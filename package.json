@@ -1,0 +1,31 @@
+{
+  "name": "powerbulletin",
+  "version": "0.0.1",
+  "description": "Post-Modern, Realtime, FREE (as in freedom) Community",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/khoerling/powerbulletin.git"
+  },
+  "keywords": [
+    "power bulletin",
+    "community",
+    "message",
+    "forum"
+  ],
+  "readmeFilename": "README.md",
+  "gitHead": "1ebbe5f74910d9398e6de4f6c53cc2446285c6dd",
+  "devDependencies": {
+    "grunt": "~0.4.0rc2",
+    "grunt-contrib-uglify": "~0.1.0",
+    "grunt-contrib-watch": "~0.1.4",
+    "grunt-contrib-concat": "~0.1.1",
+    "grunt-contrib-livescript": "~0.3.1",
+    "browserify": "~1.16.8",
+    "LiveScript": "~1.1.0",
+    "stylus": "~0.31.0",
+    "jade": "~0.27.7",
+    "cluster": "~0.7.7",
+    "async": "~0.1.22",
+    "express": "~3.0.5"
+  }
+}
