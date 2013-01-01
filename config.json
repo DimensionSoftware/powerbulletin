@@ -1,0 +1,6 @@
+{
+  "host": "//powerbulletin.com",
+  "cache_prefix": "muscache",
+  "tmp": "/tmp",
+  "workers": 2
+}
