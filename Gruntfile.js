@@ -10,12 +10,12 @@ module.exports = function(grunt) {
         separator: ';'
       },
       dist: {
-        src:  ['public/js/*.js'],
+        src:  [], // XXX none need concat yet
         dest: 'public/js/<%= pkg.name %>.js'
       }
     },
 
-    uglify: {
+    uglify: { // for all our js minification needs
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
@@ -26,10 +26,18 @@ module.exports = function(grunt) {
       }
     },
 
+    livescript: {
+      compile: {
+        files: {
+          'app/js/main.js': 'app/main.ls'
+        }
+      }
+    },
+
     watch: {
       livescript: {
         files: ['app/*.ls'],
-        tasks: ['default'],
+        tasks: ['livescript'],
         options: {
           interrupt: true
         }
@@ -43,7 +51,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-livescript');
 
+  grunt.registerTask('launch', 'Launch PowerBulletin!', function() {
+    // TODO needs to work  :)
+    //powerbulletin = require('./app/js/main.js')
+  });
+
   // Default task(s).
-  grunt.registerTask('default', ['concat', 'uglify']);
+  grunt.registerTask('default', ['livescript', 'concat', 'uglify', 'launch', 'watch']);
 
 };

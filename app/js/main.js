@@ -1,13 +1,16 @@
 (function(){
-  var app, html_50x, html_404, e, workers, reapWorkers, numWorkers, i, child, i$, ref$, len$, a, errHandler, this$ = this;
+  var app, redir_to_www, html_50x, html_404, e, workers, reapWorkers, numWorkers, i, child, i$, ref$, len$, a, errHandler, this$ = this;
   require()({
     'os': 'os',
     'fs': 'fs',
     'async': 'async',
     'cluster': 'cluster',
-    'express': 'express'
+    'express': 'express',
+    'stylus': 'stylus',
+    'fluidity': 'fluidity'
   });
-  app = express();
+  app = global.app = express();
+  redir_to_www = express();
   html_50x = fs.readFileSync('public/50x.html').toString();
   html_404 = fs.readFileSync('public/404.html').toString();
   try {
@@ -46,7 +49,7 @@
     for (i = 1; i <= numWorkers; ++i) {
       child = cluster.fork().process;
       workers[child.pid] = child;
-      console.log("\n [1;37m.. ._________\nPowerBulletin [1;37;40m" + app.settings.env + "[0;m [1;37mon port [1;37;40m" + (process.env['NODE_PORT'] || 3000) + "[0;m");
+      console.log("\n [1;37m.. ._________\nPowerBulletin [1;37;40m" + app.settings.env + "[0;m [1;37mon port [1;37;40m" + (process.env['NODE_PORT'] || 3000) + "[0;m [1;37mx " + numWorkers);
       console.log("[1;30;30m @ " + new Date() + "[0;m");
     }
     cluster.on('exit', function(worker){
@@ -55,25 +58,6 @@
       delete workers[worker.pid];
       newWorker = cluster.fork();
       return workers[newWorker.pid] = newWorker;
-    });
-    app.configure('development', function(){
-      var restarting, restart;
-      restarting = false;
-      restart = function(event, filename){
-        var restarting;
-        if (filename) {
-          if (filename.match(/\.(coffee|ls)$/) && !restarting) {
-            console.log(filename + " changed -- restarting");
-            restarting = true;
-            return process.kill(process.pid);
-          }
-        } else {
-          return console.log(event + " on unknown file");
-        }
-      };
-      fs.watch('.', {}, restart);
-      fs.watch('lib', {}, restart);
-      return fs.watch('handlers', {}, restart);
     });
   } else {
     process.title = "PowerBulletin [worker]";
@@ -97,19 +81,17 @@
     }
     for (i$ = 0, len$ = (ref$ = [app]).length; i$ < len$; ++i$) {
       a = ref$[i$];
-      a.use(mw.ip_lookup);
-      a.use(mw.rate_limit);
       a.set('view engine', 'jade');
-      a.register('.eco', eco);
       a.set('jsonp callback', true);
       a.use(express.cookieParser());
-      a.use(express_validator);
-      a.helpers(helpers);
     }
     app.locals(cvars);
-    app.locals({
-      sh_common: sh_common,
-      sh_hours: sh_hours
+    app.use(function(err, req, res, next){
+      if (err === 404) {
+        return res.send(html_404(404));
+      } else {
+        return next(err);
+      }
     });
     errHandler = function(responder){
       return function(err, req, res, next){
@@ -125,19 +107,12 @@
         return process.exit(1);
       };
     };
-    app.error(function(err, req, res, next){
-      if (err === 404) {
-        return res.send(html_404(404));
-      } else {
-        return next(err);
-      }
-    });
     if (process.env.NODE_ENV === 'production') {
       app.error(errHandler(function(res){
         return res.send(html_50x, 500);
       }));
     }
-    require()('routes');
+    require()('./routes');
     redir_to_www.all('*', function(req, res){
       var protocol, host, uri, url;
       protocol = req.headers['x-forwarded-proto'] || 'http';
