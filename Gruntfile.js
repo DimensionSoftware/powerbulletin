@@ -61,17 +61,17 @@ module.exports = function(grunt) {
   grunt.registerTask('launch', 'Launch PowerBulletin!', function() {
     // FIXME needs to properly .kill & restart if pid exists
     //console.log(grunt.config('pid'));
-    var cp = require('child_process'), proc = cp.exec('./bin/powerbulletin',
-      function(error, stdout, stderr) { // sleep & restart on error
-        if (error) {
-          grunt.warn("b00m, sleeping before restart...\n"+ error);
-          //setTimeout(proc, 2000);
-        } else {
-          console.log('done.');
-        }
-        //console.log(error ? error : 'done.');
-      }
-    );
+    var cp = require('child_process'), proc = cp.spawn('./bin/powerbulletin', [], {stdio:'inherit'});
+//      function(error, stdout, stderr) { // sleep & restart on error
+//        if (error) {
+//          grunt.warn("b00m, sleeping before restart...\n"+ error);
+//          //setTimeout(proc, 2000);
+//        } else {
+//          console.log('done.');
+//        }
+//        //console.log(error ? error : 'done.');
+//      }
+//    );
     grunt.config.set('pid', proc.pid);
     console.log(grunt.config('pid'));
   });

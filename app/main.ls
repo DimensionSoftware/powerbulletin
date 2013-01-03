@@ -6,8 +6,10 @@ require! {
   \async
   \cluster
   \express
+  \express-resource
   \stylus
   \fluidity
+  mw: './middleware'
 }
 
 app = global.app = express!
@@ -78,13 +80,11 @@ else
     })
 
   for a in [app]
-    #a.use(mw.ip_lookup)
-    #a.use(mw.rate_limit)
-    a.set('view engine', 'jade')
-    #a.register('.eco', eco)
-    a.set('jsonp callback', true)
+    a.use(mw.ip-lookup)
+    a.use(mw.rate-limit)
     a.use(express.cookieParser())
-    #a.helpers(helpers)
+    a.set('view engine', 'jade')
+    a.set('jsonp callback', true)
 
   # common vars!
   # app
@@ -118,15 +118,15 @@ else
   # all domain-based catch-alls & redirects
   redir_to_www.all '*', (req, res) ->
     protocol = req.headers['x-forwarded-proto'] or 'http'
-    host     = cvars.host
+    host     = req.host
     uri      = req.url
     url      = "https://#{host}#{uri}"
     res.redirect url, 301
 
   sock = express!
-  for domain in [cvars.host] # TODO bind all domains -- should come from voltdb
+  for domain in ['localhost', cvars.host] # TODO bind all domains -- should come from voltdb
     sock
+      .use(express.vhost "m.#{domain}", redir_to_www)
       .use(express.vhost domain, redir_to_www)
       .use(express.vhost "www.#{domain}", app)
-      .use(express.vhost "m.#{domain}", app)
   sock.listen process.env['NODE_PORT'] || cvars.port

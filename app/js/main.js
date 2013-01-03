@@ -6,8 +6,10 @@
     'async': 'async',
     'cluster': 'cluster',
     'express': 'express',
+    'express-resource': 'express-resource',
     'stylus': 'stylus',
-    'fluidity': 'fluidity'
+    'fluidity': 'fluidity',
+    mw: './middleware'
   });
   app = global.app = express();
   redir_to_www = express();
@@ -82,9 +84,11 @@
     }
     for (i$ = 0, len$ = (ref$ = [app]).length; i$ < len$; ++i$) {
       a = ref$[i$];
+      a.use(mw.ipLookup);
+      a.use(mw.rateLimit);
+      a.use(express.cookieParser());
       a.set('view engine', 'jade');
       a.set('jsonp callback', true);
-      a.use(express.cookieParser());
     }
     app.locals(cvars);
     app.use(function(err, req, res, next){
@@ -117,15 +121,15 @@
     redir_to_www.all('*', function(req, res){
       var protocol, host, uri, url;
       protocol = req.headers['x-forwarded-proto'] || 'http';
-      host = cvars.host;
+      host = req.host;
       uri = req.url;
       url = "https://" + host + uri;
       return res.redirect(url, 301);
     });
     sock = express();
-    for (i$ = 0, len$ = (ref$ = [cvars.host]).length; i$ < len$; ++i$) {
+    for (i$ = 0, len$ = (ref$ = ['localhost', cvars.host]).length; i$ < len$; ++i$) {
       domain = ref$[i$];
-      sock.use(express.vhost(domain, redir_to_www)).use(express.vhost("www." + domain, app)).use(express.vhost("m." + domain, app));
+      sock.use(express.vhost("m." + domain, redir_to_www)).use(express.vhost(domain, redir_to_www)).use(express.vhost("www." + domain, app));
     }
     sock.listen(process.env['NODE_PORT'] || cvars.port);
   }

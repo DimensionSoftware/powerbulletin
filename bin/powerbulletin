@@ -3,8 +3,8 @@
 # main
 # ---------
 if [ "$NODE_ENV" = production ] ; then
-  node_modules/LiveScript/bin/livescript app/main.ls 2>> error_log
+  node_modules/LiveScript/bin/livescript -d app/main.ls 2>> error_log
 else
   export NODE_WORKERS=${NODE_WORKERS:=1}
-  node_modules/LiveScript/bin/livescript app/main.ls
+  node_modules/LiveScript/bin/livescript -d app/main.ls
 fi
