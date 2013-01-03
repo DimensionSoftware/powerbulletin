@@ -19,11 +19,14 @@ html_404 = fs.read-file-sync('public/404.html').to-string!
 try # load config.json
   global.cvars = JSON.parse(fs.read-file-sync './config.json')
 catch e
-  console.log "Malformed configuration: #{e}"
+  console.log "Inspect config.json: #{e}"
   return
 
 # master
+num-workers = process.env.NODE_WORKERS or cvars.workers
 if cluster.is-master
+  console.log "\n [1;37m.. ._________\nPowerBulletin [1;37;40m#{app.settings.env}[0;m [1;37mon port [1;37;40m#{process.env['NODE_PORT'] || cvars.port}[0;m [1;37mx #{num-workers}"
+  console.log "[1;30;30m @ #{new Date()}[0;m"
   process.title = 'PowerBulletin [supervisor]'
   app.configure \production, -> # write pidfile
     fs.write-file-sync "#{cvars.tmp}/tmp/powerbulletin.pid", process.pid
@@ -42,12 +45,9 @@ if cluster.is-master
   process.on 'SIGINT',  reap-workers
   process.on 'SIGTERM', reap-workers
 
-  num-workers = process.env.NODE_WORKERS or cvars.workers
   for i from 1 to num-workers
     child = cluster.fork!process
     workers[child.pid] = child
-    console.log "\n [1;37m.. ._________\nPowerBulletin [1;37;40m#{app.settings.env}[0;m [1;37mon port [1;37;40m#{process.env['NODE_PORT'] || 3000}[0;m [1;37mx #{num-workers}"
-    console.log "[1;30;30m @ #{new Date()}[0;m"
 
   cluster.on \exit, (worker) ->
     console.log "Worker #{worker.pid} died"
@@ -58,6 +58,7 @@ if cluster.is-master
 # worker
 else
   process.title = "PowerBulletin [worker]"
+  console.log "[1;30;30m  `+ worker #{process.pid}[0;m"
 
   if process.env.NODE_ENV == 'production'
     process.on 'uncaughtException', (err) ->
@@ -83,7 +84,6 @@ else
     #a.register('.eco', eco)
     a.set('jsonp callback', true)
     a.use(express.cookieParser())
-    #.use(express_validator)
     #a.helpers(helpers)
 
   # common vars!
@@ -115,16 +115,18 @@ else
   # routes
   require! './routes'
 
-  # catch-alls & redirects
+  # all domain-based catch-alls & redirects
   redir_to_www.all '*', (req, res) ->
     protocol = req.headers['x-forwarded-proto'] or 'http'
-    host     = 'powerbulletin.com'
+    host     = cvars.host
     uri      = req.url
     url      = "https://#{host}#{uri}"
     res.redirect url, 301
 
-  express!use(express.vhost 'powerbulletin.com', redir_to_www)
-    .use(express.vhost 'www.powerbulletin.com', app)
-    .use(express.vhost 'm.powerbulletin.com', app)
-    .listen process.env['NODE_PORT'] || 3000
-
+  sock = express!
+  for domain in [cvars.host] # TODO bind all domains -- should come from voltdb
+    sock
+      .use(express.vhost domain, redir_to_www)
+      .use(express.vhost "www.#{domain}", app)
+      .use(express.vhost "m.#{domain}", app)
+  sock.listen process.env['NODE_PORT'] || cvars.port

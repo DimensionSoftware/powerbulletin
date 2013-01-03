@@ -1,5 +1,6 @@
 {
-  "host": "//powerbulletin.com",
+  "host": "powerbulletin.com",
+  "port": "3000",
   "cache_prefix": "muscache",
   "tmp": "/tmp",
   "workers": 2

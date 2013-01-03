@@ -34,12 +34,19 @@ module.exports = function(grunt) {
       }
     },
 
+    launch: {
+      options: {
+        pid: false
+      }
+    },
+
     watch: {
-      livescript: {
+      app: {
         files: ['app/*.ls'],
-        tasks: ['livescript'],
+        tasks: ['livescript', 'launch'],
         options: {
-          interrupt: true
+          interrupt: true,
+          debounceDelay: 2000
         }
       }
     }
@@ -52,8 +59,21 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-livescript');
 
   grunt.registerTask('launch', 'Launch PowerBulletin!', function() {
-    // TODO needs to work  :)
-    //powerbulletin = require('./app/js/main.js')
+    // FIXME needs to properly .kill & restart if pid exists
+    //console.log(grunt.config('pid'));
+    var cp = require('child_process'), proc = cp.exec('./bin/powerbulletin',
+      function(error, stdout, stderr) { // sleep & restart on error
+        if (error) {
+          grunt.warn("b00m, sleeping before restart...\n"+ error);
+          //setTimeout(proc, 2000);
+        } else {
+          console.log('done.');
+        }
+        //console.log(error ? error : 'done.');
+      }
+    );
+    grunt.config.set('pid', proc.pid);
+    console.log(grunt.config('pid'));
   });
 
   // Default task(s).

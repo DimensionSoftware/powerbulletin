@@ -1,5 +1,5 @@
 (function(){
-  var app, redir_to_www, html_50x, html_404, e, workers, reapWorkers, numWorkers, i, child, i$, ref$, len$, a, errHandler, this$ = this;
+  var app, redir_to_www, html_50x, html_404, e, numWorkers, workers, reapWorkers, i, child, i$, ref$, len$, a, errHandler, sock, domain, this$ = this;
   require()({
     'os': 'os',
     'fs': 'fs',
@@ -17,10 +17,13 @@
     global.cvars = JSON.parse(fs.readFileSync('./config.json'));
   } catch (e$) {
     e = e$;
-    console.log("Malformed configuration: " + e);
+    console.log("Inspect config.json: " + e);
     return;
   }
+  numWorkers = process.env.NODE_WORKERS || cvars.workers;
   if (cluster.isMaster) {
+    console.log("\n [1;37m.. ._________\nPowerBulletin [1;37;40m" + app.settings.env + "[0;m [1;37mon port [1;37;40m" + (process.env['NODE_PORT'] || cvars.port) + "[0;m [1;37mx " + numWorkers);
+    console.log("[1;30;30m @ " + new Date() + "[0;m");
     process.title = 'PowerBulletin [supervisor]';
     app.configure('production', function(){
       var id, e;
@@ -45,12 +48,9 @@
     };
     process.on('SIGINT', reapWorkers);
     process.on('SIGTERM', reapWorkers);
-    numWorkers = process.env.NODE_WORKERS || cvars.workers;
     for (i = 1; i <= numWorkers; ++i) {
       child = cluster.fork().process;
       workers[child.pid] = child;
-      console.log("\n [1;37m.. ._________\nPowerBulletin [1;37;40m" + app.settings.env + "[0;m [1;37mon port [1;37;40m" + (process.env['NODE_PORT'] || 3000) + "[0;m [1;37mx " + numWorkers);
-      console.log("[1;30;30m @ " + new Date() + "[0;m");
     }
     cluster.on('exit', function(worker){
       var newWorker;
@@ -61,6 +61,7 @@
     });
   } else {
     process.title = "PowerBulletin [worker]";
+    console.log("[1;30;30m  `+ worker " + process.pid + "[0;m");
     if (process.env.NODE_ENV === 'production') {
       process.on('uncaughtException', function(err){
         var timestamp;
@@ -116,11 +117,16 @@
     redir_to_www.all('*', function(req, res){
       var protocol, host, uri, url;
       protocol = req.headers['x-forwarded-proto'] || 'http';
-      host = 'powerbulletin.com';
+      host = cvars.host;
       uri = req.url;
       url = "https://" + host + uri;
       return res.redirect(url, 301);
     });
-    express().use(express.vhost('powerbulletin.com', redir_to_www)).use(express.vhost('www.powerbulletin.com', app)).use(express.vhost('m.powerbulletin.com', app)).listen(process.env['NODE_PORT'] || 3000);
+    sock = express();
+    for (i$ = 0, len$ = (ref$ = [cvars.host]).length; i$ < len$; ++i$) {
+      domain = ref$[i$];
+      sock.use(express.vhost(domain, redir_to_www)).use(express.vhost("www." + domain, app)).use(express.vhost("m." + domain, app));
+    }
+    sock.listen(process.env['NODE_PORT'] || cvars.port);
   }
 }).call(this);
