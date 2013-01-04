@@ -1,0 +1,47 @@
+@import 'common'
+
+body
+  font-family 'Ubuntu'
+  grid(90%,100%)
+  background-color #fff
+
+header
+  position relative
+  color #ddd
+  .search
+    top 16px
+    left 350px
+    position absolute 
+
+.content
+  grid-space(75%)
+  background-image linear-gradient(65deg, #fff, #fafafa)
+
+.right-menu
+  grid-space(25%)
+
+footer
+  background-color #fafafa
+  border-top 1px solid #eee
+  text-align center
+  color #ddd
+
+
+// <RESPONSIVE>
+@media screen and (max-width: 800px)
+  body
+    grid(90%,475px)
+  .content
+    grid-space(55%)
+  .right-menu
+    grid-space(45%)
+ 
+@media screen and (max-width: 500px)
+  body
+    grid(90%,320px)
+  header
+    font-size 0.8em
+  .content
+    grid-space(100%)
+  .right-menu
+    grid-space(100%)

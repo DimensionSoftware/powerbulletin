@@ -1,5 +1,5 @@
 (function(){
-  var app, redir_to_www, html_50x, html_404, e, numWorkers, workers, reapWorkers, i, child, i$, ref$, len$, a, errHandler, sock, domain, this$ = this;
+  var proc, app, redir_to_www, html_50x, html_404, e, numWorkers, workers, reapWorkers, i, child, i$, ref$, len$, a, errHandler, sock, domain, this$ = this;
   require()({
     'os': 'os',
     'fs': 'fs',
@@ -11,6 +11,7 @@
     'fluidity': 'fluidity',
     mw: './middleware'
   });
+  proc = process;
   app = global.app = express();
   redir_to_www = express();
   html_50x = fs.readFileSync('public/50x.html').toString();
@@ -22,18 +23,18 @@
     console.log("Inspect config.json: " + e);
     return;
   }
-  numWorkers = process.env.NODE_WORKERS || cvars.workers;
+  numWorkers = proc.env.NODE_WORKERS || cvars.workers;
   if (cluster.isMaster) {
-    console.log("\n [1;37m.. ._________\nPowerBulletin [1;37;40m" + app.settings.env + "[0;m [1;37mon port [1;37;40m" + (process.env['NODE_PORT'] || cvars.port) + "[0;m [1;37mx " + numWorkers);
+    console.log("\n [1;37m.. ._________\nPowerBulletin [1;37;40m" + app.settings.env + "[0;m [1;37mon port [1;37;40m" + (proc.env['NODE_PORT'] || cvars.port) + "[0;m [1;37mx " + numWorkers);
     console.log("[1;30;30m @ " + new Date() + "[0;m");
-    process.title = 'PowerBulletin [supervisor]';
+    proc.title = 'PowerBulletin [supervisor]';
     app.configure('production', function(){
       var id, e;
-      fs.writeFileSync(cvars.tmp + "/tmp/powerbulletin.pid", process.pid);
+      fs.writeFileSync(cvars.tmp + "/tmp/powerbulletin.pid", proc.pid);
       id = 'powerbulletin';
       try {
-        process.setuid(id);
-        return process.setgid(id);
+        proc.setuid(id);
+        return proc.setgid(id);
       } catch (e$) {
         e = e$;
         return console.log("Unable to setuid/setgid " + id + ": " + e);
@@ -44,12 +45,12 @@
       var pid, ref$, worker;
       for (pid in ref$ = workers) {
         worker = ref$[pid];
-        process.kill(pid);
+        proc.kill(pid);
       }
-      return process.exit();
+      return proc.exit();
     };
-    process.on('SIGINT', reapWorkers);
-    process.on('SIGTERM', reapWorkers);
+    proc.on('SIGINT', reapWorkers);
+    proc.on('SIGTERM', reapWorkers);
     for (i = 1; i <= numWorkers; ++i) {
       child = cluster.fork().process;
       workers[child.pid] = child;
@@ -62,15 +63,15 @@
       return workers[newWorker.pid] = newWorker;
     });
   } else {
-    process.title = "PowerBulletin [worker]";
-    console.log("[1;30;30m  `+ worker " + process.pid + "[0;m");
-    if (process.env.NODE_ENV === 'production') {
-      process.on('uncaughtException', function(err){
+    proc.title = "PowerBulletin [worker]";
+    console.log("[1;30;30m  `+ worker " + proc.pid + "[0;m");
+    if (proc.env.NODE_ENV === 'production') {
+      proc.on('uncaughtException', function(err){
         var timestamp;
         timestamp = new Date;
         console.warn('timestamp', timestamp);
         console.warn(err.message);
-        return process.exit(1);
+        return proc.exit(1);
       });
       require('console-trace')({
         always: true,
@@ -84,13 +85,19 @@
     }
     for (i$ = 0, len$ = (ref$ = [app]).length; i$ < len$; ++i$) {
       a = ref$[i$];
+      a.use(mw.multiDomain);
       a.use(mw.ipLookup);
       a.use(mw.rateLimit);
       a.use(express.cookieParser());
       a.set('view engine', 'jade');
+      a.set('views', 'app/views');
       a.set('jsonp callback', true);
     }
     app.locals(cvars);
+    for (i$ = 0, len$ = (ref$ = ['', 2, 3, 4, 5]).length; i$ < len$; ++i$) {
+      i = ref$[i$];
+      app.locals["cache" + i + "_url"] = "//" + cvars.cache_prefix + i + "." + cvars.host;
+    }
     app.use(function(err, req, res, next){
       if (err === 404) {
         return res.send(html_404(404));
@@ -109,10 +116,10 @@
         console.warn('user_agent', req.headers['user-agent']);
         console.warn('http_method', req.method);
         console.warn('url', req.headers.host + req.url);
-        return process.exit(1);
+        return proc.exit(1);
       };
     };
-    if (process.env.NODE_ENV === 'production') {
+    if (proc.env.NODE_ENV === 'production') {
       app.error(errHandler(function(res){
         return res.send(html_50x, 500);
       }));
@@ -127,10 +134,10 @@
       return res.redirect(url, 301);
     });
     sock = express();
-    for (i$ = 0, len$ = (ref$ = ['localhost', cvars.host]).length; i$ < len$; ++i$) {
+    for (i$ = 0, len$ = (ref$ = ['pb.com', cvars.host]).length; i$ < len$; ++i$) {
       domain = ref$[i$];
       sock.use(express.vhost("m." + domain, redir_to_www)).use(express.vhost(domain, redir_to_www)).use(express.vhost("www." + domain, app));
     }
-    sock.listen(process.env['NODE_PORT'] || cvars.port);
+    sock.listen(proc.env['NODE_PORT'] || cvars.port);
   }
 }).call(this);

@@ -16,25 +16,34 @@ html
     meta(name='viewport', content='user-scalable=0, initial-scale=1, maximum-scale=1, width=device-width')
 
     //- links first
-    link(href='/images/favicon.ico',rel='shortcut icon',type='image/x-icon')
-    link(href='/images/apple-touch-icon.png', rel='apple-touch-icon')
-    link(href='/images/apple-touch-icon-72x72.png', sizes="72x72", rel='apple-touch-icon')
-    link(href='/images/apple-touch-icon-114x114.png', sizes="114x114", rel='apple-touch-icon')
-    if this.css_files
-      for url in css_urls
-        link(rel='stylesheet',type='text/css',href=url)
+    link(href="#{cache_url}/images/favicon.ico",rel='shortcut icon',type='image/x-icon')
+    link(href="#{cache2_url}/images/apple-touch-icon.png", rel='apple-touch-icon')
+    link(href="#{cache3_url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
+    link(href="#{cache4_url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
+    link(href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700', rel='stylesheet', type='text/css')
+    if css_urls
+      for obj in css_urls
+        link(rel='stylesheet',type='text/css',href=obj.url)
 
     //- the only .js in our <head> next
     |<script type="text/javascript">
     |  var head_conf = { screens:[320, 480, 640, 768, 800, 900, 1024, 1280, 1440, 1680, 1920] };
     |</script>
-    script(type='text/javascript', src="#{cache_url}/js/head.min.js")
-    if this.js_urls
+    script(type='text/javascript', src="#{cache5_url}/js/head.min.js")
+    if js_urls
       |<script type="text/javascript">
       |  head.js.apply(head, !{JSON.stringify(js_urls)});
       |</script>
 
   body
-    p
-    | Hello World!
-
+    header
+      h1 PowerBulletin
+      input.search(type='text', placeholder='Search')
+    section
+      .content
+        p Middle
+      sidebar.right-menu
+        p Right
+    footer
+      h6 &copy; 
+        != new Date().getFullYear()
