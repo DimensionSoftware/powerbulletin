@@ -16,7 +16,8 @@ global <<< require \prelude-ls
 proc = process
 
 app = global.app = express!
-redir_to_www     = express!
+redir-to-www     = express!
+cache-app        = express!
 
 html_50x = fs.read-file-sync('public/50x.html').to-string!
 html_404 = fs.read-file-sync('public/404.html').to-string!
@@ -94,7 +95,7 @@ else
   # common locals
   app.locals cvars
   for i in ['', 2, 3, 4, 5] # add cache domains
-    app.locals["cache#{i}_url"] = "//#{cvars.cache-prefix}#{i}.#{cvars.host}"
+    app.locals["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}.#{cvars.host}"
 
   # 404 handler, if not 404, punt
   app.use (err, req, res, next) ~>
@@ -122,7 +123,9 @@ else
   require! './routes'
 
   # all domain-based catch-alls & redirects
-  redir_to_www.all '*', (req, res) ->
+  cache-app.use(express.static \public)
+
+  redir-to-www.all '*', (req, res) ->
     protocol = req.headers['x-forwarded-proto'] or 'http'
     host     = req.host
     uri      = req.url
@@ -132,7 +135,9 @@ else
   sock = express!
   for domain in ['pb.com', cvars.host] # TODO bind all domains -- should come from voltdb
     sock
-      .use(express.vhost "m.#{domain}", redir_to_www)
-      .use(express.vhost domain, redir_to_www)
+      .use(express.vhost "m.#{domain}", redir-to-www)
+      .use(express.vhost domain, redir-to-www)
       .use(express.vhost "www.#{domain}", app)
+    for i in ['', 2, 3, 4, 5] # add cache domains
+      sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{domain}", cache-app)
   sock.listen proc.env['NODE_PORT'] || cvars.port

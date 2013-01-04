@@ -1,5 +1,5 @@
 {
-  "host": "pb.com",
+  "host": "powerbulletin.com",
   "cache_prefix": "muscache",
   "port": "3000",
   "tmp": "/tmp",
