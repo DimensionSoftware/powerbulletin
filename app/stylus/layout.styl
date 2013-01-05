@@ -1,31 +1,59 @@
 @import 'common'
 
+// XXX below defines the layout's skeleton
+// XXX decoration & embellishments belong in the theme.styl
+
 body
-  font-family 'Ubuntu'
   grid(90%,100%)
-  background-color #fff
+  overflow visible!important
 
 header
-  position relative
-  color #ddd
+  position fixed
+  height 60px
+  z-index 1
+  .logo
+    margin-top 16px
+  .menu
+    position absolute
+    top -3px
+    left 250px
+    .row
+      cursor pointer
+      display inline-block
+      padding 0 19px
+      line-height 60px
   .search
-    top 16px
+    top 12px
     left 350px
     position absolute 
 
 .content
+  margin-top 60px!important
+  margin-bottom 30px!important
   grid-space(75%)
-  background-image linear-gradient(65deg, #fff, #fafafa)
 
 .right-menu
+  position fixed!important
+  z-index 2
+  top 60px
+  right 0
   grid-space(25%)
+  .menu
+    padding 0
+    margin 12px 0
+    list-style none
+    .row
+      margin 0
+  p
+    margin 10px 0
 
 footer
-  background-color #fafafa
-  border-top 1px solid #eee
   text-align center
-  color #ddd
-
+  position fixed
+  bottom 0
+  right 0
+  left 0
+  height 30px
 
 // <RESPONSIVE>
 @media screen and (max-width: 800px)
@@ -35,8 +63,26 @@ footer
     grid-space(55%)
   .right-menu
     grid-space(45%)
+  header
+    height 40px
+    .menu
+      .row
+        line-height 40px
+      .row:before
+        height 30px!important
+    .logo
+      font-size 1.3em
+      margin-top 10px
  
+  
 @media screen and (max-width: 500px)
+  .content
+    margin-bottom 10px!important
+  .right-menu
+    margin-bottom 30px!important
+    position static!important
+  header 
+    display none
   body
     grid(90%,320px)
   header

@@ -9,7 +9,6 @@ require! {
   \express-resource
   \stylus
   \fluidity
-  mw: './middleware'
 }
 global <<< require \prelude-ls
 
@@ -25,9 +24,13 @@ html_404 = fs.read-file-sync('public/404.html').to-string!
 try # load config.json
   global.cvars = JSON.parse(fs.read-file-sync './config.json')
   cvars.process-start-date = new Date!
+  for i in ['', 2, 3, 4, 5] # add cache domains
+    cvars["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}.#{cvars.host}"
 catch e
   console.log "Inspect config.json: #{e}"
   return
+
+require! mw: './middleware'
 
 # master
 num-workers = proc.env.NODE_WORKERS or cvars.workers
@@ -94,8 +97,6 @@ else
 
   # common locals
   app.locals cvars
-  for i in ['', 2, 3, 4, 5] # add cache domains
-    app.locals["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}.#{cvars.host}"
 
   # 404 handler, if not 404, punt
   app.use (err, req, res, next) ~>

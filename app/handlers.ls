@@ -12,6 +12,18 @@ require! {
   res.send "hello #{res.locals.remote-ip}"
 
 
+cvars.acceptable-js-files = fs.readdir-sync 'public/js/'
+@js = (req, res, next) ->
+  r = req.route.params
+
+  if r.file in cvars.acceptable-js-files
+    (err, buffer) <- fs.read-file "public/js/#{r.file}"
+    res.content-type 'js'
+    caching-strategies.lastmod res, cvars.process-start-date, 7200
+    res.send buffer.to-string!
+  else
+    res.send 404, 404
+
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->
   r = req.route.params
@@ -20,7 +32,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 
   render-css = (file-name, cb) ->
     if file-name in cvars.acceptable-stylus-files # concat files
-      fs.readFile "app/stylus/#{file-name}", (err, buffer) ->
+      fs.read-file "app/stylus/#{file-name}", (err, buffer) ->
         if err then cb err
         options =
           compress: true

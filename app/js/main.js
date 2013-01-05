@@ -1,5 +1,5 @@
 (function(){
-  var proc, app, redir_to_www, html_50x, html_404, e, numWorkers, workers, reapWorkers, i, child, i$, ref$, len$, a, errHandler, sock, domain, this$ = this;
+  var proc, app, redirToWww, cacheApp, html_50x, html_404, i$, ref$, len$, i, e, numWorkers, workers, reapWorkers, child, a, errHandler, sock, domain, j$, ref1$, len1$, this$ = this;
   require()({
     'os': 'os',
     'fs': 'fs',
@@ -8,21 +8,30 @@
     'express': 'express',
     'express-resource': 'express-resource',
     'stylus': 'stylus',
-    'fluidity': 'fluidity',
-    mw: './middleware'
+    'fluidity': 'fluidity'
   });
+  import$(global, require('prelude-ls'));
   proc = process;
   app = global.app = express();
-  redir_to_www = express();
+  redirToWww = express();
+  cacheApp = express();
   html_50x = fs.readFileSync('public/50x.html').toString();
   html_404 = fs.readFileSync('public/404.html').toString();
   try {
     global.cvars = JSON.parse(fs.readFileSync('./config.json'));
+    cvars.processStartDate = new Date();
+    for (i$ = 0, len$ = (ref$ = ['', 2, 3, 4, 5]).length; i$ < len$; ++i$) {
+      i = ref$[i$];
+      cvars["cache" + i + "_url"] = "//" + cvars.cache_prefix + i + "." + cvars.host;
+    }
   } catch (e$) {
     e = e$;
     console.log("Inspect config.json: " + e);
     return;
   }
+  require()({
+    mw: './middleware'
+  });
   numWorkers = proc.env.NODE_WORKERS || cvars.workers;
   if (cluster.isMaster) {
     console.log("\n [1;37m.. ._________\nPowerBulletin [1;37;40m" + app.settings.env + "[0;m [1;37mon port [1;37;40m" + (proc.env['NODE_PORT'] || cvars.port) + "[0;m [1;37mx " + numWorkers);
@@ -30,7 +39,7 @@
     proc.title = 'PowerBulletin [supervisor]';
     app.configure('production', function(){
       var id, e;
-      fs.writeFileSync(cvars.tmp + "/tmp/powerbulletin.pid", proc.pid);
+      fs.writeFileSync(cvars.tmp + "/powerbulletin.pid", proc.pid);
       id = 'powerbulletin';
       try {
         proc.setuid(id);
@@ -91,13 +100,8 @@
       a.use(express.cookieParser());
       a.set('view engine', 'jade');
       a.set('views', 'app/views');
-      a.set('jsonp callback', true);
     }
     app.locals(cvars);
-    for (i$ = 0, len$ = (ref$ = ['', 2, 3, 4, 5]).length; i$ < len$; ++i$) {
-      i = ref$[i$];
-      app.locals["cache" + i + "_url"] = "//" + cvars.cache_prefix + i + "." + cvars.host;
-    }
     app.use(function(err, req, res, next){
       if (err === 404) {
         return res.send(html_404(404));
@@ -125,7 +129,8 @@
       }));
     }
     require()('./routes');
-    redir_to_www.all('*', function(req, res){
+    cacheApp.use(express['static']('public'));
+    redirToWww.all('*', function(req, res){
       var protocol, host, uri, url;
       protocol = req.headers['x-forwarded-proto'] || 'http';
       host = req.host;
@@ -136,8 +141,17 @@
     sock = express();
     for (i$ = 0, len$ = (ref$ = ['pb.com', cvars.host]).length; i$ < len$; ++i$) {
       domain = ref$[i$];
-      sock.use(express.vhost("m." + domain, redir_to_www)).use(express.vhost(domain, redir_to_www)).use(express.vhost("www." + domain, app));
+      sock.use(express.vhost("m." + domain, redirToWww)).use(express.vhost(domain, redirToWww)).use(express.vhost("www." + domain, app));
+      for (j$ = 0, len1$ = (ref1$ = ['', 2, 3, 4, 5]).length; j$ < len1$; ++j$) {
+        i = ref1$[j$];
+        sock.use(express.vhost(cvars.cache_prefix + "" + i + "." + domain, cacheApp));
+      }
     }
     sock.listen(proc.env['NODE_PORT'] || cvars.port);
+  }
+  function import$(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
   }
 }).call(this);

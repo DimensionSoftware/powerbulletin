@@ -8,8 +8,10 @@ require! {
     tld  = rhh.substr(rhh.last-index-of '.')    # extract tld
     rest = rhh.substr(0, rhh.last-index-of '.') # everything else
     host = rest.substr(rest.last-index-of '.')  # prune all subdomains
+    cvars["cache#{i}_url"] = res.locals["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}#{host}#{tld}"
 
-    app.locals["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}#{host}#{tld}"
+    # TODO pull in all domain-specific info from volt
+    res.locals.site_name = 'Dimension Software'
   next!
 
 @ip-lookup = (req, res, next) ->
