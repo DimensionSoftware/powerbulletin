@@ -11,17 +11,36 @@ header
   position fixed
   height 60px
   z-index 1
-  .logo
-    margin-top 16px
-  .menu
-    position absolute
-    top -3px
-    left 250px
-    .row
-      cursor pointer
+  .container
+    width 800px
+    margin 0 auto
+    .logo
       display inline-block
-      padding 0 19px
-      line-height 60px
+      margin-top 18px
+      width 200px
+      vertical-align top
+      text-shadow 0 0 1px #fff
+      font-style italic
+      font-size 1.6em
+      font-weight 300
+      letter-spacing -2px
+      strong
+        letter-spacing -2px
+        font-weight 500
+        padding-left 4px
+        font-style normal
+        color #ddd
+    .menu
+      position absolute
+      top -3px
+      margin 0 auto
+      display inline-block
+      .row
+        cursor pointer
+        display inline-block
+        padding 0 19px
+        line-height 60px
+        font-size 18px
   .search
     top 12px
     left 350px
@@ -35,7 +54,7 @@ header
 .right-menu
   position fixed!important
   z-index 2
-  top 60px
+  top 85px
   right 0
   grid-space(25%)
   .menu
@@ -48,6 +67,7 @@ header
     margin 10px 0
 
 footer
+  cursor pointer
   text-align center
   position fixed
   bottom 0
@@ -65,15 +85,12 @@ footer
     grid-space(45%)
   header
     height 40px
+    .logo
+      font-size 1.3em!important
+      margin-top 8px!important
     .menu
       .row
-        line-height 40px
-      .row:before
-        height 30px!important
-    .logo
-      font-size 1.3em
-      margin-top 10px
- 
+        line-height 40px!important
   
 @media screen and (max-width: 500px)
   .content

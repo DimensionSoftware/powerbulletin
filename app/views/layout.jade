@@ -37,11 +37,14 @@ html
 
   body
     header
-      h1.logo PowerBulletin
-      ul.menu
-        li.row HOT
-        li.row FRESH
-        li.row Controversial
+      .container
+        h1.logo Power 
+          strong Bulletin
+        ul.menu
+          li.row.active HOT
+            i !
+          li.row FRESH
+          li.row Controversial
     section
       .content
         p Infinity Scroll
@@ -107,6 +110,6 @@ html
           li.row topic
           li.row topic
           li.row topic
-    footer#chat-drawer
+    footer#chat-drawer.scroll-to-top
       h6 &copy; #{site_name} &nbsp;
         b= new Date().getFullYear()
