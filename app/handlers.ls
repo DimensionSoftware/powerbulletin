@@ -6,6 +6,11 @@ require! {
 }
 
 @homepage = (req, res) ->
+  # TODO fetch smart/fun combination of latest/best voted posts, threads & media
+  res.locals.posts = for i from 0 to 100 # dummy data
+    date     : new Date!
+    username : 'anonymous'
+    message  : 'hello world'
   res.render 'layout'
 
 @hello = (req, res) ->

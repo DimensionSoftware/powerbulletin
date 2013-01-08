@@ -100,6 +100,8 @@
       a.use(express.cookieParser());
       a.set('view engine', 'jade');
       a.set('views', 'app/views');
+      a.enable('json callback');
+      a.enable('trust proxy');
     }
     app.locals(cvars);
     app.use(function(err, req, res, next){

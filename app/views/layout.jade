@@ -1,3 +1,9 @@
+mixin post(p)
+  .post
+    .username= p.username
+    .date= p.date
+    p.message= p.message
+
 !!! 5
 html
   head
@@ -38,66 +44,19 @@ html
   body
     header
       .container
-        h1.logo Power 
+        h1.logo Power
           strong Bulletin
         ul.menu
           li.row.active HOT
             i !
           li.row FRESH
           li.row Controversial
+
     section
       .content
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
-        p Infinity Scroll
+        each p,i in posts
+          mixin post(p, i)
+
       sidebar.right-menu
         input.search(type='text', placeholder='Search')
         menu.menu Navz
