@@ -1,6 +1,6 @@
 
-@threads =
-  index   : (req, res) -> console.log 'threads'
+@topics =
+  index   : (req, res) -> console.log 'topics'
   new     : null
   create  : null
   show    : null

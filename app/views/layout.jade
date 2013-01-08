@@ -1,8 +1,16 @@
-mixin post(p)
-  .post
-    .username= p.username
-    .date= p.date
+
+mixin post(p, i)
+ .post(class=(i % 2) ? 'odd' : 'even')
+    span.username= p.user.name
+    span.date= p.date
     p.message= p.message
+
+mixin topic(t, i)
+  .topic(class=(i % 2) ? 'odd' : 'even')
+    span.title= t.title
+    span.date= t.date
+    each p,i in t.posts
+      mixin post(p, i)
 
 !!! 5
 html
@@ -54,14 +62,12 @@ html
 
     section
       .content
-        each p,i in posts
-          mixin post(p, i)
+        each t,i in topics
+          mixin topic(t, i)
 
       sidebar.right-menu
         input.search(type='text', placeholder='Search')
         menu.menu Navz
-          li.row nav
-          li.row nav
           li.row nav
           li.row nav
         menu.menu Topics
@@ -72,3 +78,4 @@ html
     footer#chat-drawer.scroll-to-top
       h6 &copy; #{site_name} &nbsp;
         b= new Date().getFullYear()
+

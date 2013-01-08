@@ -7,11 +7,20 @@ require! {
 
 @homepage = (req, res) ->
   # TODO fetch smart/fun combination of latest/best voted posts, threads & media
-  res.locals.posts = for i from 0 to 100 # dummy data
-    date     : new Date!
-    username : 'anonymous'
-    message  : 'hello world'
-  res.render 'layout'
+  user =
+    name       : \anonymous
+    created_at : new Date!
+  posts = for ii to 4
+    date    : title-case elapsed-to-human-readable Math.random!*604800
+    user    : user
+    message : ellipse 'hello world!' 6
+  topics = for i to 5 # dummy data
+    title : \Test
+    date  : title-case elapsed-to-human-readable Math.random!*31446925
+    user  : user
+    posts : posts
+  res.locals.topics = topics
+  res.render \layout
 
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}"
