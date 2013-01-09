@@ -11,7 +11,7 @@ header
   position fixed
   height 60px
   z-index 1
-  .container
+  .content
     width 800px
     margin 0 auto
     .logo
@@ -46,14 +46,14 @@ header
     left 350px
     position absolute 
 
-.content
+section
   padding 0 20px 25px 0 !important
   margin-top 60px!important
   margin-bottom 30px!important
   grid-space(75%)
-
-  .post
-    padding 20px 25px
+  .content
+    .post
+      padding 20px 25px
     
 .right-menu
   position fixed!important
@@ -71,7 +71,6 @@ header
     margin 10px 0
 
 footer
-  cursor pointer
   text-align center
   position fixed
   bottom 0
@@ -79,12 +78,16 @@ footer
   left 0
   height 30px
 
+.scroll-to-top
+  cursor pointer
+
 // <RESPONSIVE>
 @media screen and (max-width: 800px)
   body
     grid(90%,475px)
-  .content
-    grid-space(55%)
+  section
+    .content
+      grid-space(55%)
   .right-menu
     grid-space(45%)
   header
@@ -97,18 +100,16 @@ footer
         line-height 40px!important
   
 @media screen and (max-width: 500px)
-  .content
-    margin-bottom 10px!important
+  section
+    .content
+      margin-bottom 10px!important
+      grid-space(100%)
   .right-menu
+    grid-space(100%)
     margin-bottom 30px!important
     position static!important
-  header 
-    display none
   body
     grid(90%,320px)
   header
     font-size 0.8em
-  .content
-    grid-space(100%)
-  .right-menu
-    grid-space(100%)
+    display none

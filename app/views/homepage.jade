@@ -1,0 +1,44 @@
+extend layout
+
+mixin post(p, i)
+ .post(class=(i % 2) ? 'odd' : 'even')
+    span.username= p.user.name
+    span.date= p.date
+    p.message= p.message
+
+mixin topic(t, i)
+  .topic(class=(i % 2) ? 'odd' : 'even')
+    span.title= t.title
+    span.date= t.date
+    each p,i in t.posts
+      mixin post(p, i)
+
+
+//- main
+//- ---------
+block header-content
+  h1.logo Power
+    strong Bulletin
+  ul.menu
+    li.row.active HOT
+      i !
+    li.row FRESH
+    li.row Controversial
+
+block section-content
+  each t,i in topics
+    mixin topic(t, i)
+
+block sidebar-content
+  input.search(type='text', placeholder='Search')
+  menu.menu Topics
+    li.row topic
+    li.row topic
+    li.row topic
+    li.row topic
+    li.row topic
+    li.row topic
+
+block footer-content
+  h6 &copy; #{site_name} &nbsp;
+    b= new Date().getFullYear()

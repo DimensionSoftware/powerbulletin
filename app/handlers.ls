@@ -20,7 +20,7 @@ require! {
     user  : user
     posts : posts
   res.locals.topics = topics
-  res.render \layout
+  res.render \homepage
 
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}"

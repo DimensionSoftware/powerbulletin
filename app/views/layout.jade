@@ -1,17 +1,3 @@
-
-mixin post(p, i)
- .post(class=(i % 2) ? 'odd' : 'even')
-    span.username= p.user.name
-    span.date= p.date
-    p.message= p.message
-
-mixin topic(t, i)
-  .topic(class=(i % 2) ? 'odd' : 'even')
-    span.title= t.title
-    span.date= t.date
-    each p,i in t.posts
-      mixin post(p, i)
-
 !!! 5
 html
   head
@@ -51,31 +37,18 @@ html
 
   body
     header
-      .container
-        h1.logo Power
-          strong Bulletin
-        ul.menu
-          li.row.active HOT
-            i !
-          li.row FRESH
-          li.row Controversial
+      .content
+        block header-content
 
     section
       .content
-        each t,i in topics
-          mixin topic(t, i)
+        block section-content
 
       sidebar.right-menu
-        input.search(type='text', placeholder='Search')
-        menu.menu Navz
-          li.row nav
-          li.row nav
-        menu.menu Topics
-          li.row topic
-          li.row topic
-          li.row topic
-          li.row topic
-    footer#chat-drawer.scroll-to-top
-      h6 &copy; #{site_name} &nbsp;
-        b= new Date().getFullYear()
+        .content
+          block sidebar-content
+          .scroll-to-top Top
 
+    footer#chat-drawer.scroll-to-top
+      .content
+        block footer-content
