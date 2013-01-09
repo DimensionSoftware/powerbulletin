@@ -32,7 +32,7 @@ catch e
 
 require! mw: './middleware'
 
-# master
+#{{{ Master
 num-workers = proc.env.NODE_WORKERS or cvars.workers
 if cluster.is-master
   console.log "\n [1;37m.. ._________\nPowerBulletin [1;37;40m#{app.settings.env}[0;m [1;37mon port [1;37;40m#{proc.env['NODE_PORT'] || cvars.port}[0;m [1;37mx #{num-workers}"
@@ -64,8 +64,8 @@ if cluster.is-master
     delete workers[worker.pid]
     new-worker = cluster.fork!
     workers[new-worker.pid] = new-worker
-
-# worker
+#}}}
+#{{{ Worker
 else
   proc.title = "PowerBulletin [worker]"
   console.log "[1;30;30m  `+ worker #{proc.pid}[0;m"
@@ -144,3 +144,5 @@ else
     for i in ['', 2, 3, 4, 5] # add cache domains
       sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{domain}", cache-app)
   sock.listen proc.env['NODE_PORT'] || cvars.port
+#}i}}
+# vim:fdm=marker

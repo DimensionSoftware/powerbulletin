@@ -3,6 +3,7 @@ require! {
 }
 
 @multi-domain = (req, res, next) ->
+  # TODO handle all domain-specifics & custom settings here -- needs voltdb
   for i in ['', 2, 3, 4, 5] # localize cache domains
     rhh  = req.headers.host
     tld  = rhh.substr(rhh.last-index-of '.')    # extract tld

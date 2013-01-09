@@ -3,9 +3,7 @@ require! {
   './handlers'
   mw: './middleware'
 }
-global <<< require './helpers' # pull helpers & common into global (play nice :)
-global <<< require './common'
-
+global <<< require './helpers' # pull helpers (common) into global (play nice :)
 
 # <API RESOURCES>
 # ---------

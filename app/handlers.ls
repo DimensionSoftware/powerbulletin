@@ -25,7 +25,7 @@ require! {
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}"
 
-
+#{{{ Asset serving handlers
 cvars.acceptable-js-files = fs.readdir-sync 'public/js/'
 @js = (req, res, next) ->
   r = req.route.params
@@ -71,3 +71,6 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
       res.content-type 'css'
       caching-strategies.lastmod res, cvars.process-start-date, 7200
       res.send css-blocks.join "\n"
+#}}}
+
+# vim:fdm=marker
