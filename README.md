@@ -11,3 +11,9 @@ Post-Modern, Realtime, FREE (as in freedom) Community
 
 2. ./bin/powerbulletin
 3. browse to http://www.pb.com:3000
+
+# Vagrant Getting Started
+
+1. install virtualbox
+2. install vagrant (ruby + gems prerequisites)
+3. vagrant up in project dir (if you don't have omnios box it will be fetched)
