@@ -8,8 +8,8 @@ mixin post(p, i)
 
 mixin topic(t, i)
   .topic(class=(i % 2) ? 'odd' : 'even')
-    span.title= t.title
-    span.date= t.date
+    h5.title= t.title
+      span.date created #{t.date}
     each p,i in t.posts
       mixin post(p, i)
 
@@ -19,7 +19,7 @@ mixin topic(t, i)
 block header-content
   h1.logo Power
     strong Bulletin
-  ul.menu
+  menu.menu
     li.row.active HOT
       i !
     li.row FRESH
@@ -31,13 +31,16 @@ block section-content
 
 block sidebar-content
   input.search(type='text', placeholder='Search')
-  menu.menu Topics
-    li.row topic
-    li.row topic
-    li.row topic
-    li.row topic
-    li.row topic
-    li.row topic
+  menu.menu
+    li.row Category
+      menu.submenu
+        li.row Topic
+        li.row Topic
+        li.row Topic
+    li.row Category2
+      menu.submenu
+        li.row Topic
+        li.row Topic
 
 block footer-content
   h6 &copy; #{site_name} &nbsp;
