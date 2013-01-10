@@ -1,7 +1,14 @@
 #!/bin/bash
 for (( ; ; ))
 do
+    echo '.'
+    if [  ]
+    then
+        statement1
+    else
+    fi
+t
     # this line will recycle powerbulletin if git was updated
-    (git pull | grep -q 'Updating') && (killall -9 powerbulletin; nohup bin/powerbulletin; echo "<Staging Updated>\n")
-    sleep 30
+    (git pull | grep -q 'Updating') && sleep 10 && (killall -9 powerbulletin; (nohup bin/powerbulletin &); echo; echo ":: Staging Updated -> `date`>")
+    sleep 3
 done
