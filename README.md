@@ -16,4 +16,7 @@ Post-Modern, Realtime, FREE (as in freedom) Community
 
 1. install virtualbox
 2. install vagrant (ruby + gems prerequisites)
-3. vagrant up in project dir (if you don't have omnios box it will be fetched)
+3. 'vagrant up' in project dir (if you don't have the precise64 box it will be fetched)
+4. vagrant ssh
+5. cd /vagrant
+6. grunt
