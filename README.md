@@ -20,3 +20,10 @@ Post-Modern, Realtime, FREE (as in freedom) Community
 4. vagrant ssh
 5. cd /vagrant
 6. grunt
+
+# Hosts
+
+  127.0.0.1 pb.com www.pb.com
+  127.0.0.1 muscache.pb.com muscache2.pb.com muscache3.pb.com muscache4.pb.com muscache5.pb.com165.225.132.161 pbstage.com www.pbstage.com
+  165.225.132.161 pbstage.com www.pbstage.com
+  165.225.132.161 muscache.pbstage.com muscache2.pbstage.com muscache3.pbstage.com muscache4.pbstage.com muscache5.pbstage.com
