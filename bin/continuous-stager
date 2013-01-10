@@ -6,8 +6,12 @@ do
     if git diff remotes/origin/HEAD | grep -qE '.+'
     then
         git pull
-        killall -9 pb-supervisor
-        killall -9 pb-worker
+        echo ':: Killing PowerBulletin'
+        killall -q9 pb-supervisor
+        killall -q9 pb-worker
+        echo ':: Purging Varnish'
+        varnishadm -T 127.0.0.1:2000 ban.url ^.
+        echo ':: Starting PowerBulletin'
         nohup bin/powerbulletin &
         echo
         echo ":: Staging Updated -> `date`"
@@ -15,3 +19,4 @@ do
 
     sleep 60
 done
+
