@@ -28,7 +28,7 @@ CREATE TABLE posts (
 
 CREATE TABLE docs (
   key VARCHAR(100) NOT NULL,
-  doctype VARCHAR(100) NOT NULL,
+  type VARCHAR(100) NOT NULL,
   json VARCHAR(1048576) NOT NULL,
   index_enabled TINYINT DEFAULT 0 NOT NULL,
   index_dirty TINYINT,
