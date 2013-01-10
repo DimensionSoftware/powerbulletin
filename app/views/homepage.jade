@@ -9,7 +9,7 @@ mixin post(p, i)
 mixin topic(t, i)
   .topic(class=(i % 2) ? 'odd' : 'even')
     h5.title= t.title
-      span.date created #{t.date}
+      span.date Created #{t.date}
     each p,i in t.posts
       mixin post(p, i)
 

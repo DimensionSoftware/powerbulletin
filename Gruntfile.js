@@ -1,3 +1,4 @@
+
 module.exports = function(grunt) {
 
   // Project configuration.
@@ -62,17 +63,19 @@ module.exports = function(grunt) {
     // XXX surely there's a more automatic way to manage this?
     var cp   = require('child_process'),
         fs   = require('fs'),
-        fn   = 'pb.pid',
         pid  = false
 
+    config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+    file   = config.tmp+'/pb.pid';
+
     try { // kill running proc
-      pid = fs.readFileSync(fn, 'utf8');
+      pid = fs.readFileSync(file, 'utf8');
       if (pid) process.kill(-pid); // the minus kills the entire process group
     } catch (e) {}
 
     // spawn detached new proc & write out pid
     proc = cp.spawn('./bin/powerbulletin', [], {detached:true, stdio:'inherit'});
-    fs.writeFileSync('pb.pid', proc.pid)
+    fs.writeFileSync(file, proc.pid)
   });
 
   // Default task(s).

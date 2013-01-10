@@ -26,7 +26,7 @@ require! {
   res.render \homepage, (err, body) ->
     if err then return next(err)
 
-    caching-strategies.etag res, helpers.sha1(body), 7200, 7200
+    caching-strategies.etag res, helpers.sha1(body), 7200
     res.content-type \html
     res.send body
 
@@ -41,7 +41,7 @@ cvars.acceptable-js-files = fs.readdir-sync 'public/js/'
   if r.file in cvars.acceptable-js-files
     (err, buffer) <- fs.read-file "public/js/#{r.file}"
     body = buffer.to-string!
-    caching-strategies.etag res, helpers.sha1(body), 7200, 7200
+    caching-strategies.etag res, helpers.sha1(body), 7200
     res.content-type \js
     res.send body
   else
@@ -77,7 +77,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
       return next err
     else
       body = css-blocks.join "\n"
-      caching-strategies.etag res, helpers.sha1(body), 7200, 7200
+      caching-strategies.etag res, helpers.sha1(body), 7200
       res.content-type 'css'
       res.send body
 #}}}
