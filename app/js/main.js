@@ -141,7 +141,7 @@
       return res.redirect(url, 301);
     });
     sock = express();
-    for (i$ = 0, len$ = (ref$ = ['pb.com', cvars.host]).length; i$ < len$; ++i$) {
+    for (i$ = 0, len$ = (ref$ = ['pbstage.com', 'pb.com', cvars.host]).length; i$ < len$; ++i$) {
       domain = ref$[i$];
       sock.use(express.vhost("m." + domain, redirToWww)).use(express.vhost(domain, redirToWww)).use(express.vhost("www." + domain, app));
       for (j$ = 0, len1$ = (ref1$ = ['', 2, 3, 4, 5]).length; j$ < len1$; ++j$) {
