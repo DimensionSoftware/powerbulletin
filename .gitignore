@@ -1,6 +1,7 @@
 /.vagrant
 /config.json
 /debugoutput/
+/voltdbroot/
 *.pid
 *.log
 *.jar
