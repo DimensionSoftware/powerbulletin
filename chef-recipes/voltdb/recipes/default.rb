@@ -17,5 +17,16 @@ unless File.file? '/usr/local/voltdb-2.8.4.1/bin/voltdb'
       tar -xvzf /tmp/#{tarball}
     EOH
   end
+
+  bash "installing voltdb tools" do
+    cwd 'tmp'
+    code <<-EOH
+      set -e
+
+      wget http://voltdb.com/downloads/technologies/other/voltdb-tools-3.0-beta3.tar.gz
+      cd /usr/local
+      tar -xvzf /tmp/voltdb-tools-3.0-beta3.tar.gz
+    EOH
+  end
 end
 

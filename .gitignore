@@ -2,6 +2,7 @@
 /config.json
 /debugoutput/
 /voltdbroot/
+/voltsnap1/
 *.pid
 *.log
 *.jar
