@@ -1,0 +1,4 @@
+#!/bin/sh -e
+export VARNISH_TTL=${VARNISH_TTL:=10}
+export VARNISH_PORT=${VARNISH_PORT:=3001}
+bin/launch-varnish

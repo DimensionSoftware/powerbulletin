@@ -1,0 +1,17 @@
+#!/bin/bash
+for (( ; ; ))
+do
+    git fetch -q
+
+    if git diff remotes/origin/HEAD | grep -qE '.+'
+    then
+        git pull
+        killall -9 pb-supervisor
+        killall -9 pb-worker
+        nohup bin/powerbulletin &
+        echo
+        echo ":: Staging Updated -> `date`"
+    fi
+
+    sleep 60
+done

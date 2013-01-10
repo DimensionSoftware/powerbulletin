@@ -37,7 +37,7 @@ num-workers = proc.env.NODE_WORKERS or cvars.workers
 if cluster.is-master
   console.log "\n [1;37m.. ._________\nPowerBulletin [1;37;40m#{app.settings.env}[0;m [1;37mon port [1;37;40m#{proc.env['NODE_PORT'] || cvars.port}[0;m [1;37mx #{num-workers}"
   console.log "[1;30;30m @ #{new Date()}[0;m"
-  proc.title = 'PowerBulletin [supervisor]'
+  proc.title = 'pb-supervisor'
   app.configure \production, -> # write pidfile
     fs.write-file-sync "#{cvars.tmp}/powerbulletin.pid", proc.pid
     id = \powerbulletin
@@ -67,7 +67,7 @@ if cluster.is-master
 #}}}
 #{{{ Worker
 else
-  proc.title = "PowerBulletin [worker]"
+  proc.title = "pb-worker"
   console.log "[1;30;30m  `+ worker #{proc.pid}[0;m"
 
   if proc.env.NODE_ENV == 'production'
@@ -126,7 +126,7 @@ else
   require! './routes'
 
   # all domain-based catch-alls & redirects
-  cache-app.use(express.static \public)
+  cache-app.use(express.static \public max-age:7200 * 1000)
 
   redir-to-www.all '*', (req, res) ->
     protocol = req.headers['x-forwarded-proto'] or 'http'
@@ -136,7 +136,7 @@ else
     res.redirect url, 301
 
   sock = express!
-  for domain in ['pb.com', cvars.host] # TODO bind all domains -- should come from voltdb
+  for domain in ['pbstage.com', 'pb.com', cvars.host] # TODO bind all domains -- should come from voltdb
     sock
       .use(express.vhost "m.#{domain}", redir-to-www)
       .use(express.vhost domain, redir-to-www)

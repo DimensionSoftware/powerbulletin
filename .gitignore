@@ -1,2 +1,4 @@
 /.vagrant
+/config.json
 *.pid
+nohup.out

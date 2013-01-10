@@ -1,0 +1,4 @@
+#!/bin/sh -e
+apt-get install -y build-essential ruby1.9.1 ruby1.9.1-dev
+gem install chef
+chef-solo -c solo.rb -j solo.json
