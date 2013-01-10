@@ -136,7 +136,7 @@ else
     res.redirect url, 301
 
   sock = express!
-  for domain in ['pb.com', cvars.host] # TODO bind all domains -- should come from voltdb
+  for domain in ['pbstage.com', 'pb.com', cvars.host] # TODO bind all domains -- should come from voltdb
     sock
       .use(express.vhost "m.#{domain}", redir-to-www)
       .use(express.vhost domain, redir-to-www)
