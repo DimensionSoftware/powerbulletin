@@ -12,19 +12,16 @@ shouldnt-cache = !((process.env.NODE_ENV == 'production') or process.env.TEST_VA
     res.header 'Cache-Control', 'no-cache'
     res.header 'Pragma', 'no-cache'
   etag: (res, etag, client_ttl, varnish_ttl = 3600) ->
-    if shouldnt-cache then @nocache(res) else
-      res.header 'X-Varnish-TTL', "#{varnish_ttl}s"
-      res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
-      res.header 'ETag', etag
+    res.header 'X-Varnish-TTL', "#{varnish_ttl}s"
+    res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
+    res.header 'ETag', etag
   lastmod: (res, last_modified, client_ttl, varnish_ttl = 3600) ->
-    if shouldnt-cache then @nocache(res) else
-      res.header 'X-Varnish-TTL', "#{varnish_ttl}s"
-      res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
-      res.header 'Last-Modified', last_modified.toUTCString()
+    res.header 'X-Varnish-TTL', "#{varnish_ttl}s"
+    res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
+    res.header 'Last-Modified', last_modified.toUTCString()
   justage: (res, client_ttl, varnish_ttl = 3600) ->
-    if shouldnt-cache then @nocache(res) else
-      res.header 'X-Varnish-TTL', "#{varnish_ttl}s"
-      res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
+    res.header 'X-Varnish-TTL', "#{varnish_ttl}s"
+    res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
 
 #{{{ String functions
 @title-case = (s) ->
