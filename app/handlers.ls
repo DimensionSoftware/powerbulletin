@@ -56,7 +56,8 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   render-css = (file-name, cb) ->
     if file-name in cvars.acceptable-stylus-files # concat files
       fs.read-file "app/stylus/#{file-name}", (err, buffer) ->
-        if err then cb err
+        if err then return cb(err)
+
         options =
           compress: true
         stylus(buffer.to-string!, options)
