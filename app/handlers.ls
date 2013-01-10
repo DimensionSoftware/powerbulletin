@@ -1,11 +1,12 @@
 require! {
-  stylus
-  fluidity
   async
+  fluidity
   fs
+  './helpers'
+  stylus
 }
 
-@homepage = (req, res) ->
+@homepage = (req, res, next) ->
   # TODO fetch smart/fun combination of latest/best voted posts, threads & media
   user =
     name       : \anonymous
@@ -20,7 +21,14 @@ require! {
     user  : user
     posts : posts
   res.locals.topics = topics
-  res.render \homepage
+
+  # XXX: this should be abstracted into a pattern, middleware or pure function
+  res.render \homepage, (err, body) ->
+    if err then return next(err)
+
+    caching-strategies.etag res, helpers.sha1(body), 7200, 7200
+    res.content-type \html
+    res.send body
 
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}"
@@ -32,9 +40,10 @@ cvars.acceptable-js-files = fs.readdir-sync 'public/js/'
 
   if r.file in cvars.acceptable-js-files
     (err, buffer) <- fs.read-file "public/js/#{r.file}"
-    res.content-type 'js'
-    caching-strategies.lastmod res, cvars.process-start-date, 7200
-    res.send buffer.to-string!
+    body = buffer.to-string!
+    caching-strategies.etag res, helpers.sha1(body), 7200, 7200
+    res.content-type \js
+    res.send body
   else
     res.send 404, 404
 
@@ -47,7 +56,8 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   render-css = (file-name, cb) ->
     if file-name in cvars.acceptable-stylus-files # concat files
       fs.read-file "app/stylus/#{file-name}", (err, buffer) ->
-        if err then cb err
+        if err then return cb(err)
+
         options =
           compress: true
         stylus(buffer.to-string!, options)
@@ -63,14 +73,13 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
       cb 404
 
   async.map files, render-css, (err, css-blocks) ->
-    if err is 404
-      return next 404
-    else if err
+    if err
       return next err
     else
+      body = css-blocks.join "\n"
+      caching-strategies.etag res, helpers.sha1(body), 7200, 7200
       res.content-type 'css'
-      caching-strategies.lastmod res, cvars.process-start-date, 7200
-      res.send css-blocks.join "\n"
+      res.send body
 #}}}
 
 # vim:fdm=marker
