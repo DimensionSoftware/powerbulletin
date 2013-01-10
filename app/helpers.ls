@@ -130,8 +130,11 @@ shouldnt-cache = !((process.env.NODE_ENV == 'production') or process.env.TEST_VA
     years = Math.floor secs-ago / 31446925
     if years == 1 then "a year #{suffix}" else "#{years} years #{suffix}"
 
+# meant to be used for etags
 @sha1 = (str) ->
-  crypto.create-hash('sha1').update(str).digest('hex')
+  str = crypto.create-hash('sha1').update(str).digest('hex')
+  # supposedly the quotes are the proper way to format this, trying to follow rfcs
+  '"' + str + '"'
 
 #}}}
 # vim:fdm=marker

@@ -131,7 +131,9 @@
       }));
     }
     require()('./routes');
-    cacheApp.use(express['static']('public'));
+    cacheApp.use(express['static']('public', {
+      maxAge: 7200 * 1000
+    }));
     redirToWww.all('*', function(req, res){
       var protocol, host, uri, url;
       protocol = req.headers['x-forwarded-proto'] || 'http';

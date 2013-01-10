@@ -126,7 +126,7 @@ else
   require! './routes'
 
   # all domain-based catch-alls & redirects
-  cache-app.use(express.static \public)
+  cache-app.use(express.static \public max-age:7200 * 1000)
 
   redir-to-www.all '*', (req, res) ->
     protocol = req.headers['x-forwarded-proto'] or 'http'
