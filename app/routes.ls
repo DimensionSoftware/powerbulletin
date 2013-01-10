@@ -12,7 +12,7 @@ app.resource \threads resources.threads
 
 # <PAGE HANDLERS & MISC.>
 # ---------
-app.get '/', mw.add-js(["/dynamic/js/layout.js"]), mw.add-css(['/dynamic/css/layout.styl,theme.styl']), handlers.homepage
+app.get '/', mw.add-js(["#{cvars.cache4_url}/js/layout.js"]), mw.add-css(['/dynamic/css/layout.styl,theme.styl']), handlers.homepage
 app.get '/hello' handlers.hello
 
 # dynamic serving
