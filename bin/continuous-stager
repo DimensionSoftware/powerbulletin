@@ -2,6 +2,6 @@
 for (( ; ; ))
 do
     # this line will recycle powerbulletin if git was updated
-    (git pull | grep -q 'Updating') && (killall -9 powerbulletin; nohup bin/powerbulletin)
+    (git pull | grep -q 'Updating') && (killall -9 powerbulletin; nohup bin/powerbulletin; echo "<Staging Updated>\n")
     sleep 30
 done
