@@ -1,4 +1,7 @@
 /.vagrant
 /config.json
+/debugoutput/
 *.pid
+*.log
+*.jar
 nohup.out

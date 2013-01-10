@@ -1,0 +1,2 @@
+#!/bin/sh -e
+/usr/local/voltdb-2.8.4.1/bin/voltcompiler /usr/local/voltdb-2.8.4.1/voltdb voltdb/project.xml voltdb/pb-schema.jar
