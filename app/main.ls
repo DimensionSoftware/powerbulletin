@@ -22,7 +22,12 @@ html_50x = fs.read-file-sync('public/50x.html').to-string!
 html_404 = fs.read-file-sync('public/404.html').to-string!
 
 try # load config.json
-  global.cvars = JSON.parse(fs.read-file-sync './config.json')
+  global.cvars = JSON.parse(fs.read-file-sync 'config/'+
+    switch proc.env.NODE_ENV
+      case \production then 'config.json.prod'
+      case \staging then 'config.json.staging'
+      default then 'config.json.dev')
+
   cvars.process-start-date = new Date!
   for i in ['', 2, 3, 4, 5] # add cache domains
     cvars["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}.#{cvars.host}"
@@ -100,13 +105,6 @@ else
   # common locals
   app.locals cvars
 
-  # 404 handler, if not 404, punt
-  app.use (err, req, res, next) ~>
-    if err is 404
-      res.send html_404 404
-    else
-      next err
-
   # give us some context in error_log when exceptions happen
   err-handler = (responder) ~>
     (err, req, res, next) ~>
@@ -119,8 +117,16 @@ else
       console.warn 'http_method' , req.method
       console.warn 'url'         , req.headers.host + req.url
       proc.exit 1
-  if proc.env.NODE_ENV == 'production'
-    app.error err-handler((res) -> res.send(html_50x, 500))
+
+  # 404 handler, if not 404, punt
+  app.use (err, req, res, next) ~>
+    if proc.env.NODE_ENV is \production
+      err-handler (res) -> res.send html_50x 500
+    else
+      if err is 404
+        res.send html_404 404
+      else
+        next err
 
   # routes
   require! './routes'
