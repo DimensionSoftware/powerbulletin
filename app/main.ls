@@ -12,6 +12,28 @@ require! {
 }
 global <<< require \prelude-ls
 
+# not-so-well worded rant, just wanted to get thoughts down though...
+#
+# using current CHANGESET as a cache prefix, this way all upstream cdn proxies
+# will be forced to blow their cache as well (this works on varnish too)
+# we can't use this technique for 'pretty url' pages
+# for instance homepage will always be '/' so we have to set a short ttl on that
+# inevitably or any other content html pages
+#
+# perhaps we can set a 1 minute caching for homepage as I had suggested before
+# if we want more freshness than 1 minute resolution, lets use client javascript to
+# 'catch the dom up'
+#
+# so basically we end up with pages which we can use the CHANGESET as a cache prefix for like css,js etc
+# we can set a super duper long ttl like a million years or whatever because the
+# cache will be blown on each deploy with this changeset as part of the cache key
+# and pages we shouldn't set long ttls on like html content pages that change and
+# we will not use the changeset as part of the cache key for...
+
+global.CHANGESET = fs.read-file-sync('.git/refs/heads/master').to-string!
+
+global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
+
 proc = process
 
 app = global.app = express!
@@ -128,7 +150,8 @@ else
   require! './routes'
 
   # all domain-based catch-alls & redirects
-  cache-app.use(express.static \public max-age:7200 * 1000)
+  max-age = if DISABLE_HTTP_CACHE then 0 else 7200 * 1000
+  cache-app.use(express.static \public {max-age})
 
   redir-to-www.all '*', (req, res) ->
     protocol = req.headers['x-forwarded-proto'] or 'http'

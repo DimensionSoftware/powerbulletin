@@ -4,23 +4,21 @@ require! {
 
 # XXX keep these functions pure as they're exported in the app & eventually (TODO) on the client via browserify
 
-shouldnt-cache = !((process.env.NODE_ENV == 'production') or process.env.TEST_VARNISH)
 @caching-strategies =
   nocache: (res) ->
     # upstream caches and clients should not cache
-    res.header 'X-Varnish-TTL', "0s"
     res.header 'Cache-Control', 'no-cache'
     res.header 'Pragma', 'no-cache'
-  etag: (res, etag, client_ttl, varnish_ttl = null) ->
-    res.header 'X-Varnish-TTL', "#{varnish_ttl}s" if varnish_ttl
+  etag: (res, etag, client_ttl) ->
+    return @nocache(res) if DISABLE_HTTP_CACHE
     res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
     res.header 'ETag', etag
-  lastmod: (res, last_modified, client_ttl, varnish_ttl = null) ->
-    res.header 'X-Varnish-TTL', "#{varnish_ttl}s" if varnish_ttl
+  lastmod: (res, last_modified, client_ttl) ->
+    return @nocache(res) if DISABLE_HTTP_CACHE
     res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
     res.header 'Last-Modified', last_modified.toUTCString()
-  justage: (res, client_ttl, varnish_ttl = null) ->
-    res.header 'X-Varnish-TTL', "#{varnish_ttl}s" if varnish_ttl
+  justage: (res, client_ttl) ->
+    return @nocache(res) if DISABLE_HTTP_CACHE
     res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
 
 #{{{ String functions

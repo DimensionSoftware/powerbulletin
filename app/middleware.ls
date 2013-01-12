@@ -24,11 +24,20 @@ require! {
   next!
 
 # add additional js & css to any route (through layout)
-@add-js = (paths = []) ->
+@add-js = (paths = [], add-changeset = true) ->
+  if add-changeset
+    paths = ["#{p}?#{CHANGESET}" for p in paths]
+
   (req, res, next) ->
+    # to blow cache after each deploy
+
     res.locals.js_urls = res.locals.js_urls || [] +++ paths
     next!
-@add-css = (paths = []) ->
+
+@add-css = (paths = [], add-changeset = true) ->
+  if add-changeset
+    paths = ["#{p}?#{CHANGESET}" for p in paths]
+
   (req, res, next) ->
     links = map (path) -> {media:'screen',url:path}, paths
     res.locals.css_urls = res.locals.css_urls || [] +++ links

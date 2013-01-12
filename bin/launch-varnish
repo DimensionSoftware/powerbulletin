@@ -9,7 +9,7 @@ set -e
   -s malloc,32M \
   -T 127.0.0.1:2000 \
   -a 0.0.0.0:$VARNISH_PORT \
-  -t $VARNISH_TTL \
+  -p default_ttl=$VARNISH_TTL \
   -p ban_lurker_sleep=2 \
   -p gzip_level=9 \
   -p gzip_memlevel=9 \

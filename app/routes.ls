@@ -17,4 +17,3 @@ app.get '/hello' handlers.hello
 
 # dynamic serving
 app.get '/dynamic/css/:file' handlers.stylus
-app.get '/dynamic/js/:file'  handlers.js
