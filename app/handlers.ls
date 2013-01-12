@@ -10,7 +10,7 @@ require! {
 @homepage = (req, res, next) ->
   err, doc <- data.homepage-doc
   if err then return next(err)
- 
+
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
   # for O(1) retrieval (assuming hashed index map)
   res.locals doc
@@ -27,20 +27,6 @@ require! {
 
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}"
-
-#{{{ Asset serving handlers
-cvars.acceptable-js-files = fs.readdir-sync 'public/js/'
-@js = (req, res, next) ->
-  r = req.route.params
-
-  if r.file in cvars.acceptable-js-files
-    (err, buffer) <- fs.read-file "public/js/#{r.file}"
-    body = buffer.to-string!
-    caching-strategies.etag res, helpers.sha1(body), 7200
-    res.content-type \js
-    res.send body
-  else
-    res.send 404, 404
 
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->
