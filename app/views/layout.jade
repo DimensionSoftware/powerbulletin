@@ -29,7 +29,7 @@ html
     |<script type="text/javascript">
     |  var head_conf = { screens:[320, 480, 640, 768, 800, 900, 1024, 1280, 1440, 1680, 1920] };
     |</script>
-    script(type='text/javascript', src="#{cache5_url}/js/head.min.js")
+    script(type='text/javascript', src="http://cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.min.js")
     if js_urls
       |<script type="text/javascript">
       |  head.js.apply(head, !{JSON.stringify(['https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'].concat(js_urls))});
