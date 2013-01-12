@@ -22,11 +22,7 @@ html_50x = fs.read-file-sync('public/50x.html').to-string!
 html_404 = fs.read-file-sync('public/404.html').to-string!
 
 try # load config.json
-  global.cvars = JSON.parse(fs.read-file-sync 'config/'+
-    switch proc.env.NODE_ENV
-      case \production then 'config.json.prod'
-      case \staging then 'config.json.staging'
-      default then 'config.json.dev')
+  global.cvars = require "../config/#{proc.env.NODE_ENV or 'development'}"
 
   cvars.process-start-date = new Date!
   for i in ['', 2, 3, 4, 5] # add cache domains
