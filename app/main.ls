@@ -44,7 +44,8 @@ html_50x = fs.read-file-sync('public/50x.html').to-string!
 html_404 = fs.read-file-sync('public/404.html').to-string!
 
 try # load config.json
-  global.cvars = require "../config/#{proc.env.NODE_ENV or 'development'}"
+  global.cvars = require '../config/common'
+  global.cvars <<< require "../config/#{proc.env.NODE_ENV or 'development'}"
 
   cvars.process-start-date = new Date!
   for i in ['', 2, 3, 4, 5] # add cache domains
@@ -122,6 +123,12 @@ else
 
   # common locals
   app.locals cvars
+
+  js_urls =
+    * '//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'
+    * '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js'
+
+  app.locals {js_urls}
 
   # give us some context in error_log when exceptions happen
   err-handler = (responder) ~>
