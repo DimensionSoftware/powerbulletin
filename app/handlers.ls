@@ -28,6 +28,9 @@ require! {
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}"
 
+@register = (req, res) ->
+  res.json req.body
+
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->
   r = req.route.params

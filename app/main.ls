@@ -134,6 +134,7 @@ else
       console.warn 'url'         , req.headers.host + req.url
       proc.exit 1
 
+  app.use express.body-parser!
   # 404 handler, if not 404, punt
   app.use (err, req, res, next) ~>
     if proc.env.NODE_ENV is \production
