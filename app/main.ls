@@ -121,15 +121,6 @@ else
     a.enable 'json callback'
     a.enable 'trust proxy' # parse x-forwarded-for in req.ip, etc...
 
-  # common locals
-  app.locals cvars
-
-  js_urls =
-    * '//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'
-    * '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js'
-
-  app.locals {js_urls}
-
   # give us some context in error_log when exceptions happen
   err-handler = (responder) ~>
     (err, req, res, next) ~>
