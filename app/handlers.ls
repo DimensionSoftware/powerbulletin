@@ -29,9 +29,6 @@ require! {
   res.send "hello #{res.locals.remote-ip}"
 
 @register = (req, res) ->
-  valid-params =
-    * \user
-
   req.assert('login').is-alphanumeric!
 
   if errors = req.validation-errors!
