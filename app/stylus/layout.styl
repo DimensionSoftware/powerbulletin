@@ -18,12 +18,18 @@ header
     .menu
       margin -3px auto 0 auto
       display inline-block
+      .row:hover
+        .submenu
+          display block
       .row
         cursor pointer
         display inline-block
         padding 0 19px
         line-height 60px
         font-size 18px
+        .submenu
+          display none
+          position absolute
     .search
       top 10px
       right 12px
@@ -31,22 +37,14 @@ header
       .query
         width 300px
 
-.profile
-  position fixed!important
-  z-index 2
-  top 85px
-  left 0
-  grid-space(25%)
-  .submenu, .menu
-    padding 0
-    margin 12px 0
-    list-style none
-    .row
-      margin 0
-  .submenu
-    margin 5px 0 12px 10px
-  p
-    margin 10px 0
+section.user-profile
+  position fixed
+  top 200px
+  left 15px
+  width 200px
+  height 300px
+  z-index 5
+  display none
 
 footer
   text-align center
@@ -59,7 +57,7 @@ footer
 .scroll-to-top
   cursor pointer
 
-// <RESPONSIVE>
+//{{{ RESPONSIVEness
 @media screen and (max-width: 800px)
   body
     grid(90%,475px)
@@ -91,3 +89,5 @@ footer
   header
     font-size 0.8em
     display none
+// }}}
+// vim:fdm=marker
