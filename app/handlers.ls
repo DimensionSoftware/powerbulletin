@@ -5,7 +5,6 @@ require! {
   fluidity
   './data'
   './helpers'
-  vdb: './voltdb'
 }
 
 @homepage = (req, res, next) ->
