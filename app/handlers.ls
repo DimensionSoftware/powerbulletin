@@ -29,7 +29,15 @@ require! {
   res.send "hello #{res.locals.remote-ip}"
 
 @register = (req, res) ->
-  res.json req.body
+  valid-params =
+    * \user
+
+  req.assert('login').is-alphanumeric!
+
+  if errors = req.validation-errors!
+    res.json {errors}
+  else
+    res.json req.body
 
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->

@@ -7,6 +7,7 @@ require! {
   \cluster
   \express
   \express-resource
+  \express-validator
   \stylus
   \fluidity
 }
@@ -135,6 +136,8 @@ else
       proc.exit 1
 
   app.use express.body-parser!
+  app.use express-validator
+
   # 404 handler, if not 404, punt
   app.use (err, req, res, next) ~>
     if proc.env.NODE_ENV is \production
