@@ -3,5 +3,10 @@
   "cache_prefix": "muscache",
   "port": "3000",
   "tmp": "/tmp",
-  "workers": 1
+  "workers": 1,
+
+  "base_js_urls":
+  [ "//muscache3.pb.com/js/local/jquery-1.8.3.min.js"
+  , "//muscache4.pb.com/js/local/jquery-ui.min.js"
+  ]
 }

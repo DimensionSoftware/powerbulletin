@@ -27,17 +27,15 @@ html
       for obj in css_urls
         link(rel='stylesheet',type='text/css',href=obj.url)
 
-    //- the only .js in our <head> next
-    //- |<script type="text/javascript">
-    //- |  var head_conf = { screens:[320, 480, 640, 768, 800, 900, 1024, 1280, 1440, 1680, 1920] };
-    //- |</script>
-    //script(type='text/javascript', src="#{cache5_url}/js/head.min.js") // XXX use this one if working w/o inet
-    script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.min.js")
+    //- the only .js in our <head> 
+    if cvars.env == 'development'
+      script(type='text/javascript', src="#{cache5_url}/js/local/head-0.99.min.js") // offline
+    else
+      script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.min.js")
     if js_urls
       |<script type="text/javascript">
       |  head.js.apply(head, !{JSON.stringify(cvars.base_js_urls.concat(js_urls))});
       |</script>
-    //  |<script type="text/javascript" src="//muscache3.pb.com/js/jquery-1.8.3.min.js"></script> // XXX use this one if working w/o inet
 
   body
     header
