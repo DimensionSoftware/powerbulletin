@@ -76,7 +76,7 @@ else
   console.log "[1;30;30m  `+ worker #{proc.pid}[0;m"
 
   if proc.env.NODE_ENV == 'production'
-    proc.on 'uncaughtException', (err) ->
+    Gproc.on 'uncaughtException', (err) ->
       timestamp = new Date
       console.warn 'timestamp', timestamp
       console.warn err.message
@@ -150,5 +150,5 @@ else
     for i in ['', 2, 3, 4, 5] # add cache domains
       sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{domain}", cache-app)
   sock.listen proc.env['NODE_PORT'] || cvars.port
-#}i}}
+#}}}
 # vim:fdm=marker

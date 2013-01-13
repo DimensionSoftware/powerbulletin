@@ -1,9 +1,10 @@
 require! {
-  async
-  fluidity
   fs
-  './helpers'
+  async
   stylus
+  fluidity
+  './helpers'
+  vdb: './voltdb'
 }
 
 @homepage = (req, res, next) ->
