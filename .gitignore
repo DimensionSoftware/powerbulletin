@@ -7,4 +7,5 @@
 *.pid
 *.log
 *.jar
+.*.swp
 nohup.out

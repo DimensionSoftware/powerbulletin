@@ -3,25 +3,20 @@ require! {
   async
   stylus
   fluidity
+  './data'
   './helpers'
   vdb: './voltdb'
 }
 
 @homepage = (req, res, next) ->
+  err, doc <- data.homepage-doc
+  if err then return next(err)
+
+  # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
+  # for O(1) retrieval (assuming hashed index map)
+  res.locals doc
+
   # TODO fetch smart/fun combination of latest/best voted posts, threads & media
-  user =
-    name       : \anonymous
-    created_at : new Date!
-  posts = for ii to 4
-    date    : title-case elapsed-to-human-readable Math.random!*604800
-    user    : user
-    message : ellipse 'hello world!' 6
-  topics = for i to 5 # dummy data
-    title : \Test
-    date  : title-case elapsed-to-human-readable Math.random!*31446925
-    user  : user
-    posts : posts
-  res.locals.topics = topics
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
   res.render \homepage, (err, body) ->
@@ -34,19 +29,13 @@ require! {
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}"
 
-#{{{ Asset serving handlers
-cvars.acceptable-js-files = fs.readdir-sync 'public/js/'
-@js = (req, res, next) ->
-  r = req.route.params
+@register = (req, res) ->
+  req.assert('login').is-alphanumeric!
 
-  if r.file in cvars.acceptable-js-files
-    (err, buffer) <- fs.read-file "public/js/#{r.file}"
-    body = buffer.to-string!
-    caching-strategies.etag res, helpers.sha1(body), 7200
-    res.content-type \js
-    res.send body
+  if errors = req.validation-errors!
+    res.json {errors}
   else
-    res.send 404, 404
+    res.json req.body
 
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->

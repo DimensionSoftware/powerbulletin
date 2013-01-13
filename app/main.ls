@@ -7,10 +7,33 @@ require! {
   \cluster
   \express
   \express-resource
+  \express-validator
   \stylus
   \fluidity
 }
 global <<< require \prelude-ls
+
+# not-so-well worded rant, just wanted to get thoughts down though...
+#
+# using current CHANGESET as a cache prefix, this way all upstream cdn proxies
+# will be forced to blow their cache as well (this works on varnish too)
+# we can't use this technique for 'pretty url' pages
+# for instance homepage will always be '/' so we have to set a short ttl on that
+# inevitably or any other content html pages
+#
+# perhaps we can set a 1 minute caching for homepage as I had suggested before
+# if we want more freshness than 1 minute resolution, lets use client javascript to
+# 'catch the dom up'
+#
+# so basically we end up with pages which we can use the CHANGESET as a cache prefix for like css,js etc
+# we can set a super duper long ttl like a million years or whatever because the
+# cache will be blown on each deploy with this changeset as part of the cache key
+# and pages we shouldn't set long ttls on like html content pages that change and
+# we will not use the changeset as part of the cache key for...
+
+global.CHANGESET = fs.read-file-sync('.git/refs/heads/master').to-string!
+
+global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
 
 proc = process
 
@@ -22,11 +45,8 @@ html_50x = fs.read-file-sync('public/50x.html').to-string!
 html_404 = fs.read-file-sync('public/404.html').to-string!
 
 try # load config.json
-  global.cvars = JSON.parse(fs.read-file-sync 'config/'+
-    switch proc.env.NODE_ENV
-      case \production then 'config.json.prod'
-      case \staging then 'config.json.staging'
-      default then 'config.json.dev')
+  global.cvars = require '../config/common'
+  global.cvars <<< require "../config/#{proc.env.NODE_ENV or 'development'}"
 
   cvars.process-start-date = new Date!
   for i in ['', 2, 3, 4, 5] # add cache domains
@@ -102,9 +122,6 @@ else
     a.enable 'json callback'
     a.enable 'trust proxy' # parse x-forwarded-for in req.ip, etc...
 
-  # common locals
-  app.locals cvars
-
   # give us some context in error_log when exceptions happen
   err-handler = (responder) ~>
     (err, req, res, next) ~>
@@ -117,6 +134,9 @@ else
       console.warn 'http_method' , req.method
       console.warn 'url'         , req.headers.host + req.url
       proc.exit 1
+
+  app.use express.body-parser!
+  app.use express-validator
 
   # 404 handler, if not 404, punt
   app.use (err, req, res, next) ~>
@@ -132,7 +152,8 @@ else
   require! './routes'
 
   # all domain-based catch-alls & redirects
-  cache-app.use(express.static \public max-age:7200 * 1000)
+  max-age = if DISABLE_HTTP_CACHE then 0 else 7200 * 1000
+  cache-app.use(express.static \public {max-age})
 
   redir-to-www.all '*', (req, res) ->
     protocol = req.headers['x-forwarded-proto'] or 'http'

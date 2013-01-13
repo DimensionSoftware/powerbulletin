@@ -30,7 +30,10 @@ CREATE TABLE docs (
   key VARCHAR(100) NOT NULL,
   type VARCHAR(100) NOT NULL,
   json VARCHAR(1048576) NOT NULL,
-  index_enabled TINYINT DEFAULT 0 NOT NULL,
-  index_dirty TINYINT,
+  index_enabled TINYINT NOT NULL,
+  index_dirty TINYINT NOT NULL,
   PRIMARY KEY (key)
 );
+
+CREATE PROCEDURE select_doc_by_type_and_key AS
+  SELECT json FROM docs WHERE type=? AND key=? LIMIT 1;

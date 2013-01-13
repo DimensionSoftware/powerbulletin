@@ -65,7 +65,7 @@ module.exports = function(grunt) {
         fs   = require('fs'),
         pid  = false
 
-    config = JSON.parse(fs.readFileSync('config/config.json.dev', 'utf8'));
+    config = require('./config/development');
     file   = config.tmp+'/pb.pid';
 
     try { // kill running proc

@@ -3,5 +3,5 @@
   "cache_prefix": "muscache",
   "port": "3000",
   "tmp": "/tmp",
-  "workers": 2
+  "workers": 1
 }

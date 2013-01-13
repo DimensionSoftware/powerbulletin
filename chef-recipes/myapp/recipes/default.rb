@@ -11,6 +11,7 @@ end
 # other stuff...
 include_recipe 'nodejs'
 include_recipe 'voltdb'
+include_recipe 'clojure'
 include_recipe 'varnish'
 include_recipe 'stunnel'
 
