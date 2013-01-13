@@ -31,7 +31,7 @@ CREATE TABLE docs (
   type VARCHAR(100) NOT NULL,
   json VARCHAR(1048576) NOT NULL,
   index_enabled TINYINT NOT NULL,
-  index_dirty TINYINT,
+  index_dirty TINYINT NOT NULL,
   PRIMARY KEY (key)
 );
 
