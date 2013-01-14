@@ -3,11 +3,9 @@
   threshold = 10;
   w = $(window);
   hasScrolled = function(){
-    if (w.scrollTop() > threshold) {
-      return $('body').addClass('has-scrolled');
-    } else {
-      return $('body').removeClass('has-scrolled');
-    }
+    var st;
+    st = w.scrollTop();
+    return $('body').toggleClass('has-scrolled', st > threshold);
   };
   w.on('scroll', function(){
     return hasScrolled();
@@ -23,10 +21,10 @@
       }, 100, function(){
         return $('html,body').animate({
           scrollTop: $('body').offset().top + threshold
-        }, 75, function(){
+        }, 85, function(){
           return $('html,body').animate({
             scrollTop: $('body').offset().top
-          }, 25, function(){});
+          }, 35, function(){});
         });
       });
     });

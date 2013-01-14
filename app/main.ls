@@ -13,6 +13,7 @@ require! {
 }
 global <<< require \prelude-ls
 
+# {{{ Caching strategy notes (pages expire quickly; assets forever)
 # not-so-well worded rant, just wanted to get thoughts down though...
 #
 # using current CHANGESET as a cache prefix, this way all upstream cdn proxies
@@ -30,9 +31,8 @@ global <<< require \prelude-ls
 # cache will be blown on each deploy with this changeset as part of the cache key
 # and pages we shouldn't set long ttls on like html content pages that change and
 # we will not use the changeset as part of the cache key for...
-
-global.CHANGESET = fs.read-file-sync('.git/refs/heads/master').to-string!
-
+# }}}
+global.CHANGESET          = fs.read-file-sync('.git/refs/heads/master').to-string!slice 0 -1
 global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
 
 proc = process
@@ -48,6 +48,7 @@ try # load config.json
   global.cvars = require '../config/common'
   global.cvars <<< require "../config/#{proc.env.NODE_ENV or 'development'}"
 
+  cvars.env                = proc.env.NODE_ENV
   cvars.process-start-date = new Date!
   for i in ['', 2, 3, 4, 5] # add cache domains
     cvars["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}.#{cvars.host}"
@@ -96,7 +97,7 @@ else
   console.log "[1;30;30m  `+ worker #{proc.pid}[0;m"
 
   if proc.env.NODE_ENV == 'production'
-    proc.on 'uncaughtException', (err) ->
+    Gproc.on 'uncaughtException', (err) ->
       timestamp = new Date
       console.warn 'timestamp', timestamp
       console.warn err.message
@@ -171,5 +172,5 @@ else
     for i in ['', 2, 3, 4, 5] # add cache domains
       sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{domain}", cache-app)
   sock.listen proc.env['NODE_PORT'] || cvars.port
-#}i}}
+#}}}
 # vim:fdm=marker

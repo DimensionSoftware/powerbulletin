@@ -1,10 +1,10 @@
 require! {
-  async
-  './data'
-  fluidity
   fs
-  './helpers'
+  async
   stylus
+  fluidity
+  './data'
+  './helpers'
 }
 
 @homepage = (req, res, next) ->

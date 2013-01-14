@@ -20,17 +20,18 @@ html
     link(href="#{cache2_url}/images/apple-touch-icon.png", rel='apple-touch-icon')
     link(href="#{cache3_url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
     link(href="#{cache4_url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
-    link(href='//fonts.googleapis.com/css?family=Ubuntu:300,400,500,700', rel='stylesheet', type='text/css')
+    //- link(href='//fonts.googleapis.com/css?family=Ubuntu:300,400,500,700', rel='stylesheet', type='text/css')
+    link(href='//fonts.googleapis.com/css?family=Open+Sans:200,400,700|Open+Sans+Condensed:700', rel='stylesheet', type='text/css')
     link(href='//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css', rel='stylesheet', type='text/css')
     if css_urls
       for obj in css_urls
         link(rel='stylesheet',type='text/css',href=obj.url)
 
-    //- the only .js in our <head> next
-    |<script type="text/javascript">
-    |  var head_conf = { screens:[320, 480, 640, 768, 800, 900, 1024, 1280, 1440, 1680, 1920] };
-    |</script>
-    script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.min.js")
+    //- the only .js in our <head> 
+    if cvars.env == 'development'
+      script(type='text/javascript', src="#{cache5_url}/js/local/head-0.99.min.js") // offline
+    else
+      script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.min.js")
     if js_urls
       |<script type="text/javascript">
       |  head.js.apply(head, !{JSON.stringify(cvars.base_js_urls.concat(js_urls))});
@@ -38,18 +39,18 @@ html
 
   body
     header
-      .content
-        block header-content
+      .container
+        block header
 
-    section
-      .content
-        block section-content
+    section.user-profile
+      block user-profile
 
-      sidebar.right-menu
-        .content
-          block sidebar-content
-          .scroll-to-top Top
+    section.content
+      .container
+        block content-stream
+        .scroll-to-top TOP
+        block user-stream
+        .scroll-to-top TOP
 
     footer#chat-drawer.scroll-to-top
-      .content
-        block footer-content
+      block footer

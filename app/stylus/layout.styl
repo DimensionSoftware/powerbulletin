@@ -2,6 +2,7 @@
 
 // XXX below defines the layout's skeleton
 // XXX decoration & embellishments belong in the theme.styl
+// XXX eventually each forum will have its own theme.{styl,css}
 
 body
   grid(90%,100%)
@@ -11,70 +12,39 @@ header
   position fixed
   height 60px
   z-index 1
-  .content
+  .container
     width 800px
     margin 0 auto
-    .logo
-      display inline-block
-      margin-top 20px
-      width 200px
-      vertical-align top
-      text-shadow 0 0 1px #fff
-      font-style italic
-      font-size 1.5em
-      font-weight 300
-      letter-spacing -2px
-      strong
-        letter-spacing -2px
-        font-weight 500
-        padding-left 4px
-        font-style normal
-        color #ddd
     .menu
-      position absolute
-      top -3px
-      margin 0 auto
+      margin -3px auto 0 auto
       display inline-block
+      .row:hover
+        .submenu
+          display block
       .row
         cursor pointer
         display inline-block
         padding 0 19px
         line-height 60px
         font-size 18px
-  .search
-    top 12px
-    left 350px
-    position absolute 
+        .submenu
+          display none
+          position absolute
+    .search
+      top 10px
+      right 12px
+      position absolute 
+      .query
+        width 300px
 
-section
-  padding 0 20px 25px 0 !important
-  margin-top 63px!important
-  margin-bottom 30px!important
-  grid-space(75%)
-  .content
-    .topic
-      .title
-        margin 0
-        padding 3px 10px
-    .post
-      padding 20px 25px
-    
-.right-menu
-  position fixed!important
-  z-index 2
-  top 85px
-  right 0
-  grid-space(25%)
-  .submenu, .menu
-    padding 0
-    margin 12px 0
-    list-style none
-    .row
-      margin 0
-  .submenu
-    margin 5px 0 12px 10px
-  p
-    margin 10px 0
+section.user-profile
+  position fixed
+  top 200px
+  left 15px
+  width 200px
+  height 300px
+  z-index 5
+  display none
 
 footer
   text-align center
@@ -87,14 +57,14 @@ footer
 .scroll-to-top
   cursor pointer
 
-// <RESPONSIVE>
+//{{{ RESPONSIVEness
 @media screen and (max-width: 800px)
   body
     grid(90%,475px)
   section
     .content
       grid-space(55%)
-  .right-menu
+  .profile
     grid-space(45%)
   header
     height 40px
@@ -110,7 +80,7 @@ footer
     .content
       margin-bottom 10px!important
       grid-space(100%)
-  .right-menu
+  .profile
     grid-space(100%)
     margin-bottom 30px!important
     position static!important
@@ -119,3 +89,5 @@ footer
   header
     font-size 0.8em
     display none
+// }}}
+// vim:fdm=marker

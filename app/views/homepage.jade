@@ -16,32 +16,40 @@ mixin topic(t, i)
 
 //- main
 //- ---------
-block header-content
+block header
   h1.logo Power
     strong Bulletin
-  menu.menu
-    li.row.active HOT
-      i !
-    li.row FRESH
-    li.row Controversial
+  block categories
+    //- TODO customizable categories & topics for this bulletin
+    menu.menu
+      li.row.active Category
+        menu.submenu
+          li.row Topic
+          li.row Topic
+          li.row Topic
+      li.row Category2
+        menu.submenu
+          li.row Topic
+          li.row Topic
+      li.row Category3
+        menu.submenu
+          li.row Topic
+          li.row Topic
+          li.row Topic
+          li.row Topic
+  .search
+    input#query.query(type='text', placeholder='Search')
 
-block section-content
+block user-profile
+  | User Profile HERE
+
+block content-stream
   each t,i in topics
     mixin topic(t, i)
 
-block sidebar-content
-  input.search(type='text', placeholder='Search')
-  menu.menu
-    li.row Category
-      menu.submenu
-        li.row Topic
-        li.row Topic
-        li.row Topic
-    li.row Category2
-      menu.submenu
-        li.row Topic
-        li.row Topic
+block user-stream
+  | User Stream HERE
 
-block footer-content
+block footer
   h6 &copy; #{site_name} &nbsp;
     b= new Date().getFullYear()
