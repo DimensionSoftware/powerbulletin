@@ -5,17 +5,17 @@ require! {
   VoltProcedure     : '../node_modules/voltjs/lib/query'
 }
 
-
 # short, simple dsl so i don't go crazy and names match in volt and here
 procs = {}
-definep = (name, spec) ->
+defp = (name, spec) ->
   procs[name] = new VoltProcedure name, spec
 getp = -> procs[it]
 getq = -> getp(it).get-query!
 
-definep 'DOCS.insert' [\string \string \string \tinyint \tinyint]
-definep 'USERS.insert' [\bigint \string]
-definep 'select_doc_by_type_and_key' [\string \string]
+defp 'DOCS.insert' [\string \string \string \tinyint \tinyint]
+defp 'USERS.insert' [\bigint \string]
+defp 'select_doc_by_type_and_key' [\string \string]
+defp 'select_users' []
 
 # it is assumed that init will have finished before any queries are exec'd
 # then @client will be populated
@@ -62,8 +62,10 @@ export put-misc-doc = (key, val, cb = (->)) ->
   q.set-parameters [key, \misc, json, 0, 0]
   @callq q, cb
 
-export test-insert = (cb = ->) ->
+export test-insert = (cb = (->)) ->
   q = getq 'USERS.insert'
   q.set-parameters [1 \matt]
   @callq q, cb
 
+export select-users = (cb = (->)) ->
+  @callq getq('select_users'), cb

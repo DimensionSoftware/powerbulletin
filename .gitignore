@@ -1,5 +1,6 @@
 /.vagrant
 /config.json
+/classes/
 /debugoutput/
 /log/
 /voltdbroot/

@@ -1,2 +1,2 @@
 #!/bin/sh -e
-java -cp /usr/local/clojure/clojure-1.4.0.jar clojure.main
+java -cp '/usr/local/clojure/clojure-1.4.0.jar:/usr/local/voltdb-2.8.4.1/voltdb/voltdb-2.8.4.1.jar:voltdb' clojure.main $@
