@@ -12,8 +12,12 @@ defp = (name, spec = []) ->
 getp = -> procs[it]
 getq = -> getp(it).get-query!
 
+# builtin procedures
 defp 'DOCS.insert' [\string \string \string \tinyint \tinyint]
 defp 'USERS.insert' [\bigint \string]
+
+# custom procedures
+defp 'AddPost'
 defp 'SelectDocByTypeAndKey' [\string \string]
 defp 'SelectUsers'
 
@@ -79,3 +83,6 @@ export test-insert = (cb = (->)) ->
 
 export select-users = (cb = (->)) ->
   @callq getq('SelectUsers'), cb
+
+export add-post = (cb = (->)) ->
+  @callq getq('AddPost'), cb
