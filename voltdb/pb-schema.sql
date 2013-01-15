@@ -33,10 +33,11 @@ CREATE TABLE docs (
   json VARCHAR(1048576) NOT NULL,
   index_enabled TINYINT NOT NULL,
   index_dirty TINYINT NOT NULL,
-  PRIMARY KEY (key)
+  PRIMARY KEY (key, type)
 );
 
 CREATE PROCEDURE SelectDocByTypeAndKey AS
   SELECT json FROM docs WHERE type=? AND key=? LIMIT 1;
 
 CREATE PROCEDURE FROM CLASS SelectUsers;
+CREATE PROCEDURE FROM CLASS AddPost;
