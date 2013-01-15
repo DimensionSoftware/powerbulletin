@@ -1,0 +1,3 @@
+models which get stuffed in docs, used with gson or jackson to serialize this to json
+many queries will feed into one of these models potentially, before being serialized to json
+in the docs table
