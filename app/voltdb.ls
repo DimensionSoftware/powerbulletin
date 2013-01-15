@@ -15,7 +15,7 @@ getq = -> getp(it).get-query!
 defp 'DOCS.insert' [\string \string \string \tinyint \tinyint]
 defp 'USERS.insert' [\bigint \string]
 defp 'select_doc_by_type_and_key' [\string \string]
-defp 'select_users' []
+defp 'SelectUsers' []
 
 # it is assumed that init will have finished before any queries are exec'd
 # then @client will be populated
@@ -36,9 +36,15 @@ export init = (host, cb = (->)) ->
     # a query object to the client
     @callq = (q, cb) ~>
       @client.call-procedure q, (err, type, res) ->
+        console.log {err, type, res}
         if res.status is 1
           # table has the meat of the data, put it in the right spot ; )
-          cb(null, res.table[0][0])
+          # XXX grabs first VoltTable, and assumes its the only thing of value
+          #     eventually this might need to handle multiple volt tables
+          #     being sent back?
+          #     concat! clones the object without the extra voltdb annotation cruft
+          vt = res.table[0].concat!
+          cb(null, vt)
         else
           # propagate error the nodejs way
           cb(new Error(res.status-string))
@@ -63,9 +69,13 @@ export put-misc-doc = (key, val, cb = (->)) ->
   @callq q, cb
 
 export test-insert = (cb = (->)) ->
-  q = getq 'USERS.insert'
-  q.set-parameters [1 \matt]
-  @callq q, cb
+  q1 = getq 'USERS.insert'
+  q1.set-parameters [1 \matt]
+  q2 = getq 'USERS.insert'
+  q2.set-parameters [2 \bob]
+  @callq q1, (->)
+  @callq q2, (->)
+  cb!
 
 export select-users = (cb = (->)) ->
-  @callq getq('select_users'), cb
+  @callq getq('SelectUsers'), cb

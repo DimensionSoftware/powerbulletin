@@ -10,11 +10,11 @@ end
 
 # other stuff...
 include_recipe 'nodejs'
-#include_recipe 'voltdb'
-#include_recipe 'clojure'
+include_recipe 'voltdb'
+include_recipe 'clojure'
 include_recipe 'varnish'
 include_recipe 'stunnel'
-include_recipe 'postgres'
+#include_recipe 'postgres'
 
 # XXX this should perhaps go somewhere else, but for now, i like having this always
 package 'tmux'

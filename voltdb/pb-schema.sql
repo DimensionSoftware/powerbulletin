@@ -38,4 +38,4 @@ CREATE TABLE docs (
 CREATE PROCEDURE select_doc_by_type_and_key AS
   SELECT json FROM docs WHERE type=? AND key=? LIMIT 1;
 
-CREATE PROCEDURE FROM CLASS procs.select_users;
+CREATE PROCEDURE FROM CLASS SelectUsers;
