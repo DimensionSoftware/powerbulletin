@@ -2,7 +2,7 @@
 
 ## START CUSTOM EXPORTS
 export VOLTDB_HOME=/usr/local/voltdb-2.8.4.1
-export CLASSPATH=/usr/local/clojure-1.4.0/clojure-1.4.0.jar:voltdb
+export CLASSPATH=/usr/local/clojure-1.4.0/clojure-1.4.0.jar:voltdb:classes
 ## END CUSTOM EXPORTS
 
 # This file is part of VoltDB.
