@@ -22,16 +22,20 @@ html
     link(href="#{cache4_url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
     //- link(href='//fonts.googleapis.com/css?family=Ubuntu:300,400,500,700', rel='stylesheet', type='text/css')
     link(href='//fonts.googleapis.com/css?family=Open+Sans:200,400,700|Open+Sans+Condensed:700', rel='stylesheet', type='text/css')
-    link(href='//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css', rel='stylesheet', type='text/css')
+
+    if cvars.env == 'development'
+      link(href="#{cache5_url}/local/jquery-ui.css", rel='stylesheet', type='text/css') // offline
+    else
+      link(href='//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css', rel='stylesheet', type='text/css')
     if css_urls
       for obj in css_urls
         link(rel='stylesheet',type='text/css',href=obj.url)
 
     //- the only .js in our <head> 
     if cvars.env == 'development'
-      script(type='text/javascript', src="#{cache5_url}/js/local/head-0.99.min.js") // offline
+      script(type='text/javascript', src="#{cache5_url}/local/head-0.99.load.min.js") // offline
     else
-      script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.min.js")
+      script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
     if js_urls
       |<script type="text/javascript">
       |  head.js.apply(head, !{JSON.stringify(cvars.base_js_urls.concat(js_urls))});

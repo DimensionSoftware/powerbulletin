@@ -6,7 +6,7 @@
   "workers": 1,
 
   "base_js_urls":
-  [ "//muscache3.pb.com/js/local/jquery-1.8.3.min.js"
-  , "//muscache4.pb.com/js/local/jquery-ui.min.js"
+  [ "//muscache3.pb.com/local/jquery-1.8.3.min.js"
+  , "//muscache4.pb.com/local/jquery-ui.min.js"
   ]
 }
