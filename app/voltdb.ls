@@ -7,15 +7,15 @@ require! {
 
 # short, simple dsl so i don't go crazy and names match in volt and here
 procs = {}
-defp = (name, spec) ->
+defp = (name, spec = []) ->
   procs[name] = new VoltProcedure name, spec
 getp = -> procs[it]
 getq = -> getp(it).get-query!
 
 defp 'DOCS.insert' [\string \string \string \tinyint \tinyint]
 defp 'USERS.insert' [\bigint \string]
-defp 'select_doc_by_type_and_key' [\string \string]
-defp 'SelectUsers' []
+defp 'SelectDocByTypeAndKey' [\string \string]
+defp 'SelectUsers'
 
 # it is assumed that init will have finished before any queries are exec'd
 # then @client will be populated
