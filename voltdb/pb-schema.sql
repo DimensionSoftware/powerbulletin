@@ -11,18 +11,19 @@ CREATE TABLE users (
 );
 
 CREATE TABLE comments (
-  id      BIGINT NOT NULL,
-  user_id BIGINT NOT NULL,
-  post_id BIGINT NOT NULL,
-  body    VARCHAR(1000) NOT NULL,
+  id        BIGINT NOT NULL,
+  parent_id BIGINT,
+  user_id   BIGINT NOT NULL,
+  post_id   BIGINT NOT NULL,
+  body      VARCHAR(1000) NOT NULL,
   PRIMARY KEY (id)
 );
 
 CREATE TABLE posts ( 
-  id    BIGINT NOT NULL,
+  id      BIGINT NOT NULL,
   user_id BIGINT NOT NULL,
-  title VARCHAR(64) NOT NULL,
-  body  VARCHAR(1000) NOT NULL,
+  title   VARCHAR(64) NOT NULL,
+  body    VARCHAR(1000) NOT NULL,
   PRIMARY KEY (id)
 );
 
