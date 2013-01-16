@@ -23,7 +23,7 @@ defp 'USERS.insert' [\bigint \string]
 # custom procedures
 defp 'AddPost' [\long \long \string \string] # id, userid, title, body
 defp 'SelectDocByTypeAndKey' [\string \string] # type, key
-defp 'SelectUsers'
+defp 'SelectUser' [\long] # id
 defp 'NextInSequence' [\string]
 
 # it is assumed that init will have finished before any queries are exec'd
@@ -90,8 +90,10 @@ export test-insert = (cb = (->)) ->
   @callq q2, (->)
   cb!
 
-export select-users = (cb = (->)) ->
-  @callq getq(\SelectUsers), cb
+export select-user = (id, cb = (->)) ->
+  q = getq \SelectUser
+  q.set-parameters [id]
+  @callq q, cb
 
 export add-post = (post, cb = (->)) ->
   err, id <~ @next-in-sequence 'posts'

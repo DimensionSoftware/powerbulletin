@@ -2,6 +2,11 @@ import org.voltdb.*;
 import utils.*;
 import java.util.*;
 
+@ProcInfo (
+  partitionInfo = "posts.id: 0",
+  singlePartition = true
+)
+
 public class AddPost extends VoltProcedure {
   public final SQLStmt insertPostSQL =
     new SQLStmt( "INSERT INTO posts (id, user_id, title, body)"

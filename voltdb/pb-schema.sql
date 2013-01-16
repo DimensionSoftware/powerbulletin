@@ -10,6 +10,7 @@ CREATE TABLE users (
   login VARCHAR(32) NOT NULL,
   PRIMARY KEY (id)
 );
+PARTITION TABLE users ON COLUMN id;
 
 CREATE TABLE comments (
   id        BIGINT NOT NULL,
@@ -19,6 +20,7 @@ CREATE TABLE comments (
   body      VARCHAR(1000) NOT NULL,
   PRIMARY KEY (id)
 );
+PARTITION TABLE comments ON COLUMN post_id;
 
 CREATE TABLE posts ( 
   id      BIGINT NOT NULL,
@@ -27,6 +29,7 @@ CREATE TABLE posts (
   body    VARCHAR(1000) NOT NULL,
   PRIMARY KEY (id)
 );
+PARTITION TABLE posts ON COLUMN id;
 
 CREATE TABLE docs (
   key           VARCHAR(100) NOT NULL,
@@ -36,10 +39,15 @@ CREATE TABLE docs (
   index_dirty   TINYINT NOT NULL,
   PRIMARY KEY (key, type)
 );
+PARTITION TABLE docs ON COLUMN key;
 
-CREATE PROCEDURE SelectDocByTypeAndKey AS
-  SELECT json FROM docs WHERE type=? AND key=? LIMIT 1;
+-- use this method for defining procedures which are
+-- multi-partitioned (not fast), otherwise use real stored
+-- procedures which can be marked single-partition
+--CREATE PROCEDURE SelectDocByTypeAndKey AS
+--  SELECT json FROM docs WHERE type=? AND key=? LIMIT 1;
 
-CREATE PROCEDURE FROM CLASS SelectUsers;
+CREATE PROCEDURE FROM CLASS SelectUser;
 CREATE PROCEDURE FROM CLASS AddPost;
 CREATE PROCEDURE FROM CLASS NextInSequence;
+CREATE PROCEDURE FROM CLASS SelectDocByTypeAndKey;
