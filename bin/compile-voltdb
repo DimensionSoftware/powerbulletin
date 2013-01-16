@@ -4,5 +4,5 @@ mkdir -p classes
 #will generate this compile list on the fly
 #XXX use clojure for support libs, but VoltProcedures themselves still have to be .java (they can use clojure utility libs tho)
 echo "(compile 'utils.common)" | bin/clojure -
-javac -cp /usr/local/voltdb-2.8.4.1/voltdb/voltdb-2.8.4.1.jar:classes:voltdb voltdb/procs/*.java voltdb/models/*.java -d classes
-/usr/local/voltdb-2.8.4.1/bin/voltcompiler /usr/local/clojure/clojure-1.4.0.jar:/usr/local/voltdb-2.8.4.1/voltdb:classes voltdb/project.xml voltdb/pb-schema.jar
+javac -cp /usr/local/voltdb-2.8.4.1/voltdb/voltdb-2.8.4.1.jar:classes:voltdb voltdb/procs/*.java -d classes
+/usr/local/voltdb-2.8.4.1/bin/voltcompiler /usr/local/jars/jackson-core-2.1.1.jar:/usr/local/clojure/clojure-1.4.0.jar:/usr/local/voltdb-2.8.4.1/voltdb:classes voltdb/project.xml voltdb/pb-schema.jar

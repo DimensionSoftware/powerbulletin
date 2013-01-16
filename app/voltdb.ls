@@ -12,13 +12,17 @@ defp = (name, spec = []) ->
 getp = -> procs[it]
 getq = -> getp(it).get-query!
 
+# we declare these procedures up here because we don't need to be creating a procedure every single time
+# we run a query, the Query object on the other hand we have no choice because it contains
+# parameters
+
 # builtin procedures
 defp 'DOCS.insert' [\string \string \string \tinyint \tinyint]
 defp 'USERS.insert' [\bigint \string]
 
 # custom procedures
-defp 'AddPost'
-defp 'SelectDocByTypeAndKey' [\string \string]
+defp 'AddPost' [\long \string \string] # userid, title, body
+defp 'SelectDocByTypeAndKey' [\string \string] # type, key
 defp 'SelectUsers'
 
 # it is assumed that init will have finished before any queries are exec'd
@@ -57,7 +61,7 @@ export init = (host, cb = (->)) ->
 # a misc doc is just a one-off document we wanna store and don't wanna index
 # i.e. a blob for the homepage
 export get-misc-doc = (key, cb) ->
-  q = getq 'select_doc_by_type_and_key'
+  q = getq \SelectDocByTypeAndKey
   q.set-parameters [\misc, key]
 
   err, res <- @callq q
@@ -68,21 +72,23 @@ export get-misc-doc = (key, cb) ->
 #XXX: this needs to handle updates to, should that be pushed inside the procedure?
 export put-misc-doc = (key, val, cb = (->)) ->
   json = JSON.stringify(val)
-  q = getq 'DOCS.insert'
+  q = getq \DOCS.insert
   q.set-parameters [key, \misc, json, 0, 0]
   @callq q, cb
 
 export test-insert = (cb = (->)) ->
-  q1 = getq 'USERS.insert'
+  q1 = getq \USERS.insert
   q1.set-parameters [1 \matt]
-  q2 = getq 'USERS.insert'
+  q2 = getq \USERS.insert
   q2.set-parameters [2 \bob]
   @callq q1, (->)
   @callq q2, (->)
   cb!
 
 export select-users = (cb = (->)) ->
-  @callq getq('SelectUsers'), cb
+  @callq getq(\SelectUsers), cb
 
-export add-post = (cb = (->)) ->
-  @callq getq('AddPost'), cb
+export add-post = (post, cb = (->)) ->
+  q = getq \AddPost
+  q.set-parameters [post.user-id, post.title, post.body]
+  @callq q, cb
