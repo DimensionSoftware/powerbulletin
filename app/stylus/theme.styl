@@ -19,14 +19,19 @@ body.has-scrolled
         line-height 40px
         font-size 15px
         transition line-height .2s ease-out
-  .search
-    top 3px!important
-    right 7px!important
-    .query
-      font-size .9em
-      width 300px
-      height 15px
-      border-bottom-width 2px
+    .search
+      top 3px!important
+      right 7px!important
+      .query
+        font-size .9em
+        width 300px!important
+        height 15px
+        border-bottom-width 2px
+  .content
+    .container
+      margin 60px 0 0 230px
+  .user-profile
+    display block
   footer
     box-shadow 0 0 25px 1px #ddd
     border-top 1px solid #ddd
@@ -77,11 +82,14 @@ header
   .search
     top 0!important
     right 0!important
+    .query:hover, .query:focus
+      //border none!important
+      //box-shadow none!important
     .query
       font-size 1.15em
       border-bottom-width 3px
       border-left 0px
-      width 400px
+      width 500px
       height 41px
 
 section.user-profile

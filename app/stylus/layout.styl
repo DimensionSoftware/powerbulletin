@@ -20,7 +20,10 @@ header
       display inline-block
       .row:hover
         .submenu
-          display block
+          opacity 1
+          visibility visible
+          transform translate(-25px)
+          transition all .2s ease-out .3s
       .row
         cursor pointer
         display inline-block
@@ -28,8 +31,13 @@ header
         line-height 60px
         font-size 18px
         .submenu
-          display none
+          opacity 0
+          padding 0
+          margin 0
+          visibility hidden
           position absolute
+          .row
+            display block
     .search
       top 10px
       right 12px
@@ -39,7 +47,7 @@ header
 
 section.user-profile
   position fixed
-  top 200px
+  top 55px
   left 15px
   width 200px
   height 300px
@@ -61,11 +69,6 @@ footer
 @media screen and (max-width: 800px)
   body
     grid(90%,475px)
-  section
-    .content
-      grid-space(55%)
-  .profile
-    grid-space(45%)
   header
     height 40px
     .logo
@@ -76,14 +79,12 @@ footer
         line-height 40px!important
   
 @media screen and (max-width: 500px)
-  section
-    .content
-      margin-bottom 10px!important
-      grid-space(100%)
-  .profile
-    grid-space(100%)
-    margin-bottom 30px!important
-    position static!important
+  .content
+    .container
+      margin 60px 15px!important
+  .has-scrolled
+    .user-profile
+      display none!important
   body
     grid(90%,320px)
   header

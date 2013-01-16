@@ -13,7 +13,6 @@ has-scrolled = ->
 w.on 'scroll' -> has-scrolled!
 has-scrolled! # initial
 
-
 # attach scroll-to-top
 $ '.scroll-to-top' .each ->
   e = $ this
@@ -22,3 +21,6 @@ $ '.scroll-to-top' .each ->
     <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top }, 100
     <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top+threshold }, 85
     <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top }, 35
+
+# main
+$ '#query' .focus!
