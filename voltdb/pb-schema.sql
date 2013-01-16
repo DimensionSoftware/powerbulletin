@@ -1,8 +1,9 @@
 CREATE TABLE sequences (
-  name VARCHAR(64) NOT NULL,
-  val  BIGINT      NOT NULL,
+  name    VARCHAR(64) NOT NULL,
+  nextval BIGINT NOT NULL,
   PRIMARY KEY(name)
 );
+PARTITION TABLE sequences ON COLUMN name;
 
 CREATE TABLE users (
   id    BIGINT NOT NULL,
@@ -28,11 +29,11 @@ CREATE TABLE posts (
 );
 
 CREATE TABLE docs (
-  key VARCHAR(100) NOT NULL,
-  type VARCHAR(100) NOT NULL,
-  json VARCHAR(1048576) NOT NULL,
+  key           VARCHAR(100) NOT NULL,
+  type          VARCHAR(100) NOT NULL,
+  json          VARCHAR(1048576) NOT NULL,
   index_enabled TINYINT NOT NULL,
-  index_dirty TINYINT NOT NULL,
+  index_dirty   TINYINT NOT NULL,
   PRIMARY KEY (key, type)
 );
 
@@ -41,3 +42,4 @@ CREATE PROCEDURE SelectDocByTypeAndKey AS
 
 CREATE PROCEDURE FROM CLASS SelectUsers;
 CREATE PROCEDURE FROM CLASS AddPost;
+CREATE PROCEDURE FROM CLASS NextInSequence;
