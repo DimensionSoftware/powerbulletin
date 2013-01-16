@@ -14,6 +14,7 @@ include_recipe 'voltdb'
 include_recipe 'clojure'
 include_recipe 'varnish'
 include_recipe 'stunnel'
+include_recipe 'java-jackson'
 #include_recipe 'postgres'
 
 # XXX this should perhaps go somewhere else, but for now, i like having this always
@@ -34,4 +35,3 @@ unless File.file? '/etc/NPM_GLOBAL_PACKAGES_COMPLETED'
     EOH
   end
 end
-

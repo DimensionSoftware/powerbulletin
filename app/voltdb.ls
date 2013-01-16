@@ -12,14 +12,19 @@ defp = (name, spec = []) ->
 getp = -> procs[it]
 getq = -> getp(it).get-query!
 
+# we declare these procedures up here because we don't need to be creating a procedure every single time
+# we run a query, the Query object on the other hand we have no choice because it contains
+# parameters
+
 # builtin procedures
 defp 'DOCS.insert' [\string \string \string \tinyint \tinyint]
 defp 'USERS.insert' [\bigint \string]
 
 # custom procedures
-defp 'AddPost'
-defp 'SelectDocByTypeAndKey' [\string \string]
-defp 'SelectUsers'
+defp 'AddPost' [\long \long \string \string] # id, userid, title, body
+defp 'SelectDocByTypeAndKey' [\string \string] # type, key
+defp 'SelectUser' [\long] # id
+defp 'NextInSequence' [\string]
 
 # it is assumed that init will have finished before any queries are exec'd
 # then @client will be populated
@@ -29,8 +34,6 @@ export init = (host, cb = (->)) ->
 
   vcli.connect (err, type, res) ~>
     if err then return cb(err)
-    console.log res.status
-    console.log res.status-string
     @client = vcli
 
     # make sure to catch all the errors...
@@ -40,24 +43,30 @@ export init = (host, cb = (->)) ->
     # a query object to the client
     @callq = (q, cb) ~>
       @client.call-procedure q, (err, type, res) ->
-        console.log {err, type, res}
         if res.status is 1
           # table has the meat of the data, put it in the right spot ; )
           # XXX grabs first VoltTable, and assumes its the only thing of value
           #     eventually this might need to handle multiple volt tables
           #     being sent back?
           #     concat! clones the object without the extra voltdb annotation cruft
-          vt = res.table[0].concat!
+          vt = res.table
           cb(null, vt)
         else
           # propagate error the nodejs way
           cb(new Error(res.status-string))
     cb!
 
+export next-in-sequence = (name, cb) ->
+  q = getq \NextInSequence
+  q.set-parameters [name]
+  @callq q, (err, res) ->
+    if err then return cb(err)
+    cb(null, res[0][0][''])
+
 # a misc doc is just a one-off document we wanna store and don't wanna index
 # i.e. a blob for the homepage
 export get-misc-doc = (key, cb) ->
-  q = getq 'select_doc_by_type_and_key'
+  q = getq \SelectDocByTypeAndKey
   q.set-parameters [\misc, key]
 
   err, res <- @callq q
@@ -68,21 +77,28 @@ export get-misc-doc = (key, cb) ->
 #XXX: this needs to handle updates to, should that be pushed inside the procedure?
 export put-misc-doc = (key, val, cb = (->)) ->
   json = JSON.stringify(val)
-  q = getq 'DOCS.insert'
+  q = getq \DOCS.insert
   q.set-parameters [key, \misc, json, 0, 0]
   @callq q, cb
 
 export test-insert = (cb = (->)) ->
-  q1 = getq 'USERS.insert'
+  q1 = getq \USERS.insert
   q1.set-parameters [1 \matt]
-  q2 = getq 'USERS.insert'
+  q2 = getq \USERS.insert
   q2.set-parameters [2 \bob]
   @callq q1, (->)
   @callq q2, (->)
   cb!
 
-export select-users = (cb = (->)) ->
-  @callq getq('SelectUsers'), cb
+export select-user = (id, cb = (->)) ->
+  q = getq \SelectUser
+  q.set-parameters [id]
+  @callq q, cb
 
-export add-post = (cb = (->)) ->
-  @callq getq('AddPost'), cb
+export add-post = (post, cb = (->)) ->
+  err, id <~ @next-in-sequence 'posts'
+  if err then return cb(err)
+
+  q = getq \AddPost
+  q.set-parameters [id, post.user-id, post.title, post.body]
+  @callq q, cb
