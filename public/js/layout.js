@@ -7,10 +7,12 @@
     st = w.scrollTop();
     return $('body').toggleClass('has-scrolled', st > threshold);
   };
-  w.on('scroll', function(){
+  setTimeout(function(){
+    w.on('scroll', function(){
+      return hasScrolled();
+    });
     return hasScrolled();
-  });
-  hasScrolled();
+  }, 1000);
   $('.scroll-to-top').each(function(){
     var e;
     e = $(this);

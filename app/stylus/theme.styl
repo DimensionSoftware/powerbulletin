@@ -4,44 +4,48 @@
 
 highlight-color  = #ffeedd
 highlight-color2 = #ff6803
+grid = 10px
 
 body.has-scrolled
   header
     box-shadow 0 -1px 14px 3px #eee
     border-bottom 1px solid #ddd
-    height 40px
+    height 30px
     transition all .2s ease-out
     .logo
-      font-size 1.3em
-      margin-top 8px
+      font-size 1.1em
+      margin-top 4px
     .menu
       .row
-        line-height 40px
+        line-height 30px
         font-size 15px
         transition line-height .2s ease-out
     .search
-      top 3px!important
+      top 1px!important
       right 7px!important
       .query
         font-size .9em
         width 300px!important
-        height 15px
+        height 9px
         border-bottom-width 2px
   .content
     .container
-      margin 60px 0 0 230px
+      margin 0 0 0 230px
   .user-profile
     display block
   footer
+    font-size .85em
+    bottom -8px
     box-shadow 0 0 25px 1px #ddd
     border-top 1px solid #ddd
     transition box-shadow .5s ease-out
+    transition bottom .5s ease-out
 body
   font-family 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue'
-  background-color #fff
+  background url(cache_url+'/images/background.jpg') fixed
 
 header
-  background-color rgba(250, 250, 250, 0.9)
+  background-color rgba(250, 250, 250, 0.95)
   border-top 3px solid #666
   color #ddd
   .container
@@ -80,8 +84,8 @@ header
       color #aaa
       text-shadow 0 0 1px #fff
   .search
-    top 0!important
-    right 0!important
+    top 3px!important
+    right 3px!important
     .query:hover, .query:focus
       //border none!important
       //box-shadow none!important
@@ -90,24 +94,30 @@ header
       border-bottom-width 3px
       border-left 0px
       width 500px
-      height 41px
+      height 33px
 
 section.user-profile
   background-color rgba(250,250,250,.85)
 
 section.content
   .container
-    margin 60px 15px
+    padding 75px 20px 20px 20px
+    margin 5px 0 0 0
+    background-color rgba(255,255,255,.9)
     .topic
       .title
-        background-color #eee
+        margin 0
         .date
           margin-left 15px
           font-size .6em
           color #777
-    .post.odd
-      background-color #fcfcfc
+    .post
+      margin-bottom grid
       border-bottom 1px solid #eee
+      p
+        margin grid+2
+      .username
+        margin-right grid
 
 footer
   background-image linear-gradient(top, #eaeaea, #fff)

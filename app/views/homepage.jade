@@ -2,7 +2,7 @@ extend layout
 
 mixin post(p, i)
  .post(class=(i % 2) ? 'odd' : 'even')
-    span.username= p.user.name
+    span.username by #{p.user.name}
     span.date= p.date
     p.message= p.message
 

@@ -8,10 +8,10 @@ w = $ window
 has-scrolled = ->
   st = w.scrollTop!
   $ 'body' .toggle-class 'has-scrolled' (st > threshold)
-  #$ '.categories' .toggle-class 'fixed'  (st > threshold*20)
 
-w.on 'scroll' -> has-scrolled!
-has-scrolled! # initial
+setTimeout (->
+  w.on 'scroll' -> has-scrolled!
+  has-scrolled!), 1000 # initially yield
 
 # attach scroll-to-top
 $ '.scroll-to-top' .each ->
