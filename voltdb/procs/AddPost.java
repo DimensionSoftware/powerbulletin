@@ -3,8 +3,7 @@ import utils.*;
 import java.util.*;
 
 @ProcInfo (
-  partitionInfo = "posts.id: 0",
-  singlePartition = true
+  singlePartition = false
 )
 
 public class AddPost extends VoltProcedure {
