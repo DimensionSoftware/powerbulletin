@@ -22,9 +22,10 @@ defp 'USERS.insert' [\bigint \string]
 
 # custom procedures
 defp 'AddPost' [\long \long \string \string] # id, userid, title, body
-defp 'SelectDocByTypeAndKey' [\string \string] # type, key
 defp 'SelectUser' [\long] # id
 defp 'NextInSequence' [\string]
+defp 'GetDoc' [\string \string] # type, key
+defp 'PutDoc' [\string \string \string \long] #type, key, json, index_enabled
 
 # it is assumed that init will have finished before any queries are exec'd
 # then @client will be populated
@@ -101,4 +102,13 @@ export add-post = (post, cb = (->)) ->
 
   q = getq \AddPost
   q.set-parameters [id, post.user-id, post.title, post.body]
+  @callq q, cb
+
+# first argument is procedure name, rest are args
+# must provide callback to this function...
+export callp = (pname, ...raw-args) ->
+  params = raw-args.slice 0, -1
+  cb = raw-args[raw-args.length - 1]
+  q = getq pname
+  q.set-parameters params
   @callq q, cb

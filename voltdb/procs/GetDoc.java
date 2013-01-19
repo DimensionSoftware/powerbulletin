@@ -5,7 +5,7 @@ import org.voltdb.*;
   singlePartition = true
 )
 
-public class SelectDocByTypeAndKey extends VoltProcedure {
+public class GetDoc extends VoltProcedure {
   public final SQLStmt sql =
     new SQLStmt("SELECT json FROM docs WHERE type=? AND key=? LIMIT 1");
 

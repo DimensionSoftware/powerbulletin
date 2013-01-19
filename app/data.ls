@@ -16,6 +16,22 @@ now = new Date
 # this will eventually pull from (either postgresql or voltdb) docs table
 # for now its a STUB
 export homepage-doc = (cb) ->
+  @get-doc \misc, \homepage, cb
+
+export add-post = (post, cb) ->
+  v.add-post(post, cb)
+
+# uses new api
+export put-doc = (type, key, doc, index-enabled, cb) ->
+  # unary + casts bool to int
+  v.callp \PutDoc type, key, JSON.stringify(doc), +index-enabled, cb
+
+export get-doc = (type, key, cb) ->
+  err, json <- v.callp \GetDoc type, key
+  if err then return cb(err)
+  cb null, JSON.parse(json[0][0].JSON)
+
+export init-stubs = (cb = (->)) ->
   user =
     name       : \anonymous
     created_at : now
@@ -31,9 +47,5 @@ export homepage-doc = (cb) ->
     user  : user
     posts : posts
 
-  stub = {topics}
-
-  cb null, stub
-
-export add-post = (post, cb) ->
-  v.add-post(post, cb)
+  homepage-stub = {topics}
+  @put-doc \misc, \homepage, homepage-stub, false, cb
