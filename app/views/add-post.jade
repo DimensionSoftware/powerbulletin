@@ -1,0 +1,10 @@
+div(title='Add Post')
+  form#add-post-form(action='/ajax/add-post', method='post')
+    label
+      strong Title
+      input(type='text', name='title')
+    label
+      strong Body
+      textarea(name='body')
+    input(type='hidden', name='fid', value=fid)
+    input#add-post-submit(type='submit', value='Post')

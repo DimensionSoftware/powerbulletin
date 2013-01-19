@@ -1,4 +1,7 @@
-require! {h: './helpers'}
+require! {
+  h: './helpers'
+  v: './voltdb'
+}
 
 # this file is intended to provide a high-level data interaction layer,
 # decoupled from any particular datasource, whether it be voltdb or elastic
@@ -32,3 +35,5 @@ export homepage-doc = (cb) ->
 
   cb null, stub
 
+export add-post = (post, cb) ->
+  v.add-post(post, cb)

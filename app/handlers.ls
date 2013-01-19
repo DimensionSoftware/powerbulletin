@@ -1,11 +1,26 @@
 require! {
   fs
   async
+  jade
   stylus
   fluidity
   './data'
   './helpers'
 }
+
+# GET / post data form
+@add-post-html = (req, res) ->
+  res.locals.fid = req.query.fid
+  res.render \add-post
+
+# POST / post data
+@add-post = (req, res, next) ->
+  post = req.body
+  post.user-id = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
+  err, res1, res2 <- data.add-post post
+  if err then return next(err)
+  console.log req.body
+  res.json {stub: true, req.body, res1, res2}
 
 @homepage = (req, res, next) ->
   err, doc <- data.homepage-doc

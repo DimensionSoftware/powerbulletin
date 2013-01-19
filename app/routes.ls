@@ -21,7 +21,14 @@ app.get '/hello' handlers.hello
 # Facebook, Twitter
 # OR
 # Register @ <Forum Name>.com
+# # post endpoint
 app.post '/ajax/register', handlers.register
+# todo html for use in fancybox or modal dialog at get route
+
+# html for use in fancybox or modal dialog
+app.get '/ajax/add-post', handlers.add-post-html
+# todo post endpoint for adding a post
+app.post '/ajax/add-post', handlers.add-post
 
 # dynamic serving
 app.get '/dynamic/css/:file' handlers.stylus

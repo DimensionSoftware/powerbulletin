@@ -1,8 +1,11 @@
 
+# shortcuts
+w = $ window
+d = $ document
+
 # XXX layout-specific client-side
 
 threshold = 10 # snap
-w = $ window
 
 # indicate to stylus that view scrolled
 has-scrolled = ->
@@ -12,6 +15,26 @@ has-scrolled = ->
 setTimeout (->
   w.on 'scroll' -> has-scrolled!
   has-scrolled!), 1000 # initially yield
+
+add-post-dialog = ->
+  #XXX: stub code for now, since we have no concept of sub-forums
+  # mainly here as a proof-of-concept
+  fid = $(this).data \fid
+
+  post-html = '<h1>add post form goes here</h1>'
+  html <- $.get '/ajax/add-post', {fid}
+  $(html).dialog modal: true
+
+  false # stop event propagation
+
+# assumes immediate parent is form (in case of submit button)
+add-post = ->
+  form = $ '#add-post-form'
+  $.post '/ajax/add-post', form.serialize!, ->
+    console.log 'success! post added'
+    console.log 'STUB: do something fancy to confirm submission'
+
+  false # stop event propagation
 
 # attach scroll-to-top
 $ '.scroll-to-top' .each ->
@@ -24,3 +47,7 @@ $ '.scroll-to-top' .each ->
 
 # main
 $ '#query' .focus!
+
+# delegated events
+d.on \click, '#add-post-submit', add-post
+d.on \click, '.onclick-add-post-dialog', add-post-dialog
