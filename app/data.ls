@@ -27,13 +27,17 @@ export put-doc = (type, key, doc, index-enabled, cb) ->
   v.callp \PutDoc type, key, JSON.stringify(doc), +index-enabled, cb
 
 export get-doc = (type, key, cb) ->
-  err, json <- v.callp \GetDoc type, key
+  err, res <- v.callp \GetDoc type, key
   if err then return cb(err)
-  cb null, JSON.parse(json[0][0].JSON)
+
+  if json = res[0][0]?.JSON
+    cb null, JSON.parse(json)
+  else
+    cb!
 
 export init-stubs = (cb = (->)) ->
   user =
-    name       : \anonymous
+    name       : \intrepid_coderman
     created_at : now
 
   posts = for i to 4 # dummy data
