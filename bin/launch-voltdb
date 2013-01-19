@@ -1,2 +1,3 @@
 #!/bin/sh -e
+export VOLTDB_HEAPSIZE=256
 bin/custom-voltdb create catalog voltdb/pb-schema.jar
