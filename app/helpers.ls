@@ -131,5 +131,13 @@ require! {
   # supposedly the quotes are the proper way to format this, trying to follow rfcs
   '"' + str + '"'
 
+# ported from http://erlycoder.com/49/javascript-hash-functions-to-convert-string-into-integer-hash-
+@djb2-hash = (str) ->
+  hash = 5381
+  for i in str
+    char = str.char-code-at i
+    hash = ((hash .<<. 5) + hash) + char
+  hash
+
 #}}}
 # vim:fdm=marker

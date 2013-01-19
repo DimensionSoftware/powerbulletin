@@ -57,6 +57,7 @@ export init = (host, cb = (->)) ->
           cb(new Error(res.status-string))
     cb!
 
+# old api
 export next-in-sequence = (name, cb) ->
   q = getq \NextInSequence
   q.set-parameters [name]
@@ -64,38 +65,13 @@ export next-in-sequence = (name, cb) ->
     if err then return cb(err)
     cb(null, res[0][0][''])
 
-# a misc doc is just a one-off document we wanna store and don't wanna index
-# i.e. a blob for the homepage
-export get-misc-doc = (key, cb) ->
-  q = getq \SelectDocByTypeAndKey
-  q.set-parameters [\misc, key]
-
-  err, res <- @callq q
-  if err then return cb(err)
-
-  cb null, JSON.parse(res.JSON)
-
-#XXX: this needs to handle updates to, should that be pushed inside the procedure?
-export put-misc-doc = (key, val, cb = (->)) ->
-  json = JSON.stringify(val)
-  q = getq \DOCS.insert
-  q.set-parameters [key, \misc, json, 0, 0]
-  @callq q, cb
-
-export test-insert = (cb = (->)) ->
-  q1 = getq \USERS.insert
-  q1.set-parameters [1 \matt]
-  q2 = getq \USERS.insert
-  q2.set-parameters [2 \bob]
-  @callq q1, (->)
-  @callq q2, (->)
-  cb!
-
+# old api
 export select-user = (id, cb = (->)) ->
   q = getq \SelectUser
   q.set-parameters [id]
   @callq q, cb
 
+# old api
 export add-post = (post, cb = (->)) ->
   err, id <~ @next-in-sequence 'posts'
   if err then return cb(err)
@@ -106,6 +82,7 @@ export add-post = (post, cb = (->)) ->
 
 # first argument is procedure name, rest are args
 # must provide callback to this function...
+# new api external call, makes it functional, discards oop..
 export callp = (pname, ...raw-args) ->
   params = raw-args.slice 0, -1
   cb = raw-args[raw-args.length - 1]
