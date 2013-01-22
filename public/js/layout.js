@@ -1,5 +1,5 @@
 (function(){
-  var w, d, threshold, hasScrolled, addPostDialog, addPost;
+  var w, d, threshold, hasScrolled, x$, addPostDialog, addPost;
   w = $(window);
   d = $(document);
   threshold = 10;
@@ -14,6 +14,30 @@
     });
     return hasScrolled();
   }, 1000);
+  $('.scroll-to-top').each(function(){
+    var e;
+    e = $(this);
+    e.attr('title', 'Scroll to Top!');
+    return e.on('mousedown', function(){
+      return $('html,body').animate({
+        scrollTop: $('body').offset().top
+      }, 100, function(){
+        return $('html,body').animate({
+          scrollTop: $('body').offset().top + threshold
+        }, 85, function(){
+          return $('html,body').animate({
+            scrollTop: $('body').offset().top
+          }, 35, function(){});
+        });
+      });
+    });
+  });
+  $('#query').focus();
+  x$ = $('.content .container').masonry;
+  ({
+    itemSelector: '.topic',
+    columnWidth: 240
+  });
   addPostDialog = function(){
     var fid, postHtml;
     fid = $(this).data('fid');
@@ -36,25 +60,6 @@
     });
     return false;
   };
-  $('.scroll-to-top').each(function(){
-    var e;
-    e = $(this);
-    e.attr('title', 'Scroll to Top!');
-    return e.on('mousedown', function(){
-      return $('html,body').animate({
-        scrollTop: $('body').offset().top
-      }, 100, function(){
-        return $('html,body').animate({
-          scrollTop: $('body').offset().top + threshold
-        }, 85, function(){
-          return $('html,body').animate({
-            scrollTop: $('body').offset().top
-          }, 35, function(){});
-        });
-      });
-    });
-  });
-  $('#query').focus();
   d.on('click', '#add-post-submit', addPost);
   d.on('click', '.onclick-add-post-dialog', addPostDialog);
 }).call(this);

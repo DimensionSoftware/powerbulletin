@@ -83,7 +83,10 @@ export add-post = (post, cb = (->)) ->
 # first argument is procedure name, rest are args
 # must provide callback to this function...
 # new api external call, makes it functional, discards oop..
-export callp = (pname, ...raw-args) ->
+@callq = ->
+  NOOP=1
+
+@callp = (pname, ...raw-args) ->
   params = raw-args.slice 0, -1
   cb = raw-args[raw-args.length - 1]
   q = getq pname

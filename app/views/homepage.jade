@@ -2,9 +2,10 @@ extend layout
 
 mixin post(p, i)
  .post(class=(i % 2) ? 'odd' : 'even')
-    span.username by #{p.user.name}
-    span.date= p.date
     p.message= p.message
+    .signature
+      span.username - #{p.user.name}
+      span.date= p.date
 
 mixin topic(t, i)
   .topic(class=(i % 2) ? 'odd' : 'even')
@@ -19,28 +20,33 @@ block header
   h1.logo Power
     strong Bulletin
   block categories
-    //- TODO customizable categories & topics for this bulletin
+    //- TODO customizable categories & subcategories for this bulletin
     menu.menu
       li.row.active Category
         menu.submenu
-          li.row Topic
-          li.row Topic
-          li.row Topic
+          li.row Subcat
+          li.row Subcat
+          li.row Subcat
       li.row Category2
         menu.submenu
-          li.row Topic
-          li.row Topic
+          li.row Subcat
+          li.row Subcat
       li.row Category3
         menu.submenu
-          li.row Topic
-          li.row Topic
-          li.row Topic
-          li.row Topic
+          li.row Subcat
+          li.row Subcat
+          li.row Subcat
+          li.row Subcat
   .search
     input#query.query(type='text', placeholder='Search')
 
 block user-profile
-  | User Profile HERE
+  | User Profile
+  //- data-fid is how we pass in the forum id of the post, this way
+  //- we can put a hotlink wherever without having to write new
+  //- javascript (other than calculating the fid)
+  //- TODO move this into topic :hover tools
+  a(href='#', class='onclick-add-post-dialog', data-fid=33) Add Post!
 
 block content-stream
   each t,i in topics
