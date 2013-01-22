@@ -8,7 +8,7 @@ mixin post(p, i)
       span.date= p.date
 
 mixin topic(t, i)
-  .topic(class=(i % 2) ? 'odd' : 'even')
+  .topic(class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")
     h5.title= t.title
       span.date Created #{t.date}
     each p,i in t.posts
@@ -51,9 +51,6 @@ block user-profile
 block content-stream
   each t,i in topics
     mixin topic(t, i)
-
-block user-stream
-  | User Stream HERE
 
 block footer
   h6 &copy; #{site_name} &nbsp;

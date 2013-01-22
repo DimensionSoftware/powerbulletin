@@ -57,12 +57,16 @@ section.user-profile
   display none
 //}}}
 //{{{ Main Content
+.col1
+  width 425px
+.col2
+  width 225px
 .content
   .container
+    margin 0 auto 0 160px!important
     .topic
       float left
       margin 10px
-      width 425px
     .scroll-to-top
       clear both
 //}}}
@@ -82,7 +86,7 @@ footer
 //{{{ RESPONSIVEness
 @media screen and (max-width: 800px)
   body
-    grid(90%,475px)
+    grid(100%,475px)
   header
     height 30px
     .logo
@@ -98,17 +102,17 @@ footer
 @media screen and (max-width: 500px)
   .content
     .container
+      margin-left 0!important
       padding 25px 15px!important
-      margin 0!important
   .has-scrolled
     .content
       .container
+        margin-left 0!important
         padding 25px 15px!important
-        margin 0!important
     .user-profile
       display none!important
   body
-    grid(90%,320px)
+    grid(100%,320px)
   header
     font-size 0.8em
     display none

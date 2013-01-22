@@ -27,10 +27,11 @@ $ '.scroll-to-top' .each ->
 
 # main
 $ '#query' .focus!
-$ '.content .container' .masonry
+$ '.content .container' .masonry(
   item-selector: '.topic'
-  column-width:  240
-
+  is-animated:   true
+  is-fit-width:  true
+  is-resizable:  true)
 
 #{{{ TODO non-layout-specific code (actions and view states) to relocate once mutant++ is pulled in
 add-post-dialog = ->

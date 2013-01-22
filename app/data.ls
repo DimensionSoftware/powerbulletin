@@ -19,20 +19,20 @@ export homepage-doc = (cb) ->
   @get-doc \misc, \homepage, cb
 
 # XXX static doc (uncomment if volt isn't setup)
-#  user =
-#    name       : \anonymous
-#    created_at : now
-#  
-#  posts = for i to 4 # dummy data
-#    date    : h.title-case h.elapsed-to-human-readable Math.random!*604800
-#    user    : user
-#    message : h.ellipse 'hello world!' 6
-#  
-#  topics = for i to 5 # dummy data
-#    title : \Test
-#    date  : h.title-case h.elapsed-to-human-readable Math.random!*31446925
-#    user  : user
-#    posts : posts
+  user =
+    name       : \anonymous
+    created_at : now
+  
+  posts = for i to 4 # dummy data
+    date    : h.title-case h.elapsed-to-human-readable Math.random!*604800
+    user    : user
+    message : h.ellipse 'hello world hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world hello world!' Math.ceil(Math.random()*100)
+  
+  topics = for i to 40 # dummy data
+    title : \Test
+    date  : h.title-case h.elapsed-to-human-readable Math.random!*31446925
+    user  : user
+    posts : posts
   
   stub = {topics}
   

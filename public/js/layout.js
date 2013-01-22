@@ -1,5 +1,5 @@
 (function(){
-  var w, d, threshold, hasScrolled, x$, addPostDialog, addPost;
+  var w, d, threshold, hasScrolled, addPostDialog, addPost;
   w = $(window);
   d = $(document);
   threshold = 10;
@@ -33,10 +33,11 @@
     });
   });
   $('#query').focus();
-  x$ = $('.content .container').masonry;
-  ({
+  $('.content .container').masonry({
     itemSelector: '.topic',
-    columnWidth: 240
+    isAnimated: true,
+    isFitWidth: true,
+    isResizable: true
   });
   addPostDialog = function(){
     var fid, postHtml;

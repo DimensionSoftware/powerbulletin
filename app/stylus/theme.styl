@@ -32,7 +32,6 @@ body.has-scrolled
         border-bottom-width 2px
   .content
     .container
-      margin 0 0 0 160px
       .topic
         margin grid
   .user-profile
@@ -121,7 +120,6 @@ header
 section.content
   .container
     padding 75px 20px 20px 20px
-    margin 5px 0 0 0
     //background-color rgba(255,255,255,.9)
     .topic:hover
       background-color #fff
@@ -130,7 +128,7 @@ section.content
       border-right 2px solid #aaa
       border-bottom 3px solid #aaa
       box-shadow 0 0 1px 1px highlight-color2
-      transition box-shadow ease-out 1s
+      transition box-shadow ease-out .4s
     .topic
       background-color rgba(255,255,255,.95)
       border 1px solid #ccc
@@ -147,7 +145,7 @@ section.content
     .post:hover
       border-bottom 1px solid #ddd
       color #000
-      background-image linear-gradient(top, #f0f0f0, #fff)
+      background-image linear-gradient(top, #f5f5f5, #fff)
       .signature
         background-color #eee
         color #444
@@ -173,12 +171,19 @@ section.content
 ///}}}
 //{{{ User profile
 section.user-profile
-  background-color rgba(0,0,0,.1)
+  background-color rgba(0,0,0,.15)
   border 1px solid #444
   padding grid - 3
   a
     display block
     color #eee
+  .scroll-to-top
+    position absolute
+    right 5px
+    bottom 0
+    color #eee
+    font-weight bold
+    font-size .8em
 //}}}
 //{{{ Footer
 footer
