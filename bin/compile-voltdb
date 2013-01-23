@@ -1,10 +1,9 @@
 #!/bin/sh -e
-mkdir -p classes
+rm -rf classes
+mkdir classes
 #XXX we need to  make this a bit less gnarly... ideally a listing of the files in the dir
 #will generate this compile list on the fly
 #XXX use clojure for support libs, but VoltProcedures themselves still have to be .java (they can use clojure utility libs tho)
-#echo "(compile 'utils.common)" | bin/clojure -
-rm -rf classes
-mkdir classes
-javac -cp /usr/local/voltdb-3.0/voltdb/voltdb-3.0.jar voltdb/procs/*.java -d classes
+echo "(compile 'utils.common)" | bin/clojure -
+javac -cp /usr/local/voltdb-3.0/voltdb/voltdb-3.0.jar:classes voltdb/procs/*.java -d classes
 /usr/local/voltdb-3.0/bin/voltdb compile -c classes -o voltdb/pb-schema.jar voltdb/pb-schema.sql
