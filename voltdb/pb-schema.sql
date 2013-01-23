@@ -12,28 +12,19 @@ CREATE TABLE users (
 );
 PARTITION TABLE users ON COLUMN id;
 
-CREATE TABLE comments (
+CREATE TABLE posts ( 
   id        BIGINT NOT NULL,
   parent_id BIGINT,
   user_id   BIGINT NOT NULL,
-  post_id   BIGINT NOT NULL,
-  body      VARCHAR(1000) NOT NULL,
-  PRIMARY KEY (id)
-);
-PARTITION TABLE comments ON COLUMN post_id;
-
-CREATE TABLE posts ( 
-  id      BIGINT NOT NULL,
-  user_id BIGINT NOT NULL,
-  title   VARCHAR(64) NOT NULL,
-  body    VARCHAR(1000) NOT NULL,
+  title     VARCHAR(256) NOT NULL,
+  body      VARCHAR(1024) NOT NULL,
   PRIMARY KEY (id)
 );
 PARTITION TABLE posts ON COLUMN id;
 
 CREATE TABLE docs (
-  key           VARCHAR(100) NOT NULL,
-  type          VARCHAR(100) NOT NULL,
+  key           VARCHAR(64) NOT NULL,
+  type          VARCHAR(64) NOT NULL,
   json          VARCHAR(1048576) NOT NULL,
   index_enabled TINYINT NOT NULL,
   index_dirty   TINYINT NOT NULL,
