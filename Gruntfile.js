@@ -30,7 +30,8 @@ module.exports = function(grunt) {
     livescript: {
       compile: {
         files: {
-          'public/js/layout.js': 'app/layout.ls'
+          'public/js/layout.js': 'app/layout.ls',
+          'public/js/bootstrap.js': 'app/bootstrap.ls'
         }
       }
     },
