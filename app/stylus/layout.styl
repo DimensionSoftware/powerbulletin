@@ -21,21 +21,26 @@ header
       display inline-block
       .row:hover
         .submenu
-          opacity 1
+          //opacity 1
+          //display block
           visibility visible
-          transform translate(-20px)
-          transition all .5s ease-out .3s
+          transform translateY(230px)
+          transition all .3s ease-out .5s
       .row
         cursor pointer
         display inline-block
-        padding 0 19px
         line-height 60px
         font-size 18px
+        .title
+          position relative
+          z-index 10
         .submenu
-          opacity 0
-          padding 0
-          margin 0 0 0 2px
+          z-index 9
+          //opacity 0
+          top -170px
+          //display none
           visibility hidden
+          margin 0 0 0 2px
           position absolute
           .row
             display block
