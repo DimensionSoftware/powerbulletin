@@ -43,7 +43,7 @@ module.exports = function(grunt) {
 
     watch: {
       app: {
-        files: ['app/*.ls'],
+        files: ['app/*.ls', 'config/*'],
         tasks: ['livescript', 'launch'],
         options: {
           interrupt: true,

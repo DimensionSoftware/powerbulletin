@@ -4,4 +4,9 @@
   "port": "3000",
   "tmp": "/tmp",
   "workers": 2
+
+  "base_js_urls":
+  [ "//cdnjs.cloudflare.com/ajax/libs/zepto/1.0rc1/zepto.min.js"
+  , "//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"
+  ]
 }
