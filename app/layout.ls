@@ -1,12 +1,10 @@
 
 # XXX layout-specific client-side
 
-
 # shortcuts
 w = $ window
 d = $ document
 
-jquery    = $ # ...and not the other way 'round--crazy speak!
 threshold = 10 # snap
 
 # indicate to stylus that view scrolled

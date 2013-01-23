@@ -1,8 +1,7 @@
 (function(){
-  var w, d, jquery, threshold, hasScrolled, addPostDialog, addPost;
+  var w, d, threshold, hasScrolled, addPostDialog, addPost;
   w = $(window);
   d = $(document);
-  jquery = $;
   threshold = 10;
   hasScrolled = function(){
     var st;
