@@ -1,7 +1,8 @@
 (function(){
-  var w, d, threshold, hasScrolled, addPostDialog, addPost;
+  var w, d, jquery, threshold, hasScrolled, addPostDialog, addPost;
   w = $(window);
   d = $(document);
+  jquery = $;
   threshold = 10;
   hasScrolled = function(){
     var st;
@@ -13,7 +14,7 @@
       return hasScrolled();
     });
     return hasScrolled();
-  }, 1000);
+  }, 1300);
   $('.scroll-to-top').each(function(){
     var e;
     e = $(this);

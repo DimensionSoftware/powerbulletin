@@ -1,10 +1,12 @@
 
+# XXX layout-specific client-side
+
+
 # shortcuts
 w = $ window
 d = $ document
 
-# XXX layout-specific client-side
-
+jquery    = $ # ...and not the other way 'round--crazy speak!
 threshold = 10 # snap
 
 # indicate to stylus that view scrolled
@@ -14,7 +16,7 @@ has-scrolled = ->
 
 setTimeout (->
   w.on 'scroll' -> has-scrolled!
-  has-scrolled!), 1000 # initially yield
+  has-scrolled!), 1300 # initially yield
 
 # attach scroll-to-top
 $ '.scroll-to-top' .each ->
