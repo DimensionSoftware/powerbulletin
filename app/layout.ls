@@ -16,6 +16,24 @@ setTimeout (->
   w.on 'scroll' -> has-scrolled!
   has-scrolled!), 1000 # initially yield
 
+# attach scroll-to-top
+$ '.scroll-to-top' .each ->
+  e = $ this
+  e.attr 'title' 'Scroll to Top!'
+  e.on 'mousedown' -> # bouncy scroll to top
+    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top }, 100
+    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top+threshold }, 85
+    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top }, 35
+
+# main
+$ '#query' .focus!
+$ '.content .container' .masonry(
+  item-selector: '.topic'
+  is-animated:   true
+  is-fit-width:  true
+  is-resizable:  true)
+
+#{{{ TODO non-layout-specific code (actions and view states) to relocate once mutant++ is pulled in
 add-post-dialog = ->
   #XXX: stub code for now, since we have no concept of sub-forums
   # mainly here as a proof-of-concept
@@ -35,19 +53,8 @@ add-post = ->
     console.log 'STUB: do something fancy to confirm submission'
 
   false # stop event propagation
-
-# attach scroll-to-top
-$ '.scroll-to-top' .each ->
-  e = $ this
-  e.attr 'title' 'Scroll to Top!'
-  e.on 'mousedown' -> # bouncy scroll to top
-    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top }, 100
-    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top+threshold }, 85
-    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top }, 35
-
-# main
-$ '#query' .focus!
-
 # delegated events
 d.on \click, '#add-post-submit', add-post
 d.on \click, '.onclick-add-post-dialog', add-post-dialog
+#}}}
+# vim:fdm=marker

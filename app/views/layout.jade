@@ -24,7 +24,7 @@ html
     link(href='//fonts.googleapis.com/css?family=Open+Sans:200,400,700|Open+Sans+Condensed:700', rel='stylesheet', type='text/css')
 
     if cvars.env == 'development'
-      link(href="#{cache5_url}/local/jquery-ui.css", rel='stylesheet', type='text/css') // offline
+      link(href="#{cache5_url}/local/jquery-ui.css", rel='stylesheet', type='text/css') //- offline
     else
       link(href='//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css', rel='stylesheet', type='text/css')
     if css_urls
@@ -33,7 +33,7 @@ html
 
     //- the only .js in our <head> 
     if cvars.env == 'development'
-      script(type='text/javascript', src="#{cache5_url}/local/head-0.99.load.min.js") // offline
+      script(type='text/javascript', src="#{cache5_url}/local/head-0.99.load.min.js") //- offline
     else
       script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
     if js_urls
@@ -48,19 +48,11 @@ html
 
     section.user-profile
       block user-profile
+      .scroll-to-top TOP
 
     section.content
       .container
         block content-stream
-        .scroll-to-top TOP
-        block user-stream
-        .scroll-to-top TOP
 
     footer#chat-drawer.scroll-to-top
-
-      //- data-fid is how we pass in the forum id of the post, this way
-      //- we can put a hotlink wherever without having to write new
-      //- javascript (other than calculating the fid)
-      a(href='#', class='onclick-add-post-dialog', data-fid=33) Add Post!
-
       block footer

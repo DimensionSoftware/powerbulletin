@@ -30,7 +30,7 @@ require! {
   # for O(1) retrieval (assuming hashed index map)
   res.locals doc
 
-  # TODO fetch smart/fun combination of latest/best voted posts, threads & media
+  # TODO fetch smart/fun combination of latest/best voted posts, topics & media
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
   res.render \homepage, (err, body) ->
