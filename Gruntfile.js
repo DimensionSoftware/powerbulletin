@@ -31,7 +31,6 @@ module.exports = function(grunt) {
       compile: {
         files: {
           'public/js/layout.js': 'app/layout.ls',
-          'public/js/bootstrap.js': 'app/bootstrap.ls'
         }
       }
     },
