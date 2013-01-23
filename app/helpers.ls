@@ -103,7 +103,7 @@ require! {
   timestring
 
 @elapsed-to-human-readable = (secs-ago) ->
-  suffix = ' ago'
+  suffix = 'ago'
   if secs-ago < 30 then 'just now!'
   else if secs-ago < 60 then "a moment #{suffix}"
   else if secs-ago < 120 then "a minute #{suffix}"
