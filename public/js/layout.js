@@ -34,7 +34,7 @@
   });
   $('#query').focus();
   $('.content .container').masonry({
-    itemSelector: '.topic',
+    itemSelector: '.post',
     isAnimated: true,
     isFitWidth: true,
     isResizable: true

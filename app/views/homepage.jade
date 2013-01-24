@@ -1,18 +1,18 @@
 extend layout
 
 mixin post(p, i)
- .post(class=(i % 2) ? 'odd' : 'even')
-    p.message= p.message
-    .signature
-      span.username - #{p.user.name}
-      span.date= p.date
+  .post(class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")
+    h5.title= p.title
+      span.date Created #{p.date}
+    each sp,i in p.posts
+      mixin sub-post(sp, i)
 
-mixin topic(t, i)
-  .topic(class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")
-    h5.title= t.title
-      span.date Created #{t.date}
-    each p,i in t.posts
-      mixin post(p, i)
+mixin sub-post(sp, i)
+ .sub-post(class=(i % 2) ? 'odd' : 'even')
+    p.message= sp.body
+    .signature
+      span.username - #{sp.user.name}
+      span.date= sp.date
 
 //- main
 //- ---------
@@ -48,13 +48,13 @@ block user-profile
   //- data-fid is how we pass in the forum id of the post, this way
   //- we can put a hotlink wherever without having to write new
   //- javascript (other than calculating the fid)
-  //- TODO move this into topic :hover tools
+  //- TODO move this into posts :hover tools
 
 block content-stream
   div
     a(href='#', class='onclick-add-post-dialog', data-fid=33) Add Post!
-  each t,i in topics
-    mixin topic(t, i)
+  each t,i in posts
+    mixin post(t, i)
 
 block footer
   h6 &copy; #{site_name} &nbsp;

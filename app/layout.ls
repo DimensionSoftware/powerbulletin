@@ -28,7 +28,7 @@ $ '.scroll-to-top' .each ->
 # main
 $ '#query' .focus!
 $ '.content .container' .masonry(
-  item-selector: '.topic'
+  item-selector: '.post'
   is-animated:   true
   is-fit-width:  true
   is-resizable:  true)
