@@ -35,6 +35,9 @@ export get-doc = (type, key, cb) ->
   else
     cb!
 
+# uses new api
+export select-users = -> v.callp \select_users, it
+
 export init-stubs = (cb = (->)) ->
   user =
     name       : \intrepid_coderman

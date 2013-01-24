@@ -10,7 +10,7 @@ procs = {}
 defp = (name, spec = []) ->
   procs[name] = new VoltProcedure name, spec
 getp = -> procs[it]
-getq = -> getp(it).get-query!
+getq = -> getp(it)?.get-query!
 
 # we declare these procedures up here because we don't need to be creating a procedure every single time
 # we run a query, the Query object on the other hand we have no choice because it contains
@@ -23,6 +23,7 @@ defp 'USERS.insert' [\bigint \string]
 # custom procedures
 defp 'AddPost' [\long \long \string \string] # id, userid, title, body
 defp 'SelectUser' [\long] # id
+defp \select_users
 defp 'NextInSequence' [\string]
 defp 'GetDoc' [\string \string] # type, key
 defp 'PutDoc' [\string \string \string \long] #type, key, json, index_enabled
@@ -83,6 +84,8 @@ export add-post = (post, cb = (->)) ->
 export callp = (pname, ...raw-args) ->
   params = raw-args.slice 0, -1
   cb = raw-args[raw-args.length - 1]
-  q = getq pname
-  q.set-parameters params
-  @callq q, cb
+  if q = getq pname
+    q.set-parameters params
+    @callq q, cb
+  else
+    throw new Error "There is no procedure named '#{pname}'"
