@@ -5,13 +5,63 @@ CREATE TABLE sequences (
 );
 PARTITION TABLE sequences ON COLUMN name;
 
+-- site has many forums
+-- site belongs to user (if they are an admin)
+-- NOTE: id is the base domain (string)
+CREATE TABLE sites (
+  id      VARCHAR(256) NOT NULL,
+  created TIMESTAMP NOT NULL,
+  user_id BIGINT NOT NULL,
+  PRIMARY KEY (id)
+);
+PARTITION TABLE sites ON COLUMN id;
+
+-- forum has many posts
+-- forum has many child forums
+-- if a forum does not have a parent, then it is a top-level category
+-- if a forum does not have a parent, then it cannot not have posts
+CREATE TABLE forums (
+  id          BIGINT NOT NULL,
+  created TIMESTAMP NOT NULL,
+  title       VARCHAR(256) NOT NULL,
+  description VARCHAR(1024) NOT NULL,
+  media_url   VARCHAR(1024),
+  PRIMARY KEY (id)
+);
+PARTITION TABLE forums ON COLUMN id;
+
+-- user has many auths
+-- user has many aliases
+-- user has many sites (if they are admin)
 CREATE TABLE users (
-  id    BIGINT NOT NULL,
-  login VARCHAR(32) NOT NULL,
+  id BIGINT NOT NULL,
+  created TIMESTAMP NOT NULL,
   PRIMARY KEY (id)
 );
 PARTITION TABLE users ON COLUMN id;
 
+-- alias belongs to user
+CREATE TABLE aliases (
+  user_id BIGINT NOT NULL,
+  site_id VARCHAR(256) NOT NULL,
+  created TIMESTAMP NOT NULL,
+  name    VARCHAR(64) NOT NULL,
+  PRIMARY KEY (user_id, site_id)
+);
+PARTITION TABLE aliases ON COLUMN user_id;
+
+-- auth belongs to user
+CREATE TABLE auths (
+  user_id BIGINT NOT NULL,
+  type    VARCHAR(16),
+  created TIMESTAMP NOT NULL,
+  json    VARCHAR(1024),
+  PRIMARY KEY (user_id, type)
+);
+PARTITION TABLE auths ON COLUMN user_id;
+
+-- user has many posts
+-- post has many child posts
 CREATE TABLE posts ( 
   id        BIGINT NOT NULL,
   parent_id BIGINT,
