@@ -1,0 +1,4 @@
+#!/bin/bash -e
+pushd lib/pb-entry
+component build -v -o ../../public -n powerbulletin
+popd
