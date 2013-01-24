@@ -1,0 +1,9 @@
+{
+  "name": "pb-entry",
+  "scripts": ["index.js"],
+  "styles": ["index.css"],
+  "paths": [".."],
+  "local":
+    [ "add-post"
+    ]
+}

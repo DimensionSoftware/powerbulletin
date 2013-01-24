@@ -1,0 +1,9 @@
+{
+  "name": "add-post",
+  "scripts": [
+    "index.js"
+  ],
+  "styles": [
+    "index.css"
+  ]
+}
