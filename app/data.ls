@@ -18,26 +18,6 @@ now = new Date
 export homepage-doc = (cb) ->
   @get-doc \misc, \homepage, cb
 
-# XXX static doc (uncomment if volt isn't setup)
-#  user =
-#    name       : \anonymous
-#    created_at : now
-#  
-#  posts = for i to 4 # dummy data
-#    date    : h.title-case h.elapsed-to-human-readable Math.random!*604800
-#    user    : user
-#    message : h.ellipse 'hello world hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world hello world!' Math.ceil(Math.random()*100)
-#  
-#  topics = for i to 40 # dummy data
-#    title : \Test
-#    date  : h.title-case h.elapsed-to-human-readable Math.random!*31446925
-#    user  : user
-#    posts : posts
-#  
-#  stub = {topics}
-#  
-#  cb null, stub
-
 export add-post = (post, cb) ->
   v.add-post(post, cb)
 
@@ -60,16 +40,19 @@ export init-stubs = (cb = (->)) ->
     name       : \intrepid_coderman
     created_at : now
 
-  posts = for i to 4 # dummy data
-    date    : h.title-case h.elapsed-to-human-readable Math.random!*604800
-    user    : user
-    message : h.ellipse 'hello world!' 6
-
-  topics = for i to 5 # dummy data
-    title : \Test
+  p = -> for ii to Math.ceil(Math.random!*5) # dummy data
+    date  : h.title-case h.elapsed-to-human-readable Math.random!*604800
+    user  : user
+    title : 'Sub-post Title'
+    body  : h.ellipse 'hello world hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world hello world!' Math.ceil(Math.random!*120) 
+ 
+  posts = for i to 40
+    title : "Test #{i+1}"
     date  : h.title-case h.elapsed-to-human-readable Math.random!*31446925
     user  : user
-    posts : posts
+    posts : p!
+ 
+  stub = {posts}
 
-  homepage-stub = {topics}
+  homepage-stub = {posts}
   @put-doc \misc, \homepage, homepage-stub, false, cb

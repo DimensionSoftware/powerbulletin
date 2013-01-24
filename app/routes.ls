@@ -8,7 +8,6 @@ global <<< require './helpers' # pull helpers (common) into global (play nice :)
 # <API RESOURCES>
 # ---------
 app.resource \posts  resources.posts
-app.resource \topics resources.topics
 
 # <PAGE HANDLERS & MISC.>
 # ---------
