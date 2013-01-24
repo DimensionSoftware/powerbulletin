@@ -31,6 +31,7 @@ unless File.file? '/etc/NPM_GLOBAL_PACKAGES_COMPLETED'
       set -e
       npm install -g git://github.com/gruntjs/grunt-cli.git
       npm install -g LiveScript
+      npm install -g component
       touch /etc/NPM_GLOBAL_PACKAGES_COMPLETED
     EOH
   end
