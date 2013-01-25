@@ -12,7 +12,7 @@
 
 (defn init-stmts
   []
-  {"select" (stmt "SELECT * FROM users")})
+  {"select" (stmt "SELECT * FROM users ORDER BY id")})
 
 (defn -init
   []
