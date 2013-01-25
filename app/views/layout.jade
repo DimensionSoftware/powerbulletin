@@ -20,13 +20,7 @@ html
     link(href="#{cache2_url}/images/apple-touch-icon.png", rel='apple-touch-icon')
     link(href="#{cache3_url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
     link(href="#{cache4_url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
-    //- link(href='//fonts.googleapis.com/css?family=Ubuntu:300,400,500,700', rel='stylesheet', type='text/css')
-    link(href='//fonts.googleapis.com/css?family=Open+Sans:200,400,700|Open+Sans+Condensed:700', rel='stylesheet', type='text/css')
 
-    if cvars.env == 'development'
-      link(href="#{cache5_url}/local/jquery-ui.css", rel='stylesheet', type='text/css') //- offline
-    else
-      link(href='//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css', rel='stylesheet', type='text/css')
     if css_urls
       for obj in css_urls
         link(rel='stylesheet',type='text/css',href=obj.url)
@@ -56,3 +50,11 @@ html
 
     footer#chat-drawer.scroll-to-top
       block footer
+
+//- XXX  css not required for initial page render -- performance mod.
+link(href='//fonts.googleapis.com/css?family=Open+Sans:200,400,700|Open+Sans+Condensed:700', rel='stylesheet', type='text/css')
+//- link(href='//fonts.googleapis.com/css?family=Ubuntu:300,400,500,700', rel='stylesheet', type='text/css')
+if cvars.env == 'development'
+  link(href="#{cache5_url}/local/jquery-ui.css", rel='stylesheet', type='text/css') //- offline
+else
+  link(href='//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css', rel='stylesheet', type='text/css')

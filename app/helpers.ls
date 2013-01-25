@@ -108,7 +108,7 @@ require! {
   else if secs-ago < 60 then "a moment #{suffix}"
   else if secs-ago < 120 then "a minute #{suffix}"
   else if secs-ago < 86400 # within the day
-     @seconds-to-human-readable(secs-ago)+suffix
+     @seconds-to-human-readable(secs-ago)+' '+suffix
   else if secs-ago < 172800 # within 2 days
     \Yesterday
   else if secs-ago < 604800 # within the week, use specific day
