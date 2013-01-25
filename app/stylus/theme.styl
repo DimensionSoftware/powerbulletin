@@ -10,8 +10,9 @@ grid = 10px
 //{{{ Style applied after body scrolls
 body.has-scrolled
   header
-    box-shadow 0 -1px 14px 3px #666
-    border-bottom 1px solid #666
+    box-shadow 0 -1px 15px 4px #666
+    border-bottom 1px solid #999
+    border-top-width 1px
     height 30px
     transition all .2s ease-out
     .logo
@@ -25,11 +26,11 @@ body.has-scrolled
         .submenu
           top -200px
     .search
-      top 1px!important
-      right 7px!important
+      top 0!important
+      right 0!important
       .query
         font-size .9em
-        width 300px!important
+        width 320px!important
         height 9px
         border-bottom-width 2px
   .content
@@ -39,10 +40,11 @@ body.has-scrolled
   .user-profile
     display block
   footer
+    background-color #111
+    border-top 1px solid #bbb
     font-size .85em
     opacity .7
     bottom -10px
-    border-top 1px solid #222
     transition bottom .5s ease-out
     line-height 16px
 //}}}
@@ -67,6 +69,8 @@ header
       font-size 1.5em
       font-weight 200
       letter-spacing -2px
+      position absolute
+      left 0
       strong
         letter-spacing -2px
         font-weight 500
