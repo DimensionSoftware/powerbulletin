@@ -57,5 +57,7 @@ block content-stream
     mixin post(t, i)
 
 block footer
-  h6 &copy; #{site_name} &nbsp;
+  h6
+    small &copy; 
+    | #{site_name} &nbsp;
     b= new Date().getFullYear()

@@ -40,10 +40,9 @@ body.has-scrolled
   .user-profile
     display block
   footer
-    background-color #111
+    background-color rgba(25,25,25,0.6)
     border-top 1px solid #bbb
     font-size .85em
-    opacity .7
     bottom -10px
     transition bottom .5s ease-out
     line-height 16px
@@ -79,24 +78,28 @@ header
         color #ddd
   .menu
     padding 0
-    background-image linear-gradient(bottom, #fff 10px, #f5f5f5)
+    //background-image linear-gradient(bottom, #fff 10px, #f5f5f5)
     > .row
       .title.active
-        color #666
+        color #333
         background-color #f3f3f3
+        background-image linear-gradient(bottom, #fff 10px, #fff0e0)
         border-top 3px solid highlight-color2
     > .row
       .title:hover
         border-top 3px solid highlight-color2
-        color #333
+        background-image linear-gradient(bottom, #fff 10px, #eee)
+        color #000
         z-index 1
         background-color #eee
     > .row
       .title
         padding 0 19px
         border-top 3px solid #333
-        color #aaa
+        color #777
         text-shadow 0 0 1px #fff
+        background-color #eee
+        background-image linear-gradient(bottom, #fff 10px, #ddd)
       .submenu
         box-shadow 0 2px 6px 0 #777
         border-right 1px solid #888
@@ -201,12 +204,11 @@ section.user-profile
 //}}}
 //{{{ Footer
 footer
-  background-image linear-gradient(top, #000, #333)
-  background-color #333
+  //background-image linear-gradient(top, #000, #333)
+  background-color rgba(0,0,0,0.7)
   border-top 1px solid #333
   text-align center
   color #ddd
-  opacity .8
   h6
     font-size .9em
     letter-spacing 3px
