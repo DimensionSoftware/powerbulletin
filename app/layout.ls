@@ -27,11 +27,28 @@ $ '.scroll-to-top' .each ->
 
 # main
 $ '#query' .focus!
-$ '.content .container' .masonry(
+
+$ '.forum .container' .masonry(
   item-selector: '.post'
   is-animated:   true
   is-fit-width:  true
   is-resizable:  true)
+
+# add waypoints
+$ '.forum' .waypoint {
+  offset  : '33%',
+  handler : (direction) ->
+    e = $ this
+
+    # handle menu
+    $ 'header .menu' .find '.active' .removeClass \active
+    id  = e.attr 'id'
+    cur = if direction is \up # highlight prev
+      "forum-#{(id.replace /.+_/ '') - 1}"
+    else # ...or next
+      id.replace /_/ '-'
+    $ 'header .menu' .find ".#{cur}" .addClass \active
+}
 
 #{{{ TODO non-layout-specific code (actions and view states) to relocate once mutant++ is pulled in
 add-post-dialog = ->

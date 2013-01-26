@@ -50,7 +50,6 @@ body.has-scrolled
 
 body
   font-family 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue'
-  background url(cache_url+'/images/background.jpg') fixed
 
 //{{{ Header
 header
@@ -85,17 +84,19 @@ header
         background-color #f3f3f3
         background-image linear-gradient(bottom, #fff 10px, #fff0e0)
         border-top 3px solid highlight-color2
+        transition all .1s ease-out
     > .row
       .title:hover
         border-top 3px solid highlight-color2
         background-image linear-gradient(bottom, #fff 10px, #eee)
         color #000
-        z-index 1
         background-color #eee
     > .row
       .title
+        display inline-block
+        text-decoration none
         padding 0 19px
-        border-top 3px solid #333
+        border-top 3px solid #777
         color #777
         text-shadow 0 0 1px #fff
         background-color #eee
@@ -115,7 +116,7 @@ header
           border-bottom 1px solid #333
   .search
     top 3px!important
-    right 3px!important
+    right 0!important
     .query:hover, .query:focus
       //border none!important
       //box-shadow none!important
@@ -138,53 +139,66 @@ section.content
   .container
     padding 75px 20px 20px 20px
     //background-color rgba(255,255,255,.9)
-    .post:hover
-      background-color #fff
-      border-radius 5px
-      border 1px solid #aaa
-      border-right 2px solid #aaa
-      border-bottom 3px solid #aaa
-      box-shadow 0 0 1px 1px highlight-color2
-      transition box-shadow ease-out .4s
-    .post
-      background-color rgba(255,255,255,.95)
-      border 1px solid #ccc
-      border-right 2px solid #ccc
-      border-bottom 3px solid #ccc
-      border-radius 3px
-      .title
-        margin 0
-        padding grid
-        .date
-          margin-left 15px
-          font-size .6em
-          color #777
-    .sub-post:hover
-      border-bottom 1px solid #ddd
-      color #000
-      background-image linear-gradient(top, #f5f5f5, #fff)
-      .signature
-        background-color #eee
-        color #444
-    .sub-post
-      position relative
-      padding 5px
-      color #333
-      margin-bottom grid
-      border-bottom 1px solid #eee
-      p
-        margin grid+2
-      .signature
-        font-style italic
-        border-top-left-radius 6px
-        padding 0 5px
-        color #666
-        font-size .75em
-        position absolute
-        bottom 0
-        right 0
-        .username
-          margin-right 5px
+    .forum
+      margin-bottom grid + grid
+      .header
+        text-shadow 0 -1px 1px #000,0 -1px 0 #000
+        display inline-block
+        text-overflow ellipsis
+        white-space nowrap
+        overflow hidden
+        margin 0 grid
+        color #fff
+        h4, span
+          display inline-block
+          margin 0 grid
+          padding 0
+      .post:hover
+        background-color #fff
+        border-radius 5px
+        border 1px solid #aaa
+        border-right 2px solid #aaa
+        border-bottom 3px solid #aaa
+        //box-shadow 0 0 6px 1px #444
+        //transition box-shadow ease-out 1s .2s
+      .post
+        background-color rgba(255,255,255,.95)
+        border 1px solid #ccc
+        border-right 2px solid #ccc
+        border-bottom 3px solid #ccc
+        border-radius 3px
+        .title
+          margin 0
+          padding grid
+          .date
+            margin-left 15px
+            font-size .6em
+            color #777
+      .sub-post:hover
+        border-bottom 1px solid #ddd
+        color #000
+        background-image linear-gradient(top, #f5f5f5, #fff)
+        .signature
+          background-color #eee
+          color #444
+      .sub-post
+        padding 5px
+        color #333
+        margin-bottom grid
+        border-bottom 1px solid #eee
+        p
+          margin grid+2
+        .signature
+          font-style italic
+          border-top-left-radius 6px
+          padding 0 5px
+          color #666
+          font-size .75em
+          position absolute
+          bottom 0
+          right 0
+          .username
+            margin-right 5px
 ///}}}
 //{{{ User profile
 section.user-profile
