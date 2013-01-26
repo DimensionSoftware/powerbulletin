@@ -9,7 +9,7 @@ mkdir classes
 
 # compile clojure procedures and utilities
 echo "(compile 'utils.common)" | bin/clojure -
-echo "(compile 'procs.select-users)" | bin/clojure -
+echo "(compile 'select-user)" | bin/clojure -
 
 # compile java procedures
 javac voltdb/procs/*.java -d classes
