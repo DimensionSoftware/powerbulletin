@@ -46,16 +46,20 @@ export init-stubs = (cb = (->)) ->
   p = -> for ii to Math.ceil(Math.random!*5) # dummy data
     date  : h.title-case h.elapsed-to-human-readable Math.random!*604800
     user  : user
-    title : 'Sub-post Title'
+    title : "Sub-post Title #{ii}"
     body  : h.ellipse 'hello world hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world hello world!' Math.ceil(Math.random!*120) 
  
-  posts = for i to 40
-    title : "Test #{i+1}"
-    date  : h.title-case h.elapsed-to-human-readable Math.random!*31446925
-    user  : user
-    posts : p!
- 
-  stub = {posts}
+  gen-posts = ->
+    for i to 10
+      title : "Post Title #{i+1}"
+      date  : h.title-case h.elapsed-to-human-readable Math.random!*31446925
+      user  : user
+      posts : p!
 
-  homepage-stub = {posts}
+  forums = for i to 3
+    title       : "Forum #{i+1}"
+    description : h.ellipse 'hello worldhello worldhello worldhello worldhe!' Math.ceil(Math.random!*50)
+    posts       : gen-posts!
+
+  homepage-stub = {forums}
   @put-doc \misc, \homepage, homepage-stub, false, cb
