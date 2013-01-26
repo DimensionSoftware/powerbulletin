@@ -58,7 +58,7 @@ export init-stubs = (cb = (->)) ->
 
   forums = for i to 3
     title       : "Forum #{i+1}"
-    description : h.ellipse 'hello worldhello worldhello worldhello worldhe!' Math.ceil(Math.random!*50)
+    description : 'hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world!'
     posts       : gen-posts!
 
   homepage-stub = {forums}
