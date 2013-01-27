@@ -1,5 +1,15 @@
 extend layout
 
+mixin forum(f, i)
+  a(name="forum-#{i+1}") //- hashtag anchor
+  .forum(id="forum_#{i+1}", class=(i % 2) ? 'odd' : 'even')
+    .header
+      h4.title= f.title
+      span.description= f.description
+    .container
+      each t,ii in f.posts
+        mixin post(t, ii)
+
 mixin post(p, i)
   .post(class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")
     h5.title= p.title
@@ -9,7 +19,7 @@ mixin post(p, i)
 
 mixin sub-post(sp, i)
  .sub-post(class=(i % 2) ? 'odd' : 'even')
-    p.message= sp.body
+    p.body= sp.body
     .signature
       span.username - #{sp.user.name}
       span.date= sp.date
@@ -20,26 +30,27 @@ block header
   h1.logo Power
     strong Bulletin
   block categories
-    //- TODO customizable categories & subcategories for this bulletin
+    //- TODO dynamic, customizable forum & sub-forum menu for this bulletin
     menu.menu
       li.row
-        .title.active Category
+        a.title.forum-1.active(data-menu=1, href='#forum-1') Forum
         menu.submenu
-          li.row Subcat
-          li.row Subcat
-          li.row Subcat
+          li.row Sub-forum
+          li.row Sub-forum
+          li.row Sub-forum
       li.row
-        .title Category2
+        a.title.forum-2(data-menu=2, href='#forum-2') Forum 2
         menu.submenu
-          li.row Subcat
-          li.row Subcat
+          li.row Sub-forum
+          li.row Sub-forum
       li.row
-        .title Category3
+        a.title.forum-3(data-menu=3, href='#forum-3') Forum 3
         menu.submenu
-          li.row Subcat
-          li.row Subcat
-          li.row Subcat
-          li.row Subcat
+          li.row Sub-forum
+      li.row
+        a.title.forum-4(data-menu=4, href='#forum-4') Forum 4
+        menu.submenu
+          li.row Sub-forum
   .search
     input#query.query(type='text', placeholder='Search')
 
@@ -53,9 +64,11 @@ block user-profile
 block content-stream
   div
     a(href='#', class='onclick-add-post-dialog', data-fid=33) Add Post!
-  each t,i in posts
-    mixin post(t, i)
+  each f,i in forums
+    mixin forum(f, i)
 
 block footer
-  h6 &copy; #{site_name} &nbsp;
+  h6
+    small &copy; 
+    | #{site_name} &nbsp;
     b= new Date().getFullYear()

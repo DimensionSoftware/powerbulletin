@@ -33,11 +33,24 @@
     });
   });
   $('#query').focus();
-  $('.content .container').masonry({
+  $('.forum .container').masonry({
     itemSelector: '.post',
     isAnimated: true,
     isFitWidth: true,
     isResizable: true
+  });
+  $('.forum').waypoint({
+    offset: '33%',
+    handler: function(direction){
+      var e, id, cur;
+      e = $(this);
+      $('header .menu').find('.active').removeClass('active');
+      id = e.attr('id');
+      cur = direction === 'up'
+        ? "forum-" + (id.replace(/.+_/, '') - 1)
+        : id.replace(/_/, '-');
+      return $('header .menu').find("." + cur).addClass('active');
+    }
   });
   addPostDialog = function(){
     var fid, postHtml;
