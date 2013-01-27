@@ -7,6 +7,8 @@
 body
   grid(90%,100%)
   overflow visible!important
+  a
+    cursor pointer
   img.bg
     position fixed
     z-index 1
@@ -15,16 +17,41 @@ body
     margin-left -40px
 
 //{{{ Header
+body, body.has-scrolled
+  header.expanded
+    height 60%!important
+    transition all .2s ease-out
+    .search
+      top 100px!important
+      left 35%!important
+      #query.query
+        font-size 30px
+        padding 5px 20px
+        height 40px
+        color #fff
+        letter-spacing 1px
+        font-weight 100
+        border-left none
+        border-bottom 1px solid #444
+  header.expanded:after
+    cursor pointer
+    position absolute
+    right 17px
+    bottom 8px
+    content 'x'
+    color #bbb
 header
   position fixed
   height 60px
-  z-index 6
+  z-index 7
   .container
     width 800px
     margin 0 auto
     .menu
       margin -3px auto 0 auto
       display inline-block
+      position absolute
+      bottom 0
       .row:hover
         z-index 7
         .submenu
@@ -56,7 +83,7 @@ header
 //}}}
 //{{{ Left side
 section.left
-  z-index 7
+  z-index 6
   top 80px
   width 175px
   position fixed

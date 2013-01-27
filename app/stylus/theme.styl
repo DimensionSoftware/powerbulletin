@@ -7,11 +7,22 @@ highlight-color2 = #ff6803
 mouse-intent = .2s
 grid = 10px
 
+@keyframes pulse
+  0%
+    transform scale(1.0) rotate(0deg)
+  33%
+    transform scale(1.1) rotate(-1deg)
+  67%
+    transform scale(0.9) rotate(3deg)
+  100%
+    transform scale(1.0) rotate(0deg)
+
 //{{{ Style applied after body scrolls
 body.has-scrolled
   header
+    background-color rgba(0,0,0,0.7)
     box-shadow 0 -1px 15px 4px #666
-    border-bottom 1px solid #999
+    border-bottom 1px solid #fff
     border-top-width 1px
     height 30px
     transition all .2s ease-out
@@ -30,7 +41,7 @@ body.has-scrolled
       right 0!important
       .query
         font-size .9em
-        width 320px!important
+        width 340px!important
         height 9px
         border-bottom-width 2px
   .left
@@ -42,8 +53,9 @@ body.has-scrolled
       .post
         margin grid
   footer
-    background-color rgba(25,25,25,0.6)
-    border-top 1px solid #888
+    border-top 1px solid #555
+    color #bbb
+    background-color rgba(25,25,25,0.7)
     font-size .85em
     bottom -10px
     transition bottom .5s ease-out
@@ -54,8 +66,11 @@ body
   font-family 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue'
 
 //{{{ Header
+header.expanded
+  background-color rgba(0,0,0,0.85)!important
+  border-bottom 1px solid #fff
 header
-  background-color rgba(0,0,0,0.75)
+  background-color rgba(0,0,0,0.35)
   border-top 2px solid #000
   color #ddd
   .container
@@ -83,6 +98,8 @@ header
       .title.active:hover
         background-image linear-gradient(bottom, #fff 10px, #fff0e0)
       .title.active
+        animation-name pulse
+        animation-duration .25s
         color #333
         background-color #f3f3f3
         background-image linear-gradient(bottom, #fff 10px, #fff0e0)
@@ -152,8 +169,8 @@ section.left
       position absolute
       right 5px
       bottom 0
-      color #eee
-      font-weight bold
+      color #ccc
+      font-weight 100
       font-size .8em
 //}}}
 //{{{ Main Content
@@ -174,7 +191,9 @@ section.content
         h4, span
           display inline-block
           margin 0 grid
-          padding 0
+          padding 1px 6px
+          background-color rgba(0,0,0,.08)
+          border-radius 4px
       .post:hover
         background-color #fff
         border-radius 5px
@@ -224,11 +243,11 @@ section.content
 ///}}}
 //{{{ Footer
 footer
-  //background-image linear-gradient(top, #000, #333)
-  background-color rgba(0,0,0,0.7)
-  border-top 1px solid #333
-  text-align center
   color #ddd
+  //background-image linear-gradient(top, #000, #333)
+  background-color rgba(0,0,0,0.1)
+  text-align center
+  color #999
   h6
     font-size .9em
     letter-spacing 3px

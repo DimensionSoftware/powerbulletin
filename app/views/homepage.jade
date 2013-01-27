@@ -33,7 +33,7 @@ block header
     //- TODO dynamic, customizable forum & sub-forum menu for this bulletin
     menu.menu
       li.row
-        a.title.forum-1.active(data-menu=1, href='#forum-1') Forum
+        a.title.forum-1(data-menu=1, href='#forum-1') Forum
         menu.submenu
           li.row Sub-forum
           li.row Sub-forum
@@ -59,13 +59,13 @@ block left
   //- we can put a hotlink wherever without having to write new
   //- javascript (other than calculating the fid)
   //- TODO move this into posts :hover tools }}}
-  div
-    a(href='#', class='onclick-add-post-dialog', data-fid=33) Add Post
-      i !
-
   .user-profile
     .photo
       img#user-photo
+    div
+      a(class='onclick-add-post-dialog', data-fid=33) Add Post
+        i !
+    .scroll-to-top top
 
 block content-stream
   each f,i in forums
