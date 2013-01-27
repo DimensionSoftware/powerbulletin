@@ -36,7 +36,7 @@ export get-doc = (type, key, cb) ->
     cb!
 
 # uses new api
-export select-users = -> v.callp \select_users, it
+export select-user = -> v.callp \select_user, ...arguments
 
 export init-stubs = (cb = (->)) ->
   user =

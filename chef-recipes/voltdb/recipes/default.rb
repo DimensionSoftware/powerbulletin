@@ -21,6 +21,7 @@ unless File.file? '/usr/local/voltdb/bin/voltdb'
       set -e
       git clone http://github.com/DimensionSoftware/voltdb.git
       cd voltdb
+      git checkout clojure
       ant
     EOH
   end
