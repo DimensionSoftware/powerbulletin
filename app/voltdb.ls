@@ -23,7 +23,7 @@ defp 'USERS.insert' [\bigint \string]
 # custom procedures
 defp 'AddPost' [\long \long \string \string] # id, userid, title, body
 defp 'SelectUser' [\long] # id
-defp \select_users
+defp \select_user [\long]
 defp 'NextInSequence' [\string]
 defp 'GetDoc' [\string \string] # type, key
 defp 'PutDoc' [\string \string \string \long] #type, key, json, index_enabled
