@@ -1,8 +1,8 @@
 extend layout
 
 mixin forum(f, i)
-  a(name="forum-#{i+1}") //- hashtag anchor
-  .forum(id="forum_#{i+1}", class=(i % 2) ? 'odd' : 'even')
+  a(name="forum-#{f.id}") //- hashtag anchor
+  .forum(id="forum_#{f.id}", class=(i % 2) ? 'odd' : 'even')
     .header
       h4.title= f.title
       span.description= f.description
@@ -11,14 +11,14 @@ mixin forum(f, i)
         mixin post(t, ii)
 
 mixin post(p, i)
-  .post(class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")
+  .post(id="post_#{p.id}", class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")
     h5.title= p.title
       span.date Created #{p.date}
     each sp,i in p.posts
       mixin sub-post(sp, i)
 
 mixin sub-post(sp, i)
- .sub-post(class=(i % 2) ? 'odd' : 'even')
+ .sub-post(id="sub_post_#{sp.id}", class=(i % 2) ? 'odd' : 'even')
     p.body= sp.body
     .signature
       span.username - #{sp.user.name}
@@ -54,16 +54,20 @@ block header
   .search
     input#query.query(type='text', placeholder='Search')
 
-block user-profile
-  | User Profile
-  //- data-fid is how we pass in the forum id of the post, this way
+block left
+  //-{{{ data-fid is how we pass in the forum id of the post, this way
   //- we can put a hotlink wherever without having to write new
   //- javascript (other than calculating the fid)
-  //- TODO move this into posts :hover tools
+  //- TODO move this into posts :hover tools }}}
+  div
+    a(href='#', class='onclick-add-post-dialog', data-fid=33) Add Post
+      i !
+
+  .user-profile
+    .photo
+      img#user-photo
 
 block content-stream
-  div
-    a(href='#', class='onclick-add-post-dialog', data-fid=33) Add Post!
   each f,i in forums
     mixin forum(f, i)
 

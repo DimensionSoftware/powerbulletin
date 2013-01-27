@@ -40,14 +40,15 @@ $ '.forum' .waypoint {
   handler : (direction) ->
     e = $ this
 
-    # handle menu
-    $ 'header .menu' .find '.active' .removeClass \active
-    id  = e.attr 'id'
-    cur = if direction is \up # highlight prev
-      "forum-#{(id.replace /.+_/ '') - 1}"
-    else # ...or next
-      id.replace /_/ '-'
-    $ 'header .menu' .find ".#{cur}" .addClass \active
+    # handle menu active
+    id  = e.attr \id
+    cur = if direction is \down then id else
+      $ '#'+id .prevAll '.forum:first' .attr \id # prev
+    $ 'header .menu' .find '.active' .removeClass \active             # remove old active
+    $ 'header .menu' .find ".#{cur.replace /_/ \-}" .addClass \active # ... and activate!
+
+    # TODO handle background 3dfx
+
 }
 
 #{{{ TODO non-layout-specific code (actions and view states) to relocate once mutant++ is pulled in

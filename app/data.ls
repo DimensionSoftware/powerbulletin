@@ -40,24 +40,28 @@ export select-users = -> v.callp \select_users, it
 
 export init-stubs = (cb = (->)) ->
   user =
+    id         : 1
     name       : \intrepid_coderman
     created_at : now
 
-  p = -> for ii to Math.ceil(Math.random!*5) # dummy data
+  p = -> for ii from 1 to Math.ceil(Math.random!*5) # dummy data
+    id    : ii
     date  : h.title-case h.elapsed-to-human-readable Math.random!*604800
     user  : user
     title : "Sub-post Title #{ii}"
     body  : h.ellipse 'hello world hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world hello world!' Math.ceil(Math.random!*120) 
  
   gen-posts = ->
-    for i to 10
-      title : "Post Title #{i+1}"
+    for i from 1 to 11
+      id    : i
+      title : "Post Title #{i}"
       date  : h.title-case h.elapsed-to-human-readable Math.random!*31446925
       user  : user
       posts : p!
 
-  forums = for i to 3
-    title       : "Forum #{i+1}"
+  forums = for i from 1 to 4
+    id          : i
+    title       : "Forum #{i}"
     description : 'hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world!'
     posts       : gen-posts!
 
