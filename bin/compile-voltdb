@@ -15,4 +15,4 @@ echo "(compile 'select-user)" | bin/clojure -
 javac voltdb/procs/*.java -d classes
 
 # finally hand voltdb compiler everything
-/usr/local/voltdb-3.0/bin/voltdb compile -c $CLASSPATH -o voltdb/pb-schema.jar voltdb/pb-schema.sql
+/usr/local/voltdb/bin/voltdb compile -c $CLASSPATH -o voltdb/pb-schema.jar voltdb/pb-schema.sql
