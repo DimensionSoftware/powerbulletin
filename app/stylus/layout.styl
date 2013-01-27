@@ -54,15 +54,26 @@ header
       .query
         width 300px
 //}}}
-//{{{ User Profile
-section.user-profile
-  position fixed
-  top 55px
-  left 15px
-  width 140px
-  height 300px
+//{{{ Left side
+section.left
   z-index 7
-  display none
+  top 80px
+  width 175px
+  position fixed
+  text-indent 25px
+  .user-profile
+    position absolute
+    top 35px
+    left 0
+    width 140px
+    height 300px
+    border-bottom-right-radius 5px
+    border-top-right-radius 5px
+  .scroll-to-top
+    position absolute
+    right 5px
+    bottom 0
+    
 //}}}
 //{{{ Main Content
 .col1
@@ -77,10 +88,11 @@ section.user-profile
       position relative
       clear both
       .header
+        width 100%
         .description
           overflow hidden
           text-overflow ellipsis
-          width 40%
+          width 50%
       .container
         padding 0!important
         margin 0!important
@@ -137,7 +149,7 @@ footer
       .container
         margin-left 0!important
         padding 25px 15px!important
-    .user-profile
+    .left
       display none!important
   body
     grid(100%,320px)

@@ -36,13 +36,13 @@ html
       |</script>
 
   body
-    img#plax.bg.plax(src="#{cache_url}/images/background.jpg", data-xrange='40', data-invert='true')
+    img.bg(src="#{cache_url}/images/background.jpg")
     header
       .container
         block header
 
-    section.user-profile
-      block user-profile
+    section.left
+      block left
       .scroll-to-top TOP
 
     section.content
