@@ -42,7 +42,7 @@ module.exports = function(grunt) {
     watch: {
       app: {
         files: ['app/*.ls', 'config/*', 'lib/**/*.ls'],
-        tasks: ['livescript', 'launch'],
+        tasks: ['livescript', 'uglify', 'launch'],
         options: {
           interrupt: true,
           debounceDelay: 2000
