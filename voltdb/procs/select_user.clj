@@ -11,6 +11,9 @@
      (defn ~'stmt [sql# & args#]
        (new org.voltdb.SQLStmt sql# args#))
 
+     (defn ~'get-stmt [this# name#]
+       (get (.state this#) name#))
+
      (defn ~'-init []
        [[] ~statements])
 
@@ -24,7 +27,7 @@
 (defproc select-user [long] [this & args]
   {"select" (stmt "SELECT * FROM users WHERE id=? LIMIT 1")}
 
-  (.voltQueueSQL this (get (.state this) "select") (into-array args))
+  (.voltQueueSQL this (get-stmt this "select") (into-array args))
   (nth (.voltExecuteSQL this) 0))
 
 ;(println (macroexpand '(defproc select-user)))
