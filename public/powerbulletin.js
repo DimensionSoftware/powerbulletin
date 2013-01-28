@@ -392,8 +392,18 @@ process.binding = function (name) {
 
 });
 
+require.define("/validations.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
+  var myvalidation, out$ = typeof exports != 'undefined' && exports || this;
+  out$.myvalidation = myvalidation = function(){
+    return console.log('whee test');
+  };
+}).call(this);
+
+});
+
 require.define("/layout.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
   var w, d, threshold, hasScrolled, addPostDialog, addPost;
+  window.v = require('./validations');
   w = $(window);
   d = $(document);
   threshold = 10;

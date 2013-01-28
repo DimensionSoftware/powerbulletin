@@ -1,4 +1,5 @@
 # XXX layout-specific client-side
+window.v = require './validations'
 
 # shortcuts
 w = $ window
