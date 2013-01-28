@@ -58,29 +58,6 @@ export init = (host, cb = (->)) ->
           cb(new Error(res.status-string))
     cb!
 
-# old api
-export next-in-sequence = (name, cb) ->
-  q = getq \NextInSequence
-  q.set-parameters [name]
-  @callq q, (err, res) ->
-    if err then return cb(err)
-    cb(null, res[0][0][''])
-
-# old api
-export select-user = (id, cb = (->)) ->
-  q = getq \SelectUser
-  q.set-parameters [id]
-  @callq q, cb
-
-# old api
-export add-post = (post, cb = (->)) ->
-  err, id <~ @next-in-sequence 'posts'
-  if err then return cb(err)
-
-  q = getq \AddPost
-  q.set-parameters [id, post.user-id, post.title, post.body]
-  @callq q, cb
-
 export callp = (pname, ...raw-args) ->
   params = raw-args.slice 0, -1
   cb = raw-args[raw-args.length - 1]
