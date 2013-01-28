@@ -58,7 +58,6 @@ set-timeout (->
       unless last.length
         next = $ '#forum'+"_bg_#{cur.data \id}"
         next.add-class \active
-        #$ '.bg' .css(\visibility, \visible)
       else
         w.bg-anim := set-timeout (->
           next = $ '#forum'+"_bg_#{cur.data \id}"
