@@ -4,27 +4,74 @@
 // XXX decoration & embellishments belong in the theme.styl
 // XXX eventually each forum will have its own theme.{styl,css}
 
+header-height = 50px
+
 body
   grid(90%,100%)
   overflow visible!important
+  a
+    cursor pointer
   img.bg
     position fixed
-    z-index 1
     height 100%
-    width 115%
-    margin-left -40px
+    width 100%
+    z-index 0
+    transition top 1s ease-out
+    left 0!important
+    visibility hidden
+    top 0
+  img.bg.visible
+    visibility visible
+  img.bg.active
+    top 0!important
+    z-index 1!important
+    transition top .4s ease-out
+    visibility visible
 
 //{{{ Header
+body.expanded
+  section.content .container
+    padding 110px 20px 20px 20px
+    transition padding .3s ease-out
+  header
+    height 100px!important
+    transition all .2s ease-out
+    .search
+      top 5px!important
+      right auto!important
+      #query.query
+        position relative
+        z-index 9
+        font-size 31px
+        padding 5px 20px
+        letter-spacing 3px
+        font-weight 100
+        height 51px
+        width 500px!important
+    .advanced
+      display block
+      position absolute
+      right 20px
+      top 20px
+  header:after
+    cursor pointer
+    position absolute
+    right 17px
+    bottom 8px
+    content 'x'
+
 header
   position fixed
-  height 60px
-  z-index 6
+  height header-height
+  z-index 7
   .container
     width 800px
     margin 0 auto
     .menu
       margin -3px auto 0 auto
       display inline-block
+      position absolute
+      bottom 0
       .row:hover
         z-index 7
         .submenu
@@ -34,14 +81,14 @@ header
       .row
         cursor pointer
         display inline-block
-        line-height 60px
-        font-size 18px
+        line-height header-height
+        font-size 16px
         .title
           position relative
           z-index 10
         .submenu
           z-index 9
-          top -170px
+          top -180px
           visibility hidden
           margin 0 0 0 2px
           position absolute
@@ -53,10 +100,12 @@ header
       position absolute 
       .query
         width 300px
+    .advanced
+      display none
 //}}}
 //{{{ Left side
 section.left
-  z-index 7
+  z-index 6
   top 80px
   width 175px
   position fixed
@@ -67,8 +116,6 @@ section.left
     left 0
     width 140px
     height 300px
-    border-bottom-right-radius 5px
-    border-top-right-radius 5px
   .scroll-to-top
     position absolute
     right 5px
@@ -96,7 +143,7 @@ section.left
       .container
         padding 0!important
         margin 0!important
-        z-index 1
+        z-index 3
         .post
           float left
           margin 10px
@@ -144,6 +191,8 @@ footer
     .container
       margin-left 0!important
       padding 25px 15px!important
+      .forum
+        margin-bottom 10px!important
   .has-scrolled
     .content
       .container

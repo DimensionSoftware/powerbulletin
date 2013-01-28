@@ -21,13 +21,13 @@
     return e.on('mousedown', function(){
       return $('html,body').animate({
         scrollTop: $('body').offset().top
-      }, 100, function(){
+      }, 140, function(){
         return $('html,body').animate({
           scrollTop: $('body').offset().top + threshold
-        }, 85, function(){
+        }, 110, function(){
           return $('html,body').animate({
             scrollTop: $('body').offset().top
-          }, 35, function(){});
+          }, 75, function(){});
         });
       });
     });
@@ -39,19 +39,46 @@
     isFitWidth: true,
     isResizable: true
   });
-  $('.forum').waypoint({
-    offset: '33%',
-    handler: function(direction){
-      var e, id, cur;
-      e = $(this);
-      id = e.attr('id');
-      cur = direction === 'down'
-        ? id
-        : $('#' + id).prevAll('.forum:first').attr('id');
-      $('header .menu').find('.active').removeClass('active');
-      return $('header .menu').find("." + cur.replace(/_/, '-')).addClass('active');
-    }
+  w.resize(function(){
+    return setTimeout(function(){
+      return $.waypoints('refresh');
+    }, 800);
   });
+  setTimeout(function(){
+    return $('.forum').waypoint({
+      offset: '33%',
+      handler: function(direction){
+        var e, eId, id, prev, cur, last, next;
+        e = $(this);
+        eId = e.attr('id');
+        id = direction === 'down'
+          ? eId
+          : $('#' + eId).prevAll('.forum:first').attr('id');
+        prev = $('header .menu').find('.active');
+        cur = $('header .menu').find("." + id.replace(/_/, '-'));
+        prev.removeClass('active');
+        cur.addClass('active');
+        if (w.bgAnim) {
+          clearTimeout(w.bgAnim);
+        }
+        last = $('.bg.active');
+        if (!last.length) {
+          next = $('#forum' + ("_bg_" + cur.data('id')));
+          return next.addClass('active');
+        } else {
+          return w.bgAnim = setTimeout(function(){
+            var next;
+            next = $('#forum' + ("_bg_" + cur.data('id')));
+            last.css('top', direction === 'down' ? -300 : 300);
+            last.removeClass('active');
+            next.addClass('active');
+            next.addClass('visible');
+            return w.bgAnim = 0;
+          }, 300);
+        }
+      }
+    });
+  }, 100);
   addPostDialog = function(){
     var fid, postHtml;
     fid = $(this).data('fid');
@@ -70,10 +97,19 @@
     form = $('#add-post-form');
     $.post('/ajax/add-post', form.serialize(), function(){
       console.log('success! post added');
-      return console.log('STUB: do something fancy to confirm submission');
+      return console.log('stub: do something fancy to confirm submission');
     });
     return false;
   };
   d.on('click', '#add-post-submit', addPost);
   d.on('click', '.onclick-add-post-dialog', addPostDialog);
+  d.on('click', 'header', function(e){
+    if (e.target.className === 'header') {
+      $('body').removeClass('expanded');
+    }
+    return $('#query').focus();
+  });
+  d.on('keypress', '#query', function(){
+    return $('body').addClass('expanded');
+  });
 }).call(this);

@@ -7,11 +7,36 @@ highlight-color2 = #ff6803
 mouse-intent = .2s
 grid = 10px
 
+@keyframes grow
+  0%
+    transform scale(1.0)
+  33%
+    transform scale(1.18)
+  100%
+    transform scale(1.0)
+
 //{{{ Style applied after body scrolls
+body.expanded header
+  .search
+    #query.query
+      border-bottom 2px solid #444
+  .advanced
+    .check
+      margin 3px
+    label
+      margin-right 10px
+  .menu
+    .row
+      line-height 30px!important
+      font-size 15px!important
+      transition line-height .2s ease-out!important
+      .submenu
+        top -200px
 body.has-scrolled
   header
+    background-color rgba(0,0,0,0.7)
     box-shadow 0 -1px 15px 4px #666
-    border-bottom 1px solid #999
+    border-bottom 1px solid #fff
     border-top-width 1px
     height 30px
     transition all .2s ease-out
@@ -30,8 +55,8 @@ body.has-scrolled
       right 0!important
       .query
         font-size .9em
-        width 320px!important
-        height 9px
+        width 340px!important
+        height 12px
         border-bottom-width 2px
   .left
     .user-profile
@@ -42,8 +67,10 @@ body.has-scrolled
       .post
         margin grid
   footer
-    background-color rgba(25,25,25,0.6)
-    border-top 1px solid #888
+    opacity 1
+    border-top 1px solid #555
+    color #bbb
+    background-color rgba(25,25,25,0.7)
     font-size .85em
     bottom -10px
     transition bottom .5s ease-out
@@ -54,14 +81,19 @@ body
   font-family 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue'
 
 //{{{ Header
+body.expanded header
+  background-color rgba(0,0,0,0.85)!important
+  border-bottom 1px solid #fff
+body.expanded header:after
+  color #bbb
 header
-  background-color rgba(0,0,0,0.75)
+  background-color rgba(0,0,0,0.35)
   border-top 2px solid #000
   color #ddd
   .container
     .logo
       display inline-block
-      margin-top 20px
+      margin-top 13px
       width 200px
       vertical-align top
       text-shadow 0 0 1px #000
@@ -83,6 +115,10 @@ header
       .title.active:hover
         background-image linear-gradient(bottom, #fff 10px, #fff0e0)
       .title.active
+        animation-name grow
+        animation-duration .22s
+        position relative!important
+        z-index 50!important
         color #333
         background-color #f3f3f3
         background-image linear-gradient(bottom, #fff 10px, #fff0e0)
@@ -119,7 +155,7 @@ header
         .row
           border-bottom 1px solid #333
   .search
-    top 3px!important
+    top 5px!important
     right 0!important
     .query:hover, .query:focus
       //border none!important
@@ -127,21 +163,24 @@ header
       box-shadow none
     #query.query
       box-shadow 0
-      background #000
       color #fff
-      background-color #000
+      font-style italic
+      border-left none
+      background rgba(0,0,0,0.2)
       border 1px solid #000
     .query
       font-size 1.15em
       border-bottom-width 3px
       border-left 0px
       width 500px
-      height 33px
+      height 20px
 //}}}
 //{{{ Left side
 section.left
   .user-profile
-    background-color rgba(0,0,0,.15)
+    border-bottom-right-radius 5px
+    border-top-right-radius 5px
+    background-color rgba(0,0,0,.4)
     left -160px!important
     border 1px solid #444
     padding grid - 3
@@ -152,20 +191,20 @@ section.left
       position absolute
       right 5px
       bottom 0
-      color #eee
-      font-weight bold
+      color #ccc
+      font-weight 100
       font-size .8em
 //}}}
 //{{{ Main Content
 section.content
   .container
-    padding 75px 20px 20px 20px
+    padding 60px 20px 20px 20px
     //background-color rgba(255,255,255,.9)
     .forum
-      margin-bottom grid + grid
+      margin-bottom (grid * 10)
       .header
         text-shadow 0 -1px 1px #000,0 -1px 0 #000
-        display inline-block
+        display none
         text-overflow ellipsis
         white-space nowrap
         overflow hidden
@@ -174,7 +213,9 @@ section.content
         h4, span
           display inline-block
           margin 0 grid
-          padding 0
+          padding 1px 6px
+          background-color rgba(0,0,0,.08)
+          border-radius 4px
       .post:hover
         background-color #fff
         border-radius 5px
@@ -189,46 +230,54 @@ section.content
         border-right 2px solid #ccc
         border-bottom 3px solid #ccc
         border-radius 3px
+        > .body
+          margin 0 20px 20px 11px
+          color #111
         .title
           margin 0
-          padding grid
+          padding grid 0 0 grid
           .date
-            margin-left 15px
+            position absolute
             font-size .6em
             color #777
+            right grid
+            top (grid / 2)
       .sub-post:hover
         border-bottom 1px solid #ddd
         color #000
-        background-image linear-gradient(top, #f5f5f5, #fff)
+        background-image linear-gradient(top, #f0f0f0, #f9f9f9)
         .signature
           background-color #eee
           color #444
       .sub-post
-        padding 5px
+        border-left 2px solid #eee
+        padding (grid / 2)
+        background-color #f9f9f9
         color #333
-        margin-bottom grid
         border-bottom 1px solid #eee
         p
+          font-size .8em
           margin grid+2
         .signature
           font-style italic
           border-top-left-radius 6px
           padding 0 5px
-          color #666
-          font-size .75em
+          color #888
+          font-size .7em
           position absolute
           bottom 0
-          right 0
+          right (grid / 2)
           .username
             margin-right 5px
 ///}}}
 //{{{ Footer
 footer
-  //background-image linear-gradient(top, #000, #333)
-  background-color rgba(0,0,0,0.7)
-  border-top 1px solid #333
-  text-align center
+  opacity 0
   color #ddd
+  //background-image linear-gradient(top, #000, #333)
+  background-color rgba(0,0,0,0.1)
+  text-align center
+  color #999
   h6
     font-size .9em
     letter-spacing 3px
@@ -258,7 +307,6 @@ input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:h
   box-shadow 0 0 1px highlight-color2 inset,1px 0 2px highlight-color
 input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #000
-  text-indent -1px
   background-color #fffcfc
   border 1px solid highlight-color2
   border-bottom 1px solid highlight-color2
