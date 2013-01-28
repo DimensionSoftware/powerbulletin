@@ -50,13 +50,13 @@
           ? id
           : $('#' + id).prevAll('.forum:first').attr('id');
         $('header .menu').find('.active').removeClass('active');
-        return $('header .menu').find("." + cur.replace(/_/, '-')).addClass('active');
+        $('header .menu').find("." + cur.replace(/_/, '-')).addClass('active');
+        return $('.bg');
       }
     });
   }, 100);
   addPostDialog = function(){
     var fid, postHtml;
-    $('header').toggleClass('expanded');
     fid = $(this).data('fid');
     postHtml = '<h1>add post form goes here</h1>';
     return $.get('/ajax/add-post', {
@@ -79,10 +79,13 @@
   };
   d.on('click', '#add-post-submit', addPost);
   d.on('click', '.onclick-add-post-dialog', addPostDialog);
-  d.on('click', 'header', function(){
-    return $('header').removeClass('expanded');
+  d.on('click', 'header', function(e){
+    if (e.target.className === 'header') {
+      $('body').removeClass('expanded');
+    }
+    return $('#query').focus();
   });
   d.on('keypress', '#query', function(){
-    return $('header').addClass('expanded');
+    return $('body').addClass('expanded');
   });
 }).call(this);

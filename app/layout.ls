@@ -48,14 +48,14 @@ set-timeout (->
       $ 'header .menu' .find '.active' .removeClass \active             # remove old active
       $ 'header .menu' .find ".#{cur.replace /_/ \-}" .addClass \active # ... and activate!
 
-    # TODO handle background 3dfx
+      # TODO handle background 3dfx
+      $ '.bg'
   }), 100
 
 #{{{ todo non-layout-specific code (actions and view states) to relocate once mutant++ is pulled in
 add-post-dialog = ->
   #xxx: stub code for now, since we have no concept of sub-forums
   # mainly here as a proof-of-concept
-  $ 'header' .toggle-class \expanded
   fid = $(this).data \fid
 
   post-html = '<h1>add post form goes here</h1>'
@@ -75,7 +75,9 @@ add-post = ->
 d.on \click '#add-post-submit' add-post
 d.on \click '.onclick-add-post-dialog' add-post-dialog
 
-d.on \click 'header' -> $ \header .remove-class \expanded
-d.on \keypress '#query' -> $ \header .add-class \expanded
+d.on \click 'header' (e) ->
+  $ \body .remove-class \expanded if e.target.class-name is \header # guard
+  $ '#query' .focus!
+d.on \keypress '#query' -> $ \body .add-class \expanded
 #}}}
 # vim:fdm=marker

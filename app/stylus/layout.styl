@@ -15,38 +15,39 @@ body
     position fixed
     z-index 1
     height 100%
-    width 115%
-    margin-left -40px
+    width 100%
 
 //{{{ Header
-body, body.has-scrolled
-  header.expanded
-    height 150px!important
+body.expanded
+  section.content .container
+    padding 110px 20px 20px 20px
+    transition padding .3s ease-out
+  header
+    height 100px!important
     transition all .2s ease-out
     .search
-      top 30px!important
+      top 5px!important
       right auto!important
       #query.query
-        font-size 30px
+        position relative
+        z-index 9
+        font-size 31px
         padding 5px 20px
-        color #fff
-        letter-spacing 1px
+        letter-spacing 3px
         font-weight 100
-        border-left none
-        border-bottom 1px solid #444
-        height 50px
-        width 400px!important
+        height 51px
+        width 500px!important
     .advanced
       display block
-      float right
-      margin-top 50px
-  header.expanded:after
+      position absolute
+      right 20px
+      top 20px
+  header:after
     cursor pointer
     position absolute
     right 17px
     bottom 8px
     content 'x'
-    color #bbb
 
 header
   position fixed
@@ -76,7 +77,7 @@ header
           z-index 10
         .submenu
           z-index 9
-          top -170px
+          top -180px
           visibility hidden
           margin 0 0 0 2px
           position absolute
@@ -104,8 +105,6 @@ section.left
     left 0
     width 140px
     height 300px
-    border-bottom-right-radius 5px
-    border-top-right-radius 5px
   .scroll-to-top
     position absolute
     right 5px

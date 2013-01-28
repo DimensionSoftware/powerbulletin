@@ -16,6 +16,22 @@ grid = 10px
     transform scale(1.0)
 
 //{{{ Style applied after body scrolls
+body.expanded header
+  .search
+    #query.query
+      border-bottom 2px solid #444
+  .advanced
+    .check
+      margin 3px
+    label
+      margin-right 10px
+  .menu
+    .row
+      line-height 30px!important
+      font-size 15px!important
+      transition line-height .2s ease-out!important
+      .submenu
+        top -200px
 body.has-scrolled
   header
     background-color rgba(0,0,0,0.7)
@@ -51,6 +67,7 @@ body.has-scrolled
       .post
         margin grid
   footer
+    opacity 1
     border-top 1px solid #555
     color #bbb
     background-color rgba(25,25,25,0.7)
@@ -64,9 +81,11 @@ body
   font-family 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue'
 
 //{{{ Header
-header.expanded
+body.expanded header
   background-color rgba(0,0,0,0.85)!important
   border-bottom 1px solid #fff
+body.expanded header:after
+  color #bbb
 header
   background-color rgba(0,0,0,0.35)
   border-top 2px solid #000
@@ -137,7 +156,7 @@ header
           border-bottom 1px solid #333
   .search
     top 5px!important
-    right 6px!important
+    right 0!important
     .query:hover, .query:focus
       //border none!important
       //box-shadow none!important
@@ -145,7 +164,9 @@ header
     #query.query
       box-shadow 0
       color #fff
-      background rgba(0,0,0,0.4)
+      font-style italic
+      border-left none
+      background rgba(0,0,0,0.2)
       border 1px solid #000
     .query
       font-size 1.15em
@@ -157,6 +178,8 @@ header
 //{{{ Left side
 section.left
   .user-profile
+    border-bottom-right-radius 5px
+    border-top-right-radius 5px
     background-color rgba(0,0,0,.15)
     left -160px!important
     border 1px solid #444
@@ -175,13 +198,13 @@ section.left
 //{{{ Main Content
 section.content
   .container
-    padding 75px 20px 20px 20px
+    padding 60px 20px 20px 20px
     //background-color rgba(255,255,255,.9)
     .forum
-      margin-bottom grid + grid
+      margin-bottom (grid * 10)
       .header
         text-shadow 0 -1px 1px #000,0 -1px 0 #000
-        display inline-block
+        display none
         text-overflow ellipsis
         white-space nowrap
         overflow hidden
@@ -242,6 +265,7 @@ section.content
 ///}}}
 //{{{ Footer
 footer
+  opacity 0
   color #ddd
   //background-image linear-gradient(top, #000, #333)
   background-color rgba(0,0,0,0.1)
@@ -276,7 +300,6 @@ input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:h
   box-shadow 0 0 1px highlight-color2 inset,1px 0 2px highlight-color
 input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #000
-  text-indent -1px
   background-color #fffcfc
   border 1px solid highlight-color2
   border-bottom 1px solid highlight-color2

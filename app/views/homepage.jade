@@ -41,12 +41,12 @@ block header
   .search
     input#query.query(type='text', placeholder='Search', autocomplete='off')
   .advanced
-    input(type='checkbox')
-    | Option
-    input(type='checkbox')
-    | Option
-    input(type='checkbox')
-    | Option
+    input#option_1.check(type='checkbox')
+    label(for='option_1') Option
+    input#option_2.check(type='checkbox')
+    label(for='option_2') Option 2
+    input#option_3.check(type='checkbox')
+    label(for='option_3') Option 3
 
 block left
   //-{{{ data-fid is how we pass in the forum id of the post, this way
