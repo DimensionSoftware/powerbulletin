@@ -13,9 +13,20 @@ body
     cursor pointer
   img.bg
     position fixed
-    z-index 1
     height 100%
     width 100%
+    z-index 0
+    transition top 1s ease-out
+    left 0!important
+    top 0
+  img.bg.up
+    top 300px!important
+  img.bg.down
+    top -300px!important
+  img.bg.active
+    top 0!important
+    z-index 1!important
+    transition top .4s ease-out
 
 //{{{ Header
 body.expanded
@@ -180,6 +191,8 @@ footer
     .container
       margin-left 0!important
       padding 25px 15px!important
+      .forum
+        margin-bottom 10px!important
   .has-scrolled
     .content
       .container

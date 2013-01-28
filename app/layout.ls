@@ -39,17 +39,27 @@ set-timeout (->
   $ '.forum' .waypoint {
     offset  : '33%',
     handler : (direction) ->
-      e = $ this
+      e    = $ this
+      e-id = e.attr \id
 
       # handle menu active
-      id  = e.attr \id
-      cur = if direction is \down then id else
-        $ '#'+id .prevAll '.forum:first' .attr \id # prev
-      $ 'header .menu' .find '.active' .removeClass \active             # remove old active
-      $ 'header .menu' .find ".#{cur.replace /_/ \-}" .addClass \active # ... and activate!
+      id = if direction is \down then e-id else
+        $ '#'+e-id .prevAll '.forum:first' .attr \id
+      prev = $ 'header .menu' .find '.active'
+      cur  = $ 'header .menu' .find ".#{id.replace /_/ \-}"
+      prev.remove-class \active # remove old active
+      cur.add-class \active     # ... and activate!
 
-      # TODO handle background 3dfx
-      $ '.bg'
+      # handle forum background
+      clear-timeout w.bg-anim if w.bg-anim
+      w.bg-anim := set-timeout (->
+        last = $ '.bg.active'
+        next = $ '#forum'+"_bg_#{cur.data \id}"
+        last.css \top if direction is \down then -300 else 300
+        last.remove-class \active
+        next.add-class \active
+        w.bg-anim = 0
+      ), 100
   }), 100
 
 #{{{ todo non-layout-specific code (actions and view states) to relocate once mutant++ is pulled in

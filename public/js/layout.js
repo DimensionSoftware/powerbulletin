@@ -43,15 +43,28 @@
     return $('.forum').waypoint({
       offset: '33%',
       handler: function(direction){
-        var e, id, cur;
+        var e, eId, id, prev, cur;
         e = $(this);
-        id = e.attr('id');
-        cur = direction === 'down'
-          ? id
-          : $('#' + id).prevAll('.forum:first').attr('id');
-        $('header .menu').find('.active').removeClass('active');
-        $('header .menu').find("." + cur.replace(/_/, '-')).addClass('active');
-        return $('.bg');
+        eId = e.attr('id');
+        id = direction === 'down'
+          ? eId
+          : $('#' + eId).prevAll('.forum:first').attr('id');
+        prev = $('header .menu').find('.active');
+        cur = $('header .menu').find("." + id.replace(/_/, '-'));
+        prev.removeClass('active');
+        cur.addClass('active');
+        if (w.bgAnim) {
+          clearTimeout(w.bgAnim);
+        }
+        return w.bgAnim = setTimeout(function(){
+          var last, next;
+          last = $('.bg.active');
+          next = $('#forum' + ("_bg_" + cur.data('id')));
+          last.css('top', direction === 'down' ? -300 : 300);
+          last.removeClass('active');
+          next.addClass('active');
+          return w.bgAnim = 0;
+        }, 100);
       }
     });
   }, 100);
