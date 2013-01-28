@@ -4,6 +4,8 @@
 // XXX decoration & embellishments belong in the theme.styl
 // XXX eventually each forum will have its own theme.{styl,css}
 
+header-height = 50px
+
 body
   grid(90%,100%)
   overflow visible!important
@@ -19,20 +21,25 @@ body
 //{{{ Header
 body, body.has-scrolled
   header.expanded
-    height 60%!important
+    height 150px!important
     transition all .2s ease-out
     .search
-      top 100px!important
-      left 35%!important
+      top 30px!important
+      right auto!important
       #query.query
         font-size 30px
         padding 5px 20px
-        height 40px
         color #fff
         letter-spacing 1px
         font-weight 100
         border-left none
         border-bottom 1px solid #444
+        height 50px
+        width 400px!important
+    .advanced
+      display block
+      float right
+      margin-top 50px
   header.expanded:after
     cursor pointer
     position absolute
@@ -40,9 +47,10 @@ body, body.has-scrolled
     bottom 8px
     content 'x'
     color #bbb
+
 header
   position fixed
-  height 60px
+  height header-height
   z-index 7
   .container
     width 800px
@@ -61,8 +69,8 @@ header
       .row
         cursor pointer
         display inline-block
-        line-height 60px
-        font-size 18px
+        line-height header-height
+        font-size 16px
         .title
           position relative
           z-index 10
@@ -80,6 +88,8 @@ header
       position absolute 
       .query
         width 300px
+    .advanced
+      display none
 //}}}
 //{{{ Left side
 section.left

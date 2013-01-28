@@ -21,9 +21,9 @@ $ '.scroll-to-top' .each ->
   e = $ this
   e.attr 'title' 'Scroll to Top!'
   e.on 'mousedown' -> # bouncy scroll to top
-    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top }, 100
-    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top+threshold }, 85
-    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top }, 35
+    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top }, 140
+    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top+threshold }, 110
+    <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top }, 75
 
 # main
 $ '#query' .focus!

@@ -30,29 +30,23 @@ block header
   h1.logo Power
     strong Bulletin
   block categories
-    //- TODO dynamic, customizable forum & sub-forum menu for this bulletin
     menu.menu
-      li.row
-        a.title.forum-1(data-menu=1, href='#forum-1') Forum
-        menu.submenu
-          li.row Sub-forum
-          li.row Sub-forum
-          li.row Sub-forum
-      li.row
-        a.title.forum-2(data-menu=2, href='#forum-2') Forum 2
-        menu.submenu
-          li.row Sub-forum
-          li.row Sub-forum
-      li.row
-        a.title.forum-3(data-menu=3, href='#forum-3') Forum 3
-        menu.submenu
-          li.row Sub-forum
-      li.row
-        a.title.forum-4(data-menu=4, href='#forum-4') Forum 4
-        menu.submenu
-          li.row Sub-forum
+      each f,i in forums
+        li.row
+          a.title(data-menu=f.id, class="forum-#{f.id}", href="#forum-#{f.id}")= f.title
+          menu.submenu
+            li.row Sub-forum
+            li.row Sub-forum
+            li.row Sub-forum
   .search
-    input#query.query(type='text', placeholder='Search')
+    input#query.query(type='text', placeholder='Search', autocomplete='off')
+  .advanced
+    input(type='checkbox')
+    | Option
+    input(type='checkbox')
+    | Option
+    input(type='checkbox')
+    | Option
 
 block left
   //-{{{ data-fid is how we pass in the forum id of the post, this way

@@ -21,13 +21,13 @@
     return e.on('mousedown', function(){
       return $('html,body').animate({
         scrollTop: $('body').offset().top
-      }, 100, function(){
+      }, 140, function(){
         return $('html,body').animate({
           scrollTop: $('body').offset().top + threshold
-        }, 85, function(){
+        }, 110, function(){
           return $('html,body').animate({
             scrollTop: $('body').offset().top
-          }, 35, function(){});
+          }, 75, function(){});
         });
       });
     });

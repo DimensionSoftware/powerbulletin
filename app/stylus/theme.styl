@@ -7,15 +7,13 @@ highlight-color2 = #ff6803
 mouse-intent = .2s
 grid = 10px
 
-@keyframes pulse
+@keyframes grow
   0%
-    transform scale(1.0) rotate(0deg)
+    transform scale(1.0)
   33%
-    transform scale(1.1) rotate(-1deg)
-  67%
-    transform scale(0.9) rotate(3deg)
+    transform scale(1.18)
   100%
-    transform scale(1.0) rotate(0deg)
+    transform scale(1.0)
 
 //{{{ Style applied after body scrolls
 body.has-scrolled
@@ -42,7 +40,7 @@ body.has-scrolled
       .query
         font-size .9em
         width 340px!important
-        height 9px
+        height 12px
         border-bottom-width 2px
   .left
     .user-profile
@@ -76,7 +74,7 @@ header
   .container
     .logo
       display inline-block
-      margin-top 20px
+      margin-top 13px
       width 200px
       vertical-align top
       text-shadow 0 0 1px #000
@@ -98,8 +96,10 @@ header
       .title.active:hover
         background-image linear-gradient(bottom, #fff 10px, #fff0e0)
       .title.active
-        animation-name pulse
-        animation-duration .25s
+        animation-name grow
+        animation-duration .22s
+        position relative!important
+        z-index 50!important
         color #333
         background-color #f3f3f3
         background-image linear-gradient(bottom, #fff 10px, #fff0e0)
@@ -136,24 +136,23 @@ header
         .row
           border-bottom 1px solid #333
   .search
-    top 3px!important
-    right 0!important
+    top 5px!important
+    right 6px!important
     .query:hover, .query:focus
       //border none!important
       //box-shadow none!important
       box-shadow none
     #query.query
       box-shadow 0
-      background #000
       color #fff
-      background-color #000
+      background rgba(0,0,0,0.4)
       border 1px solid #000
     .query
       font-size 1.15em
       border-bottom-width 3px
       border-left 0px
       width 500px
-      height 33px
+      height 20px
 //}}}
 //{{{ Left side
 section.left
