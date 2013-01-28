@@ -27,10 +27,14 @@ module.exports = function(grunt) {
     livescript: {
       compile: {
         files: {
-          'lib/pb-entry/index.js': 'lib/pb-entry/index.ls',
-          'lib/validations/index.js': 'lib/validations/index.ls',
-          'public/powerbulletin.js': 'app/layout.ls',
         }
+      }
+    },
+
+    browserify: {
+      'public/powerbulletin.js' : {
+        entries: 'app/layout.ls',
+        beforeHook: function(bundle) { bundle.use(require('livescript-browserify')); }
       }
     },
 
@@ -43,7 +47,7 @@ module.exports = function(grunt) {
     watch: {
       app: {
         files: ['app/*.ls', 'config/*', 'lib/**/*.ls'],
-        tasks: ['livescript', 'uglify', 'launch'],
+        tasks: ['browserify', 'uglify', 'launch'],
         options: {
           interrupt: true,
           debounceDelay: 2000
@@ -57,6 +61,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-livescript');
+  grunt.loadNpmTasks('grunt-browserify');
 
   grunt.registerTask('launch', 'Launch PowerBulletin!', function() {
     // XXX surely there's a more automatic way to manage this?
@@ -82,6 +87,6 @@ module.exports = function(grunt) {
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['livescript', 'uglify', 'launch', 'watch']);
+  grunt.registerTask('default', ['browserify', 'uglify', 'launch', 'watch']);
 
 };
