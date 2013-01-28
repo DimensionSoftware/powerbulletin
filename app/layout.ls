@@ -36,6 +36,7 @@ $ '.forum .container' .masonry(
   is-resizable:  true)
 
 #{{{ waypoints
+w.resize -> set-timeout (-> $.waypoints \refresh), 800
 set-timeout (->
   $ '.forum' .waypoint {
     offset  : '33%',
@@ -57,7 +58,7 @@ set-timeout (->
       unless last.length
         next = $ '#forum'+"_bg_#{cur.data \id}"
         next.add-class \active
-        $ '.bg' .css(\visibility, \visible)
+        #$ '.bg' .css(\visibility, \visible)
       else
         w.bg-anim := set-timeout (->
           next = $ '#forum'+"_bg_#{cur.data \id}"
@@ -65,6 +66,7 @@ set-timeout (->
           last.css \top if direction is \down then -300 else 300 # stage animation
           last.remove-class \active
           next.add-class \active # ... and switch!
+          next.add-class \visible # ... and switch!
           w.bg-anim = 0
         ), 300
   }), 100

@@ -39,6 +39,11 @@
     isFitWidth: true,
     isResizable: true
   });
+  w.resize(function(){
+    return setTimeout(function(){
+      return $.waypoints('refresh');
+    }, 800);
+  });
   setTimeout(function(){
     return $('.forum').waypoint({
       offset: '33%',
@@ -59,8 +64,7 @@
         last = $('.bg.active');
         if (!last.length) {
           next = $('#forum' + ("_bg_" + cur.data('id')));
-          next.addClass('active');
-          return $('.bg').css('visibility', 'visible');
+          return next.addClass('active');
         } else {
           return w.bgAnim = setTimeout(function(){
             var next;
@@ -68,6 +72,7 @@
             last.css('top', direction === 'down' ? -300 : 300);
             last.removeClass('active');
             next.addClass('active');
+            next.addClass('visible');
             return w.bgAnim = 0;
           }, 300);
         }
