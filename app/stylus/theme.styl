@@ -87,7 +87,7 @@ body.expanded header
 body.expanded header:after
   color #bbb
 header
-  background-color rgba(0,0,0,0.35)
+  background-color rgba(0,0,0,0.2)
   border-top 2px solid #000
   color #ddd
   .container
@@ -96,19 +96,20 @@ header
       margin-top 13px
       width 200px
       vertical-align top
-      text-shadow 0 0 1px #000
+      //text-shadow 0 0 1px #000
       font-style italic
+      color #777
       font-size 1.5em
       font-weight 200
       letter-spacing -2px
       position absolute
       left 0
       strong
-        letter-spacing -2px
+        letter-spacing -1px
         font-weight 500
         padding-left 4px
         font-style normal
-        color #ddd
+        color #888
   .menu
     padding 0
     > .row
@@ -201,7 +202,7 @@ section.content
     padding 60px 20px 20px 20px
     //background-color rgba(255,255,255,.9)
     .forum
-      margin-bottom (grid * 10)
+      margin-bottom (grid * 2)
       .header
         text-shadow 0 -1px 1px #000,0 -1px 0 #000
         display none
@@ -216,65 +217,68 @@ section.content
           padding 1px 6px
           background-color rgba(0,0,0,.08)
           border-radius 4px
-      .post:hover
-        background-color rgba(255,255,255,.93)
-        border-radius 5px
-        border 1px solid #aaa
-        border-right 2px solid #aaa
-        border-bottom 3px solid #aaa
-        //box-shadow 0 0 6px 1px #444
-        //transition box-shadow ease-out 1s .2s
-      .post
-        background-color rgba(255,255,255,.9)
-        border 1px solid #ccc
-        border-right 2px solid #ccc
-        border-bottom 3px solid #bbb
-        border-radius 3px
-        > .body
-          padding 0 0 grid grid
-          margin 0
-          color #111
-          background-color #fff
-        .title
-          margin 0
-          padding grid 0 0 grid
-          border-top-left-radius 5px
-          border-top-right-radius 5px
-          background-color #fff
-          .date
+      .container
+        padding-bottom (grid * 2)!important
+        border-bottom 1px dotted #111
+        .post:hover
+          background-color rgba(255,255,255,.93)
+          border-radius 5px
+          border 1px solid #aaa
+          border-right 2px solid #aaa
+          border-bottom 3px solid #aaa
+          //box-shadow 0 0 6px 1px #444
+          //transition box-shadow ease-out 1s .2s
+        .post
+          background-color rgba(255,255,255,.9)
+          border 1px solid #ccc
+          border-right 2px solid #ccc
+          border-bottom 3px solid #bbb
+          border-radius 3px
+          > .body
+            padding 0 0 grid grid
+            margin 0
+            color #111
+            background-color #fff
+          .title
+            margin 0
+            padding grid 0 0 grid
+            border-top-left-radius 5px
+            border-top-right-radius 5px
+            background-color #fff
+            .date
+              position absolute
+              font-size .6em
+              color #777
+              right grid
+              top (grid / 2)
+        .sub-post:hover
+          border-bottom 1px solid #ddd
+          color #000
+          //background-image linear-gradient(top, #f0f0f0, #f9f9f9)
+          .signature
+            background-color #eee
+            color #444
+        .sub-post
+          border-left 2px solid #eee
+          padding (grid / 2)
+          //background-color #f9f9f9
+          color #333
+          border-bottom 1px solid #eee
+          p
+            font-size .8em
+            padding (grid/2) 0 (grid) (grid/2)
+            margin 0
+          .signature
+            font-style italic
+            border-top-left-radius 6px
+            padding 0 grid
+            color #888
+            font-size .7em
             position absolute
-            font-size .6em
-            color #777
-            right grid
-            top (grid / 2)
-      .sub-post:hover
-        border-bottom 1px solid #ddd
-        color #000
-        //background-image linear-gradient(top, #f0f0f0, #f9f9f9)
-        .signature
-          background-color #eee
-          color #444
-      .sub-post
-        border-left 2px solid #eee
-        padding (grid / 2)
-        //background-color #f9f9f9
-        color #333
-        border-bottom 1px solid #eee
-        p
-          font-size .8em
-          padding (grid/2) 0 (grid) (grid/2)
-          margin 0
-        .signature
-          font-style italic
-          border-top-left-radius 6px
-          padding 0 grid
-          color #888
-          font-size .7em
-          position absolute
-          bottom 0
-          right 0
-          .username
-            margin-right 5px
+            bottom 0
+            right 0
+            .username
+              margin-right 5px
 ///}}}
 //{{{ Footer
 footer
