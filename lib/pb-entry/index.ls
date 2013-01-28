@@ -1,3 +1,7 @@
+require! {
+ add-post : '../add-post'
+ v : '../validations'
+}
 
 # XXX layout-specific client-side
 

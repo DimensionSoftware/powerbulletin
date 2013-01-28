@@ -5,21 +5,21 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
-    concat: {
-      options: {
-        // define a string to put between each file in the concatenated output
-        separator: ';'
-      },
-      dist: {
-        src:  [], // XXX none need concat yet
-        dest: 'public/js/<%= pkg.name %>.js'
-      }
-    },
+    //concat: {
+    //  options: {
+    //    // define a string to put between each file in the concatenated output
+    //    separator: ';'
+    //  },
+    //  dist: {
+    //    src:  [], // XXX none need concat yet
+    //    dest: 'public/<%= pkg.name %>.js'
+    //  }
+    //},
 
     uglify: { // for all our js minification needs
       dist: {
         files: {
-          'public/js/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+          'public/powerbulletin.min.js': 'public/powerbulletin.js'
         }
       }
     },
@@ -27,7 +27,8 @@ module.exports = function(grunt) {
     livescript: {
       compile: {
         files: {
-          'public/js/layout.js': 'app/layout.ls',
+          'lib/pb-entry/index.js': 'lib/pb-entry/index.ls',
+          'lib/pb-validations/index.js': 'lib/pb-validations/index.ls',
         }
       }
     },
@@ -40,7 +41,7 @@ module.exports = function(grunt) {
 
     watch: {
       app: {
-        files: ['app/*.ls', 'config/*'],
+        files: ['app/*.ls', 'config/*', 'lib/**/*.ls'],
         tasks: ['livescript', 'launch'],
         options: {
           interrupt: true,
@@ -70,12 +71,16 @@ module.exports = function(grunt) {
       if (pid) process.kill(-pid); // the minus kills the entire process group
     } catch (e) {}
 
+    // compile pb-entry with component (tjholowaychauk or however u say his name)
+    cp.spawn('./bin/compile-pb-entry', [], {detached:true, stdio:'inherit'});
+    console.log(" ... compiling pb entry");
+
     // spawn detached new proc & write out pid
     proc = cp.spawn('./bin/powerbulletin', [], {detached:true, stdio:'inherit'});
     fs.writeFileSync(file, proc.pid)
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['livescript', 'concat', 'uglify', 'launch', 'watch']);
+  grunt.registerTask('default', ['livescript', 'uglify', 'launch', 'watch']);
 
 };

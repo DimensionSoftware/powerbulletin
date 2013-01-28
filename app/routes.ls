@@ -15,7 +15,7 @@ app.get '/',
   mw.add-js([
     "#{cvars.cache3_url}/local/jquery.masonry.min.js",
     "#{cvars.cache2_url}/local/waypoints.min.js",
-    "#{cvars.cache4_url}/js/layout.js"]),
+    "#{cvars.cache4_url}/powerbulletin.min.js"]),
   mw.add-css(['/dynamic/css/theme.styl,layout.styl']),
   handlers.homepage
 

@@ -1,0 +1,9 @@
+{
+  "name": "validations",
+  "scripts": [
+    "index.js"
+  ],
+  "styles": [
+    "index.css"
+  ]
+}
