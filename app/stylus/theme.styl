@@ -217,7 +217,7 @@ section.content
           background-color rgba(0,0,0,.08)
           border-radius 4px
       .post:hover
-        background-color #fff
+        background-color rgba(255,255,255,.93)
         border-radius 5px
         border 1px solid #aaa
         border-right 2px solid #aaa
@@ -225,17 +225,22 @@ section.content
         //box-shadow 0 0 6px 1px #444
         //transition box-shadow ease-out 1s .2s
       .post
-        background-color rgba(255,255,255,.95)
+        background-color rgba(255,255,255,.9)
         border 1px solid #ccc
         border-right 2px solid #ccc
-        border-bottom 3px solid #ccc
+        border-bottom 3px solid #bbb
         border-radius 3px
         > .body
-          margin 0 20px 20px 11px
+          padding 0 0 grid grid
+          margin 0
           color #111
+          background-color #fff
         .title
           margin 0
           padding grid 0 0 grid
+          border-top-left-radius 5px
+          border-top-right-radius 5px
+          background-color #fff
           .date
             position absolute
             font-size .6em
@@ -245,28 +250,29 @@ section.content
       .sub-post:hover
         border-bottom 1px solid #ddd
         color #000
-        background-image linear-gradient(top, #f0f0f0, #f9f9f9)
+        //background-image linear-gradient(top, #f0f0f0, #f9f9f9)
         .signature
           background-color #eee
           color #444
       .sub-post
         border-left 2px solid #eee
         padding (grid / 2)
-        background-color #f9f9f9
+        //background-color #f9f9f9
         color #333
         border-bottom 1px solid #eee
         p
           font-size .8em
-          margin grid+2
+          padding (grid/2) 0 (grid) (grid/2)
+          margin 0
         .signature
           font-style italic
           border-top-left-radius 6px
-          padding 0 5px
+          padding 0 grid
           color #888
           font-size .7em
           position absolute
           bottom 0
-          right (grid / 2)
+          right 0
           .username
             margin-right 5px
 ///}}}
