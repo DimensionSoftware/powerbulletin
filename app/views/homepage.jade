@@ -14,7 +14,8 @@ mixin forum(f, i)
 mixin post(p, i)
   .post(id="post_#{p.id}", class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")
     h5.title= p.title
-      span.date Created #{p.date}
+      span.date #{p.date}
+    p.body= p.body
     each sp,i in p.posts
       mixin sub-post(sp, i)
 
