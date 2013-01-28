@@ -28,7 +28,8 @@ module.exports = function(grunt) {
       compile: {
         files: {
           'lib/pb-entry/index.js': 'lib/pb-entry/index.ls',
-          'lib/pb-validations/index.js': 'lib/pb-validations/index.ls',
+          'lib/validations/index.js': 'lib/validations/index.ls',
+          'public/powerbulletin.js': 'app/layout.ls',
         }
       }
     },
@@ -72,8 +73,8 @@ module.exports = function(grunt) {
     } catch (e) {}
 
     // compile pb-entry with component (tjholowaychauk or however u say his name)
-    cp.spawn('./bin/compile-pb-entry', [], {detached:true, stdio:'inherit'});
-    console.log(" ... compiling pb entry");
+    //cp.spawn('./bin/compile-pb-entry', [], {detached:true, stdio:'inherit'});
+    //console.log(" ... compiling pb entry");
 
     // spawn detached new proc & write out pid
     proc = cp.spawn('./bin/powerbulletin', [], {detached:true, stdio:'inherit'});
