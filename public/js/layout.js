@@ -43,7 +43,7 @@
     return $('.forum').waypoint({
       offset: '33%',
       handler: function(direction){
-        var e, eId, id, prev, cur;
+        var e, eId, id, prev, cur, last, next;
         e = $(this);
         eId = e.attr('id');
         id = direction === 'down'
@@ -56,15 +56,21 @@
         if (w.bgAnim) {
           clearTimeout(w.bgAnim);
         }
-        return w.bgAnim = setTimeout(function(){
-          var last, next;
-          last = $('.bg.active');
+        last = $('.bg.active');
+        if (!last.length) {
           next = $('#forum' + ("_bg_" + cur.data('id')));
-          last.css('top', direction === 'down' ? -300 : 300);
-          last.removeClass('active');
           next.addClass('active');
-          return w.bgAnim = 0;
-        }, 100);
+          return $('.bg').css('visibility', 'visible');
+        } else {
+          return w.bgAnim = setTimeout(function(){
+            var next;
+            next = $('#forum' + ("_bg_" + cur.data('id')));
+            last.css('top', direction === 'down' ? -300 : 300);
+            last.removeClass('active');
+            next.addClass('active');
+            return w.bgAnim = 0;
+          }, 300);
+        }
       }
     });
   }, 100);

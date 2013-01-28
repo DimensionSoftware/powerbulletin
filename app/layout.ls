@@ -26,6 +26,7 @@ $ '.scroll-to-top' .each ->
     <- $ 'html,body' .animate { scroll-top:$ 'body' .offset!top }, 75
 
 # main
+# ---------
 $ '#query' .focus!
 
 $ '.forum .container' .masonry(
@@ -34,7 +35,7 @@ $ '.forum .container' .masonry(
   is-fit-width:  true
   is-resizable:  true)
 
-# add waypoints
+#{{{ waypoints
 set-timeout (->
   $ '.forum' .waypoint {
     offset  : '33%',
@@ -52,15 +53,22 @@ set-timeout (->
 
       # handle forum background
       clear-timeout w.bg-anim if w.bg-anim
-      w.bg-anim := set-timeout (->
-        last = $ '.bg.active'
+      last = $ '.bg.active'
+      unless last.length
         next = $ '#forum'+"_bg_#{cur.data \id}"
-        last.css \top if direction is \down then -300 else 300
-        last.remove-class \active
         next.add-class \active
-        w.bg-anim = 0
-      ), 100
+        $ '.bg' .css(\visibility, \visible)
+      else
+        w.bg-anim := set-timeout (->
+          next = $ '#forum'+"_bg_#{cur.data \id}"
+
+          last.css \top if direction is \down then -300 else 300 # stage animation
+          last.remove-class \active
+          next.add-class \active # ... and switch!
+          w.bg-anim = 0
+        ), 300
   }), 100
+#}}}
 
 #{{{ todo non-layout-specific code (actions and view states) to relocate once mutant++ is pulled in
 add-post-dialog = ->
