@@ -13,7 +13,10 @@ require! {
 
 now = new Date
 
-export next-in-sequence = -> v.callp \NextInSequence, ...arguments
+export next-in-sequence = (seqname, cb) ->
+  err, res <- v.callp \NextInSequence, seqname
+  if err then return cb(err)
+  cb null, res[0][0]['']
 
 export select-user = -> v.callp \select_user, ...arguments
 
@@ -23,7 +26,7 @@ export homepage-doc = (cb) ->
 export add-post = (post, cb) ->
   err, id <~ @next-in-sequence \posts
   if err then return cb(err)
-  v.callp \AddPost id, post.user-id, post.title, post.body
+  v.callp \AddPost id, post.user-id, post.title, post.body, cb
 
 # uses new api
 export put-doc = (type, key, doc, index-enabled, cb) ->
