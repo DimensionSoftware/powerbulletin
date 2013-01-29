@@ -16,7 +16,6 @@ body
     height 100%
     width 100%
     z-index 0
-    transition top 1s ease-out
     left 0!important
     visibility hidden
     top 0
@@ -25,7 +24,7 @@ body
   img.bg.active
     top 0!important
     z-index 1!important
-    transition top .4s ease-out
+    transition top .3s ease-out
     visibility visible
 
 //{{{ Header
@@ -77,7 +76,7 @@ header
         .submenu
           visibility visible
           transform translateY(230px)
-          transition all .2s ease-out .2s
+          transition .2s ease-out .2s
       .row
         cursor pointer
         display inline-block
@@ -109,13 +108,16 @@ section.left
   top 80px
   width 175px
   position fixed
-  text-indent 25px
   .user-profile
     position absolute
     top 35px
     left 0
     width 140px
     height 300px
+    .photo
+      margin-bottom 5px
+      width 140px
+      height 100px
   .scroll-to-top
     position absolute
     right 5px

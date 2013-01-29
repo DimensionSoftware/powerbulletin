@@ -67,7 +67,7 @@ set-timeout (->
           next.add-class \active # ... and switch!
           next.add-class \visible # ... and switch!
           w.bg-anim = 0
-        ), 300
+        ), 350
   }), 100
 #}}}
 

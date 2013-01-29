@@ -478,7 +478,7 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
             next.addClass('active');
             next.addClass('visible');
             return w.bgAnim = 0;
-          }, 300);
+          }, 350);
         }
       }
     });
