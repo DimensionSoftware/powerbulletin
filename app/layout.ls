@@ -41,16 +41,16 @@ set-timeout (->
   $ '.forum' .waypoint {
     offset  : '33%',
     handler : (direction) ->
-      e    = $ this
-      e-id = e.attr \id
+      e   = $ this
+      eid = e.attr \id
 
       # handle menu active
-      id = if direction is \down then e-id else
-        $ '#'+e-id .prevAll '.forum:first' .attr \id
-      prev = $ 'header .menu' .find '.active'
-      cur  = $ 'header .menu' .find ".#{id.replace /_/ \-}"
-      prev.remove-class \active # remove old active
-      cur.add-class \active     # ... and activate!
+      id = if direction is \down then eid else
+        $ '#'+eid .prevAll '.forum:first' .attr \id
+      $ 'header .menu' .find '.active' .remove-class \active # remove prev
+      cur  = $ 'header .menu'
+        .find ".#{id.replace /_/ \-}"
+        .add-class \active # ...and activate!
 
       # handle forum background
       clear-timeout w.bg-anim if w.bg-anim
@@ -64,10 +64,10 @@ set-timeout (->
 
           last.css \top if direction is \down then -300 else 300 # stage animation
           last.remove-class \active
-          next.add-class \active # ... and switch!
-          next.add-class \visible # ... and switch!
+          next.add-class 'active visible' # ... and switch!
+          #next.add-class \visible # ... and switch!
           w.bg-anim = 0
-        ), 350
+        ), 300
   }), 100
 #}}}
 

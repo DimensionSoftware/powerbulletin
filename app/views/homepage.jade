@@ -17,10 +17,16 @@ mixin post(p, i)
       span.date #{p.date}
     p.body= p.body
     each sp,i in p.posts
-      mixin sub-post(sp, i)
+      mixin subpost(sp, i)
+    .comment
+      .photo
+        img(src="#{cache_url}/images/profile.jpg")
+      input.msg(placeholder='Say it ...')
 
-mixin sub-post(sp, i)
- .sub-post(id="sub_post_#{sp.id}", class=(i % 2) ? 'odd' : 'even')
+mixin subpost(sp, i)
+ .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even')
+    .photo
+      img(src="#{cache_url}/images/profile.jpg")
     p.body= sp.body
     .signature
       span.username - #{sp.user.name}
@@ -57,7 +63,7 @@ block left
   //- TODO move this into posts :hover tools }}}
   .user-profile
     .photo
-      img#user-photo
+      img#user-photo(src="#{cache_url}/images/profile.jpg")
     div
       a(class='button onclick-add-post-dialog', data-fid=33) Post
     .scroll-to-top top

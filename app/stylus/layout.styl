@@ -11,22 +11,62 @@ body
   overflow visible!important
   a
     cursor pointer
-  img.bg
-    position fixed
-    height 100%
-    width 100%
-    z-index 0
-    left 0!important
-    visibility hidden
-    top 0
-  img.bg.visible
-    visibility visible
-  img.bg.active
-    top 0!important
-    z-index 1!important
-    transition top .3s ease-out
-    visibility visible
+  .scroll-to-top
+    cursor pointer
 
+//{{{ Structure applied after body scrolls
+body.expanded header
+  .menu
+    .row
+      line-height 30px!important
+      font-size 15px!important
+body.has-scrolled
+  header
+    height 30px
+    .container
+      .logo
+        font-size 1.1em
+      .menu
+        .row:hover
+          .submenu
+            top 33px
+        .row
+          line-height 30px
+          font-size 15px
+      .search
+        top 0!important
+        right 0!important
+        .query
+          font-size .9em
+          width 340px!important
+          height 12px
+  .left
+    .user-profile
+      left 0px!important
+  footer
+    opacity 1
+    font-size .85em
+    bottom -10px
+    line-height 16px
+//}}}
+
+//{{{ Background layer
+img.bg
+  position fixed
+  height 100%
+  width 100%
+  z-index 0
+  left 0!important
+  visibility hidden
+  top 0
+img.bg.visible
+  visibility visible
+img.bg.active
+  top 0!important
+  z-index 1!important
+  transition top .3s ease-out
+  visibility visible
+//}}}
 //{{{ Header
 body.expanded
   section.content .container
@@ -34,24 +74,25 @@ body.expanded
     transition padding .3s ease-out
   header
     height 100px!important
-    transition all .2s ease-out
-    .search
-      top 5px!important
-      right auto!important
-      #query.query
-        position relative
-        z-index 9
-        font-size 31px
-        padding 5px 20px
-        letter-spacing 3px
-        font-weight 100
-        height 51px
-        width 500px!important
-    .advanced
-      display block
-      position absolute
-      right 20px
-      top 20px
+    transition background-color .25s ease-out, height .2s ease-out
+    .container
+      .search
+        top 5px!important
+        right auto!important
+        #query.query
+          position relative
+          z-index 9
+          font-size 31px
+          padding 5px 20px
+          letter-spacing 3px
+          font-weight 100
+          height 51px
+          width 500px!important
+      .advanced
+        display block
+        position absolute
+        right 20px
+        top 20px
   header:after
     cursor pointer
     position absolute
@@ -75,8 +116,8 @@ header
         z-index 7
         .submenu
           visibility visible
-          transform translateY(230px)
-          transition .2s ease-out .2s
+          top 50px
+          transition top .1s ease-out .2s
       .row
         cursor pointer
         display inline-block
@@ -87,7 +128,7 @@ header
           z-index 10
         .submenu
           z-index 9
-          top -180px
+          top -500px
           visibility hidden
           margin 0 0 0 2px
           position absolute
@@ -115,9 +156,12 @@ section.left
     width 140px
     height 300px
     .photo
+      overflow hidden
       margin-bottom 5px
       width 140px
       height 100px
+      img
+        width 100%
   .scroll-to-top
     position absolute
     right 5px
@@ -146,11 +190,36 @@ section.left
         padding 0!important
         margin 0!important
         z-index 3
+        .post:hover
+          transform translateY(-15px)
+          transition all .2s ease-out 1.75s
+          .comment
+            height 30px
+            transition height .2s ease-out 2.1s
         .post
           float left
           margin 10px
-        .sub-post
+          .photo
+            float left
+            width 25px
+            img
+              width 100%
+        .comment 
+          margin-top 2px
+          padding 3px 7px
+          height 0
+          .msg
+            font-size .9em
+            font-style italic
+            width 70%
+        .subpost
           position relative
+          .photo
+            overflow hidden
+            width 40px
+            float left
+            img
+              width 100%
     .scroll-to-top
       clear both
 //}}}
@@ -164,9 +233,6 @@ footer
   height 30px
   z-index 5
 //}}}
-
-.scroll-to-top
-  cursor pointer
 
 //{{{ RESPONSIVEness
 @media screen and (max-width: 800px)

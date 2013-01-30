@@ -7,6 +7,7 @@ highlight-color2 = #ff6803
 mouse-intent = .2s
 grid = 10px
 
+//{{{ Animations!
 @keyframes grow
   0%
     transform scale(1.0)
@@ -14,12 +15,14 @@ grid = 10px
     transform scale(1.18)
   100%
     transform scale(1.0)
+//}}}
 
 //{{{ Style applied after body scrolls
 body.expanded header
   .search
     #query.query
       border-bottom 2px solid #444
+      text-align left
   .advanced
     .check
       margin 3px
@@ -27,40 +30,32 @@ body.expanded header
       margin-right 10px
   .menu
     .row
-      line-height 30px!important
-      font-size 15px!important
       transition line-height .2s ease-out!important
-      .submenu
-        top -200px
 body.has-scrolled
   header
     background-color rgba(0,0,0,0.7)
     box-shadow 0 -1px 15px 4px #666
     border-bottom 1px solid #fff
     border-top-width 1px
-    height 30px
-    transition all .2s ease-out
+    transition height .2s ease-out, background-color .5s ease-out
     .logo
-      font-size 1.1em
       margin-top 4px
     .menu
       .row
-        line-height 30px
-        font-size 15px
         transition line-height .2s ease-out
-        .submenu
-          top -200px
     .search
-      top 0!important
-      right 0!important
       .query
-        font-size .9em
-        width 340px!important
-        height 12px
         border-bottom-width 2px
+      .query::-webkit-input-placeholder
+          color #bbb
+      .query:-moz-placeholder
+          color #bbb
+      .query::-moz-placeholder
+          color #bbb
+      .query:-ms-input-placeholder
+          color #bbb
   .left
     .user-profile
-      left 0px!important
       transition left .5s ease-out
   .content
     .container
@@ -71,10 +66,7 @@ body.has-scrolled
     border-top 1px solid #555
     color #bbb
     background-color rgba(25,25,25,0.7)
-    font-size .85em
-    bottom -10px
     transition bottom .5s ease-out
-    line-height 16px
 //}}}
 
 body
@@ -87,7 +79,7 @@ body.expanded header
 body.expanded header:after
   color #bbb
 header
-  background-color rgba(0,0,0,0.2)
+  background-color rgba(0,0,0,0.1)
   border-top 2px solid #000
   color #ddd
   .container
@@ -124,7 +116,6 @@ header
         background-color #f3f3f3
         background-image linear-gradient(bottom, #fff 10px, #fff0e0)
         border-top 3px solid highlight-color2
-        transition background-image 1s ease-out
     > .row
       .title:hover, .title.hover
         border-top 3px solid highlight-color2
@@ -157,7 +148,15 @@ header
           border-bottom 1px solid #333
   .search
     top 5px!important
-    right 0!important
+    right 6px!important
+    .query::-webkit-input-placeholder
+        color #777
+    .query:-moz-placeholder
+        color #777
+    .query::-moz-placeholder
+        color #777
+    .query:-ms-input-placeholder
+        color #777
     .query:hover, .query:focus
       //border none!important
       //box-shadow none!important
@@ -167,8 +166,10 @@ header
       color #fff
       font-style italic
       border-left none
-      background rgba(0,0,0,0.2)
-      border 1px solid #000
+      text-align right
+      padding-right 15px
+      background transparent
+      border none
     .query
       font-size 1.15em
       border-bottom-width 3px
@@ -223,19 +224,28 @@ section.content
         padding-bottom (grid * 2)!important
         border-bottom 1px dotted #111
         .post:hover
-          background-color rgba(255,255,255,.93)
+          background-color rgba(255,255,255,.95)
           border-radius 5px
           border 1px solid #aaa
           border-right 2px solid #aaa
           border-bottom 3px solid #aaa
-          //box-shadow 0 0 6px 1px #444
-          //transition box-shadow ease-out 1s .2s
+          box-shadow 0 0 2px 0 #fff, 0 0 4px 0 #555
         .post
           background-color rgba(255,255,255,.9)
           border 1px solid #ccc
           border-right 2px solid #ccc
           border-bottom 3px solid #bbb
           border-radius 3px
+          .comment
+            clear both
+            text-align left
+            padding 2px grid
+            overflow hidden
+            .photo
+              margin-right 10px
+              margin-top 2px
+            .msg
+              margin-top 2px
           > .body
             padding 0 0 grid grid
             margin 0
@@ -253,22 +263,25 @@ section.content
               color #777
               right grid
               top (grid / 2)
-        .sub-post:hover
+        .subpost:hover
           border-bottom 1px solid #ddd
           color #000
-          //background-image linear-gradient(top, #f0f0f0, #f9f9f9)
+          background-color rgba(255,255,255,.3)
           .signature
             background-color #eee
             color #444
-        .sub-post
+        .subpost
           border-left 2px solid #eee
           padding (grid / 2)
           //background-color #f9f9f9
           color #333
           border-bottom 1px solid #eee
+          .photo
+            margin-right grid
+            margin-top (grid/2)
           p
             font-size .8em
-            padding (grid/2) 0 (grid) (grid/2)
+            padding 0 0 (grid) (grid/2)
             margin 0
           .signature
             font-style italic
@@ -296,6 +309,7 @@ footer
     margin 3px
     font-weight 100
 //}}}
+
 //{{{ Controls
 input[type="password"], select, textarea, input[type="text"]
   //box-shadow 0 0 9px #cba inset, 0 0 0 #888
@@ -381,6 +395,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   padding 3px 12px
   text-align center
 //}}}
+
 //{{{ jQuery UI
 .ui-widget-overlay
   opacity .9!important

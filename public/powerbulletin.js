@@ -452,16 +452,14 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
     return $('.forum').waypoint({
       offset: '33%',
       handler: function(direction){
-        var e, eId, id, prev, cur, last, next;
+        var e, eid, id, cur, last, next;
         e = $(this);
-        eId = e.attr('id');
+        eid = e.attr('id');
         id = direction === 'down'
-          ? eId
-          : $('#' + eId).prevAll('.forum:first').attr('id');
-        prev = $('header .menu').find('.active');
-        cur = $('header .menu').find("." + id.replace(/_/, '-'));
-        prev.removeClass('active');
-        cur.addClass('active');
+          ? eid
+          : $('#' + eid).prevAll('.forum:first').attr('id');
+        $('header .menu').find('.active').removeClass('active');
+        cur = $('header .menu').find("." + id.replace(/_/, '-')).addClass('active');
         if (w.bgAnim) {
           clearTimeout(w.bgAnim);
         }
@@ -475,10 +473,9 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
             next = $('#forum' + ("_bg_" + cur.data('id')));
             last.css('top', direction === 'down' ? -300 : 300);
             last.removeClass('active');
-            next.addClass('active');
-            next.addClass('visible');
+            next.addClass('active visible');
             return w.bgAnim = 0;
-          }, 350);
+          }, 300);
         }
       }
     });
