@@ -192,10 +192,12 @@ section.left
         z-index 3
         .post:hover
           transform translateY(-15px)
-          transition all .2s ease-out 1.75s
+          position relative
+          z-index 4
+          transition all .1s ease-out 1.3s
           .comment
             height 30px
-            transition height .2s ease-out 2.1s
+            transition height .05s ease-out 1.6s
         .post
           float left
           margin 10px
@@ -214,6 +216,7 @@ section.left
             width 70%
         .subpost
           position relative
+          clear both
           .photo
             overflow hidden
             width 40px

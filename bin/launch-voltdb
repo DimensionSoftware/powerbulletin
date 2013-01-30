@@ -2,6 +2,5 @@
 export CLASSPATH=`bin/classpath`
 export VOLTDB_HOME=/usr/local/voltdb
 export VOLTDB_HEAPSIZE=256
-#echo " ... launching voltdb in background and waiting 10 secs (see voltdb.log)"
 (bin/custom-voltdb recover host 127.0.0.1 deployment voltdb/deployment.xml >> voltdb.log 2>&1) ||\
 (bin/custom-voltdb create catalog voltdb/pb-schema.jar host 127.0.0.1 deployment voltdb/deployment.xml >> voltdb.log 2>&1)
