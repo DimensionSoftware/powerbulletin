@@ -58,7 +58,7 @@ module.exports = function(grunt) {
       },
       voltdb: {
         files: ['voltdb/procs/*.java', 'voltdb/procs/*.clj'],
-        tasks: ['voltdb'],
+        tasks: ['voltdb', 'launch'],
         options: {
           interrupt: true,
           debounceDelay: 2000
@@ -92,7 +92,8 @@ module.exports = function(grunt) {
     fs.writeFileSync(pidFile, proc.pid)
   }
 
-  grunt.registerTask('launch', 'Launch PowerBulletin!', function() {
+  var launch;
+  grunt.registerTask('launch', 'Launch PowerBulletin!', launch = function() {
     // XXX surely there's a more automatic way to manage this?
     var config = require('./config/development');
     var file   = config.tmp+'/pb.pid';
@@ -113,6 +114,7 @@ module.exports = function(grunt) {
     fs.appendFileSync(logFile, result.output);
     if (result.code == 0) {
       daemon('./bin/launch-voltdb', pidFile, logFile);
+      setTimeout(launch, 10000);
     }
   });
 
