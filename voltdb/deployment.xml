@@ -1,0 +1,5 @@
+<deployment>
+  <cluster hostcount="1" sitesperhost="1" kfactor="0"/>
+  <!-- ENTERPRISE ONLY :( <commandlog enabled="true"/> -->
+  <snapshot prefix="snapshots" frequency="1m" retain="3"/>
+</deployment>

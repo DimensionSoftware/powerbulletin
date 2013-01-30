@@ -2,4 +2,4 @@
 export CLASSPATH=`bin/classpath`
 export VOLTDB_HOME=/usr/local/voltdb
 export VOLTDB_HEAPSIZE=256
-bin/custom-voltdb create catalog voltdb/pb-schema.jar
+bin/custom-voltdb create catalog voltdb/pb-schema.jar host localhost deployment voltdb/deployment.xml
