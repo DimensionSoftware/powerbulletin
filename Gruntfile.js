@@ -1,3 +1,6 @@
+require('shelljs/global');
+var cp = require('child_process'),
+    fs = require('fs');
 
 module.exports = function(grunt) {
 
@@ -52,6 +55,14 @@ module.exports = function(grunt) {
           interrupt: true,
           debounceDelay: 2000
         }
+      },
+      voltdb: {
+        files: ['voltdb/procs/*.java', 'voltdb/procs/*.clj'],
+        tasks: ['voltdb'],
+        options: {
+          interrupt: true,
+          debounceDelay: 2000
+        }
       }
     }
   });
@@ -63,30 +74,49 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-livescript');
   grunt.loadNpmTasks('grunt-browserify');
 
-  grunt.registerTask('launch', 'Launch PowerBulletin!', function() {
-    // XXX surely there's a more automatic way to manage this?
-    var cp   = require('child_process'),
-        fs   = require('fs'),
-        pid  = false
-
-    config = require('./config/development');
-    file   = config.tmp+'/pb.pid';
+  // daemonize a command
+  function daemon(command, pidFile, logFile) {
+    var pid = false;
 
     try { // kill running proc
-      pid = fs.readFileSync(file, 'utf8');
+      pid = fs.readFileSync(pidFile, 'utf8');
       if (pid) process.kill(-pid); // the minus kills the entire process group
     } catch (e) {}
 
-    // compile pb-entry with component (tjholowaychauk or however u say his name)
-    //cp.spawn('./bin/compile-pb-entry', [], {detached:true, stdio:'inherit'});
-    //console.log(" ... compiling pb entry");
+    var opts = { detached: true, stdio: 'inherit' };
+    if (logFile) {
+      var log = fs.openSync(logFile, 'a');
+      opts.stdio = [ 'ignore', log, log ];
+    }
+    var proc = cp.spawn(command, [], opts);
+    fs.writeFileSync(pidFile, proc.pid)
+  }
 
-    // spawn detached new proc & write out pid
-    proc = cp.spawn('./bin/powerbulletin', [], {detached:true, stdio:'inherit'});
-    fs.writeFileSync(file, proc.pid)
+  grunt.registerTask('launch', 'Launch PowerBulletin!', function() {
+    // XXX surely there's a more automatic way to manage this?
+    var config = require('./config/development');
+    var file   = config.tmp+'/pb.pid';
+
+    daemon('./bin/powerbulletin', file);
+  });
+
+  // Compile VoltDB Procedures and Launch VoltDB
+  grunt.registerTask('voltdb', 'Compile VoltDB Procedures!', function() {
+    var config  = require('./config/development');
+    var pidFile = config.tmp+'/voltdb.pid';
+    var logFile = 'voltdb.log';
+
+    var now = new Date();
+    fs.appendFileSync(logFile, "\n" + now.toISOString() + " - Recompiling VoltDB Procedures...\n");
+
+    var result  = exec("./bin/compile-voltdb", { silent: true });
+    fs.appendFileSync(logFile, result.output);
+    if (result.code == 0) {
+      daemon('./bin/launch-voltdb', pidFile, logFile);
+    }
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['browserify', 'uglify', 'launch', 'watch']);
+  grunt.registerTask('default', ['browserify', 'uglify', 'launch', 'voltdb', 'watch']);
 
 };
