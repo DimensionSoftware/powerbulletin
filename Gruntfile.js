@@ -117,6 +117,7 @@ module.exports = function(grunt) {
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['browserify', 'uglify', 'launch', 'voltdb', 'watch']);
+  //grunt.registerTask('default', ['browserify', 'uglify', 'launch', 'voltdb', 'watch']);
+  grunt.registerTask('default', ['browserify', 'uglify', 'launch', 'watch']);
 
 };
