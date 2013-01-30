@@ -3,7 +3,7 @@ export CLASSPATH=`bin/classpath`
 export VOLTDB_HOME=/usr/local/voltdb
 export VOLTDB_HEAPSIZE=256
 echo " ... launching voltdb in background and waiting 10 secs (see voltdb.log)"
-nohup bin/custom-voltdb create catalog voltdb/pb-schema.jar host 127.0.0.1 deployment voltdb/deployment.xml &> voltdb.log &
+nohup bin/custom-voltdb create catalog voltdb/pb-schema.jar host 127.0.0.1 deployment voltdb/deployment.xml &>> voltdb.log &
 sleep 10
 /usr/local/voltdb-tools-3.0/bin/voltadmin restore voltdbroot/snapshots \
   `basename $(ls voltdbroot/snapshots/**.jar | tail -n 1) .jar`
