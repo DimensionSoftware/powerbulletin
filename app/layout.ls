@@ -5,7 +5,7 @@ window.v = require './validations'
 w = $ window
 d = $ document
 
-w.jade-templates = require './templates'
+#w.jade-templates = require './templates'
 
 threshold = 10 # snap
 
