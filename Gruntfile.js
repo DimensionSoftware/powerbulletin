@@ -48,6 +48,10 @@ module.exports = function(grunt) {
     },
 
     watch: {
+      jade: {
+        files: ['app/views/*.jade'],
+        tasks: ['jade']
+      },
       app: {
         files: ['app/*.ls', 'config/*', 'lib/**/*.ls'],
         tasks: ['browserify', 'uglify', 'launch'],
@@ -99,6 +103,10 @@ module.exports = function(grunt) {
     var file   = config.tmp+'/pb.pid';
 
     daemon('./bin/powerbulletin', file);
+  });
+
+  grunt.registerTask('jade', 'Compile VoltDB Procedures!', function() {
+    var result = exec('clientjade -c app/views/homepage.jade > app/views/homepage.js');
   });
 
   // Compile VoltDB Procedures and Launch VoltDB
