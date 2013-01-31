@@ -54,6 +54,7 @@ set-timeout (->
         .add-class \active # ...and activate!
 
       # handle forum background
+      $ '.bg' .each -> $ this .remove!prependTo $ 'body' # position behind
       clear-timeout w.bg-anim if w.bg-anim
       last = $ '.bg.active'
       unless last.length
@@ -66,7 +67,6 @@ set-timeout (->
           last.css \top if direction is \down then -300 else 300 # stage animation
           last.remove-class \active
           next.add-class 'active visible' # ... and switch!
-          #next.add-class \visible # ... and switch!
           w.bg-anim = 0
         ), 300
   }), 100

@@ -50,6 +50,8 @@ else
   onInitial = template.onInitial || ((w, cb) -> cb(null))
   onMutate  = template.onMutate  || ((w, cb) -> cb(null))
 
+  require '../../app/views/mutants.js' # pre-built clientjade templates
+
   if window?
     if initial_run
       onLoad.call params, window, (err) ->
@@ -57,24 +59,15 @@ else
         onInitial.call params, window, cb
 
     else
-      window.templates = # pre-built mutant templates (clientjade)
-        homepage: require '../../app/views/homepage.js'
-
-      window.render-jade = (target, tmpl, cb) ->
-        #$.get "/templates/#{tmpl_name}", (funtxt) ->
-        #  # bring runtime into scope, assumes runtime is attached to window (by loading runtime.js)
-        #  jade = window.jade
-        #  jade_tmpl = eval "#{funtxt} anonymous"
-        #  cb(null, jade_tmpl(params))
-        cb null, window.templates[tmpl].render(target, tmpl, params)
+      # render static jade template, followed by dynamic mutator template
+      window.render-jade = (target, tmpl) ->
+        cb null, jade.render window.document.get-element-by-id(target), tmpl, params
 
       window.marshal = (key, val) ->
         window[key] = val
 
-      # render static jade template, followed by dynamic mutator template
       template.static.call params, window, (err) ->
         if err then return cb(err)
-
         onLoad.call params, window, (err) ->
           if err then return cb(err)
           onMutate.call params, window, cb
@@ -82,32 +75,25 @@ else
   else if html
     # playskool pretend server-side window
     gen_dom_window html, (err, window) ->
-      if err then return cb(err)
+      if err then return cb err
 
-      #window.renderJade = (tmpl_name, cb) ->
-      #  jade.renderFile "./views/#{tmpl_name}.jade", params, cb
-      #console.log tmpl_name
-      #window.templates = # pre-built mutant templates (clientjade)
-      #  homepage: require '../../app/views/homepage.js'
-      require '../../app/views/homepage.js'
       window.render-jade = (target, tmpl) ->
         jade.render window.document.get-element-by-id(target), tmpl, params
 
       window.marshal = (key, val) ->
-        #window.$('body').append("<script>window['#{key}'] = #{JSON.stringify(val)};</script>")
-        s = window.document.createElement('script')
-        window.$(s).attr('type', 'text/javascript')
-        window.$(s).text("window['#{key}'] = #{JSON.stringify(val)};")
-        window.document.body.appendChild(s)
+        s = window.document.createElement \script
+        window.$ s .attr('type', 'text/javascript')
+        window.$ s .text "window['#{key}'] = #{JSON.stringify(val)};"
+        window.document.body.appendChild s
 
       template.static.call params, window, (err) ->
-        if err then return cb(err)
+        if err then return cb err
 
         # mutating / loading of jquery already accomplished, don't pollute html page load
-        window.$('script.jsdom').remove()
+        window.$('script.jsdom').remove!
 
         # finally return html
-        cb(null, "<!doctype html>\n" + window.document.outerHTML)
+        cb null "<!doctype html>#{window.document.outerHTML}"
   else
     throw new Error("need html for serverside")
 

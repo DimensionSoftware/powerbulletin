@@ -105,8 +105,8 @@ module.exports = function(grunt) {
     daemon('./bin/powerbulletin', file);
   });
 
-  grunt.registerTask('jade', 'Compile VoltDB Procedures!', function() {
-    fs.writeFileSync('app/views/homepage.js', (exec('clientjade -c app/views/homepage.jade', {silent:true}).output));
+  grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {
+    fs.writeFileSync('app/views/mutants.js', (exec('clientjade -c app/views/homepage.jade', {silent:true}).output));
   });
 
   // Compile VoltDB Procedures and Launch VoltDB
@@ -127,6 +127,6 @@ module.exports = function(grunt) {
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['browserify', 'uglify', 'voltdb', 'watch']);
+  grunt.registerTask('default', ['jade', 'browserify', 'uglify', 'voltdb', 'watch']);
 
 };

@@ -460,6 +460,9 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
           : $('#' + eid).prevAll('.forum:first').attr('id');
         $('header .menu').find('.active').removeClass('active');
         cur = $('header .menu').find("." + id.replace(/_/, '-')).addClass('active');
+        $('.bg').each(function(){
+          return $(this).remove().prependTo($('body'));
+        });
         if (w.bgAnim) {
           clearTimeout(w.bgAnim);
         }

@@ -37,7 +37,7 @@ require! {
   res.mutant \homepage
 
 @hello = (req, res) ->
-  res.send "hello #{res.locals.remote-ip}"
+  res.send "hello #{res.locals.remote-ip}!"
 
 @register = (req, res) ->
   req.assert('login').is-alphanumeric!
