@@ -33,6 +33,7 @@ PARTITION TABLE forums ON COLUMN id;
 -- user has many auths
 -- user has many aliases
 -- user has many sites (if they are admin)
+-- user has many posts
 CREATE TABLE users (
   id BIGINT NOT NULL,
   created TIMESTAMP NOT NULL,
@@ -60,8 +61,9 @@ CREATE TABLE auths (
 );
 PARTITION TABLE auths ON COLUMN user_id;
 
--- user has many posts
 -- post has many child posts
+-- post belongs to user
+-- post belongs to forum
 CREATE TABLE posts ( 
   id        BIGINT NOT NULL,
   parent_id BIGINT,
@@ -94,4 +96,5 @@ CREATE PROCEDURE FROM CLASS NextInSequence;
 CREATE PROCEDURE FROM CLASS GetDoc;
 CREATE PROCEDURE FROM CLASS PutDoc;
 CREATE PROCEDURE FROM CLASS select_user;
+CREATE PROCEDURE FROM CLASS add_post2;
 PARTITION PROCEDURE select_user ON TABLE users COLUMN id;
