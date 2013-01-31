@@ -7,6 +7,8 @@ require! {
 }
 global <<< require './helpers' # pull helpers (common) into global (play nice :)
 
+surfable-routes = []
+
 # <API RESOURCES>
 # ---------
 app.resource \posts  resources.posts
@@ -40,3 +42,5 @@ app.post '/ajax/add-post', handlers.add-post
 
 # dynamic serving
 app.get '/dynamic/css/:file' handlers.stylus
+
+surfable-routes = mutant.surfable-routes app

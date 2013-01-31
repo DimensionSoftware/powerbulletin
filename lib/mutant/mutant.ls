@@ -100,3 +100,8 @@ else
   else
     throw new Error("need html for serverside")
 
+# surfable routes populated now that we have declared all routes
+is-surfable = (r) ->
+  r.callbacks.some( (m) -> m.surfable )
+@surfable-routes = (app) ->
+  [r.regexp.to-string! for r in app.routes.all! when is-surfable r]
