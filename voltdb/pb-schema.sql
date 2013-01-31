@@ -78,6 +78,8 @@ PARTITION TABLE posts ON COLUMN id;
 CREATE TABLE docs (
   key           VARCHAR(64) NOT NULL,
   type          VARCHAR(64) NOT NULL,
+  created       TIMESTAMP NOT NULL,
+  updated       TIMESTAMP,
   json          VARCHAR(1048576) NOT NULL,
   index_enabled TINYINT NOT NULL,
   index_dirty   TINYINT NOT NULL,
