@@ -14,6 +14,12 @@
      (defn ~'get-stmt [this# name#]
        (get (.state this#) name#))
 
+     (defn ~'queue [this# stmtname# & args#]
+       (.voltQueueSQL this# (~'get-stmt this# stmtname#) (into-array Object args#)))
+
+     (defn ~'execute [this# & args#]
+       (.voltExecuteSQL this# (into-array args#)))
+
      (defn ~'-init []
        [[] ~statements])
 
