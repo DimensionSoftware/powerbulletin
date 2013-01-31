@@ -22,7 +22,7 @@ PARTITION TABLE sites ON COLUMN id;
 -- if a forum does not have a parent, then it cannot not have posts
 CREATE TABLE forums (
   id          BIGINT NOT NULL,
-  created TIMESTAMP NOT NULL,
+  created     TIMESTAMP NOT NULL,
   title       VARCHAR(256) NOT NULL,
   description VARCHAR(1024) NOT NULL,
   media_url   VARCHAR(1024),
@@ -66,6 +66,7 @@ PARTITION TABLE auths ON COLUMN user_id;
 -- post belongs to forum
 CREATE TABLE posts ( 
   id        BIGINT NOT NULL,
+  created   TIMESTAMP NOT NULL,
   parent_id BIGINT,
   user_id   BIGINT NOT NULL,
   title     VARCHAR(256) NOT NULL,
@@ -91,7 +92,7 @@ PARTITION TABLE docs ON COLUMN key;
 --  SELECT json FROM docs WHERE type=? AND key=? LIMIT 1;
 
 CREATE PROCEDURE FROM CLASS SelectUser;
-CREATE PROCEDURE FROM CLASS AddPost;
+--CREATE PROCEDURE FROM CLASS AddPost;
 CREATE PROCEDURE FROM CLASS NextInSequence;
 CREATE PROCEDURE FROM CLASS GetDoc;
 CREATE PROCEDURE FROM CLASS PutDoc;

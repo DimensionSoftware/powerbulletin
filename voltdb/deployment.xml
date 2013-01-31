@@ -2,4 +2,6 @@
   <cluster hostcount="1" sitesperhost="1" kfactor="0"/>
   <!-- ENTERPRISE ONLY :( <commandlog enabled="true"/> -->
   <snapshot prefix="snapshots" frequency="30s" retain="3"/>
+  <!-- enable web interface access -->
+  <httpd><jsonapi enabled='true'/></httpd>
 </deployment>
