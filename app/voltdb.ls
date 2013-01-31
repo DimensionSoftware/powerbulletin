@@ -28,10 +28,27 @@ defp 'NextInSequence' [\string]
 defp 'GetDoc' [\string \string] # type, key
 defp 'PutDoc' [\string \string \string \long] #type, key, json, index_enabled
 
-# it is assumed that init will have finished before any queries are exec'd
+
+# if it returns null for err, then everything is groovy
+# if it returns true for err, then you need to re-initialize connection
+_callp = @callp
+_connect = @connect
+init-health-check-loop = ->
+  health-check = (cb) ->
+    _callp \select_user, 1, cb
+
+  checker = ->
+    console.log '^'
+    unhealthy <~ health-check
+    if unhealthy
+      _connect!
+      console.warn 'voltdb connection unhealthy, reconnecting...'
+
+  set-interval checker, 5000
+
 # then @client will be populated
-export init = (host, cb = (->)) ->
-  vconf = new VoltConfiguration {host}
+export connect(cb = (->)) = ->
+  vconf = new VoltConfiguration {host: @host}
   vcli = new VoltClient [vconf]
 
   vcli.connect (err, type, res) ~>
@@ -58,11 +75,39 @@ export init = (host, cb = (->)) ->
           cb(new Error(res.status-string))
     cb!
 
+# it is assumed that init will have finished before any queries are exec'd (or connect is called)
+# this also starts the health check loop
+export init = ->
+  # wait 10000ms to start health checking
+  set-timeout init-health-check-loop, 10000
+  @host = arguments[0]
+  @connect(...arguments)
+
 export callp = (pname, ...raw-args) ->
   params = raw-args.slice 0, -1
   cb = raw-args[raw-args.length - 1]
+  procedure-finished = false
+
+  # check to see if procedure call timed out
+  # if procedure did time out, then return error!
+  timeout-checker = ~>
+    unless procedure-finished
+      if @callq
+        @connect!
+        return cb(new Error "voltdb procedure '#{pname}' timed out, reconnecting...")
+      else
+        throw new Error 'voltdb is not initialized (did you call init?)'
+
   if q = getq pname
     q.set-parameters params
-    @callq q, cb
+    if @callq
+      set-timeout timeout-checker, 3000 # the health check has 3000ms to complete, before timing out
+      err, res <- @callq q
+      procedure-finished := true # timeout-checker will not fire after setting this
+      if err then return cb(err)
+      cb null, res
+    else
+      throw new Error 'voltdb is not initialized (did you call init?)'
   else
     throw new Error "There is no procedure named '#{pname}'"
+
