@@ -57,7 +57,7 @@ module.exports = function(grunt) {
         }
       },
       voltdb: {
-        files: ['voltdb/procs/*.java', 'voltdb/procs/*.clj'],
+        files: ['voltdb/procs/*.java', 'voltdb/procs/*.clj', 'voltdb/pb-schema.sql'],
         tasks: ['voltdb', 'launch'],
         options: {
           interrupt: true,
