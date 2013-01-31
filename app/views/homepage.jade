@@ -1,4 +1,4 @@
-extend layout
+//-extend layout
 
 mixin forum(f, i)
   img.bg(id="forum_bg_#{f.id}", class=(i==0) ? 'active' : '', src="#{cache_url}/images/bg_#{f.id}.jpg")
@@ -21,7 +21,7 @@ mixin post(p, i)
     .comment
       .photo
         img(src="#{cache_url}/images/profile.jpg")
-      input.msg(placeholder='Say it ...')
+      input.msg(type='text', placeholder='Say it ...')
 
 mixin subpost(sp, i)
  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even')
@@ -34,48 +34,8 @@ mixin subpost(sp, i)
 
 //- main
 //- ---------
-block header
-  h1.logo Power
-    strong Bulletin
-  block categories
-    menu.menu
-      each f,i in forums
-        li.row
-          a.title(data-id=f.id, class="forum-#{f.id}", href="#forum_#{f.id}")= f.title
-          menu.submenu
-            li.row Sub-forum
-            li.row Sub-forum
-            li.row Sub-forum
-  .search
-    input#query.query(type='text', placeholder='Search', autocomplete='off')
-  .advanced
-    input#option_1.check(type='checkbox')
-    label(for='option_1') Option
-    input#option_2.check(type='checkbox')
-    label(for='option_2') Option 2
-    input#option_3.check(type='checkbox')
-    label(for='option_3') Option 3
-
-block left
-  //-{{{ data-fid is how we pass in the forum id of the post, this way
-  //- we can put a hotlink wherever without having to write new
-  //- javascript (other than calculating the fid)
-  //- TODO move this into posts :hover tools }}}
-  .user-profile
-    .photo
-      img#user-photo(src="#{cache_url}/images/profile.jpg")
-    div
-      a(class='button onclick-add-post-dialog', data-fid=33) Post
-    .scroll-to-top top
-
 block content-stream
   each f,i in forums
     mixin forum(f, i)
-
-block footer
-  h6
-    small &copy; 
-    | #{site_name} &nbsp;
-    b= new Date().getFullYear()
 
 //- vim:fdm=marker

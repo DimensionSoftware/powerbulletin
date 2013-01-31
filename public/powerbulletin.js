@@ -403,9 +403,9 @@ require.define("/validations.ls",function(require,module,exports,__dirname,__fil
 
 require.define("/layout.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
   var w, d, threshold, hasScrolled, addPostDialog, addPost;
-  window.v = require('./validations');
   w = $(window);
   d = $(document);
+  w.v = require('./validations');
   threshold = 10;
   hasScrolled = function(){
     var st;

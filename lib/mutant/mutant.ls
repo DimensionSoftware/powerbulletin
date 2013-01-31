@@ -3,7 +3,6 @@ if window?
 else
   require! {
     \jsdom
-    \jade
   }
 
   gen_dom_window = (html, cb) ->
@@ -47,9 +46,9 @@ else
   # specify base html if we are serverside
   html = opts.html
 
-  onLoad = template.onLoad || ((w, cb) -> cb(null))
+  onLoad    = template.onLoad    || ((w, cb) -> cb(null))
   onInitial = template.onInitial || ((w, cb) -> cb(null))
-  onMutate = template.onMutate || ((w, cb) -> cb(null))
+  onMutate  = template.onMutate  || ((w, cb) -> cb(null))
 
   if window?
     if initial_run
@@ -58,12 +57,16 @@ else
         onInitial.call params, window, cb
 
     else
-      window.renderJade = (tmpl_name, cb) ->
-        $.get "/templates/#{tmpl_name}", (funtxt) ->
-          # bring runtime into scope, assumes runtime is attached to window (by loading runtime.js)
-          jade = window.jade
-          jade_tmpl = eval "#{funtxt} anonymous"
-          cb(null, jade_tmpl(params))
+      window.templates = # pre-built mutant templates (clientjade)
+        homepage: require '../../app/views/homepage.js'
+
+      window.render-jade = (target, tmpl, cb) ->
+        #$.get "/templates/#{tmpl_name}", (funtxt) ->
+        #  # bring runtime into scope, assumes runtime is attached to window (by loading runtime.js)
+        #  jade = window.jade
+        #  jade_tmpl = eval "#{funtxt} anonymous"
+        #  cb(null, jade_tmpl(params))
+        cb null, window.templates[tmpl].render(target, tmpl, params)
 
       window.marshal = (key, val) ->
         window[key] = val
@@ -81,8 +84,14 @@ else
     gen_dom_window html, (err, window) ->
       if err then return cb(err)
 
-      window.renderJade = (tmpl_name, cb) ->
-        jade.renderFile "./views/#{tmpl_name}.jade", params, cb
+      #window.renderJade = (tmpl_name, cb) ->
+      #  jade.renderFile "./views/#{tmpl_name}.jade", params, cb
+      #console.log tmpl_name
+      #window.templates = # pre-built mutant templates (clientjade)
+      #  homepage: require '../../app/views/homepage.js'
+      require '../../app/views/homepage.js'
+      window.render-jade = (target, tmpl) ->
+        jade.render window.document.get-element-by-id(target), tmpl, params
 
       window.marshal = (key, val) ->
         #window.$('body').append("<script>window['#{key}'] = #{JSON.stringify(val)};</script>")

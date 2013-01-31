@@ -1,11 +1,10 @@
 # XXX layout-specific client-side
-window.v = require './validations'
 
 # shortcuts
 w = $ window
 d = $ document
 
-#w.jade-templates = require './templates'
+w.v = require './validations'
 
 threshold = 10 # snap
 

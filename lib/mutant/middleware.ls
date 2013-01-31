@@ -32,7 +32,7 @@ export mutant-layout = (jade-layout, mutants) ->
       else
         res.locals.initial-mutant = template-nm
         res.locals.query = req.query
-        res.render "#{jade-layout}.jade", {locals: locals, layout:false}, (err, base-html) ->
+        res.render "#{jade-layout}.jade", {locals:locals, layout:false}, (err, base-html) ->
           if err then return next err
           mutant.run mutants[template-nm], locals:locals, html: base-html, (err, html) ->
             if err then return next err
