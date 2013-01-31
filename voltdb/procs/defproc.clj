@@ -31,4 +31,6 @@
 
      (defn ~'-run
        ~params
+       (in-ns 'user)
        ~@body)))
+

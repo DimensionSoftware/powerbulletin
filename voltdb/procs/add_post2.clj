@@ -1,4 +1,5 @@
 (require 'defproc)
+(require 'u)
 
 (defproc add-post2
   [long long String String] [this id user-id title body]
@@ -23,7 +24,7 @@
   (let [now (new java.util.Date)]
     (queue this "insert-post" id now user-id title body)
     (queue this "select-top-posts")
-    (let [top-posts-json (.toJSONString (nth (execute this) 1))]
+    (let [top-posts-json (.toJSONString (nth (execute this) (u/foo 1)))]
       ; upsert homepage doc
       (queue this "select-homepage-doc")
       (if (< (.getRowCount (nth (execute this) 0)) 1)
