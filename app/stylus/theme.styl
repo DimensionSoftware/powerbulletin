@@ -230,7 +230,7 @@ section.content
           border 1px solid #aaa
           border-right 2px solid #aaa
           border-bottom 3px solid #aaa
-          box-shadow 0 0 2px 0 #fff, 0 0 4px 0 #555
+          box-shadow 0 0 2px 0 #fff, 0 0 2px 0 #555
         .post
           background-color rgba(255,255,255,.9)
           border 1px solid #ccc
@@ -245,8 +245,11 @@ section.content
             .photo
               margin-right 10px
               margin-top 2px
+            .msg:focus
+              padding-left 5px
             .msg
               margin-top 2px
+              padding 4px
           > .body
             padding 0 0 grid grid
             margin 0
@@ -328,25 +331,25 @@ input[type="password"], select, textarea, input[type="text"]
   outline none
 input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:hover
   color #555
-  border-color #444
-  border-bottom 1px solid #666
-  border-right 1px solid #777
+  border-color #ddd
+  border-bottom 1px solid #555
+  border-right 1px solid #666
   box-shadow 0 0 1px highlight-color2 inset,1px 0 2px highlight-color
 input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #000
   background-color #fffcfc
   border 1px solid highlight-color2
   border-bottom 1px solid highlight-color2
-  box-shadow -1px 0px 3px #aaa inset,0 0 2px orange,-1px 0px 0 #ff3800,1px 2px 0 #555,0 0 4px #faa,-1px -1px 2px yellow,0 0 3px yellow
+  box-shadow -1px 0px 2px #aaa inset,0 0 1px orange,-1px 0px 0 #ff3800,1px 1px 0 #555,0 0 4px #faa
   transition all .15s
   border-radius 4px
 .button:hover:before
   background-color rgba(100,100,100,.08)
 .button:hover, input[type="button"]:hover, input[type="submit"]:hover, button:hover
-  background -moz-linear-gradient(center top , #FFce29, #F38437) repeat scroll 0 0 #FFFFFF
-  background -webkit-gradient(linear, left top, left bottom, from(#FFce29), to(#F38437))
+  background -moz-linear-gradient(center top , #ffce29, #f38437) repeat scroll 0 0 #ffffff
+  background -webkit-gradient(linear, left top, left bottom, from(#ffce29), to(#f38437))
   text-indent -1px
-  background-color #FFca27
+  background-color #ffca27
   border-color #777
   border-top 1px solid #fff467
   border-left 1px solid #fff467
