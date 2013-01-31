@@ -1,5 +1,5 @@
-__        = require 'underscore'
-mutant    = require './mutant'
+__     = require \lodash
+mutant = require './mutant'
 
 unpick = (obj, keys) -> # strip unnecessary values from mutate phase
   locals = __.clone obj
