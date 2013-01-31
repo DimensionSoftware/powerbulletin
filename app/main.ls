@@ -38,6 +38,8 @@ global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.en
 
 proc = process
 
+proc.on 'uncaughtException', (e) -> throw e
+
 app = global.app = express!
 redir-to-www     = express!
 cache-app        = express!
@@ -98,7 +100,7 @@ else
   console.log "[1;30;30m  `+ worker #{proc.pid}[0;m"
   # XXX/FIXME: would like to actually block until initialized, except voltdb never calls back...
   # then we can use back-calls before initializing the worker....
-  v.init!
+  v.init '127.0.0.1'
 
   if proc.env.NODE_ENV == 'production'
     Gproc.on 'uncaughtException', (err) ->
