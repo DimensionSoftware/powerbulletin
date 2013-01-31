@@ -9,6 +9,7 @@ mkdir classes
 
 # compile clojure procedures and utilities
 echo "(compile 'utils.common)" | bin/clojure -
+echo "(compile 'add-post2)" | bin/clojure -
 echo "(compile 'select-user)" | bin/clojure -
 
 # compile java procedures
