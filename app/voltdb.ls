@@ -31,14 +31,15 @@ defp 'PutDoc' [\string \string \string \long] #type, key, json, index_enabled
 
 # if it returns null for err, then everything is groovy
 # if it returns true for err, then you need to re-initialize connection
+_t = @
 init-health-check-loop = ->
   health-check = (cb) ~>
-    @callp \select_user, 1, cb
+    _t.callp \select_user, 1, cb
 
   checker = ~>
     unhealthy <~ health-check
     if unhealthy
-      @connect!
+      _t.connect!
       console.warn 'voltdb connection unhealthy, reconnecting...'
 
   set-interval checker, 5000
