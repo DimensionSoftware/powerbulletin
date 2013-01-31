@@ -34,7 +34,7 @@ require! {
   # XXX: this should be abstracted into a pattern, middleware or pure function
   caching-strategies.etag res, sha1(JSON.stringify req.params), 7200 # FIXME include site here later
   res.content-type \html
-  res.mutant \homepage
+  res.render \homepage
 
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}"
