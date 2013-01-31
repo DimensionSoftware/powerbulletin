@@ -106,7 +106,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('jade', 'Compile VoltDB Procedures!', function() {
-    var result = exec('clientjade -c app/views/homepage.jade > app/views/homepage.js');
+    fs.writeFileSync('app/views/homepage.js', (exec('clientjade -c app/views/homepage.jade', {silent:true}).output));
   });
 
   // Compile VoltDB Procedures and Launch VoltDB
