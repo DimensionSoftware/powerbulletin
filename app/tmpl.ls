@@ -1,6 +1,7 @@
 require! {
   \fs
   \jade
+  __: \lodash
 }
 
 @build = (path = "./app/views", ignore = [/add-post/, /layout/]) ->
@@ -10,5 +11,5 @@ require! {
     j1   = j.replace(/\.jade$/, '')
     j2   = j1.split('/')
     name = j2[j2.length - 1]
-    templates[name] = jade.compile(fs.read-file-sync("#{path}/#{j}", 'utf8'), {client:true, compile-debug:false})
-  template
+    templates[name] = jade.compile(fs.read-file-sync("#{path}/#{j}", 'utf8'), {client:true, compile-debug:false, filename: "#{path}/#{j}"})
+  templates
