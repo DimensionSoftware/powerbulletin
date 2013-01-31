@@ -220,9 +220,9 @@ section.left
 //}}}
 //{{{ Main Content
 section.content
-  .container
-    padding 60px 20px 20px 20px
-    //background-color rgba(255,255,255,.9)
+  .container:first-child
+    padding 60px (grid) (grid) (grid)
+    background-color rgba(255,255,255,.85)
     .forum
       margin-bottom (grid * 2)
       .header
@@ -246,17 +246,9 @@ section.content
           animation-name tiny-grow
           animation-duration .5s
         .post:hover
-          background-color #fff
           border-radius 5px
-          border 1px solid #aaa
-          border-right 2px solid #aaa
-          border-bottom 3px solid #aaa
           box-shadow 0 0 2px 0 #fff, 0 0 2px 0 #111
         .post
-          background-color rgba(255,255,255,.9)
-          border 1px solid #ccc
-          border-right 2px solid #ccc
-          border-bottom 3px solid #bbb
           border-radius 3px
           .comment
             clear both
@@ -275,13 +267,11 @@ section.content
             padding 0 0 grid grid
             margin 0
             color #111
-            background-color #fff
           .title
             margin 0
             padding grid 0 0 grid
             border-top-left-radius 5px
             border-top-right-radius 5px
-            background-color #fff
             .date
               position absolute
               font-size .6em
@@ -296,11 +286,9 @@ section.content
             background-color #eee
             color #444
         .subpost
-          border-left 2px solid #eee
           padding (grid / 2)
-          //background-color #f9f9f9
           color #333
-          border-bottom 1px solid #eee
+          border-bottom 1px solid transparent
           .photo
             margin-right grid
             margin-top (grid/2)
