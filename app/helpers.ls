@@ -9,17 +9,36 @@ require! {
     # upstream caches and clients should not cache
     res.header 'Cache-Control', 'no-cache'
     res.header 'Pragma', 'no-cache'
-  etag: (res, etag, client_ttl) ->
+  etag: (res, etag, client-ttl) ->
     return @nocache(res) if DISABLE_HTTP_CACHE
-    res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
+    res.header 'Cache-Control', "max-age=#{client-ttl}; must-revalidate"
     res.header 'ETag', etag
-  lastmod: (res, last_modified, client_ttl) ->
+  lastmod: (res, last-modified, client-ttl) ->
     return @nocache(res) if DISABLE_HTTP_CACHE
-    res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
-    res.header 'Last-Modified', last_modified.toUTCString()
-  justage: (res, client_ttl) ->
+    res.header 'Cache-Control', "max-age=#{client-ttl}; must-revalidate"
+    res.header 'Last-Modified', last-modified.toUTCString()
+  justage: (res, client-ttl) ->
     return @nocache(res) if DISABLE_HTTP_CACHE
-    res.header 'Cache-Control', "max-age=#{client_ttl}; must-revalidate"
+    res.header 'Cache-Control', "max-age=#{client-ttl}; must-revalidate"
+
+# cache data in process memory
+process-cached-data = {}
+@process-cache = (key, time-ms, f) ->
+  cache = process-cached-data
+  cache[key] || cache[key] = {}
+  (cb) ->
+    now = new Date
+    if (not cache[key].data and not cache[key].expiration-date) or (now > cache[key].expiration-date)
+      f (err, data) ->
+        if err
+          return cb err, null
+        else
+          cache[key].data = data
+          # javascript quirk: '-' means date arithmetic, '+' means string concatenation
+          cache[key].expiration-date = new Date(now - -(time-ms))
+          cb err, data
+    else
+      cb null, cache[key].data
 
 #{{{ String functions
 @title-case = (s) ->
@@ -35,21 +54,6 @@ require! {
   if s?.length > len
     s = s.substr(0 len) # chop
     s = s.substr(0 s.last-index-of(' '))+suffix if s.last-index-of(' ') > 0 # trunc
-  s
-
-@title-case = (s) ->
-  s?.replace /[\w]\S*/g, (word) ->
-    if word is word.to-upper-case! # oh n0ez--a potential caps-locker
-      if word.index-of('.')>-1 or word.index-of('-')>-1 or word.length<6 # it's an abbreviation, after all
-        return word
-    if word.length > 3 # title case it!
-      return word[0].to-upper-case! + word.substr 1 .to-lower-case!
-    word
-
-@ellipse = (s, len, suffix='...') ->
-  if s?.length > len
-    s = s.substr(0, len) # chop
-    s = s.substr(0, s.last-index-of ' ')+suffix if s.last-index-of ' ' > 0 # trunc
   s
 #}}}
 #{{{ Time functions

@@ -1,4 +1,6 @@
 require! {
+  \mutant
+  './mutants'
   './resources'
   './handlers'
   mw: './middleware'
