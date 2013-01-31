@@ -5,4 +5,4 @@ global.v = require './voltdb'
 global <<< require \prelude-ls
 global <<< require './helpers'
 
-v.init!
+v.init '127.0.0.1'

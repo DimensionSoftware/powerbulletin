@@ -16,5 +16,5 @@
             WHERE key='homepage' AND type='misc'")
    }
 
-  (.voltQueueSQL this (get-stmt this "insert-post") (into-array [id user-id title body]))
+  (.voltQueueSQL this (get-stmt this "insert-post") (into-array Object [id user-id title body]))
   (nth (.voltExecuteSQL this) 0))
