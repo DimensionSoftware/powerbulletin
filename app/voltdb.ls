@@ -31,23 +31,20 @@ defp 'PutDoc' [\string \string \string \long] #type, key, json, index_enabled
 
 # if it returns null for err, then everything is groovy
 # if it returns true for err, then you need to re-initialize connection
-_callp = @callp
-_connect = @connect
 init-health-check-loop = ->
-  health-check = (cb) ->
-    _callp \select_user, 1, cb
+  health-check = (cb) ~>
+    @callp \select_user, 1, cb
 
-  checker = ->
-    console.log '^'
+  checker = ~>
     unhealthy <~ health-check
     if unhealthy
-      _connect!
+      @connect!
       console.warn 'voltdb connection unhealthy, reconnecting...'
 
   set-interval checker, 5000
 
-# then @client will be populated
-export connect(cb = (->)) = ->
+# @client will be populated after calling this, (init must have been called)
+export connect = (host = @host, cb = (->)) ->
   vconf = new VoltConfiguration {host: @host}
   vcli = new VoltClient [vconf]
 
@@ -77,11 +74,15 @@ export connect(cb = (->)) = ->
 
 # it is assumed that init will have finished before any queries are exec'd (or connect is called)
 # this also starts the health check loop
-export init = ->
+export init = (host, cb = (->)) ->
+  @host = host
+  err <- @connect(host)
+  if err then return cb(err)
+
   # wait 10000ms to start health checking
   set-timeout init-health-check-loop, 10000
-  @host = arguments[0]
-  @connect(...arguments)
+
+  cb!
 
 export callp = (pname, ...raw-args) ->
   params = raw-args.slice 0, -1
