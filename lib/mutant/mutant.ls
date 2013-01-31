@@ -1,11 +1,13 @@
 if window?
   true
 else
-  jsdom = require 'jsdom'
-  jade = require 'jade'
+  require! {
+    \jsdom
+    \jade
+  }
 
   gen_dom_window = (html, cb) ->
-    scripts = ["cache/web/js/jquery-1.7.1.min.js"]
+    scripts = ['../../public/local/jquery-1.8.3.min.js']
 
     jsdom_opts = {html, scripts}
 
@@ -100,3 +102,8 @@ else
   else
     throw new Error("need html for serverside")
 
+# surfable routes populated now that we have declared all routes
+is-surfable = (r) ->
+  r.callbacks.some( (m) -> m.surfable )
+@surfable-routes = (app) ->
+  [r.regexp.to-string! for r in app.routes.get when is-surfable r]

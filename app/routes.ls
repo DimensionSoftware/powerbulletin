@@ -3,6 +3,7 @@ require! {
   './mutants'
   './resources'
   './handlers'
+  mmw: 'mutant/middleware'
   mw: './middleware'
 }
 global <<< require './helpers' # pull helpers (common) into global (play nice :)
@@ -18,6 +19,7 @@ app.get '/',
     "#{cvars.cache3_url}/local/jquery.masonry.min.js",
     "#{cvars.cache2_url}/local/waypoints.min.js",
     "#{cvars.cache4_url}/powerbulletin.min.js"]),
+  mmw.mutant-layout('layout', mutants),
   mw.add-css(['/dynamic/css/theme.styl,layout.styl']),
   handlers.homepage
 
@@ -40,3 +42,5 @@ app.post '/ajax/add-post', handlers.add-post
 
 # dynamic serving
 app.get '/dynamic/css/:file' handlers.stylus
+
+cvars.surfable-routes = mutant.surfable-routes app

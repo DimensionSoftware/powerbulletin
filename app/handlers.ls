@@ -5,7 +5,6 @@ require! {
   stylus
   fluidity
   './data'
-  './helpers'
 }
 
 # GET / post data form
@@ -33,12 +32,9 @@ require! {
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
-  res.render \homepage, (err, body) ->
-    if err then return next(err)
-
-    caching-strategies.etag res, helpers.sha1(body), 7200
-    res.content-type \html
-    res.send body
+  caching-strategies.etag res, sha1(JSON.stringify req.params), 7200 # FIXME include site here later
+  res.content-type \html
+  res.mutant \homepage
 
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}"
@@ -81,7 +77,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
       return next err
     else
       body = css-blocks.join "\n"
-      caching-strategies.etag res, helpers.sha1(body), 7200
+      caching-strategies.etag res, sha1(body), 7200
       res.content-type 'css'
       res.send body
 #}}}

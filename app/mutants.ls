@@ -2,6 +2,8 @@
 @homepage =
   static:
     (window, next) ->
+      # TODO use pre-compiled jade template
+      # jade[\homepage]
       next!
   on-load:
     (window, next) ->
