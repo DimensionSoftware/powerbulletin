@@ -54,7 +54,7 @@ body.has-scrolled
     .container
       margin 0 auto 0 180px!important
       .forum
-        .header:before
+        .header::before
           position absolute
           opacity .8
 //}}}
@@ -85,6 +85,14 @@ body.expanded
     height 100px!important
     transition background-color .25s ease-out, height .2s ease-out
     .container
+      .search::before
+        content ''
+        border-left 10px solid #555
+        border-top 8px solid transparent
+        border-bottom 8px solid transparent
+        position absolute
+        top 25px
+        left 0
       .search
         top 5px!important
         right auto!important
@@ -102,7 +110,7 @@ body.expanded
         position absolute
         right 20px
         top 20px
-  header:after
+  header::after
     cursor pointer
     position absolute
     right 17px
@@ -144,11 +152,12 @@ header
           .row
             display block
     .search
-      top 10px
+      top 13px
       right 12px
       position absolute 
       .query
         width 300px
+        font-size 1.3em
     .advanced
       display none
 //}}}
@@ -163,7 +172,7 @@ section.left
     top 35px
     left 0
     width 140px
-    height 300px
+    height 290px
     .photo
       overflow hidden
       margin-bottom 5px
@@ -180,11 +189,49 @@ section.left
       border-top 20px solid transparent
       height 0
       width 0
+    .sort::before
+      content ''
+      width 1px
+      height 1px
+      position absolute
+      left 0
+      bottom 75px
+      z-index 3
+      border-top-color transparent
+      border-right-color transparent
+      border-bottom-color transparent
+    .sort
+      position relative
+      margin-top 10px
+      height 117px
+      overflow hidden
+      cursor pointer
+      #sort
+        padding 23px 10px 90px 15px
+        overflow-y scroll
+        height 1px
+        margin 0
+        list-style none
+        li
+          font-size .8em
+          letter-spacing 1px
+          padding 0 0 1px 0
+          margin 0 0 10px 0
+      .indicator
+        top 33px
+        position absolute
+        left 20px
+        width 100px
+        height 1px
+  .scroll-to-top:hover
+    border-bottom 10px solid #777
   .scroll-to-top
     position absolute
     right 5px
-    bottom 0
-    
+    bottom 5px
+    border-left 8px solid transparent
+    border-right 8px solid transparent
+    border-bottom 10px solid #555
 //}}}
 //{{{ Main Content
 .col1
@@ -198,7 +245,7 @@ section.left
     .forum
       position relative
       clear both
-      .header:before
+      .header::before
         position absolute
         opacity .35
         top -47px
@@ -295,6 +342,12 @@ footer
       right 0!important
       .query
         height 9px
+  body
+    .content
+      #content.container
+        margin 0 auto 0 10px!important
+    .left
+      display none!important
   
 @media screen and (max-width: 500px)
   .content

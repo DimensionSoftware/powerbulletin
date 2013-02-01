@@ -25,6 +25,18 @@ $ '.forum .container' .masonry(
 #{{{ Waypoints
 w.resize -> set-timeout (-> $.waypoints \refresh), 800
 set-timeout (->
+  $ '#sort li' .waypoint {
+    context: \ul
+    offset : 30
+    handler: (direction) ->
+      active = $ this
+      if direction is \up
+        active := active.prev!
+      active = $ this unless active.length
+      $ '#sort li.active' .remove-class \active
+      active .add-class \active
+  }
+
   $ '.forum' .waypoint {
     offset  : '33%',
     handler : (direction) ->

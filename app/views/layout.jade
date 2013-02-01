@@ -68,7 +68,16 @@ html
           img#user-photo(src="#{cache_url}/images/profile.jpg")
         div
           a(class='button onclick-add-post-dialog', data-fid=33) Post
-        .scroll-to-top Top
+        .sort
+          .indicator
+          ul#sort
+            li(data-value='popular').active Popular
+            li(data-value='recent') Most Recent
+            li(data-value='active') Most Active
+            li(data-value='controversal') Controversal
+            li(data-value='nearest') Nearest to You
+            li(data-value='favorite') Favorites Only
+        .scroll-to-top
         .arrow
 
     section.content

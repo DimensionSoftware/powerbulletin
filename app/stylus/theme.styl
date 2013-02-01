@@ -63,12 +63,26 @@ body.has-scrolled
       .query:-ms-input-placeholder
           color #bbb
   .left
+    .sort::before
+      border 10px solid #aaa
+    .sort
+      color #ddd
+      font-weight 100
+      .indicator
+        opacity .5
+        background-color #fff
+        border-bottom 1px solid #000
+      #sort
+        li.active
+          color #fed
+          font-weight 400
+          font-size .9em
     .user-profile
       transition left .5s ease-out
   .content
     .container
       .forum.light
-          .header:before
+          .header::before
             position absolute
             opacity .25
       .post
@@ -88,7 +102,7 @@ body
 body.expanded header
   background-color rgba(0,0,0,0.85)!important
   border-bottom 1px solid #fff
-body.expanded header:after
+body.expanded header::after
   color #bbb
 header
   background-color rgba(0,0,0,0.1)
@@ -213,13 +227,6 @@ section.left
     a
       display block
       padding 8px
-    .scroll-to-top
-      position absolute
-      right 5px
-      bottom 0
-      color #ccc
-      font-weight 100
-      font-size .8em
     .arrow
       border-left 15px solid rgba(255,255,255,.45)
 //}}}
@@ -231,7 +238,7 @@ section.content
     .forum.light
       .header
         color #777
-      .header:before
+      .header::before
         position absolute
         opacity 0
     .forum
@@ -384,7 +391,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   box-shadow -1px 0px 2px #aaa inset,0 0 1px orange,-1px 0px 0 #ff3800,1px 1px 0 #555,0 0 4px #faa
   transition all .15s
   border-radius 4px
-.button:hover:before
+.button:hover::before
   background-color rgba(100,100,100,.08)
 .button:hover, input[type="button"]:hover, input[type="submit"]:hover, button:hover
   background -moz-linear-gradient(center top , #ffce29, #f38437) repeat scroll 0 0 #ffffff
@@ -398,7 +405,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   box-shadow 0 0 5px #888
   text-shadow 0px 1px 0 black,1px 1px 0 black
   transition all .1s
-.button:active:before
+.button:active::before
   background-color rgba(0,0,0,.15)
   border-radius 5px
 .button:active, button:active, input[type='submit']:active,input[type='button']:active,button:focus, input[type="submit"]:focus, input[type="button"]:focus
@@ -410,7 +417,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   border-bottom 1px solid highlight-color2
   border-right 1px solid highlight-color2
   transition all .2s
-.button:before
+.button::before
   position absolute
   content ''
   background-color rgba(0,0,0,.1)

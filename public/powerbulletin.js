@@ -423,6 +423,22 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
     }, 800);
   });
   setTimeout(function(){
+    $('#sort li').waypoint({
+      context: 'ul',
+      offset: 30,
+      handler: function(direction){
+        var active;
+        active = $(this);
+        if (direction === 'up') {
+          active = active.prev();
+        }
+        if (!active.length) {
+          active = $(this);
+        }
+        $('#sort li.active').removeClass('active');
+        return active.addClass('active');
+      }
+    });
     return $('.forum').waypoint({
       offset: '33%',
       handler: function(direction){
