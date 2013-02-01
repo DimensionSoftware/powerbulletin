@@ -70,15 +70,15 @@ img.bg
   width 100%
   z-index 0
   left 0!important
-  visibility hidden
+  display none
   top 200px
 img.bg.visible
-  visibility visible
+  display block
 img.bg.active
   top 0!important
   z-index 1!important
   transition top .3s ease-out
-  visibility visible
+  display block
 //}}}
 //{{{ Header
 body.expanded
@@ -114,13 +114,13 @@ body.expanded
       .advanced
         display block
         position absolute
-        right 20px
-        top 20px
+        right 10%
+        top 10px
   header::after
     cursor pointer
     position absolute
     right 17px
-    bottom 8px
+    top 8px
     content 'x'
 
 header
@@ -251,6 +251,8 @@ section.left
     .forum
       position relative
       clear both
+      .sticky-wrapper
+        height auto!important
       .header::before
         position absolute
         opacity .35

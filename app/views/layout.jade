@@ -52,11 +52,13 @@ html
           input#query.query(type='text', placeholder='Search', autocomplete='off')
         .advanced
           input#option_1.check(type='checkbox')
-          label(for='option_1') Option
+          label(for='option_1') Photos Only
+          br
           input#option_2.check(type='checkbox')
-          label(for='option_2') Option 2
+          label(for='option_2') Videos Only
+          br
           input#option_3.check(type='checkbox')
-          label(for='option_3') Option 3
+          label(for='option_3') Favorites Only
 
     section.left
       //-{{{ data-fid is how we pass in the forum id of the post, this way
@@ -74,11 +76,8 @@ html
             li(data-value='popular').active Popular
             li(data-value='recent') Most Recent
             li(data-value='active') Most Active
-            li(data-value='active') Photos Only
-            li(data-value='active') Videos Only
             li(data-value='controversal') Controversal
             li(data-value='nearest') Nearest to You
-            li(data-value='favorite') Favorites Only
         .scroll-to-top
         .arrow
 
