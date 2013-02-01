@@ -439,19 +439,8 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
         return e.addClass('active');
       }
     });
-    $('.forum .header').waypoint('sticky');
-    $('.forum .header').waypoint({
-      offset: '80%',
-      handler: function(direction){
-        return $('.forum .invisible').removeClass('invisible');
-      }
-    });
-    $('.forum .header').waypoint({
-      offset: '40%',
-      handler: function(direction){
-        $('.forum .invisible').removeClass('invisible');
-        return $('.forum .stuck').addClass('invisible');
-      }
+    $('.forum .header').waypoint('sticky', {
+      offset: -100
     });
     return $('.forum').waypoint({
       offset: '33%',
@@ -464,6 +453,8 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
           : $('#' + eid).prevAll('.forum:first').attr('id');
         $('header .menu').find('.active').removeClass('active');
         cur = $('header .menu').find("." + id.replace(/_/, '-')).addClass('active');
+        $('.forum .invisible').removeClass('invisible');
+        $('.forum .stuck').removeClass('stuck');
         $('.bg').each(function(){
           return $(this).remove().prependTo($('body'));
         });

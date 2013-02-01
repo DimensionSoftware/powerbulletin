@@ -40,17 +40,8 @@ set-timeout (->
   }
 
   # sticky forum headers
-  $ '.forum .header' .waypoint \sticky
-  $ '.forum .header' .waypoint { # add back prev sticky
-    offset : '80%',
-    handler: (direction) ->
-      $ '.forum .invisible' .remove-class \invisible
-  }
-  $ '.forum .header' .waypoint { # remove prev sticky
-    offset : '40%',
-    handler: (direction) ->
-      $ '.forum .invisible' .remove-class \invisible
-      $ '.forum .stuck' .add-class \invisible
+  $ '.forum .header' .waypoint \sticky {
+    offset : -100
   }
 
   # forum switches
@@ -67,6 +58,11 @@ set-timeout (->
       cur  = $ 'header .menu'
         .find ".#{id.replace /_/ \-}"
         .add-class \active # ...and activate!
+
+      # handle forum headers
+      $ '.forum .invisible' .remove-class \invisible
+      $ '.forum .stuck'     .remove-class \stuck
+      # TODO if direction is \up stick last forum
 
       # handle forum background
       $ '.bg' .each -> $ this .remove!prependTo $ 'body' # position behind

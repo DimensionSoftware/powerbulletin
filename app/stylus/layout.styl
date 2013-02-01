@@ -119,8 +119,8 @@ body.expanded
   header::after
     cursor pointer
     position absolute
-    right 17px
-    top 8px
+    right 30px
+    top 18px
     content 'x'
 
 header
@@ -259,10 +259,11 @@ section.left
         top -47px
         left 20%
         content ''
-        width 600px
+        width 640px
         height 200px
         z-index 1
         background-image url(cache_url+'/images/blob.png')
+        background-repeat no-repeat
       .header.stuck::before
         opacity 1!important
       .header.stuck
@@ -275,7 +276,6 @@ section.left
         overflow hidden
         font-size 17px
         letter-spacing 0
-        transition top .2 ease-out
       .header
         width 95%
         overflow visible

@@ -81,6 +81,13 @@ body.has-scrolled
       transition left .5s ease-out
   .content
     .container
+      .forum.dark
+        .post
+          background-color rgba(255,255,255, .77)
+          .title
+            background-color transparent
+          .body
+            background-color transparent
       .forum.light
           .header::before
             position absolute
@@ -104,6 +111,8 @@ body.expanded header
   border-bottom 1px solid #fff
 body.expanded header::after
   color red
+  font-weight 100
+  font-size 1.5em
 header
   background-color rgba(0,0,0,0.1)
   border-top 2px solid #000
@@ -268,6 +277,9 @@ section.content
           border-bottom 13px solid #222
           border-left 10px solid transparent
           border-right 10px solid transparent
+          padding 1px
+          width 1px
+          height 20px
         .post.grow
           animation-name tiny-grow
           animation-duration .5s
