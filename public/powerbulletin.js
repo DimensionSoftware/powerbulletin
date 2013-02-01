@@ -402,40 +402,14 @@ require.define("/validations.ls",function(require,module,exports,__dirname,__fil
 });
 
 require.define("/layout.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
-  var w, d, threshold, hasScrolled, addPostDialog, addPost;
+  var w, d, isIe, isMoz, isOpera, threshold, hasScrolled, addPostDialog, addPost;
   w = $(window);
   d = $(document);
-  w.v = require('./validations');
+  isIe = false || in$('msTransform', document.documentElement.style);
+  isMoz = false || in$('MozBoxSizing', document.documentElement.style);
+  isOpera = !!(window.opera && window.opera.version);
   threshold = 10;
-  hasScrolled = function(){
-    var st;
-    st = w.scrollTop();
-    return $('body').toggleClass('has-scrolled', st > threshold);
-  };
-  setTimeout(function(){
-    w.on('scroll', function(){
-      return hasScrolled();
-    });
-    return hasScrolled();
-  }, 1300);
-  $('.scroll-to-top').each(function(){
-    var e;
-    e = $(this);
-    e.attr('title', 'Scroll to Top!');
-    return e.on('mousedown', function(){
-      return $('html,body').animate({
-        scrollTop: $('body').offset().top
-      }, 140, function(){
-        return $('html,body').animate({
-          scrollTop: $('body').offset().top + threshold
-        }, 110, function(){
-          return $('html,body').animate({
-            scrollTop: $('body').offset().top
-          }, 75, function(){});
-        });
-      });
-    });
-  });
+  w.v = require('./validations');
   $('#query').focus();
   $('.forum .container').masonry({
     itemSelector: '.post',
@@ -483,6 +457,64 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
       }
     });
   }, 100);
+  hasScrolled = function(){
+    var st;
+    st = w.scrollTop();
+    return $('body').toggleClass('has-scrolled', st > threshold);
+  };
+  setTimeout(function(){
+    w.on('scroll', function(){
+      return hasScrolled();
+    });
+    return hasScrolled();
+  }, 1300);
+  window.awesomeScrollTo = function(e, onComplete, duration){
+    var ms, offset, dstScroll, curScroll;
+    onComplete = function(){
+      var noop;
+      if (!onComplete) {
+        return noop = 1;
+      }
+    };
+    e = $(e);
+    ms = duration || 600;
+    offset = 100;
+    if (isIe || isOpera) {
+      e[0].scrollIntoView();
+      onComplete();
+    } else {
+      dstScroll = Math.round(e.position().top) - offset;
+      curScroll = window.scrollY;
+      if (Math.abs(dstScroll - curScroll) > 30) {
+        $('html,body').animate({
+          scrollTop: dstScroll
+        }, ms, function(){});
+      } else {
+        onComplete();
+      }
+    }
+    return e;
+  };
+  d.on('mousedown', '.scroll-to', function(){
+    awesomeScrollTo($(this).data('scroll-to'));
+    return false;
+  });
+  d.on('mousedown', '.scroll-to-top', function(){
+    $(this).attr('title', 'Scroll to Top!');
+    return $('html,body').animate({
+      scrollTop: $('body').offset().top
+    }, 140, function(){
+      return $('html,body').animate({
+        scrollTop: $('body').offset().top + threshold
+      }, 110, function(){
+        return $('html,body').animate({
+          scrollTop: $('body').offset().top
+        }, 75, function(){
+          return false;
+        });
+      });
+    });
+  });
   addPostDialog = function(){
     var fid, postHtml;
     fid = $(this).data('fid');
@@ -516,6 +548,11 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
   d.on('keypress', '#query', function(){
     return $('body').addClass('expanded');
   });
+  function in$(x, arr){
+    var i = -1, l = arr.length >>> 0;
+    while (++i < l) if (x === arr[i] && i in arr) return true;
+    return false;
+  }
 }).call(this);
 
 });

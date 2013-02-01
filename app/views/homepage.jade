@@ -9,6 +9,7 @@ mixin forum(f, i)
     .container
       each t,ii in f.posts
         mixin post(t, ii)
+      .up(class='scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
 
 mixin post(p, i)
   .post(id="post_#{p.id}", class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")

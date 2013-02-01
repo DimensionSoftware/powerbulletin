@@ -11,7 +11,7 @@ body
   overflow visible!important
   a
     cursor pointer
-  .scroll-to-top
+  .scroll-to, .scroll-to-top
     cursor pointer
 
 //{{{ Structure applied after body scrolls
@@ -126,7 +126,7 @@ header
         .submenu
           visibility visible
           top 51px
-          transition top .1s ease-out .2s
+          transition top .1s ease-out .5s
       .row
         cursor pointer
         display inline-block
@@ -174,8 +174,8 @@ section.left
     .arrow
       content ''
       position absolute
-      top 107px
-      right -17px
+      top 87px
+      right -16px
       border-bottom 20px solid transparent
       border-top 20px solid transparent
       height 0
@@ -225,6 +225,10 @@ section.left
         padding 0!important
         margin 0!important
         z-index 3
+        .scroll-to
+          position absolute
+          right 0
+          bottom -30px
         .post:hover
           transform translateY(-15px)
           position relative

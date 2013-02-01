@@ -28,7 +28,6 @@ require! {
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
   # for O(1) retrieval (assuming hashed index map)
   res.locals doc
-  console.log doc.forums[0].theme
 
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
 
