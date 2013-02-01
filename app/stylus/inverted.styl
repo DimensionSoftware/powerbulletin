@@ -30,7 +30,6 @@ grid = 10px
 body.expanded header
   .search
     #query.query
-      border-bottom 2px solid #444
       text-align left
   .advanced
     .check
@@ -190,7 +189,8 @@ header
 section.left
   .user-profile:hover
     .arrow
-       border-left-color rgba(255,255,255,.6)
+       border-left-color rgba(255,255,255,.65)
+       transition border-left-color .5s ease-out
        //right -20px
        //animation-name grow
        //animation-duration .5s
@@ -216,7 +216,7 @@ section.left
       font-weight 100
       font-size .8em
     .arrow
-      border-left 15px solid rgba(255,255,255,.4)
+      border-left 15px solid rgba(255,255,255,.45)
 //}}}
 //{{{ Main Content
 section.content
@@ -226,13 +226,16 @@ section.content
     .forum
       margin-bottom (grid * 2)
       .header
-        text-shadow 0 -1px 1px #000,0 -1px 0 #000
-        display none
+        text-shadow 0 1px 1px #000,0 2px 0 #000
         text-overflow ellipsis
+        letter-spacing -1px
         white-space nowrap
         overflow hidden
         margin 0 grid
         color #fff
+        font-weight 100
+        font-size 2.1em
+        line-height 2em
         h4, span
           display inline-block
           margin 0 grid

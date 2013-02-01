@@ -66,6 +66,7 @@ export init-stubs = (cb = (->)) ->
 
   forums = for i from 1 to 4
     id          : i
+    theme       : if i is 1 then \light else \dark # becomes a css class
     title       : "Forum #{i}"
     description : 'hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world!'
     posts       : gen-posts!

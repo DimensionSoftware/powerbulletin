@@ -3,10 +3,9 @@
 mixin forum(f, i)
   img.bg(id="forum_bg_#{f.id}", class=(i==0) ? 'active' : '', src="#{cache_url}/images/bg_#{f.id}.jpg")
   a(name="forum_#{f.id}") //- hashtag anchor
-  .forum(id="forum_#{f.id}", class=(i % 2) ? 'odd' : 'even')
+  .forum(id="forum_#{f.id}", class="#{f.theme} #{i%2 ? 'odd' : 'even'}")
     .header
-      h4.title= f.title
-      span.description= f.description
+      .description= f.description
     .container
       each t,ii in f.posts
         mixin post(t, ii)

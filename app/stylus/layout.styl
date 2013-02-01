@@ -48,6 +48,15 @@ body.has-scrolled
     font-size .85em
     bottom -10px
     line-height 16px
+
+  .content
+    z-index 5
+    .container
+      margin 0 auto 0 180px!important
+      .forum
+        .header:before
+          position absolute
+          opacity .8
 //}}}
 
 //{{{ Background layer
@@ -58,7 +67,7 @@ img.bg
   z-index 0
   left 0!important
   visibility hidden
-  top 0
+  top 200px
 img.bg.visible
   visibility visible
 img.bg.active
@@ -189,12 +198,29 @@ section.left
     .forum
       position relative
       clear both
+      .header:before
+        position absolute
+        opacity .35
+        top -47px
+        left 20%
+        content ''
+        width 600px
+        height 200px
+        z-index 1
+        background-image url(cache_url+'/images/blob.png')
       .header
-        width 100%
+        width 95%
+        margin 45px!important
+        text-align center
         .description
+          text-rendering optimizelegibility
+          text-transform capitalize
           overflow hidden
           text-overflow ellipsis
-          width 50%
+          width 35%
+          left 22%
+          position relative
+          z-index 2
       .container
         padding 0!important
         margin 0!important

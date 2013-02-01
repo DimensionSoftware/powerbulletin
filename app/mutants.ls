@@ -3,7 +3,6 @@
   static:
     (window, next) ->
       # TODO use pre-compiled jade template
-      console.log \static
       window.render-jade 'content', \homepage
       next!
   on-load:

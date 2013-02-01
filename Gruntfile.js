@@ -50,7 +50,7 @@ module.exports = function(grunt) {
     watch: {
       jade: {
         files: ['app/views/*.jade'],
-        tasks: ['jade']
+        tasks: ['jade', 'launch']
       },
       app: {
         files: ['app/*.ls', 'config/*', 'lib/**/*.ls'],
