@@ -68,7 +68,7 @@ export init-stubs = (cb = (->)) ->
     id          : i
     theme       : if i is 1 then \light else \dark # becomes a css class
     title       : "Forum #{i}"
-    description : 'hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world!'
+    description : "Description for Forum #{i}"
     posts       : gen-posts!
 
   homepage-stub = {forums}

@@ -18,6 +18,7 @@ app.get '/',
   mw.add-js([
     "#{cvars.cache3_url}/local/jquery.masonry.min.js",
     "#{cvars.cache2_url}/local/waypoints.min.js",
+    "#{cvars.cache2_url}/local/waypoints-sticky.min.js",
     "#{cvars.cache4_url}/powerbulletin.min.js"]),
   mmw.mutant-layout('layout', mutants),
   mw.add-css(['/dynamic/css/theme.styl,layout.styl']),

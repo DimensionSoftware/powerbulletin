@@ -25,18 +25,35 @@ $ '.forum .container' .masonry(
 #{{{ Waypoints
 w.resize -> set-timeout (-> $.waypoints \refresh), 800
 set-timeout (->
+  # sort control
   $ '#sort li' .waypoint {
     context: \ul
     offset : 30
     handler: (direction) ->
-      active = $ this
+      e = $ this # figure active element
       if direction is \up
-        active := active.prev!
-      active = $ this unless active.length
+        e := e.prev!
+      e := $ this unless e.length
+
       $ '#sort li.active' .remove-class \active
-      active .add-class \active
+      e .add-class \active # set!
   }
 
+  # sticky forum headers
+  $ '.forum .header' .waypoint \sticky
+  $ '.forum .header' .waypoint { # add back prev sticky
+    offset : '80%',
+    handler: (direction) ->
+      $ '.forum .invisible' .remove-class \invisible
+  }
+  $ '.forum .header' .waypoint { # remove prev sticky
+    offset : '40%',
+    handler: (direction) ->
+      $ '.forum .invisible' .remove-class \invisible
+      $ '.forum .stuck' .add-class \invisible
+  }
+
+  # forum switches
   $ '.forum' .waypoint {
     offset  : '33%',
     handler : (direction) ->

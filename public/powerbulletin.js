@@ -427,16 +427,30 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
       context: 'ul',
       offset: 30,
       handler: function(direction){
-        var active;
-        active = $(this);
+        var e;
+        e = $(this);
         if (direction === 'up') {
-          active = active.prev();
+          e = e.prev();
         }
-        if (!active.length) {
-          active = $(this);
+        if (!e.length) {
+          e = $(this);
         }
         $('#sort li.active').removeClass('active');
-        return active.addClass('active');
+        return e.addClass('active');
+      }
+    });
+    $('.forum .header').waypoint('sticky');
+    $('.forum .header').waypoint({
+      offset: '80%',
+      handler: function(direction){
+        return $('.forum .invisible').removeClass('invisible');
+      }
+    });
+    $('.forum .header').waypoint({
+      offset: '40%',
+      handler: function(direction){
+        $('.forum .invisible').removeClass('invisible');
+        return $('.forum .stuck').addClass('invisible');
       }
     });
     return $('.forum').waypoint({
