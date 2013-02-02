@@ -1,0 +1,16 @@
+
+mixin post(p, i)
+  a(href=p.slug) != p.title
+  each sp,ii in p.subposts
+    mixin subpost(p, sp, ii)
+
+mixin subpost(p, sp, i)
+  .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even')
+    span.title= sp.title
+
+//- main
+//- ---------
+each p,i in posts
+  mixin post(p, i)
+
+//- vim:fdm=marker

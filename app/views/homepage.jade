@@ -8,13 +8,14 @@ mixin forum(f, i)
       .description= f.description
     .container
       each t,ii in f.posts
-        mixin post(t, ii)
+        mixin post(f, t, ii)
       .up(class='scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
 
-mixin post(p, i)
+mixin post(f, p, i)
   .post(id="post_#{p.id}", class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")
-    h5.title= p.title
-      span.date #{p.date}
+    a(href=f.slug)
+      h5.title= p.title
+        span.date #{p.date}
     p.body= p.body
     each sp,i in p.posts
       mixin subpost(sp, i)
@@ -34,8 +35,7 @@ mixin subpost(sp, i)
 
 //- main
 //- ---------
-block content-stream
-  each f,i in forums
-    mixin forum(f, i)
+each f,i in forums
+  mixin forum(f, i)
 
 //- vim:fdm=marker

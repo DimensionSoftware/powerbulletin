@@ -82,17 +82,20 @@ html
         .arrow
 
     section.content
-      #content.container
+      #left_content.container
+
+    section.content
+      #main_content.container
 
     footer#chat_drawer.scroll-to-top
       h6
         small #{site_name} &nbsp;
         b= new Date().getFullYear()
 
-//- XXX  css not required for initial page render -- performance mod.
-link(href='//fonts.googleapis.com/css?family=Open+Sans:200,400,700|Open+Sans+Condensed:700', rel='stylesheet', type='text/css')
-//- link(href='//fonts.googleapis.com/css?family=Ubuntu:300,400,500,700', rel='stylesheet', type='text/css')
-if cvars.env == 'development'
-  link(href="#{cache5_url}/local/jquery-ui.css", rel='stylesheet', type='text/css') //- offline
-else
-  link(href='//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css', rel='stylesheet', type='text/css')
+    //- XXX  css not required for initial page render -- performance mod.
+    link(href='//fonts.googleapis.com/css?family=Open+Sans:200,400,700|Open+Sans+Condensed:700', rel='stylesheet', type='text/css')
+    //- link(href='//fonts.googleapis.com/css?family=Ubuntu:300,400,500,700', rel='stylesheet', type='text/css')
+    if cvars.env == 'development'
+      link(href="#{cache5_url}/local/jquery-ui.css", rel='stylesheet', type='text/css') //- offline
+    else
+      link(href='//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css', rel='stylesheet', type='text/css')
