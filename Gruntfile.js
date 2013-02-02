@@ -106,7 +106,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {
-    fs.writeFileSync('app/views/mutants.js', (exec('clientjade -c app/views/homepage.jade', {silent:true}).output));
+    fs.writeFileSync('app/views/mutants.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade', {silent:true}).output));
   });
 
   // Compile VoltDB Procedures and Launch VoltDB
