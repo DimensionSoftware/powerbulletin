@@ -1,0 +1,7 @@
+#!/bin/bash -e
+export CLASSPATH=`bin/classpath`
+export VOLTDB_HOME=/usr/local/voltdb
+export VOLTDB_HEAPSIZE=256
+# this should ONLY happen when one wants to start over and blast the catalog (schema change in dev..) (referring to create)
+# in prod we would use the UpdateCatalog procedure or use the commandline admin tool
+bin/custom-voltdb create catalog voltdb/pb-schema.jar host 127.0.0.1 deployment voltdb/deployment.xml >> voltdb.log 2>&1

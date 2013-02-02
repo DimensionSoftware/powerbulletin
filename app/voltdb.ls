@@ -33,14 +33,15 @@ defp 'PutDoc' [\string \string \string \long] #type, key, json, index_enabled
 # if it returns true for err, then you need to re-initialize connection
 _t = @
 init-health-check-loop = ->
-  health-check = (cb) ~>
+  health-check = (cb) ->
     _t.callp \select_user, 1, cb
 
-  checker = ~>
-    unhealthy <~ health-check
+  checker = ->
+    unhealthy <- health-check
     if unhealthy
       _t.connect!
-      console.warn 'voltdb connection unhealthy, reconnecting...'
+      console.warn 'voltdb connection unhealthy, reconnecting... (error follows)'
+      console.warn unhealthy
 
   set-interval checker, 5000
 
