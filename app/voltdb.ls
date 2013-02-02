@@ -34,14 +34,13 @@ defp 'PutDoc' [\string \string \string \long] #type, key, json, index_enabled
 _t = @
 init-health-check-loop = ->
   health-check = (cb) ->
-    _t.callp \select_user, 1, cb
+    _t.callp \SelectUser, 1, cb
 
   checker = ->
     unhealthy <- health-check
     if unhealthy
       _t.connect!
-      console.warn 'voltdb connection unhealthy, reconnecting... (error follows)'
-      console.warn unhealthy
+      console.warn 'voltdb connection unhealthy, reconnecting...'
 
   set-interval checker, 5000
 
