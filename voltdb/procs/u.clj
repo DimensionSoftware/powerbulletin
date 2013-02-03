@@ -24,10 +24,8 @@
   (.voltExecuteSQL this true))
 
 ; custom json format for our purposes
-; vt = org.voltdb.VoltTable
-(defn vt2json ^String [^org.voltdb.VoltTable vt]
+(defn vt2maplist ^String [^org.voltdb.VoltTable vt]
   (let [vtobj (json2obj (.toJSONString vt))
         vtcols (map (fn [c] (clojure.string/lower-case (get c "name"))) (get vtobj "schema"))
-        vtrows (get vtobj "data")
-        out (map (fn [r] (zipmap vtcols r)) vtrows)]
-    (obj2json out)))
+        vtrows (get vtobj "data")]
+    (map (fn [r] (zipmap vtcols r)) vtrows)))

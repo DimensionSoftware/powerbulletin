@@ -65,7 +65,7 @@ export init-stubs = (cb = (->)) ->
       user  : user
       posts : p!
 
-  gen-subforums (id) ->
+  gen-subforums = (id) ->
     for i from 1 to 3
       id          : id+"#{i}"
       theme       : if i is 1 then \light else \dark # becomes a css class
