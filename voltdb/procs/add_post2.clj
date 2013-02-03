@@ -32,4 +32,4 @@
         (queue this "insert-homepage-doc" now top-posts-json)
         (queue this "update-homepage-doc" now top-posts-json))
 
-      (nth (execute-final this) 0))))
+      (u/foo (nth (execute-final this) 0)))))
