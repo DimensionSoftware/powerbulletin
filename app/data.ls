@@ -24,9 +24,7 @@ export homepage-doc = (cb) ->
   @get-doc \misc, \homepage, cb
 
 export add-post = (post, cb) ->
-  err, id <~ @next-in-sequence \posts
-  if err then return cb(err)
-  v.callp \AddPost id, post.user-id, post.title, post.body, cb
+  v.callp \add_post2 post.user-id, post.title, post.body, cb
 
 # uses new api
 export put-doc = (type, key, doc, index-enabled, cb) ->
