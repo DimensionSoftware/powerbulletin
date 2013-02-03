@@ -4,10 +4,11 @@
     (window, next) ->
       # TODO use pre-compiled jade template
       console.log 'before jade'
-      window.render-jade 'content', \homepage
+      window.render-jade 'main_content', \homepage
       next!
   on-load:
     (window, next) ->
+      console.log 'client side homepage'
       next!
   on-mutate:
     (window, next) ->
@@ -17,6 +18,8 @@
   static:
     (window, next) ->
       window.marshal('q', @q)
+      window.render-jade 'left_content', \nav
+      window.render-jade 'main_content', \posts
       next!
   on-initial:
     (window, next) ->
@@ -24,6 +27,7 @@
       next!
   on-load:
     (window, next) ->
+      console.log 'client side forum'
       next!
   on-mutate:
     (window, next) ->

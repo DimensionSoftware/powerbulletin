@@ -20,6 +20,9 @@ export next-in-sequence = (seqname, cb) ->
 
 export select-user = -> v.callp \select_user, ...arguments
 
+export forum-doc = (cb) ->
+  @get-doc \misc, \forum, cb
+
 export homepage-doc = (cb) ->
   @get-doc \misc, \homepage, cb
 
@@ -62,12 +65,26 @@ export init-stubs = (cb = (->)) ->
       user  : user
       posts : p!
 
+  gen-subforums (id) ->
+    for i from 1 to 3
+      id          : id+"#{i}"
+      theme       : if i is 1 then \light else \dark # becomes a css class
+      title       : "SubForum #{i}"
+      slug        : "subforum-#{i}"
+      description : "Description for Forum #{i}"
+      posts       : gen-posts!
+
   forums = for i from 1 to 4
     id          : i
-    theme       : if i is 1 or 3 then \light else \dark # becomes a css class
+    theme       : if i is 1 then \light else \dark # becomes a css class
     title       : "Forum #{i}"
+    slug        : "forum-#{i}"
     description : "Description for Forum #{i}"
     posts       : gen-posts!
+    subforums   : gen-subforums i
 
   homepage-stub = {forums}
+  forum-stub    = {forums}
+
   @put-doc \misc, \homepage, homepage-stub, false, cb
+  @put-doc \misc, \forum, forum-stub, false, cb

@@ -7,6 +7,9 @@ require! {
   './data'
 }
 
+@hello = (req, res) ->
+  res.send "hello #{res.locals.remote-ip}!"
+
 # GET / post data form
 @add-post-html = (req, res) ->
   res.locals.fid = req.query.fid
@@ -36,8 +39,13 @@ require! {
   res.content-type \html
   res.mutant \homepage
 
-@hello = (req, res) ->
-  res.send "hello #{res.locals.remote-ip}!"
+@forum = (req, res, next) ->
+  err, doc <- data.forum-doc
+  if err then return next err
+  res.locals doc
+  caching-strategies.etag res, sha1(JSON.stringify req.params), 7200 # FIXME include site here later
+  res.content-type \html
+  res.mutant \forum
 
 @register = (req, res) ->
   req.assert('login').is-alphanumeric!
