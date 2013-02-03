@@ -19,7 +19,8 @@
 
 (defn run [this now]
   (u/queue this "build-homepage-top-posts")
-  (let [top-posts-json (.toJSONString (nth (u/execute this) 0))]
+  (let [top-posts-json (u/vt2json (nth (u/execute this) 0))]
+    (println top-posts-json)
     ; upsert homepage doc
     (u/queue this "build-homepage-select")
     (if (< (.getRowCount (nth (u/execute this) 0)) 1)
