@@ -19,12 +19,13 @@
 
 (defn run [this now]
   (u/queue this "build-homepage-top-posts")
-  (let [top-posts-json (u/vt2json (nth (u/execute this) 0))]
-    (println top-posts-json)
+  (let [top-posts (u/vt2maplist (nth (u/execute this) 0))
+        out (u/obj2json top-posts)]
+    (println out)
     ; upsert homepage doc
     (u/queue this "build-homepage-select")
     (if (< (.getRowCount (nth (u/execute this) 0)) 1)
       ; "{}" is a stub / placeholder
-      (u/queue this "build-homepage-insert" now top-posts-json)
-      (u/queue this "build-homepage-update" now top-posts-json))
+      (u/queue this "build-homepage-insert" now out)
+      (u/queue this "build-homepage-update" now out))
     (u/execute this)))
