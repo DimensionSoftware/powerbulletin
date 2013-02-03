@@ -46,7 +46,14 @@ init-health-check-loop = ->
 
 # @client will be populated after calling this, (init must have been called)
 export connect = (host = @host, cb = (->)) ->
-  vconf = new VoltConfiguration {host: @host}
+  vconf-opts =
+    host                   : @host
+    query-timeout          : 10000
+    query-timeout-interval : 10000
+    flush-interval         : 300
+    message-queue-size     : 10
+
+  vconf = new VoltConfiguration vconf-opts
   vcli = new VoltClient [vconf]
 
   vcli.connect (err, type, res) ~>
