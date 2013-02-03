@@ -57,7 +57,7 @@ export init-stubs = (cb = (->)) ->
     body  : h.ellipse 'hello world hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world hello world!' Math.ceil(Math.random!*120) 
  
   gen-posts = ->
-    for i from 1 to 30
+    for i from 1 to 10
       id    : i
       title : "Post Title #{i}"
       date  : h.title-case h.elapsed-to-human-readable Math.random!*31446925
@@ -72,7 +72,8 @@ export init-stubs = (cb = (->)) ->
       title       : "SubForum #{i}"
       slug        : "subforum-#{i}"
       description : "Description for Forum #{i}"
-      posts       : gen-posts!
+      posts       : []
+      #posts       : gen-posts!
 
   forums = for i from 1 to 4
     id          : i
