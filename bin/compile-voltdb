@@ -8,8 +8,6 @@ mkdir classes
 #will generate this compile list on the fly
 
 # compile clojure procedures and utilities
-echo "(compile 'u)" | bin/clojure -
-echo "(compile 'build-homepage)" | bin/clojure -
 echo "(compile 'add-post2)" | bin/clojure -
 echo "(compile 'select-user)" | bin/clojure -
 

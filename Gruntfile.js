@@ -103,6 +103,9 @@ module.exports = function(grunt) {
     var file   = config.tmp+'/pb.pid';
 
     daemon('./bin/powerbulletin', file);
+
+    // update catalog (assumes voltdb running
+    exec("/usr/local/voltdb-tools-3.0/bin/voltadmin update voltdb/pb-schema.jar voltdb/deployment.xml");
   });
 
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {

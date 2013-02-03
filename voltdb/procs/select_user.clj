@@ -1,6 +1,8 @@
 (require 'defproc)
 
-(defproc select-user [long] [this & args]
+(defproc select-user
+  [long] org.voltdb.VoltTable
+  [this & args]
   {"select" (stmt "SELECT * FROM users WHERE id=? LIMIT 1")}
 
   (.voltQueueSQL this (get-stmt this "select") (into-array args))

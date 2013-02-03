@@ -1,11 +1,11 @@
-(defmacro defproc [name param-types params statements & body]
+(defmacro defproc [name param-types ret-type params statements & body]
   `(do
      (ns ~name
        (:gen-class
         :extends org.voltdb.VoltProcedure
         :state ~'state
         :init ~'init
-        :methods [[~'run ~param-types org.voltdb.VoltTable]
+        :methods [[~'run ~param-types ~ret-type]
                   [~'statements [] java.util.Map]]))
 
      (defn ~'stmt [sql# & args#]

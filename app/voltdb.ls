@@ -24,7 +24,7 @@ defp 'USERS.insert' [\bigint \string]
 defp 'AddPost' [\long \long \string \string] # id, userid, title, body
 defp 'SelectUser' [\long] # id
 defp \select_user [\long]
-defp \add_post2 [\long \long \string \string]
+defp \add_post2 [\long \string \string]
 defp 'NextInSequence' [\string]
 defp 'GetDoc' [\string \string] # type, key
 defp 'PutDoc' [\string \string \string \long] #type, key, json, index_enabled
