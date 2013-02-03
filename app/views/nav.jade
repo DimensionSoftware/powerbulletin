@@ -1,7 +1,7 @@
 
 mixin forum(f, i)
-  a(href=f.slug) != f.title
-  each sf,ii in f.forums
+  a(href=f.slug)= f.title
+  each sf,ii in f.subforums
     mixin subforum(sf, f, ii)
 
 mixin subforum(sf, i)

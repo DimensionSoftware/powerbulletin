@@ -1,16 +1,20 @@
 
 mixin post(p, i)
-  a(href=p.slug) != p.title
+  a(href=p.slug)= p.title
   each sp,ii in p.subposts
     mixin subpost(p, sp, ii)
 
 mixin subpost(p, sp, i)
   .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even')
-    span.title= sp.title
+    h4.title= sp.title
+    .user= sp.user.name
+    .date= sp.date
+    p.body= sp.body
 
 //- main
 //- ---------
-each p,i in posts
-  mixin post(p, i)
+each f,i in forums
+  each p,i in f.posts
+    mixin post(p, i)
 
 //- vim:fdm=marker
