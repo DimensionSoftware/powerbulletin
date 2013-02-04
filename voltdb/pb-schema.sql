@@ -74,6 +74,7 @@ CREATE TABLE posts (
   PRIMARY KEY (id)
 );
 PARTITION TABLE posts ON COLUMN id;
+CREATE UNIQUE INDEX sort1 ON posts (created DESC, id DESC);
 
 CREATE TABLE docs (
   key           VARCHAR(64) NOT NULL,

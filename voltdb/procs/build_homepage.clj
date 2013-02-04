@@ -14,7 +14,7 @@
    "build-homepage-top-posts"
      (u/stmt "SELECT * FROM posts
               WHERE parent_id IS NULL
-              ORDER BY created DESC
+              ORDER BY created DESC, id DESC
               LIMIT 10")})
 
 (defn run [this now]
