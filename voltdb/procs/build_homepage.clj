@@ -19,6 +19,11 @@
 
 (defn run [this now]
   (u/queue this "build-homepage-top-posts")
+  ; TODO: additionally, queue up other queries needed to populate homepage data
+  ; including, but not limited to:
+  ; - toplevel forums
+  ; - first level of subforums for each toplevel forum
+  ; - what else guys??
   (let [top-posts (u/vt2maplist (nth (u/execute this) 0))
         out (u/obj2json top-posts)]
     (println out)
