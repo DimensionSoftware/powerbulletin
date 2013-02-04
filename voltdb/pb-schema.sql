@@ -67,9 +67,10 @@ PARTITION TABLE auths ON COLUMN user_id;
 -- post belongs to forum
 CREATE TABLE posts ( 
   id        BIGINT NOT NULL,
-  created   TIMESTAMP NOT NULL,
   parent_id BIGINT,
   user_id   BIGINT NOT NULL,
+  forum_id  BIGINT NOT NULL,
+  created   TIMESTAMP NOT NULL,
   title     VARCHAR(256) NOT NULL,
   body      VARCHAR(1024) NOT NULL,
   PRIMARY KEY (id)
