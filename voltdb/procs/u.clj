@@ -23,6 +23,9 @@
 (defn execute-final [this]
   (.voltExecuteSQL this true))
 
+(defn now [this]
+  (.getTransactionTime this))
+
 ; custom json format for our purposes
 (defn vt2maplist [^org.voltdb.VoltTable vt]
   (let [vtobj (json2obj (.toJSONString vt))

@@ -10,8 +10,8 @@ PARTITION TABLE sequences ON COLUMN name;
 -- NOTE: id is the base domain (string)
 CREATE TABLE sites (
   id      VARCHAR(256) NOT NULL,
-  created TIMESTAMP NOT NULL,
   user_id BIGINT NOT NULL,
+  created TIMESTAMP NOT NULL,
   PRIMARY KEY (id)
 );
 PARTITION TABLE sites ON COLUMN id;
@@ -22,6 +22,7 @@ PARTITION TABLE sites ON COLUMN id;
 -- if a forum does not have a parent, then it cannot not have posts
 CREATE TABLE forums (
   id          BIGINT NOT NULL,
+  parent_id   BIGINT,
   created     TIMESTAMP NOT NULL,
   title       VARCHAR(256) NOT NULL,
   description VARCHAR(1024) NOT NULL,
