@@ -123,9 +123,9 @@ else
     a.use mw.multi-domain
     a.use mw.ip-lookup
     a.use mw.rate-limit
-    a.use express.cookieParser!
-    a.use express.cookieSession!
-    a.set 'view engine' 'jade'
+    a.use express.cookie-parser!
+    a.use express.cookie-session {secret:cvars.secret}
+    a.set 'view engine' \jade
     a.set 'views' 'app/views'
     a.enable 'json callback'
     a.enable 'trust proxy' # parse x-forwarded-for in req.ip, etc...
