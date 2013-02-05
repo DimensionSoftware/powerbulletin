@@ -44,48 +44,50 @@ export get-doc = (type, key, cb) ->
     cb!
 
 export init-stubs = (cb = (->)) ->
-  user =
-    id         : 1
-    name       : \intrepid_coderman
-    created_at : now
+  v.callp \add_post2 1, 1, "fooey bar, the car", "u want my body", cb
 
-  p = -> for ii from 1 to Math.ceil(Math.random!*5) # dummy data
-    id    : ii
-    date  : h.title-case h.elapsed-to-human-readable Math.random!*604800
-    user  : user
-    title : "Sub-post Title #{ii}"
-    body  : h.ellipse 'hello world hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world hello world!' Math.ceil(Math.random!*120) 
- 
-  gen-posts = ->
-    for i from 1 to 10
-      id    : i
-      title : "Post Title #{i}"
-      date  : h.title-case h.elapsed-to-human-readable Math.random!*31446925
-      body  : h.ellipse 'hello world hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world hello world!' Math.ceil(Math.random!*75) 
-      user  : user
-      subposts : p!
-
-  gen-subforums = (id) ->
-    for i from 1 to 3
-      id          : id+"#{i}"
-      theme       : if i is 1 then \light else \dark # becomes a css class
-      title       : "SubForum #{i}"
-      slug        : "subforum-#{i}"
-      description : "Description for Forum #{i}"
-      posts       : []
-      #posts       : gen-posts!
-
-  forums = for i from 1 to 4
-    id          : i
-    theme       : if i is 1 then \light else \dark # becomes a css class
-    title       : "Forum #{i}"
-    slug        : "forum-#{i}"
-    description : "Description for Forum #{i}"
-    posts       : gen-posts!
-    subforums   : gen-subforums i
-
-  homepage-stub = {forums}
-  forum-stub    = {forums}
-
-  @put-doc \misc, \homepage, homepage-stub, false, cb
-  @put-doc \misc, \forum, forum-stub, false, cb
+  #user =
+  #  id         : 1
+  #  name       : \intrepid_coderman
+  #  created_at : now
+#
+#  p = -> for ii from 1 to Math.ceil(Math.random!*5) # dummy data
+#    id    : ii
+#    date  : h.title-case h.elapsed-to-human-readable Math.random!*604800
+#    user  : user
+#    title : "Sub-post Title #{ii}"
+#    body  : h.ellipse 'hello world hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world hello world!' Math.ceil(Math.random!*120) 
+# 
+#  gen-posts = ->
+#    for i from 1 to 10
+#      id    : i
+#      title : "Post Title #{i}"
+#      date  : h.title-case h.elapsed-to-human-readable Math.random!*31446925
+#      body  : h.ellipse 'hello world hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world hello world!' Math.ceil(Math.random!*75) 
+#      user  : user
+#      subposts : p!
+#
+#  gen-subforums = (id) ->
+#    for i from 1 to 3
+#      id          : id+"#{i}"
+#      theme       : if i is 1 then \light else \dark # becomes a css class
+#      title       : "SubForum #{i}"
+#      slug        : "subforum-#{i}"
+#      description : "Description for Forum #{i}"
+#      posts       : []
+#      #posts       : gen-posts!
+#
+#  forums = for i from 1 to 4
+#    id          : i
+#    theme       : if i is 1 then \light else \dark # becomes a css class
+#    title       : "Forum #{i}"
+#    slug        : "forum-#{i}"
+#    description : "Description for Forum #{i}"
+#    posts       : gen-posts!
+#    subforums   : gen-subforums i
+#
+#  homepage-stub = {forums}
+#  forum-stub    = {forums}
+#
+#  @put-doc \misc, \homepage, homepage-stub, false, cb
+#  @put-doc \misc, \forum, forum-stub, false, cb
