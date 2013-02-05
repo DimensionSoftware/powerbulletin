@@ -14,13 +14,15 @@
    "build-homepage-top-posts-for-forum"
      (u/stmt "SELECT * FROM posts
               WHERE parent_id IS NULL AND forum_id=?
-              ORDER BY created DESC, id DESC
-              LIMIT 10")
+              ORDER BY created DESC, id DESC")
+   "build-homepage-sub-posts"
+     (u/stmt "SELECT * FROM posts
+              WHERE parent_id=?
+              ORDER BY created DESC, id DESC")
    "build-homepage-top-forums-for-site"
      (u/stmt "SELECT * FROM forums
               WHERE parent_id IS NULL AND site_id=?
-              ORDER BY created DESC, id DESC
-              LIMIT 10")})
+              ORDER BY created DESC, id DESC")})
 
 (defn user-stub []
   {"id" 1
@@ -63,21 +65,30 @@
 (defn homepage-stub []
   {"forums" (map forum-stub (range 1 4))})
 
-(defn get-posts [fid]
-  '(if ))
+; recursively gets the post tree, starting with toplevel posts in a forum
+; this should return a list of posts
+(defn get-post-tree [this parent-post-id]
+  (let [vtposts (u/qe this "build-homepage-sub-posts" parent-post-id)]
+    (if (< (.getRowCount vtposts) 1)
+      []
+      (let [posts (u/vt2maplist vtposts)]
+        (map (fn [post] (assoc post "posts" (get-post-tree this (get post "id")))) posts)))))
+
 (defn run [this now]
   ; XXX: eventually we parameterize on site too
   (let [topforums (u/vt2maplist (u/qe this "build-homepage-top-forums-for-site" 1))]
+    ; queue up top posts for each topforum
     (dorun (map (fn [forum] (u/queue this "build-homepage-top-posts-for-forum" (get forum "id"))) topforums))
-    (println "foo")
-    (let [topposts (map u/vt2maplist (u/execute this))
-          topforums (map-indexed (fn [i f] (assoc f "posts" (nth topposts i))) topforums)]
 
-      (println "bar")
+    (let [topposts (doall (map u/vt2maplist (u/execute this)))
+          topposts (doall (map (fn [post] (assoc (into {} post) "posts" (get-post-tree this (get post "id")))) topposts))
+          topforums (doall (map-indexed (fn [i forum] (assoc (into {} forum) "posts" (nth topposts i))) topforums))]
+
+      ;(println topposts)
+      (println topforums)
       ; XXX: REALLY use top-posts, not just pretend ; )
       (let [homepage {"forums" topforums}
             out (u/obj2json homepage)]
-        (println topforums)
         ; upsert homepage doc
         (if (< (.getRowCount (u/qe this "build-homepage-select")) 1)
           ; "{}" is a stub / placeholder
