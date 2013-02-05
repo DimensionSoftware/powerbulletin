@@ -11,12 +11,16 @@
    "build-homepage-update"
      (u/stmt "UPDATE docs SET updated=?, json=?
               WHERE key='homepage' AND type='misc'")
-   "build-homepage-top-posts"
+   "build-homepage-top-posts-for-forum"
      (u/stmt "SELECT * FROM posts
-              WHERE parent_id IS NULL
+              WHERE parent_id IS NULL AND forum_id=?
+              ORDER BY created DESC, id DESC
+              LIMIT 10")
+   "build-homepage-top-forums-for-site"
+     (u/stmt "SELECT * FROM forums
+              WHERE parent_id IS NULL AND site_id=?
               ORDER BY created DESC, id DESC
               LIMIT 10")})
-
 
 (defn user-stub []
   {"id" 1
@@ -60,21 +64,22 @@
   {"forums" (map forum-stub (range 1 4))})
 
 (defn run [this now]
-  (u/queue this "build-homepage-top-posts")
-  ; TODO: additionally, queue up other queries needed to populate homepage data
-  ; including, but not limited to:
-  ; - toplevel forums
-  ; - first level of subforums for each toplevel forum
-  ; - what else guys??
-  ; XXX: REALLY use top-posts, not just pretend ; )
-  (let [top-posts (u/vt2maplist (nth (u/execute this) 0))
-        homepage (homepage-stub)
-        out (u/obj2json homepage)]
-    (println out)
-    ; upsert homepage doc
-    (u/queue this "build-homepage-select")
-    (if (< (.getRowCount (nth (u/execute this) 0)) 1)
-      ; "{}" is a stub / placeholder
-      (u/queue this "build-homepage-insert" now out)
-      (u/queue this "build-homepage-update" now out))
-    (u/execute this)))
+  ; XXX: eventually we parameterize on site too
+  (let [forums (u/vt2maplist (u/qe this "build-homepage-top-forums-for-site" 1))]
+    ;(u/queue this "build-homepage-top-posts-for-forum" 1)
+    ; ^^ will have to run the above once for each toplevel forum
+    ; TODO: additionally, queue up other queries needed to populate homepage data
+    ; including, but not limited to:
+    ; - toplevel forums
+    ; - first level of subforums for each toplevel forum
+    ; - what else guys??
+    ; XXX: REALLY use top-posts, not just pretend ; )
+    (let [homepage {"forums" forums}
+          out (u/obj2json homepage)]
+      (println forums)
+      ; upsert homepage doc
+      (if (< (.getRowCount (u/qe this "build-homepage-select")) 1)
+        ; "{}" is a stub / placeholder
+        (u/queue this "build-homepage-insert" now out)
+        (u/queue this "build-homepage-update" now out))
+      (u/execute this))))

@@ -19,10 +19,11 @@ PARTITION TABLE sites ON COLUMN id;
 -- forum has many posts
 -- forum has many child forums
 -- if a forum does not have a parent, then it is a top-level category
--- if a forum does not have a parent, then it cannot not have posts
+-- if a forum does not have a parent, then it cannot have posts
 CREATE TABLE forums (
   id          BIGINT NOT NULL,
   parent_id   BIGINT,
+  site_id     BIGINT NOT NULL,
   created     TIMESTAMP NOT NULL,
   title       VARCHAR(256) NOT NULL,
   description VARCHAR(1024) NOT NULL,
