@@ -29,6 +29,7 @@ export mutant-layout = (jade-layout, mutants) ->
           locals:locals2
           mutant:template-nm
         delete data.locals.req
+        res.content-type 'application/json'
         res.json data
       else
         res.locals.initial-mutant = template-nm
