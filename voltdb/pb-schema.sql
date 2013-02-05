@@ -26,6 +26,7 @@ CREATE TABLE forums (
   site_id     VARCHAR(256) NOT NULL,
   created     TIMESTAMP NOT NULL,
   title       VARCHAR(256) NOT NULL,
+  slug        VARCHAR(256) NOT NULL,
   description VARCHAR(1024) NOT NULL,
   media_url   VARCHAR(1024),
   PRIMARY KEY (id)
