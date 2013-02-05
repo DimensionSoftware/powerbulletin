@@ -79,21 +79,20 @@ body.has-scrolled
           font-size .9em
     .user-profile
       transition left .5s ease-out
-  .content
-    .container
-      .forum.dark
-        .post
-          background-color rgba(255,255,255, .77)
-          .title
-            background-color transparent
-          .body
-            background-color transparent
-      .forum.light
-          .header::before
-            position absolute
-            opacity .25
+  #main_content.container
+    .forum.dark
       .post
-        margin grid
+        background-color rgba(255,255,255, .77)
+        .title
+          background-color transparent
+        .body
+          background-color transparent
+    .forum.light
+      .header::before
+        position absolute
+        opacity .25
+    .post
+      margin grid
   footer
     opacity 1
     border-top 1px solid #555
@@ -130,6 +129,7 @@ header
       font-weight 200
       letter-spacing -2px
       position absolute
+      top 0
       left 0
       strong
         letter-spacing -1px
@@ -242,123 +242,120 @@ section.left
       border-left 15px solid #ddd
 //}}}
 //{{{ Main Content
-section.content
-  .container
-    padding 25px 20px 20px 20px
-    //background-color rgba(255,255,255,.9)
-    .forum.light
-      .header
-        color #777
-      .header::before
-        position absolute
-        opacity 0
-    .forum
-      margin-bottom (grid * 2)
-      .header
-        text-shadow 0 1px 1px #000,0 2px 0 #000
-        text-overflow ellipsis
-        letter-spacing -1px
-        white-space nowrap
+#main_content.container
+  .forum.light
+    .header
+      color #777
+    .header::before
+      position absolute
+      opacity 0
+  .forum
+    margin-bottom (grid * 2)
+    .header
+      text-shadow 0 1px 1px #000,0 2px 0 #000
+      text-overflow ellipsis
+      letter-spacing -1px
+      white-space nowrap
+      margin (grid*2) grid
+      color #fff
+      font-weight 100
+      font-size 2.1em
+      line-height 2em
+      h4, span
+        display inline-block
         margin 0 grid
-        color #fff
-        font-weight 100
-        font-size 2.1em
-        line-height 2em
-        h4, span
-          display inline-block
-          margin 0 grid
-          padding 1px 6px
-          //background-color rgba(0,0,0,.08)
-          border-radius 4px
-      .container
-        padding-bottom (grid * 2)!important
-        border-bottom 1px dotted #111
-        .scroll-to:hover
-          border-bottom 14px solid #444
-        .scroll-to
-          border-bottom 13px solid #222
-          border-left 10px solid transparent
-          border-right 10px solid transparent
-          padding 1px
-          width 1px
-          height 20px
-        .post.grow
-          animation-name tiny-grow
-          animation-duration .5s
-        .post:hover
-          background-color #fff
-          border-radius 5px
-          border 1px solid #aaa
-          border-right 2px solid #aaa
-          border-bottom 3px solid #aaa
-          box-shadow 0 0 2px 0 #fff, 0 0 2px 0 #111
-        .post
-          background-color rgba(255,255,255,.9)
-          border 1px solid #ccc
-          border-right 2px solid #ccc
-          border-bottom 3px solid #bbb
-          border-radius 3px
-          .comment
-            clear both
-            text-align left
-            padding 2px grid
-            overflow hidden
-            .photo
-              margin-right 10px
-              margin-top 2px
-            .msg:focus
-              padding-left 5px
-            .msg
-              margin-top 2px
-              padding 4px
-          > .body
-            padding 0 0 grid grid
-            margin 0
-            color #111
-            background-color #fff
-          .title
-            margin 0
-            padding grid 0 0 grid
-            border-top-left-radius 5px
-            border-top-right-radius 5px
-            background-color #fff
-            .date
-              position absolute
-              font-size .6em
-              color #777
-              right grid
-              top (grid / 2)
-        .subpost:hover
-          border-bottom 1px solid #ddd
-          color #000
-          background-color rgba(255,255,255,.3)
-          .signature
-            background-color #eee
-            color #444
-        .subpost
-          border-left 2px solid #eee
-          padding (grid / 2)
-          //background-color #f9f9f9
-          color #333
-          border-bottom 1px solid #eee
+        padding 1px 6px
+        //background-color rgba(0,0,0,.08)
+        border-radius 4px
+    .container
+      padding-bottom (grid * 2)!important
+      border-bottom 1px dotted #111
+      .scroll-to:hover
+        border-bottom 14px solid #444
+      .scroll-to
+        border-bottom 13px solid #222
+        border-left 10px solid transparent
+        border-right 10px solid transparent
+        padding 1px
+        width 1px
+        height 20px
+      .post.grow
+        animation-name tiny-grow
+        animation-duration .5s
+      .post:hover
+        background-color #fff
+        border-radius 5px
+        border 1px solid #aaa
+        border-right 2px solid #aaa
+        border-bottom 3px solid #aaa
+        box-shadow 0 0 2px 0 #fff, 0 0 2px 0 #111
+      .post
+        background-color rgba(255,255,255,.9)
+        border 1px solid #ccc
+        border-right 2px solid #ccc
+        border-bottom 3px solid #bbb
+        border-radius 3px
+        .comment
+          clear both
+          text-align left
+          padding 2px grid
+          overflow hidden
           .photo
-            margin-right grid
-            margin-top (grid/2)
-          p
-            font-size .8em
-            padding 0 0 (grid) (grid/2)
-            margin 0
-          .signature
-            font-style italic
-            border-top-left-radius 6px
-            padding 0 grid
-            color #888
-            font-size .7em
+            margin-right 10px
+            margin-top 2px
+          .msg:focus
+            padding-left 5px
+          .msg
+            margin-top 2px
+            padding 4px
+        > .body
+          padding 0 0 grid grid
+          margin 0
+          color #111
+          background-color #fff
+        .title
+          margin 0
+          padding grid 0 0 grid
+          border-top-left-radius 5px
+          border-top-right-radius 5px
+          background-color #fff
+          .date
             position absolute
-            bottom 0
-            right 0
-            .username
-              margin-right 5px
+            font-size .6em
+            color #777
+            right grid
+            top (grid / 2)
+      .subpost:hover
+        border-bottom 1px solid #ddd
+        color #000
+        background-color rgba(255,255,255,.3)
+        .signature
+          background-color #eee
+          color #444
+      .subpost
+        border-left 2px solid #eee
+        padding (grid / 2)
+        //background-color #f9f9f9
+        color #333
+        border-bottom 1px solid #eee
+        .photo
+          margin-right grid
+          margin-top (grid/2)
+        p
+          font-size .8em
+          padding 0 0 (grid) (grid/2)
+          margin 0
+        .signature
+          font-style italic
+          border-top-left-radius 6px
+          padding 0 grid
+          color #888
+          font-size .7em
+          position absolute
+          bottom 0
+          right 0
+          .username
+            margin-right 5px
 ///}}}
 //{{{ Footer
 footer

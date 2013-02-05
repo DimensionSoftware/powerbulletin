@@ -5,6 +5,7 @@
 // XXX eventually each forum will have its own theme.{styl,css}
 
 header-height = 50px
+forum-header-height = 70px
 
 body
   grid(90%,100%)
@@ -53,14 +54,11 @@ body.has-scrolled
     bottom -10px
     line-height 16px
 
-  .content
-    z-index 5
-    .container
-      margin 0 auto 0 180px!important
-      .forum
-        .header::before
-          position absolute
-          opacity .8
+  #main_content.container
+    .forum
+      .header::before
+        position absolute
+        opacity .8
 //}}}
 
 //{{{ Background layer
@@ -82,7 +80,7 @@ img.bg.active
 //}}}
 //{{{ Header
 body.expanded
-  section.content .container
+  .container
     padding 110px 20px 20px 20px
     transition padding .3s ease-out
   .stuck
@@ -245,95 +243,100 @@ section.left
   width 425px
 .col2
   width 425px
-.content
+
+//#left_content.container
+//  grid-space(20%)
+
+//#forum_content.container
+//  grid-space(80%)
+
+#main_content.container
+  grid(100%, 800px)
+  padding forum-header-height 0 0 0!important
   z-index 5
-  .container
-    margin 0 auto 0 180px!important
-    .forum
+  .forum
+    position relative
+    clear both
+    min-height 450px
+    margin-left 180px
+    .container
+      z-index 6
+    .sticky-wrapper
+      height auto!important
+    .header::before
+      position absolute
+      opacity .35
+      top -50px
+      left 20%
+      content ''
+      width 640px
+      height 200px
+      z-index 1
+      background-image url(cache_url+'/images/blob.png')
+      background-repeat no-repeat
+    .header.stuck::before
+      opacity 1!important
+    .header.stuck
+      color #fff!important
+      text-shadow none!important
+      position fixed
+      top 14px
+      left 50px
+      z-index 4
+      overflow hidden
+      font-size 17px
+      letter-spacing 0
+    .header
+      width 95%
+      overflow visible
+      text-align center
+      .description
+        text-rendering optimizelegibility
+        text-transform capitalize
+        overflow hidden
+        text-overflow ellipsis
+        width 35%
+        left 22%
+        position relative
+        z-index 2
+    .scroll-to
+      position absolute
+      right 0
+      bottom -30px
+    .post:hover
+      transform translateY(-15px)
+      position relative
+      z-index 4
+      transition all .1s ease-out 1.3s
+      .comment
+        height 30px
+        transition height .05s ease-out 1.6s
+    .post
+      float left
+      margin 10px
+      .photo
+        float left
+        width 25px
+        img
+          width 100%
+    .comment 
+      margin-top 2px
+      padding 3px 7px
+      height 0
+      .msg
+        font-size .9em
+        font-style italic
+        width 70%
+    .subpost
       position relative
       clear both
-      .sticky-wrapper
-        height auto!important
-      .header::before
-        position absolute
-        opacity .35
-        top -47px
-        left 20%
-        content ''
-        width 640px
-        height 200px
-        z-index 1
-        background-image url(cache_url+'/images/blob.png')
-        background-repeat no-repeat
-      .header.stuck::before
-        opacity 1!important
-      .header.stuck
-        color #fff!important
-        text-shadow none!important
-        position fixed
-        top 31px
-        left 50px
-        z-index 4
+      .photo
         overflow hidden
-        font-size 17px
-        letter-spacing 0
-      .header
-        width 95%
-        overflow visible
-        text-align center
-        position absolute
-        top 25px
-        .description
-          text-rendering optimizelegibility
-          text-transform capitalize
-          overflow hidden
-          text-overflow ellipsis
-          width 35%
-          left 22%
-          position relative
-          z-index 2
-      .container
-        margin 0!important
-        padding 145px 0 0 0!important
-        z-index 3
-        .scroll-to
-          position absolute
-          right 0
-          bottom -30px
-        .post:hover
-          transform translateY(-15px)
-          position relative
-          z-index 4
-          transition all .1s ease-out 1.3s
-          .comment
-            height 30px
-            transition height .05s ease-out 1.6s
-        .post
-          float left
-          margin 10px
-          .photo
-            float left
-            width 25px
-            img
-              width 100%
-        .comment 
-          margin-top 2px
-          padding 3px 7px
-          height 0
-          .msg
-            font-size .9em
-            font-style italic
-            width 70%
-        .subpost
-          position relative
-          clear both
-          .photo
-            overflow hidden
-            width 40px
-            float left
-            img
-              width 100%
-    .scroll-to-top
+        width 40px
+        float left
+        img
+          width 100%
+  .scroll-to-top
       clear both
 //}}}
 //{{{ Footer
@@ -349,8 +352,6 @@ footer
 
 //{{{ RESPONSIVEness
 @media screen and (max-width: 800px)
-  body
-    grid(100%,475px)
   header
     height 30px
     .logo
@@ -367,30 +368,31 @@ footer
       .query
         height 9px
   body
-    .content
-      #main_content.container
-        margin 0 auto 0 10px!important
+    grid(100%,475px)
     .left
       display none!important
+    #main_content.container
+      margin 0 auto 0 10px!important
+      .forum
+        margin-left 0!important
   
 @media screen and (max-width: 500px)
-  .content
-    .container
+  header
+    font-size 0.8em
+    display none
+  body
+    grid(100%,320px)
+    #main_content.container
       margin-left 0!important
       padding 25px 15px!important
       .forum
         margin-bottom 10px!important
-  .has-scrolled
-    .content
-      .container
         margin-left 0!important
-        padding 25px 15px!important
+  body.has-scrolled
+    .container
+      margin-left 0!important
+      padding 25px 15px!important
     .left
       display none!important
-  body
-    grid(100%,320px)
-  header
-    font-size 0.8em
-    display none
 // }}}
 // vim:fdm=marker
