@@ -63,23 +63,24 @@
 (defn homepage-stub []
   {"forums" (map forum-stub (range 1 4))})
 
+(defn get-posts [fid]
+  '(if ))
 (defn run [this now]
   ; XXX: eventually we parameterize on site too
-  (let [forums (u/vt2maplist (u/qe this "build-homepage-top-forums-for-site" 1))]
-    ;(u/queue this "build-homepage-top-posts-for-forum" 1)
-    ; ^^ will have to run the above once for each toplevel forum
-    ; TODO: additionally, queue up other queries needed to populate homepage data
-    ; including, but not limited to:
-    ; - toplevel forums
-    ; - first level of subforums for each toplevel forum
-    ; - what else guys??
-    ; XXX: REALLY use top-posts, not just pretend ; )
-    (let [homepage {"forums" forums}
-          out (u/obj2json homepage)]
-      (println forums)
-      ; upsert homepage doc
-      (if (< (.getRowCount (u/qe this "build-homepage-select")) 1)
-        ; "{}" is a stub / placeholder
-        (u/queue this "build-homepage-insert" now out)
-        (u/queue this "build-homepage-update" now out))
-      (u/execute this))))
+  (let [topforums (u/vt2maplist (u/qe this "build-homepage-top-forums-for-site" 1))]
+    (dorun (map (fn [forum] (u/queue this "build-homepage-top-posts-for-forum" (get forum "id"))) topforums))
+    (println "foo")
+    (let [topposts (map u/vt2maplist (u/execute this))
+          topforums (map-indexed (fn [i f] (assoc f "posts" (nth topposts i))) topforums)]
+
+      (println "bar")
+      ; XXX: REALLY use top-posts, not just pretend ; )
+      (let [homepage {"forums" topforums}
+            out (u/obj2json homepage)]
+        (println topforums)
+        ; upsert homepage doc
+        (if (< (.getRowCount (u/qe this "build-homepage-select")) 1)
+          ; "{}" is a stub / placeholder
+          (u/queue this "build-homepage-insert" now out)
+          (u/queue this "build-homepage-update" now out))
+        (u/execute this)))))
