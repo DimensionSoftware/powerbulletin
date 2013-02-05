@@ -1,5 +1,6 @@
 require! {
   crypto
+  __: \lodash
 }
 
 # XXX keep these functions pure as they're exported in the app & eventually (TODO) on the client via browserify
@@ -39,6 +40,25 @@ process-cached-data = {}
           cb err, data
     else
       cb null, cache[key].data
+
+# recursively turn 'created' and 'created_at' fields into Date objects
+@add-dates = (o) ->
+  switch typeof o
+  | 'object' =>
+    if o.created
+      o.created = new Date(o.created)
+    if o.created_at
+      o.created_at = new Date(o.created_at)
+    sub = __.keys(o).filter (k) -> typeof o[k] == 'array' || typeof o[k] == 'object'
+    for k in sub
+      o[k] = @add-dates o[k]
+    o
+  | 'array' =>
+    for v,i in o
+      if typeof v == 'object'
+        o[i] = @add-dates o[i]
+    o
+  | otherwise => o
 
 #{{{ String functions
 @title-case = (s) ->

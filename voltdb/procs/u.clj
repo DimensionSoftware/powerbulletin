@@ -23,6 +23,10 @@
 (defn execute-final [this]
   (.voltExecuteSQL this true))
 
+(defn qe [& args]
+  (apply queue args)
+  (nth (execute (nth args 0)) 0))
+
 (defn now [this]
   (.getTransactionTime this))
 
