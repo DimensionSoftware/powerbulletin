@@ -1,8 +1,9 @@
 
 mixin forum(f, i)
   a(href=f.slug)= f.title
-  each sf,ii in f.subforums
-    mixin subforum(sf, f, ii)
+  if f.subforums
+    each sf,ii in f.subforums
+      mixin subforum(sf, f, ii)
 
 mixin subforum(sf, i)
   .subforum(id="subforum_#{sf.id}", class=(i % 2) ? 'odd' : 'even')
@@ -10,7 +11,8 @@ mixin subforum(sf, i)
 
 //- main
 //- ---------
-each f,i in forums
-  mixin forum(f, i)
+if forums
+  each f,i in forums
+    mixin forum(f, i)
 
 //- vim:fdm=marker

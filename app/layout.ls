@@ -1,16 +1,15 @@
 # XXX layout-specific client-side
 
 # shortcuts
-w = $ window
-d = $ document
+$w = $ window
+$d = $ document
 
 is-ie     = false or \msTransform in document.documentElement.style
 is-moz    = false or \MozBoxSizing in document.documentElement.style
 is-opera  = !!(window.opera and window.opera.version)
 threshold = 10 # snap
 
-w.v = require './validations'
-
+$w.v = require './validations'
 
 # main
 # ---------
@@ -22,8 +21,29 @@ $ '.forum .container' .masonry(
   is-fit-width:  true
   is-resizable:  true)
 
+#{{{ Mutant init
+window.mutant  = require '../lib/mutant/mutant'
+window.mutants = require './mutants'
+
+$d.on \click 'a.mutant' (e) ->
+  href = $ this .attr \href
+  return false unless href # guard
+  return true if href?.match /#/
+  search-params = {}
+  History.push-state {search-params}, '', href
+  return false
+
+History.Adapter.bind window, \statechange, (e) ->
+  url = History.get-page-url!replace /\/$/, ''
+  console.log url
+  $.get url, _surf:1, (r) ->
+    if r.locals?.title
+      $d.title = r.locals.title
+    window.mutant.run window.mutants[r.mutant], locals:r.locals
+  return false
+#}}}
 #{{{ Waypoints
-w.resize -> set-timeout (-> $.waypoints \refresh), 800
+$w.resize -> set-timeout (-> $.waypoints \refresh), 800
 set-timeout (->
   # sort control
   $ '#sort li' .waypoint {
@@ -66,19 +86,19 @@ set-timeout (->
 
       # handle forum background
       $ '.bg' .each -> $ this .remove!prependTo $ 'body' # position behind
-      clear-timeout w.bg-anim if w.bg-anim
+      clear-timeout window.bg-anim if window.bg-anim
       last = $ '.bg.active'
       unless last.length
         next = $ '#forum'+"_bg_#{cur.data \id}"
         next.add-class \active
       else
-        w.bg-anim := set-timeout (->
+        window.bg-anim := set-timeout (->
           next = $ '#forum'+"_bg_#{cur.data \id}"
 
           last.css \top if direction is \down then -300 else 300 # stage animation
           last.remove-class \active
           next.add-class 'active visible' # ... and switch!
-          w.bg-anim = 0
+          window.bg-anim = 0
         ), 300
   }), 100
 #}}}
@@ -86,10 +106,10 @@ set-timeout (->
 
 # indicate to stylus that view scrolled
 has-scrolled = ->
-  st = w.scrollTop!
+  st = $w.scrollTop!
   $ \body .toggle-class 'has-scrolled' (st > threshold)
 set-timeout (->
-  w.on \scroll -> has-scrolled!
+  $w.on \scroll -> has-scrolled!
   has-scrolled!), 1300 # initially yield
 
 window.awesome-scroll-to = (e, on-complete, duration) ->
@@ -114,12 +134,12 @@ window.awesome-scroll-to = (e, on-complete, duration) ->
   e
 
 # attach scroll-to's
-d.on \mousedown '.scroll-to' ->
+$d.on \mousedown '.scroll-to' ->
   awesome-scroll-to $(this).data \scroll-to
   false
 
 # attach scroll-to-top's
-d.on \mousedown '.scroll-to-top' ->
+$d.on \mousedown '.scroll-to-top' ->
   $ this .attr \title 'Scroll to Top!'
   <- $ 'html,body' .animate { scroll-top:$ \body .offset!top }, 140
   <- $ 'html,body' .animate { scroll-top:$ \body .offset!top+threshold }, 110
@@ -147,12 +167,12 @@ add-post = ->
 
   false # stop event propagation
 # delegated events
-d.on \click '#add-post-submit' add-post
-d.on \click '.onclick-add-post-dialog' add-post-dialog
+$d.on \click '#add-post-submit' add-post
+$d.on \click '.onclick-add-post-dialog' add-post-dialog
 
-d.on \click 'header' (e) ->
+$d.on \click 'header' (e) ->
   $ \body .remove-class \expanded if e.target.class-name is \header # guard
   $ '#query' .focus!
-d.on \keypress '#query' -> $ \body .add-class \expanded
+$d.on \keypress '#query' -> $ \body .add-class \expanded
 #}}}
 # vim:fdm=marker

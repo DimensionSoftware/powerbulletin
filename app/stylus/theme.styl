@@ -243,12 +243,20 @@ section.left
 //}}}
 //{{{ Main Content
 #main_content.container
+  a:hover
+    color #000
+    text-decoration underline
+  a
+    color #333
+    text-decoration none
+
   .forum.light
     .header
       color #777
     .header::before
       position absolute
       opacity 0
+
   .forum
     margin-bottom (grid * 2)
     .header
@@ -256,7 +264,7 @@ section.left
       text-overflow ellipsis
       letter-spacing -1px
       white-space nowrap
-      margin (grid*2) grid
+      margin (grid*3) grid
       color #fff
       font-weight 100
       font-size 2.1em

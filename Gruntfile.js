@@ -37,6 +37,7 @@ module.exports = function(grunt) {
     browserify: {
       'public/powerbulletin.js' : {
         entries: 'app/layout.ls',
+        ignore: ['jsdom'],
         beforeHook: function(bundle) { bundle.use(require('livescript-browserify')); }
       }
     },
