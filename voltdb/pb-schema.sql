@@ -31,7 +31,7 @@ CREATE TABLE forums (
   media_url   VARCHAR(1024),
   PRIMARY KEY (id)
 );
-PARTITION TABLE forums ON COLUMN site_id;
+--PARTITION TABLE forums ON COLUMN site_id;
 CREATE INDEX forums_site ON forums (parent_id, site_id);
 CREATE UNIQUE INDEX forums_sort ON forums (created DESC, id DESC);
 
