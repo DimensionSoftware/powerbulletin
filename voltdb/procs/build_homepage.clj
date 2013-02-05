@@ -11,15 +11,22 @@
    "build-homepage-update"
      (u/stmt "UPDATE docs SET updated=?, json=?
               WHERE key='homepage' AND type='misc'")
-   "build-homepage-top-posts-for-forum"
-     (u/stmt "SELECT * FROM posts
-              WHERE parent_id IS NULL AND forum_id=?
+   "build-homepage-top-posts"
+     (u/stmt "SELECT p.*, a.name user_name
+              FROM posts p, aliases a
+              WHERE a.user_id=p.user_id
+                AND a.site_id='cats.pb.com'
+                AND p.parent_id IS NULL
+                AND p.forum_id=?
               ORDER BY created DESC, id DESC")
    "build-homepage-sub-posts"
-     (u/stmt "SELECT * FROM posts
-              WHERE parent_id=?
-              ORDER BY created DESC, id DESC")
-   "build-homepage-top-forums-for-site"
+     (u/stmt "SELECT p.*, a.name user_name
+              FROM posts p, aliases a
+              WHERE a.user_id=p.user_id
+                AND a.site_id='cats.pb.com'
+                AND p.parent_id=?
+              ORDER BY created DESC, id DESC") ; site='cats.pb.com' is a STUB eventually sites dynamic too... alias based on site...
+   "build-homepage-top-forums"
      (u/stmt "SELECT * FROM forums
               WHERE parent_id IS NULL AND site_id=?
               ORDER BY created DESC, id DESC")})
@@ -76,16 +83,14 @@
 
 (defn run [this now]
   ; XXX: eventually we parameterize on site too
-  (let [topforums (u/vt2maplist (u/qe this "build-homepage-top-forums-for-site" 1))]
+  (let [topforums (u/vt2maplist (u/qe this "build-homepage-top-forums" "cats.pb.com"))]
     ; queue up top posts for each topforum
-    (dorun (map (fn [forum] (u/queue this "build-homepage-top-posts-for-forum" (get forum "id"))) topforums))
+    (dorun (map (fn [forum] (u/queue this "build-homepage-top-posts" (get forum "id"))) topforums))
 
     (let [topposts (doall (map u/vt2maplist (u/execute this)))
-          topposts (doall (map (fn [post] (assoc (into {} post) "posts" (get-post-tree this (get post "id")))) topposts))
+          topposts (doall (map (fn [post] (get-post-tree this (get post "id"))) topposts))
           topforums (doall (map-indexed (fn [i forum] (assoc (into {} forum) "posts" (nth topposts i))) topforums))]
 
-      ;(println topposts)
-      (println topforums)
       ; XXX: REALLY use top-posts, not just pretend ; )
       (let [homepage {"forums" topforums}
             out (u/obj2json homepage)]

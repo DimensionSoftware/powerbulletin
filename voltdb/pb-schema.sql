@@ -23,7 +23,7 @@ PARTITION TABLE sites ON COLUMN id;
 CREATE TABLE forums (
   id          BIGINT NOT NULL,
   parent_id   BIGINT,
-  site_id     BIGINT NOT NULL,
+  site_id VARCHAR(256) NOT NULL,
   created     TIMESTAMP NOT NULL,
   title       VARCHAR(256) NOT NULL,
   description VARCHAR(1024) NOT NULL,
@@ -41,7 +41,6 @@ CREATE TABLE users (
   created TIMESTAMP NOT NULL,
   PRIMARY KEY (id)
 );
-PARTITION TABLE users ON COLUMN id;
 
 -- alias belongs to user
 CREATE TABLE aliases (
@@ -51,7 +50,6 @@ CREATE TABLE aliases (
   name    VARCHAR(64) NOT NULL,
   PRIMARY KEY (user_id, site_id)
 );
-PARTITION TABLE aliases ON COLUMN user_id;
 
 -- auth belongs to user
 CREATE TABLE auths (
@@ -61,7 +59,6 @@ CREATE TABLE auths (
   json    VARCHAR(1024),
   PRIMARY KEY (user_id, type)
 );
-PARTITION TABLE auths ON COLUMN user_id;
 
 -- post has many child posts
 -- post belongs to user
@@ -104,4 +101,4 @@ CREATE PROCEDURE FROM CLASS GetDoc;
 CREATE PROCEDURE FROM CLASS PutDoc;
 CREATE PROCEDURE FROM CLASS select_user;
 CREATE PROCEDURE FROM CLASS add_post2;
-PARTITION PROCEDURE select_user ON TABLE users COLUMN id;
+--PARTITION PROCEDURE select_user ON TABLE users COLUMN id;
