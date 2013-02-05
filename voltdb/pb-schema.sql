@@ -23,7 +23,7 @@ PARTITION TABLE sites ON COLUMN id;
 CREATE TABLE forums (
   id          BIGINT NOT NULL,
   parent_id   BIGINT,
-  site_id VARCHAR(256) NOT NULL,
+  site_id     VARCHAR(256) NOT NULL,
   created     TIMESTAMP NOT NULL,
   title       VARCHAR(256) NOT NULL,
   description VARCHAR(1024) NOT NULL,
