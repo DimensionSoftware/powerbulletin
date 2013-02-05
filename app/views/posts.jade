@@ -13,8 +13,9 @@ mixin subpost(p, sp, i)
 
 //- main
 //- ---------
-each f,i in forums
-  each p,i in f.posts
-    mixin post(p, i)
+if forums
+  each f,i in forums
+    each p,i in f.posts
+      mixin post(p, i)
 
 //- vim:fdm=marker

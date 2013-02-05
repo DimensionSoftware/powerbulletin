@@ -392,7 +392,7 @@ process.binding = function (name) {
 
 });
 
-require.define("/validations.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
+require.define("/app/validations.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
   var myvalidation, out$ = typeof exports != 'undefined' && exports || this;
   out$.myvalidation = myvalidation = function(){
     return console.log('whee test');
@@ -401,15 +401,207 @@ require.define("/validations.ls",function(require,module,exports,__dirname,__fil
 
 });
 
-require.define("/layout.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
-  var w, d, isIe, isMoz, isOpera, threshold, hasScrolled, addPostDialog, addPost;
-  w = $(window);
-  d = $(document);
+require.define("/lib/mutant/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"index.js"}
+});
+
+require.define("/lib/mutant/mutant.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
+  var jsdom, gen_dom_window, isSurfable;
+  if (typeof window != 'undefined' && window !== null) {
+    true;
+  } else {
+    jsdom = require('jsdom');
+    gen_dom_window = function(html, cb){
+      var scripts, jsdom_opts, jsdom_done, this$ = this;
+      scripts = ['../../public/local/jquery-1.8.3.min.js'];
+      jsdom_opts = {
+        html: html,
+        scripts: scripts
+      };
+      jsdom_done = function(err, window){
+        if (err) {
+          return cb(err);
+        }
+        window.$ = window.jQuery;
+        return cb(null, window);
+      };
+      return jsdom.env(jsdom_opts, jsdom_done);
+    };
+  }
+  this.run = function(template, opts, cb){
+    /*
+    run returns void because it mutates the window object
+    
+    on the server side we need to know the base html before we can mutate it
+    
+    on the client side the callback returns nothing because the dom has been mutated already
+    on the server side the callback will return html
+    
+    templates are objects with up to four methods:
+    static, onLoad, onInitial, onMutate
+    
+    static is client or serverside and this phase is purely for html dom tree creation/manipulation
+    
+    onLoad happens when a mutant template is run, regardless of whether it is the initial pageload, or a mutation
+    
+    onInitial only happens on an initial pageload (not on mutation)
+    
+    onMutate only happens on a mutation (not on an initial pageload)
+    */
+    var initial_run, params, html, onLoad, onInitial, onMutate;
+    cb == null && (cb = function(){});
+    initial_run = opts.initial;
+    params = opts.locals || {};
+    html = opts.html;
+    onLoad = template.onLoad || function(w, cb){
+      return cb(null);
+    };
+    onInitial = template.onInitial || function(w, cb){
+      return cb(null);
+    };
+    onMutate = template.onMutate || function(w, cb){
+      return cb(null);
+    };
+    require('../../app/views/mutants.js');
+    if (typeof window != 'undefined' && window !== null) {
+      if (initial_run) {
+        return onLoad.call(params, window, function(err){
+          if (err) {
+            return cb(err);
+          }
+          return onInitial.call(params, window, cb);
+        });
+      } else {
+        window.renderJade = function(target, tmpl){
+          return cb(null, jade.render(window.document.getElementById(target), tmpl, params));
+        };
+        window.marshal = function(key, val){
+          return window[key] = val;
+        };
+        return template['static'].call(params, window, function(err){
+          if (err) {
+            return cb(err);
+          }
+          return onLoad.call(params, window, function(err){
+            if (err) {
+              return cb(err);
+            }
+            return onMutate.call(params, window, cb);
+          });
+        });
+      }
+    } else if (html) {
+      return gen_dom_window(html, function(err, window){
+        if (err) {
+          return cb(err);
+        }
+        window.renderJade = function(target, tmpl){
+          return jade.render(window.document.getElementById(target), tmpl, params);
+        };
+        window.marshal = function(key, val){
+          var s;
+          s = window.document.createElement('script');
+          window.$(s).attr('type', 'text/javascript');
+          window.$(s).text("window['" + key + "'] = " + JSON.stringify(val) + ";");
+          return window.document.body.appendChild(s);
+        };
+        return template['static'].call(params, window, function(err){
+          if (err) {
+            return cb(err);
+          }
+          window.$('script.jsdom').remove();
+          return cb(null, "<!doctype html>" + window.document.outerHTML);
+        });
+      });
+    } else {
+      throw new Error("need html for serverside");
+    }
+  };
+  isSurfable = function(r){
+    return r.callbacks.some(function(m){
+      return m.surfable;
+    });
+  };
+  this.surfableRoutes = function(app){
+    var i$, ref$, len$, r, results$ = [];
+    for (i$ = 0, len$ = (ref$ = app.routes.get).length; i$ < len$; ++i$) {
+      r = ref$[i$];
+      if (isSurfable(r)) {
+        results$.push(r.regexp.toString());
+      }
+    }
+    return results$;
+  };
+}).call(this);
+
+});
+
+require.define("/app/views/mutants.js",function(require,module,exports,__dirname,__filename,process,global){jade=function(e){function t(e){return e!=null}return Array.isArray||(Array.isArray=function(e){return"[object Array]"==Object.prototype.toString.call(e)}),Object.keys||(Object.keys=function(e){var t=[];for(var n in e)e.hasOwnProperty(n)&&t.push(n);return t}),e.merge=function(n,r){var i=n["class"],s=r["class"];if(i||s)i=i||[],s=s||[],Array.isArray(i)||(i=[i]),Array.isArray(s)||(s=[s]),i=i.filter(t),s=s.filter(t),n["class"]=i.concat(s).join(" ");for(var o in r)o!="class"&&(n[o]=r[o]);return n},e.attrs=function(n,r){var i=[],s=n.terse;delete n.terse;var o=Object.keys(n),u=o.length;if(u){i.push("");for(var a=0;a<u;++a){var f=o[a],l=n[f];"boolean"==typeof l||null==l?l&&(s?i.push(f):i.push(f+'="'+f+'"')):0==f.indexOf("data")&&"string"!=typeof l?i.push(f+"='"+JSON.stringify(l)+"'"):"class"==f&&Array.isArray(l)?i.push(f+'="'+e.escape(l.join(" "))+'"'):r&&r[f]?i.push(f+'="'+e.escape(l)+'"'):i.push(f+'="'+l+'"')}}return i.join(" ")},e.escape=function(t){return String(t).replace(/&(?!(\w+|\#\d+);)/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")},e.rethrow=function(t,n,r){if(!n)throw t;var i=3,s=require("fs").readFileSync(n,"utf8"),o=s.split("\n"),u=Math.max(r-i,0),a=Math.min(o.length,r+i),i=o.slice(u,a).map(function(e,t){var n=t+u+1;return(n==r?"  > ":"    ")+n+"| "+e}).join("\n");throw t.path=n,t.message=(n||"Jade")+":"+r+"\n"+i+"\n\n"+t.message,t},e}({}),jade.templates={},jade.render=function(e,t,n){var r=jade.templates[t](n);e.innerHTML=r},jade.templates.homepage=function(locals,attrs,escape,rethrow,merge){attrs=attrs||jade.attrs,escape=escape||jade.escape,rethrow=rethrow||jade.rethrow,merge=merge||jade.merge;var buf=[];with(locals||{}){var interp,forum_mixin=function(e,t){var n=this.block,r=this.attributes||{},i=this.escaped||{};buf.push("<img"),buf.push(attrs({id:"forum_bg_"+e.id+"",src:""+cache_url+"/images/bg_"+e.id+".jpg","class":"bg"},{id:!0,src:!0})),buf.push("/><a"),buf.push(attrs({name:"forum_"+e.id+""},{name:!0})),buf.push("></a><div"),buf.push(attrs({id:"forum_"+e.id+"","class":"forum "+(""+e.theme+" "+(t%2?"odd":"even")+"")},{"class":!0,id:!0})),buf.push('><div class="header"><div class="description">');var s=e.description;buf.push(escape(null==s?"":s)),buf.push('</div></div><div class="container">'),e.posts&&(function(){if("number"==typeof e.posts.length)for(var t=0,n=e.posts.length;t<n;t++){var r=e.posts[t];post_mixin(e,r,t)}else for(var t in e.posts){var r=e.posts[t];post_mixin(e,r,t)}}.call(this),buf.push("<div"),buf.push(attrs({"data-scroll-to":"#forum_"+e.id+"",title:"Scroll top of "+e.title+"!","class":"up scroll-to"},{"class":!0,"data-scroll-to":!0,title:!0})),buf.push("></div>")),buf.push("</div></div>")},post_mixin=function(e,t,n){var r=this.block,i=this.attributes||{},s=this.escaped||{};buf.push("<div"),buf.push(attrs({id:"post_"+t.id+"","class":"post "+("col"+Math.ceil(Math.random()*2)+"")},{"class":!0,id:!0})),buf.push("><a"),buf.push(attrs({href:e.slug,"class":"mutant"},{href:!0,"class":!0})),buf.push('><h5 class="title">');var o=t.title;buf.push(escape(null==o?"":o)),buf.push('<span class="date">'+escape((interp=t.date)==null?"":interp)+'</span></h5></a><p class="body">');var o=t.body;buf.push(escape(null==o?"":o)),buf.push("</p>"),t.posts&&function(){if("number"==typeof t.posts.length)for(var e=0,n=t.posts.length;e<n;e++){var r=t.posts[e];subpost_mixin(r,e)}else for(var e in t.posts){var r=t.posts[e];subpost_mixin(r,e)}}.call(this),buf.push('<div class="comment"><div class="photo"><img'),buf.push(attrs({src:""+cache_url+"/images/profile.jpg"},{src:!0})),buf.push('/></div><input type="text" placeholder="Say it ..." class="msg"/></div></div>')},subpost_mixin=function(e,t){var n=this.block,r=this.attributes||{},i=this.escaped||{};buf.push("<div"),buf.push(attrs({id:"subpost_"+e.id+"","class":"subpost "+(t%2?"odd":"even")},{"class":!0,id:!0})),buf.push('><div class="photo"><img'),buf.push(attrs({src:""+cache_url+"/images/profile.jpg"},{src:!0})),buf.push('/></div><p class="body">');var s=e.body;buf.push(escape(null==s?"":s)),buf.push('</p><div class="signature"><span class="username">- '+escape((interp=e.user.name)==null?"":interp)+'</span><span class="date">');var s=e.date;buf.push(escape(null==s?"":s)),buf.push("</span></div></div>")};forums?function(){if("number"==typeof forums.length)for(var e=0,t=forums.length;e<t;e++){var n=forums[e];forum_mixin(n,e)}else for(var e in forums){var n=forums[e];forum_mixin(n,e)}}.call(this):buf.push("<p>Create a forum first<i>!</i></p>")}return buf.join("")},jade.templates.nav=function(locals,attrs,escape,rethrow,merge){attrs=attrs||jade.attrs,escape=escape||jade.escape,rethrow=rethrow||jade.rethrow,merge=merge||jade.merge;var buf=[];with(locals||{}){var interp,forum_mixin=function(e,t){var n=this.block,r=this.attributes||{},i=this.escaped||{};buf.push("<a"),buf.push(attrs({href:e.slug},{href:!0})),buf.push(">");var s=e.title;buf.push(escape(null==s?"":s)),buf.push("</a>"),e.subforums&&function(){if("number"==typeof e.subforums.length)for(var t=0,n=e.subforums.length;t<n;t++){var r=e.subforums[t];subforum_mixin(r,e,t)}else for(var t in e.subforums){var r=e.subforums[t];subforum_mixin(r,e,t)}}.call(this)},subforum_mixin=function(e,t){var n=this.block,r=this.attributes||{},i=this.escaped||{};buf.push("<div"),buf.push(attrs({id:"subforum_"+e.id+"","class":"subforum "+(t%2?"odd":"even")},{"class":!0,id:!0})),buf.push('><span class="title">');var s=e.title;buf.push(escape(null==s?"":s)),buf.push("</span></div>")};forums&&function(){if("number"==typeof forums.length)for(var e=0,t=forums.length;e<t;e++){var n=forums[e];forum_mixin(n,e)}else for(var e in forums){var n=forums[e];forum_mixin(n,e)}}.call(this)}return buf.join("")},jade.templates.posts=function(locals,attrs,escape,rethrow,merge){attrs=attrs||jade.attrs,escape=escape||jade.escape,rethrow=rethrow||jade.rethrow,merge=merge||jade.merge;var buf=[];with(locals||{}){var interp,post_mixin=function(e,t){var n=this.block,r=this.attributes||{},i=this.escaped||{};buf.push("<a"),buf.push(attrs({href:e.slug},{href:!0})),buf.push(">");var s=e.title;buf.push(escape(null==s?"":s)),buf.push("</a>"),function(){if("number"==typeof e.subposts.length)for(var t=0,n=e.subposts.length;t<n;t++){var r=e.subposts[t];subpost_mixin(e,r,t)}else for(var t in e.subposts){var r=e.subposts[t];subpost_mixin(e,r,t)}}.call(this)},subpost_mixin=function(e,t,n){var r=this.block,i=this.attributes||{},s=this.escaped||{};buf.push("<div"),buf.push(attrs({id:"subpost"+t.id+"","class":"subpost "+(n%2?"odd":"even")},{"class":!0,id:!0})),buf.push('><h4 class="title">');var o=t.title;buf.push(escape(null==o?"":o)),buf.push('</h4><div class="user">');var o=t.user.name;buf.push(escape(null==o?"":o)),buf.push('</div><div class="date">');var o=t.date;buf.push(escape(null==o?"":o)),buf.push('</div><p class="body">');var o=t.body;buf.push(escape(null==o?"":o)),buf.push("</p></div>")};forums&&function(){if("number"==typeof forums.length)for(var e=0,t=forums.length;e<t;e++){var n=forums[e];(function(){if("number"==typeof n.posts.length)for(var e=0,t=n.posts.length;e<t;e++){var r=n.posts[e];post_mixin(r,e)}else for(var e in n.posts){var r=n.posts[e];post_mixin(r,e)}}).call(this)}else for(var e in forums){var n=forums[e];(function(){if("number"==typeof n.posts.length)for(var e=0,t=n.posts.length;e<t;e++){var r=n.posts[e];post_mixin(r,e)}else for(var e in n.posts){var r=n.posts[e];post_mixin(r,e)}}).call(this)}}.call(this)}return buf.join("")}
+});
+
+require.define("fs",function(require,module,exports,__dirname,__filename,process,global){// nothing to see here... no file methods for the browser
+
+});
+
+require.define("/app/mutants.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
+  this.homepage = {
+    'static': function(window, next){
+      window.renderJade('main_content', 'homepage');
+      return next();
+    },
+    onLoad: function(window, next){
+      console.log('client side homepage');
+      return next();
+    },
+    onMutate: function(window, next){
+      return next();
+    }
+  };
+  this.forum = {
+    'static': function(window, next){
+      window.marshal('q', this.q);
+      window.renderJade('left_content', 'nav');
+      window.renderJade('main_content', 'posts');
+      return next();
+    },
+    onInitial: function(window, next){
+      return next();
+    },
+    onLoad: function(window, next){
+      console.log('client side forum');
+      return next();
+    },
+    onMutate: function(window, next){
+      return next();
+    }
+  };
+  this.search = {
+    'static': function(window, next){
+      window.marshal('q', this.q);
+      return next();
+    },
+    onLoad: function(window, next){
+      return next();
+    },
+    onInitial: function(window, next){
+      return next();
+    },
+    onMutate: function(window, next){
+      return next();
+    }
+  };
+}).call(this);
+
+});
+
+require.define("/app/layout.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
+  var $w, $d, isIe, isMoz, isOpera, threshold, hasScrolled, addPostDialog, addPost;
+  $w = $(window);
+  $d = $(document);
   isIe = false || in$('msTransform', document.documentElement.style);
   isMoz = false || in$('MozBoxSizing', document.documentElement.style);
   isOpera = !!(window.opera && window.opera.version);
   threshold = 10;
-  w.v = require('./validations');
+  $w.v = require('./validations');
   $('#query').focus();
   $('.forum .container').masonry({
     itemSelector: '.post',
@@ -417,7 +609,41 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
     isFitWidth: true,
     isResizable: true
   });
-  w.resize(function(){
+  window.mutant = require('../lib/mutant/mutant');
+  window.mutants = require('./mutants');
+  $d.on('click', 'a.mutant', function(e){
+    var href, searchParams;
+    href = $(this).attr('href');
+    if (!href) {
+      return false;
+    }
+    if (href != null && href.match(/#/)) {
+      return true;
+    }
+    searchParams = {};
+    History.pushState({
+      searchParams: searchParams
+    }, '', href);
+    return false;
+  });
+  History.Adapter.bind(window, 'statechange', function(e){
+    var url;
+    url = History.getPageUrl().replace(/\/$/, '');
+    console.log(url);
+    $.get(url, {
+      _surf: 1
+    }, function(r){
+      var ref$;
+      if ((ref$ = r.locals) != null && ref$.title) {
+        $d.title = r.locals.title;
+      }
+      return window.mutant.run(window.mutants[r.mutant], {
+        locals: r.locals
+      });
+    });
+    return false;
+  });
+  $w.resize(function(){
     return setTimeout(function(){
       return $.waypoints('refresh');
     }, 800);
@@ -458,21 +684,21 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
         $('.bg').each(function(){
           return $(this).remove().prependTo($('body'));
         });
-        if (w.bgAnim) {
-          clearTimeout(w.bgAnim);
+        if (window.bgAnim) {
+          clearTimeout(window.bgAnim);
         }
         last = $('.bg.active');
         if (!last.length) {
           next = $('#forum' + ("_bg_" + cur.data('id')));
           return next.addClass('active');
         } else {
-          return w.bgAnim = setTimeout(function(){
+          return window.bgAnim = setTimeout(function(){
             var next;
             next = $('#forum' + ("_bg_" + cur.data('id')));
             last.css('top', direction === 'down' ? -300 : 300);
             last.removeClass('active');
             next.addClass('active visible');
-            return w.bgAnim = 0;
+            return window.bgAnim = 0;
           }, 300);
         }
       }
@@ -480,11 +706,11 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
   }, 100);
   hasScrolled = function(){
     var st;
-    st = w.scrollTop();
+    st = $w.scrollTop();
     return $('body').toggleClass('has-scrolled', st > threshold);
   };
   setTimeout(function(){
-    w.on('scroll', function(){
+    $w.on('scroll', function(){
       return hasScrolled();
     });
     return hasScrolled();
@@ -516,11 +742,11 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
     }
     return e;
   };
-  d.on('mousedown', '.scroll-to', function(){
+  $d.on('mousedown', '.scroll-to', function(){
     awesomeScrollTo($(this).data('scroll-to'));
     return false;
   });
-  d.on('mousedown', '.scroll-to-top', function(){
+  $d.on('mousedown', '.scroll-to-top', function(){
     $(this).attr('title', 'Scroll to Top!');
     return $('html,body').animate({
       scrollTop: $('body').offset().top
@@ -558,15 +784,15 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
     });
     return false;
   };
-  d.on('click', '#add-post-submit', addPost);
-  d.on('click', '.onclick-add-post-dialog', addPostDialog);
-  d.on('click', 'header', function(e){
+  $d.on('click', '#add-post-submit', addPost);
+  $d.on('click', '.onclick-add-post-dialog', addPostDialog);
+  $d.on('click', 'header', function(e){
     if (e.target.className === 'header') {
       $('body').removeClass('expanded');
     }
     return $('#query').focus();
   });
-  d.on('keypress', '#query', function(){
+  $d.on('keypress', '#query', function(){
     return $('body').addClass('expanded');
   });
   function in$(x, arr){
@@ -577,6 +803,6 @@ require.define("/layout.ls",function(require,module,exports,__dirname,__filename
 }).call(this);
 
 });
-require("/layout.ls");
+require("/app/layout.ls");
 
 })();

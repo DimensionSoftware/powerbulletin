@@ -14,7 +14,7 @@ mixin forum(f, i)
 
 mixin post(f, p, i)
   .post(id="post_#{p.id}", class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")
-    a(href=f.slug)
+    a(href=f.slug, class='mutant')
       h5.title= p.title
         span.date #{p.date}
     p.body= p.body

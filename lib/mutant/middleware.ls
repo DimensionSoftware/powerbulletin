@@ -24,8 +24,9 @@ export mutant-layout = (jade-layout, mutants) ->
           res.locals
 
       if req.surfing
+        locals2 = { [k,v] for k,v of locals }
         data =
-          locals:locals
+          locals:locals2
           mutant:template-nm
         delete data.locals.req
         res.json data
