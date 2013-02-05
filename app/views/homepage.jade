@@ -21,11 +21,11 @@ mixin post(f, p, i)
     if p.posts
       each sp,i in p.posts
         mixin subpost(sp, i)
-      .comment
-        .photo
-          img(src="#{cache_url}/images/profile.jpg")
+    .comment
+      .photo
+        img(src="#{cache_url}/images/profile.jpg")
 
-        input.msg(type='text', placeholder='Say it ...')
+      input.msg(type='text', placeholder='Say it ...')
 
 mixin subpost(sp, i)
  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even')

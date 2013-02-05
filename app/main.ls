@@ -124,6 +124,7 @@ else
     a.use mw.ip-lookup
     a.use mw.rate-limit
     a.use express.cookieParser!
+    a.use express.cookieSession!
     a.set 'view engine' 'jade'
     a.set 'views' 'app/views'
     a.enable 'json callback'
