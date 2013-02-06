@@ -8,6 +8,8 @@ mylist =
   * 4
   * 5
 
-return mylist
+mylist2 = require(\mymod).foo!
+
+return mylist2
 $$
 LANGUAGE plls;

@@ -1,0 +1,1 @@
+this folder should be symlinked to the /usr/local/plv8/plv8_modules folder on each postgres server
