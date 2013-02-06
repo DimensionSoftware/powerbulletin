@@ -14,7 +14,8 @@ $$;
 -- site belongs to user (if they are an admin)
 -- NOTE: id is the base domain (string)
 CREATE TABLE sites (
-  id      VARCHAR(256) NOT NULL,
+  id      BIGSERIAL NOT NULL,
+  domain  VARCHAR(256) NOT NULL,
   user_id BIGINT NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
@@ -29,7 +30,7 @@ CREATE TRIGGER sites_timestamp AFTER UPDATE ON sites FOR EACH ROW EXECUTE PROCED
 CREATE TABLE forums (
   id          BIGSERIAL NOT NULL,
   parent_id   BIGINT,
-  site_id     VARCHAR(256) NOT NULL,
+  site_id     BIGINT NOT NULL,
   title       VARCHAR(256) NOT NULL,
   slug        VARCHAR(256) NOT NULL,
   description VARCHAR(1024) NOT NULL,
@@ -55,7 +56,7 @@ CREATE TRIGGER users_timestamp AFTER UPDATE ON users FOR EACH ROW EXECUTE PROCED
 -- alias belongs to user
 CREATE TABLE aliases (
   user_id BIGINT NOT NULL,
-  site_id VARCHAR(256) NOT NULL,
+  site_id BIGINT NOT NULL,
   name    VARCHAR(64) NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,

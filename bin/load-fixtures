@@ -1,5 +1,5 @@
 #!/bin/bash -e
 
 for f in $(ls fixtures/*.csv) ; do
-  /usr/local/voltdb/bin/csvloader -r /tmp --blank null $(basename $f .csv) < $f
+  bin/psql -d pb -c "COPY `basename $f .csv` FROM '`readlink -f $f`' DELIMITERS ',' CSV;"
 done
