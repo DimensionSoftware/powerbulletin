@@ -1,6 +1,6 @@
 require! pg
 
-conn-str = "tcp://postgres@localhost/powerbulletin"
+conn-str = "tcp://postgres@localhost/pb"
 
 export init = (cb = (->)) ->
   pg.connect conn-str, (err, c) ~>
