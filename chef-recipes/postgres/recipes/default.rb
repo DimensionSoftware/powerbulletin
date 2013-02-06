@@ -37,7 +37,7 @@ unless File.file? '/usr/bin/psql'
     cwd '/tmp'
     code <<-EOH
       set -e
-      git clone https://code.google.com/p/plv8js/
+      git clone http://github.com/DimensionSoftware/plv8js.git
       cd plv8js
       make
       make install
