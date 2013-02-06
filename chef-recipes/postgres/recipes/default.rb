@@ -31,4 +31,16 @@ unless File.file? '/usr/bin/psql'
       sudo service postgresql restart
     EOH
   end
+
+  package 'libv8-dev'
+  bash "installing plv8" do
+    cwd '/tmp'
+    code <<-EOH
+      set -e
+      git clone https://code.google.com/p/plv8js/
+      cd plv8js
+      make
+      make install
+    EOH
+  end
 end
