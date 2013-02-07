@@ -5,3 +5,4 @@ export foo = ->
     * 77
     * 88
     * 11
+  plv8.execute 'select * from users', []

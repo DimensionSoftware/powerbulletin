@@ -4,18 +4,9 @@ DROP FUNCTION IF EXISTS get_user(BIGINT);
 DROP FUNCTION IF EXISTS get_doc(TEXT, TEXT);
 
 -- FUNCTION: test
-CREATE OR REPLACE FUNCTION test() RETURNS SETOF BIGINT AS $$
-  # test
-  mylist =
-    * 1
-    * 2
-    * 3
-    * 4
-    * 5
+CREATE OR REPLACE FUNCTION test() RETURNS JSON AS $$
+  return require(\mymod).foo!
 
-  mylist2 = require(\mymod).foo!
-
-  return mylist2
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- FUNCTION: get_user
@@ -26,4 +17,6 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- FUNCTION: get_doc
 CREATE FUNCTION get_doc(type TEXT, key TEXT) RETURNS JSON AS $$
   return plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', [type, key])[0]
+
+CREATE FUNCTION put_doc
 $$ LANGUAGE plls IMMUTABLE STRICT;
