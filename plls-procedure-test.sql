@@ -18,15 +18,15 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS add_post(JSON);
 CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
-  require! validations
+  require! <[u validations]>
   errors = validations.post(post)
   success = !errors.length
   if success
     sql = '''
-    INSERT INTO posts (user_id, forum_id, title, body)
-    VALUES ($1, $2, $3, $4)
-    RETURNING id
-    '''
+      INSERT INTO posts (user_id, forum_id, title, body)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id
+      '''
     params =
       * post.user_id
       * post.forum_id
@@ -34,8 +34,10 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       * post.body
 
     id = plv8.execute(sql, params)[0].id
+    # only works for forum-id 1 right now
+    forums = u.forums 1
 
-  return {success, errors, id}
+  return {success, errors, id, forums}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --CREATE FUNCTION put_doc(
 --$$ LANGUAGE plls IMMUTABLE STRICT;
