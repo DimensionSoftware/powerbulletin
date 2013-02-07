@@ -1,6 +1,10 @@
--- FUNCTION: test
+-- CLEANUP
 DROP FUNCTION IF EXISTS test();
-CREATE OR REPLACE FUNCTION test() RETURNS SETOF int AS $$
+DROP FUNCTION IF EXISTS get_user(BIGINT);
+DROP FUNCTION IF EXISTS get_doc(TEXT, TEXT);
+
+-- FUNCTION: test
+CREATE OR REPLACE FUNCTION test() RETURNS SETOF BIGINT AS $$
   # test
   mylist =
     * 1
@@ -15,12 +19,11 @@ CREATE OR REPLACE FUNCTION test() RETURNS SETOF int AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- FUNCTION: get_user
-DROP FUNCTION IF EXISTS get_user(int);
-DROP TYPE IF EXISTS get_user_r;
-CREATE TYPE get_user_r AS
-  ( id bigint
-  , created timestamp
-  , updated timestamp);
-CREATE FUNCTION get_user(id int) RETURNS SETOF get_user_r AS $$
-  return plv8.execute('SELECT * FROM USERS WHERE id=$1', [id])
+CREATE FUNCTION get_user(id BIGINT) RETURNS TABLE (id BIGINT, created TIMESTAMP, updated TIMESTAMP) AS $$
+  return plv8.execute('SELECT * FROM users WHERE id=$1', [id])
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- FUNCTION: get_doc
+CREATE FUNCTION get_doc(type TEXT, key TEXT) RETURNS JSON AS $$
+  return plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', [type, key])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
