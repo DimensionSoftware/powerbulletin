@@ -13,19 +13,14 @@ $w.v = require './validations'
 
 # main
 # ---------
-$ '#query' .focus!
-
-$ '.forum .container' .masonry(
-  item-selector: '.post'
-  is-animated:   true
-  is-fit-width:  true
-  is-resizable:  true)
-
 #{{{ Mutant init
 window.mutant  = require '../lib/mutant/mutant'
 window.mutants = require './mutants'
 
-$d.on \click 'a.mutant' (e) ->
+<- window.mutants[window.mutator].on-load window # fire onLoad of initial mutant
+$ '#query' .focus!
+
+$d.on \click 'a.mutant' (e) -> # hijack urls
   href = $ this .attr \href
   return false unless href # guard
   return true if href?.match /#/
@@ -33,14 +28,13 @@ $d.on \click 'a.mutant' (e) ->
   History.push-state {search-params}, '', href
   return false
 
-History.Adapter.bind window, \statechange, (e) ->
+History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url = History.get-page-url!replace /\/$/, ''
-  console.log url
   $.get url, _surf:1, (r) ->
-    if r.locals?.title
-      $d.title = r.locals.title
+    $d.title = r.locals.title if r.locals?.title # set title
     window.mutant.run window.mutants[r.mutant], locals:r.locals
   return false
+
 #}}}
 #{{{ Waypoints
 $w.resize -> set-timeout (-> $.waypoints \refresh), 800
@@ -74,6 +68,7 @@ set-timeout (->
       # handle menu active
       id = if direction is \down then eid else
         $ '#'+eid .prevAll '.forum:first' .attr \id
+      return unless id # guard
       $ 'header .menu' .find '.active' .remove-class \active # remove prev
       cur  = $ 'header .menu'
         .find ".#{id.replace /_/ \-}"
@@ -107,7 +102,7 @@ set-timeout (->
 # indicate to stylus that view scrolled
 has-scrolled = ->
   st = $w.scrollTop!
-  $ \body .toggle-class 'has-scrolled' (st > threshold)
+  $ \body .toggle-class 'scrolled' (st > threshold)
 set-timeout (->
   $w.on \scroll -> has-scrolled!
   has-scrolled!), 1300 # initially yield
@@ -119,6 +114,7 @@ window.awesome-scroll-to = (e, on-complete, duration) ->
   ms     = duration or 600
   offset = 100
 
+  return unless e.length # guard
   if is-ie or is-opera
     e[0].scroll-into-view!
     on-complete!
@@ -134,7 +130,7 @@ window.awesome-scroll-to = (e, on-complete, duration) ->
   e
 
 # attach scroll-to's
-$d.on \mousedown '.scroll-to' ->
+$d.on \click '.scroll-to' ->
   awesome-scroll-to $(this).data \scroll-to
   false
 

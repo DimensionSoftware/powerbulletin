@@ -39,30 +39,33 @@ body.expanded header
   .menu
     .row
       transition line-height .2s ease-out!important
-body.has-scrolled
+body.scrolled
   header
     background-color rgba(0,0,0,0.7)
     box-shadow 0 -1px 15px 4px #666
     border-bottom 1px solid #fff
     border-top-width 2px
     transition height .2s ease-out, background-color .5s ease-out
-    .logo
-      margin-top 4px
-    .menu
-      .row
-        transition line-height .2s ease-out
-    .search
-      .query
-        border-bottom-width 2px
-      .query::-webkit-input-placeholder
-          color #bbb
-      .query:-moz-placeholder
-          color #bbb
-      .query::-moz-placeholder
-          color #bbb
-      .query:-ms-input-placeholder
-          color #bbb
-  .left
+    .container
+      .logo
+        a
+          top -10px
+          font-size .55em
+      .menu
+        .row
+          transition line-height .2s ease-out
+      .search
+        .query
+          border-bottom-width 2px
+        .query::-webkit-input-placeholder
+            color #bbb
+        .query:-moz-placeholder
+            color #bbb
+        .query::-moz-placeholder
+            color #bbb
+        .query:-ms-input-placeholder
+            color #bbb
+  .left-chrome
     .sort::before
       border 10px solid #ccc
     .sort
@@ -118,25 +121,27 @@ header
   color #ddd
   .container
     .logo
-      display inline-block
-      margin-top 13px
-      width 200px
-      vertical-align top
-      //text-shadow 0 0 1px #000
-      font-style italic
-      color #777
-      font-size 1.5em
-      font-weight 200
-      letter-spacing -2px
-      position absolute
-      top 0
-      left 0
-      strong
-        letter-spacing -1px
-        font-weight 500
-        padding-left 4px
-        font-style normal
-        color #888
+      a
+        display inline-block
+        margin-top 13px
+        width 200px
+        vertical-align top
+        //text-shadow 0 0 1px #000
+        font-style italic
+        color #777
+        font-size .75em
+        text-decoration none
+        font-weight 200
+        letter-spacing -2px
+        position absolute
+        top 1px
+        left 15px
+        strong
+          letter-spacing -1px
+          font-weight 500
+          padding-left 4px
+          font-style normal
+          color #888
   .menu
     padding 0
     > .row
@@ -213,7 +218,7 @@ header
       height 20px
 //}}}
 //{{{ Left side
-section.left
+section.left-chrome
   .user-profile:hover
     border 1px solid #333
     .arrow

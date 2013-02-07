@@ -25,12 +25,10 @@ body.expanded header
     .row
       line-height 30px!important
       font-size 15px!important
-body.has-scrolled
+body.scrolled
   header
     height 30px
     .container
-      .logo
-        font-size 1.1em
       .menu
         .row:hover
           .submenu
@@ -45,7 +43,7 @@ body.has-scrolled
           font-size .9em
           width 340px!important
           height 12px
-  .left
+  .left-chrome
     .user-profile
       left 0px!important
   footer
@@ -166,8 +164,8 @@ header
       display none
 //}}}
 //{{{ Left side
-section.left
-  z-index 6
+section.left-chrome
+  z-index 7
   top 80px
   width 175px
   position fixed
@@ -244,11 +242,16 @@ section.left
 .col2
   width 425px
 
-//#left_content.container
-//  grid-space(20%)
+#left_content.container
+  position fixed
+  top 75px
+  left 25px
+  z-index 6
 
-//#forum_content.container
-//  grid-space(80%)
+#forum_content.container
+  padding forum-header-height 0 0 0!important
+  margin-left 300px
+  grid(100%, 800px)
 
 #main_content.container
   grid(100%, 800px)
@@ -257,7 +260,7 @@ section.left
   .forum
     position relative
     clear both
-    min-height 450px
+    min-height 650px
     margin-left 180px
     .container
       z-index 6
@@ -369,7 +372,7 @@ footer
         height 9px
   body
     grid(100%,475px)
-    .left
+    .left-chrome
       display none!important
     #main_content.container
       margin 0 auto 0 10px!important
@@ -388,11 +391,11 @@ footer
       .forum
         margin-bottom 10px!important
         margin-left 0!important
-  body.has-scrolled
+  body.scrolled
     .container
       margin-left 0!important
       padding 25px 15px!important
-    .left
+    .left-chrome
       display none!important
 // }}}
 // vim:fdm=marker
