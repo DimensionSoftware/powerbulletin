@@ -89,13 +89,13 @@ img.bg.active
 //}}}
 //{{{ Header
 body.expanded
-  .container
-    padding 110px 20px 20px 20px
-    transition padding .3s ease-out
+  #left_content, #main_content.main-content
+    padding-top 100px!important
+    transition padding-top .3s ease-out
   .stuck
     display none!important
   header
-    height 100px!important
+    height 80px!important
     transition background-color .25s ease-out, height .2s ease-out
     .container
       .search::before
@@ -107,7 +107,7 @@ body.expanded
         top 25px
         left 0
       .search
-        top 5px!important
+        top -7px!important
         right auto!important
         #query.query
           position relative
@@ -122,12 +122,12 @@ body.expanded
         display block
         position absolute
         right 10%
-        top 10px
+        top 5px
   header::after
     cursor pointer
     position absolute
-    right 30px
-    top 18px
+    right 10px
+    top 5px
     content 'x'
 
 header
