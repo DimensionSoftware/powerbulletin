@@ -11,6 +11,7 @@ require! {
   stylus
   fluidity
   v: './voltdb'
+  pg: './postgres'
 }
 global <<< require \prelude-ls
 
@@ -101,6 +102,7 @@ else
   # XXX/FIXME: would like to actually block until initialized, except voltdb never calls back...
   # then we can use back-calls before initializing the worker....
   v.init '127.0.0.1'
+  pg.init console.warn
 
   if proc.env.NODE_ENV == 'production'
     Gproc.on 'uncaughtException', (err) ->

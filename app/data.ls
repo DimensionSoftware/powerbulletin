@@ -28,28 +28,14 @@ export homepage-doc = (cb) ->
   @get-doc \misc, \homepage, cb
 
 export add-post = (post, cb) ->
-  v.callp \add_post2 post.user-id, post.title, post.body, cb
-
-# uses new api
-export put-doc = (type, key, doc, index-enabled, cb) ->
-  # unary + casts bool to int
-  v.callp \PutDoc type, key, JSON.stringify(doc), +index-enabled, cb
+  pg.procs.add_post JSON.stringify(post), cb
 
 export get-doc = (type, key, cb) ->
-  err, res <- v.callp \GetDoc type, key
-  if err then return cb(err)
-
-  if json = res[0][0]?.JSON
-    cb null, JSON.parse(json)
-  else
-    cb!
-
-export get-doc2 = (type, key, cb) ->
   err, res <- pg.procs.get_doc type, key
   if err then return cb(err)
   cb null, JSON.parse(JSON.parse(res[0].get_doc).json)
 
-export put-doc2 = (type, key, val, cb) ->
+export put-doc = (type, key, val, cb) ->
   err <- pg.procs.put_doc type, key, JSON.stringify(val)
   if err then return cb(err)
   cb null

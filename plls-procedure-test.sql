@@ -16,9 +16,9 @@ CREATE FUNCTION get_doc(type TEXT, key TEXT) RETURNS JSON AS $$
   return require(\u).get-doc type, key
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS put_doc(TEXT, TEXT, TEXT);
-CREATE FUNCTION put_doc(type TEXT, key TEXT, val TEXT) RETURNS VOID AS $$
-  return require(\u).put-doc type, key, val
+DROP FUNCTION IF EXISTS put_doc(TEXT, TEXT, JSON);
+CREATE FUNCTION put_doc(type TEXT, key TEXT, val JSON) RETURNS VOID AS $$
+  return require(\u).put-doc type, key, JSON.stringify(val)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS add_post(JSON);
@@ -41,6 +41,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
     id = plv8.execute(sql, params)[0].id
     # only works for forum-id 1 right now
     forums = u.forums 1
+    u.put-doc \misc, \homepage, JSON.stringify({forums})
 
-  return {success, errors, id, forums}
+  return {success, errors, id}
 $$ LANGUAGE plls IMMUTABLE STRICT;

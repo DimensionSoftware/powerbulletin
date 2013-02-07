@@ -17,7 +17,7 @@ top-posts = ->
     ORDER BY created DESC, id DESC
     '''
   plv8.execute sql, arguments
- 
+
 sub-posts = ->
   sql = '''
     SELECT p.*, a.name user_name
@@ -51,6 +51,6 @@ export put-doc = ->
       plv8.execute insert-sql, arguments
   catch
     plv8.execute update-sql, arguments
-  
+
 export forums = (site-id) ->
   [f <<< {posts: posts(f.id)} for f in top-forums(site-id)]
