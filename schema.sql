@@ -95,8 +95,8 @@ CREATE TABLE docs (
   key           VARCHAR(64) NOT NULL,
   type          VARCHAR(64) NOT NULL,
   json          TEXT NOT NULL,
-  index_enabled BOOLEAN NOT NULL,
-  index_dirty   BOOLEAN NOT NULL,
+  index_enabled BOOLEAN NOT NULL DEFAULT 'f',
+  index_dirty   BOOLEAN NOT NULL DEFAULT 'f',
   created       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated       TIMESTAMP,
   PRIMARY KEY (key, type)

@@ -13,7 +13,12 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS get_doc(TEXT, TEXT);
 CREATE FUNCTION get_doc(type TEXT, key TEXT) RETURNS JSON AS $$
-  return plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', [type, key])[0]
+  return require(\u).get-doc type, key
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS put_doc(TEXT, TEXT, TEXT);
+CREATE FUNCTION put_doc(type TEXT, key TEXT, val TEXT) RETURNS VOID AS $$
+  return require(\u).put-doc type, key, val
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS add_post(JSON);
@@ -39,5 +44,3 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
 
   return {success, errors, id, forums}
 $$ LANGUAGE plls IMMUTABLE STRICT;
---CREATE FUNCTION put_doc(
---$$ LANGUAGE plls IMMUTABLE STRICT;

@@ -1,5 +1,6 @@
 require! {
   h: './helpers'
+  pg: './postgres'
   v: './voltdb'
 }
 
@@ -42,6 +43,16 @@ export get-doc = (type, key, cb) ->
     cb null, JSON.parse(json)
   else
     cb!
+
+export get-doc2 = (type, key, cb) ->
+  err, res <- pg.procs.get_doc type, key
+  if err then return cb(err)
+  cb null, JSON.parse(JSON.parse(res[0].get_doc).json)
+
+export put-doc2 = (type, key, val, cb) ->
+  err <- pg.procs.put_doc type, key, JSON.stringify(val)
+  if err then return cb(err)
+  cb null
 
 export init-stubs = (cb = (->)) ->
   v.callp \add_post2 1, 1, "fooey bar, the car", "u want my body", cb
