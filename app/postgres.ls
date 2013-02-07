@@ -42,6 +42,7 @@ export init = (cb = (->)) ->
         if err then return cb(err)
         # unwrap rows from result
         cb null, res.rows
+      return void
     init-procs.call @
     cb!
 
