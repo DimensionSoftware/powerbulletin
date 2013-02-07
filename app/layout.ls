@@ -31,8 +31,10 @@ $d.on \click 'a.mutant' (e) -> # hijack urls
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url = History.get-page-url!replace /\/$/, ''
   $.get url, _surf:1, (r) ->
-    $d.title = r.locals.title if r.locals?.title # set title
-    window.mutant.run window.mutants[r.mutant], locals:r.locals
+    $d.title = r.locals.title if r.locals?.title       # set title
+    onUnload = window.mutants[window.mutator].onUnload or (w, cb) -> cb null
+    onUnload window, -> # cleanup & run next mutant
+      window.mutant.run window.mutants[r.mutant], locals:r.locals
   return false
 
 #}}}
@@ -97,50 +99,6 @@ set-timeout (->
 
       $ '#sort li.active' .remove-class \active
       e .add-class \active # set!
-  }
-
-  # sticky forum headers
-  $ '.forum .header' .waypoint \sticky {
-    offset : -100
-  }
-
-  # forum switches
-  $ '.forum' .waypoint {
-    offset  : '33%',
-    handler : (direction) ->
-      e   = $ this
-      eid = e.attr \id
-
-      # handle menu active
-      id = if direction is \down then eid else
-        $ '#'+eid .prevAll '.forum:first' .attr \id
-      return unless id # guard
-      $ 'header .menu' .find '.active' .remove-class \active # remove prev
-      cur  = $ 'header .menu'
-        .find ".#{id.replace /_/ \-}"
-        .add-class \active # ...and activate!
-
-      # handle forum headers
-      $ '.forum .invisible' .remove-class \invisible
-      $ '.forum .stuck'     .remove-class \stuck
-      # TODO if direction is \up stick last forum
-
-      # handle forum background
-      $ '.bg' .each -> $ this .remove!prependTo $ 'body' # position behind
-      clear-timeout window.bg-anim if window.bg-anim
-      last = $ '.bg.active'
-      unless last.length
-        next = $ '#forum'+"_bg_#{cur.data \id}"
-        next.add-class \active
-      else
-        window.bg-anim := set-timeout (->
-          next = $ '#forum'+"_bg_#{cur.data \id}"
-
-          last.css \top if direction is \down then -300 else 300 # stage animation
-          last.remove-class \active
-          next.add-class 'active visible' # ... and switch!
-          window.bg-anim = 0
-        ), 300
   }), 100
 #}}}
 #{{{ todo non-layout-specific code (actions and view states) to relocate once mutant++ is pulled in

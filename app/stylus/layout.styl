@@ -7,6 +7,17 @@
 header-height = 50px
 forum-header-height = 70px
 
+//{{{Mutant States
+html.homepage
+  .left-content
+    display none
+html.forum
+  .left-content
+    display block
+  .left-chrome
+    display none
+//}}}
+
 body
   grid(90%,100%)
   overflow visible!important
@@ -246,6 +257,7 @@ section.left-chrome
   position fixed
   top 75px
   left 25px
+  width 200px
   z-index 6
 
 #forum_content.container

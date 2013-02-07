@@ -555,14 +555,63 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
       return next();
     },
     onLoad: function(window, next){
-      window.$('#left_chrome').show();
-      window.$('#left_content').hide();
       window.$('.forum .container').masonry({
         itemSelector: '.post',
         isAnimated: true,
         isFitWidth: true,
         isResizable: true
       });
+      setTimeout(function(){
+        var $;
+        $ = window.$;
+        $('.forum .header').waypoint('sticky', {
+          offset: -100
+        });
+        return $('.forum').waypoint({
+          offset: '33%',
+          handler: function(direction){
+            var e, eid, id, cur, last, next;
+            e = $(this);
+            eid = e.attr('id');
+            id = direction === 'down'
+              ? eid
+              : $('#' + eid).prevAll('.forum:first').attr('id');
+            if (!id) {
+              return;
+            }
+            $('header .menu').find('.active').removeClass('active');
+            cur = $('header .menu').find("." + id.replace(/_/, '-')).addClass('active');
+            $('.forum .invisible').removeClass('invisible');
+            $('.forum .stuck').removeClass('stuck');
+            $('.bg').each(function(){
+              return $(this).remove().prependTo($('body'));
+            });
+            if (window.bgAnim) {
+              clearTimeout(window.bgAnim);
+            }
+            last = $('.bg.active');
+            if (!last.length) {
+              next = $('#forum' + ("_bg_" + cur.data('id')));
+              return next.addClass('active');
+            } else {
+              return window.bgAnim = setTimeout(function(){
+                var next;
+                next = $('#forum' + ("_bg_" + cur.data('id')));
+                last.css('top', direction === 'down' ? -300 : 300);
+                last.removeClass('active');
+                next.addClass('active visible');
+                return window.bgAnim = 0;
+              }, 300);
+            }
+          }
+        });
+      }, 100);
+      return next();
+    },
+    onUnload: function(window, next){
+      window.$('.forum .container').masonry('destroy');
+      window.$('.forum .header').waypoint('destroy');
+      window.$('.forum').waypoint('destroy');
       return next();
     }
   };
@@ -574,8 +623,6 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
       return next();
     },
     onLoad: function(window, next){
-      window.$('#left_chrome').hide(200);
-      window.$('#left_content').show();
       return next();
     },
     onMutate: function(window, next){
@@ -636,12 +683,17 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
       $.get(url, {
         _surf: 1
       }, function(r){
-        var ref$;
+        var ref$, onUnload;
         if ((ref$ = r.locals) != null && ref$.title) {
           $d.title = r.locals.title;
         }
-        return window.mutant.run(window.mutants[r.mutant], {
-          locals: r.locals
+        onUnload = window.mutants[window.mutator].onUnload || function(w, cb){
+          return cb(null);
+        };
+        return onUnload(window, function(){
+          return window.mutant.run(window.mutants[r.mutant], {
+            locals: r.locals
+          });
         });
       });
       return false;
@@ -713,7 +765,7 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
       }, 800);
     });
     setTimeout(function(){
-      $('#sort li').waypoint({
+      return $('#sort li').waypoint({
         context: 'ul',
         offset: 30,
         handler: function(direction){
@@ -727,47 +779,6 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
           }
           $('#sort li.active').removeClass('active');
           return e.addClass('active');
-        }
-      });
-      $('.forum .header').waypoint('sticky', {
-        offset: -100
-      });
-      return $('.forum').waypoint({
-        offset: '33%',
-        handler: function(direction){
-          var e, eid, id, cur, last, next;
-          e = $(this);
-          eid = e.attr('id');
-          id = direction === 'down'
-            ? eid
-            : $('#' + eid).prevAll('.forum:first').attr('id');
-          if (!id) {
-            return;
-          }
-          $('header .menu').find('.active').removeClass('active');
-          cur = $('header .menu').find("." + id.replace(/_/, '-')).addClass('active');
-          $('.forum .invisible').removeClass('invisible');
-          $('.forum .stuck').removeClass('stuck');
-          $('.bg').each(function(){
-            return $(this).remove().prependTo($('body'));
-          });
-          if (window.bgAnim) {
-            clearTimeout(window.bgAnim);
-          }
-          last = $('.bg.active');
-          if (!last.length) {
-            next = $('#forum' + ("_bg_" + cur.data('id')));
-            return next.addClass('active');
-          } else {
-            return window.bgAnim = setTimeout(function(){
-              var next;
-              next = $('#forum' + ("_bg_" + cur.data('id')));
-              last.css('top', direction === 'down' ? -300 : 300);
-              last.removeClass('active');
-              next.addClass('active visible');
-              return window.bgAnim = 0;
-            }, 300);
-          }
         }
       });
     }, 100);
