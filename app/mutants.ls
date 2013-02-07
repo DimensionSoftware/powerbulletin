@@ -33,7 +33,10 @@ layout-static = (w, mutator) ->
     (window, next) ->
       window.$ '#left_chrome' .hide(200)
       window.$ '#left_content' .show!
-      window.awesome-scroll-to \body
+      next!
+  on-mutate:
+    (window, next) ->
+      window.awesome-scroll-to \body 300
       next!
 
 @search =

@@ -576,7 +576,10 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
     onLoad: function(window, next){
       window.$('#left_chrome').hide(200);
       window.$('#left_content').show();
-      window.awesomeScrollTo('body');
+      return next();
+    },
+    onMutate: function(window, next){
+      window.awesomeScrollTo('body', 300);
       return next();
     }
   };
@@ -643,6 +646,67 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
       });
       return false;
     });
+    hasScrolled = function(){
+      var st;
+      st = $w.scrollTop();
+      return $('body').toggleClass('scrolled', st > threshold);
+    };
+    setTimeout(function(){
+      $w.on('scroll', function(){
+        return hasScrolled();
+      });
+      return hasScrolled();
+    }, 1300);
+    window.awesomeScrollTo = function(e, duration, onComplete){
+      var ms, offset, dstScroll, curScroll;
+      onComplete = function(){
+        var noop;
+        if (!onComplete) {
+          return noop = 1;
+        }
+      };
+      e = $(e);
+      ms = duration || 600;
+      offset = 100;
+      if (!e.length) {
+        return;
+      }
+      if (isIe || isOpera) {
+        e[0].scrollIntoView();
+        onComplete();
+      } else {
+        dstScroll = Math.round(e.position().top) - offset;
+        curScroll = window.scrollY;
+        if (Math.abs(dstScroll - curScroll) > 30) {
+          $('html,body').animate({
+            scrollTop: dstScroll
+          }, ms, function(){});
+        } else {
+          onComplete();
+        }
+      }
+      return e;
+    };
+    $d.on('click', '.scroll-to', function(){
+      awesomeScrollTo($(this).data('scroll-to'));
+      return false;
+    });
+    $d.on('mousedown', '.scroll-to-top', function(){
+      $(this).attr('title', 'Scroll to Top!');
+      return $('html,body').animate({
+        scrollTop: $('body').offset().top
+      }, 140, function(){
+        return $('html,body').animate({
+          scrollTop: $('body').offset().top + threshold
+        }, 110, function(){
+          return $('html,body').animate({
+            scrollTop: $('body').offset().top
+          }, 75, function(){
+            return false;
+          });
+        });
+      });
+    });
     $w.resize(function(){
       return setTimeout(function(){
         return $.waypoints('refresh');
@@ -707,67 +771,6 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
         }
       });
     }, 100);
-    hasScrolled = function(){
-      var st;
-      st = $w.scrollTop();
-      return $('body').toggleClass('scrolled', st > threshold);
-    };
-    setTimeout(function(){
-      $w.on('scroll', function(){
-        return hasScrolled();
-      });
-      return hasScrolled();
-    }, 1300);
-    window.awesomeScrollTo = function(e, onComplete, duration){
-      var ms, offset, dstScroll, curScroll;
-      onComplete = function(){
-        var noop;
-        if (!onComplete) {
-          return noop = 1;
-        }
-      };
-      e = $(e);
-      ms = duration || 600;
-      offset = 100;
-      if (!e.length) {
-        return;
-      }
-      if (isIe || isOpera) {
-        e[0].scrollIntoView();
-        onComplete();
-      } else {
-        dstScroll = Math.round(e.position().top) - offset;
-        curScroll = window.scrollY;
-        if (Math.abs(dstScroll - curScroll) > 30) {
-          $('html,body').animate({
-            scrollTop: dstScroll
-          }, ms, function(){});
-        } else {
-          onComplete();
-        }
-      }
-      return e;
-    };
-    $d.on('click', '.scroll-to', function(){
-      awesomeScrollTo($(this).data('scroll-to'));
-      return false;
-    });
-    $d.on('mousedown', '.scroll-to-top', function(){
-      $(this).attr('title', 'Scroll to Top!');
-      return $('html,body').animate({
-        scrollTop: $('body').offset().top
-      }, 140, function(){
-        return $('html,body').animate({
-          scrollTop: $('body').offset().top + threshold
-        }, 110, function(){
-          return $('html,body').animate({
-            scrollTop: $('body').offset().top
-          }, 75, function(){
-            return false;
-          });
-        });
-      });
-    });
     addPostDialog = function(){
       var fid, postHtml;
       fid = $(this).data('fid');
