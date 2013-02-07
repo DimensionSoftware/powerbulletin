@@ -38,16 +38,17 @@ html
   body
     header.header
       .container
-        h1.logo Power
-          strong Bulletin
+        h1.logo
+          a.mutant(href='/') Power
+            strong Bulletin
         menu.menu
           each f,i in forums
             li.row
-              a.title(data-id=f.id, data-scroll-to="#forum_#{f.id}", class="scroll-to forum-#{f.id}", href="#forum_#{f.id}")= f.title
+              a.title(data-id=f.id, data-scroll-to="#forum_#{f.id}", class="scroll-to forum-#{f.id}", href="#{f.slug}#forum_#{f.id}")= f.title
               menu.submenu
-                li.row Sub-forum
-                li.row Sub-forum
-                li.row Sub-forum
+                if f.forums
+                  each sf,i in f.subforums
+                    li.row(href="#{f.slug}")= f.title
         .search
           input#query.query(type='text', placeholder='Search', autocomplete='off')
         .advanced
@@ -60,7 +61,7 @@ html
           input#option_3.check(type='checkbox')
           label(for='option_3') Favorites Only
 
-    section.left
+    section#left_chrome.left-chrome
       //-{{{ data-fid is how we pass in the forum id of the post, this way
       //- we can put a hotlink wherever without having to write new
       //- javascript (other than calculating the fid)

@@ -13,19 +13,14 @@ $w.v = require './validations'
 
 # main
 # ---------
-$ '#query' .focus!
-
-$ '.forum .container' .masonry(
-  item-selector: '.post'
-  is-animated:   true
-  is-fit-width:  true
-  is-resizable:  true)
-
 #{{{ Mutant init
 window.mutant  = require '../lib/mutant/mutant'
 window.mutants = require './mutants'
 
-$d.on \click 'a.mutant' (e) ->
+<- window.mutants[window.mutator].on-load window # fire onLoad of initial mutant
+$ '#query' .focus!
+
+$d.on \click 'a.mutant' (e) -> # hijack urls
   href = $ this .attr \href
   return false unless href # guard
   return true if href?.match /#/
@@ -33,15 +28,60 @@ $d.on \click 'a.mutant' (e) ->
   History.push-state {search-params}, '', href
   return false
 
-History.Adapter.bind window, \statechange, (e) ->
+History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url = History.get-page-url!replace /\/$/, ''
-  console.log url
   $.get url, _surf:1, (r) ->
-    if r.locals?.title
-      $d.title = r.locals.title
+    $d.title = r.locals.title if r.locals?.title # set title
     window.mutant.run window.mutants[r.mutant], locals:r.locals
   return false
+
 #}}}
+#{{{ Scrolling behaviors
+
+# indicate to stylus that view scrolled
+has-scrolled = ->
+  st = $w.scrollTop!
+  $ \body .toggle-class 'scrolled' (st > threshold)
+set-timeout (->
+  $w.on \scroll -> has-scrolled!
+  has-scrolled!), 1300 # initially yield
+
+window.awesome-scroll-to = (e, duration, on-complete) ->
+  on-complete = -> noop=1 unless on-complete
+
+  e     := $ e
+  ms     = duration or 600
+  offset = 100
+
+  return unless e.length # guard
+  if is-ie or is-opera
+    e[0].scroll-into-view!
+    on-complete!
+  else # animate
+    dst-scroll = Math.round(e.position!top) - offset
+    cur-scroll = window.scrollY
+    if Math.abs(dst-scroll - cur-scroll) > 30
+      #<- $ 'html,body' .animate { scroll-top:dst-scroll }, 140
+      #<- $ 'html,body' .animate { scroll-top:dst-scroll+threshold }, 110
+      <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms
+    else
+      on-complete!
+  e
+
+# attach scroll-to's
+$d.on \click '.scroll-to' ->
+  awesome-scroll-to $(this).data \scroll-to
+  false
+
+# attach scroll-to-top's
+$d.on \mousedown '.scroll-to-top' ->
+  $ this .attr \title 'Scroll to Top!'
+  <- $ 'html,body' .animate { scroll-top:$ \body .offset!top }, 140
+  <- $ 'html,body' .animate { scroll-top:$ \body .offset!top+threshold }, 110
+  <- $ 'html,body' .animate { scroll-top:$ \body .offset!top }, 75
+  false
+#}}}
+
 #{{{ Waypoints
 $w.resize -> set-timeout (-> $.waypoints \refresh), 800
 set-timeout (->
@@ -74,6 +114,7 @@ set-timeout (->
       # handle menu active
       id = if direction is \down then eid else
         $ '#'+eid .prevAll '.forum:first' .attr \id
+      return unless id # guard
       $ 'header .menu' .find '.active' .remove-class \active # remove prev
       cur  = $ 'header .menu'
         .find ".#{id.replace /_/ \-}"
@@ -102,51 +143,6 @@ set-timeout (->
         ), 300
   }), 100
 #}}}
-#{{{ Scrolling behaviors
-
-# indicate to stylus that view scrolled
-has-scrolled = ->
-  st = $w.scrollTop!
-  $ \body .toggle-class 'has-scrolled' (st > threshold)
-set-timeout (->
-  $w.on \scroll -> has-scrolled!
-  has-scrolled!), 1300 # initially yield
-
-window.awesome-scroll-to = (e, on-complete, duration) ->
-  on-complete = -> noop=1 unless on-complete
-
-  e     := $ e
-  ms     = duration or 600
-  offset = 100
-
-  if is-ie or is-opera
-    e[0].scroll-into-view!
-    on-complete!
-  else # animate
-    dst-scroll = Math.round(e.position!top) - offset
-    cur-scroll = window.scrollY
-    if Math.abs(dst-scroll - cur-scroll) > 30
-      #<- $ 'html,body' .animate { scroll-top:dst-scroll }, 140
-      #<- $ 'html,body' .animate { scroll-top:dst-scroll+threshold }, 110
-      <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms
-    else
-      on-complete!
-  e
-
-# attach scroll-to's
-$d.on \mousedown '.scroll-to' ->
-  awesome-scroll-to $(this).data \scroll-to
-  false
-
-# attach scroll-to-top's
-$d.on \mousedown '.scroll-to-top' ->
-  $ this .attr \title 'Scroll to Top!'
-  <- $ 'html,body' .animate { scroll-top:$ \body .offset!top }, 140
-  <- $ 'html,body' .animate { scroll-top:$ \body .offset!top+threshold }, 110
-  <- $ 'html,body' .animate { scroll-top:$ \body .offset!top }, 75
-  false
-#}}}
-
 #{{{ todo non-layout-specific code (actions and view states) to relocate once mutant++ is pulled in
 add-post-dialog = ->
   #xxx: stub code for now, since we have no concept of sub-forums
