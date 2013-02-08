@@ -35,20 +35,21 @@
     return plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0];
   };
   out$.putDoc = putDoc = function(){
-    var insertSql, updateSql, e;
+    var insertSql, updateSql, args, e;
     insertSql = 'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)';
-    updateSql = 'UPDATE docs SET type=$1, key=$2, json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)';
+    updateSql = 'UPDATE docs SET json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)';
+    args = Array.prototype.slice.call(arguments);
     try {
       plv8.elog(WARNING, "before");
       plv8.subtransaction(function(){
         plv8.elog(WARNING, "during");
-        return plv8.execute(insertSql, arguments);
+        return plv8.execute(insertSql, args);
       });
       return plv8.elog(WARNING, "after");
     } catch (e$) {
       e = e$;
-      plv8.elog(WARNING, "update");
-      return plv8.execute(updateSql, arguments);
+      plv8.elog(WARNING, "update", e);
+      return plv8.execute(updateSql, args);
     }
   };
   out$.forums = forums = function(siteId){

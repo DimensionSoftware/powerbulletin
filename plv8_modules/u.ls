@@ -44,17 +44,18 @@ export put-doc = ->
   insert-sql =
     'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)'
   update-sql =
-    'UPDATE docs SET type=$1, key=$2, json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)'
+    'UPDATE docs SET json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)'
 
+  args = Array.prototype.slice.call(arguments)
   try
     plv8.elog WARNING, "before"
     plv8.subtransaction ->
       plv8.elog WARNING, "during"
-      plv8.execute insert-sql, arguments
+      plv8.execute insert-sql, args
     plv8.elog WARNING, "after"
   catch
-    plv8.elog WARNING, "update"
-    plv8.execute update-sql, arguments
+    plv8.elog WARNING, "update", e
+    plv8.execute update-sql, args
 
 export forums = (site-id) ->
   [f <<< {posts: posts(f.id)} for f in top-forums(site-id)]

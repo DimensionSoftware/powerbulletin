@@ -27,7 +27,7 @@ export get-doc = (type, key, cb) ->
   if err then return cb(err)
 
   if json-res = res[0].get_doc
-    cb null, JSON.parse(JSON.parse(json-res.json))
+    cb null, JSON.parse(JSON.parse(json-res).json)
   else
     cb null, null
 
