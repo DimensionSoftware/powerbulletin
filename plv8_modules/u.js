@@ -39,9 +39,7 @@
     insertSql = 'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)';
     updateSql = 'UPDATE docs SET type=$1, key=$2, json=$3';
     try {
-      return plv8.subtransaction(function(){
-        return plv8.execute(insertSql, arguments);
-      });
+      return plv8.execute(insertSql, arguments);
     } catch (e$) {
       e = e$;
       return plv8.execute(updateSql, arguments);
