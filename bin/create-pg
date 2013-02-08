@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+bin/psql -c "DROP DATABASE pb"
+bin/psql -c "CREATE DATABASE pb"
+bin/psql pb -c "CREATE EXTENSION plls"
+bin/psql pb < schema.sql
+bin/psql pb < plls-procedure-test.sql
+bin/load-fixtures
