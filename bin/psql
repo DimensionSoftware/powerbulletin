@@ -1,3 +1,9 @@
 #!/bin/bash -e
 # there is a trust for the user postgres on all databases when originating from 127.0.0.1
-psql -Upostgres -h127.0.0.1 "$@"
+if [ `uname` == 'Darwin' ]; then
+  user=$USER
+else
+  user='postgres'
+fi
+
+psql -U$user -h127.0.0.1 "$@"
