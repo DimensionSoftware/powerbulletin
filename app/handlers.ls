@@ -18,11 +18,12 @@ require! {
 # POST / post data
 @add-post = (req, res, next) ->
   post = req.body
-  post.user-id = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
-  err, res1, res2 <- data.add-post post
+  post.user_id = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
+  post.forum_id = 1 # XXX/FIXME: in the future, this should be passed in
+  err, ap-res <- data.add-post post
   if err then return next(err)
-  console.log req.body
-  res.json {stub: true, req.body, res1, res2}
+
+  res.json ap-res
 
 @homepage = (req, res, next) ->
   err, doc <- data.homepage-doc
