@@ -32,19 +32,23 @@ init-procs = (cb = (->)) ->
   cb!
 
 export init = (cb = (->)) ->
-  pg.connect conn-str, (err, c) ~>
-    if err then return cb(err)
-    @client = c
+  err, c <~ pg.connect conn-str
+  if err then return cb(err)
 
-    # define closure function which has active connection
-    @query = (sql, args, cb) ~>
-      @client.query sql, args, (err, res) ->
-        if err then return cb(err)
-        # unwrap rows from result
-        cb null, res.rows
-      return void
-    init-procs.call @
-    cb!
+  # initialize procs from pg
+  # and materialize them into real nodejs funs
+  init-procs.call @
+
+  cb!
+
+export query = (sql, args, cb) ->
+  err, c <- pg.connect conn-str
+  if err then return cb(err)
+  err, res <- c.query sql, args
+  if err then return cb(err)
+
+  # unwrap rows from result
+  cb null, res.rows
 
 export select-users = (cb) ->
   @query "SELECT * FROM users LIMIT 1", [], cb
