@@ -47,8 +47,7 @@ export put-doc = ->
     'UPDATE docs SET type=$1, key=$2, json=$3'
 
   try
-    plv8.subtransaction ->
-      plv8.execute insert-sql, arguments
+    plv8.execute insert-sql, arguments
   catch
     plv8.execute update-sql, arguments
 
