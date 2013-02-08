@@ -51,7 +51,11 @@ module.exports = function(grunt) {
     watch: {
       jade: {
         files: ['app/views/*.jade'],
-        tasks: ['jade', 'launch']
+        tasks: ['jade', 'launch'],
+        options: {
+          interrupt: true,
+          debounceDelay: 2000
+        }
       },
       app: {
         files: ['app/*.ls', 'config/*', 'lib/**/*.ls'],
@@ -103,6 +107,6 @@ module.exports = function(grunt) {
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['jade', 'browserify', 'uglify', 'watch']);
+  grunt.registerTask('default', ['jade', 'browserify', 'uglify', 'launch', 'watch']);
 
 };
