@@ -32,14 +32,9 @@ init-procs = (cb = (->)) ->
   cb!
 
 export init = (cb = (->)) ->
-  err, c <~ pg.connect conn-str
-  if err then return cb(err)
-
   # initialize procs from pg
   # and materialize them into real nodejs funs
-  init-procs.call @
-
-  cb!
+  init-procs.call @, cb
 
 export query = (sql, args, cb) ->
   err, c <- pg.connect conn-str
