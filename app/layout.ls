@@ -32,8 +32,8 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url = History.get-page-url!replace /\/$/, ''
   $.get url, _surf:1, (r) ->
     $d.title = r.locals.title if r.locals?.title       # set title
-    onUnload = window.mutants[window.mutator].onUnload or (w, cb) -> cb null
-    onUnload window, -> # cleanup & run next mutant
+    on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
+    on-unload window, -> # cleanup & run next mutant
       window.mutant.run window.mutants[r.mutant], locals:r.locals
   return false
 
