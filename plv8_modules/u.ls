@@ -44,11 +44,16 @@ export put-doc = ->
   insert-sql =
     'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)'
   update-sql =
-    'UPDATE docs SET type=$1, key=$2, json=$3'
+    'UPDATE docs SET type=$1, key=$2, json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)'
 
   try
-    plv8.execute insert-sql, arguments
+    plv8.elog WARNING, "before"
+    plv8.subtransaction ->
+      plv8.elog WARNING, "during"
+      plv8.execute insert-sql, arguments
+    plv8.elog WARNING, "after"
   catch
+    plv8.elog WARNING, "update"
     plv8.execute update-sql, arguments
 
 export forums = (site-id) ->

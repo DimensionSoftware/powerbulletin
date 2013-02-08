@@ -37,11 +37,17 @@
   out$.putDoc = putDoc = function(){
     var insertSql, updateSql, e;
     insertSql = 'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)';
-    updateSql = 'UPDATE docs SET type=$1, key=$2, json=$3';
+    updateSql = 'UPDATE docs SET type=$1, key=$2, json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)';
     try {
-      return plv8.execute(insertSql, arguments);
+      plv8.elog(WARNING, "before");
+      plv8.subtransaction(function(){
+        plv8.elog(WARNING, "during");
+        return plv8.execute(insertSql, arguments);
+      });
+      return plv8.elog(WARNING, "after");
     } catch (e$) {
       e = e$;
+      plv8.elog(WARNING, "update");
       return plv8.execute(updateSql, arguments);
     }
   };
