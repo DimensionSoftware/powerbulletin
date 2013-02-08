@@ -1,7 +1,6 @@
 require! {
   h: './helpers'
   pg: './postgres'
-  v: './voltdb'
 }
 
 # this file is intended to provide a high-level data interaction layer,
@@ -13,13 +12,6 @@ require! {
 # all funs are assume to be callback functions
 
 now = new Date
-
-export next-in-sequence = (seqname, cb) ->
-  err, res <- v.callp \NextInSequence, seqname
-  if err then return cb(err)
-  cb null, res[0][0]['']
-
-export select-user = -> v.callp \select_user, ...arguments
 
 export forum-doc = (cb) ->
   @get-doc \misc, \forum, cb
@@ -39,9 +31,6 @@ export put-doc = (type, key, val, cb) ->
   err <- pg.procs.put_doc type, key, JSON.stringify(val)
   if err then return cb(err)
   cb null
-
-export init-stubs = (cb = (->)) ->
-  v.callp \add_post2 1, 1, "fooey bar, the car", "u want my body", cb
 
   #user =
   #  id         : 1

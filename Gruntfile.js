@@ -61,14 +61,6 @@ module.exports = function(grunt) {
           debounceDelay: 2000
         }
       },
-      voltdb: {
-        files: ['voltdb/procs/*.java', 'voltdb/procs/*.clj', 'voltdb/pb-schema.sql'],
-        tasks: ['voltdb', 'launch'],
-        options: {
-          interrupt: true,
-          debounceDelay: 2000
-        }
-      }
     }
   });
 
@@ -104,33 +96,13 @@ module.exports = function(grunt) {
     var file   = config.tmp+'/pb.pid';
 
     daemon('./bin/powerbulletin', file);
-
-    // update catalog (assumes voltdb running
-    exec("/usr/local/voltdb-tools-3.0/bin/voltadmin update voltdb/pb-schema.jar voltdb/deployment.xml");
   });
 
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {
     fs.writeFileSync('app/views/mutants.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/nav.jade app/views/posts.jade', {silent:true}).output));
   });
 
-  // Compile VoltDB Procedures and Launch VoltDB
-  grunt.registerTask('voltdb', 'Compile VoltDB Procedures!', function() {
-    var config  = require('./config/development');
-    var pidFile = config.tmp+'/voltdb.pid';
-    var logFile = 'voltdb.log';
-
-    var now = new Date();
-    fs.appendFileSync(logFile, "\n" + now.toISOString() + " - Recompiling VoltDB Procedures...\n");
-
-    var result  = exec("./bin/compile-voltdb", { silent: true });
-    fs.appendFileSync(logFile, result.output);
-    if (result.code == 0) {
-      daemon('./bin/launch-voltdb', pidFile, logFile);
-      setTimeout(launch, 10000);
-    }
-  });
-
   // Default task(s).
-  grunt.registerTask('default', ['jade', 'browserify', 'uglify', 'voltdb', 'watch']);
+  grunt.registerTask('default', ['jade', 'browserify', 'uglify', 'watch']);
 
 };
