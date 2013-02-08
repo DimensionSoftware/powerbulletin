@@ -49,6 +49,14 @@ module.exports = function(grunt) {
     },
 
     watch: {
+      procs: {
+        files: ['plv8_modules/*.ls'],
+        tasks: ['procs', 'launch'],
+        options: {
+          interrupt: true,
+          debounceDelay: 2000
+        }
+      },
       jade: {
         files: ['app/views/*.jade'],
         tasks: ['jade', 'launch'],
@@ -102,11 +110,14 @@ module.exports = function(grunt) {
     daemon('./bin/powerbulletin', file);
   });
 
+  grunt.registerTask('procs', 'Compile stored procedures to JS', function() {
+    exec('node_modules/.bin/lsc -c plv8_modules/*.ls', {silent:true});
+  });
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {
     fs.writeFileSync('app/views/mutants.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/nav.jade app/views/posts.jade', {silent:true}).output));
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['jade', 'browserify', 'uglify', 'launch', 'watch']);
+  grunt.registerTask('default', ['procs', 'jade', 'browserify', 'uglify', 'launch', 'watch']);
 
 };
