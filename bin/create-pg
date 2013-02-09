@@ -1,6 +1,7 @@
-#!/bin/sh -e
+#!/bin/sh
 
 bin/psql -c "DROP DATABASE pb"
+set -e
 bin/psql -c "CREATE DATABASE pb"
 bin/psql pb -c "CREATE EXTENSION plls"
 bin/psql pb < schema.sql

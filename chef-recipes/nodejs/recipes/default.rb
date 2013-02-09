@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-include_recipe "build-essential"
+package 'build-essential'
 
 case node[:platform]
   when "centos","redhat","fedora"
