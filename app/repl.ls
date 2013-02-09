@@ -1,5 +1,4 @@
 global.async = require \async
-global.data = global.d = require './data'
 global.pg = require './postgres'
 global.cl = console.log
 global.cw = console.log

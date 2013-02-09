@@ -4,7 +4,6 @@ require! {
   jade
   stylus
   fluidity
-  './data'
   pg: './postgres'
 }
 
@@ -29,7 +28,7 @@ db = pg.procs
   res.json ap-res
 
 @homepage = (req, res, next) ->
-  err, doc <- data.homepage-doc
+  err, doc <- db.get_doc \misc, \homepage
   if err then return next(err)
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
@@ -44,7 +43,8 @@ db = pg.procs
   res.mutant \homepage
 
 @forum = (req, res, next) ->
-  err, doc <- data.forum-doc
+  # XXX: this should be changed to \misc, \forum once the forum doc lives
+  err, doc <- db.get_doc \misc, \homepage
   if err then return next err
   res.locals doc
   caching-strategies.etag res, sha1(JSON.stringify req.params), 7200 # FIXME include site here later
