@@ -44,25 +44,29 @@ CREATE FUNCTION find_or_create(sel TEXT, sel_params TEXT[], ins TEXT, ins_params
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS find_or_create_user(JSON);
-CREATE FUNCTION find_or_create_user(u JSON) RETURNS JSON AS $$
+CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
   site-id = 1
   sel = """
   SELECT u.*, a.* FROM users u JOIN aliases a ON a.user_id = u.id WHERE a.name=$1 AND a.site_id=$2;
   """
   sel-params =
-    * u.name
+    * usr.name
     * site-id
   ins = """
   WITH u AS (
-    INSERT INTO users (updated) VALUES (NOW()) RETURNING id)
+    INSERT INTO users DEFAULT VALUES RETURNING id)
   INSERT INTO aliases (user_id, site_id, name)
     SELECT u.id, $1::int, $2::varchar FROM u;
   """
   ins-params =
     * site-id
-    * u.name
-  return plv8.execute('SELECT * FROM find_or_create($1, $2, $3, $4)', [sel, sel-params, ins, ins-params])
+    * usr.name
+  find-or-create = plv8.find_function('find_or_create') 
+  return find-or-create(sel, sel-params, ins, ins-params)
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS find_user(JSON);
+
 
 DROP FUNCTION IF EXISTS add_user(JSON);
 CREATE FUNCTION add_user(usr JSON) RETURNS JSON AS $$

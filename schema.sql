@@ -1,12 +1,17 @@
 -- keeps 'updated' field up to date
--- intended to be used in an AFTER UPDATE trigger
+-- intended to be used in an BEFORE UPDATE trigger
+-- http://stackoverflow.com/questions/2362871/postgresql-current-timestamp-on-update?rq=1
+-- http://stackoverflow.com/a/10246381
 CREATE OR REPLACE FUNCTION upd_timestamp() RETURNS TRIGGER 
 LANGUAGE plpgsql
 AS
 $$
 BEGIN
+  IF (NEW != OLD) THEN                    
     NEW.updated = CURRENT_TIMESTAMP;
     RETURN NEW;
+  END IF;   
+  RETURN OLD;          
 END;
 $$;
 
@@ -21,7 +26,7 @@ CREATE TABLE sites (
   updated TIMESTAMP,
   PRIMARY KEY (id)
 );
-CREATE TRIGGER sites_timestamp AFTER UPDATE ON sites FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+CREATE TRIGGER sites_timestamp BEFORE UPDATE ON sites FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 -- forum has many posts
 -- forum has many child forums
@@ -39,7 +44,7 @@ CREATE TABLE forums (
   updated     TIMESTAMP,
   PRIMARY KEY (id)
 );
-CREATE TRIGGER forums_timestamp AFTER UPDATE ON forums FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+CREATE TRIGGER forums_timestamp BEFORE UPDATE ON forums FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 -- user has many auths
 -- user has many aliases
@@ -51,7 +56,7 @@ CREATE TABLE users (
   updated TIMESTAMP,
   PRIMARY KEY (id)
 );
-CREATE TRIGGER users_timestamp AFTER UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+CREATE TRIGGER users_timestamp BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 -- alias belongs to user
 CREATE TABLE aliases (
@@ -63,7 +68,7 @@ CREATE TABLE aliases (
   UNIQUE (site_id, name),
   PRIMARY KEY (user_id, site_id)
 );
-CREATE TRIGGER aliases_timestamp AFTER UPDATE ON aliases FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+CREATE TRIGGER aliases_timestamp BEFORE UPDATE ON aliases FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 -- auth belongs to user
 CREATE TABLE auths (
@@ -74,7 +79,7 @@ CREATE TABLE auths (
   updated TIMESTAMP,
   PRIMARY KEY (user_id, type)
 );
-CREATE TRIGGER auths_timestamp AFTER UPDATE ON auths FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+CREATE TRIGGER auths_timestamp BEFORE UPDATE ON auths FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 -- post has many child posts
 -- post belongs to user
@@ -90,7 +95,7 @@ CREATE TABLE posts (
   updated   TIMESTAMP,
   PRIMARY KEY (id)
 );
-CREATE TRIGGER posts_timestamp AFTER UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+CREATE TRIGGER posts_timestamp BEFORE UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 CREATE TABLE docs (
   key           VARCHAR(64) NOT NULL,
@@ -102,4 +107,4 @@ CREATE TABLE docs (
   updated       TIMESTAMP,
   PRIMARY KEY (key, type)
 );
-CREATE TRIGGER docs_timestamp AFTER UPDATE ON docs FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+CREATE TRIGGER docs_timestamp BEFORE UPDATE ON docs FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
