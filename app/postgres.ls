@@ -9,9 +9,12 @@ init-proc = (proname) ->
     cb = arguments[arguments.length - 1]
     pdollars = if pargs.length then [1 to pargs.length] else []
     pdollars = ["$#{i}" for i in pdollars].join(',')
-    #debug console log
-    #console.log {pargs, pdollars, cb}
-    @query "SELECT * FROM #{proname}(#{pdollars})", pargs, cb
+
+    err, res <- @query "SELECT * FROM #{proname}(#{pdollars})", pargs
+    if err then return cb(err)
+
+    json = res[0][proname]
+    cb null, JSON.parse(json)
 
 init-procs = (cb = (->)) ->
   sql = '''
