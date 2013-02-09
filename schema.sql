@@ -60,6 +60,7 @@ CREATE TABLE aliases (
   name    VARCHAR(64) NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
+  UNIQUE (site_id, name),
   PRIMARY KEY (user_id, site_id)
 );
 CREATE TRIGGER aliases_timestamp AFTER UPDATE ON aliases FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
