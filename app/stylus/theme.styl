@@ -113,16 +113,19 @@ body
 body.expanded header
   background-color rgba(0,0,0,0.85)!important
   border-bottom 1px solid #fff
-body.expanded header::after
-  font-weight bold
-  font-size .95em
-  transform rotate(12deg)
-  padding 1px 7px
-  border-radius 25px
-  color #fff
-  background-color #444
-  border 1px solid #666
-
+  .close:hover
+    background-color highlight-color2
+  .close
+    font-weight 200
+    font-size 1.3em
+    transform rotate(90deg)
+    padding 0
+    height 9px
+    width 8px
+    line-height 7px
+    border-radius 25px
+    color #eee
+    text-indent -2px
 header
   background-color rgba(0,0,0,0.1)
   border-top 2px solid #000

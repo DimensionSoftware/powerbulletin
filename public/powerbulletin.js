@@ -650,7 +650,7 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
   window.mutant = require('../lib/mutant/mutant');
   window.mutants = require('./mutants');
   window.mutants[window.mutator].onLoad(window, function(){
-    var hasScrolled, addPostDialog, addPost;
+    var hasScrolled;
     $('#query').focus();
     $d.on('click', 'a.mutant', function(e){
       var href, searchParams;
@@ -749,53 +749,6 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
         });
       });
     });
-    $w.resize(function(){
-      return setTimeout(function(){
-        return $.waypoints('refresh');
-      }, 800);
-    });
-    setTimeout(function(){
-      return $('#sort li').waypoint({
-        context: 'ul',
-        offset: 30,
-        handler: function(direction){
-          var e;
-          e = $(this);
-          if (direction === 'up') {
-            e = e.prev();
-          }
-          if (!e.length) {
-            e = $(this);
-          }
-          $('#sort li.active').removeClass('active');
-          return e.addClass('active');
-        }
-      });
-    }, 100);
-    addPostDialog = function(){
-      var fid, postHtml;
-      fid = $(this).data('fid');
-      postHtml = '<h1>add post form goes here</h1>';
-      return $.get('/post', {
-        fid: fid
-      }, function(html){
-        $(html).dialog({
-          modal: true
-        });
-        return false;
-      });
-    };
-    addPost = function(){
-      var form;
-      form = $('#add-post-form');
-      $.post('/post', form.serialize(), function(){
-        console.log('success! post added');
-        return console.log('stub: do something fancy to confirm submission');
-      });
-      return false;
-    };
-    $d.on('click', '#add-post-submit', addPost);
-    $d.on('click', '.onclick-add-post-dialog', addPostDialog);
     $d.on('click', 'header', function(e){
       if (e.target.className === 'header') {
         $('body').removeClass('expanded');
@@ -815,5 +768,61 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
 
 });
 require("/app/layout.ls");
+
+require.define("/app/entry.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
+  var $w, $d, addPostDialog, addPost;
+  $w = $(window);
+  $d = $(document);
+  $w.resize(function(){
+    return setTimeout(function(){
+      return $.waypoints('refresh');
+    }, 800);
+  });
+  setTimeout(function(){
+    return $('#sort li').waypoint({
+      context: 'ul',
+      offset: 30,
+      handler: function(direction){
+        var e;
+        e = $(this);
+        if (direction === 'up') {
+          e = e.prev();
+        }
+        if (!e.length) {
+          e = $(this);
+        }
+        $('#sort li.active').removeClass('active');
+        return e.addClass('active');
+      }
+    });
+  }, 100);
+  addPostDialog = function(){
+    var fid, postHtml;
+    fid = $(this).data('fid');
+    postHtml = '<h1>add post form goes here</h1>';
+    return $.get('/post', {
+      fid: fid
+    }, function(html){
+      $(html).dialog({
+        modal: true
+      });
+      return false;
+    });
+  };
+  addPost = function(){
+    var form;
+    form = $('#add-post-form');
+    $.post('/post', form.serialize(), function(){
+      console.log('success! post added');
+      return console.log('stub: do something fancy to confirm submission');
+    });
+    return false;
+  };
+  $d.on('click', '#add-post-submit', addPost);
+  $d.on('click', '.onclick-add-post-dialog', addPostDialog);
+}).call(this);
+
+});
+require("/app/entry.ls");
 
 })();
