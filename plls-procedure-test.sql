@@ -65,8 +65,29 @@ CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
   return find-or-create(sel, sel-params, ins, ins-params)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+-- @param Object usr
+--   @param String  name       user name
+--   @param Integer site_id    site id
+-- @returns Object user        user with all auth objects
 DROP FUNCTION IF EXISTS find_user(JSON);
-
+CREATE FUNCTION find_user(usr JSON) RETURNS JSON AS $$
+  sql = """
+  SELECT u.id, a.name, a.site_id, auths.type, auths.json 
+  FROM users u
+  JOIN aliases a ON a.user_id = u.id
+  LEFT JOIN auths ON auths.user_id = u.id
+  WHERE a.name = $1
+  AND a.site_id = $2
+  """
+  auths = plv8.execute(sql, [ usr.name, usr.site_id ])
+  make-user = (memo, auth) -> 
+    memo.id = auth.id
+    memo.site_id = auth.id
+    memo.name = auth.name
+    memo.auths[auth.type] = JSON.parse(auth.json)
+    memo
+  return auths.reduce make-user, { auths: {} }
+$$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS add_user(JSON);
 CREATE FUNCTION add_user(usr JSON) RETURNS JSON AS $$
