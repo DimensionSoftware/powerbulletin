@@ -1,9 +1,9 @@
-CREATE FUNCTION get_doc(args JSON) RETURNS JSON AS $$
-  return require(\u).get-doc args.type, args.key
+CREATE FUNCTION get_doc(type JSON, key JSON) RETURNS JSON AS $$
+  return require(\u).get-doc type, key
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION put_doc(args JSON) RETURNS JSON AS $$
-  return require(\u).put-doc args.type, args.key, JSON.stringify(args.val)
+CREATE FUNCTION put_doc(type JSON, key JSON, val JSON) RETURNS JSON AS $$
+  return require(\u).put-doc type, key, JSON.stringify(val)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
@@ -31,7 +31,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 
-CREATE FUNCTION find_or_create(sel TEXT, sel_params TEXT[], ins TEXT, ins_params TEXT[]) RETURNS JSON AS $$
+CREATE FUNCTION find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON) RETURNS JSON AS $$
   thing = plv8.execute(sel, sel_params)
   return thing[0] if thing.length > 0
   plv8.execute(ins, ins_params)
