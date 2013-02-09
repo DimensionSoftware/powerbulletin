@@ -100,7 +100,6 @@ body.expanded
     .container
       .search::before
         content ''
-        border-left 10px solid #555
         border-top 8px solid transparent
         border-bottom 8px solid transparent
         position absolute
@@ -123,6 +122,8 @@ body.expanded
         position absolute
         right 10%
         top 5px
+        .check, label
+          cursor pointer
   header::after
     cursor pointer
     position absolute
@@ -260,11 +261,6 @@ section.left-chrome
   width 200px
   z-index 6
 
-#forum_content.container
-  padding forum-header-height 0 0 0!important
-  margin-left 300px
-  grid(100%, 800px)
-
 #main_content.container
   grid(100%, 800px)
   padding forum-header-height 0 0 0!important
@@ -276,8 +272,6 @@ section.left-chrome
     margin-left 180px
     .container
       z-index 6
-    .sticky-wrapper
-      height auto!important
     .header::before
       position absolute
       opacity .35

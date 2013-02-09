@@ -35,7 +35,7 @@ body.expanded header
     font-weight 100
     font-size .9em
     .check
-      margin 3px
+      margin 0 8px
     label
       margin-right 10px
   .menu
@@ -114,10 +114,15 @@ body.expanded header
   background-color rgba(0,0,0,0.85)!important
   border-bottom 1px solid #fff
 body.expanded header::after
-  color red
-  font-weight 500
+  font-weight bold
   font-size .95em
   transform rotate(12deg)
+  padding 1px 7px
+  border-radius 25px
+  color #fff
+  background-color #444
+  border 1px solid #666
+
 header
   background-color rgba(0,0,0,0.1)
   border-top 2px solid #000
@@ -127,9 +132,7 @@ header
       a
         display inline-block
         margin-top 13px
-        width 200px
         vertical-align top
-        //text-shadow 0 0 1px #000
         font-style italic
         color #777
         font-size .75em
@@ -145,80 +148,82 @@ header
           padding-left 4px
           font-style normal
           color #888
-  .menu
-    padding 0
-    > .row
-      .title.active:hover
-        background-image linear-gradient(bottom, #fff 10px, #ffe0c0)
-      .title.active
-        animation-name grow
-        animation-duration .25s
-        position relative!important
-        z-index 50!important
-        color #333
-        background-color #f3f3f3
-        background-image linear-gradient(bottom, #fff 10px, #ffe0c0)
-        border-top 3px solid highlight-color2
-    > .row
-      .title:hover, .title.hover
-        border-top 3px solid highlight-color2
-        background-image linear-gradient(bottom, #fff 10px, #eee)
-        color #000
-        background-color #eee
-    > .row
-      .title
-        display inline-block
-        box-shadow 1px 0 0 #fafafa inset
-        text-decoration none
-        padding 0 19px
-        border-top 3px solid #777
-        color #777
-        text-shadow 0 0 1px #fff
-        background-color #eee
-        background-image linear-gradient(bottom, #fff 10px, #ddd)
-      .submenu
-        box-shadow 0 2px 6px 0 #777
-        border-right 1px solid #888
-        padding 10px 15px
-        border-bottom 2px solid #888
-        border-bottom-right-radius 10px
-        border-bottom-left-radius 10px
-        background-color #000
+    .menu
+      padding 0
+      > .row
+        .title.active:hover
+          background-image linear-gradient(bottom, #fff 10px, #ffe0c0)
+        .title.active
+          animation-name grow
+          animation-duration .25s
+          position relative!important
+          z-index 50!important
+          color #333
+          background-color #f3f3f3
+          background-image linear-gradient(bottom, #fff 10px, #ffe0c0)
+          border-top 3px solid highlight-color2
+      > .row
+        .title:hover, .title.hover
+          border-top 3px solid highlight-color2
+          background-image linear-gradient(bottom, #fff 10px, #eee)
+          color #000
+          background-color #eee
+      > .row
+        .title
+          display inline-block
+          box-shadow 1px 0 0 #fafafa inset
+          text-decoration none
+          padding 0 19px
+          border-top 3px solid #777
+          color #777
+          text-shadow 0 0 1px #fff
+          background-color #eee
+          background-image linear-gradient(bottom, #fff 10px, #ddd)
+        .submenu
+          box-shadow 0 2px 6px 0 #777
+          border-right 1px solid #888
+          padding 10px 15px
+          border-bottom 2px solid #888
+          border-bottom-right-radius 10px
+          border-bottom-left-radius 10px
+          background-color #000
+          color #fff
+          .row:last-child
+            border-bottom 1px solid transparent
+          .row
+            border-bottom 1px solid #333
+    .search::before
+      border-left 7px solid highlight-color2
+    .search
+      top 5px!important
+      right 6px!important
+      .query::-webkit-input-placeholder
+          color #777
+      .query:-moz-placeholder
+          color #777
+      .query::-moz-placeholder
+          color #777
+      .query:-ms-input-placeholder
+          color #777
+      .query:hover, .query:focus
+        //border none!important
+        //box-shadow none!important
+        box-shadow none
+      #query.query
+        box-shadow 0
         color #fff
-        .row:last-child
-          border-bottom 1px solid transparent
-        .row
-          border-bottom 1px solid #333
-  .search
-    top 5px!important
-    right 6px!important
-    .query::-webkit-input-placeholder
-        color #777
-    .query:-moz-placeholder
-        color #777
-    .query::-moz-placeholder
-        color #777
-    .query:-ms-input-placeholder
-        color #777
-    .query:hover, .query:focus
-      //border none!important
-      //box-shadow none!important
-      box-shadow none
-    #query.query
-      box-shadow 0
-      color #fff
-      font-style italic
-      border-left none
-      text-align right
-      padding-right 15px
-      background transparent
-      border none
-    .query
-      font-size 1.15em
-      border-bottom-width 3px
-      border-left 0px
-      width 500px
-      height 20px
+        font-style italic
+        border-left none
+        text-align right
+        padding-right 15px
+        background transparent
+        border none
+      .query
+        font-size 1.15em
+        border-bottom-width 3px
+        border-left 0px
+        width 500px
+        height 20px
 //}}}
 //{{{ Left side
 section.left-chrome
