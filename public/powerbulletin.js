@@ -392,15 +392,6 @@ process.binding = function (name) {
 
 });
 
-require.define("/app/validations.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
-  var myvalidation, out$ = typeof exports != 'undefined' && exports || this;
-  out$.myvalidation = myvalidation = function(){
-    return console.log('whee test');
-  };
-}).call(this);
-
-});
-
 require.define("/lib/mutant/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"index.js"}
 });
 
@@ -656,7 +647,6 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
   isMoz = false || in$('MozBoxSizing', document.documentElement.style);
   isOpera = !!(window.opera && window.opera.version);
   threshold = 10;
-  $w.v = require('./validations');
   window.mutant = require('../lib/mutant/mutant');
   window.mutants = require('./mutants');
   window.mutants[window.mutator].onLoad(window, function(){
