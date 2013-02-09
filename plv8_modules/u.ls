@@ -42,19 +42,15 @@ export get-doc = ->
 
 export put-doc = ->
   insert-sql =
-    'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)'
+    'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3) RETURNING json'
   update-sql =
     'UPDATE docs SET json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)'
 
   args = Array.prototype.slice.call(arguments)
   try
-    plv8.elog WARNING, "before"
     plv8.subtransaction ->
-      plv8.elog WARNING, "during"
       plv8.execute insert-sql, args
-    plv8.elog WARNING, "after"
   catch
-    plv8.elog WARNING, "update", e
     plv8.execute update-sql, args
 
 export forums = (site-id) ->

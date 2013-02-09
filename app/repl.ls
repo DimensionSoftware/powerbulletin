@@ -1,11 +1,11 @@
 global.async = require \async
 global.data = global.d = require './data'
-global.v = require './voltdb'
 global.pg = require './postgres'
+global.cl = console.log
+global.cw = console.log
 
 global <<< require \prelude-ls
 global <<< require './helpers'
 
-v.init '127.0.0.1'
-<- pg.init!
+<- pg.init
 global.procs = pg.procs # FIXME should work--right?

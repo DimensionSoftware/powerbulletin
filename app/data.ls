@@ -20,9 +20,7 @@ export homepage-doc = (cb) ->
   @get-doc \misc, \homepage, cb
 
 export add-post = (post, cb) ->
-  err, res <- pg.procs.add_post JSON.stringify(post)
-  if err then return cb(err)
-  cb null, res[0].add_post
+  pg.procs.add_post JSON.stringify(post), cb
 
 export get-doc = (type, key, cb) ->
   err, res <- pg.procs.get_doc type, key

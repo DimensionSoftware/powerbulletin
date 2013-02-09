@@ -36,19 +36,15 @@
   };
   out$.putDoc = putDoc = function(){
     var insertSql, updateSql, args, e;
-    insertSql = 'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)';
+    insertSql = 'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3) RETURNING json';
     updateSql = 'UPDATE docs SET json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)';
     args = Array.prototype.slice.call(arguments);
     try {
-      plv8.elog(WARNING, "before");
-      plv8.subtransaction(function(){
-        plv8.elog(WARNING, "during");
+      return plv8.subtransaction(function(){
         return plv8.execute(insertSql, args);
       });
-      return plv8.elog(WARNING, "after");
     } catch (e$) {
       e = e$;
-      plv8.elog(WARNING, "update", e);
       return plv8.execute(updateSql, args);
     }
   };
