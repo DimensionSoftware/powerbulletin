@@ -2,10 +2,14 @@ require! pg
 
 conn-str = "tcp://postgres@localhost/pb"
 
+# underscore foo_bar_car to camelcase fooBarCar
+under2camel = (s) ->
+  s.replace /_(\w)/gi, -> arguments[1].toUpperCase!
+
 # assumes @query is populated (must call init)
 # assumes all procs take one json argument and return a json response
 init-proc = (proname) ->
-  @procs[proname] = ~>
+  @procs[under2camel(proname)] = ~>
     pargs = arguments[0 to -2].map(JSON.stringify)
     cb = arguments[arguments.length - 1]
 

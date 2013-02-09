@@ -22,13 +22,13 @@ db = pg.procs
   post = req.body
   post.user_id = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
   post.forum_id = 1 # XXX/FIXME: in the future, this should be passed in
-  err, ap-res <- db.add_post JSON.stringify(post)
+  err, ap-res <- db.add-post JSON.stringify(post)
   if err then return next(err)
 
   res.json ap-res
 
 @homepage = (req, res, next) ->
-  err, doc <- db.get_doc \misc, \homepage
+  err, doc <- db.get-doc \misc, \homepage
   if err then return next(err)
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
@@ -44,7 +44,7 @@ db = pg.procs
 
 @forum = (req, res, next) ->
   # XXX: this should be changed to \misc, \forum once the forum doc lives
-  err, doc <- db.get_doc \misc, \homepage
+  err, doc <- db.get-doc \misc, \homepage
   if err then return next err
   res.locals doc
   caching-strategies.etag res, sha1(JSON.stringify req.params), 7200 # FIXME include site here later

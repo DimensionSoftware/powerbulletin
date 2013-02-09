@@ -16,7 +16,7 @@ passport.use(new Strategy (user, password, cb) ->
   INSERT INTO user (updated) VALUES (NOW()) RETURNING id;
   COMMIT;
   """
-  db.find_or_create sel sel-params ins ins-params
+  db.find-or-create sel sel-params ins ins-params
   cb null user
   )
 
@@ -24,7 +24,7 @@ passport.use(new Strategy (user, password, cb) ->
   create : (req, res) ->
     user = req.params.user
     # munge data
-    (err, user) <- db.find_or_create user
+    (err, user) <- db.find-or-create user
     res.json user
 
 @posts =
