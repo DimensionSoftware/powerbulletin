@@ -5,7 +5,7 @@ conn-str = "tcp://postgres@localhost/pb"
 # assumes @query is populated (must call init)
 # assumes all procs take one json argument and return a json response
 init-proc = (proname) ->
-  @procs[proname] = (args, cb) ~>
+  @procs[proname] = (args, cb = (->)) ~>
     err, res <- @query "SELECT * FROM #{proname}($1)", [JSON.stringify(args)]
     if err then return cb(err)
 
