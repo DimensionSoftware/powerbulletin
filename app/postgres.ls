@@ -47,6 +47,3 @@ export query = (sql, args, cb) ->
 
   # unwrap rows from result
   cb null, res.rows
-
-export select-users = (cb) ->
-  @query "SELECT * FROM users LIMIT 1", [], cb
