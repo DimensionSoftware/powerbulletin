@@ -23,18 +23,10 @@ export add-post = (post, cb) ->
   pg.procs.add_post JSON.stringify(post), cb
 
 export get-doc = (type, key, cb) ->
-  err, res <- pg.procs.get_doc type, key
-  if err then return cb(err)
-
-  if json-res = res[0].get_doc
-    cb null, JSON.parse(JSON.parse(json-res).json)
-  else
-    cb null, null
+  pg.procs.get_doc type, key, cb
 
 export put-doc = (type, key, val, cb) ->
-  err <- pg.procs.put_doc type, key, JSON.stringify(val)
-  if err then return cb(err)
-  cb null
+  pg.procs.put_doc type, key, JSON.stringify(val), cb
 
   #user =
   #  id         : 1

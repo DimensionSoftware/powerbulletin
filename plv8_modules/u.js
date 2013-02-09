@@ -32,7 +32,12 @@
     return results$;
   };
   out$.getDoc = getDoc = function(){
-    return plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0];
+    var res;
+    if (res = plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0]) {
+      return JSON.parse(res.json);
+    } else {
+      return null;
+    }
   };
   out$.putDoc = putDoc = function(){
     var insertSql, updateSql, args, e;

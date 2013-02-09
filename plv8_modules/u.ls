@@ -38,7 +38,10 @@ posts = (forum-id) ->
   [p <<< {posts: sub-posts-tree(p.id)} for p in top-posts(forum-id)]
 
 export get-doc = ->
-  plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0]
+  if res = plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0]
+    JSON.parse(res.json)
+  else
+    null
 
 export put-doc = ->
   insert-sql =
