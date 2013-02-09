@@ -40,23 +40,20 @@
     }
   };
   out$.putDoc = putDoc = function(){
-    var insertSql, updateSql, args, e;
-    insertSql = 'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3) RETURNING json';
+    var insertSql, updateSql, args, json, e;
+    insertSql = 'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)';
     updateSql = 'UPDATE docs SET json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)';
     args = Array.prototype.slice.call(arguments);
+    json = args[2];
     try {
-      return plv8.subtransaction(function(){
-        var res;
-        if (res = plv8.execute(insertSql, args)[0]) {
-          return JSON.parse(res);
-        } else {
-          return null;
-        }
+      plv8.subtransaction(function(){
+        return plv8.execute(insertSql, args);
       });
     } catch (e$) {
       e = e$;
-      return plv8.execute(updateSql, args);
+      plv8.execute(updateSql, args);
     }
+    return JSON.parse(json);
   };
   out$.forums = forums = function(siteId){
     var i$, ref$, len$, f, results$ = [];

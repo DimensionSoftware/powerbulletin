@@ -45,19 +45,19 @@ export get-doc = ->
 
 export put-doc = ->
   insert-sql =
-    'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3) RETURNING json'
+    'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)'
   update-sql =
     'UPDATE docs SET json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)'
 
   args = Array.prototype.slice.call(arguments)
+  json = args[2]
   try
     plv8.subtransaction ->
-      if res = plv8.execute(insert-sql, args)[0]
-        JSON.parse(res)
-      else
-        null
+      plv8.execute(insert-sql, args)
   catch
     plv8.execute update-sql, args
+
+  JSON.parse(json) # return val they stored if all is well
 
 export forums = (site-id) ->
   [f <<< {posts: posts(f.id)} for f in top-forums(site-id)]

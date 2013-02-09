@@ -3,6 +3,7 @@ require! {
   pg: './postgres'
 }
 
+
 # this file is intended to provide a high-level data interaction layer,
 # decoupled from any particular datasource, whether it be voltdb or elastic
 #
@@ -20,13 +21,16 @@ export homepage-doc = (cb) ->
   @get-doc \misc, \homepage, cb
 
 export add-post = (post, cb) ->
-  pg.procs.add_post JSON.stringify(post), cb
+  db = pg.procs # XXX: gotta be a better way
+  db.add_post post, cb
 
 export get-doc = (type, key, cb) ->
-  pg.procs.get_doc type, key, cb
+  db = pg.procs # XXX: gotta be a better way
+  db.get_doc {type, key}, cb
 
 export put-doc = (type, key, val, cb) ->
-  pg.procs.put_doc type, key, JSON.stringify(val), cb
+  db = pg.procs # XXX: gotta be a better way
+  db.put_doc {type, key, val}, cb
 
   #user =
   #  id         : 1
