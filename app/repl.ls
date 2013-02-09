@@ -7,4 +7,5 @@ global <<< require \prelude-ls
 global <<< require './helpers'
 
 v.init '127.0.0.1'
-pg.init!
+<- pg.init!
+global.procs = pg.procs # FIXME should work--right?
