@@ -23,8 +23,7 @@ db = pg.procs
   post = req.body
   post.user_id = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
   post.forum_id = 1 # XXX/FIXME: in the future, this should be passed in
-  #err, ap-res <- data.add-post post
-  db.add_post JSON.stringify(post)
+  err, ap-res <- db.add_post JSON.stringify(post)
   if err then return next(err)
 
   res.json ap-res
