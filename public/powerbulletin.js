@@ -786,7 +786,7 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
       var fid, postHtml;
       fid = $(this).data('fid');
       postHtml = '<h1>add post form goes here</h1>';
-      return $.get('/ajax/add-post', {
+      return $.get('/post', {
         fid: fid
       }, function(html){
         $(html).dialog({
@@ -798,7 +798,7 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
     addPost = function(){
       var form;
       form = $('#add-post-form');
-      $.post('/ajax/add-post', form.serialize(), function(){
+      $.post('/post', form.serialize(), function(){
         console.log('success! post added');
         return console.log('stub: do something fancy to confirm submission');
       });

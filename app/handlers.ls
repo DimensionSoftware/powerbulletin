@@ -12,21 +12,6 @@ db = pg.procs
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}!"
 
-# GET / post data form
-@add-post-html = (req, res) ->
-  res.locals.fid = req.query.fid
-  res.render \add-post
-
-# POST / post data
-@add-post = (req, res, next) ->
-  post = req.body
-  post.user_id = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
-  post.forum_id = 1 # XXX/FIXME: in the future, this should be passed in
-  err, ap-res <- db.add_post JSON.stringify(post)
-  if err then return next(err)
-
-  res.json ap-res
-
 @homepage = (req, res, next) ->
   err, doc <- db.get_doc \misc, \homepage
   if err then return next(err)

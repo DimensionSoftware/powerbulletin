@@ -10,7 +10,7 @@ global <<< require './helpers' # pull helpers (common) into global (play nice :)
 
 # <API RESOURCES>
 # ---------
-app.resource \posts  resources.posts
+app.resource \post  resources.post
 
 # <PAGE HANDLERS & MISC.>
 # ---------
@@ -47,11 +47,6 @@ app.get '/:forum',
 # # post endpoint
 app.post '/ajax/register', handlers.register
 # todo html for use in fancybox or modal dialog at get route
-
-# html for use in fancybox or modal dialog
-app.get '/ajax/add-post', handlers.add-post-html
-# todo post endpoint for adding a post
-app.post '/ajax/add-post', handlers.add-post
 
 # dynamic serving
 app.get '/dynamic/css/:file' handlers.stylus

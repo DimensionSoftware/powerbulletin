@@ -27,12 +27,19 @@ passport.use(new Strategy (user, password, cb) ->
     (err, user) <- db.find_or_create user
     res.json user
 
-@posts =
-  index   : (req, res) -> console.log 'posts'
+@post =
+  index   : (req, res) ->
+    res.locals.fid = req.query.fid
+    res.render \add-post
   new     : null
-  create  : null
+  create  : (req, res, next) ->
+    post = req.body
+    post.user_id  = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
+    post.forum_id = 1 # XXX/FIXME: in the future, this should be passed in
+    err, ap-res <- db.add_post JSON.stringify(post)
+    if err then return next err
+    res.json ap-res
   show    : null
   edit    : null
   update  : null
   destroy : null
-

@@ -108,14 +108,14 @@ add-post-dialog = ->
   fid = $(this).data \fid
 
   post-html = '<h1>add post form goes here</h1>'
-  html <- $.get '/ajax/add-post', {fid}
+  html <- $.get '/post', {fid}
   $(html).dialog modal: true
   false # stop event propagation
 
 # assumes immediate parent is form (in case of submit button)
 add-post = ->
   form = $ '#add-post-form'
-  $.post '/ajax/add-post', form.serialize!, ->
+  $.post '/post', form.serialize!, ->
     console.log 'success! post added'
     console.log 'stub: do something fancy to confirm submission'
 
