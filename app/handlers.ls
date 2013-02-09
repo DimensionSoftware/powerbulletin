@@ -8,6 +8,8 @@ require! {
   pg: './postgres'
 }
 
+db = pg.procs
+
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}!"
 
@@ -22,7 +24,7 @@ require! {
   post.user_id = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
   post.forum_id = 1 # XXX/FIXME: in the future, this should be passed in
   #err, ap-res <- data.add-post post
-  pg.procs.add_post JSON.stringify(post)
+  db.add_post JSON.stringify(post)
   if err then return next(err)
 
   res.json ap-res
