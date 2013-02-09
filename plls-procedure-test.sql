@@ -1,23 +1,10 @@
--- CLEANUP
-
--- FUNCTIONS
-DROP FUNCTION IF EXISTS test();
-CREATE OR REPLACE FUNCTION test() RETURNS JSON AS $$
-  return require(\mymod).foo!
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-DROP FUNCTION IF EXISTS get_user(BIGINT);
-CREATE FUNCTION get_user(id BIGINT) RETURNS TABLE (id BIGINT, created TIMESTAMP, updated TIMESTAMP) AS $$
-  return plv8.execute('SELECT * FROM users WHERE id=$1', [id])
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
 DROP FUNCTION IF EXISTS get_doc(TEXT, TEXT);
 CREATE FUNCTION get_doc(type TEXT, key TEXT) RETURNS JSON AS $$
   return require(\u).get-doc type, key
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS put_doc(TEXT, TEXT, JSON);
-CREATE FUNCTION put_doc(type TEXT, key TEXT, val JSON) RETURNS VOID AS $$
+CREATE FUNCTION put_doc(type TEXT, key TEXT, val JSON) RETURNS JSON AS $$
   return require(\u).put-doc type, key, JSON.stringify(val)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -78,6 +65,6 @@ CREATE FUNCTION find_or_create_user(u JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS add_user(JSON);
-CREATE FUNCTION add_user(user JSON) RETURNS JSON AS $$
+CREATE FUNCTION add_user(usr JSON) RETURNS JSON AS $$
   require! <[u validations]>
 $$ LANGUAGE plls IMMUTABLE STRICT;

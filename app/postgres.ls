@@ -15,11 +15,11 @@ init-proc = (proname) ->
 
 init-procs = (cb = (->)) ->
   sql = '''
-  SELECT  proname
-  FROM    pg_catalog.pg_namespace n
-  JOIN    pg_catalog.pg_proc p
-  ON      pronamespace = n.oid
-  WHERE   nspname = 'public'
+  SELECT proname
+  FROM pg_catalog.pg_namespace n
+  JOIN pg_catalog.pg_proc p ON pronamespace = n.oid
+  WHERE nspname = 'public'
+    AND prorettype='json'::regtype
   '''
   err, res <~ @query sql, []
   if err then return cb(err)
