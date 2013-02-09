@@ -1,14 +1,11 @@
-DROP FUNCTION IF EXISTS get_doc(TEXT, TEXT);
-CREATE FUNCTION get_doc(type TEXT, key TEXT) RETURNS JSON AS $$
-  return require(\u).get-doc type, key
+CREATE FUNCTION get_doc(args JSON) RETURNS JSON AS $$
+  return require(\u).get-doc args.type, args.key
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS put_doc(TEXT, TEXT, JSON);
-CREATE FUNCTION put_doc(type TEXT, key TEXT, val JSON) RETURNS JSON AS $$
-  return require(\u).put-doc type, key, JSON.stringify(val)
+CREATE FUNCTION put_doc(args JSON) RETURNS JSON AS $$
+  return require(\u).put-doc args.type, args.key, JSON.stringify(args.val)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS add_post(JSON);
 CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   require! <[u validations]>
   errors = validations.post(post)
@@ -34,7 +31,6 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 
-DROP FUNCTION IF EXISTS find_or_create(TEXT, TEXT[], TEXT, TEXT[]);
 CREATE FUNCTION find_or_create(sel TEXT, sel_params TEXT[], ins TEXT, ins_params TEXT[]) RETURNS JSON AS $$
   thing = plv8.execute(sel, sel_params)
   return thing[0] if thing.length > 0
@@ -43,7 +39,6 @@ CREATE FUNCTION find_or_create(sel TEXT, sel_params TEXT[], ins TEXT, ins_params
   return plv8.execute(sel, sel_params)[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS find_or_create_user(JSON);
 CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
   site-id = 1
   sel = """
@@ -69,7 +64,6 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param String  name       user name
 --   @param Integer site_id    site id
 -- @returns Object user        user with all auth objects
-DROP FUNCTION IF EXISTS find_user(JSON);
 CREATE FUNCTION find_user(usr JSON) RETURNS JSON AS $$
   sql = """
   SELECT u.id, a.name, a.site_id, auths.type, auths.json 
@@ -89,7 +83,6 @@ CREATE FUNCTION find_user(usr JSON) RETURNS JSON AS $$
   return auths.reduce make-user, { auths: {} }
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS add_user(JSON);
 CREATE FUNCTION add_user(usr JSON) RETURNS JSON AS $$
   require! <[u validations]>
 $$ LANGUAGE plls IMMUTABLE STRICT;

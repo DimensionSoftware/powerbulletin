@@ -46,7 +46,12 @@
     args = Array.prototype.slice.call(arguments);
     try {
       return plv8.subtransaction(function(){
-        return plv8.execute(insertSql, args);
+        var res;
+        if (res = plv8.execute(insertSql, args)[0]) {
+          return JSON.parse(res);
+        } else {
+          return null;
+        }
       });
     } catch (e$) {
       e = e$;

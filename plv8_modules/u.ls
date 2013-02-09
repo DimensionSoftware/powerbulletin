@@ -52,7 +52,10 @@ export put-doc = ->
   args = Array.prototype.slice.call(arguments)
   try
     plv8.subtransaction ->
-      plv8.execute insert-sql, args
+      if res = plv8.execute(insert-sql, args)[0]
+        JSON.parse(res)
+      else
+        null
   catch
     plv8.execute update-sql, args
 
