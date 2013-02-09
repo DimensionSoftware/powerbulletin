@@ -9,8 +9,6 @@ is-moz    = false or \MozBoxSizing in document.documentElement.style
 is-opera  = !!(window.opera and window.opera.version)
 threshold = 10 # snap
 
-$w.v = require './validations'
-
 # main
 # ---------
 #{{{ Mutant init

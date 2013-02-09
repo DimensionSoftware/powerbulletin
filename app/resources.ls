@@ -16,7 +16,7 @@ passport.use(new Strategy (user, password, cb) ->
   INSERT INTO user (updated) VALUES (NOW()) RETURNING id;
   COMMIT;
   """
-  db.find_or_create sel sel-params ins ins-params
+  db.find-or-create sel sel-params ins ins-params
   cb null user
   )
 
@@ -24,7 +24,7 @@ passport.use(new Strategy (user, password, cb) ->
   create : (req, res) ->
     user = req.params.user
     # munge data
-    (err, user) <- db.find_or_create user
+    (err, user) <- db.find-or-create user
     res.json user
 
 @post =
@@ -36,7 +36,7 @@ passport.use(new Strategy (user, password, cb) ->
     post = req.body
     post.user_id  = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
     post.forum_id = 1 # XXX/FIXME: in the future, this should be passed in
-    err, ap-res <- db.add_post JSON.stringify(post)
+    err, ap-res <- db.add-post JSON.stringify(post)
     if err then return next err
     res.json ap-res
   show    : null
