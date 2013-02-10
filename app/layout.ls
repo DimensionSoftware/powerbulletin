@@ -15,7 +15,8 @@ threshold = 10 # snap
 window.mutant  = require '../lib/mutant/mutant'
 window.mutants = require './mutants'
 
-<- window.mutants[window.mutator].on-load window # fire onLoad of initial mutant
+on-load = window.mutants[window.mutator]?.on-load or (window, next) -> next!
+<- on-load window # fire on-load of initial mutant
 $ '#query' .focus!
 
 $d.on \click 'a.mutant' (e) -> # hijack urls

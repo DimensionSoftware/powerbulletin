@@ -46,7 +46,8 @@ layout-static = (w, mutator) ->
             # TODO if direction is \up stick last forum
 
             # handle forum background
-            $ '.bg' .each -> $ this .remove!prependTo $ 'body' # position behind
+            $ '.bg-set' .remove!
+            $ '.bg' .each -> $ this .add-class \bg-set .remove!prepend-to $ 'body' # position behind
             clear-timeout window.bg-anim if window.bg-anim
             last = $ '.bg.active'
             unless last.length

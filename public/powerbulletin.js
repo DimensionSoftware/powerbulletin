@@ -574,8 +574,9 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
             cur = $('header .menu').find("." + id.replace(/_/, '-')).addClass('active');
             $('.forum .invisible').removeClass('invisible');
             $('.forum .stuck').removeClass('stuck');
+            $('.bg-set').remove();
             $('.bg').each(function(){
-              return $(this).remove().prependTo($('body'));
+              return $(this).addClass('bg-set').remove().prependTo($('body'));
             });
             if (window.bgAnim) {
               clearTimeout(window.bgAnim);
@@ -613,9 +614,6 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
       layoutStatic(window, 'forum');
       return next();
     },
-    onLoad: function(window, next){
-      return next();
-    },
     onMutate: function(window, next){
       window.awesomeScrollTo('body', 300);
       return next();
@@ -640,7 +638,7 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
 });
 
 require.define("/app/layout.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
-  var $w, $d, isIe, isMoz, isOpera, threshold;
+  var $w, $d, isIe, isMoz, isOpera, threshold, onLoad, ref$;
   $w = $(window);
   $d = $(document);
   isIe = false || in$('msTransform', document.documentElement.style);
@@ -649,7 +647,10 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
   threshold = 10;
   window.mutant = require('../lib/mutant/mutant');
   window.mutants = require('./mutants');
-  window.mutants[window.mutator].onLoad(window, function(){
+  onLoad = ((ref$ = window.mutants[window.mutator]) != null ? ref$.onLoad : void 8) || function(window, next){
+    return next();
+  };
+  onLoad(window, function(){
     var hasScrolled;
     $('#query').focus();
     $d.on('click', 'a.mutant', function(e){
