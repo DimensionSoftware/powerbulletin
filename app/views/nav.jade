@@ -1,6 +1,7 @@
 
 mixin forum(f, i)
-  a.mutant(href=f.slug)= f.title
+  h4.title
+    a.mutant(href=f.slug)= f.title
   if f.subforums
     each sf,ii in f.subforums
       mixin subforum(sf, f, ii)
@@ -12,7 +13,8 @@ mixin subforum(sf, i)
 //- main
 //- ---------
 if forums
-  each f,i in forums
-    mixin forum(f, i)
+  .forum(id="forum_#{active.id}", class="#{active.theme || ''}")
+    each f,i in forums
+      mixin forum(f, i)
 
 //- vim:fdm=marker

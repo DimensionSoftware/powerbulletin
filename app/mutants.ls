@@ -3,6 +3,25 @@ layout-static = (w, mutator) ->
   # indicate current
   w.marshal \mutator, mutator     # js
   w.$ \html .attr(\class mutator) # stylus
+  # handle forum background
+  w.$ '.bg-set' .remove!
+  w.$ '.bg' .each -> w.$ this .add-class \bg-set .remove!prepend-to w.$ 'body' # position behind
+
+flip-background = (w, cur, direction='down') ->
+  clear-timeout w.bg-anim if w.bg-anim
+  last = w.$ '.bg.active'
+  unless last.length
+    next = w.$ '#forum'+"_bg_#{cur.data \id}"
+    next.add-class \active
+  else
+    w.bg-anim := set-timeout (->
+      next = w.$ '#forum'+"_bg_#{cur.data \id}"
+
+      last.css \top if direction is \down then -300 else 300 # stage animation
+      last.remove-class \active
+      next.add-class 'active visible' # ... and switch!
+      w.bg-anim = 0
+    ), 300
 
 
 @homepage =
@@ -36,7 +55,7 @@ layout-static = (w, mutator) ->
               $ '#'+eid .prevAll '.forum:first' .attr \id
             return unless id # guard
             $ 'header .menu' .find '.active' .remove-class \active # remove prev
-            cur  = $ 'header .menu'
+            cur = $ 'header .menu'
               .find ".#{id.replace /_/ \-}"
               .add-class \active # ...and activate!
 
@@ -45,23 +64,7 @@ layout-static = (w, mutator) ->
             $ '.forum .stuck'     .remove-class \stuck
             # TODO if direction is \up stick last forum
 
-            # handle forum background
-            $ '.bg-set' .remove!
-            $ '.bg' .each -> $ this .add-class \bg-set .remove!prepend-to $ 'body' # position behind
-            clear-timeout window.bg-anim if window.bg-anim
-            last = $ '.bg.active'
-            unless last.length
-              next = $ '#forum'+"_bg_#{cur.data \id}"
-              next.add-class \active
-            else
-              window.bg-anim := set-timeout (->
-                next = $ '#forum'+"_bg_#{cur.data \id}"
-
-                last.css \top if direction is \down then -300 else 300 # stage animation
-                last.remove-class \active
-                next.add-class 'active visible' # ... and switch!
-                window.bg-anim = 0
-              ), 300
+            flip-background window, cur, direction
         }), 100
       #}}}
       next!
@@ -81,6 +84,8 @@ layout-static = (w, mutator) ->
       next!
   on-load:
     (window, next) ->
+      cur = window.$ 'header .menu .active'
+      flip-background window, cur
       next!
   on-mutate:
     (window, next) ->

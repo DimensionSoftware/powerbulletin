@@ -30,7 +30,7 @@ $d.on \click 'a.mutant' (e) -> # hijack urls
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url = History.get-page-url!replace /\/$/, ''
   $.get url, _surf:1, (r) ->
-    $d.title = r.locals.title if r.locals?.title       # set title
+    $d.title = r.locals.title if r.locals?.title # set title
     on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
     on-unload window, -> # cleanup & run next mutant
       window.mutant.run window.mutants[r.mutant], locals:r.locals
@@ -83,8 +83,11 @@ $d.on \mousedown '.scroll-to-top' ->
   false
 #}}}
 
+# header expansion
 $d.on \click 'header' (e) ->
   $ \body .remove-class \expanded if e.target.class-name.index-of(\toggler) > -1 # guard
   $ '#query' .focus!
 $d.on \keypress '#query' -> $ \body .add-class \expanded
+
+
 # vim:fdm=marker

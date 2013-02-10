@@ -19,28 +19,14 @@ grid = 10px
   0%
     transform scale(1.0)
   25%
-    transform scale(.9)
+    transform scale(1.03)
   45%
-    transform scale(1.1)
+    transform scale(1.04)
   100%
     transform scale(1.0)
 //}}}
 
 //{{{ Style applied after body scrolls
-body.expanded header
-  .search
-    #query.query
-      text-align left
-  .advanced
-    font-weight 100
-    font-size .9em
-    .check
-      margin 0 8px
-    label
-      margin-right 10px
-  .menu
-    .row
-      transition line-height .2s ease-out!important
 body.scrolled
   header
     background-color rgba(0,0,0,0.7)
@@ -82,8 +68,13 @@ body.scrolled
           color #fed
           font-weight 400
           font-size .9em
+          animation-name tiny-grow
+          animation-duration .25s
     .user-profile
       transition left .5s ease-out
+  #left_content.container
+    padding-top (grid * 4)
+    transition padding-top .4s ease-out
   #main_content.container
     .forum.dark
       .post
@@ -105,20 +96,18 @@ body.scrolled
     background-color rgba(25,25,25,0.7)
     transition bottom .5s ease-out
 //}}}
-
-body
-  font-family 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue'
-
-//{{{ Header
+//{{{ Style applied when header is expanded
 body.expanded header
   background-color rgba(0,0,0,0.85)!important
   border-bottom 1px solid #fff
   .close:hover
     background-color highlight-color2
+    font-weight 500
+    color #fff
   .close
     font-weight 200
     font-size 1.3em
-    transform rotate(90deg)
+    transform rotate(10deg)
     padding 0
     height 9px
     width 8px
@@ -126,6 +115,29 @@ body.expanded header
     border-radius 25px
     color #eee
     text-indent -2px
+  .search
+    #query.query
+      text-align left
+  .advanced
+    font-weight 100
+    font-size .9em
+    .check
+      margin 0 8px
+    label
+      margin-right 10px
+  .menu
+    .row
+      transition line-height .2s ease-out!important
+//}}}
+
+body
+  font-family 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue'
+
+a.mutant:hover
+  animation-name tiny-grow
+  animation-duration .1s
+
+//{{{ Header
 header
   background-color rgba(0,0,0,0.1)
   border-top 2px solid #000
@@ -171,13 +183,17 @@ header
           background-image linear-gradient(bottom, #fff 10px, #eee)
           color #000
           background-color #eee
+          animation-name tiny-grow
+          animation-duration .1s
+          transition border-top .5s, background-color .3s, color .4s
       > .row
         .title
           display inline-block
+          text-transform capitalize
           box-shadow 1px 0 0 #fafafa inset
           text-decoration none
           padding 0 19px
-          border-top 3px solid #777
+          border-top 3px solid #444
           color #777
           text-shadow 0 0 1px #fff
           background-color #eee
@@ -229,6 +245,20 @@ header
         height 20px
 //}}}
 //{{{ Left side
+#left_content.container
+  padding grid
+  .title
+    padding 2px 7px
+    letter-spacing -1px
+    font-size 1em
+    margin (grid / 2) 0
+#left_content.container.dark
+  background-color rgba(0,0,0,.1)
+  border-right 1px solid #333
+#left_content.container.light
+  background-color rgba(255,255,255,.8)
+  border-right 1px solid #eee
+
 section.left-chrome
   .user-profile:hover
     border 1px solid #333

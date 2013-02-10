@@ -6,17 +6,36 @@
 
 header-height = 50px
 forum-header-height = 70px
+footer-height = 30px
+left-content-width = 200px
+grid = 10px
 
 //{{{Mutant States
 html.homepage
   .left-content
     display none
 html.forum
+  body.scrolled
+    #left_content.container
+      bottom 0
+      top 0 
+  body.expanded
+    #left_content.left-content
+      padding-top 70px!important
+      transition padding-top .3s ease-out
+    #main_content.main-content
+      padding-top 100px!important
+      transition padding-top .3s ease-out
   .left-content
     display block
   .left-chrome
     display none
+  #main_content
+    padding forum-header-height 0 0 (left-content-width / 2)!important
 //}}}
+
+section
+  box-sizing border-box
 
 body
   grid(90%,100%)
@@ -60,7 +79,7 @@ body.scrolled
   footer
     opacity 1
     font-size .85em
-    bottom -10px
+    bottom -(grid)
     line-height 16px
 
   #main_content.container
@@ -69,29 +88,8 @@ body.scrolled
         position absolute
         opacity .8
 //}}}
-
-//{{{ Background layer
-img.bg
-  position fixed
-  height 100%
-  width 100%
-  z-index 0
-  left 0!important
-  display none
-  top 200px
-img.bg.visible
-  display block
-img.bg.active
-  top 0!important
-  z-index 1!important
-  transition top .3s ease-out
-  display block
-//}}}
-//{{{ Header
+//{{{ Structure applied when header is expanded
 body.expanded
-  #left_content, #main_content.main-content
-    padding-top 100px!important
-    transition padding-top .3s ease-out
   .stuck
     display none!important
   header
@@ -127,10 +125,30 @@ body.expanded
     .close
       cursor pointer
       position absolute
-      right 10px
-      top 5px
+      right 12px
+      top grid
       display block
+//}}}
 
+//{{{ Background layer
+img.bg
+  position fixed
+  height 100%
+  width 100%
+  z-index 0
+  left 0!important
+  display none
+  top 200px
+img.bg.visible
+  display block
+img.bg.active
+  top 0!important
+  z-index 1!important
+  transition top .3s ease-out
+  display block
+//}}}
+
+//{{{ Header
 header
   position fixed
   height header-height
@@ -178,6 +196,21 @@ header
       display none
 //}}}
 //{{{ Left side
+#left_content.container
+  position fixed
+  top header-height
+  left 0
+  bottom 0
+  top (header-height + 2)
+  height auto
+  width left-content-width
+  z-index 6
+  .title
+    text-overflow ellipsis
+    overflow hidden
+    height 20px
+    text-transform capitalize
+
 section.left-chrome
   z-index 7
   top 80px
@@ -218,7 +251,7 @@ section.left-chrome
       border-bottom-color transparent
     .sort
       position relative
-      margin-top 10px
+      margin-top grid
       height 117px
       overflow hidden
       cursor pointer
@@ -255,13 +288,6 @@ section.left-chrome
   width 425px
 .col2
   width 425px
-
-#left_content.container
-  position fixed
-  top 75px
-  left 25px
-  width 200px
-  z-index 6
 
 #main_content.container
   grid(100%, 800px)
@@ -324,7 +350,7 @@ section.left-chrome
         transition height .05s ease-out 1.6s
     .post
       float left
-      margin 10px
+      margin grid
       .photo
         float left
         width 25px
@@ -357,8 +383,8 @@ footer
   bottom 0
   right 0
   left 0
-  height 30px
-  z-index 5
+  height footer-height
+  z-index 7
 //}}}
 
 //{{{ RESPONSIVEness
@@ -383,7 +409,7 @@ footer
     .left-chrome
       display none!important
     #main_content.container
-      margin 0 auto 0 10px!important
+      margin 0 auto 0 grid!important
       .forum
         margin-left 0!important
   
@@ -397,7 +423,7 @@ footer
       margin-left 0!important
       padding 25px 15px!important
       .forum
-        margin-bottom 10px!important
+        margin-bottom grid!important
         margin-left 0!important
   body.scrolled
     .container

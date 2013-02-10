@@ -18,6 +18,7 @@ db = pg.procs
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
   # for O(1) retrieval (assuming hashed index map)
+  doc.active = doc.forums[0] # TODO select real active
   res.locals doc
 
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
@@ -31,6 +32,7 @@ db = pg.procs
   # XXX: this should be changed to \misc, \forum once the forum doc lives
   err, doc <- db.get-doc \misc, \homepage
   if err then return next err
+  doc.active = doc.forums[0] # TODO select real active
   res.locals doc
   caching-strategies.etag res, sha1(JSON.stringify req.params), 7200 # FIXME include site here later
   res.content-type \html
