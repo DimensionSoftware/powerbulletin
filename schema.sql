@@ -21,8 +21,10 @@ $$;
 -- user has many posts
 CREATE TABLE users (
   id      BIGSERIAL NOT NULL,
+  email   VARCHAR(256),
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
+  UNIQUE (email),
   PRIMARY KEY (id)
 );
 CREATE TRIGGER users_timestamp BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
