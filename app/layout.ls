@@ -83,7 +83,7 @@ $d.on \mousedown '.scroll-to-top' ->
 #}}}
 
 $d.on \click 'header' (e) ->
-  $ \body .remove-class \expanded if e.target.class-name is \header # guard
+  $ \body .remove-class \expanded if e.target.class-name.index-of(\toggler) > -1 # guard
   $ '#query' .focus!
 $d.on \keypress '#query' -> $ \body .add-class \expanded
 # vim:fdm=marker

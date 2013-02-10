@@ -750,7 +750,7 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
       });
     });
     $d.on('click', 'header', function(e){
-      if (e.target.className === 'header') {
+      if (e.target.className.indexOf('toggler') > -1) {
         $('body').removeClass('expanded');
       }
       return $('#query').focus();
