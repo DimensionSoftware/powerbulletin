@@ -1,11 +1,14 @@
+DROP FUNCTION IF EXISTS get_doc(type JSON, key JSON);
 CREATE FUNCTION get_doc(type JSON, key JSON) RETURNS JSON AS $$
   return require(\u).get-doc type, key
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS put_doc(type JSON, key JSON, val JSON);
 CREATE FUNCTION put_doc(type JSON, key JSON, val JSON) RETURNS JSON AS $$
   return require(\u).put-doc type, key, JSON.stringify(val)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS add_post(post JSON);
 CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   require! <[u validations]>
   errors = validations.post(post)
@@ -31,6 +34,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 
+DROP FUNCTION IF EXISTS find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON);
 CREATE FUNCTION find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON) RETURNS JSON AS $$
   thing = plv8.execute(sel, sel_params)
   return thing[0] if thing.length > 0
@@ -39,6 +43,7 @@ CREATE FUNCTION find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params J
   return plv8.execute(sel, sel_params)[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS find_or_create_user(usr JSON);
 CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
   site-id = 1
   sel = """
@@ -64,6 +69,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param String  name       user name
 --   @param Integer site_id    site id
 -- @returns Object user        user with all auth objects
+DROP FUNCTION IF EXISTS find_user(usr JSON);
 CREATE FUNCTION find_user(usr JSON) RETURNS JSON AS $$
   sql = """
   SELECT u.id, a.name, a.site_id, auths.type, auths.json 
@@ -85,6 +91,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- @param Object site
 --   @param String domain      domain of site
+DROP FUNCTION IF EXISTS find_site_by_domain(site JSON);
 CREATE FUNCTION find_site_by_domain(site JSON) RETURNS JSON AS $$
   sql = """
   SELECT * FROM sites WHERE domain = $1
