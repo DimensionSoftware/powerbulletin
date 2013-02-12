@@ -56,7 +56,7 @@ CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
   ins-params =
     * site-id
     * usr.name
-  find-or-create = plv8.find_function('find_or_create') 
+  find-or-create = plv8.find_function('find_or_create')
   return find-or-create(sel, sel-params, ins, ins-params)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -74,7 +74,7 @@ CREATE FUNCTION find_user(usr JSON) RETURNS JSON AS $$
   AND a.site_id = $2
   """
   auths = plv8.execute(sql, [ usr.name, usr.site_id ])
-  make-user = (memo, auth) -> 
+  make-user = (memo, auth) ->
     memo.id = auth.id
     memo.site_id = auth.id
     memo.name = auth.name
