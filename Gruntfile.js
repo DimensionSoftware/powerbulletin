@@ -54,7 +54,7 @@ module.exports = function(grunt) {
         tasks: ['procs', 'launch'],
         options: {
           interrupt: true,
-          debounceDelay: 2000
+          debounceDelay: 500
         }
       },
       jade: {
@@ -62,7 +62,7 @@ module.exports = function(grunt) {
         tasks: ['jade', 'launch'],
         options: {
           interrupt: true,
-          debounceDelay: 2000
+          debounceDelay: 500
         }
       },
       app: {
@@ -70,7 +70,7 @@ module.exports = function(grunt) {
         tasks: ['browserify', 'uglify', 'launch'],
         options: {
           interrupt: true,
-          debounceDelay: 2000
+          debounceDelay: 500
         }
       },
     }
