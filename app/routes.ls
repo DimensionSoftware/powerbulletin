@@ -47,7 +47,7 @@ app.get '/dynamic/css/:file' handlers.stylus
 
 #cvars.surfable-routes = mutant.surfable-routes app
 
-app.get '/favicon.ico', (res, req, next) ->
+app.get '/favicon.ico', (req, res, next) ->
   res.send '404', 404
 
 app.get '/:forum',

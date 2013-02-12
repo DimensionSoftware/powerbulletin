@@ -48,9 +48,8 @@ db = pg.procs
     if err then return next err
     finish doc
   else # forum
-    console.log {req.path, parts}
     forum-slug = '/' + parts[0].join('/')
-    err, [fdoc] <- db.forum-doc-by-slug forum-slug
+    err, fdoc <- db.forum-doc-by-slug forum-slug
     if err then return next err
     if !fdoc then return next(404)
     finish fdoc
