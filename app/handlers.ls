@@ -33,11 +33,7 @@ db = pg.procs
 
 @forum = (req, res, next) ->
   finish = (doc) ->
-    if doc?.forums?.length # store active
-      doc.active = head filter (.slug is req.params.forum), doc.forums
     res.locals doc
-    console.log doc
-    console.log res.locals.site
     caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<< res.locals.site), 7200
     res.mutant \forum
 
@@ -46,12 +42,18 @@ db = pg.procs
   if parts?.length > 1 # thread
     err, doc <- db.doc \misc, \homepage
     if err then return next err
+
+    if doc?.forums?.length # store active
+      doc.active = head filter (.slug is req.params.forum), doc.forums
+
     finish doc
   else # forum
     forum-slug = '/' + parts[0].join('/')
     err, fdoc <- db.forum-doc-by-slug forum-slug
     if err then return next err
     if !fdoc then return next(404)
+    #XXX: maybe for optimization make this an index in the future
+    fdoc.active = fdoc.forums[0] # TODO select real active
     finish fdoc
 
 @register = (req, res) ->
