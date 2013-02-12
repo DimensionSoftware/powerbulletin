@@ -32,7 +32,7 @@ db = pg.procs
   # XXX: this should be changed to \misc, \forum once the forum doc lives
   err, doc <- db.get-doc \misc, \homepage
   if err then return next err
-  doc.active = doc.forums[0] # TODO select real active
+  doc.active = head filter (.slug is req.params.forum), doc.forums # store active
   res.locals doc
   caching-strategies.etag res, sha1(JSON.stringify req.params), 7200 # FIXME include site here later
   res.content-type \html

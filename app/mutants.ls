@@ -80,11 +80,13 @@ flip-background = (w, cur, direction='down') ->
     (window, next) ->
       window.render-jade 'left_content' \nav
       window.render-jade 'main_content' \posts
+      window.marshal \active @active.id
       layout-static window, \forum
       next!
   on-load:
     (window, next) ->
-      cur = window.$ 'header .menu .active'
+      cur = window.$ "header .menu .forum-#{window.active}"
+      cur.add-class \active
       flip-background window, cur
       next!
   on-mutate:
