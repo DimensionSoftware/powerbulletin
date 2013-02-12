@@ -50,7 +50,7 @@ module.exports = function(grunt) {
 
     watch: {
       procs: {
-        files: ['plv8_modules/*.ls'],
+        files: ['plv8_modules/*.ls', 'plls-procedure-test.sql'],
         tasks: ['procs', 'launch'],
         options: {
           interrupt: true,
@@ -112,6 +112,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('procs', 'Compile stored procedures to JS', function() {
     exec('node_modules/.bin/lsc -c plv8_modules/*.ls', {silent:true});
+    exec('bin/psql pb < plls-procedure-test.sql', {silent: true});
   });
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {
     fs.writeFileSync('app/views/mutants.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/nav.jade app/views/posts.jade', {silent:true}).output));
