@@ -89,7 +89,9 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-mutate:
     (window, next) ->
-      window.awesome-scroll-to \body 300
+      #window.awesome-scroll-to \body 300
+      window.scroll-to 0  0
+      window.s
       next!
 
 @search =

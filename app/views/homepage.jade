@@ -15,9 +15,9 @@ mixin forum(f, i)
 mixin post(f, p, i)
   .post(id="post_#{p.id}", class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")
     a(href=f.slug, class='mutant')
-      h5.title= p.title
+      h5.title- p.title
         span.date #{p.date}
-    p.body= p.body
+    p.body- p.body
     if p.posts
       each sp,i in p.posts
         mixin subpost(sp, i)
@@ -31,7 +31,7 @@ mixin subpost(sp, i)
  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even')
     .photo
       img(src="#{cache_url}/images/profile.jpg")
-    p.body= sp.body
+    p.body- sp.body
     .signature
       span.username - #{sp.user_name}
       span.date= sp.date

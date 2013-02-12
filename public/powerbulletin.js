@@ -626,7 +626,8 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
       return next();
     },
     onMutate: function(window, next){
-      window.awesomeScrollTo('body', 300);
+      window.scrollTo(0, 0);
+      window.s;
       return next();
     }
   };

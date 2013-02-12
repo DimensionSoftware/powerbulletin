@@ -7,8 +7,7 @@ $d = $ document
 
 #{{{ Waypoints
 $w.resize -> set-timeout (-> $.waypoints \refresh), 800
-set-timeout (->
-  # sort control
+set-timeout (-> # sort control
   $ '#sort li' .waypoint {
     context: \ul
     offset : 30
