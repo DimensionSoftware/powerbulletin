@@ -107,3 +107,8 @@ CREATE FUNCTION domains() RETURNS JSON AS $$
   """
   return plv8.execute(sql).map (d) -> d.domain
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS forum_doc(fid JSON);
+CREATE FUNCTION forum_doc(fid JSON) RETURNS JSON AS $$
+  return require(\u).forum fid
+$$ LANGUAGE plls IMMUTABLE STRICT;
