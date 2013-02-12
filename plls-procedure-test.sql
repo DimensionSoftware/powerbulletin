@@ -69,8 +69,8 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param String  name       user name
 --   @param Integer site_id    site id
 -- @returns Object user        user with all auth objects
-DROP FUNCTION IF EXISTS user(usr JSON);
-CREATE FUNCTION user(usr JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS usr(usr JSON);
+CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   sql = """
   SELECT u.id, a.name, a.site_id, auths.type, auths.json 
   FROM users u
