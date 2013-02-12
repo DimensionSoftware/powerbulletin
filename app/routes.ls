@@ -32,12 +32,6 @@ app.get '/',
   mmw.mutant-layout(\layout, mutants),
   handlers.homepage
 
-app.get '/:forum',
-  mw.add-js(common-js),
-  mw.add-css(common-css),
-  mmw.mutant-layout(\layout, mutants),
-  handlers.forum
-
 # UI SKETCH UP:
 #
 # Connect to a social network:
@@ -52,3 +46,13 @@ app.post '/ajax/register', handlers.register
 app.get '/dynamic/css/:file' handlers.stylus
 
 #cvars.surfable-routes = mutant.surfable-routes app
+
+app.get '/favicon.ico', (res, req, next) ->
+  res.send '404', 404
+
+app.get '/:forum',
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.forum
+

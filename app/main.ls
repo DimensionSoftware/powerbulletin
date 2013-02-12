@@ -172,7 +172,7 @@ else
 
   sock = express!
   (err, domains) <- pg.procs.domains
-  for domain in ['pbstage.com', 'pb.com', cvars.host]+++domains
+  for domain in ['pbstage.com', 'pb.com', cvars.host] ++ domains
     sock
       .use(express.vhost domain, app)
       .use(express.vhost "m.#{domain}", redir-to-domain)
