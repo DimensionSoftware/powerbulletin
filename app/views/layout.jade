@@ -48,7 +48,7 @@ html
               a.title(data-id=f.id, data-scroll-to="#forum_#{f.id}", class="forum-#{f.id}", href="/#{f.slug}")= f.title
               menu.submenu
                 if f.forums
-                  each sf,i in f.subforums
+                  each sf,i in f.forums
                     li.row(href="#{f.slug}")= f.title
         .search
           input#query.query(type='text', placeholder='Search', autocomplete='off')
