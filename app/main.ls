@@ -103,7 +103,7 @@ else
   <- pg.init
 
   if proc.env.NODE_ENV == 'production'
-    Gproc.on 'uncaughtException', (err) ->
+    proc.on 'uncaughtException', (err) ->
       timestamp = new Date
       console.warn 'timestamp', timestamp
       console.warn err.message
