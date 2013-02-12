@@ -8,9 +8,9 @@ top-forums = ->
 
 sub-forums = ->
   sql = '''
-  SELECT f.*
-  FROM forums f
-  WHERE site_id=$1 AND f.parent_id=$2
+  SELECT *
+  FROM forums
+  WHERE parent_id=$1
   ORDER BY created DESC, id DESC
   '''
   plv8.execute sql, arguments
@@ -36,15 +36,18 @@ sub-posts = ->
     AND p.parent_id=$1
   ORDER BY created DESC, id DESC
   '''
-  sub-posts = plv8.execute sql, arguments
+  plv8.execute sql, arguments
 
 # recurses to build entire comment tree
 sub-posts-tree = (parent-id) ->
   [p <<< {posts: sub-posts-tree(p.id)} for p in sub-posts(parent-id)]
 
 # gets entire list of top posts and inlines all sub-posts to them
-export posts = (forum-id) ->
+posts = (forum-id) ->
   [p <<< {posts: sub-posts-tree(p.id)} for p in top-posts(forum-id)]
+
+decorate-forum = (f) ->
+  f <<< {posts: posts(f.id), forums: [decorate-forum(sf) for sf in sub-forums(f.id)]}
 
 export doc = ->
   if res = plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0]
@@ -70,10 +73,10 @@ export put-doc = ->
 # single forum
 export forum = (forum-id) ->
   sql = 'SELECT * FROM forums WHERE id=$1 LIMIT 1'
-  f = plv8.execute sql, [forum-id]
-  f <<< {posts: @posts(forum-id), subforums: []}
+  if f = plv8.execute(sql, [forum-id])[0]
+    decorate-forum(f)
 
 # all forums for site
 export forums = (site-id) ->
-  [f <<< {posts: @posts(f.id)} for f in top-forums(site-id)]
+  [decorate-forum(f) for f in top-forums(site-id)]
 

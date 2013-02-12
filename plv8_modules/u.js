@@ -1,5 +1,5 @@
 (function(){
-  var topForums, subForums, topPosts, subPosts, subPostsTree, posts, doc, putDoc, forum, forums, out$ = typeof exports != 'undefined' && exports || this;
+  var topForums, subForums, topPosts, subPosts, subPostsTree, posts, decorateForum, doc, putDoc, forum, forums, out$ = typeof exports != 'undefined' && exports || this;
   topForums = function(){
     var sql;
     sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id DESC';
@@ -7,7 +7,7 @@
   };
   subForums = function(){
     var sql;
-    sql = 'SELECT f.*\nFROM forums f\nWHERE site_id=$1 AND f.parent_id=$2\nORDER BY created DESC, id DESC';
+    sql = 'SELECT *\nFROM forums\nWHERE parent_id=$1\nORDER BY created DESC, id DESC';
     return plv8.execute(sql, arguments);
   };
   topPosts = function(){
@@ -16,9 +16,9 @@
     return plv8.execute(sql, arguments);
   };
   subPosts = function(){
-    var sql, subPosts;
+    var sql;
     sql = 'SELECT p.*, a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id=$1\nORDER BY created DESC, id DESC';
-    return subPosts = plv8.execute(sql, arguments);
+    return plv8.execute(sql, arguments);
   };
   subPostsTree = function(parentId){
     var i$, ref$, len$, p, results$ = [];
@@ -28,13 +28,24 @@
     }
     return results$;
   };
-  out$.posts = posts = function(forumId){
+  posts = function(forumId){
     var i$, ref$, len$, p, results$ = [];
     for (i$ = 0, len$ = (ref$ = topPosts(forumId)).length; i$ < len$; ++i$) {
       p = ref$[i$];
       results$.push((p.posts = subPostsTree(p.id), p));
     }
     return results$;
+  };
+  decorateForum = function(f){
+    var sf;
+    return f.posts = posts(f.id), f.forums = (function(){
+      var i$, ref$, len$, results$ = [];
+      for (i$ = 0, len$ = (ref$ = subForums(f.id)).length; i$ < len$; ++i$) {
+        sf = ref$[i$];
+        results$.push(decorateForum(sf));
+      }
+      return results$;
+    }()), f;
   };
   out$.doc = doc = function(){
     var res;
@@ -62,14 +73,15 @@
   out$.forum = forum = function(forumId){
     var sql, f;
     sql = 'SELECT * FROM forums WHERE id=$1 LIMIT 1';
-    f = plv8.execute(sql, [forumId]);
-    return f.posts = this.posts(forumId), f.subforums = [], f;
+    if (f = plv8.execute(sql, [forumId])[0]) {
+      return decorateForum(f);
+    }
   };
   out$.forums = forums = function(siteId){
     var i$, ref$, len$, f, results$ = [];
     for (i$ = 0, len$ = (ref$ = topForums(siteId)).length; i$ < len$; ++i$) {
       f = ref$[i$];
-      results$.push((f.posts = this.posts(f.id), f));
+      results$.push(decorateForum(f));
     }
     return results$;
   };
