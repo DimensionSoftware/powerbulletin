@@ -14,8 +14,7 @@ require! {
 
   db = pg.procs # XXX - I can't do it earlier, because pg.procs might not be initialized
   (err, site) <- db.find-site-by-domain { domain: req.headers.host }
-  res.locals.site      = site
-  res.locals.site_name = site?.domain || "Unknown"  # XXX - would like to remove this line and rely on previous line for all site info
+  res.locals.site = site
   next!
 
 @ip-lookup = (req, res, next) ->

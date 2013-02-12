@@ -92,3 +92,11 @@ CREATE FUNCTION find_site_by_domain(site JSON) RETURNS JSON AS $$
   s = plv8.execute(sql, [ site.domain ])
   return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS get_domains();
+CREATE FUNCTION get_domains() RETURNS JSON AS $$
+  sql = """
+  SELECT domain FROM sites
+  """
+  return plv8.execute(sql).map (d) -> d.domain
+$$ LANGUAGE plls IMMUTABLE STRICT;

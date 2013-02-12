@@ -34,10 +34,12 @@ CREATE TRIGGER users_timestamp BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCE
 -- NOTE: id is the base domain (string)
 CREATE TABLE sites (
   id      BIGSERIAL NOT NULL,
+  name    VARCHAR(256) NOT NULL,
   domain  VARCHAR(256) NOT NULL,
   user_id BIGINT NOT NULL references users(id),
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
+  UNIQUE (domain),
   PRIMARY KEY (id)
 );
 CREATE TRIGGER sites_timestamp BEFORE UPDATE ON sites FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();

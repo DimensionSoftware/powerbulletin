@@ -41,7 +41,7 @@ proc = process
 proc.on 'uncaughtException', (e) -> throw e
 
 app = global.app = express!
-redir-to-www     = express!
+redir-to-domain  = express!
 cache-app        = express!
 
 html_50x = fs.read-file-sync('public/50x.html').to-string!
@@ -163,19 +163,20 @@ else
   max-age = if DISABLE_HTTP_CACHE then 0 else 7200 * 1000
   cache-app.use(express.static \public {max-age})
 
-  redir-to-www.all '*', (req, res) ->
+  redir-to-domain.all '*', (req, res) ->
     protocol = req.headers['x-forwarded-proto'] or 'http'
-    host     = req.host
+    host     = req.host.replace /(m|www)\./ ''
     uri      = req.url
     url      = "https://#{host}#{uri}"
     res.redirect url, 301
 
   sock = express!
-  for domain in ['pbstage.com', 'pb.com', cvars.host] # TODO bind all domains -- should come from voltdb
+  (err, domains) <- pg.procs.get-domains
+  for domain in ['pbstage.com', 'pb.com', cvars.host]+++domains
     sock
-      .use(express.vhost "m.#{domain}", redir-to-www)
-      .use(express.vhost domain, redir-to-www)
-      .use(express.vhost "www.#{domain}", app)
+      .use(express.vhost domain, app)
+      .use(express.vhost "m.#{domain}", redir-to-domain)
+      .use(express.vhost "www.#{domain}", redir-to-domain)
     for i in ['', 2, 3, 4, 5] # add cache domains
       sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{domain}", cache-app)
   sock.listen proc.env['NODE_PORT'] || cvars.port
