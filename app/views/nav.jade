@@ -2,8 +2,8 @@
 mixin forum(f, i)
   h4.title
     a.mutant(href=f.slug)= f.title
-  if f.subforums
-    each sf,ii in f.subforums
+  if f.forums
+    each sf,ii in f.forums
       mixin subforum(sf, f, ii)
 
 mixin subforum(sf, i)

@@ -60,6 +60,17 @@ process-cached-data = {}
     o
   | otherwise => o
 
+@forum-path-parts = (path) ->
+  parts = path.split /\//
+  parts.shift!
+  m     = last parts .match /-([\d]+)$/
+  id    = m?[1]
+  if id
+    parts.pop!
+    [parts, id]
+  else
+    [parts]
+
 #{{{ String functions
 @title-case = (s) ->
   s?.replace /[\w]\S*/g, (word) ->

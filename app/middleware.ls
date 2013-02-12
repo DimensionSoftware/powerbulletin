@@ -32,7 +32,7 @@ require! {
     paths = ["#{p}?#{CHANGESET}" for p in paths]
 
   (req, res, next) ->
-    res.locals.js_urls = res.locals.js_urls || [] +++ paths
+    res.locals.js_urls = res.locals.js_urls || [] ++ paths
     next!
 
 @add-css = (paths = [], add-changeset = true) ->
@@ -42,7 +42,7 @@ require! {
 
   (req, res, next) ->
     links = map (path) -> {media:'screen',url:path}, paths
-    res.locals.css_urls = res.locals.css_urls || [] +++ links
+    res.locals.css_urls = res.locals.css_urls || [] ++ links
     next!
 
 @require-https = (req, res, next) ->

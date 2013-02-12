@@ -4,8 +4,11 @@ require! {
   jade
   stylus
   fluidity
+  __: \lodash
   pg: './postgres'
 }
+
+global <<< require './helpers'
 
 db = pg.procs
 
@@ -24,19 +27,30 @@ db = pg.procs
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
-  caching-strategies.etag res, sha1(JSON.stringify req.params), 7200 # FIXME include site here later
+  caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.locals.site), 7200
   res.content-type \html
   res.mutant \homepage
 
 @forum = (req, res, next) ->
-  # XXX: this should be changed to \misc, \forum once the forum doc lives
-  err, doc <- db.doc \misc, \homepage
-  if err then return next err
-  doc.active = head filter (.slug is req.params.forum), doc.forums # store active
-  res.locals doc
-  caching-strategies.etag res, sha1(JSON.stringify req.params), 7200 # FIXME include site here later
-  res.content-type \html
-  res.mutant \forum
+  finish = (doc) ->
+    if doc?.forums?.length # store active
+      doc.active = head filter (.slug is req.params.forum), doc.forums
+    res.locals doc
+    console.log doc
+    console.log res.locals.site
+    caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<< res.locals.site), 7200
+    res.mutant \forum
+
+  # parse url
+  parts = forum-path-parts req.path
+  if parts?.length > 1 # thread
+    err, doc <- db.doc \misc, \homepage
+    if err then return next err
+    finish doc
+  else # forum
+    err, doc <- db.doc \misc, \forum
+    if err then return next err
+    finish doc
 
 @register = (req, res) ->
   req.assert('login').is-alphanumeric!
