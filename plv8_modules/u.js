@@ -1,5 +1,5 @@
 (function(){
-  var topForums, subForums, topPosts, subPosts, subPostsTree, posts, decorateForum, doc, putDoc, forum, forums, out$ = typeof exports != 'undefined' && exports || this;
+  var topForums, subForums, topPosts, subPosts, subPostsTree, posts, decorateForum, doc, putDoc, forum, forums, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this;
   topForums = function(){
     var sql;
     sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id DESC';
@@ -84,5 +84,19 @@
       results$.push(decorateForum(f));
     }
     return results$;
+  };
+  out$.buildForumDoc = buildForumDoc = function(forumId){
+    var forumDoc;
+    forumDoc = JSON.stringify({
+      forums: [this.forum(forumId)]
+    });
+    return this.putDoc('forum_doc', forumId, JSON.stringify(forumDoc));
+  };
+  out$.buildHomepageDoc = buildHomepageDoc = function(siteId){
+    var homepageDoc;
+    homepageDoc = JSON.stringify({
+      forums: this.forums(siteId)
+    });
+    return this.putDoc('misc', 'homepage', JSON.stringify(homepageDoc));
   };
 }).call(this);

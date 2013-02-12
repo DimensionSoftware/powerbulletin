@@ -28,11 +28,8 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
     id = plv8.execute(sql, params)[0].id
 
     # XXX: only works for site-id 1 right now
-    homepage-doc = JSON.stringify {forums: u.forums(1)}
-    forum-doc = JSON.stringify {forums: [u.forum(post.forum_id)]}
-
-    u.put-doc \misc, \homepage, JSON.stringify(homepage-doc) # XXX: needs to be multi-tennant-ized
-    u.put-doc \forum_doc, post.forum_id, JSON.stringify(forum-doc)
+    u.build-forum-doc(post.forum_id)
+    u.build-homepage-doc(1)
 
   return {success, errors, id}
 $$ LANGUAGE plls IMMUTABLE STRICT;
@@ -121,3 +118,15 @@ CREATE FUNCTION forum_doc_by_slug(slug JSON) RETURNS JSON AS $$
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS build_all_docs();
+CREATE FUNCTION build_all_docs() RETURNS JSON AS $$
+  require! <[u]>
+
+  # XXX: only works for site-id 1 right now
+  u.build-homepage-doc(1)
+
+  for f in plv8.execute('SELECT id FROM forums', [])
+    u.build-forum-doc(f.id)
+
+  return true
+$$ LANGUAGE plls IMMUTABLE STRICT;

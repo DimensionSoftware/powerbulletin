@@ -80,3 +80,12 @@ export forum = (forum-id) ->
 export forums = (site-id) ->
   [decorate-forum(f) for f in top-forums(site-id)]
 
+export build-forum-doc = (forum-id) ->
+  forum-doc = JSON.stringify {forums: [@forum(forum-id)]}
+  @put-doc \forum_doc, forum-id, JSON.stringify(forum-doc)
+
+export build-homepage-doc = (site-id) ->
+  homepage-doc = JSON.stringify {forums: @forums(site-id)}
+  # XXX: needs to be multi-tennant-ized
+  @put-doc \misc, \homepage, JSON.stringify(homepage-doc)
+
