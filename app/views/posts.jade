@@ -1,18 +1,18 @@
 
 mixin post(p, i)
   .post
-    a.mutant(href=p.slug)- p.title
-    p.body- p.body
+    a.mutant(href=p.slug)!= p.title
+    p.body!= p.body
     if p.subposts
       each sp,ii in p.subposts
         mixin subpost(p, sp, ii)
 
 mixin subpost(p, sp, i)
   .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even')
-    h4.title- sp.title
+    h4.title!= sp.title
     .user= sp.user.name
     .date= sp.date
-    p.body- sp.body
+    p.body!= sp.body
 
 //- main
 //- ---------

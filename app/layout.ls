@@ -16,7 +16,7 @@ window.mutant  = require '../lib/mutant/mutant'
 window.mutants = require './mutants'
 
 on-load = window.mutants[window.mutator]?.on-load or (window, next) -> next!
-<- on-load window # fire on-load of initial mutant
+<- on-load.call this, window # fire on-load of initial mutant
 $ '#query' .focus!
 
 $d.on \click 'a.mutant' (e) -> # hijack urls
