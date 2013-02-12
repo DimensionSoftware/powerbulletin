@@ -112,7 +112,12 @@ CREATE FUNCTION domains() RETURNS JSON AS $$
   return plv8.execute(sql).map (d) -> d.domain
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS forum_doc(fid JSON);
-CREATE FUNCTION forum_doc(fid JSON) RETURNS JSON AS $$
-  return require(\u).forum fid
+DROP FUNCTION IF EXISTS forum_doc_by_slug(slug JSON);
+CREATE FUNCTION forum_doc_by_slug(slug JSON) RETURNS JSON AS $$
+  require! <[u]>
+  if {id} = plv8.execute('SELECT id FROM forums WHERE slug=$1', [slug])[0]
+    return u.doc \forum_doc, id
+  else
+    return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
+

@@ -30,7 +30,7 @@ db = pg.procs
 
 @forum = (req, res, next) ->
   # XXX: this should be changed to \misc, \forum once the forum doc lives
-  err, doc <- db.doc \misc, \homepage
+  err, doc <- db.doc \forum_doc, 1
   if err then return next err
   doc.active = head filter (.slug is req.params.forum), doc.forums # store active
   res.locals doc
