@@ -45,7 +45,7 @@ html
         menu.menu
           each f,i in forums
             li.row
-              a.title(data-id=f.id, data-scroll-to="#forum_#{f.id}", class="scroll-to forum-#{f.id}", href="#{f.slug}#forum_#{f.id}")= f.title
+              a.title(data-id=f.id, data-scroll-to="#forum_#{f.id}", class="forum-#{f.id}", href="/#{f.slug}")= f.title
               menu.submenu
                 if f.forums
                   each sf,i in f.subforums

@@ -533,124 +533,6 @@ require.define("fs",function(require,module,exports,__dirname,__filename,process
 
 });
 
-require.define("/app/mutants.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
-  var layoutStatic, flipBackground;
-  layoutStatic = function(w, mutator){
-    w.marshal('mutator', mutator);
-    w.$('html').attr('class', mutator);
-    w.$('.bg-set').remove();
-    return w.$('.bg').each(function(){
-      return w.$(this).addClass('bg-set').remove().prependTo(w.$('body'));
-    });
-  };
-  flipBackground = function(w, cur, direction){
-    var last, next;
-    direction == null && (direction = 'down');
-    if (w.bgAnim) {
-      clearTimeout(w.bgAnim);
-    }
-    last = w.$('.bg.active');
-    if (!last.length) {
-      next = w.$('#forum' + ("_bg_" + cur.data('id')));
-      return next.addClass('active');
-    } else {
-      return w.bgAnim = setTimeout(function(){
-        var next;
-        next = w.$('#forum' + ("_bg_" + cur.data('id')));
-        last.css('top', direction === 'down' ? -300 : 300);
-        last.removeClass('active');
-        next.addClass('active visible');
-        return w.bgAnim = 0;
-      }, 300);
-    }
-  };
-  this.homepage = {
-    'static': function(window, next){
-      window.renderJade('main_content', 'homepage');
-      layoutStatic(window, 'homepage');
-      return next();
-    },
-    onLoad: function(window, next){
-      window.$('.forum .container').masonry({
-        itemSelector: '.post',
-        isAnimated: true,
-        isFitWidth: true,
-        isResizable: true
-      });
-      setTimeout(function(){
-        var $;
-        $ = window.$;
-        $('.forum .header').waypoint('sticky', {
-          offset: -100
-        });
-        return $('.forum').waypoint({
-          offset: '33%',
-          handler: function(direction){
-            var e, eid, id, cur;
-            e = $(this);
-            eid = e.attr('id');
-            id = direction === 'down'
-              ? eid
-              : $('#' + eid).prevAll('.forum:first').attr('id');
-            if (!id) {
-              return;
-            }
-            $('header .menu').find('.active').removeClass('active');
-            cur = $('header .menu').find("." + id.replace(/_/, '-')).addClass('active');
-            $('.forum .invisible').removeClass('invisible');
-            $('.forum .stuck').removeClass('stuck');
-            return flipBackground(window, cur, direction);
-          }
-        });
-      }, 100);
-      return next();
-    },
-    onUnload: function(window, next){
-      window.$('.forum .container').masonry('destroy');
-      window.$('.forum .header').waypoint('destroy');
-      window.$('.forum').waypoint('destroy');
-      return next();
-    }
-  };
-  this.forum = {
-    'static': function(window, next){
-      window.renderJade('left_content', 'nav');
-      window.renderJade('main_content', 'posts');
-      window.marshal('active', this.active.id);
-      layoutStatic(window, 'forum');
-      return next();
-    },
-    onLoad: function(window, next){
-      var cur;
-      cur = window.$("header .menu .forum-" + window.active);
-      cur.addClass('active');
-      flipBackground(window, cur);
-      return next();
-    },
-    onMutate: function(window, next){
-      window.scrollTo(0, 0);
-      window.s;
-      return next();
-    }
-  };
-  this.search = {
-    'static': function(window, next){
-      return next();
-    },
-    onLoad: function(window, next){
-      return next();
-    },
-    onInitial: function(window, next){
-      return next();
-    },
-    onMutate: function(window, next){
-      return next();
-    }
-  };
-}).call(this);
-
-});
-
 require.define("/app/layout.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
   var $w, $d, isIe, isMoz, isOpera, threshold, onLoad, ref$;
   $w = $(window);
@@ -661,27 +543,28 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
   threshold = 10;
   window.mutant = require('../lib/mutant/mutant');
   window.mutants = require('./mutants');
+  window.mutate = function(e){
+    var href, searchParams;
+    href = $(this).attr('href');
+    if (!href) {
+      return false;
+    }
+    if (href != null && href.match(/#/)) {
+      return true;
+    }
+    searchParams = {};
+    History.pushState({
+      searchParams: searchParams
+    }, '', href);
+    return false;
+  };
   onLoad = ((ref$ = window.mutants[window.mutator]) != null ? ref$.onLoad : void 8) || function(window, next){
     return next();
   };
   onLoad.call(this, window, function(){
     var hasScrolled;
     $('#query').focus();
-    $d.on('click', 'a.mutant', function(e){
-      var href, searchParams;
-      href = $(this).attr('href');
-      if (!href) {
-        return false;
-      }
-      if (href != null && href.match(/#/)) {
-        return true;
-      }
-      searchParams = {};
-      History.pushState({
-        searchParams: searchParams
-      }, '', href);
-      return false;
-    });
+    $d.on('click', 'a.mutant', window.mutate);
     History.Adapter.bind(window, 'statechange', function(e){
       var url;
       url = History.getPageUrl().replace(/\/$/, '');
@@ -811,6 +694,11 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
       }
     });
   }, 100);
+  $d.on('click', 'html.homepage header .menu a.title', function(){
+    awesomeScrollTo($(this).data('scroll-to'));
+    return false;
+  });
+  $d.on('click', 'html.forum header .menu a.title', window.mutate);
   addPostDialog = function(){
     var fid, postHtml;
     fid = $(this).data('fid');

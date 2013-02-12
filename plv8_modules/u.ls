@@ -6,6 +6,15 @@ top-forums = ->
     '''
   plv8.execute sql, arguments
 
+sub-forums = ->
+  sql = '''
+  SELECT f.*
+  FROM forums f
+  WHERE site_id=$1 AND f.parent_id=$2
+  ORDER BY created DESC, id DESC
+  '''
+  plv8.execute sql, arguments
+
 top-posts = ->
   sql = '''
     SELECT p.*, a.name user_name
@@ -61,3 +70,4 @@ export put-doc = ->
 
 export forums = (site-id) ->
   [f <<< {posts: posts(f.id)} for f in top-forums(site-id)]
+

@@ -14,18 +14,19 @@ threshold = 10 # snap
 #{{{ Mutant init
 window.mutant  = require '../lib/mutant/mutant'
 window.mutants = require './mutants'
-
-on-load = window.mutants[window.mutator]?.on-load or (window, next) -> next!
-<- on-load.call this, window # fire on-load of initial mutant
-$ '#query' .focus!
-
-$d.on \click 'a.mutant' (e) -> # hijack urls
+window.mutate  = (e) ->
   href = $ this .attr \href
   return false unless href # guard
   return true if href?.match /#/
   search-params = {}
   History.push-state {search-params}, '', href
-  return false
+  false
+
+on-load = window.mutants[window.mutator]?.on-load or (window, next) -> next!
+<- on-load.call this, window # fire on-load of initial mutant
+$ '#query' .focus!
+
+$d.on \click 'a.mutant' window.mutate # hijack urls
 
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url = History.get-page-url!replace /\/$/, ''

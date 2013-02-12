@@ -66,6 +66,8 @@ flip-background = (w, cur, direction='down') ->
 
             flip-background window, cur, direction
         }), 100
+
+        awesome-scroll-to "forum_#{}"
       #}}}
       next!
   on-unload:
@@ -85,6 +87,7 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-load:
     (window, next) ->
+      window.$ 'header .menu .active' .remove-class \active
       cur = window.$ "header .menu .forum-#{window.active}"
       cur.add-class \active
       flip-background window, cur

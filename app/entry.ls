@@ -21,6 +21,11 @@ set-timeout (-> # sort control
       e .add-class \active # set!
   }), 100
 #}}}
+#{{{ Main Menu
+$d.on \click 'html.homepage header .menu a.title' ->
+  awesome-scroll-to $(this).data \scroll-to; false
+$d.on \click 'html.forum header .menu a.title' window.mutate
+#}}}
 
 # main
 # ---------

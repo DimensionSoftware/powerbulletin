@@ -1,8 +1,13 @@
 (function(){
-  var topForums, topPosts, subPosts, subPostsTree, posts, getDoc, putDoc, forums, out$ = typeof exports != 'undefined' && exports || this;
+  var topForums, subForums, topPosts, subPosts, subPostsTree, posts, getDoc, putDoc, forums, out$ = typeof exports != 'undefined' && exports || this;
   topForums = function(){
     var sql;
     sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id DESC';
+    return plv8.execute(sql, arguments);
+  };
+  subForums = function(){
+    var sql;
+    sql = 'SELECT f.*\nFROM forums f\nWHERE site_id=$1 AND f.parent_id=$2\nORDER BY created DESC, id DESC';
     return plv8.execute(sql, arguments);
   };
   topPosts = function(){
