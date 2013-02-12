@@ -1,5 +1,6 @@
 require! {
   \fs
+  pg: './postgres'
 }
 
 @multi-domain = (req, res, next) ->
@@ -11,8 +12,10 @@ require! {
     host = rest.substr(rest.last-index-of '.')  # prune all subdomains
     cvars["cache#{i}_url"] = res.locals["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}#{host}#{tld}"
 
-    # TODO pull in all domain-specific info from volt
-    res.locals.site_name = 'Dimension Software'
+  db = pg.procs # XXX - I can't do it earlier, because pg.procs might not be initialized
+  (err, site) <- db.find-site-by-domain { domain: req.headers.host }
+  res.locals.site      = site
+  res.locals.site_name = site?.domain || "Unknown"  # XXX - would like to remove this line and rely on previous line for all site info
   next!
 
 @ip-lookup = (req, res, next) ->
