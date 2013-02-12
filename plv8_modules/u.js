@@ -1,5 +1,5 @@
 (function(){
-  var topForums, subForums, topPosts, subPosts, subPostsTree, posts, getDoc, putDoc, forums, out$ = typeof exports != 'undefined' && exports || this;
+  var topForums, subForums, topPosts, subPosts, subPostsTree, posts, doc, putDoc, forums, out$ = typeof exports != 'undefined' && exports || this;
   topForums = function(){
     var sql;
     sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id DESC';
@@ -36,7 +36,7 @@
     }
     return results$;
   };
-  out$.getDoc = getDoc = function(){
+  out$.doc = doc = function(){
     var res;
     if (res = plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0]) {
       return JSON.parse(res.json);
