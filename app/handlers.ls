@@ -13,7 +13,7 @@ db = pg.procs
   res.send "hello #{res.locals.remote-ip}!"
 
 @homepage = (req, res, next) ->
-  err, doc <- db.get-doc \misc, \homepage
+  err, doc <- db.doc \misc, \homepage
   if err then return next(err)
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
@@ -30,7 +30,7 @@ db = pg.procs
 
 @forum = (req, res, next) ->
   # XXX: this should be changed to \misc, \forum once the forum doc lives
-  err, doc <- db.get-doc \misc, \homepage
+  err, doc <- db.doc \misc, \homepage
   if err then return next err
   doc.active = head filter (.slug is req.params.forum), doc.forums # store active
   res.locals doc

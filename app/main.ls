@@ -171,7 +171,7 @@ else
     res.redirect url, 301
 
   sock = express!
-  (err, domains) <- pg.procs.get-domains
+  (err, domains) <- pg.procs.domains
   for domain in ['pbstage.com', 'pb.com', cvars.host]+++domains
     sock
       .use(express.vhost domain, app)

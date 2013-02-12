@@ -67,7 +67,7 @@ flip-background = (w, cur, direction='down') ->
             flip-background window, cur, direction
         }), 100
 
-        awesome-scroll-to "forum_#{}"
+      awesome-scroll-to "forum_#{}"
       #}}}
       next!
   on-unload:

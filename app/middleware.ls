@@ -13,7 +13,7 @@ require! {
     cvars["cache#{i}_url"] = res.locals["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}#{host}#{tld}"
 
   db = pg.procs # XXX - I can't do it earlier, because pg.procs might not be initialized
-  (err, site) <- db.find-site-by-domain { domain: req.headers.host }
+  (err, site) <- db.site-by-domain { domain: req.headers.host }
   res.locals.site = site
   next!
 

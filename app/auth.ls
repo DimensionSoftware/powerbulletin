@@ -23,7 +23,7 @@ db = pg.procs
 
 # Local # {{{1
 passport.use new passport-local.Strategy (username, password, done) ~>
-  (err, user) <~ db.find-user { name: username, site_id: 1 }  # XXX - how do i get site_id?
+  (err, user) <~ db.user { name: username, site_id: 1 }  # XXX - how do i get site_id?
   if err then return done(err)
   if not user
     return done(null, false, { message: 'User not found' })

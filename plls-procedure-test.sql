@@ -1,6 +1,6 @@
-DROP FUNCTION IF EXISTS get_doc(type JSON, key JSON);
-CREATE FUNCTION get_doc(type JSON, key JSON) RETURNS JSON AS $$
-  return require(\u).get-doc type, key
+DROP FUNCTION IF EXISTS doc(type JSON, key JSON);
+CREATE FUNCTION doc(type JSON, key JSON) RETURNS JSON AS $$
+  return require(\u).doc type, key
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS put_doc(type JSON, key JSON, val JSON);
@@ -69,8 +69,8 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param String  name       user name
 --   @param Integer site_id    site id
 -- @returns Object user        user with all auth objects
-DROP FUNCTION IF EXISTS find_user(usr JSON);
-CREATE FUNCTION find_user(usr JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS user(usr JSON);
+CREATE FUNCTION user(usr JSON) RETURNS JSON AS $$
   sql = """
   SELECT u.id, a.name, a.site_id, auths.type, auths.json 
   FROM users u
@@ -91,8 +91,8 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- @param Object site
 --   @param String domain      domain of site
-DROP FUNCTION IF EXISTS find_site_by_domain(site JSON);
-CREATE FUNCTION find_site_by_domain(site JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS site_by_domain(site JSON);
+CREATE FUNCTION site_by_domain(site JSON) RETURNS JSON AS $$
   sql = """
   SELECT * FROM sites WHERE domain = $1
   """
@@ -100,8 +100,8 @@ CREATE FUNCTION find_site_by_domain(site JSON) RETURNS JSON AS $$
   return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS get_domains();
-CREATE FUNCTION get_domains() RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS domains();
+CREATE FUNCTION domains() RETURNS JSON AS $$
   sql = """
   SELECT domain FROM sites
   """
