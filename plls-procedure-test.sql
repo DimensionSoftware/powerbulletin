@@ -26,9 +26,13 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       * post.body
 
     id = plv8.execute(sql, params)[0].id
-    # only works for forum-id 1 right now
-    forums = u.forums 1
-    u.put-doc \misc, \homepage, JSON.stringify({forums})
+
+    # XXX: only works for site-id 1 right now
+    homepage-doc = JSON.stringify {forums: u.forums(1)}
+    forum-doc = JSON.stringify {forums: [u.forum(post.forum_id)]}
+
+    u.put-doc \misc, \homepage, JSON.stringify(homepage-doc) # XXX: needs to be multi-tennant-ized
+    u.put-doc \forum_doc, post.forum_id, JSON.stringify(forum-doc)
 
   return {success, errors, id}
 $$ LANGUAGE plls IMMUTABLE STRICT;
@@ -106,4 +110,9 @@ CREATE FUNCTION domains() RETURNS JSON AS $$
   SELECT domain FROM sites
   """
   return plv8.execute(sql).map (d) -> d.domain
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS forum_doc(fid JSON);
+CREATE FUNCTION forum_doc(fid JSON) RETURNS JSON AS $$
+  return require(\u).forum fid
 $$ LANGUAGE plls IMMUTABLE STRICT;
