@@ -1,5 +1,5 @@
 (function(){
-  var topForums, subForums, topPosts, subPosts, subPostsTree, posts, getDoc, putDoc, forums, out$ = typeof exports != 'undefined' && exports || this;
+  var topForums, subForums, topPosts, subPosts, subPostsTree, posts, doc, putDoc, forum, forums, out$ = typeof exports != 'undefined' && exports || this;
   topForums = function(){
     var sql;
     sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id DESC';
@@ -28,7 +28,7 @@
     }
     return results$;
   };
-  posts = function(forumId){
+  out$.posts = posts = function(forumId){
     var i$, ref$, len$, p, results$ = [];
     for (i$ = 0, len$ = (ref$ = topPosts(forumId)).length; i$ < len$; ++i$) {
       p = ref$[i$];
@@ -36,7 +36,7 @@
     }
     return results$;
   };
-  out$.getDoc = getDoc = function(){
+  out$.doc = doc = function(){
     var res;
     if (res = plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0]) {
       return JSON.parse(res.json);
@@ -45,11 +45,10 @@
     }
   };
   out$.putDoc = putDoc = function(){
-    var insertSql, updateSql, args, json, e;
+    var insertSql, updateSql, args, e;
     insertSql = 'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)';
     updateSql = 'UPDATE docs SET json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)';
     args = Array.prototype.slice.call(arguments);
-    json = args[2];
     try {
       plv8.subtransaction(function(){
         return plv8.execute(insertSql, args);
@@ -58,13 +57,19 @@
       e = e$;
       plv8.execute(updateSql, args);
     }
-    return JSON.parse(json);
+    return true;
+  };
+  out$.forum = forum = function(forumId){
+    var sql, f;
+    sql = 'SELECT * FROM forums WHERE id=$1 LIMIT 1';
+    f = plv8.execute(sql, [forumId]);
+    return f.posts = this.posts(forumId), f.subforums = [], f;
   };
   out$.forums = forums = function(siteId){
     var i$, ref$, len$, f, results$ = [];
     for (i$ = 0, len$ = (ref$ = topForums(siteId)).length; i$ < len$; ++i$) {
       f = ref$[i$];
-      results$.push((f.posts = posts(f.id), f));
+      results$.push((f.posts = this.posts(f.id), f));
     }
     return results$;
   };
