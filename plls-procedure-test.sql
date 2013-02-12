@@ -83,6 +83,12 @@ CREATE FUNCTION find_user(usr JSON) RETURNS JSON AS $$
   return auths.reduce make-user, { auths: {} }
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION add_user(usr JSON) RETURNS JSON AS $$
-  require! <[u validations]>
+-- @param Object site
+--   @param String domain      domain of site
+CREATE FUNCTION find_site_by_domain(site JSON) RETURNS JSON AS $$
+  sql = """
+  SELECT * FROM sites WHERE domain = $1
+  """
+  s = plv8.execute(sql, [ site.domain ])
+  return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
