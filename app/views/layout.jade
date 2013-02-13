@@ -43,7 +43,7 @@ html
           a.mutant(href='/') Power
             strong Bulletin
         menu.menu
-          each f,i in forums
+          each f,i in menu
             li.row
               a.title(data-id=f.id, data-scroll-to="#forum_#{f.id}", class="forum-#{f.id}", href="/#{f.slug}")= f.title
               menu.submenu
