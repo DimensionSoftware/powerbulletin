@@ -88,8 +88,6 @@ html_509 = fs.read-file-sync('public/509.html').to-string!
   rec.timestamp = now
 
   if rec.hits > threshold
-    # XXX: i feel like this will flood logs, but leaving it for now
-    console.warn "rate_limit #{ip} #{rec.hits} #{req.url}"
-    res.send html_509 509
+    res.send html_509, 509
   else
     next!
