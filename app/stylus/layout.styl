@@ -140,16 +140,16 @@ img.bg
   height 100%
   width 100%
   z-index 0
-  left 0!important
+  left 0
   display none
-  top 200px
-img.bg.visible
-  display block
+  top 300px
 img.bg.active
   top 0!important
+  transition top .3s
   z-index 1!important
-  transition top .3s ease-out
-  display block
+  //transition opacity .8s ease-out
+  //opacity 1
+  //display block
 //}}}
 
 //{{{ Header
@@ -175,7 +175,7 @@ header
           top 50px
           transition top .15s ease-out .5s, opacity .4s ease-out .5s
           .row:hover
-            text-indent 18px
+            text-indent 19px
             transition text-indent .1s ease-out
       .row
         cursor pointer
@@ -319,29 +319,14 @@ section.left-chrome
     padding-left 180px
     .container
       z-index 6
-    .header::before
-      position absolute
-      opacity .35
-      top -50px
-      left 20%
-      content ''
-      width 640px
-      height 200px
-      z-index 1
-      background-image url(cache_url+'/images/blob.png')
-      background-repeat no-repeat
     .header.stuck::before
       opacity 1!important
     .header.stuck
-      color #fff!important
-      text-shadow none!important
       position fixed
       top 3px
       left 50px
       z-index 7
       overflow hidden
-      font-size 17px
-      letter-spacing 0
     .header
       width 95%
       overflow visible

@@ -165,14 +165,12 @@ header
           color #888
     .menu
       padding 0
-      .row:hover, .row.active
-        background-image linear-gradient(bottom, #fff 10px, #ffe0c0)!important
       > .row
         .title.active:hover
           background-image linear-gradient(bottom, #fff 10px, #ffe0c0)
         .title.active
-          animation-name grow
-          animation-duration .25s
+          //animation-name grow
+          //animation-duration .25s
           position relative!important
           z-index 50!important
           color #333
@@ -182,7 +180,7 @@ header
       > .row
         .title:hover, .title.hover
           border-top 3px solid highlight-color2
-          background-image linear-gradient(bottom, #fff 10px, #eee)
+          background-image linear-gradient(bottom, #fff 20px, #eee)
           color #000
           background-color #eee
           animation-name tiny-grow!important
@@ -322,6 +320,22 @@ section.left-chrome
 
   .forum
     margin-bottom (grid * 2)
+    .header.stuck
+      color #fff!important
+      text-shadow 1px 1px 0 rgba(0,0,0,.5)!important
+      font-size 17px
+      letter-spacing 0
+    .header::before
+      position absolute
+      opacity .55
+      top -50px
+      left 30%
+      content ''
+      width 640px
+      height 200px
+      z-index 1
+      background-image url(cache_url+'/images/blob.png')
+      background-repeat no-repeat
     .header
       text-shadow 0 1px 1px #000,0 2px 0 #000
       text-overflow ellipsis
@@ -473,27 +487,29 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   transition all .15s
   border-radius 4px
 .button:hover::before
-  background-color rgba(100,100,100,.08)
+  background-color rgba(100,100,100,.2)
+  border-radius 6px
 .button:hover, input[type="button"]:hover, input[type="submit"]:hover, button:hover
   background -moz-linear-gradient(center top , #ffce29, #f38437) repeat scroll 0 0 #ffffff
   background -webkit-gradient(linear, left top, left bottom, from(#ffce29), to(#f38437))
-  text-indent -1px
+  text-indent -2px
   background-color #ffca27
   border-color #777
   border-top 1px solid #fff467
   border-left 1px solid #fff467
   border-bottom 1px solid #444
-  box-shadow 0 0 5px #888
+  box-shadow 0 0 5px #888, 0 0 3px 1px #c35407
   text-shadow 0px 1px 0 black,1px 1px 0 black
-  transition all .1s
+  transition text-indent .2s, border-color .3s, box-shadow .3s
 .button:active::before
-  background-color rgba(0,0,0,.15)
-  border-radius 5px
+  background-color rgba(0,0,0,.25)
+  border-radius 6px
 .button:active, button:active, input[type='submit']:active,input[type='button']:active,button:focus, input[type="submit"]:focus, input[type="button"]:focus
   text-indent 2px
   border-top 1px solid #666
   border-left 1px solid #666
   box-shadow 0 0 2px #888, 1px 1px 1px #a33400 inset
+  box-shadow 0px 0px 3px #C35407
   text-shadow 1px 1px 0 black
   border-bottom 1px solid highlight-color2
   border-right 1px solid highlight-color2

@@ -10,18 +10,17 @@ layout-static = (w, mutator) ->
 flip-background = (w, cur, direction='down') ->
   clear-timeout w.bg-anim if w.bg-anim
   last = w.$ '.bg.active'
+  next = w.$ '#forum'+"_bg_#{cur.data \id}"
+  next.css \display \block
   unless last.length
-    next = w.$ '#forum'+"_bg_#{cur.data \id}"
     next.add-class \active
   else
     w.bg-anim := set-timeout (->
-      next = w.$ '#forum'+"_bg_#{cur.data \id}"
-
       last.css \top if direction is \down then -300 else 300 # stage animation
       last.remove-class \active
-      next.add-class 'active visible' # ... and switch!
+      next.add-class \active # ... and switch!
       w.bg-anim = 0
-    ), 300
+    ), 100
 
 
 @homepage =
@@ -60,8 +59,7 @@ flip-background = (w, cur, direction='down') ->
               .add-class \active # ...and activate!
 
             # handle forum headers
-            $ '.forum .invisible' .remove-class \invisible
-            $ '.forum .stuck'     .remove-class \stuck
+            $ '.forum .stuck' .remove-class \stuck
             # TODO if direction is \up stick last forum
 
             flip-background window, cur, direction
