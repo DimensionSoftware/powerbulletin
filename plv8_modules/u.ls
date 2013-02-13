@@ -81,7 +81,7 @@ export forums = (site-id) ->
   [decorate-forum(f) for f in top-forums(site-id)]
 
 export build-forum-doc = (forum-id) ->
-  site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forum-id])[0].id
+  site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forum-id])[0].site_id
 
   ## XXX: should we have a custom menu routine ?? instead of piggybacking on to forums
   menu = @forums(site-id)

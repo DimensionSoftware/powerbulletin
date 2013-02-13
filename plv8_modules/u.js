@@ -87,7 +87,7 @@
   };
   out$.buildForumDoc = buildForumDoc = function(forumId){
     var siteId, menu, forumDoc;
-    siteId = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forumId])[0].id;
+    siteId = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forumId])[0].site_id;
     menu = this.forums(siteId);
     forumDoc = JSON.stringify({
       forums: [this.forum(forumId)],
