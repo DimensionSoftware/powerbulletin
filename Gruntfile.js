@@ -50,7 +50,7 @@ module.exports = function(grunt) {
 
     watch: {
       procs: {
-        files: ['plv8_modules/*.ls', 'plls-procedure-test.sql'],
+        files: ['plv8_modules/*.ls', 'procedures.sql'],
         tasks: ['procs', 'launch'],
         options: {
           interrupt: true,
