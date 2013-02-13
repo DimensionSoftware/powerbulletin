@@ -22,12 +22,16 @@ require! {
 @mw =
   initialize: (req, res, next) ~>
     domain   = res.locals.site?.domain
-    passport = @passport-for-site[domain]
-    passport.mw-initialize(req, res, next)
+    if passport = @passport-for-site[domain]
+      passport.mw-initialize(req, res, next)
+    else
+      next(404)
   session: (req, res, next) ~>
     domain   = res.locals.site?.domain
-    passport = @passport-for-site[domain]
-    passport.mw-session(req, res, next)
+    if passport = @passport-for-site[domain]
+      passport.mw-session(req, res, next)
+    else
+      next(404)
 
 # XXX - only exported for debugging convenience
 @valid-password = (user, password) ->

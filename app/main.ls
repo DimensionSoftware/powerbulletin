@@ -152,13 +152,12 @@ else
 
   # 404 handler, if not 404, punt
   app.use (err, req, res, next) ~>
-    if proc.env.NODE_ENV is \production
-      err-handler (res) -> res.send html_50x 500
+    if err is 404
+      res.send html_404, 404
+    else if proc.env.NODE_ENV is \production
+      err-handler (res) -> res.send html_50x, 500
     else
-      if err is 404
-        res.send html_404 404
-      else
-        next err
+      next err
 
   # routes
   require! './routes'
