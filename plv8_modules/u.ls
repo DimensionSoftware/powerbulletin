@@ -81,11 +81,17 @@ export forums = (site-id) ->
   [decorate-forum(f) for f in top-forums(site-id)]
 
 export build-forum-doc = (forum-id) ->
-  forum-doc = JSON.stringify {forums: [@forum(forum-id)]}
+  site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forum-id])[0].id
+
+  ## XXX: should we have a custom menu routine ?? instead of piggybacking on to forums
+  menu = @forums(site-id)
+  forum-doc = JSON.stringify {forums: [@forum(forum-id)], menu}
   @put-doc \forum_doc, forum-id, JSON.stringify(forum-doc)
 
 export build-homepage-doc = (site-id) ->
-  homepage-doc = JSON.stringify {forums: @forums(site-id)}
+  forums = @forums(site-id)
+  menu = forums # replace this with something else in the future...
+  homepage-doc = JSON.stringify {forums, menu}
   # XXX: needs to be multi-tennant-ized
   @put-doc \misc, \homepage, JSON.stringify(homepage-doc)
 

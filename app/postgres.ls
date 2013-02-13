@@ -16,7 +16,7 @@ init-proc = (proname) ->
     pdollars = if pargs.length then [1 to pargs.length] else []
     pdollars = ["$#{i}" for i in pdollars].join(',')
 
-    err, res <~ @query "SELECT * FROM #{proname}(#{pdollars})", pargs
+    err, res <~ @query "SELECT #{proname}(#{pdollars})", pargs
     if err then return cb(err)
 
     json = res[0][proname]

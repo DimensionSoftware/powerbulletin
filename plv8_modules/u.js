@@ -86,16 +86,22 @@
     return results$;
   };
   out$.buildForumDoc = buildForumDoc = function(forumId){
-    var forumDoc;
+    var siteId, menu, forumDoc;
+    siteId = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forumId])[0].id;
+    menu = this.forums(siteId);
     forumDoc = JSON.stringify({
-      forums: [this.forum(forumId)]
+      forums: [this.forum(forumId)],
+      menu: menu
     });
     return this.putDoc('forum_doc', forumId, JSON.stringify(forumDoc));
   };
   out$.buildHomepageDoc = buildHomepageDoc = function(siteId){
-    var homepageDoc;
+    var forums, menu, homepageDoc;
+    forums = this.forums(siteId);
+    menu = forums;
     homepageDoc = JSON.stringify({
-      forums: this.forums(siteId)
+      forums: forums,
+      menu: menu
     });
     return this.putDoc('misc', 'homepage', JSON.stringify(homepageDoc));
   };
