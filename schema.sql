@@ -88,8 +88,10 @@ CREATE TRIGGER forums_timestamp BEFORE UPDATE ON forums FOR EACH ROW EXECUTE PRO
 -- post has many child posts
 -- post belongs to user
 -- post belongs to forum
+-- note: thread_id is the topmost parents' id
 CREATE TABLE posts ( 
   id        BIGSERIAL NOT NULL,
+  thread_id BIGINT NOT NULL,
   parent_id BIGINT,
   user_id   BIGINT NOT NULL references users(id),
   forum_id  BIGINT NOT NULL references forums(id),

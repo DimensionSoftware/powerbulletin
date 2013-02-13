@@ -15,15 +15,32 @@ sub-forums = ->
   '''
   plv8.execute sql, arguments
 
-top-posts = ->
+top-posts-recent = ->
   sql = '''
-  SELECT p.*, a.name user_name
+  SELECT
+    p.*,
+    a.name user_name
   FROM posts p, aliases a
   WHERE a.user_id=p.user_id
     AND a.site_id=1
     AND p.parent_id IS NULL
     AND p.forum_id=$1
   ORDER BY created DESC, id DESC
+  '''
+  plv8.execute sql, arguments
+
+top-posts-active = ->
+  sql = '''
+  SELECT
+    p.*,
+    a.name user_name,
+    (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1) sort
+  FROM posts p, aliases a
+  WHERE a.user_id=p.user_id
+    AND a.site_id=1
+    AND p.parent_id IS NULL
+    AND p.forum_id=$1
+  ORDER BY sort
   '''
   plv8.execute sql, arguments
 
@@ -44,7 +61,7 @@ sub-posts-tree = (parent-id) ->
 
 # gets entire list of top posts and inlines all sub-posts to them
 posts = (forum-id) ->
-  [p <<< {posts: sub-posts-tree(p.id)} for p in top-posts(forum-id)]
+  [p <<< {posts: sub-posts-tree(p.id)} for p in top-posts-active(forum-id)]
 
 decorate-forum = (f) ->
   f <<< {posts: posts(f.id), forums: [decorate-forum(sf) for sf in sub-forums(f.id)]}

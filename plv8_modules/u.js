@@ -1,5 +1,5 @@
 (function(){
-  var topForums, subForums, topPosts, subPosts, subPostsTree, posts, decorateForum, doc, putDoc, forum, forums, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this;
+  var topForums, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, posts, decorateForum, doc, putDoc, forum, forums, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this;
   topForums = function(){
     var sql;
     sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id DESC';
@@ -10,9 +10,14 @@
     sql = 'SELECT *\nFROM forums\nWHERE parent_id=$1\nORDER BY created DESC, id DESC';
     return plv8.execute(sql, arguments);
   };
-  topPosts = function(){
+  topPostsRecent = function(){
     var sql;
-    sql = 'SELECT p.*, a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY created DESC, id DESC';
+    sql = 'SELECT\n  p.*,\n  a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY created DESC, id DESC';
+    return plv8.execute(sql, arguments);
+  };
+  topPostsActive = function(){
+    var sql;
+    sql = 'SELECT\n  p.*,\n  a.name user_name,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1) sort\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY sort';
     return plv8.execute(sql, arguments);
   };
   subPosts = function(){
@@ -30,7 +35,7 @@
   };
   posts = function(forumId){
     var i$, ref$, len$, p, results$ = [];
-    for (i$ = 0, len$ = (ref$ = topPosts(forumId)).length; i$ < len$; ++i$) {
+    for (i$ = 0, len$ = (ref$ = topPostsActive(forumId)).length; i$ < len$; ++i$) {
       p = ref$[i$];
       results$.push((p.posts = subPostsTree(p.id), p));
     }

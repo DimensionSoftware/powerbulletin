@@ -8,18 +8,21 @@ CREATE FUNCTION put_doc(type JSON, key JSON, val JSON) RETURNS JSON AS $$
   return require(\u).put-doc type, key, JSON.stringify(val)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+-- THIS IS ONLY FOR TOPLEVEL POSTS
+-- TODO: needs to support nested posts also, and update correct thread-id
 DROP FUNCTION IF EXISTS add_post(post JSON);
 CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
-  plv8.elog NOTICE, 'BATMAN LIVES!!'
   require! <[u validations]>
   errors = validations.post(post)
   success = !errors.length
   if success
     sql = '''
-      INSERT INTO posts (user_id, forum_id, title, body)
-      VALUES ($1, $2, $3, $4)
-      RETURNING id
-      '''
+    INSERT INTO posts (user_id, forum_id, title, body)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id
+    '''
+    sql2 = 'UPDATE posts SET thread_id=$1 WHERE id=$2'
+
     params =
       * post.user_id
       * post.forum_id
@@ -27,6 +30,11 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       * post.body
 
     id = plv8.execute(sql, params)[0].id
+
+    # in the future thread_id may be harder to calculate...
+    # because of nested posts...
+    thread-id = id
+    plv8.execute sql2, [thread-id, id]
 
     # XXX: only works for site-id 1 right now
     u.build-forum-doc(post.forum_id)
@@ -48,18 +56,18 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS find_or_create_user(usr JSON);
 CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
   site-id = 1
-  sel = """
+  sel = '''
   SELECT u.*, a.* FROM users u JOIN aliases a ON a.user_id = u.id WHERE a.name=$1 AND a.site_id=$2;
-  """
+  '''
   sel-params =
     * usr.name
     * site-id
-  ins = """
+  ins = '''
   WITH u AS (
     INSERT INTO users DEFAULT VALUES RETURNING id)
   INSERT INTO aliases (user_id, site_id, name)
-    SELECT u.id, $1::int, $2::varchar FROM u;
-  """
+  SELECT u.id, $1::int, $2::varchar FROM u;
+  '''
   ins-params =
     * site-id
     * usr.name
@@ -83,11 +91,11 @@ CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   """
   auths = plv8.execute(sql, [ usr.name, usr.site_id ])
   make-user = (memo, auth) ->
-    memo.id = auth.id
-    memo.site_id = auth.id
-    memo.name = auth.name
-    memo.auths[auth.type] = JSON.parse(auth.json)
-    memo
+  memo.id = auth.id
+  memo.site_id = auth.id
+  memo.name = auth.name
+  memo.auths[auth.type] = JSON.parse(auth.json)
+  memo
   return auths.reduce make-user, { auths: {} }
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
