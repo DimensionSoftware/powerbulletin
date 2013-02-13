@@ -4,7 +4,7 @@ global.cl = console.log
 global.cw = console.log
 
 global <<< require \prelude-ls
-global <<< require './helpers'
 
-<- pg.init
-global.procs = pg.procs # FIXME should work--right?
+global.db = -> pg.procs
+
+pg.init!
