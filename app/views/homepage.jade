@@ -2,8 +2,8 @@
 
 mixin forum(f, i)
   img.bg(id="forum_bg_#{f.id}", src="#{cache_url}/images/bg_#{f.id}.jpg")
-  a(name="forum_#{f.id}") //- hashtag anchor
   .forum(id="forum_#{f.id}", class="#{f.theme || ''} #{i%2 ? 'odd' : 'even'}")
+    a(name="forum_#{f.id}") //- hashtag anchor
     .header
       .description
         a.mutant(href=f.slug)= f.description
