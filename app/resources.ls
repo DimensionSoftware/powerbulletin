@@ -1,24 +1,7 @@
 require! {
-  passport
   pg: './postgres'
 }
 
-db = pg.procs
-
-Strategy = require('passport-local').Strategy
-
-passport.use(new Strategy (user, password, cb) ->
-  sel = """
-  SELECT u.*, a.* FROM user u JOIN aliases a ON a.user_id = u.id WHERE a.name=$1 AND a.site_id=$2;
-  """
-  ins = """
-  BEGIN;
-  INSERT INTO user (updated) VALUES (NOW()) RETURNING id;
-  COMMIT;
-  """
-  db.find-or-create sel sel-params ins ins-params
-  cb null user
-  )
 
 @users =
   create : (req, res) ->
@@ -33,10 +16,11 @@ passport.use(new Strategy (user, password, cb) ->
     res.render \add-post
   new     : null
   create  : (req, res, next) ->
+    db = pg.procs
     post = req.body
     post.user_id  = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
     post.forum_id = 1 # XXX/FIXME: in the future, this should be passed in
-    err, ap-res <- db.add-post JSON.stringify(post)
+    err, ap-res <- db.add-post post
     if err then return next err
     res.json ap-res
   show    : null

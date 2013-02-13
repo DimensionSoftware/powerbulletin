@@ -10,7 +10,7 @@ global <<< require './helpers' # pull helpers (common) into global (play nice :)
 
 # <API RESOURCES>
 # ---------
-app.resource \post  resources.post
+app.resource 'resources/posts',  resources.post
 
 # <PAGE HANDLERS & MISC.>
 # ---------
