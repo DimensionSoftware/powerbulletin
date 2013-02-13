@@ -10,6 +10,7 @@ require! {
   \express-validator
   stylus
   fluidity
+  './auth'
   pg: './postgres'
 }
 global <<< require \prelude-ls
@@ -128,6 +129,8 @@ else
     a.use mw.rate-limit
     a.use express.cookie-parser!
     a.use express.cookie-session {secret:cvars.secret}
+    a.use auth.mw.initialize
+    a.use auth.mw.session
     a.set 'view engine' \jade
     a.set 'views' 'app/views'
     a.enable 'json callback'

@@ -26,6 +26,10 @@ common-css = [
 
 app.get '/hello' handlers.hello
 
+# local auth
+app.post '/auth/login' handlers.login
+app.get '/auth/logout' handlers.logout
+
 app.get '/',
   mw.add-js(common-js),
   mw.add-css(common-css),

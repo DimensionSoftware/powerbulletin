@@ -6,6 +6,7 @@ require! {
   fluidity
   __: \lodash
   pg: './postgres'
+  auth: './auth'
 }
 
 global <<< require './helpers'
@@ -14,6 +15,29 @@ db = pg.procs
 
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}!"
+
+@login = (req, res, next) ->
+  domain   = res.locals.site.domain
+  passport = auth.passport-for-site[domain]
+  if passport
+    console.warn "domain", domain
+
+    auth-response = (err, user, info) ->
+      if err then return next(err)
+      if not user then return res.json { success: false }
+      req.login user, (err) ->
+        if err then return next(err)
+        res.json { success: true }
+
+    passport.authenticate('local', auth-response)(req, res, next)
+  else
+    console.warn "no passport for #{domain}"
+    res.send "500", 500
+
+@logout = (req, res, next) ->
+  redirect-url = req.param('redirect-url') || '/'
+  req.logout()
+  req.redirect redirect-url
 
 @homepage = (req, res, next) ->
   err, doc <- db.doc \misc, \homepage
