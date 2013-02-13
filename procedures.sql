@@ -17,8 +17,8 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   success = !errors.length
   if success
     sql = '''
-    INSERT INTO posts (user_id, forum_id, title, body)
-    VALUES ($1, $2, $3, $4)
+    INSERT INTO posts (thread_id, user_id, forum_id, title, body)
+    VALUES (-1, $1, $2, $3, $4)
     RETURNING id
     '''
     sql2 = 'UPDATE posts SET thread_id=$1 WHERE id=$2'
