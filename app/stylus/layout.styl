@@ -4,10 +4,11 @@
 // XXX decoration & embellishments belong in the theme.styl
 // XXX eventually each forum will have its own theme.{styl,css}
 
-header-height = 50px
-forum-header-height = 70px
-footer-height = 30px
-left-content-width = 200px
+header-height       = 50px
+forum-header-height = 0
+footer-height       = 32px
+left-content-width  = 200px
+
 grid = 10px
 
 //{{{Mutant States
@@ -30,8 +31,8 @@ html.forum
     display block
   .left-chrome
     display none
-  #main_content
-    padding forum-header-height 0 0 (left-content-width / 2)!important
+//  #main_content
+//    padding forum-header-height 0 0 (left-content-width / 2)!important
 //}}}
 
 section
@@ -55,6 +56,9 @@ body.expanded header
     .row
       line-height 30px!important
       font-size 15px!important
+    .row:hover
+      .submenu
+        top 30px
 body.scrolled
   header
     height 30px
@@ -62,7 +66,7 @@ body.scrolled
       .menu
         .row:hover
           .submenu
-            top 34px
+            top 33px
         .row
           line-height 30px
           font-size 15px
@@ -152,6 +156,7 @@ img.bg.active
 header
   position fixed
   height header-height
+  top 0
   z-index 7
   .close
     display none
@@ -163,12 +168,12 @@ header
       display inline-block
       position absolute
       bottom 0
-      .row:hover
+      .row.active, .row:hover
         z-index 7
         .submenu
-          visibility visible
-          top 51px
-          transition top .1s ease-out .5s
+          opacity 1
+          top 50px
+          transition top .15s ease-out .5s, opacity .4s ease-out .5s
       .row
         cursor pointer
         display inline-block
@@ -178,13 +183,19 @@ header
           position relative
           z-index 10
         .submenu
-          z-index 9
+          z-index 51
           top -500px
-          visibility hidden
-          margin 0 0 0 2px
+          opacity 0
           position absolute
+          padding 0
+          margin 0
+          .row:first-child
+            padding-top (grid/2)
+          .row:last-child
+            padding-bottom (grid/2)
           .row
             display block
+            text-indent (grid * 2)
     .search
       top 13px
       right 12px
@@ -210,6 +221,8 @@ header
     overflow hidden
     height 20px
     text-transform capitalize
+  .create
+    margin-top (grid * 2)
 
 section.left-chrome
   z-index 7
@@ -221,7 +234,7 @@ section.left-chrome
     top 35px
     left 0
     width 140px
-    height 290px
+    height 140px
     .photo
       overflow hidden
       margin-bottom 5px
@@ -256,7 +269,7 @@ section.left-chrome
       overflow hidden
       cursor pointer
       #sort
-        padding 23px 10px 90px 10px
+        padding (grid*2) (grid) (grid*9) (grid)
         text-align center
         overflow-y scroll
         height 1px
@@ -297,7 +310,7 @@ section.left-chrome
     position relative
     clear both
     min-height 650px
-    margin-left 180px
+    padding-left 180px
     .container
       z-index 6
     .header::before
@@ -411,7 +424,7 @@ footer
     #main_content.container
       margin 0 auto 0 grid!important
       .forum
-        margin-left 0!important
+        padding-left 0!important
   
 @media screen and (max-width: 500px)
   header
@@ -424,7 +437,7 @@ footer
       padding 25px 15px!important
       .forum
         margin-bottom grid!important
-        margin-left 0!important
+        padding-left 0!important
   body.scrolled
     .container
       margin-left 0!important

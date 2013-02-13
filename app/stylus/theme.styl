@@ -165,6 +165,8 @@ header
           color #888
     .menu
       padding 0
+      .row:hover, .row.active
+        background-image linear-gradient(bottom, #fff 10px, #ffe0c0)!important
       > .row
         .title.active:hover
           background-image linear-gradient(bottom, #fff 10px, #ffe0c0)
@@ -203,14 +205,28 @@ header
           border-right 1px solid #888
           padding 10px 15px
           border-bottom 2px solid #888
+          border-top 1px solid #bbb
           border-bottom-right-radius 10px
           border-bottom-left-radius 10px
-          background-color #000
-          color #fff
+          background-color #fff
+          color #333
+          min-width 250px
           .row:last-child
             border-bottom 1px solid transparent
+            border-bottom-right-radius 10px
+            border-bottom-left-radius 10px
+          .row:hover
+            background-image linear-gradient(bottom, #fff 10px, #eee)
+            border-bottom 1px solid #ccc
+            border-left 1px solid highlight-color2
+            a
+              color #222
           .row
-            border-bottom 1px solid #333
+            border-left 1px solid transparent
+            border-bottom 1px solid #eee
+            a
+              color #444
+              text-decoration none
     .search::before
       border-left 7px solid highlight-color2
     .search

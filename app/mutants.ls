@@ -41,18 +41,18 @@ flip-background = (w, cur, direction='down') ->
       set-timeout (->
         # sticky forum headers
         $ = window.$
-        $ '.forum .header' .waypoint \sticky { offset: -100 }
+        $ '.forum .header' .waypoint \sticky { offset: -70 }
 
         # forum switches
         $ '.forum' .waypoint {
-          offset  : '33%',
+          offset  : '25%',
           handler : (direction) ->
             e   = $ this
             eid = e.attr \id
 
             # handle menu active
             id = if direction is \down then eid else
-              $ '#'+eid .prevAll '.forum:first' .attr \id
+              $ '#'+eid .prev-all '.forum:first' .attr \id
             return unless id # guard
             $ 'header .menu' .find '.active' .remove-class \active # remove prev
             cur = $ 'header .menu'

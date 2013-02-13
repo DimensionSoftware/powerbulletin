@@ -1,14 +1,14 @@
 
 mixin forum(f, i)
-  h4.title
-    a.mutant(href=f.slug)= f.title
+  //-h4.title
+  //-  a.mutant(href=f.slug)= f.title
   if f.forums
     each sf,ii in f.forums
-      mixin subforum(sf, f, ii)
+      mixin subforum(f, sf, ii)
 
-mixin subforum(sf, i)
+mixin subforum(f, sf, i)
   .subforum(id="subforum_#{sf.id}", class=(i % 2) ? 'odd' : 'even')
-    span.title= sf.title
+    a.title(href="#{sf.slug}")= sf.title
 
 //- main
 //- ---------
@@ -16,5 +16,7 @@ if forums
   .forum(id="forum_#{active.id}", class="#{active.theme || ''}")
     each f,i in forums
       mixin forum(f, i)
+    .create
+      a(class='button onclick-add-post-dialog', data-fid=33) Create Thread
 
 //- vim:fdm=marker

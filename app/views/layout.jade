@@ -49,7 +49,8 @@ html
               menu.submenu
                 if f.forums
                   each sf,i in f.forums
-                    li.row(href="#{sf.slug}")= sf.title
+                    li.row
+                      a(href="#{sf.slug}")= sf.title
         .search
           input#query.query(type='text', placeholder='Search', autocomplete='off')
         .advanced
@@ -68,10 +69,10 @@ html
       //- javascript (other than calculating the fid)
       //- TODO move this into posts :hover tools }}}
       .user-profile
-        .photo
-          img#user-photo(src="#{cache_url}/images/profile.jpg")
-        div
-          a(class='button onclick-add-post-dialog', data-fid=33) Post
+        //-.photo
+        //-  img#user-photo(src="#{cache_url}/images/profile.jpg")
+        //-div
+        //-  a(class='button onclick-add-post-dialog', data-fid=33) Post
         .sort
           .indicator
           ul#sort
