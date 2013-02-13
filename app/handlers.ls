@@ -37,7 +37,7 @@ db = pg.procs
 @logout = (req, res, next) ->
   redirect-url = req.param('redirect-url') || '/'
   req.logout()
-  req.redirect redirect-url
+  res.redirect redirect-url
 
 @homepage = (req, res, next) ->
   err, doc <- db.doc \misc, \homepage

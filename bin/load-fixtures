@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
 #for f in $(ls fixtures/*.csv) ; do
-for f in fixtures/{users,sites,aliases,forums,posts}.csv; do
+for f in fixtures/{users,sites,aliases,auths,forums,posts}.csv; do
   table=`basename $f .csv`
-  bin/psql -d pb -c "COPY $table FROM '`readlink -f $f`' DELIMITERS ',' CSV;"
+  bin/psql -d pb -c "COPY $table FROM '`readlink -f $f`' DELIMITERS ',' CSV ESCAPE '\\';"
   bin/psql -d pb -c '\d' | grep "${table}_id_seq" > /dev/null &&
     bin/psql -d pb -c "SELECT setval('${table}_id_seq', (SELECT MAX(id) FROM $table));"
 done
