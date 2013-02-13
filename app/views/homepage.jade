@@ -5,7 +5,8 @@ mixin forum(f, i)
   a(name="forum_#{f.id}") //- hashtag anchor
   .forum(id="forum_#{f.id}", class="#{f.theme || ''} #{i%2 ? 'odd' : 'even'}")
     .header
-      .description= f.description
+      .description
+        a.mutant(href=f.slug)= f.description
     .container
       if f.posts
         each t,ii in f.posts

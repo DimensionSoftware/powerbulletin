@@ -119,6 +119,9 @@ else
       colors: true
     })
 
+  app.use express.body-parser!
+  app.use express-validator
+
   for a in [app] # apply app defaults
     a.use mw.multi-domain
     a.use mw.ip-lookup
@@ -143,8 +146,6 @@ else
       console.warn 'url'         , req.headers.host + req.url
       proc.exit 1
 
-  app.use express.body-parser!
-  app.use express-validator
 
   # 404 handler, if not 404, punt
   app.use (err, req, res, next) ~>

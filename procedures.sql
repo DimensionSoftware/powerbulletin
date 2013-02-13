@@ -10,6 +10,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS add_post(post JSON);
 CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
+  plv8.elog NOTICE, 'BATMAN LIVES!!'
   require! <[u validations]>
   errors = validations.post(post)
   success = !errors.length
