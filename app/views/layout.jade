@@ -49,7 +49,7 @@ html
               menu.submenu
                 if f.forums
                   each sf,i in f.forums
-                    li.row(href="#{f.slug}")= f.title
+                    li.row(href="#{sf.slug}")= sf.title
         .search
           input#query.query(type='text', placeholder='Search', autocomplete='off')
         .advanced
