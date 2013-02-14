@@ -1,4 +1,4 @@
-
+#{{{ Common
 layout-static = (w, mutator) ->
   # indicate current
   w.marshal \mutator, mutator     # js
@@ -21,7 +21,7 @@ flip-background = (w, cur, direction='down') ->
       next.add-class \active # ... and switch!
       w.bg-anim = 0
     ), 100
-
+#}}}
 
 @homepage =
   static:
@@ -31,6 +31,7 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-load:
     (window, next) ->
+      # reflow masonry content
       window.$ '.forum .container' .masonry(
         item-selector: '.post'
         is-animated:   true
@@ -92,8 +93,7 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-mutate:
     (window, next) ->
-      #window.awesome-scroll-to \body 300
-      window.scroll-to 0  0
+      window.scroll-to-top!
       window.s
       next!
 

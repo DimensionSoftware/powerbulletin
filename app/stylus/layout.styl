@@ -15,6 +15,7 @@ grid = 10px
 html.homepage
   .left-content
     display none
+  
 html.forum
   body.scrolled
     #left_content.container
@@ -56,9 +57,6 @@ body.expanded header
     .row
       line-height 30px!important
       font-size 16px!important
-    .row:hover
-      .submenu
-        top 30px
 body.scrolled
   header
     height 30px
@@ -172,7 +170,7 @@ header
         z-index 7
         .submenu
           opacity 1
-          top 50px
+          top 53px
           transition top .15s ease-out .5s, opacity .4s ease-out .5s
           .row:hover
             text-indent 19px
@@ -238,7 +236,7 @@ section.left-chrome
     top 35px
     left 0
     width 140px
-    height 140px
+    height 85px
     .photo
       overflow hidden
       margin-bottom 5px
@@ -268,12 +266,11 @@ section.left-chrome
       border-bottom-color transparent
     .sort
       position relative
-      margin-top grid
-      height 117px
+      height 75px
       overflow hidden
       cursor pointer
       #sort
-        padding (grid*2) (grid) (grid*9) (grid)
+        padding (grid) (grid) (grid*7) (grid)
         text-align center
         overflow-y scroll
         height 1px
@@ -283,9 +280,9 @@ section.left-chrome
           font-size .8em
           letter-spacing 1px
           padding 0 0 1px 0
-          margin 0 0 10px 0
+          margin 0 0 (grid / 2) 0
       .indicator
-        top 33px
+        top 22px
         position absolute
         left 20px
         width 100px
@@ -316,7 +313,7 @@ section.left-chrome
     position relative
     clear both
     min-height 650px
-    padding-left 180px
+    padding-left left-content-width
     .container
       z-index 6
     .header.stuck::before

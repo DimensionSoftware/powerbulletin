@@ -39,6 +39,12 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
 
 #}}}
 #{{{ Scrolling behaviors
+window.scroll-to-top = ->
+  return if ($ window).scroll-top! is 0 # guard
+  $e = $ 'html,body'
+  <- $e .animate { scroll-top:$ \body .offset!top }, 140
+  <- $e .animate { scroll-top:$ \body .offset!top+threshold }, 110
+  <- $e .animate { scroll-top:$ \body .offset!top }, 75
 
 # indicate to stylus that view scrolled
 has-scrolled = ->
@@ -78,9 +84,7 @@ $d.on \click '.scroll-to' ->
 # attach scroll-to-top's
 $d.on \mousedown '.scroll-to-top' ->
   $ this .attr \title 'Scroll to Top!'
-  <- $ 'html,body' .animate { scroll-top:$ \body .offset!top }, 140
-  <- $ 'html,body' .animate { scroll-top:$ \body .offset!top+threshold }, 110
-  <- $ 'html,body' .animate { scroll-top:$ \body .offset!top }, 75
+  window.scroll-to-top!
   false
 #}}}
 

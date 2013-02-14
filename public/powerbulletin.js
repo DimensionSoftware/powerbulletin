@@ -627,7 +627,7 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
       return next();
     },
     onMutate: function(window, next){
-      window.scrollTo(0, 0);
+      window.scrollToTop();
       window.s;
       return next();
     }
@@ -703,6 +703,24 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
       });
       return false;
     });
+    window.scrollToTop = function(){
+      var $e;
+      if ($(window).scrollTop() === 0) {
+        return;
+      }
+      $e = $('html,body');
+      return $e.animate({
+        scrollTop: $('body').offset().top
+      }, 140, function(){
+        return $e.animate({
+          scrollTop: $('body').offset().top + threshold
+        }, 110, function(){
+          return $e.animate({
+            scrollTop: $('body').offset().top
+          }, 75, function(){});
+        });
+      });
+    };
     hasScrolled = function(){
       var st;
       st = $w.scrollTop();
@@ -750,19 +768,8 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
     });
     $d.on('mousedown', '.scroll-to-top', function(){
       $(this).attr('title', 'Scroll to Top!');
-      return $('html,body').animate({
-        scrollTop: $('body').offset().top
-      }, 140, function(){
-        return $('html,body').animate({
-          scrollTop: $('body').offset().top + threshold
-        }, 110, function(){
-          return $('html,body').animate({
-            scrollTop: $('body').offset().top
-          }, 75, function(){
-            return false;
-          });
-        });
-      });
+      window.scrollToTop();
+      return false;
     });
     $d.on('click', 'header', function(e){
       if (e.target.className.indexOf('toggler') > -1) {

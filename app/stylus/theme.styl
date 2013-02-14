@@ -213,6 +213,8 @@ header
             border-bottom 1px solid transparent
             border-bottom-right-radius 10px
             border-bottom-left-radius 10px
+          .row:last-child:hover
+            border-bottom 1px solid #aaa
           .row:hover
             background-image linear-gradient(bottom, #fff 10px, #eee)
             border-bottom 1px solid #ccc
@@ -318,6 +320,9 @@ section.left-chrome
       position absolute
       opacity 0
 
+  .forum:first-child
+    .header::before
+      top 50px
   .forum
     margin-bottom (grid * 2)
     .header.stuck
