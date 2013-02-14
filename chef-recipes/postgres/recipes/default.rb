@@ -32,6 +32,7 @@ unless File.file? '/usr/bin/psql'
     EOH
   end
 
+  package 'git'
   package 'libv8-dev'
   bash "installing plv8" do
     cwd '/tmp'
