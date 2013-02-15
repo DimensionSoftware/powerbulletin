@@ -4,7 +4,8 @@ require! {
   './resources'
   './handlers'
   mmw: 'mutant/middleware'
-  mw: './middleware'
+  mw: './middleware',
+  pg: './postgres'
 }
 global <<< require './helpers' # pull helpers (common) into global (play nice :)
 
@@ -54,9 +55,21 @@ app.get '/dynamic/css/:file' handlers.stylus
 app.get '/favicon.ico', (req, res, next) ->
   res.send '404', 404
 
+app.get '/:forum/most-active',
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.forum
+
 app.get '/:forum',
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   handlers.forum
 
+if process.env.NODE_ENV != 'production'
+  app.get '/debug/docs/:type/:key', (req, res, next) ->
+    db = pg.procs
+    err, d <- db.doc req.params.type, req.params.key
+    if err then return next(err)
+    res.json d
