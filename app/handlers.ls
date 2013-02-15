@@ -39,8 +39,13 @@ db = pg.procs
   req.logout()
   res.redirect redirect-url
 
+@forum-most-active = (req, res, next) ->
+  # nothing
+
 @homepage = (req, res, next) ->
-  err, doc <- db.doc \misc, \homepage
+  # TODO: 1 should be replaced with the real site-id here
+  # TODO: need to allow ui to change between homepage_recent and homepage_active
+  err, doc <- db.doc \homepage_recent, 1
   if err then return next(err)
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc

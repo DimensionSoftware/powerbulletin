@@ -5,7 +5,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS put_doc(type JSON, key JSON, val JSON);
 CREATE FUNCTION put_doc(type JSON, key JSON, val JSON) RETURNS JSON AS $$
-  return require(\u).put-doc type, key, JSON.stringify(val)
+  return require(\u).put-doc type, key, val
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- THIS IS ONLY FOR TOPLEVEL POSTS
@@ -139,3 +139,12 @@ CREATE FUNCTION build_all_docs() RETURNS JSON AS $$
 
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS test();
+CREATE FUNCTION test() RETURNS JSON AS $$
+  require! <[u]>
+  a = {a:1}
+  return true
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+
