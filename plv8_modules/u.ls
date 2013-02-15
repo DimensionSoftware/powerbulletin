@@ -81,13 +81,14 @@ export doc = ->
   else
     null
 
-export put-doc = ->
+export put-doc = (...args) ->
   insert-sql =
     'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)'
   update-sql =
     'UPDATE docs SET json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)'
 
-  args = Array.prototype.slice.call(arguments)
+  args[2] = JSON.stringify args[2] if args[2]
+
   try
     plv8.subtransaction ->
       plv8.execute insert-sql, args
@@ -111,13 +112,17 @@ export build-forum-doc = (forum-id) ->
 
   ## XXX: should we have a custom menu routine ?? instead of piggybacking on to forums
   menu = forums-tree(site-id, top-posts-recent)
-  forum-doc = JSON.stringify {forums: [forum-tree(forum-id, top-posts-recent)], menu}
+  forum-doc = {forums: [forum-tree(forum-id, top-posts-recent)], menu}
   @put-doc \forum_doc, forum-id, JSON.stringify(forum-doc)
 
 export build-homepage-doc = (site-id) ->
-  forums = forums-tree(site-id, top-posts-recent)
-  menu = forums # replace this with something else in the future...
-  homepage-doc = JSON.stringify {forums, menu}
-  # XXX: needs to be multi-tennant-ized
-  @put-doc \misc, \homepage, JSON.stringify(homepage-doc)
+  build-homepage-doc-for = (doctype, top-posts-fun) ~>
+    forums = forums-tree(site-id, top-posts-fun)
+    menu = forums # replace this with something else in the future...
+    homepage = {forums, menu}
+    @put-doc doctype, site-id, JSON.stringify(homepage)
+
+  build-homepage-doc-for \homepage_recent, top-posts-recent
+  build-homepage-doc-for \homepage_active, top-posts-active
+  true
 

@@ -76,10 +76,13 @@
     }
   };
   out$.putDoc = putDoc = function(){
-    var insertSql, updateSql, args, e;
+    var args, insertSql, updateSql, e;
+    args = slice$.call(arguments);
     insertSql = 'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)';
     updateSql = 'UPDATE docs SET json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)';
-    args = Array.prototype.slice.call(arguments);
+    if (args[2]) {
+      args[2] = JSON.stringify(args[2]);
+    }
     try {
       plv8.subtransaction(function(){
         return plv8.execute(insertSql, args);
@@ -109,21 +112,27 @@
     var siteId, menu, forumDoc;
     siteId = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forumId])[0].site_id;
     menu = forumsTree(siteId, topPostsRecent);
-    forumDoc = JSON.stringify({
+    forumDoc = {
       forums: [forumTree(forumId, topPostsRecent)],
       menu: menu
-    });
+    };
     return this.putDoc('forum_doc', forumId, JSON.stringify(forumDoc));
   };
   out$.buildHomepageDoc = buildHomepageDoc = function(siteId){
-    var forums, menu, homepageDoc;
-    forums = forumsTree(siteId, topPostsRecent);
-    menu = forums;
-    homepageDoc = JSON.stringify({
-      forums: forums,
-      menu: menu
-    });
-    return this.putDoc('misc', 'homepage', JSON.stringify(homepageDoc));
+    var buildHomepageDocFor, this$ = this;
+    buildHomepageDocFor = function(doctype, topPostsFun){
+      var forums, menu, homepage;
+      forums = forumsTree(siteId, topPostsFun);
+      menu = forums;
+      homepage = {
+        forums: forums,
+        menu: menu
+      };
+      return this$.putDoc(doctype, siteId, JSON.stringify(homepage));
+    };
+    buildHomepageDocFor('homepage_recent', topPostsRecent);
+    buildHomepageDocFor('homepage_active', topPostsActive);
+    return true;
   };
   function import$(obj, src){
     var own = {}.hasOwnProperty;
