@@ -1,5 +1,5 @@
 (function(){
-  var merge, topForums, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forum, forums, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
+  var merge, topForums, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
     args = slice$.call(arguments);
@@ -43,25 +43,25 @@
     }
     return results$;
   };
-  postsTree = function(forumId){
-    var i$, ref$, len$, p, results$ = [];
-    for (i$ = 0, len$ = (ref$ = topPostsActive(forumId)).length; i$ < len$; ++i$) {
-      p = ref$[i$];
+  postsTree = function(forumId, topPosts){
+    var i$, len$, p, results$ = [];
+    for (i$ = 0, len$ = topPosts.length; i$ < len$; ++i$) {
+      p = topPosts[i$];
       results$.push(merge(p, {
         posts: subPostsTree(p.id)
       }));
     }
     return results$;
   };
-  decorateForum = function(f){
+  decorateForum = function(f, topPostsFun){
     var sf;
     return merge(f, {
-      posts: postsTree(f.id),
+      posts: postsTree(f.id, topPostsFun(f.id)),
       forums: (function(){
         var i$, ref$, len$, results$ = [];
         for (i$ = 0, len$ = (ref$ = subForums(f.id)).length; i$ < len$; ++i$) {
           sf = ref$[i$];
-          results$.push(decorateForum(sf));
+          results$.push(decorateForum(sf, topPostsFun));
         }
         return results$;
       }())
@@ -90,37 +90,37 @@
     }
     return true;
   };
-  out$.forum = forum = function(forumId){
+  forumTree = function(forumId, topPostsFun){
     var sql, f;
     sql = 'SELECT * FROM forums WHERE id=$1 LIMIT 1';
     if (f = plv8.execute(sql, [forumId])[0]) {
-      return decorateForum(f);
+      return decorateForum(f, topPostsFun);
     }
   };
-  out$.forums = forums = function(siteId){
+  forumsTree = function(siteId, topPostsFun){
     var i$, ref$, len$, f, results$ = [];
     for (i$ = 0, len$ = (ref$ = topForums(siteId)).length; i$ < len$; ++i$) {
       f = ref$[i$];
-      results$.push(decorateForum(f));
+      results$.push(decorateForum(f, topPostsFun));
     }
     return results$;
   };
   out$.buildForumDoc = buildForumDoc = function(forumId){
     var siteId, menu, forumDoc;
     siteId = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forumId])[0].site_id;
-    menu = this.forums(siteId);
+    menu = forumsTree(siteId, topPostsRecent);
     forumDoc = JSON.stringify({
-      forums: [this.forum(forumId)],
+      forums: [forumTree(forumId, topPostsRecent)],
       menu: menu
     });
     return this.putDoc('forum_doc', forumId, JSON.stringify(forumDoc));
   };
   out$.buildHomepageDoc = buildHomepageDoc = function(siteId){
     var forums, menu, homepageDoc;
-    forums = this.forums(siteId);
-    menu = forums;
+    forums = forumsTree(siteId, topPostsRecent);
+    menu = forumss;
     homepageDoc = JSON.stringify({
-      forums: forums,
+      forums: forumss,
       menu: menu
     });
     return this.putDoc('misc', 'homepage', JSON.stringify(homepageDoc));

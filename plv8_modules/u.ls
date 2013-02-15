@@ -69,11 +69,11 @@ sub-posts-tree = (parent-id) ->
   [merge(p, {posts: sub-posts-tree(p.id)}) for p in sub-posts(parent-id)]
 
 # gets entire list of top posts and inlines all sub-posts to them
-posts-tree = (forum-id) ->
-  [merge(p, {posts: sub-posts-tree(p.id)}) for p in top-posts-active(forum-id)]
+posts-tree = (forum-id, top-posts) ->
+  [merge(p, {posts: sub-posts-tree(p.id)}) for p in top-posts]
 
-decorate-forum = (f) ->
-  merge f, {posts: posts-tree(f.id), forums: [decorate-forum(sf) for sf in sub-forums(f.id)]}
+decorate-forum = (f, top-posts-fun) ->
+  merge f, {posts: posts-tree(f.id, top-posts-fun(f.id)), forums: [decorate-forum(sf, top-posts-fun) for sf in sub-forums(f.id)]}
 
 export doc = ->
   if res = plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0]
@@ -97,25 +97,25 @@ export put-doc = ->
   true # rval
 
 # single forum
-export forum = (forum-id) ->
+forum-tree = (forum-id, top-posts-fun) ->
   sql = 'SELECT * FROM forums WHERE id=$1 LIMIT 1'
   if f = plv8.execute(sql, [forum-id])[0]
-    decorate-forum(f)
+    decorate-forum(f, top-posts-fun)
 
 # all forums for site
-export forums = (site-id) ->
-  [decorate-forum(f) for f in top-forums(site-id)]
+forums-tree = (site-id, top-posts-fun) ->
+  [decorate-forum(f, top-posts-fun) for f in top-forums(site-id)]
 
 export build-forum-doc = (forum-id) ->
   site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forum-id])[0].site_id
 
   ## XXX: should we have a custom menu routine ?? instead of piggybacking on to forums
-  menu = @forums(site-id)
-  forum-doc = JSON.stringify {forums: [@forum(forum-id)], menu}
+  menu = forums-tree(site-id, top-posts-recent)
+  forum-doc = JSON.stringify {forums: [forum-tree(forum-id, top-posts-recent)], menu}
   @put-doc \forum_doc, forum-id, JSON.stringify(forum-doc)
 
 export build-homepage-doc = (site-id) ->
-  forums = @forums(site-id)
+  forums = forums-tree(site-id, top-posts-recent)
   menu = forums # replace this with something else in the future...
   homepage-doc = JSON.stringify {forums, menu}
   # XXX: needs to be multi-tennant-ized
