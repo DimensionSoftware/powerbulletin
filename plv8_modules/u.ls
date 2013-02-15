@@ -1,8 +1,7 @@
 ## BEG PURE FUNCTIONS ##
 
 # will not mutate operand (similar to hashish.merge)
-export merge = merge = ->
-  args = Array.prototype.slice.call arguments
+export merge = merge = (...args) ->
   r = (rval, hval) -> rval <<< hval
   args.reduce r, {}
 

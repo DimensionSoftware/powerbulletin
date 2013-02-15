@@ -1,8 +1,8 @@
 (function(){
-  var merge, topForums, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forum, forums, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this;
+  var merge, topForums, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forum, forums, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
-    args = Array.prototype.slice.call(arguments);
+    args = slice$.call(arguments);
     r = function(rval, hval){
       return import$(rval, hval);
     };
