@@ -73,7 +73,7 @@ body.scrolled
     .user-profile
       transition left .5s ease-out
   #left_content.container
-    padding-top (grid * 4)
+    padding-top (grid * 5)
     transition padding-top .4s ease-out
   #main_content.container
     .forum.dark
@@ -141,6 +141,7 @@ a.mutant:hover
 header
   background-color rgba(0,0,0,0.1)
   border-top 2px solid #000
+  border-bottom 1px solid #ddd
   color #ddd
   .container
     .logo
@@ -190,7 +191,7 @@ header
         .title
           display inline-block
           text-transform capitalize
-          box-shadow 1px 0 0 #fafafa inset
+          box-shadow 1px 0 0 #fafafa inset,0 1px 0px 0px #aaa
           text-decoration none
           padding 0 19px
           border-top 3px solid #444
@@ -262,8 +263,8 @@ header
 //}}}
 //{{{ Left side
 #left_content.container
-  background-color rgba(0,0,0,.2)
-  padding grid
+  //background-color rgba(0,0,0,.2)
+  padding (grid*2) grid grid grid
   .title
     padding 2px 7px
     letter-spacing -1px
@@ -278,7 +279,7 @@ header
 
 section.left-chrome
   .user-profile:hover
-    border 1px solid #333
+    border 1px solid #777
     .arrow
        //border-left-color rgba(255,255,255,.65)
        border-left-color #eee
@@ -546,7 +547,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   color #fff
   font-size 1.1em
   font-weight 600
-  padding 3px 12px
+  padding 6px 15px
   text-align center
 //}}}
 
