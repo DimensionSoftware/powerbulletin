@@ -32,6 +32,7 @@ app.post '/auth/login' handlers.login
 app.get '/auth/logout' handlers.logout
 
 app.get '/',
+  mw.geo,
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
