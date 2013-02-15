@@ -118,9 +118,9 @@
   out$.buildHomepageDoc = buildHomepageDoc = function(siteId){
     var forums, menu, homepageDoc;
     forums = forumsTree(siteId, topPostsRecent);
-    menu = forumss;
+    menu = forums;
     homepageDoc = JSON.stringify({
-      forums: forumss,
+      forums: forums,
       menu: menu
     });
     return this.putDoc('misc', 'homepage', JSON.stringify(homepageDoc));
