@@ -1,5 +1,6 @@
 require! {
   \fs
+  \geoip
   pg: './postgres'
 }
 
@@ -23,6 +24,43 @@ require! {
     or req.headers['client-ip']
     or req.headers['x-forwarded-for']
     or 'localhost'
+  next!
+
+@geo = (req, res, next) ->
+  # try specific, passed-in client position for request
+  lat = req.params.lat
+  lng = req.params.lng
+  if lng and lat # use!
+    geo =
+      longitude: lng
+      latitude:  lat
+    res.locals.geo = geo
+    return next!
+
+  # try cookie'd request
+  lat = req.cookies['lat']
+  lng = req.cookies['lng']
+  if lng and lat # use!
+    geo =
+      longitude: lng
+      latitude:  lat
+    res.locals.geo = geo
+    return next!
+
+  # TODO use logged-in user's zipcode third
+
+  # use maxmind if nothing else is available
+  city = new geoip.City(cvars.maxmind)
+  if not res.locals.remote-ip # set it from headers
+    res.locals.remote_ip = req.headers['x-real-client-ip']
+  res.locals.geo =
+    city.lookup-sync res.locals.remote-ip
+
+  # finally, default
+  def = res.locals.geo or {}
+  unless def?.latitude  then def.latitude  = 0
+  unless def?.longitude then def.longitude = 0
+  res.locals.geo = def
   next!
 
 # add additional js & css to any route (through layout)
