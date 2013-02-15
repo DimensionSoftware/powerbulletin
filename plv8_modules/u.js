@@ -1,5 +1,13 @@
 (function(){
-  var topForums, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, posts, decorateForum, doc, putDoc, forum, forums, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this;
+  var merge, topForums, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forum, forums, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this;
+  out$.merge = merge = function(){
+    var args, r;
+    args = Array.prototype.slice.call(arguments);
+    r = function(rval, hval){
+      return import$(rval, hval);
+    };
+    return args.reduce(r, {});
+  };
   topForums = function(){
     var sql;
     sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id DESC';
@@ -33,7 +41,7 @@
     }
     return results$;
   };
-  posts = function(forumId){
+  postsTree = function(forumId){
     var i$, ref$, len$, p, results$ = [];
     for (i$ = 0, len$ = (ref$ = topPostsActive(forumId)).length; i$ < len$; ++i$) {
       p = ref$[i$];
@@ -43,7 +51,7 @@
   };
   decorateForum = function(f){
     var sf;
-    return f.posts = posts(f.id), f.forums = (function(){
+    return f.posts = postsTree(f.id), f.forums = (function(){
       var i$, ref$, len$, results$ = [];
       for (i$ = 0, len$ = (ref$ = subForums(f.id)).length; i$ < len$; ++i$) {
         sf = ref$[i$];
@@ -110,4 +118,9 @@
     });
     return this.putDoc('misc', 'homepage', JSON.stringify(homepageDoc));
   };
+  function import$(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
+  }
 }).call(this);

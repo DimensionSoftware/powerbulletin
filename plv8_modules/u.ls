@@ -1,3 +1,13 @@
+## BEG PURE FUNCTIONS ##
+
+# will not mutate operand (similar to hashish.merge)
+export merge = ->
+  args = Array.prototype.slice.call arguments
+  r = (rval, hval) -> rval <<< hval
+  args.reduce r, {}
+
+## END PURE FUNCTIONS ##
+
 top-forums = ->
   sql = '''
   SELECT * FROM forums
@@ -60,11 +70,11 @@ sub-posts-tree = (parent-id) ->
   [p <<< {posts: sub-posts-tree(p.id)} for p in sub-posts(parent-id)]
 
 # gets entire list of top posts and inlines all sub-posts to them
-posts = (forum-id) ->
+posts-tree = (forum-id) ->
   [p <<< {posts: sub-posts-tree(p.id)} for p in top-posts-active(forum-id)]
 
 decorate-forum = (f) ->
-  f <<< {posts: posts(f.id), forums: [decorate-forum(sf) for sf in sub-forums(f.id)]}
+  f <<< {posts: posts-tree(f.id), forums: [decorate-forum(sf) for sf in sub-forums(f.id)]}
 
 export doc = ->
   if res = plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0]
