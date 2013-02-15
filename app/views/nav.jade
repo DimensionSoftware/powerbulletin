@@ -13,7 +13,8 @@ mixin subforum(f, sf, i)
 //- main
 //- ---------
 if forums
-  .forum(id="forum_#{active.id}", class="#{active.theme || ''}")
+  //-.forum(id="forum_#{active.id}", class="#{active.theme || ''}")
+  .forum(id="forum_#{activeForumId}", class="forum-#{activeForumId}")
     each f,i in forums
       mixin forum(f, i)
     .create

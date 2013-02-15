@@ -51,10 +51,8 @@ app.post '/ajax/register', handlers.register
 # dynamic serving
 app.get '/dynamic/css/:file' handlers.stylus
 
-#cvars.surfable-routes = mutant.surfable-routes app
-
 app.get '/favicon.ico', (req, res, next) ->
-  res.send '404', 404
+  next 404, \404
 
 app.get '/:forum/most-active',
   mw.add-js(common-js),

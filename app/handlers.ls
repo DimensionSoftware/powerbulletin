@@ -45,7 +45,7 @@ db = pg.procs
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
   # for O(1) retrieval (assuming hashed index map)
-  doc.active = doc.forums[0] # TODO select real active
+  doc.active-forum-id = \homepage
   res.locals doc
 
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
@@ -68,7 +68,7 @@ db = pg.procs
     if err then return next err
 
     if doc?.forums?.length # store active
-      doc.active = head filter (.slug is req.params.forum), doc.forums
+      doc.active-forum-id = (head filter (.slug is req.params.forum), doc.forums)?.id
 
     finish doc
   else # forum
@@ -76,8 +76,7 @@ db = pg.procs
     err, fdoc <- db.forum-doc-by-slug forum-slug
     if err then return next err
     if !fdoc then return next(404)
-    #XXX: maybe for optimization make this an index in the future
-    fdoc.active = fdoc.forums[0] # TODO select real active
+    fdoc.active-forum-id = fdoc.forums[0]?.id
     finish fdoc
 
 @register = (req, res) ->

@@ -1,8 +1,9 @@
 #{{{ Common
-layout-static = (w, mutator) ->
+layout-static = (w, mutator, id) ->
   # indicate current
-  w.marshal \mutator, mutator     # js
-  w.$ \html .attr(\class mutator) # stylus
+  forum-class = if id then " forum-#{id}" else ''
+  w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
+  w.marshal \mutator, mutator                        # js
   # handle forum background
   w.$ '.bg-set' .remove!
   w.$ '.bg' .each -> w.$ this .add-class \bg-set .remove!prepend-to w.$ 'body' # position behind
@@ -27,7 +28,7 @@ flip-background = (w, cur, direction='down') ->
   static:
     (window, next) ->
       window.render-jade 'main_content' \homepage
-      layout-static window, \homepage
+      layout-static window, \homepage, @active-forum-id
       next!
   on-load:
     (window, next) ->
@@ -81,13 +82,13 @@ flip-background = (w, cur, direction='down') ->
     (window, next) ->
       window.render-jade 'left_content' \nav
       window.render-jade 'main_content' \posts
-      window.marshal \active @active.id
-      layout-static window, \forum
+      window.marshal \activeForumId @active-forum-id
+      layout-static window, \forum, @active-forum-id
       next!
   on-load:
     (window, next) ->
       window.$ 'header .menu .active' .remove-class \active
-      cur = window.$ "header .menu .forum-#{window.active}"
+      cur = window.$ "header .menu .forum-#{window.active-forum-id}"
       cur.add-class \active
       flip-background window, cur
       next!
