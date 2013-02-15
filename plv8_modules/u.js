@@ -1,6 +1,6 @@
 (function(){
   var merge, topForums, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forum, forums, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this;
-  out$.merge = merge = function(){
+  out$.merge = merge = merge = function(){
     var args, r;
     args = Array.prototype.slice.call(arguments);
     r = function(rval, hval){
@@ -37,7 +37,9 @@
     var i$, ref$, len$, p, results$ = [];
     for (i$ = 0, len$ = (ref$ = subPosts(parentId)).length; i$ < len$; ++i$) {
       p = ref$[i$];
-      results$.push((p.posts = subPostsTree(p.id), p));
+      results$.push(merge(p, {
+        posts: subPostsTree(p.id)
+      }));
     }
     return results$;
   };
@@ -45,20 +47,25 @@
     var i$, ref$, len$, p, results$ = [];
     for (i$ = 0, len$ = (ref$ = topPostsActive(forumId)).length; i$ < len$; ++i$) {
       p = ref$[i$];
-      results$.push((p.posts = subPostsTree(p.id), p));
+      results$.push(merge(p, {
+        posts: subPostsTree(p.id)
+      }));
     }
     return results$;
   };
   decorateForum = function(f){
     var sf;
-    return f.posts = postsTree(f.id), f.forums = (function(){
-      var i$, ref$, len$, results$ = [];
-      for (i$ = 0, len$ = (ref$ = subForums(f.id)).length; i$ < len$; ++i$) {
-        sf = ref$[i$];
-        results$.push(decorateForum(sf));
-      }
-      return results$;
-    }()), f;
+    return merge(f, {
+      posts: postsTree(f.id),
+      forums: (function(){
+        var i$, ref$, len$, results$ = [];
+        for (i$ = 0, len$ = (ref$ = subForums(f.id)).length; i$ < len$; ++i$) {
+          sf = ref$[i$];
+          results$.push(decorateForum(sf));
+        }
+        return results$;
+      }())
+    });
   };
   out$.doc = doc = function(){
     var res;
