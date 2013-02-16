@@ -124,7 +124,7 @@ CREATE FUNCTION forum_doc_by_slug(slug JSON) RETURNS JSON AS $$
   res = plv8.execute('SELECT id FROM forums WHERE slug=$1', [slug])
   id  = res[0]?.id
   if id
-    return u.doc \forum_doc, id
+    return u.doc \forum_recent, id
   else
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;

@@ -8,15 +8,23 @@
     };
     return args.reduce(r, {});
   };
-  topForumsRecent = function(){
+  topForumsRecent = function(limit){
     var sql;
-    sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id ASC';
-    return plv8.execute(sql, arguments);
+    sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id ASC\nLIMIT $2';
+    return function(){
+      var args;
+      args = slice$.call(arguments);
+      return plv8.execute(sql, args.concat([limit]));
+    };
   };
-  topForumsActive = function(){
+  topForumsActive = function(limit){
     var sql;
-    sql = 'SELECT\n  f.*,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=f.id) sort\nFROM forums f\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY sort';
-    return plv8.execute(sql, arguments);
+    sql = 'SELECT\n  f.*,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=f.id) sort\nFROM forums f\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY sort\nLIMIT $2';
+    return function(){
+      var args;
+      args = slice$.call(arguments);
+      return plv8.execute(sql, args.concat([limit]));
+    };
   };
   subForums = function(){
     var sql;
@@ -122,29 +130,35 @@
     return results$;
   };
   out$.buildForumDoc = buildForumDoc = function(forumId){
-    var siteId, menu, forumDoc;
+    var siteId, menu, buildForumDocFor, this$ = this;
     siteId = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forumId])[0].site_id;
-    menu = forumsTree(siteId, topPostsRecent, topForumsRecent);
-    forumDoc = {
-      forums: [forumTree(forumId, topPostsRecent)],
-      menu: menu
+    menu = forumsTree(siteId, topPostsRecent(), topForumsRecent());
+    buildForumDocFor = function(doctype, topPostsFun){
+      var forum;
+      forum = {
+        forums: [forumTree(forumId, topPostsFun)],
+        menu: menu
+      };
+      return this$.putDoc(doctype, forumId, JSON.stringify(forum));
     };
-    return this.putDoc('forum_doc', forumId, JSON.stringify(forumDoc));
+    buildForumDocFor('forum_recent', topPostsRecent());
+    buildForumDocFor('forum_active', topPostsActive());
+    return true;
   };
   out$.buildHomepageDoc = buildHomepageDoc = function(siteId){
-    var buildHomepageDocFor, this$ = this;
+    var menu, buildHomepageDocFor, this$ = this;
+    menu = forumsTree(siteId, topPostsRecent(), topForumsRecent());
     buildHomepageDocFor = function(doctype, topPostsFun, topForumsFun){
-      var forums, menu, homepage;
+      var forums, homepage;
       forums = forumsTree(siteId, topPostsFun, topForumsFun);
-      menu = forums;
       homepage = {
         forums: forums,
         menu: menu
       };
       return this$.putDoc(doctype, siteId, JSON.stringify(homepage));
     };
-    buildHomepageDocFor('homepage_recent', topPostsRecent(5), topForumsRecent);
-    buildHomepageDocFor('homepage_active', topPostsActive(5), topForumsActive);
+    buildHomepageDocFor('homepage_recent', topPostsRecent(5), topForumsRecent());
+    buildHomepageDocFor('homepage_active', topPostsActive(5), topForumsActive());
     return true;
   };
   function import$(obj, src){
