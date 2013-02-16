@@ -99,7 +99,7 @@ err, threads <- threads-from-forum 1
 if err then console.warn err
 console.log "found #{threads.length} threads for forum 1"
 
-err, threads-with-posts <- async.map threads, with-posts
+err, threads-with-posts <- async.map-series threads, with-posts
 if err then console.warn err
 
 (err, r) <- async.map-series threads-with-posts, create-thread
