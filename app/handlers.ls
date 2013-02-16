@@ -3,6 +3,7 @@ require! {
   async
   jade
   stylus
+  cssmin
   fluidity
   __: \lodash
   pg: './postgres'
@@ -121,7 +122,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
     if err
       return next err
     else
-      body = css-blocks.join "\n"
+      body = cssmin.cssmin (css-blocks.join "\n"), 1000
       caching-strategies.etag res, sha1(body), 7200
       res.content-type 'css'
       res.send body
