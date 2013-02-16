@@ -1,5 +1,5 @@
 (function(){
-  var merge, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
+  var merge, topForumsRecent, topForumsActive, subForums, topPostsRecentFn, topPostsRecent, topPostsActiveFn, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
     args = slice$.call(arguments);
@@ -23,16 +23,32 @@
     sql = 'SELECT *\nFROM forums\nWHERE parent_id=$1\nORDER BY created DESC, id DESC';
     return plv8.execute(sql, arguments);
   };
-  topPostsRecent = function(){
-    var sql;
-    sql = 'SELECT\n  p.*,\n  a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY created DESC, id DESC';
-    return plv8.execute(sql, arguments);
+  topPostsRecentFn = function(limit){
+    var f;
+    limit == null && (limit = '');
+    if (limit) {
+      limit = " LIMIT " + limit;
+    }
+    return f = function(){
+      var sql;
+      sql = "SELECT\n  p.*,\n  a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY created DESC, id DESC\n" + limit;
+      return plv8.execute(sql, arguments);
+    };
   };
-  topPostsActive = function(){
-    var sql;
-    sql = 'SELECT\n  p.*,\n  a.name user_name,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1) sort\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY sort';
-    return plv8.execute(sql, arguments);
+  topPostsRecent = topPostsRecentFn();
+  topPostsActiveFn = function(limit){
+    var f;
+    limit == null && (limit = '');
+    if (limit) {
+      limit = " LIMIT " + limit;
+    }
+    return f = function(){
+      var sql;
+      sql = "SELECT\n  p.*,\n  a.name user_name,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1) sort\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY sort\n" + limit;
+      return plv8.execute(sql, arguments);
+    };
   };
+  topPostsActive = topPostsRecentFn();
   subPosts = function(){
     var sql;
     sql = 'SELECT p.*, a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id=$1\nORDER BY created DESC, id DESC';
@@ -135,8 +151,8 @@
       };
       return this$.putDoc(doctype, siteId, JSON.stringify(homepage));
     };
-    buildHomepageDocFor('homepage_recent', topPostsRecent, topForumsRecent);
-    buildHomepageDocFor('homepage_active', topPostsActive, topForumsActive);
+    buildHomepageDocFor('homepage_recent', topPostsRecentFn(5), topForumsRecent);
+    buildHomepageDocFor('homepage_active', topPostsActiveFn(5), topForumsActive);
     return true;
   };
   function import$(obj, src){
