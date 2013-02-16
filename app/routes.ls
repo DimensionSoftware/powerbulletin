@@ -1,5 +1,6 @@
 require! {
   \mutant
+  \cssmin
   './mutants'
   './resources'
   './handlers'
