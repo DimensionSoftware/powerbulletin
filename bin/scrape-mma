@@ -6,6 +6,8 @@ require! {
   \async
   pg: '../app/postgres'
 }
+global <<< require \prelude-ls
+pg.init!
 
 url =
   forum: (forum-id) ->
@@ -15,10 +17,12 @@ url =
 
 forum = (forum-id, cb) ->
   threads = []
+  console.log "fetching forum #{forum-id}"
   jsdom.env(
     url.forum(forum-id),
     ["http://code.jquery.com/jquery.js"],
     (err, window) ->
+      if err then return cb(err)
       $ = window.$
       $('.ThreadList td.First').each (i, td) ->
         $a = $(td).find('a:first')
@@ -34,14 +38,16 @@ forum = (forum-id, cb) ->
       cb null, threads
   )
 
-add-posts = (t, cb) ->
+with-posts = (t, cb) ->
   posts = []
   forum-id = t.forum-id
   thread-id = t.thread-id
+  console.log "fetching posts for thread #{t.title}"
   jsdom.env(
     url.thread(forum-id, thread-id)
     ["http://code.jquery.com/jquery.js"],
     (err, window) ->
+      if err then return cb(err)
       $ = window.$
       $('.PostList .PostContent').each (i, p) ->
         html = $(p).html()
@@ -56,12 +62,47 @@ add-posts = (t, cb) ->
       cb null, t
   )
 
+#.
+#### main   ###############>======-- -   -
+##
+#
+#
+#
+
 err, threads <- forum 1
 if err then console.warn err
-console.log "loaded threads for #{1}"
+console.log "found #{threads.length} threads for forum 1"
 
-err, threads-with-posts <- async.map threads[0 to 1], add-posts
+err, threads-with-posts <- async.map threads, with-posts
 if err then console.warn err
-console.log threads-with-posts[0]
+
+create-thread = (t, cb) ->
+  console.log 'inserting top post', { t.forum-id, t.title }
+  top-post =
+    user_id  : 1
+    forum_id : t.forum-id
+    title    : t.title
+    body     : "\n"
+
+  pg.procs.add-post top-post, (err, insertion) ->
+    if err then return cb(err)
+    console.warn 'insertion', insertion
+
+    thread-id = parent-id = insertion.id
+
+    create-post = (p, cb) ->
+      # XXX - make the stored procedure work
+      sql = """
+      INSERT INTO posts (thread_id, parent_id, user_id, forum_id, title, body)
+      VALUES ($1, $2, $3, $4, ' ', $5)
+      """
+      console.log '  inserting child post', {t.title, thread-id, parent-id, p.user-id, p.forum-id}
+      pg.query sql, [thread-id, parent-id, p.user-id, p.forum-id, p.body], cb
+
+    async.map-series t.posts, create-post, cb
+
+(err, r) <- async.map-series threads-with-posts, create-thread
+if err then console.warn(err)
+console.log "the END"
 
 # vim:ft=ls
