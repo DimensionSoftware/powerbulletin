@@ -149,6 +149,8 @@ else
       console.warn 'url'         , req.headers.host + req.url
       proc.exit 1
 
+  # routes
+  require! './routes'
 
   # 404 handler, if not 404, punt
   app.use (err, req, res, next) ~>
@@ -158,9 +160,6 @@ else
       err-handler (res) -> res.send html_50x, 500
     else
       next err
-
-  # routes
-  require! './routes'
 
   # all domain-based catch-alls & redirects
   max-age = if DISABLE_HTTP_CACHE then 0 else 7200 * 1000
