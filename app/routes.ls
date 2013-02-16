@@ -60,15 +60,15 @@ app.get '/:forum/most-active',
   mmw.mutant-layout(\layout, mutants),
   handlers.forum
 
-app.all '*',
-  mw.add-js(common-js),
-  mw.add-css(common-css),
-  mmw.mutant-layout(\layout, mutants),
-  handlers.forum
-
 if process.env.NODE_ENV != 'production'
   app.get '/debug/docs/:type/:key', (req, res, next) ->
     db = pg.procs
     err, d <- db.doc req.params.type, req.params.key
     if err then return next(err)
     res.json d
+
+app.all '*',
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.forum
