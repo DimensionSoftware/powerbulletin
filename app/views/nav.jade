@@ -11,9 +11,11 @@ mixin subforum(f, sf, i)
   //-.subforum(class="#{(i % 2) ? 'odd' : 'even'}")
   a.title(href="#{sf.slug}")= sf.title
 
-//- TODO
-mixin thread(t, i)
+mixin thread(f, t, i)
   .thread
+    li
+      h4.title
+        a(href="#{f.slug}/#{t.title}-#{t.id}")= t.title
 
 //- main
 //- ---------
@@ -28,5 +30,12 @@ if forums
 h3.title Threads
 .create
   a(class='button onclick-add-post-dialog', data-fid=33) Create Thread
+
+if forums
+  each f,i in forums
+    if f.posts
+      ul.threads
+        each t,ii in f.posts
+          mixin thread(f, t, ii)
 
 //- vim:fdm=marker

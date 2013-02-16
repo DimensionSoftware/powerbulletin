@@ -70,7 +70,7 @@ db = pg.procs
   # parse url
   parts = forum-path-parts req.path
   if parts?.length > 1 # thread
-    err, doc <- db.doc \misc, \homepage
+    err, doc <- db.doc \misc, \homepage_recent
     if err then return next err
 
     if doc?.forums?.length # store active
