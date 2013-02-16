@@ -69,16 +69,18 @@ db = pg.procs
 
   # parse url
   parts = forum-path-parts req.path
+  forum-slug = '/' + parts[0].join('/')
   if parts?.length > 1 # thread
-    err, doc <- db.doc \misc, \homepage_recent
+    err, doc <- db.forum-doc-by-slug forum-slug
     if err then return next err
 
     if doc?.forums?.length # store active
       doc.active-forum-id = (head filter (.slug is req.params.forum), doc.forums)?.id
 
+    console.warn "[thread] #{req.url}"
+
     finish doc
   else # forum
-    forum-slug = '/' + parts[0].join('/')
     err, fdoc <- db.forum-doc-by-slug forum-slug
     if err then return next err
     if !fdoc then return next(404)

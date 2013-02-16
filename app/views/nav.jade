@@ -15,7 +15,7 @@ mixin thread(f, t, i)
   .thread
     li
       h4.title
-        a(href="#{f.slug}/#{t.title}-#{t.id}")= t.title
+        a(href="#{f.slug}/#{t.title.replace(/\W+/g, '-')}-#{t.id}")= t.title
 
 //- main
 //- ---------
