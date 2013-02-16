@@ -31,14 +31,6 @@ app.get '/hello' handlers.hello
 # local auth
 app.post '/auth/login' handlers.login
 app.get '/auth/logout' handlers.logout
-
-app.get '/',
-  mw.geo,
-  mw.add-js(common-js),
-  mw.add-css(common-css),
-  mmw.mutant-layout(\layout, mutants),
-  handlers.homepage
-
 # UI SKETCH UP:
 #
 # Connect to a social network:
@@ -46,8 +38,15 @@ app.get '/',
 # OR
 # Register @ <Forum Name>.com
 # # post endpoint
-app.post '/ajax/register', handlers.register
+app.post '/auth/register', handlers.register
 # todo html for use in fancybox or modal dialog at get route
+
+app.get '/',
+  mw.geo,
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.homepage
 
 # dynamic serving
 app.get '/dynamic/css/:file' handlers.stylus
