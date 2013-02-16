@@ -35,34 +35,42 @@ sub-forums = ->
   '''
   plv8.execute sql, arguments
 
-top-posts-recent = ->
-  sql = '''
-  SELECT
-    p.*,
-    a.name user_name
-  FROM posts p, aliases a
-  WHERE a.user_id=p.user_id
-    AND a.site_id=1
-    AND p.parent_id IS NULL
-    AND p.forum_id=$1
-  ORDER BY created DESC, id DESC
-  '''
-  plv8.execute sql, arguments
+top-posts-recent-fn = (limit='') ->
+  limit = " LIMIT #{limit}" if limit
+  f = ->
+    sql = """
+    SELECT
+      p.*,
+      a.name user_name
+    FROM posts p, aliases a
+    WHERE a.user_id=p.user_id
+      AND a.site_id=1
+      AND p.parent_id IS NULL
+      AND p.forum_id=$1
+    ORDER BY created DESC, id DESC
+    #{limit}
+    """
+    plv8.execute sql, arguments
+top-posts-recent = top-posts-recent-fn!
 
-top-posts-active = ->
-  sql = '''
-  SELECT
-    p.*,
-    a.name user_name,
-    (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1) sort
-  FROM posts p, aliases a
-  WHERE a.user_id=p.user_id
-    AND a.site_id=1
-    AND p.parent_id IS NULL
-    AND p.forum_id=$1
-  ORDER BY sort
-  '''
-  plv8.execute sql, arguments
+top-posts-active-fn = (limit='') ->
+  limit = " LIMIT #{limit}" if limit
+  f = ->
+    sql = """
+    SELECT
+      p.*,
+      a.name user_name,
+      (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1) sort
+    FROM posts p, aliases a
+    WHERE a.user_id=p.user_id
+      AND a.site_id=1
+      AND p.parent_id IS NULL
+      AND p.forum_id=$1
+    ORDER BY sort
+    #{limit}
+    """
+    plv8.execute sql, arguments
+top-posts-active = top-posts-recent-fn!
 
 sub-posts = ->
   sql = '''
@@ -133,7 +141,7 @@ export build-homepage-doc = (site-id) ->
     homepage = {forums, menu}
     @put-doc doctype, site-id, JSON.stringify(homepage)
 
-  build-homepage-doc-for \homepage_recent, top-posts-recent, top-forums-recent
-  build-homepage-doc-for \homepage_active, top-posts-active, top-forums-active
+  build-homepage-doc-for \homepage_recent, top-posts-recent-fn(5), top-forums-recent
+  build-homepage-doc-for \homepage_active, top-posts-active-fn(5), top-forums-active
   true
 
