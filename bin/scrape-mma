@@ -1,0 +1,67 @@
+#!./node_modules/.bin/lsc
+
+require! {
+  \fs
+  \jsdom
+  \async
+  pg: '../app/postgres'
+}
+
+url =
+  forum: (forum-id) ->
+    "http://www.mixedmartialarts.com/mma.cfm?go=forum.splash&forum=#{forum-id}"
+  thread: (forum-id, thread-id) ->
+    "http://www.mixedmartialarts.com/mma.cfm?go=forum.posts&thread=#{thread-id}&forum=#{forum-id}&page=1&pc=143"
+
+forum = (forum-id, cb) ->
+  threads = []
+  jsdom.env(
+    url.forum(forum-id),
+    ["http://code.jquery.com/jquery.js"],
+    (err, window) ->
+      $ = window.$
+      $('.ThreadList td.First').each (i, td) ->
+        $a = $(td).find('a:first')
+        if $a.length
+          id    = $a.attr('href').match(/thread=(\d+)/)?[1]
+          title = $a.text()
+          threads.push {
+            thread-id : id
+            forum-id  : forum-id
+            title     : title
+            posts     : [ ]
+          }
+      cb null, threads
+  )
+
+add-posts = (t, cb) ->
+  posts = []
+  forum-id = t.forum-id
+  thread-id = t.thread-id
+  jsdom.env(
+    url.thread(forum-id, thread-id)
+    ["http://code.jquery.com/jquery.js"],
+    (err, window) ->
+      $ = window.$
+      $('.PostList .PostContent').each (i, p) ->
+        html = $(p).html()
+        post =
+          parent-id : thread-id
+          forum-id  : forum-id
+          user-id   : 3
+          title     : ""
+          body      : html
+        posts.push post
+      t.posts = posts
+      cb null, t
+  )
+
+err, threads <- forum 1
+if err then console.warn err
+console.log "loaded threads for #{1}"
+
+err, threads-with-posts <- async.map threads[0 to 1], add-posts
+if err then console.warn err
+console.log threads-with-posts[0]
+
+# vim:ft=ls
