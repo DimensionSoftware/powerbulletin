@@ -99,7 +99,7 @@ CREATE TABLE posts (
   user_id   BIGINT NOT NULL references users(id),
   forum_id  BIGINT NOT NULL references forums(id),
   title     VARCHAR(256) NOT NULL,
-  body      VARCHAR(1024) NOT NULL,
+  body      TEXT NOT NULL,
   loc       POINT,
   created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated   TIMESTAMP,
