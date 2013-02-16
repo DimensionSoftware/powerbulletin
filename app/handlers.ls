@@ -119,13 +119,12 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
       cb 404
 
   async.map files, render-css, (err, css-blocks) ->
-    if err
-      return next err
-    else
-      body = cssmin.cssmin (css-blocks.join "\n"), 1000
-      caching-strategies.etag res, sha1(body), 7200
-      res.content-type 'css'
-      res.send body
+    if err then return next err
+    blocks = css-blocks.join "\n"
+    body   = if process.env.NODE_ENV is \production then cssmin.cssmin blocks 1000 else blocks
+    caching-strategies.etag res, sha1(body), 7200
+    res.content-type 'css'
+    res.send body
 #}}}
 
 # vim:fdm=marker
