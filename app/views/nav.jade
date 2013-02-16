@@ -12,10 +12,9 @@ mixin subforum(f, sf, i)
   a.title(href="#{sf.slug}")= sf.title
 
 mixin thread(f, t, i)
-  .thread
-    li
-      h4.title
-        a(href="#{f.slug}/#{t.title.replace(/\W+/g, '-')}-#{t.id}")= t.title
+  li
+    h4.title
+      a(href="#{f.slug}/#{t.title.replace(/\W+/g, '-')}-#{t.id}")= t.title
 
 //- main
 //- ---------
