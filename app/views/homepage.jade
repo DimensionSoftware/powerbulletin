@@ -2,7 +2,7 @@
 
 mixin forum(f, i)
   img.bg(id="forum_bg_#{f.id}", class='initial', src="#{cache_url}/images/bg_#{f.id}.jpg")
-  .forum(id="forum_#{f.id}", class="#{f.theme || ''} #{i%2 ? 'odd' : 'even'}")
+  .forum(id="forum_#{f.id}", class="#{f.classes || ''} #{i%2 ? 'odd' : 'even'}")
     a(name="forum_#{f.id}") //- hashtag anchor
     .header
       .description

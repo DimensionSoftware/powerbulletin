@@ -7,15 +7,14 @@ mixin forum(f, i)
       mixin subforum(f, sf, ii)
 
 mixin subforum(f, sf, i)
-  .subforum(id="subforum_#{sf.id}", class=(i % 2) ? 'odd' : 'even')
+  .subforum(id="subforum_#{sf.id}", class="#{(i % 2) ? 'odd' : 'even'}")
     a.title(href="#{sf.slug}")= sf.title
 
 //- main
 //- ---------
 if forums
-  //-.forum(id="forum_#{active.id}", class="#{active.theme || ''}")
-  .forum(id="forum_#{activeForumId}", class="forum-#{activeForumId}")
-    each f,i in forums
+  each f,i in forums
+    .forum(id="forum_#{activeForumId}", class="#{f.classes || ''} forum-#{activeForumId}")
       mixin forum(f, i)
     .create
       a(class='button onclick-add-post-dialog', data-fid=33) Create Thread

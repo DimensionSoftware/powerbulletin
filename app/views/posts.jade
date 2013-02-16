@@ -19,7 +19,7 @@ mixin subpost(p, sp, i)
 if forums
   each f,i in forums
     img.bg(id="forum_bg_#{f.id}", src="#{cache_url}/images/bg_#{f.id}.jpg")
-    .forum(id="forum_#{f.id}", class="#{f.theme || ''} #{i%2 ? 'odd' : 'even'}")
+    .forum(id="forum_#{f.id}", class="#{f.classes || ''} #{i%2 ? 'odd' : 'even'}")
       .header
         .description= f.description
       .container

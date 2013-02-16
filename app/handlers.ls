@@ -50,7 +50,7 @@ db = pg.procs
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
   # for O(1) retrieval (assuming hashed index map)
-  doc.active-forum-id = \homepage
+  doc?.active-forum-id = \homepage
   res.locals doc
 
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media

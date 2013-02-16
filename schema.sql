@@ -81,6 +81,7 @@ CREATE TABLE forums (
   slug        VARCHAR(256) NOT NULL,
   description VARCHAR(1024) NOT NULL,
   media_url   VARCHAR(1024),
+  classes     VARCHAR(128),
   created     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated     TIMESTAMP,
   PRIMARY KEY (id)
