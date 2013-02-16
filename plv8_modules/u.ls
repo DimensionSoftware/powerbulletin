@@ -11,7 +11,7 @@ top-forums-recent = ->
   sql = '''
   SELECT * FROM forums
   WHERE parent_id IS NULL AND site_id=$1
-  ORDER BY created DESC, id DESC
+  ORDER BY created DESC, id ASC
   '''
   plv8.execute sql, arguments
 

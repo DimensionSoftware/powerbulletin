@@ -10,7 +10,7 @@
   };
   topForumsRecent = function(){
     var sql;
-    sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id DESC';
+    sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id ASC';
     return plv8.execute(sql, arguments);
   };
   topForumsActive = function(){
