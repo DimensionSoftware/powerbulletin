@@ -32,7 +32,6 @@ body.scrolled
     background-color rgba(0,0,0,0.7)
     box-shadow 0 -1px 15px 4px #666
     border-bottom 1px solid #fff
-    border-top-width 2px
     transition height .2s ease-out, background-color .5s ease-out
     .container
       .logo
@@ -41,7 +40,10 @@ body.scrolled
           font-size .55em
       .menu
         .row
-          transition line-height .2s ease-out
+          transition line-height .4s ease-out
+          .submenu
+            .row
+              line-height (grid*3)
       .search
         .query
           border-bottom-width 2px
@@ -54,22 +56,6 @@ body.scrolled
         .query:-ms-input-placeholder
             color #bbb
   .left-chrome
-    .sort::before
-      border 10px solid #ccc
-    .sort
-      color #ddd
-      font-weight 100
-      .indicator
-        opacity .5
-        background-color #fff
-        //border-bottom 1px solid #000
-      #sort
-        li.active
-          color #fed
-          font-weight 400
-          font-size .9em
-          animation-name tiny-grow
-          animation-duration .25s
     .user-profile
       transition left .5s ease-out
   #left_content.container
@@ -223,6 +209,7 @@ header
             a
               color #222
           .row
+            line-height (grid*4)
             border-left 1px solid transparent
             border-bottom 1px solid #eee
             a
@@ -304,6 +291,24 @@ section.left-chrome
     .arrow
       //border-left 15px solid rgba(255,255,255,.45)
       border-left 15px solid #ddd
+    .sort::before
+      border 10px solid #ccc
+    .sort
+      color #ddd
+      font-weight 100
+      li
+        letter-spacing 2px
+      .indicator
+        opacity .4
+        background-color highlight-color2
+        //border-bottom 1px solid #000
+      #sort
+        li.active
+          color #fed
+          font-weight 500
+          font-size .95em
+          animation-name tiny-grow
+          animation-duration .25s
 //}}}
 //{{{ Main Content
 #main_content.container
