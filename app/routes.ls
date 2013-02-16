@@ -52,8 +52,8 @@ app.post '/ajax/register', handlers.register
 # dynamic serving
 app.get '/dynamic/css/:file' handlers.stylus
 
-app.get '/favicon.ico', (req, res, next) ->
-  next 404, \404
+#app.get '/favicon.ico', (req, res, next) ->
+#  next 404, \404
 
 app.get '/:forum/most-active',
   mw.add-js(common-js),
@@ -61,7 +61,7 @@ app.get '/:forum/most-active',
   mmw.mutant-layout(\layout, mutants),
   handlers.forum
 
-app.get '/:forum',
+app.all '*',
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),

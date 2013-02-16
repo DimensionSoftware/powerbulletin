@@ -121,7 +121,9 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS forum_doc_by_slug(slug JSON);
 CREATE FUNCTION forum_doc_by_slug(slug JSON) RETURNS JSON AS $$
   require! <[u]>
-  if {id} = plv8.execute('SELECT id FROM forums WHERE slug=$1', [slug])[0]
+  res = plv8.execute('SELECT id FROM forums WHERE slug=$1', [slug])
+  id  = res[0]?.id
+  if id
     return u.doc \forum_doc, id
   else
     return null
