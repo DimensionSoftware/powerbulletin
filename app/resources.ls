@@ -19,7 +19,6 @@ require! {
     db = pg.procs
     post = req.body
     post.user_id  = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
-    post.forum_id = 1 # XXX/FIXME: in the future, this should be passed in
     err, ap-res <- db.add-post post
     if err then return next err
     res.json ap-res
