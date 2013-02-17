@@ -222,6 +222,8 @@ header
   top (header-height + 2)
   height auto
   width left-content-width
+  overflow-x hidden
+  overflow-y scroll
   z-index 6
   .title
     text-overflow ellipsis
@@ -230,6 +232,12 @@ header
     text-transform capitalize
   .create
     margin-top (grid * 2)
+  ul.forum 
+    margin 0
+    padding 0
+    list-style none
+    li
+      font-size 75%
 
 section.left-chrome
   z-index 7
