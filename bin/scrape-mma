@@ -4,6 +4,7 @@ require! {
   \fs
   \jsdom
   \async
+  program: \commander
   pg: '../app/postgres'
 }
 global <<< require \prelude-ls
@@ -95,9 +96,13 @@ create-thread = (t, cb) -> # {{{1
 #
 #
 
-err, threads <- threads-from-forum 1
+program
+  .option '-f, --forum <n>', 'forum id', parseInt, 1
+  .parse process.argv
+
+err, threads <- threads-from-forum program.forum
 if err then console.warn err
-console.log "found #{threads.length} threads for forum 1"
+console.log "found #{threads.length} threads for forum #{program.forum}"
 
 err, threads-with-posts <- async.map-series threads, with-posts
 if err then console.warn err
