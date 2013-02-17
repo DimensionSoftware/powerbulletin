@@ -24,7 +24,7 @@ flip-background = (w, cur, direction='down') ->
     ), 100
 #}}}
 
-@homepage =
+@homepage = #{{{
   static:
     (window, next) ->
       window.render-jade 'main_content' \homepage
@@ -76,8 +76,8 @@ flip-background = (w, cur, direction='down') ->
       window.$ '.forum .header' .waypoint(\destroy)
       window.$ '.forum' .waypoint(\destroy)
       next!
-
-@forum =
+#}}}
+@forum = #{{{
   static:
     (window, next) ->
       window.render-jade 'left_content' \nav
@@ -97,6 +97,7 @@ flip-background = (w, cur, direction='down') ->
       window.scroll-to-top!
       window.s
       next!
+#}}}
 
 @search =
   static:
@@ -110,6 +111,11 @@ flip-background = (w, cur, direction='down') ->
       # set initial state
       next!
   on-mutate:
+    (window, next) ->
+      next!
+
+@admin =
+  static:
     (window, next) ->
       next!
 

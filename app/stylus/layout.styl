@@ -238,7 +238,7 @@ section.left-chrome
     position absolute
     top 35px
     left 0
-    width 140px
+    width 150px
     height 95px
     .photo
       overflow hidden
@@ -273,10 +273,12 @@ section.left-chrome
       overflow hidden
       cursor pointer
       #sort
+        position relative
+        box-sizing border-box
         padding (grid) (grid) (grid*7) (grid*2)
         text-align center
         overflow-y scroll
-        height 1px
+        height 109px
         margin 0
         list-style none
         li
@@ -284,10 +286,10 @@ section.left-chrome
           padding 0 0 1px 0
           margin 0 0 5px 0
       .indicator
-        top 22px
+        top 21px
         position absolute
-        left 20px
-        width 100px
+        left 0
+        width 140px
         height 1px
   .scroll-to-top:hover
     border-bottom 10px solid #777

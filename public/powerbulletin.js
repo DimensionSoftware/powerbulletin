@@ -648,6 +648,11 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
       return next();
     }
   };
+  this.admin = {
+    'static': function(window, next){
+      return next();
+    }
+  };
 }).call(this);
 
 });
