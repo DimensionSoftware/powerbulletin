@@ -68,10 +68,22 @@ db = pg.procs
     res.mutant \forum
 
   # parse url
-  parts = forum-path-parts req.path
+  url = req.path
+  if m = url.match /^(.+)\/active$/
+    url = m[1]
+    fdtype = \active
+  else if m = url.match /^(.+)\/recent$/
+    url = m[1]
+    fdtype = \recent
+  else
+    # defaults
+    # url stays the same
+    fdtype = \recent
+
+  parts = forum-path-parts url
   forum-slug = '/' + parts[0].join('/')
   if parts?.length > 1 # thread
-    err, doc <- db.forum-doc-by-slug forum-slug
+    err, doc <- db.forum-doc-by-type-and-slug fdtype, forum-slug
     if err then return next err
 
     if doc?.forums?.length # store active
@@ -81,7 +93,7 @@ db = pg.procs
 
     finish doc
   else # forum
-    err, fdoc <- db.forum-doc-by-slug forum-slug
+    err, fdoc <- db.forum-doc-by-type-and-slug fdtype, forum-slug
     if err then return next err
     if !fdoc then return next(404)
     fdoc.active-forum-id = fdoc.forums[0]?.id

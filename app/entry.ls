@@ -30,11 +30,7 @@ $d.on \click 'html.forum header .menu a.title' window.mutate
 # main
 # ---------
 add-post-dialog = ->
-  #xxx: stub code for now, since we have no concept of sub-forums
-  # mainly here as a proof-of-concept
-  fid = $(this).data \fid
-  post-html = '<h1>add post form goes here</h1>'
-  html <- $.get '/resources/posts', {fid}
+  html <- $.get '/resources/posts', {fid: window.active-forum-id}
   $(html).dialog modal: true
   false # stop event propagation
 
