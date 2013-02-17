@@ -93,7 +93,7 @@ db = pg.procs
 
     finish doc
   else # forum
-    err, fdoc <- db.forum-doc-by-slug forum-slug
+    err, fdoc <- db.forum-doc-by-type-and-slug fdtype, forum-slug
     if err then return next err
     if !fdoc then return next(404)
     fdoc.active-forum-id = fdoc.forums[0]?.id
