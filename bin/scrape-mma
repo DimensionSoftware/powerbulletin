@@ -88,6 +88,10 @@ create-thread = (t, cb) -> # {{{1
 
     async.map-series t.posts, create-post, cb
 
+delay-by = (ms, fn) --> # {{{1
+  (param, cb) ->
+    (setTimeout (-> fn(param, cb)), ms)
+
 # }}}
 #.
 #### main   ###############>======-- -   -
@@ -96,15 +100,22 @@ create-thread = (t, cb) -> # {{{1
 #
 #
 
+defaults =
+  forum: 1
+  delay: 3000
+
 program
-  .option '-f, --forum <n>', 'forum id', parseInt, 1
+  .option  '-f, --forum <id>',           "forum id (default: #{defaults.forum})", parseInt, defaults.forum
+  .option  '-d, --delay <milliseconds>', "amount of time to wait in between HTTP requests (default: #{defaults.delay})", parseInt, defaults.delay
   .parse process.argv
+
+delayed = delay-by program.delay # gratuitous use of currying ;)
 
 err, threads <- threads-from-forum program.forum
 if err then console.warn err
 console.log "found #{threads.length} threads for forum #{program.forum}"
 
-err, threads-with-posts <- async.map-series threads, with-posts
+err, threads-with-posts <- async.map-series threads, (delayed with-posts)
 if err then console.warn err
 
 (err, r) <- async.map-series threads-with-posts, create-thread
