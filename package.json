@@ -14,6 +14,8 @@
   ],
   "readmeFilename": "README.md",
   "gitHead": "1ebbe5f74910d9398e6de4f6c53cc2446285c6dd",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
+    "commander": "~1.1.1"
   }
 }
