@@ -80,7 +80,7 @@ sub-posts = ->
   plv8.execute sql, arguments
 
 # recurses to build entire comment tree
-sub-posts-tree = (parent-id) ->
+export sub-posts-tree = (parent-id) ->
   [merge(p, {posts: sub-posts-tree(p.id)}) for p in sub-posts(parent-id)]
 
 # gets entire list of top posts and inlines all sub-posts to them

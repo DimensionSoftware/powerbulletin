@@ -54,7 +54,7 @@
     sql = 'SELECT p.*, a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id=$1\nORDER BY created DESC, id DESC';
     return plv8.execute(sql, arguments);
   };
-  subPostsTree = function(parentId){
+  out$.subPostsTree = subPostsTree = function(parentId){
     var i$, ref$, len$, p, results$ = [];
     for (i$ = 0, len$ = (ref$ = subPosts(parentId)).length; i$ < len$; ++i$) {
       p = ref$[i$];

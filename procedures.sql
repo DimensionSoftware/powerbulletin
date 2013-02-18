@@ -43,6 +43,11 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   return {success, errors, id}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS post_tree(id JSON);
+CREATE FUNCTION sub_posts_tree(id JSON) RETURNS JSON AS $$
+  require! <[u validations]>
+  return u.sub-posts-tree id
+$$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON);
 CREATE FUNCTION find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON) RETURNS JSON AS $$
