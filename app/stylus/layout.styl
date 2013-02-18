@@ -106,6 +106,10 @@ body.expanded
         position absolute
         top 25px
         left 0
+      .menu
+        .row
+          .submenu
+            top 33px!important
       .search
         top -7px!important
         right auto!important
@@ -228,16 +232,19 @@ header
   .title
     text-overflow ellipsis
     overflow hidden
-    height 20px
+    max-height 65px
     text-transform capitalize
+    margin-bottom 8px
   .create
-    margin-top (grid * 2)
-  ul.forum 
+    margin (grid*2) 0 (grid*2) 5px
+  .threads
     margin 0
+  .forum 
+    margin 0 0 (grid*2) 0
     padding 0
     list-style none
     li
-      font-size 75%
+      font-size .9em
 
 section.left-chrome
   z-index 7
@@ -348,7 +355,7 @@ section.left-chrome
         overflow hidden
         text-overflow ellipsis
         width 45%
-        left 24%
+        left 19%
         position relative
         z-index 2
     .scroll-to

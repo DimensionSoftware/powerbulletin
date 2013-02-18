@@ -123,6 +123,15 @@ body.expanded header
   .menu
     .row
       transition line-height .2s ease-out!important
+    > .row
+      a.title.active:hover
+        background-image linear-gradient(bottom, #fff 23px, #ffe0c0)
+      a.title.active
+        background-image linear-gradient(bottom, #fff 23px, #ffe0c0)
+      a.title:hover, a.title.hover
+        background-image linear-gradient(bottom, #fff 15px, #eee)
+      a.title
+        background-image linear-gradient(bottom, #fff 20px, #ddd)
 //}}}
 
 body
@@ -136,7 +145,7 @@ a.mutant:hover
 header
   background-color rgba(255,255,255,0.1)
   border-top 2px solid #000
-  border-bottom 1px solid #ddd
+  border-bottom 1px solid rgba(200,200,200,.3)
   color #ddd
   .container
     .logo
@@ -218,6 +227,8 @@ header
             border-left 1px solid highlight-color2
             a
               color #222
+              animation-name 0
+              animation-duration 0
           .row
             line-height (grid*4)
             border-left 1px solid transparent
@@ -260,15 +271,18 @@ header
 //}}}
 //{{{ Left side
 #left_content.container
-  //background-color rgba(0,0,0,.2)
-  padding (grid*2) grid grid grid
+  background-color rgba(255,255,255,.9)
+  padding grid
   .title
     padding 2px 7px
     letter-spacing -1px
     font-size 1em
     margin (grid / 2) 0
-  ul.forum a:hover
-    color #D1920B
+  .forum, .threads
+    a
+      color #333
+    a:hover
+      color #d1920b
 
 #left_content.container.dark
   background-color rgba(0,0,0,.1)
@@ -294,9 +308,9 @@ section.left-chrome
     //background-color rgba(0,0,0,.4)
     background-image linear-gradient(bottom, #fff 0%, #555 23%, #aaa 85%, #aaa 100%)
     left -160px!important
-    border 1px solid #444
-    border-bottom 3px solid #333
-    border-right-width 2px
+    border 1px solid #666
+    border-bottom 2px solid #333
+    border-right-width 1px
     padding 2px
     .photo
       background-color #fff
@@ -372,6 +386,9 @@ section.left-chrome
       font-weight 100
       font-size 2.1em
       line-height 2em
+      .description
+        a
+          color #fff
       h4, span
         display inline-block
         margin 0 grid
