@@ -10,7 +10,7 @@ mixin forum(f, i)
 mixin subforum(f, sf, i)
   //-.subforum(class="#{(i % 2) ? 'odd' : 'even'}")
   li
-    a.title(href="#{sf.slug}")= sf.title
+    a.mutant.title(href="#{sf.slug}")= sf.title
 
 mixin thread(f, t, i)
   li

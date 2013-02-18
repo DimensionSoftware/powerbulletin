@@ -31,7 +31,7 @@ $d.on \click 'a.mutant' window.mutate # hijack urls
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url = History.get-page-url!replace /\/$/, ''
   $.get url, _surf:1, (r) ->
-    $d.title = r.locals.title if r.locals?.title # set title
+    $d.attr \title, r.locals.title if r.locals?.title # set title
     on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
     on-unload window, -> # cleanup & run next mutant
       window.mutant.run window.mutants[r.mutant], locals:r.locals
