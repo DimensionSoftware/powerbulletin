@@ -15,7 +15,7 @@ mixin subforum(f, sf, i)
 mixin thread(f, t, i)
   li
     h4.title
-      a(href="#{f.slug}/#{t.title.replace(/\W+/g, '-')}-#{t.id}")= t.title
+      a.mutant(href="#{f.slug}/#{t.title.replace(/\W+/g, '-')}-#{t.id}")= t.title
 
 //- main
 //- ---------
