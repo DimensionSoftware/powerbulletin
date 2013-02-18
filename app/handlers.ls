@@ -139,6 +139,5 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
     caching-strategies.etag res, sha1(body), 7200
     res.content-type 'css'
     res.send body
-#}}}
 
-# vim:fdm=marker
+# vim:fdm=indent
