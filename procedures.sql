@@ -140,12 +140,3 @@ CREATE FUNCTION build_all_docs() RETURNS JSON AS $$
 
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
-
-DROP FUNCTION IF EXISTS test();
-CREATE FUNCTION test() RETURNS JSON AS $$
-  require! <[u]>
-  a = {a:1}
-  return true
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-
