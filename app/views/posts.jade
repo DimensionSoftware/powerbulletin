@@ -10,8 +10,8 @@ mixin post(p, i)
 mixin subpost(p, sp, i)
   .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even')
     h4.title!= sp.title
-    .user= sp.user.name
-    .date= sp.date
+    .user= sp.user_name
+    .date= sp.created
     p.body!= sp.body
 
 //- main
@@ -27,5 +27,9 @@ if forums
           each t,ii in f.posts
             mixin post(f, t, ii)
           .up(class='scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
+
+if posts
+  each p, i in posts
+    mixin subpost(forums[0], p, i)
 
 //- vim:fdm=marker
