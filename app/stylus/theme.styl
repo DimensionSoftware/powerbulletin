@@ -29,8 +29,9 @@ grid = 10px
 //{{{ Style applied after body scrolls
 body.scrolled
   header
-    background-color rgba(0,0,0,0.7)
-    box-shadow 0 -1px 15px 4px #666
+    //background-color rgba(0,0,0,0.7)
+    background-color rgba(255,255,255,0.85)
+    box-shadow 0 -1px 15px 4px #ddd,0 1px 0 0 #bbb
     border-bottom 1px solid #fff
     transition height .2s ease-out, background-color .5s ease-out
     .container
@@ -49,7 +50,7 @@ body.scrolled
           a.title
             background-image linear-gradient(bottom, #fff 20px, #ddd)
         .row
-          transition line-height .4s ease-out
+          transition line-height .2s ease-out
           .submenu
             .row
               line-height (grid*3)
@@ -86,14 +87,17 @@ body.scrolled
       margin grid
   footer
     opacity 1
-    border-top 1px solid #555
+    //border-top 1px solid #555
+    border-top 1px solid #ddd
     color #bbb
-    background-color rgba(25,25,25,0.7)
+    //background-color rgba(25,25,25,0.7)
+    background-color rgba(255,255,255,.85)
     transition bottom .5s ease-out
 //}}}
 //{{{ Style applied when header is expanded
 body.expanded header
-  background-color rgba(0,0,0,0.85)!important
+  //background-color rgba(0,0,0,0.85)!important
+  background-color rgba(255,255,255,0.85)!important
   border-bottom 1px solid #fff
   .close:hover
     background-color highlight-color2
@@ -146,12 +150,12 @@ header
   background-color rgba(255,255,255,0.1)
   border-top 2px solid #000
   border-bottom 1px solid rgba(200,200,200,.3)
-  color #ddd
+  color #555
   .container
     .logo
       a
         display inline-block
-        margin-top 13px
+        margin-top 15px
         vertical-align top
         font-style italic
         color #777
@@ -255,7 +259,8 @@ header
         box-shadow none
       #query.query
         box-shadow 0
-        color #fff
+        //color #fff
+        color #000
         font-style italic
         border-left none
         text-align right
@@ -293,7 +298,8 @@ header
 
 section.left-chrome
   .user-profile:hover
-    background-image linear-gradient(bottom, #f9f9f9 0%, #4a4a4a 23%, #a8a8a8 85%, #a8a8a8 100%)
+    //background-image linear-gradient(bottom, #f9f9f9 0%, #4a4a4a 23%, #a8a8a8 85%, #a8a8a8 100%)
+    background-image linear-gradient(bottom, #fcfcfc 0%, #fff 23%, #cfcfcf 85%, #cfcfcf 100%)
     .arrow
        //border-left-color rgba(255,255,255,.65)
        border-left-color #eee
@@ -306,10 +312,11 @@ section.left-chrome
     border-bottom-right-radius 5px
     border-top-right-radius 5px
     //background-color rgba(0,0,0,.4)
-    background-image linear-gradient(bottom, #fff 0%, #555 23%, #aaa 85%, #aaa 100%)
+    //background-image linear-gradient(bottom, #fff 0%, #555 23%, #aaa 85%, #aaa 100%)
+    background-image linear-gradient(bottom, #fff 0%, #fff 23%, #ccc 85%, #ccc 100%)
     left -160px!important
-    border 1px solid #666
-    border-bottom 2px solid #333
+    border 1px solid #ccc
+    border-bottom 2px solid #bbb
     border-right-width 1px
     padding 2px
     .photo
@@ -324,16 +331,16 @@ section.left-chrome
     .sort::before
       border 10px solid #333
     .sort
-      color #ddd
+      color #555
       font-weight 100
       li
         letter-spacing 2px
       .indicator
         opacity .3
-        background-color #000
+        background-color #666
       #sort
         li.active
-          color #fed
+          color #000
           font-weight 500
           font-size .95em
           animation-name tiny-grow
