@@ -16,7 +16,8 @@ mixin subpost(p, sp, i)
 
 //- main
 //- ---------
-if forums
+// if forums
+if false
   each f,i in forums
     img.bg(id="forum_bg_#{f.id}", src="#{cache_url}/images/bg_#{f.id}.jpg")
     .forum(id="forum_#{f.id}", class="#{f.classes || ''} #{i%2 ? 'odd' : 'even'}")
@@ -29,7 +30,8 @@ if forums
           .up(class='scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
 
 if posts
-  each p, i in posts
-    mixin subpost(forums[0], p, i)
+  .forum
+    each p, i in posts
+      mixin subpost(forums[0], p, i)
 
 //- vim:fdm=marker
