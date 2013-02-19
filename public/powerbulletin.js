@@ -541,9 +541,11 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
     w.$('html').attr('class', mutator + "" + forumClass);
     w.marshal('mutator', mutator);
     w.$('.bg-set').remove();
-    return w.$('.bg').each(function(){
+    w.$('.bg').each(function(){
       return w.$(this).addClass('bg-set').remove().prependTo(w.$('body'));
     });
+    w.$('header .menu').find('.active').removeClass('active');
+    return w.$('menu .row').has(".submenu-" + id).find('.title').addClass('active');
   };
   flipBackground = function(w, cur, direction){
     var last, next;
@@ -587,17 +589,9 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
         return $('.forum').waypoint({
           offset: '25%',
           handler: function(direction){
-            var e, eid, id, cur;
+            var e, eid;
             e = $(this);
             eid = e.attr('id');
-            id = direction === 'down'
-              ? eid
-              : $('#' + eid).prevAll('.forum:first').attr('id');
-            if (!id) {
-              return;
-            }
-            $('header .menu').find('.active').removeClass('active');
-            cur = $('header .menu').find("." + id.replace(/_/, '-')).addClass('active');
             $('.forum .stuck').removeClass('stuck');
             return flipBackground(window, cur, direction);
           }
@@ -622,9 +616,7 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
     },
     onLoad: function(window, next){
       var cur;
-      window.$('header .menu .active').removeClass('active');
       cur = window.$("header .menu .forum-" + window.activeForumId);
-      cur.addClass('active');
       flipBackground(window, cur);
       return next();
     },

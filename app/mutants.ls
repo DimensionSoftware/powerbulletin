@@ -4,9 +4,15 @@ layout-static = (w, mutator, id) ->
   forum-class = if id then " forum-#{id}" else ''
   w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
   w.marshal \mutator, mutator                        # js
-  # handle forum background
+  # handle active forum background
   w.$ '.bg-set' .remove!
   w.$ '.bg' .each -> w.$ this .add-class \bg-set .remove!prepend-to w.$ 'body' # position behind
+  # handle active main menu
+  w.$ 'header .menu' .find '.active' .remove-class \active # remove prev
+  w.$ 'menu .row' # add current
+    .has ".submenu-#{id}"
+    .find '.title'
+    .add-class \active
 
 flip-background = (w, cur, direction='down') ->
   clear-timeout w.bg-anim if w.bg-anim
@@ -51,15 +57,6 @@ flip-background = (w, cur, direction='down') ->
             e   = $ this
             eid = e.attr \id
 
-            # handle menu active
-            id = if direction is \down then eid else
-              $ '#'+eid .prev-all '.forum:first' .attr \id
-            return unless id # guard
-            $ 'header .menu' .find '.active' .remove-class \active # remove prev
-            cur = $ 'header .menu'
-              .find ".#{id.replace /_/ \-}"
-              .add-class \active # ...and activate!
-
             # handle forum headers
             $ '.forum .stuck' .remove-class \stuck
             # TODO if direction is \up stick last forum
@@ -87,9 +84,7 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-load:
     (window, next) ->
-      window.$ 'header .menu .active' .remove-class \active
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
-      cur.add-class \active
       flip-background window, cur
       next!
   on-mutate:
