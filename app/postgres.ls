@@ -1,4 +1,5 @@
 require! pg
+require! h: './helpers'
 
 conn-str = "tcp://postgres@localhost/pb"
 
@@ -20,7 +21,7 @@ init-proc = (proname) ->
     if err then return cb(err)
 
     json = res[0][proname]
-    cb null, JSON.parse(json)
+    cb null, h.add-dates(JSON.parse(json))
 
 init-procs = (cb = (->)) ->
   sql = '''

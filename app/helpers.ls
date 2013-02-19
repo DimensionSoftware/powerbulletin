@@ -41,14 +41,18 @@ process-cached-data = {}
     else
       cb null, cache[key].data
 
-# recursively turn 'created' and 'created_at' fields into Date objects
+date-fields =
+  * \created
+  * \updated
+
+# recursively turn date-fields into Date objects
 @add-dates = (o) ->
+  return o unless o
   switch typeof o
   | 'object' =>
-    if o.created
-      o.created = new Date(o.created)
-    if o.created_at
-      o.created_at = new Date(o.created_at)
+    for df in date-fields
+      if o[df]
+        o[df] = new Date o[df]
     sub = __.keys(o).filter (k) -> typeof o[k] == 'array' || typeof o[k] == 'object'
     for k in sub
       o[k] = @add-dates o[k]
