@@ -589,9 +589,17 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
         return $('.forum').waypoint({
           offset: '25%',
           handler: function(direction){
-            var e, eid;
+            var e, eid, id, cur;
             e = $(this);
             eid = e.attr('id');
+            id = direction === 'down'
+              ? eid
+              : $('#' + eid).prevAll('.forum:first').attr('id');
+            if (!id) {
+              return;
+            }
+            $('header .menu').find('.active').removeClass('active');
+            cur = $('header .menu').find("." + id.replace(/_/, '-')).addClass('active');
             $('.forum .stuck').removeClass('stuck');
             return flipBackground(window, cur, direction);
           }

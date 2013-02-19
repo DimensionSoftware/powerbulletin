@@ -57,6 +57,15 @@ flip-background = (w, cur, direction='down') ->
             e   = $ this
             eid = e.attr \id
 
+            # handle menu active
+            id = if direction is \down then eid else
+              $ '#'+eid .prev-all '.forum:first' .attr \id
+            return unless id # guard
+            $ 'header .menu' .find '.active' .remove-class \active # remove prev
+            cur = $ 'header .menu'
+              .find ".#{id.replace /_/ \-}"
+              .add-class \active # ...and activate!
+
             # handle forum headers
             $ '.forum .stuck' .remove-class \stuck
             # TODO if direction is \up stick last forum
