@@ -29,7 +29,7 @@ if false
             mixin post(f, t, ii)
           .up(class='scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
 
-if posts
+if typeof(posts) !== 'undefined'
   .forum
     each p, i in posts
       mixin subpost(forums[0], p, i)
