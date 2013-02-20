@@ -5,6 +5,14 @@ export merge = merge = (...args) ->
   r = (rval, hval) -> rval <<< hval
   args.reduce r, {}
 
+# turn a title into a unique uri
+export title2slug = (title, id) ->
+  title = title.to-lower-case!
+  title = title.replace new RegExp('[^a-z0-9 ]'), ''
+  title = title.replace new RegExp(' +'), '-'
+  title = title.slice 0, 30
+  title.concat "-#{id}"
+
 ## END PURE FUNCTIONS ##
 
 top-forums-recent = (limit) ->

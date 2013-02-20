@@ -78,12 +78,13 @@ CREATE TABLE forums (
   parent_id   BIGINT references forums(id),
   site_id     BIGINT references sites(id) NOT NULL,
   title       VARCHAR(256) NOT NULL,
-  slug        VARCHAR(256) NOT NULL,
+  slug        VARCHAR(256),
   description VARCHAR(1024) NOT NULL,
   media_url   VARCHAR(1024),
   classes     VARCHAR(128),
   created     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated     TIMESTAMP,
+  UNIQUE (site_id, slug),
   PRIMARY KEY (id)
 );
 CREATE TRIGGER forums_timestamp BEFORE UPDATE ON forums FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
@@ -99,11 +100,13 @@ CREATE TABLE posts (
   user_id   BIGINT NOT NULL references users(id),
   forum_id  BIGINT NOT NULL references forums(id),
   title     VARCHAR(256) NOT NULL,
+  slug      VARCHAR(256),
   body      TEXT NOT NULL,
   loc       POINT,
   created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated   TIMESTAMP,
   CONSTRAINT potential_loop_prevention CHECK (parent_id <= id),
+  UNIQUE (forum_id, slug), -- perhaps add site_id to posts in the future??
   PRIMARY KEY (id)
 );
 CREATE TRIGGER posts_timestamp BEFORE UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();

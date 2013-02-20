@@ -21,7 +21,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       VALUES (-1, $1, $2, $3, $4)
       RETURNING id
       '''
-      sql2 = 'UPDATE posts SET thread_id=$1 WHERE id=$2'
+      sql2 = 'UPDATE posts SET thread_id=$1, slug=$2 WHERE id=$3'
 
       params =
         * post.user_id
@@ -34,7 +34,9 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       # in the future thread_id may be harder to calculate...
       # because of nested posts...
       thread-id = id
-      plv8.execute sql2, [thread-id, id]
+      slug = u.title2slug(post.title, id)
+      plv8.elog WARNING, JSON.stringify({slug})
+      plv8.execute sql2, [thread-id, slug, id]
 
       u.build-forum-doc(site-id, post.forum_id)
       u.build-homepage-doc(site-id)

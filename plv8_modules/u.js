@@ -1,5 +1,5 @@
 (function(){
-  var merge, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
+  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
     args = slice$.call(arguments);
@@ -7,6 +7,13 @@
       return import$(rval, hval);
     };
     return args.reduce(r, {});
+  };
+  out$.title2slug = title2slug = function(title, id){
+    title = title.toLowerCase();
+    title = title.replace(new RegExp('[^a-z0-9 ]'), '');
+    title = title.replace(new RegExp(' +'), '-');
+    title = title.slice(0, 30);
+    return title.concat("-" + id);
   };
   topForumsRecent = function(limit){
     var sql;
