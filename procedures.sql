@@ -35,7 +35,14 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       # in the future thread_id may be harder to calculate...
       # because of nested posts...
       thread-id = id
-      slug = u.title2slug(post.title, id)
+
+      if post.parent_id
+        # child posts use comment text for generating a slug
+        slug = u.title2slug(post.body, id)
+      else
+        # top-level posts use title text for generating a slug
+        slug = u.title2slug(post.title, id)
+
       plv8.execute sql2, [thread-id, slug, id]
 
       u.build-forum-doc(site-id, post.forum_id)
