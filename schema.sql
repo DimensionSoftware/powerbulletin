@@ -103,7 +103,7 @@ CREATE TABLE posts (
   loc       POINT,
   created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated   TIMESTAMP,
-  CONSTRAINT potential_loop_prevention CHECK (parent_id < id),
+  CONSTRAINT potential_loop_prevention CHECK (parent_id <= id),
   PRIMARY KEY (id)
 );
 CREATE TRIGGER posts_timestamp BEFORE UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
