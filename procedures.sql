@@ -10,36 +10,38 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- THIS IS ONLY FOR TOPLEVEL POSTS
 -- TODO: needs to support nested posts also, and update correct thread-id
-DROP FUNCTION IF EXISTS add_post(site_id JSON, post JSON);
-CREATE FUNCTION add_post(site_id JSON, post JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS add_post(post JSON);
+CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   require! <[u validations]>
   errors = validations.post(post)
-  success = !errors.length
-  if success
-    sql = '''
-    INSERT INTO posts (thread_id, user_id, forum_id, title, body)
-    VALUES (-1, $1, $2, $3, $4)
-    RETURNING id
-    '''
-    sql2 = 'UPDATE posts SET thread_id=$1 WHERE id=$2'
+  if !errors.length
+    if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])[0]?.site_id
+      sql = '''
+      INSERT INTO posts (thread_id, user_id, forum_id, title, body)
+      VALUES (-1, $1, $2, $3, $4)
+      RETURNING id
+      '''
+      sql2 = 'UPDATE posts SET thread_id=$1 WHERE id=$2'
 
-    params =
-      * post.user_id
-      * post.forum_id
-      * post.title
-      * post.body
+      params =
+        * post.user_id
+        * post.forum_id
+        * post.title
+        * post.body
 
-    id = plv8.execute(sql, params)[0].id
+      id = plv8.execute(sql, params)[0].id
 
-    # in the future thread_id may be harder to calculate...
-    # because of nested posts...
-    thread-id = id
-    plv8.execute sql2, [thread-id, id]
+      # in the future thread_id may be harder to calculate...
+      # because of nested posts...
+      thread-id = id
+      plv8.execute sql2, [thread-id, id]
 
-    u.build-forum-doc(site_id, post.forum_id)
-    u.build-homepage-doc(site_id)
+      u.build-forum-doc(site-id, post.forum_id)
+      u.build-homepage-doc(site-id)
+    else
+      errors.push "forum_id invalid: #{post.forum_id}"
 
-  return {success, errors, id}
+  return {success: !errors.length, errors, id}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS sub_posts_tree(id JSON);
