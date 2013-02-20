@@ -63,7 +63,7 @@ with-posts = (t, cb) -> # {{{1
       cb null, t
   )
 
-create-thread = (t, cb) -> # {{{1
+create-thread-for-site = (site-id, t, cb) --> # {{{1
   console.log 'inserting top post', { t.forum-id, t.title }
   top-post =
     user_id  : 1
@@ -71,7 +71,7 @@ create-thread = (t, cb) -> # {{{1
     title    : t.title
     body     : "\n"
 
-  pg.procs.add-post top-post, (err, insertion) ->
+  pg.procs.add-post site-id, top-post, (err, insertion) ->
     if err then return cb(err)
     console.warn 'insertion', insertion
 
@@ -101,11 +101,13 @@ delay-by = (ms, fn) --> # {{{1
 #
 
 defaults =
-  forum: 1
-  delay: 1500
+  site  : 1
+  forum : 1
+  delay : 1500
 
 program
-  .option  '-f, --forum <id>',           "forum id (default: #{defaults.forum})", parseInt, defaults.forum
+  .option  '-s, --site <id>',            "site id  (default: #{defaults.site})",                                         parseInt, defaults.site
+  .option  '-f, --forum <id>',           "forum id (default: #{defaults.forum})",                                        parseInt, defaults.forum
   .option  '-d, --delay <milliseconds>', "amount of time to wait in between HTTP requests (default: #{defaults.delay})", parseInt, defaults.delay
   .parse process.argv
 
@@ -118,7 +120,7 @@ console.log "found #{threads.length} threads for forum #{program.forum}"
 err, threads-with-posts <- async.map-series threads, (delayed with-posts)
 if err then console.warn err
 
-(err, r) <- async.map-series threads-with-posts, create-thread
+(err, r) <- async.map-series threads-with-posts, (create-thread-for-site program.site)
 if err then console.warn(err)
 console.log "the END"
 
