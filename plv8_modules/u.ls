@@ -110,7 +110,7 @@ export put-doc = (...args) ->
   update-sql =
     'UPDATE docs SET json=$4 WHERE site_id=$1::bigint AND type=$2::varchar(64) AND key=$3::varchar(64)'
 
-  args[2] = JSON.stringify args[2] if args[2]
+  args[3] = JSON.stringify args[3] if args[3]
 
   try
     plv8.subtransaction ->

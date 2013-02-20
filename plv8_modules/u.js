@@ -108,8 +108,8 @@
     args = slice$.call(arguments);
     insertSql = 'INSERT INTO docs (site_id, type, key, json) VALUES ($1, $2, $3, $4)';
     updateSql = 'UPDATE docs SET json=$4 WHERE site_id=$1::bigint AND type=$2::varchar(64) AND key=$3::varchar(64)';
-    if (args[2]) {
-      args[2] = JSON.stringify(args[2]);
+    if (args[3]) {
+      args[3] = JSON.stringify(args[3]);
     }
     try {
       plv8.subtransaction(function(){
