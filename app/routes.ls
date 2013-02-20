@@ -63,7 +63,7 @@ app.get '/:forum/most-active',
 if process.env.NODE_ENV != 'production'
   app.get '/debug/docs/:type/:key', (req, res, next) ->
     db = pg.procs
-    err, d <- db.doc req.params.type, req.params.key
+    err, d <- db.doc res.locals.site.id, req.params.type, req.params.key
     if err then return next(err)
     res.json d
 
