@@ -50,7 +50,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
     else
       errors.push "forum_id invalid: #{post.forum_id}"
 
-  return {success: !errors.length, errors, id}
+  return {success: !errors.length, errors, id, slug}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS sub_posts_tree(id JSON);
