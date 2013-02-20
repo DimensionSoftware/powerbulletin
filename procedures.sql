@@ -127,7 +127,7 @@ CREATE FUNCTION forum_doc_by_type_and_slug(site_id JSON, type JSON, slug JSON) R
   require! <[u]>
   res = plv8.execute('SELECT id FROM forums WHERE site_id=$1 AND slug=$2', [site_id, slug])
   if id  = res[0]?.id
-    return u.doc "forum_#{type}", id
+    return u.doc site_id, "forum_#{type}", id
   else
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
