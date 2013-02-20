@@ -35,7 +35,6 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       # because of nested posts...
       thread-id = id
       slug = u.title2slug(post.title, id)
-      plv8.elog WARNING, JSON.stringify({slug})
       plv8.execute sql2, [thread-id, slug, id]
 
       u.build-forum-doc(site-id, post.forum_id)
