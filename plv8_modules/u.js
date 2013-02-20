@@ -131,7 +131,7 @@
   };
   out$.buildForumDoc = buildForumDoc = function(siteId, forumId){
     var menu, buildForumDocFor, this$ = this;
-    siteId = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forumId])[0].site_id;
+    plv8.elog(WARNING, 'BONZAI');
     menu = forumsTree(siteId, topPostsRecent(), topForumsRecent());
     buildForumDocFor = function(doctype, topPostsFun){
       var forum;

@@ -123,8 +123,6 @@ forums-tree = (site-id, top-posts-fun, top-forums-fun) ->
   [decorate-forum(f, top-posts-fun) for f in top-forums-fun(site-id)]
 
 export build-forum-doc = (site-id, forum-id) ->
-  site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forum-id])[0].site_id
-
   ## XXX: should we have a custom menu routine ?? instead of piggybacking on to forums
   menu = forums-tree(site-id, top-posts-recent!, top-forums-recent!)
 
