@@ -2,6 +2,7 @@
 # - every site needs its own credentials for 3rd party auth
 
 require! {
+  \async
   \passport
   \passport-local
   \passport-facebook
@@ -12,7 +13,7 @@ require! {
   passport.Passport
 }
 
-@passport-for-site = {}
+export passport-for-site = {}
 
 # XXX - only exported for debugging convenience
 # XXX - what's a good way to hash local passwords?
@@ -44,11 +45,11 @@ pg.init ~>
   (err, domains) <~ db.domains
   if err then return throw err
 
-  for domain in domains
+  create-passport = (domain, cb) ->
     (err, site) <~ db.site-by-domain { domain }
     if err then return throw err
 
-    @passport-for-site[domain] = pass = new Passport
+    passport-for-site[domain] = pass = new Passport
 
     # middleware functions for this passport
     pass.mw-initialize = pass.initialize()
@@ -65,7 +66,6 @@ pg.init ~>
       (err, user) <~ db.usr {name, site_id}
       done err, user
 
-    # Local # {{{1
     pass.use new passport-local.Strategy (username, password, done) ~>
       (err, user) <~ db.usr { name: username, site_id: site.id }  # XXX - how do i get site_id?
       if err then return done(err)
@@ -78,7 +78,6 @@ pg.init ~>
       console.warn 'ok'
       done(null, user)
 
-    # Facebook # {{{1
     facebook-options =
       clientID      : \xxx
       client-secret : \xxx
@@ -87,7 +86,6 @@ pg.init ~>
       (err, user) <- db.find-or-create-user {}
       done(err, user)
 
-    # Twitter # {{{1
     twitter-options =
       consumer-key    : \xxx
       consumer-secret : \xxx
@@ -96,7 +94,6 @@ pg.init ~>
       (err, user) <- db.find-or-create-user {}
       done(err, user)
 
-    # Google # {{{1
     google-options =
       returnURL : "http://#{domain}/auth/google/return"  # XXX - should not hardcode site
       realm     : "http://#{domain}/"
@@ -104,6 +101,10 @@ pg.init ~>
       (err, user) <- db.find-or-create-user {}
       done(err, user)
 
-    # }}}
+    cb(null, pass)
 
-# vim:fdm=marker
+  (err, passports) <- async.map domains, create-passport
+  if err then return cb(err)
+  #console.warn 'passport-for-site', keys passport-for-site
+
+# vim:fdm=indent
