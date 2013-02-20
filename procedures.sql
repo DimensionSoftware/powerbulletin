@@ -138,7 +138,7 @@ CREATE FUNCTION build_all_docs(site_id JSON) RETURNS JSON AS $$
 
   u.build-homepage-doc(site_id)
 
-  for f in plv8.execute('SELECT id FROM forums', [])
+  for f in plv8.execute('SELECT id FROM forums WHERE site_id=$1', [site_id])
     u.build-forum-doc(site_id, f.id)
 
   return true
