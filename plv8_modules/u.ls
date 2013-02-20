@@ -91,16 +91,16 @@ decorate-forum = (f, top-posts-fun) ->
   merge f, {posts: posts-tree(f.id, top-posts-fun(f.id)), forums: [decorate-forum(sf, top-posts-fun) for sf in sub-forums(f.id)]}
 
 export doc = ->
-  if res = plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0]
+  if res = plv8.execute('SELECT json FROM docs WHERE site_id=$1 AND type=$2 AND key=$3', arguments)[0]
     JSON.parse(res.json)
   else
     null
 
 export put-doc = (...args) ->
   insert-sql =
-    'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)'
+    'INSERT INTO docs (site_id, type, key, json) VALUES ($1, $2, $3, $4)'
   update-sql =
-    'UPDATE docs SET json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)'
+    'UPDATE docs SET json=$4 WHERE site_id=$1::bigint AND type=$2::varchar(64) AND key=$3::varchar(64)'
 
   args[2] = JSON.stringify args[2] if args[2]
 
@@ -122,7 +122,7 @@ forum-tree = (forum-id, top-posts-fun) ->
 forums-tree = (site-id, top-posts-fun, top-forums-fun) ->
   [decorate-forum(f, top-posts-fun) for f in top-forums-fun(site-id)]
 
-export build-forum-doc = (forum-id) ->
+export build-forum-doc = (site-id, forum-id) ->
   site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forum-id])[0].site_id
 
   ## XXX: should we have a custom menu routine ?? instead of piggybacking on to forums
@@ -130,7 +130,7 @@ export build-forum-doc = (forum-id) ->
 
   build-forum-doc-for = (doctype, top-posts-fun) ~>
     forum = {forums: [forum-tree(forum-id, top-posts-fun)], menu}
-    @put-doc doctype, forum-id, JSON.stringify(forum)
+    @put-doc site-id, doctype, forum-id, JSON.stringify(forum)
 
   build-forum-doc-for \forum_recent, top-posts-recent!
   build-forum-doc-for \forum_active, top-posts-active!
@@ -143,7 +143,7 @@ export build-homepage-doc = (site-id) ->
   build-homepage-doc-for = (doctype, top-posts-fun, top-forums-fun) ~>
     forums = forums-tree(site-id, top-posts-fun, top-forums-fun)
     homepage = {forums, menu}
-    @put-doc doctype, site-id, JSON.stringify(homepage)
+    @put-doc site-id, doctype, site-id, JSON.stringify(homepage)
 
   build-homepage-doc-for \homepage_recent, top-posts-recent(5), top-forums-recent!
   build-homepage-doc-for \homepage_active, top-posts-active(5), top-forums-active!

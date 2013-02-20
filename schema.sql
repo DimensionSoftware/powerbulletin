@@ -109,6 +109,7 @@ CREATE TABLE posts (
 CREATE TRIGGER posts_timestamp BEFORE UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 CREATE TABLE docs (
+  site_id       BIGINT references sites(id) NOT NULL,
   key           VARCHAR(64) NOT NULL,
   type          VARCHAR(64) NOT NULL,
   json          TEXT NOT NULL,
@@ -116,6 +117,6 @@ CREATE TABLE docs (
   index_dirty   BOOLEAN NOT NULL DEFAULT 'f',
   created       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated       TIMESTAMP,
-  PRIMARY KEY (key, type)
+  PRIMARY KEY (site_id, key, type)
 );
 CREATE TRIGGER docs_timestamp BEFORE UPDATE ON docs FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();

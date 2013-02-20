@@ -1,17 +1,17 @@
-DROP FUNCTION IF EXISTS doc(type JSON, key JSON);
-CREATE FUNCTION doc(type JSON, key JSON) RETURNS JSON AS $$
-  return require(\u).doc type, key
+DROP FUNCTION IF EXISTS doc(site_id JSON, type JSON, key JSON);
+CREATE FUNCTION doc(site_id JSON, type JSON, key JSON) RETURNS JSON AS $$
+  return require(\u).doc site_id, type, key
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS put_doc(type JSON, key JSON, val JSON);
-CREATE FUNCTION put_doc(type JSON, key JSON, val JSON) RETURNS JSON AS $$
-  return require(\u).put-doc type, key, val
+DROP FUNCTION IF EXISTS put_doc(site_id JSON, type JSON, key JSON, val JSON);
+CREATE FUNCTION put_doc(site_id JSON, type JSON, key JSON, val JSON) RETURNS JSON AS $$
+  return require(\u).put-doc site_id, type, key, val
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- THIS IS ONLY FOR TOPLEVEL POSTS
 -- TODO: needs to support nested posts also, and update correct thread-id
-DROP FUNCTION IF EXISTS add_post(post JSON);
-CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS add_post(site_id JSON, post JSON);
+CREATE FUNCTION add_post(site_id JSON, post JSON) RETURNS JSON AS $$
   require! <[u validations]>
   errors = validations.post(post)
   success = !errors.length
@@ -36,14 +36,13 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
     thread-id = id
     plv8.execute sql2, [thread-id, id]
 
-    # XXX: only works for site-id 1 right now
-    u.build-forum-doc(post.forum_id)
-    u.build-homepage-doc(1)
+    u.build-forum-doc(site_id, post.forum_id)
+    u.build-homepage-doc(site_id)
 
   return {success, errors, id}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS post_tree(id JSON);
+DROP FUNCTION IF EXISTS sub_posts_tree(id JSON);
 CREATE FUNCTION sub_posts_tree(id JSON) RETURNS JSON AS $$
   require! <[u validations]>
   return u.sub-posts-tree id
@@ -123,25 +122,24 @@ CREATE FUNCTION domains() RETURNS JSON AS $$
   return plv8.execute(sql).map (d) -> d.domain
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS forum_doc_by_type_and_slug(type JSON, slug JSON);
-CREATE FUNCTION forum_doc_by_type_and_slug(type JSON, slug JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS forum_doc_by_type_and_slug(site_id JSON, type JSON, slug JSON);
+CREATE FUNCTION forum_doc_by_type_and_slug(site_id JSON, type JSON, slug JSON) RETURNS JSON AS $$
   require! <[u]>
-  res = plv8.execute('SELECT id FROM forums WHERE slug=$1', [slug])
+  res = plv8.execute('SELECT id FROM forums WHERE site_id=$1 AND slug=$2', [site_id, slug])
   if id  = res[0]?.id
     return u.doc "forum_#{type}", id
   else
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS build_all_docs();
-CREATE FUNCTION build_all_docs() RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS build_all_docs(site_id JSON);
+CREATE FUNCTION build_all_docs(site_id JSON) RETURNS JSON AS $$
   require! <[u]>
 
-  # XXX: only works for site-id 1 right now
-  u.build-homepage-doc(1)
+  u.build-homepage-doc(site_id)
 
   for f in plv8.execute('SELECT id FROM forums', [])
-    u.build-forum-doc(f.id)
+    u.build-forum-doc(site_id, f.id)
 
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;

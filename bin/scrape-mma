@@ -102,7 +102,7 @@ delay-by = (ms, fn) --> # {{{1
 
 defaults =
   forum: 1
-  delay: 3000
+  delay: 1500
 
 program
   .option  '-f, --forum <id>',           "forum id (default: #{defaults.forum})", parseInt, defaults.forum
