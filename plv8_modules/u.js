@@ -90,7 +90,7 @@
   };
   out$.doc = doc = function(){
     var res;
-    if (res = plv8.execute('SELECT json FROM docs WHERE type=$1 AND key=$2', arguments)[0]) {
+    if (res = plv8.execute('SELECT json FROM docs WHERE site_id=$1 AND type=$2 AND key=$3', arguments)[0]) {
       return JSON.parse(res.json);
     } else {
       return null;
@@ -99,8 +99,8 @@
   out$.putDoc = putDoc = function(){
     var args, insertSql, updateSql, e;
     args = slice$.call(arguments);
-    insertSql = 'INSERT INTO docs (type, key, json) VALUES ($1, $2, $3)';
-    updateSql = 'UPDATE docs SET json=$3 WHERE type=$1::varchar(64) AND key=$2::varchar(64)';
+    insertSql = 'INSERT INTO docs (site_id, type, key, json) VALUES ($1, $2, $3, $4)';
+    updateSql = 'UPDATE docs SET json=$4 WHERE site_id=$1::bigint AND type=$2::varchar(64) AND key=$3::varchar(64)';
     if (args[2]) {
       args[2] = JSON.stringify(args[2]);
     }
@@ -129,8 +129,8 @@
     }
     return results$;
   };
-  out$.buildForumDoc = buildForumDoc = function(forumId){
-    var siteId, menu, buildForumDocFor, this$ = this;
+  out$.buildForumDoc = buildForumDoc = function(siteId, forumId){
+    var menu, buildForumDocFor, this$ = this;
     siteId = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [forumId])[0].site_id;
     menu = forumsTree(siteId, topPostsRecent(), topForumsRecent());
     buildForumDocFor = function(doctype, topPostsFun){
@@ -139,7 +139,7 @@
         forums: [forumTree(forumId, topPostsFun)],
         menu: menu
       };
-      return this$.putDoc(doctype, forumId, JSON.stringify(forum));
+      return this$.putDoc(siteId, doctype, forumId, JSON.stringify(forum));
     };
     buildForumDocFor('forum_recent', topPostsRecent());
     buildForumDocFor('forum_active', topPostsActive());
@@ -155,7 +155,7 @@
         forums: forums,
         menu: menu
       };
-      return this$.putDoc(doctype, siteId, JSON.stringify(homepage));
+      return this$.putDoc(siteId, doctype, siteId, JSON.stringify(homepage));
     };
     buildHomepageDocFor('homepage_recent', topPostsRecent(5), topForumsRecent());
     buildHomepageDocFor('homepage_active', topPostsActive(5), topForumsActive());

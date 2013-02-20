@@ -46,7 +46,7 @@ db = pg.procs
 @homepage = (req, res, next) ->
   # TODO: 1 should be replaced with the real site-id here
   # TODO: need to allow ui to change between homepage_recent and homepage_active
-  err, doc <- db.doc \homepage_recent, 1
+  err, doc <- db.doc res.locals.site.id, \homepage_recent, res.locals.site.id
   if err then return next(err)
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
@@ -84,7 +84,7 @@ db = pg.procs
   forum-slug = '/' + parts[0].join('/')
 
   if parts?.length > 1 # thread
-    err, doc <- db.forum-doc-by-type-and-slug fdtype, forum-slug
+    err, doc <- db.forum-doc-by-type-and-slug res.locals.site.id, fdtype, forum-slug
     if err then return next err
 
     if doc?.forums?.length # store active
@@ -97,7 +97,7 @@ db = pg.procs
     finish doc
 
   else # forum
-    err, fdoc <- db.forum-doc-by-type-and-slug fdtype, forum-slug
+    err, fdoc <- db.forum-doc-by-type-and-slug res.locals.site.id, fdtype, forum-slug
     if err then return next err
     if !fdoc then return next(404)
     fdoc.active-forum-id = fdoc.forums[0]?.id

@@ -181,6 +181,8 @@ else
       .use(express.vhost "www.#{domain}", redir-to-domain)
     for i in ['', 2, 3, 4, 5] # add cache domains
       sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{domain}", cache-app)
+      cvars["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}.#{domain}"
+
   sock.listen proc.env['NODE_PORT'] || cvars.port
 #}}}
 # vim:fdm=marker

@@ -5,13 +5,8 @@ require! {
 }
 
 @multi-domain = (req, res, next) ->
-  # TODO handle all domain-specifics & custom settings here -- needs voltdb
   for i in ['', 2, 3, 4, 5] # localize cache domains
-    rhh  = req.headers.host
-    tld  = rhh.substr(rhh.last-index-of '.')    # extract tld
-    rest = rhh.substr(0, rhh.last-index-of '.') # everything else
-    host = rest.substr(rest.last-index-of '.')  # prune all subdomains
-    cvars["cache#{i}_url"] = res.locals["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}#{host}#{tld}"
+    res.locals["cache#{i}_url"] = cvars["cache#{i}_url"]
 
   db = pg.procs # XXX - I can't do it earlier, because pg.procs might not be initialized
   (err, site) <- db.site-by-domain { domain: req.headers.host }

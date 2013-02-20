@@ -7,4 +7,6 @@ bin/psql pb -c "CREATE EXTENSION plls"
 bin/psql pb < schema.sql
 bin/psql pb < procedures.sql
 bin/load-fixtures
-bin/psql pb -c 'SELECT build_all_docs()'
+for i in 1 2 3 4; do
+  bin/psql pb -c "SELECT build_all_docs('$i')"
+  done
