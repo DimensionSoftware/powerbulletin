@@ -17,8 +17,8 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   if !errors.length
     if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])[0]?.site_id
       sql = '''
-      INSERT INTO posts (thread_id, user_id, forum_id, title, body)
-      VALUES (-1, $1, $2, $3, $4)
+      INSERT INTO posts (thread_id, user_id, forum_id, parent_id, title, body)
+      VALUES (-1, $1, $2, $3, $4, $5)
       RETURNING id
       '''
       sql2 = 'UPDATE posts SET thread_id=$1, slug=$2 WHERE id=$3'
@@ -26,6 +26,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       params =
         * post.user_id
         * post.forum_id
+        * post.parent_id
         * post.title
         * post.body
 
