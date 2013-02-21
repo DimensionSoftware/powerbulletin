@@ -17,6 +17,11 @@ mixin subpost(p, sp, i)
 //- main
 //- ---------
 // if forums
+//-if typeof(forums) !== 'undefined'
+//-  //- breadcrumbs here
+//-  each f,i in 
+//-    mixin breadcrumb
+
 if false
   each f,i in forums
     img.bg(id="forum_bg_#{f.id}", src="#{cache_url}/images/bg_#{f.id}.jpg")

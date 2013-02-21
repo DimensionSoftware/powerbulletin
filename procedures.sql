@@ -162,6 +162,13 @@ CREATE FUNCTION post_doc(post_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS build_doc(site_id JSON, forum_id JSON);
+CREATE FUNCTION build_doc(site_id JSON, forum_id JSON) RETURNS JSON AS $$
+  require! <[u]>
+  u.build-forum-doc(site_id, forum_id)
+  return true
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 DROP FUNCTION IF EXISTS build_all_docs(site_id JSON);
 CREATE FUNCTION build_all_docs(site_id JSON) RETURNS JSON AS $$
   require! u

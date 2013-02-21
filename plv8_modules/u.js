@@ -1,5 +1,5 @@
 (function(){
-  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
+  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
     args = slice$.call(arguments);
@@ -13,11 +13,12 @@
     title = title.replace(new RegExp('[^a-z0-9 ]', 'g'), '');
     title = title.replace(new RegExp(' +', 'g'), '-');
     title = title.slice(0, 30);
-    return title.concat("." + id);
+    return title.concat("-" + id);
   };
-  topForumsRecent = function(limit){
+  topForumsRecent = function(limit, fields){
     var sql;
-    sql = 'SELECT * FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id ASC\nLIMIT $2';
+    fields == null && (fields = '*');
+    sql = "SELECT " + fields + " FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id ASC\nLIMIT $2";
     return function(){
       var args;
       args = slice$.call(arguments);
@@ -38,18 +39,20 @@
     sql = 'SELECT *\nFROM forums\nWHERE parent_id=$1\nORDER BY created DESC, id DESC';
     return plv8.execute(sql, arguments);
   };
-  out$.topPostsRecent = topPostsRecent = topPostsRecent = function(limit){
+  topPostsRecent = function(limit, fields){
     var sql;
-    sql = 'SELECT\n  p.*,\n  a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY created DESC, id DESC\nLIMIT $2';
+    fields == null && (fields = 'p.*');
+    sql = "SELECT\n  " + fields + ",\n  a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY p.created DESC, id DESC\nLIMIT $2";
     return function(){
       var args;
       args = slice$.call(arguments);
       return plv8.execute(sql, args.concat([limit]));
     };
   };
-  topPostsActive = function(limit){
+  topPostsActive = function(limit, fields){
     var sql;
-    sql = 'SELECT\n  p.*,\n  a.name user_name,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1) sort\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY sort\nLIMIT $2';
+    fields == null && (fields = 'p.*');
+    sql = "SELECT\n  " + fields + ",\n  a.name user_name,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1) sort\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY sort\nLIMIT $2";
     return function(){
       var args;
       args = slice$.call(arguments);
@@ -121,9 +124,9 @@
     }
     return true;
   };
-  out$.forumTree = forumTree = forumTree = function(forumId, topPostsFun){
+  forumTree = function(forumId, topPostsFun){
     var sql, f;
-    sql = 'SELECT * FROM forums WHERE id=$1 LIMIT 1';
+    sql = 'SELECT id,parent_id,title,slug,description,media_url,classes FROM forums WHERE id=$1 LIMIT 1';
     if (f = plv8.execute(sql, [forumId])[0]) {
       return decorateForum(f, topPostsFun);
     }
@@ -136,29 +139,9 @@
     }
     return results$;
   };
-  out$.uriForForum = uriForForum = function(forumId){
-    var sql, ref$, parent_id, slug;
-    sql = 'SELECT parent_id, slug FROM forums WHERE id=$1';
-    ref$ = plv8.execute(sql, [forumId])[0], parent_id = ref$.parent_id, slug = ref$.slug;
-    if (parent_id) {
-      return this.uriForForum(parent_id) + '/' + slug;
-    } else {
-      return '/' + slug;
-    }
-  };
-  out$.uriForPost = uriForPost = function(postId){
-    var sql, ref$, forum_id, parent_id, slug;
-    sql = 'SELECT forum_id, parent_id, slug FROM posts WHERE id=$1';
-    ref$ = plv8.execute(sql, [postId])[0], forum_id = ref$.forum_id, parent_id = ref$.parent_id, slug = ref$.slug;
-    if (parent_id) {
-      return this.uriForPost(parent_id) + '/' + slug;
-    } else {
-      return this.uriForForum(forum_id) + '/' + slug;
-    }
-  };
   out$.buildForumDoc = buildForumDoc = function(siteId, forumId){
     var menu, buildForumDocFor, this$ = this;
-    menu = forumsTree(siteId, topPostsRecent(), topForumsRecent());
+    menu = forumsTree(siteId, topPostsRecent(null, 'p.created,p.title,p.slug,p.id'), topForumsRecent(null, 'id,title,slug,classes'));
     buildForumDocFor = function(doctype, topPostsFun){
       var forum;
       forum = {
