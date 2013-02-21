@@ -108,7 +108,7 @@ CREATE TABLE posts (
   created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated   TIMESTAMP,
   CONSTRAINT potential_loop_prevention CHECK (parent_id <= id),
-  UNIQUE (forum_id, slug), -- perhaps add site_id to posts in the future??
+  UNIQUE (forum_id, uri), -- perhaps add site_id to posts in the future??
   PRIMARY KEY (id)
 );
 CREATE TRIGGER posts_timestamp BEFORE UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
