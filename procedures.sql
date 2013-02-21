@@ -21,7 +21,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       VALUES (-1, $1, $2, $3, $4, $5, $6)
       RETURNING id
       '''
-      sql2 = 'UPDATE posts SET thread_id=$1, slug=$2, uri=$3 WHERE id=$4'
+      sql2 = 'UPDATE posts SET thread_id=$1, uri=$2 WHERE id=$3'
 
       params =
         * post.user_id
@@ -36,14 +36,20 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       if post.parent_id
         [{thread_id}] = plv8.execute('SELECT thread_id FROM posts WHERE id=$1', [post.parent_id])
         # child posts use comment text for generating a slug
+
         slug = u.title2slug(post.body, id)
       else
         thread_id = id
         # top-level posts use title text for generating a slug
         slug = u.title2slug(post.title, id)
 
+      # TODO: don't use numeric identifier in slug unless you have to, use subtransaction to catch the case and use the more-unique version
+
+      # replace placeholder above
+      plv8.execute 'UPDATE posts SET slug=$1', [slug]
+
       uri = u.uri-for-post(id)
-      plv8.execute sql2, [thread_id, slug, uri, id]
+      plv8.execute sql2, [thread_id, uri, id]
 
       u.build-forum-doc(site-id, post.forum_id)
       u.build-homepage-doc(site-id)
