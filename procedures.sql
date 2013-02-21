@@ -17,33 +17,33 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   if !errors.length
     if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])[0]?.site_id
       sql = '''
-      INSERT INTO posts (thread_id, user_id, forum_id, parent_id, title, body)
-      VALUES (-1, $1, $2, $3, $4, $5)
+      INSERT INTO posts (thread_id, user_id, forum_id, parent_id, title, slug, body)
+      VALUES (-1, $1, $2, $3, $4, $5, $6)
       RETURNING id
       '''
-      sql2 = 'UPDATE posts SET thread_id=$1, slug=$2 WHERE id=$3'
+      sql2 = 'UPDATE posts SET thread_id=$1, slug=$2, uri=$3 WHERE id=$4'
 
       params =
         * post.user_id
         * post.forum_id
         * post.parent_id
         * post.title
+        * '-should never see me-'
         * post.body
 
       id = plv8.execute(sql, params)[0].id
 
-      # in the future thread_id may be harder to calculate...
-      # because of nested posts...
-      thread-id = id
-
       if post.parent_id
+        [{thread_id}] = plv8.execute('SELECT thread_id FROM posts WHERE id=$1', [post.parent_id])
         # child posts use comment text for generating a slug
         slug = u.title2slug(post.body, id)
       else
+        thread_id = id
         # top-level posts use title text for generating a slug
         slug = u.title2slug(post.title, id)
 
-      plv8.execute sql2, [thread-id, slug, id]
+      uri = u.uri-for-post(id)
+      plv8.execute sql2, [thread_id, slug, uri, id]
 
       u.build-forum-doc(site-id, post.forum_id)
       u.build-homepage-doc(site-id)
