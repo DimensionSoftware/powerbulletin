@@ -10,3 +10,7 @@ bin/load-fixtures
 for i in 1 2 3 4; do
   bin/psql pb -c "SELECT build_all_docs('$i')"
   done
+
+for i in 1 2 3 4; do
+  bin/psql pb -c "SELECT build_all_uris('$i')"
+  done

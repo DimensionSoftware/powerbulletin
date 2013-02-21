@@ -133,24 +133,54 @@ CREATE FUNCTION domains() RETURNS JSON AS $$
   return plv8.execute(sql).map (d) -> d.domain
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS forum_doc_by_type_and_slug(site_id JSON, type JSON, slug JSON);
-CREATE FUNCTION forum_doc_by_type_and_slug(site_id JSON, type JSON, slug JSON) RETURNS JSON AS $$
-  require! <[u]>
-  res = plv8.execute('SELECT id FROM forums WHERE site_id=$1 AND slug=$2', [site_id, slug])
+-- XXX sort is used but will need to be reworked for geospatial
+DROP FUNCTION IF EXISTS forum_doc(site_id JSON, sort JSON, uri JSON);
+CREATE FUNCTION forum_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
+  require! u
+  res = plv8.execute('SELECT id FROM forums WHERE site_id=$1 AND uri=$2', [site_id, uri])
   if id  = res[0]?.id
-    return u.doc site_id, "forum_#{type}", id
+    return u.doc site_id, "forum_#{sort}", id
+  else
+    return null
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- this one is on the fly cuz we don't wanna pregen N depth recursive tree docs
+-- XXX sort is a placeholder and is not used currently
+DROP FUNCTION IF EXISTS post_doc(post_id JSON, sort JSON, uri JSON);
+CREATE FUNCTION post_doc(post_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
+  require! u
+  res = plv8.execute('SELECT id FROM posts WHERE parent_id=$1 AND uri=$2', [post_id, uri])
+  if id  = res[0]?.id
+    return u.forum-tree forum_id, u.top-posts-recent(10)
   else
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS build_all_docs(site_id JSON);
 CREATE FUNCTION build_all_docs(site_id JSON) RETURNS JSON AS $$
-  require! <[u]>
+  require! u
 
   u.build-homepage-doc(site_id)
 
   for f in plv8.execute('SELECT id FROM forums WHERE site_id=$1', [site_id])
     u.build-forum-doc(site_id, f.id)
+
+  return true
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS build_all_uris(site_id JSON);
+CREATE FUNCTION build_all_uris(site_id JSON) RETURNS JSON AS $$
+  require! u
+  forums = plv8.execute 'SELECT id FROM forums WHERE site_id=$1', [site_id]
+  posts = plv8.execute 'SELECT p.id FROM posts p JOIN forums f ON f.id=forum_id WHERE f.site_id=$1', [site_id]
+
+  for f in forums
+    uri = u.uri-for-forum(f.id)
+    plv8.execute 'UPDATE forums SET uri=$1 WHERE id=$2', [uri, f.id]
+
+  for p in posts
+    uri = u.uri-for-post(p.id)
+    plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [uri, p.id]
 
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
