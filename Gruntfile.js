@@ -111,7 +111,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('procs', 'Compile stored procedures to JS', function() {
-    exec('node_modules/.bin/lsc -c plv8_modules/*.ls', {silent: true});
+    exec('node_modules/.bin/lsc -c plv8_modules/*.ls');
     exec('bin/psql pb < procedures.sql', {silent: true});
   });
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {
