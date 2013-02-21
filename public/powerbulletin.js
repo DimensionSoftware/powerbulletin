@@ -545,7 +545,7 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
       return w.$(this).addClass('bg-set').remove().prependTo(w.$('body'));
     });
     w.$('header .menu').find('.active').removeClass('active');
-    return w.$('menu .row').has(".submenu-" + id).find('.title').addClass('active');
+    return w.$('menu .row').has(".forum-" + id).find('.title').addClass('active');
   };
   flipBackground = function(w, cur, direction){
     var last, next;

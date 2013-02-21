@@ -10,7 +10,7 @@ layout-static = (w, mutator, id) ->
   # handle active main menu
   w.$ 'header .menu' .find '.active' .remove-class \active # remove prev
   w.$ 'menu .row' # add current
-    .has ".submenu-#{id}"
+    .has ".forum-#{id}"
     .find '.title'
     .add-class \active
 
