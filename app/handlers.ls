@@ -84,6 +84,7 @@ db = pg.procs
     if !doc then return next(404)
 
     doc.active-forum-id = doc.forum_id
+    doc.active-post-id = doc.id
 
     finish doc
 

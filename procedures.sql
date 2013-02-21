@@ -16,47 +16,47 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   errors = validations.post(post)
   if !errors.length
     if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])[0]?.site_id
-      sql = '''
-      INSERT INTO posts (thread_id, user_id, forum_id, parent_id, title, slug, body)
-      VALUES (-1, $1, $2, $3, $4, $5, $6)
-      RETURNING id
-      '''
-      sql2 = 'UPDATE posts SET thread_id=$1, uri=$2 WHERE id=$3'
-
-      params =
-        * post.user_id
-        * post.forum_id
-        * post.parent_id
-        * post.title
-        * '-should never see me-'
-        * post.body
-
-      id = plv8.execute(sql, params)[0].id
+      [{nextval}] = plv8.execute("SELECT nextval('posts_id_seq')", [])
 
       if post.parent_id
         [{thread_id}] = plv8.execute('SELECT thread_id FROM posts WHERE id=$1', [post.parent_id])
         # child posts use comment text for generating a slug
-
-        slug = u.title2slug(post.body, id)
+        slug = u.title2slug(post.body, nextval)
       else
-        thread_id = id
+        thread_id = nextval
         # top-level posts use title text for generating a slug
-        slug = u.title2slug(post.title, id)
+        slug = u.title2slug(post.title, nextval)
 
       # TODO: don't use numeric identifier in slug unless you have to, use subtransaction to catch the case and use the more-unique version
+      # TODO: kill comment url recursions and go flat with the threads side of things (hashtag like reddit?) or keep it the same
+      #       its a question of url length
 
-      # replace placeholder above
-      plv8.execute 'UPDATE posts SET slug=$1', [slug]
+      sql = '''
+      INSERT INTO posts (id, thread_id, user_id, forum_id, parent_id, title, slug, body)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      '''
 
-      uri = u.uri-for-post(id)
-      plv8.execute sql2, [thread_id, uri, id]
+      params =
+        * nextval
+        * thread_id
+        * post.user_id
+        * post.forum_id
+        * post.parent_id
+        * post.title
+        * slug
+        * post.body
+
+      plv8.execute(sql, params)
+
+      # the post must be inserted before uri-for-post will work, thats why uri is a NULLABLE column
+      plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [u.uri-for-post(nextval), nextval]
 
       u.build-forum-doc(site-id, post.forum_id)
       u.build-homepage-doc(site-id)
     else
       errors.push "forum_id invalid: #{post.forum_id}"
 
-  return {success: !errors.length, errors, id, slug}
+  return {success: !errors.length, errors, id: nextval, slug}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS sub_posts_tree(id JSON);

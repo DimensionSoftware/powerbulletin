@@ -31,7 +31,8 @@ mixin thread(f, t, i)
 .create
   a(class='button onclick-add-post-dialog') Create Thread
 
-if forums
+//- XXX - && typeof(forums) !== 'undefined' is a temporary hack to get the page to load
+if typeof(forums) !== 'undefined' && forums
   each f,i in forums
     if f.posts
       ul.threads

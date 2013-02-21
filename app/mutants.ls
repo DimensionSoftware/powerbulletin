@@ -89,6 +89,7 @@ flip-background = (w, cur, direction='down') ->
       window.render-jade 'left_content' \nav
       window.render-jade 'main_content' \posts
       window.marshal \activeForumId @active-forum-id
+      window.marshal \activePostId @active-post-id
       layout-static window, \forum, @active-forum-id
       next!
   on-load:

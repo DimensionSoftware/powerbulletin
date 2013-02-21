@@ -30,15 +30,19 @@ $d.on \click 'html.forum header .menu a.title' window.mutate
 # main
 # ---------
 add-post-dialog = ->
-  html <- $.get '/resources/posts', {fid: window.active-forum-id}
+  query =
+    fid: window.active-forum-id
+    pid: window.active-post-id
+
+  html <- $.get '/resources/posts', query
   $(html).dialog modal: true
   false # stop event propagation
 
 # assumes immediate parent is form (in case of submit button)
 add-post = ->
   form = $ '#add-post-form'
-  $.post '/resources/posts', form.serialize!, ->
-    console.log 'success! post added'
+  $.post '/resources/posts', form.serialize!, (_r1, res) ->
+    console.log 'success! post added', res
     console.log 'stub: do something fancy to confirm submission'
   false # stop event propagation
 
