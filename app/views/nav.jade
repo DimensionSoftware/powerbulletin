@@ -1,7 +1,7 @@
 
 mixin forum(f, i)
   h3.title Forums
-    //-a.mutant(href=f.slug)= f.title
+    //-a.mutant(href=f.uri)= f.title
   if f.forums
     ul.forum(class="#{f.classes || ''} forum-#{activeForumId}")
       each sf,ii in f.forums
@@ -10,12 +10,12 @@ mixin forum(f, i)
 mixin subforum(f, sf, i)
   //-.subforum(class="#{(i % 2) ? 'odd' : 'even'}")
   li
-    a.mutant.title(href="#{sf.slug}")= sf.title
+    a.mutant.title(href=sf.uri)= sf.title
 
 mixin thread(f, t, i)
   li
     h4.title
-      a.mutant(href="#{f.slug}/#{t.title.replace(/\W+/g, '-')}-#{t.id}")= t.title
+      a.mutant(href=t.uri)= t.title
 
 //- main
 //- ---------

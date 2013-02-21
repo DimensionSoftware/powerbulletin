@@ -7,6 +7,13 @@ bin/psql pb -c "CREATE EXTENSION plls"
 bin/psql pb < schema.sql
 bin/psql pb < procedures.sql
 bin/load-fixtures
+
+# populate absolute uris from slugs and tree layout
+for i in 1 2 3 4; do
+  bin/psql pb -c "SELECT build_all_uris('$i')"
+  done
+
+# build all docs finally
 for i in 1 2 3 4; do
   bin/psql pb -c "SELECT build_all_docs('$i')"
   done

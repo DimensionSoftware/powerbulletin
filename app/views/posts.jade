@@ -1,7 +1,7 @@
 
 mixin post(p, i)
   .post
-    a.mutant(href=p.slug)!= p.title
+    a.mutant(href=p.uri)!= p.title
     p.body!= p.body
     if p.subposts
       each sp,ii in p.subposts

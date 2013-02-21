@@ -71,33 +71,34 @@ db = pg.procs
   url = req.path
   if m = url.match /^(.+)\/active$/
     url = m[1]
-    fdtype = \active
+    sorttype = \active
   else if m = url.match /^(.+)\/recent$/
     url = m[1]
-    fdtype = \recent
+    sorttype = \recent
   else
     # defaults
     # url stays the same
-    fdtype = \recent
+    sorttype = \recent
 
   parts = forum-path-parts url
-  forum-slug = '/' + parts[0].join('/')
+  uri = '/' + parts[0].join('/')
 
   if parts?.length > 1 # thread
-    err, doc <- db.forum-doc-by-type-and-slug res.locals.site.id, fdtype, forum-slug
+    thread-id = parseInt parts[1]
+
+    err, doc <- db.post-doc thread-id, sorttype, uri
     if err then return next err
 
     if doc?.forums?.length # store active
       doc.active-forum-id = (head filter (.slug is forum-slug), doc.forums)?.id
 
-    thread-id = parseInt parts[1]
     err, posts <- db.sub-posts-tree thread-id
     doc.posts = posts
     console.warn "[thread #{thread-id}] #{req.url}"
     finish doc
 
   else # forum
-    err, fdoc <- db.forum-doc-by-type-and-slug res.locals.site.id, fdtype, forum-slug
+    err, fdoc <- db.forum-doc res.locals.site.id, sorttype, uri
     if err then return next err
     if !fdoc then return next(404)
     fdoc.active-forum-id = fdoc.forums[0]?.id
