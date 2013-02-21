@@ -71,7 +71,7 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
     title    : t.title
     body     : "\n"
 
-  pg.procs.add-post site-id, top-post, (err, insertion) ->
+  pg.procs.add-post top-post, (err, insertion) ->
     if err then return cb(err)
     console.warn 'insertion', insertion
 
