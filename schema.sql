@@ -99,7 +99,7 @@ CREATE TABLE posts (
   parent_id BIGINT,
   user_id   BIGINT NOT NULL references users(id),
   forum_id  BIGINT NOT NULL references forums(id),
-  title     VARCHAR(256) NOT NULL,
+  title     VARCHAR(256),
   slug      VARCHAR(256),
   body      TEXT NOT NULL,
   loc       POINT,

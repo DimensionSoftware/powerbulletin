@@ -10,8 +10,8 @@
   };
   out$.title2slug = title2slug = function(title, id){
     title = title.toLowerCase();
-    title = title.replace(new RegExp('[^a-z0-9 ]'), '');
-    title = title.replace(new RegExp(' +'), '-');
+    title = title.replace(new RegExp('[^a-z0-9 ]', 'g'), '');
+    title = title.replace(new RegExp(' +', 'g'), '-');
     title = title.slice(0, 30);
     return title.concat("-" + id);
   };

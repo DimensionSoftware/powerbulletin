@@ -9,8 +9,8 @@
     if (!post.forum_id) {
       errors.push('forum_id cannot be blank');
     }
-    if (!post.title) {
-      errors.push('title cannot be blank');
+    if (!(post.title || post.parent_id)) {
+      errors.push('must specify a title or parent_id');
     }
     if (!post.body) {
       errors.push('body cannot be blank');

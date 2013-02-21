@@ -17,8 +17,8 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   if !errors.length
     if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])[0]?.site_id
       sql = '''
-      INSERT INTO posts (thread_id, user_id, forum_id, title, body)
-      VALUES (-1, $1, $2, $3, $4)
+      INSERT INTO posts (thread_id, user_id, forum_id, parent_id, title, body)
+      VALUES (-1, $1, $2, $3, $4, $5)
       RETURNING id
       '''
       sql2 = 'UPDATE posts SET thread_id=$1, slug=$2 WHERE id=$3'
@@ -26,6 +26,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       params =
         * post.user_id
         * post.forum_id
+        * post.parent_id
         * post.title
         * post.body
 
@@ -34,7 +35,14 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       # in the future thread_id may be harder to calculate...
       # because of nested posts...
       thread-id = id
-      slug = u.title2slug(post.title, id)
+
+      if post.parent_id
+        # child posts use comment text for generating a slug
+        slug = u.title2slug(post.body, id)
+      else
+        # top-level posts use title text for generating a slug
+        slug = u.title2slug(post.title, id)
+
       plv8.execute sql2, [thread-id, slug, id]
 
       u.build-forum-doc(site-id, post.forum_id)
@@ -42,7 +50,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
     else
       errors.push "forum_id invalid: #{post.forum_id}"
 
-  return {success: !errors.length, errors, id}
+  return {success: !errors.length, errors, id, slug}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS sub_posts_tree(id JSON);

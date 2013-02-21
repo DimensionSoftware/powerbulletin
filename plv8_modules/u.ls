@@ -8,8 +8,8 @@ export merge = merge = (...args) ->
 # turn a title into a unique uri
 export title2slug = (title, id) ->
   title = title.to-lower-case!
-  title = title.replace new RegExp('[^a-z0-9 ]'), ''
-  title = title.replace new RegExp(' +'), '-'
+  title = title.replace new RegExp('[^a-z0-9 ]', 'g'), ''
+  title = title.replace new RegExp(' +', 'g'), '-'
   title = title.slice 0, 30
   title.concat "-#{id}"
 
