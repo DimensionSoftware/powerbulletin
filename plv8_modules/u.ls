@@ -45,7 +45,7 @@ sub-forums = ->
   '''
   plv8.execute sql, arguments
 
-top-posts-recent = (limit, fields='p.*') ->
+export top-posts-recent = top-posts-recent = (limit, fields='p.*') ->
   sql = """
   SELECT
     #{fields},
@@ -146,11 +146,13 @@ export uri-for-post = (post-id) ->
   else
     @uri-for-forum(forum_id) + '/' + slug
 
-export build-forum-doc = (site-id, forum-id) ->
-  ## XXX: should we have a custom menu routine ?? instead of piggybacking on to forums
-  menu = forums-tree(site-id,
+export menu = (site-id) ->
+  forums-tree(site-id,
     top-posts-recent(null, 'p.created,p.title,p.slug,p.id'),
     top-forums-recent(null, 'id,title,slug,classes'))
+
+export build-forum-doc = (site-id, forum-id) ->
+  menu = @menu(site-id)
 
   build-forum-doc-for = (doctype, top-posts-fun) ~>
     forum = {forums: [forum-tree(forum-id, top-posts-fun)], menu}
@@ -161,8 +163,7 @@ export build-forum-doc = (site-id, forum-id) ->
   true
 
 export build-homepage-doc = (site-id) ->
-  ## XXX: should we have a custom menu routine ?? instead of piggybacking on to forums
-  menu = forums-tree(site-id, top-posts-recent!, top-forums-recent!)
+  menu = @menu(site-id)
 
   build-homepage-doc-for = (doctype, top-posts-fun, top-forums-fun) ~>
     forums = forums-tree(site-id, top-posts-fun, top-forums-fun)

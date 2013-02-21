@@ -152,12 +152,23 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- this one is on the fly cuz we don't wanna pregen N depth recursive tree docs
 -- XXX sort is a placeholder and is not used currently
-DROP FUNCTION IF EXISTS post_doc(post_id JSON, sort JSON, uri JSON);
-CREATE FUNCTION post_doc(post_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS post_doc(site_id JSON, sort JSON, uri JSON);
+CREATE FUNCTION post_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
   require! u
-  res = plv8.execute('SELECT id FROM posts WHERE parent_id=$1 AND uri=$2', [post_id, uri])
-  if id  = res[0]?.id
-    return u.sub-posts-tree post_id, u.top-posts-recent(10)
+
+  sql = '''
+  SELECT p.*
+  FROM posts p
+  JOIN forums f ON f.id=p.forum_id
+  WHERE f.site_id=$1 AND p.uri=$2
+  '''
+  [doc] = plv8.execute(sql, [site_id, uri])
+
+  if doc
+    doc.posts = u.sub-posts-tree doc.id, u.top-posts-recent(10)
+    #XXX: note to self, menu doc? this seems to be used in alot of places
+    doc.menu = u.menu site_id
+    return doc
   else
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;

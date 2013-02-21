@@ -67,32 +67,34 @@ db = pg.procs
     caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<< res.locals.site), 7200
     res.mutant \forum
 
-  # parse url
-  url = req.path
-  if m = url.match /^(.+)\/active$/
-    url = m[1]
+  # parse uri
+  uri = req.path
+  if m = uri.match /^(.+)\/active$/
+    uri = m[1]
     sorttype = \active
-  else if m = url.match /^(.+)\/recent$/
-    url = m[1]
+  else if m = uri.match /^(.+)\/recent$/
+    uri = m[1]
     sorttype = \recent
   else
     # defaults
-    # url stays the same
+    # uri stays the same
     sorttype = \recent
 
-  parts = forum-path-parts url
-  uri = '/' + parts[0].join('/')
+  parts = forum-path-parts uri
+  uri = uri.replace '&?_surf=1', ''
+  uri = uri.replace /\?$/, '' # remove ? if its all thats left
 
   if parts?.length > 1 # thread
     thread-id = parseInt parts[1]
 
-    err, doc <- db.post-doc thread-id, sorttype, uri
+    console.warn uri
+    err, doc <- db.post-doc res.locals.site.id, sorttype, uri
     if err then return next err
 
     if doc?.forums?.length # store active
       doc.active-forum-id = (head filter (.uri is uri), doc.forums)?.id
 
-    console.warn "[thread #{thread-id}] #{req.url}"
+    console.warn "[thread #{thread-id}] #{uri}"
     finish doc
 
   else # forum

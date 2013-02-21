@@ -1,5 +1,5 @@
 (function(){
-  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
+  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, menu, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
     args = slice$.call(arguments);
@@ -39,7 +39,7 @@
     sql = 'SELECT *\nFROM forums\nWHERE parent_id=$1\nORDER BY created DESC, id DESC';
     return plv8.execute(sql, arguments);
   };
-  topPostsRecent = function(limit, fields){
+  out$.topPostsRecent = topPostsRecent = topPostsRecent = function(limit, fields){
     var sql;
     fields == null && (fields = 'p.*');
     sql = "SELECT\n  " + fields + ",\n  a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY p.created DESC, id DESC\nLIMIT $2";
@@ -159,9 +159,12 @@
       return this.uriForForum(forum_id) + '/' + slug;
     }
   };
+  out$.menu = menu = function(siteId){
+    return forumsTree(siteId, topPostsRecent(null, 'p.created,p.title,p.slug,p.id'), topForumsRecent(null, 'id,title,slug,classes'));
+  };
   out$.buildForumDoc = buildForumDoc = function(siteId, forumId){
     var menu, buildForumDocFor, this$ = this;
-    menu = forumsTree(siteId, topPostsRecent(null, 'p.created,p.title,p.slug,p.id'), topForumsRecent(null, 'id,title,slug,classes'));
+    menu = this.menu(siteId);
     buildForumDocFor = function(doctype, topPostsFun){
       var forum;
       forum = {
@@ -176,7 +179,7 @@
   };
   out$.buildHomepageDoc = buildHomepageDoc = function(siteId){
     var menu, buildHomepageDocFor, this$ = this;
-    menu = forumsTree(siteId, topPostsRecent(), topForumsRecent());
+    menu = this.menu(siteId);
     buildHomepageDocFor = function(doctype, topPostsFun, topForumsFun){
       var forums, homepage;
       forums = forumsTree(siteId, topPostsFun, topForumsFun);
