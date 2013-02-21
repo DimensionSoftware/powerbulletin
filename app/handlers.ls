@@ -90,10 +90,8 @@ db = pg.procs
     if err then return next err
 
     if doc?.forums?.length # store active
-      doc.active-forum-id = (head filter (.slug is forum-slug), doc.forums)?.id
+      doc.active-forum-id = (head filter (.uri is uri), doc.forums)?.id
 
-    err, posts <- db.sub-posts-tree thread-id
-    doc.posts = posts
     console.warn "[thread #{thread-id}] #{req.url}"
     finish doc
 

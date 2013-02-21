@@ -157,7 +157,7 @@ CREATE FUNCTION post_doc(post_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
   require! u
   res = plv8.execute('SELECT id FROM posts WHERE parent_id=$1 AND uri=$2', [post_id, uri])
   if id  = res[0]?.id
-    return u.forum-tree forum_id, u.top-posts-recent(10)
+    return u.sub-posts-tree post_id, u.top-posts-recent(10)
   else
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;

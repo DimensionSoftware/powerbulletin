@@ -1,5 +1,5 @@
 (function(){
-  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
+  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, buildForumDoc, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
     args = slice$.call(arguments);
@@ -138,6 +138,26 @@
       results$.push(decorateForum(f, topPostsFun));
     }
     return results$;
+  };
+  out$.uriForForum = uriForForum = function(forumId){
+    var sql, ref$, parent_id, slug;
+    sql = 'SELECT parent_id, slug FROM forums WHERE id=$1';
+    ref$ = plv8.execute(sql, [forumId])[0], parent_id = ref$.parent_id, slug = ref$.slug;
+    if (parent_id) {
+      return this.uriForForum(parent_id) + '/' + slug;
+    } else {
+      return '/' + slug;
+    }
+  };
+  out$.uriForPost = uriForPost = function(postId){
+    var sql, ref$, forum_id, parent_id, slug;
+    sql = 'SELECT forum_id, parent_id, slug FROM posts WHERE id=$1';
+    ref$ = plv8.execute(sql, [postId])[0], forum_id = ref$.forum_id, parent_id = ref$.parent_id, slug = ref$.slug;
+    if (parent_id) {
+      return this.uriForPost(parent_id) + '/' + slug;
+    } else {
+      return this.uriForForum(forum_id) + '/' + slug;
+    }
   };
   out$.buildForumDoc = buildForumDoc = function(siteId, forumId){
     var menu, buildForumDocFor, this$ = this;

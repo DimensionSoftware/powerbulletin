@@ -130,6 +130,22 @@ forum-tree = (forum-id, top-posts-fun) ->
 forums-tree = (site-id, top-posts-fun, top-forums-fun) ->
   [decorate-forum(f, top-posts-fun) for f in top-forums-fun(site-id)]
 
+export uri-for-forum = (forum-id) ->
+  sql = 'SELECT parent_id, slug FROM forums WHERE id=$1'
+  [{parent_id, slug}] = plv8.execute sql, [forum-id]
+  if parent_id
+    @uri-for-forum(parent_id) + '/' + slug
+  else
+    '/' + slug
+
+export uri-for-post = (post-id) ->
+  sql = 'SELECT forum_id, parent_id, slug FROM posts WHERE id=$1'
+  [{forum_id, parent_id, slug}] = plv8.execute sql, [post-id]
+  if parent_id
+    @uri-for-post(parent_id) + '/' + slug
+  else
+    @uri-for-forum(forum_id) + '/' + slug
+
 export build-forum-doc = (site-id, forum-id) ->
   ## XXX: should we have a custom menu routine ?? instead of piggybacking on to forums
   menu = forums-tree(site-id,
