@@ -39,9 +39,9 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       params =
         * nextval
         * thread_id
-        * post.user_id
-        * post.forum_id
-        * post.parent_id
+        * parse-int(post.user_id) or null
+        * parse-int(post.forum_id) or null
+        * parse-int(post.parent_id) or null
         * post.title
         * slug
         * post.body
