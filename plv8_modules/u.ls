@@ -144,7 +144,7 @@ export uri-for-post = (post-id) ->
   if parent_id
     @uri-for-post(parent_id) + '/' + slug
   else
-    @uri-for-forum(forum_id) + '/' + slug
+    @uri-for-forum(forum_id) + '/t/' + slug
 
 export menu = (site-id) ->
   forums-tree(site-id,

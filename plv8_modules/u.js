@@ -156,7 +156,7 @@
     if (parent_id) {
       return this.uriForPost(parent_id) + '/' + slug;
     } else {
-      return this.uriForForum(forum_id) + '/' + slug;
+      return this.uriForForum(forum_id) + '/t/' + slug;
     }
   };
   out$.menu = menu = function(siteId){

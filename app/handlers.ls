@@ -62,45 +62,36 @@ db = pg.procs
   res.mutant \homepage
 
 @forum = (req, res, next) ->
+  [forum_part, post_part] = req.params
+  console.warn {forum_part, post_part}
+
   finish = (doc) ->
     res.locals doc
-    caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<< res.locals.site), 7200
+    caching-strategies.etag res, sha1(JSON.stringify(doc)), 7200
     res.mutant \forum
 
   # parse uri
   uri = req.path
-  if m = uri.match /^(.+)\/active$/
-    uri = m[1]
-    sorttype = \active
-  else if m = uri.match /^(.+)\/recent$/
-    uri = m[1]
-    sorttype = \recent
-  else
-    # defaults
-    # uri stays the same
-    sorttype = \recent
+  sorttype = \recent
 
   parts = forum-path-parts uri
   uri = uri.replace '&?_surf=1', ''
   uri = uri.replace /\?$/, '' # remove ? if its all thats left
 
-  if parts?.length > 1 # thread
-    thread-id = parseInt parts[1]
-
-    console.warn uri
+  if post_part
     err, doc <- db.post-doc res.locals.site.id, sorttype, uri
     if err then return next err
+    if !doc then return next(404)
 
-    if doc?.forums?.length # store active
-      doc.active-forum-id = (head filter (.uri is uri), doc.forums)?.id
+    doc.active-forum-id = doc.forum_id
 
-    console.warn "[thread #{thread-id}] #{uri}"
     finish doc
 
   else # forum
     err, fdoc <- db.forum-doc res.locals.site.id, sorttype, uri
     if err then return next err
     if !fdoc then return next(404)
+
     fdoc.active-forum-id = fdoc.forums[0]?.id
     finish fdoc
 
