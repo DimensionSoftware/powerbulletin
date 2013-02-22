@@ -15,6 +15,8 @@ unless File.file? '/usr/local/bin/stunnel'
       make
       make install-exec
       make install-data
+      mkdir -p /usr/local/var/run/stunnel
+      chown nobody:nogroup /usr/local/var/run/stunnel
     EOH
   end
 end
