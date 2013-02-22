@@ -41,7 +41,7 @@ add-post-dialog = ->
 # assumes immediate parent is form (in case of submit button)
 add-post = ->
   form = $ '#add-post-form'
-  $.post '/resources/posts', form.serialize!, (_r1, res) ->
+  $.post '/resources/posts', form.serialize!, (_r1, _r2, res) ->
     console.log 'success! post added', res
     console.log 'stub: do something fancy to confirm submission'
   false # stop event propagation

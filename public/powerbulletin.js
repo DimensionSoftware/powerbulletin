@@ -847,7 +847,7 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
   addPost = function(){
     var form;
     form = $('#add-post-form');
-    $.post('/resources/posts', form.serialize(), function(_r1, res){
+    $.post('/resources/posts', form.serialize(), function(_r1, _r2, res){
       console.log('success! post added', res);
       return console.log('stub: do something fancy to confirm submission');
     });
