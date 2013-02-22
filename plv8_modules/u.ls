@@ -88,8 +88,16 @@ sub-posts = ->
   plv8.execute sql, arguments
 
 # recurses to build entire comment tree
-export sub-posts-tree = (parent-id) ->
-  [merge(p, {posts: sub-posts-tree(p.id)}) for p in sub-posts(parent-id)]
+export sub-posts-tree = sub-posts-tree = (parent-id, depth=3) ->
+  sp = sub-posts(parent-id)
+  if depth <= 0
+    # more-posts flag will be used to put 'load more' links,
+    # vs not showing the 'load more' links when there are no children yet
+    # we only show 'load more' links when we hit an empty child list
+    # and if and only if more-posts flag is true
+    [merge(p, {posts: [], more-posts: !!sub-posts(p.id).length}) for p in sp]
+  else
+    [merge(p, {posts: sub-posts-tree(p.id, depth - 1)}) for p in sp]
 
 # gets entire list of top posts and inlines all sub-posts to them
 posts-tree = (forum-id, top-posts) ->

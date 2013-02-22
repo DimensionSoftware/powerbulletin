@@ -64,15 +64,28 @@
     sql = 'SELECT p.*, a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id=$1\nORDER BY created DESC, id DESC';
     return plv8.execute(sql, arguments);
   };
-  out$.subPostsTree = subPostsTree = function(parentId){
-    var i$, ref$, len$, p, results$ = [];
-    for (i$ = 0, len$ = (ref$ = subPosts(parentId)).length; i$ < len$; ++i$) {
-      p = ref$[i$];
-      results$.push(merge(p, {
-        posts: subPostsTree(p.id)
-      }));
+  out$.subPostsTree = subPostsTree = subPostsTree = function(parentId, depth){
+    var sp, i$, len$, p, results$ = [];
+    depth == null && (depth = 3);
+    sp = subPosts(parentId);
+    if (depth <= 0) {
+      for (i$ = 0, len$ = sp.length; i$ < len$; ++i$) {
+        p = sp[i$];
+        results$.push(merge(p, {
+          posts: [],
+          morePosts: !!subPosts(p.id).length
+        }));
+      }
+      return results$;
+    } else {
+      for (i$ = 0, len$ = sp.length; i$ < len$; ++i$) {
+        p = sp[i$];
+        results$.push(merge(p, {
+          posts: subPostsTree(p.id, depth - 1)
+        }));
+      }
+      return results$;
     }
-    return results$;
   };
   postsTree = function(forumId, topPosts){
     var i$, len$, p, results$ = [];
