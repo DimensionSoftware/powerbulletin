@@ -104,14 +104,14 @@ module.exports = function(grunt) {
   var launch;
   grunt.registerTask('launch', 'Launch PowerBulletin!', launch = function() {
     // XXX surely there's a more automatic way to manage this?
-    var config = require('./config/development');
+    var config = require('./config/common');
     var file   = config.tmp+'/pb.pid';
 
     daemon('./bin/powerbulletin', file);
   });
 
   grunt.registerTask('procs', 'Compile stored procedures to JS', function() {
-    exec('node_modules/.bin/lsc -c plv8_modules/*.ls', {silent: true});
+    exec('node_modules/.bin/lsc -c plv8_modules/*.ls');
     exec('bin/psql pb < procedures.sql', {silent: true});
   });
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {

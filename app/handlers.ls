@@ -62,44 +62,36 @@ db = pg.procs
   res.mutant \homepage
 
 @forum = (req, res, next) ->
+  [forum_part, post_part] = req.params
+
   finish = (doc) ->
     res.locals doc
-    caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<< res.locals.site), 7200
+    caching-strategies.etag res, sha1(JSON.stringify(doc)), 7200
     res.mutant \forum
 
-  # parse url
-  url = req.path
-  if m = url.match /^(.+)\/active$/
-    url = m[1]
-    fdtype = \active
-  else if m = url.match /^(.+)\/recent$/
-    url = m[1]
-    fdtype = \recent
-  else
-    # defaults
-    # url stays the same
-    fdtype = \recent
+  # parse uri
+  uri = req.path
+  sorttype = \recent
 
-  parts = forum-path-parts url
-  forum-slug = '/' + parts[0].join('/')
+  parts = forum-path-parts uri
+  uri = uri.replace '&?_surf=1', ''
+  uri = uri.replace /\?$/, '' # remove ? if its all thats left
 
-  if parts?.length > 1 # thread
-    err, doc <- db.forum-doc-by-type-and-slug res.locals.site.id, fdtype, forum-slug
+  if post_part
+    err, doc <- db.post-doc res.locals.site.id, sorttype, uri
     if err then return next err
+    if !doc then return next(404)
 
-    if doc?.forums?.length # store active
-      doc.active-forum-id = (head filter (.slug is req.params.forum), doc.forums)?.id
+    doc.active-forum-id = doc.forum_id
+    doc.active-post-id = doc.id
 
-    thread-id = parseInt parts[1]
-    err, posts <- db.sub-posts-tree thread-id
-    doc.posts = posts
-    console.warn "[thread #{thread-id}] #{req.url}"
     finish doc
 
   else # forum
-    err, fdoc <- db.forum-doc-by-type-and-slug res.locals.site.id, fdtype, forum-slug
+    err, fdoc <- db.forum-doc res.locals.site.id, sorttype, uri
     if err then return next err
     if !fdoc then return next(404)
+
     fdoc.active-forum-id = fdoc.forums[0]?.id
     finish fdoc
 

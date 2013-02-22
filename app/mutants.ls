@@ -78,9 +78,12 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-unload:
     (window, next) ->
-      window.$ '.forum .container' .masonry(\destroy)
-      window.$ '.forum .header' .waypoint(\destroy)
-      window.$ '.forum' .waypoint(\destroy)
+      try
+        window.$ '.forum .container' .masonry(\destroy)
+        window.$ '.forum .header' .waypoint(\destroy)
+        window.$ '.forum' .waypoint(\destroy)
+      catch e
+        # do nothing
       next!
 
 @forum =
@@ -89,6 +92,7 @@ flip-background = (w, cur, direction='down') ->
       window.render-jade 'left_content' \nav
       window.render-jade 'main_content' \posts
       window.marshal \activeForumId @active-forum-id
+      window.marshal \activePostId @active-post-id
       layout-static window, \forum, @active-forum-id
       next!
   on-load:

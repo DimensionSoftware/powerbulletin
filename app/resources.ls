@@ -13,6 +13,7 @@ require! {
 @post =
   index   : (req, res) ->
     res.locals.fid = req.query.fid
+    res.locals.pid = req.query.pid
     res.render \add-post
   new     : null
   create  : (req, res, next) ->

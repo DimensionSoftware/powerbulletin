@@ -69,7 +69,15 @@ if process.env.NODE_ENV != 'production'
     if err then return next(err)
     res.json d
 
-app.all '*',
+# forum + post
+app.all new RegExp('/(.+)/t/(.+)'),
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.forum
+
+# bare forum (catch all)
+app.all new RegExp('/(.+)'),
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
