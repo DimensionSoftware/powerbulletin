@@ -104,7 +104,7 @@ module.exports = function(grunt) {
   var launch;
   grunt.registerTask('launch', 'Launch PowerBulletin!', launch = function() {
     // XXX surely there's a more automatic way to manage this?
-    var config = require('./config/development');
+    var config = require('./config/common');
     var file   = config.tmp+'/pb.pid';
 
     daemon('./bin/powerbulletin', file);
