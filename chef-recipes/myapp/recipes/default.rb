@@ -12,7 +12,8 @@ end
 include_recipe 'nodejs'
 #include_recipe 'clojure'
 include_recipe 'varnish'
-include_recipe 'stunnel'
+#include_recipe 'stunnel'
+include_recipe 'haproxy'
 #include_recipe 'java-jackson'
 include_recipe 'postgres'
 
