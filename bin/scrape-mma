@@ -78,13 +78,9 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
     thread-id = parent-id = insertion.id
 
     create-post = (p, cb) ->
-      # XXX - make the stored procedure work
-      sql = """
-      INSERT INTO posts (thread_id, parent_id, user_id, forum_id, title, body)
-      VALUES ($1, $2, $3, $4, ' ', $5)
-      """
-      console.log '  inserting child post', {t.title, thread-id, parent-id, p.user-id, p.forum-id}
-      pg.query sql, [thread-id, parent-id, p.user-id, p.forum-id, p.body], cb
+      p.thread-id = thread-id
+      p.parent-id = thread-id
+      pg.procs.add-post p, cb
 
     async.map-series t.posts, create-post, cb
 
