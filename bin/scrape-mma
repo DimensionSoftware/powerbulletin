@@ -73,14 +73,18 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
 
   pg.procs.add-post top-post, (err, insertion) ->
     if err then return cb(err)
-    console.warn 'insertion', insertion
-
-    thread-id = parent-id = insertion.id
 
     create-post = (p, cb) ->
-      p.thread-id = thread-id
-      p.parent-id = thread-id
-      pg.procs.add-post p, cb
+
+      q = {}
+      for k,v of p
+        key = k.replace(/([A-Z])/g, ($1) -> return "_"+$1.toLowerCase())
+        q[key] = v
+      q.thread_id = q.parent_id = insertion.id
+
+      pg.procs.add-post q, (err, r) ->
+        console.warn err
+        cb(err, r)
 
     async.map-series t.posts, create-post, cb
 
