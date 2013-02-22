@@ -1,0 +1,6 @@
+#!/bin/sh
+killall haproxy
+sleep 1
+killall -9 haproxy
+set -e
+haproxy -f config/haproxy.conf

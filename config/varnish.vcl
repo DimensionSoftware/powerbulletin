@@ -10,9 +10,9 @@ backend default {
 
 sub vcl_recv {
   # force ssl
-  if (req.http.X-Forwarded-Proto !~ "(?i)https") {
-    set req.http.x-redir-url = "https://" + req.http.host + req.url; 
-    error 302 req.http.x-redir-url; 
+  if ((req.request == "GET" || req.request == "HEAD") && req.http.X-Forwarded-Proto !~ "(?i)https") {
+    set req.http.Location = "https://" + req.http.host + req.url; 
+    error 302 "Found"; 
   }
 }
 
@@ -34,9 +34,13 @@ sub vcl_fetch {
 }
 
 sub vcl_error { 
-  # redirect
-  if (obj.status == 302) {
-    set obj.http.Location = obj.response; 
+  # redirect, permanent
+  if (obj.status == 301 || obj.status == 302) {
+    set obj.http.Location = req.http.Location; 
+
+    # never cache this type of redirect
+    set obj.ttl = 0s;
+
     return(deliver); 
   }
 } 
