@@ -1,4 +1,4 @@
-#unless File.file? '/usr/local/bin/haproxy'
+unless File.file? '/usr/local/sbin/haproxy'
   package 'build-essential'
   package 'libssl-dev'
 
@@ -18,5 +18,4 @@
       make install
     EOH
   end
-#end
-
+end
