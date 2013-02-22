@@ -34,6 +34,7 @@ global <<< require \prelude-ls
 # and pages we shouldn't set long ttls on like html content pages that change and
 # we will not use the changeset as part of the cache key for...
 # }}}
+global.cl                 = console.log
 global.CHANGESET          = fs.read-file-sync('.git/refs/heads/master').to-string!slice 0 -1
 global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
 
@@ -50,12 +51,12 @@ html_404 = fs.read-file-sync('public/404.html').to-string!
 
 try # load config.json
   global.cvars = require '../config/common'
-  global.cvars <<< require "../config/#{proc.env.NODE_ENV or 'development'}"
+  global.cvars <<< require "../config/#{proc.env.NODE_ENV or \development}"
+  for i in ['', 2, 3, 4, 5]
+    cvars["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}.#{cvars.cache_domain}" # expand
 
   cvars.env                = proc.env.NODE_ENV
   cvars.process-start-date = new Date!
-  for i in ['', 2, 3, 4, 5] # add cache domains
-    cvars["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}.#{cvars.host}"
 catch e
   console.log "Inspect config.json: #{e}"
   return
@@ -175,13 +176,14 @@ else
   sock = express!
   (err, domains) <- pg.procs.domains
   for domain in ['pbstage.com', 'pb.com', cvars.host] ++ domains
-    sock
+    sock # bind all domains
       .use(express.vhost domain, app)
       .use(express.vhost "m.#{domain}", redir-to-domain)
       .use(express.vhost "www.#{domain}", redir-to-domain)
-    for i in ['', 2, 3, 4, 5] # add cache domains
-      sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{domain}", cache-app)
-      cvars["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}.#{domain}"
+
+  # bind shared cache domains
+  for i in ['', 2, 3, 4, 5]
+    sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{cvars.cache_domain}", cache-app)
 
   sock.listen proc.env['NODE_PORT'] || cvars.port
 #}}}
