@@ -78,9 +78,12 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-unload:
     (window, next) ->
-      window.$ '.forum .container' .masonry(\destroy)
-      window.$ '.forum .header' .waypoint(\destroy)
-      window.$ '.forum' .waypoint(\destroy)
+      try
+        window.$ '.forum .container' .masonry(\destroy)
+        window.$ '.forum .header' .waypoint(\destroy)
+        window.$ '.forum' .waypoint(\destroy)
+      catch e
+        # do nothing
       next!
 
 @forum =

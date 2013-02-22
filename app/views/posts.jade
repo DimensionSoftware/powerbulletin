@@ -37,6 +37,7 @@ if false
 //- XXX - && typeof(forums) !== 'undefined' is a temporary hack to get the page to load
 if typeof(posts) !== 'undefined' && typeof(forums) !== 'undefined'
   .forum
+    .breadcrumb= forums[0].posts[0].uri
     each p, i in posts
       mixin subpost(forums[0], p, i)
 

@@ -63,7 +63,6 @@ db = pg.procs
 
 @forum = (req, res, next) ->
   [forum_part, post_part] = req.params
-  console.warn {forum_part, post_part}
 
   finish = (doc) ->
     res.locals doc
