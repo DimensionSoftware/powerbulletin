@@ -173,7 +173,7 @@ CREATE FUNCTION thread_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
     #XXX: note to self, menu doc? this seems to be used in alot of places
     menu = u.menu site_id 
     #XXX: misnamed forums
-    posts = u.top-posts-recent(10)(doc.forum_id)
+    posts = u.top-posts-recent(10)(sub-post.forum_id)
     rval = {forums: [{posts}], sub-post, menu}
     plv8.elog WARNING, JSON.stringify(rval)
     return rval

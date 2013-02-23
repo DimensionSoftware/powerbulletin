@@ -32,7 +32,6 @@ $d.on \click 'html.forum header .menu a.title' window.mutate
 add-post-dialog = ->
   query =
     fid: window.active-forum-id
-    pid: window.active-post-id
 
   html <- $.get '/resources/posts', query
   $(html).dialog modal: true

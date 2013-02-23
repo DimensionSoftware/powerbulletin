@@ -839,8 +839,7 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
   addPostDialog = function(){
     var query;
     query = {
-      fid: window.activeForumId,
-      pid: window.activePostId
+      fid: window.activeForumId
     };
     return $.get('/resources/posts', query, function(html){
       $(html).dialog({
