@@ -169,7 +169,7 @@ CREATE FUNCTION thread_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
     doc.posts = u.sub-posts-tree doc.id, u.top-posts-recent(10)
     #XXX: note to self, menu doc? this seems to be used in alot of places
     doc.menu = u.menu site_id
-    return doc
+    return {sub-post: doc}
   else
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
