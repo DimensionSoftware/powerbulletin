@@ -27,6 +27,13 @@ sub vcl_recv {
   }
 }
 
+sub vcl_fetch {
+  # discard cookies on everything but login or personalization urls
+  if (req.url !~ "/user\.js$" || req.url !~ "^/auth/") {
+    unset beresp.http.set-cookie;
+  }
+}
+
 sub vcl_deliver {
   unset resp.http.via;
   unset resp.http.x-varnish;
