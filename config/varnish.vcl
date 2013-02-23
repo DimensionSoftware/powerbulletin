@@ -18,6 +18,13 @@ sub vcl_recv {
     set req.http.Location = "https://" + req.http.host + req.url; 
     error 302 "Found"; 
   }
+
+  # discard cookies on everything but login or personalization urls
+  if (req.url !~ "/user\.js$" || req.url !~ "^/auth/") {
+    unset req.http.cookie;
+    unset req.http.cache-control;
+    unset req.http.pragma;
+  }
 }
 
 sub vcl_deliver {
