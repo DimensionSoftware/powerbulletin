@@ -12,6 +12,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- TODO: needs to support nested posts also, and update correct thread-id
 DROP FUNCTION IF EXISTS add_post(post JSON);
 CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
+  post.build_docs ||= true
   require! <[u validations]>
   errors = validations.post(post)
   if !errors.length
@@ -47,11 +48,12 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
         * post.body
 
       plv8.execute(sql, params)
+      plv8.elog WARNING, 'HERE4'
 
       # the post must be inserted before uri-for-post will work, thats why uri is a NULLABLE column
       plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [u.uri-for-post(nextval), nextval]
 
-      if post.build_docs is false
+      if post.build_docs
         u.build-forum-doc(site-id, post.forum_id)
         u.build-homepage-doc(site-id)
     else
@@ -62,7 +64,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS sub_posts_tree(id JSON);
 CREATE FUNCTION sub_posts_tree(id JSON) RETURNS JSON AS $$
-  require! <[u validations]>
+  require! u
   return u.sub-posts-tree id, u.top-posts-recent(10)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -158,7 +160,7 @@ CREATE FUNCTION thread_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
   require! u
 
   sql = '''
-  SELECT p.*
+  SELECT p.*, f.id forum_id
   FROM posts p
   JOIN forums f ON f.id=p.forum_id
   WHERE f.site_id=$1 AND p.uri=$2
@@ -167,8 +169,14 @@ CREATE FUNCTION thread_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
 
   if doc
     doc.posts = u.sub-posts-tree doc.id, u.top-posts-recent(10)
+    sub-post = doc
     #XXX: note to self, menu doc? this seems to be used in alot of places
-    return {sub-post: doc, menu: u.menu site_id}
+    menu = u.menu site_id 
+    #XXX: misnamed forums
+    posts = u.top-posts-recent(10)(doc.forum_id)
+    rval = {forums: [{posts}], sub-post, menu}
+    plv8.elog WARNING, JSON.stringify(rval)
+    return rval
   else
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
