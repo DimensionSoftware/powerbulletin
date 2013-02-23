@@ -14,31 +14,11 @@ mixin subpost(p, sp, i)
     .date= sp.created
     p.body!= sp.body
 
-//- main
-//- ---------
-// if forums
-//-if typeof(forums) !== 'undefined'
-//-  //- breadcrumbs here
-//-  each f,i in 
-//-    mixin breadcrumb
-
-if false
-  each f,i in forums
-    img.bg(id="forum_bg_#{f.id}", src="#{cache_url}/images/bg_#{f.id}.jpg")
-    .forum(id="forum_#{f.id}", class="#{f.classes || ''} #{i%2 ? 'odd' : 'even'}")
-      .header
-        .description= f.description
-      .container
-        if f.posts
-          each t,ii in f.posts
-            mixin post(f, t, ii)
-          .up(class='scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
-
 //- XXX - && typeof(forums) !== 'undefined' is a temporary hack to get the page to load
-if typeof(posts) !== 'undefined' && typeof(forums) !== 'undefined'
+if typeof(subPost) !== 'undefined'
   .forum
-    .breadcrumb= forums[0].posts[0].uri
-    each p, i in posts
-      mixin subpost(forums[0], p, i)
+    .breadcrumb breadcrumb
+    each p, i in subPost.posts
+      mixin subpost(subPost, p, i)
 
 //- vim:fdm=marker
