@@ -18,7 +18,7 @@ mixin subpost(p, sp, i)
     if sp.posts
       .children
         each pp, ii in sp.posts
-          mixin post(pp, sp, ii)
+          mixin subpost(sp, pp, ii)
 
 //- XXX - && typeof(forums) !== 'undefined' is a temporary hack to get the page to load
 if typeof(subPost) !== 'undefined'
