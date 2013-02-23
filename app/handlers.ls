@@ -78,7 +78,7 @@ db = pg.procs
   uri = uri.replace /\?$/, '' # remove ? if its all thats left
 
   if post_part
-    err, doc <- db.post-doc res.locals.site.id, sorttype, uri
+    err, doc <- db.thread-doc res.locals.site.id, sorttype, uri
     if err then return next err
     if !doc then return next(404)
 

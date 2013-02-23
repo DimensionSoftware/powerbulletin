@@ -153,8 +153,8 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- this one is on the fly cuz we don't wanna pregen N depth recursive tree docs
 -- XXX sort is a placeholder and is not used currently
-DROP FUNCTION IF EXISTS post_doc(site_id JSON, sort JSON, uri JSON);
-CREATE FUNCTION post_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS thread_doc(site_id JSON, sort JSON, uri JSON);
+CREATE FUNCTION thread_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
   require! u
 
   sql = '''
