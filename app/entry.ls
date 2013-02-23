@@ -45,8 +45,30 @@ add-post = ->
     console.log 'stub: do something fancy to confirm submission'
   false # stop event propagation
 
+append-reply-ui = ->
+  # find post div
+  $subpost = $(this).parents('.subpost')
+  post-id  = $subpost.data('post-id')
+  # FIXME html 
+  reply-ui-html = """
+  <div class="reply">
+    <form method="post" action="/resources/posts">
+      <textarea name="body"></textarea>
+      <input type="hidden" name="forum_id" value="#{window.active-forum-id}">
+      <input type="hidden" name="parent_id" value="#{post-id}">
+      <div>
+        <input type="submit" value="Post">
+      </div>
+    </form>
+  </div>
+  """
+  # append dom for reply ui
+  $subpost.append reply-ui-html
+
 # delegated events
 $d.on \click '#add-post-submit' add-post
 $d.on \click '.onclick-add-post-dialog' add-post-dialog
+
+$d.on \click '.onclick-append-reply-ui' append-reply-ui
 
 # vim:fdm=marker
