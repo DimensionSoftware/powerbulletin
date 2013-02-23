@@ -62,7 +62,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS sub_posts_tree(id JSON);
 CREATE FUNCTION sub_posts_tree(id JSON) RETURNS JSON AS $$
   require! <[u validations]>
-  return u.sub-posts-tree id
+  return u.sub-posts-tree id, u.top-posts-recent(10)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON);

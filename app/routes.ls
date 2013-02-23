@@ -69,6 +69,12 @@ if process.env.NODE_ENV != 'production'
     if err then return next(err)
     res.json d
 
+  app.get '/debug/sub-posts-tree/:post_id', (req, res, next) ->
+    db = pg.procs
+    err, d <- db.sub-posts-tree req.params.post_id
+    if err then return next(err)
+    res.json d
+
 # forum + post
 app.all new RegExp('/(.+)/t/(.+)'),
   mw.add-js(common-js),
