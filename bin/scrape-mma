@@ -82,6 +82,7 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
         key = k.replace(/([A-Z])/g, ($1) -> return "_"+$1.toLowerCase())
         q[key] = v
       q.thread_id = q.parent_id = insertion.id
+      q.build_docs = false
 
       pg.procs.add-post q, (err, r) ->
         console.warn err
