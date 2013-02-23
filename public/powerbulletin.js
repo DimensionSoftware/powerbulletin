@@ -859,8 +859,10 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
   };
   appendReplyUi = function(){
     var $subpost, postId, replyUiHtml;
-    $subpost = $(this).parents('.subpost');
+    $subpost = $(this).parents('.subpost:first');
     postId = $subpost.data('post-id');
+    window.$subpost = $subpost;
+    console.log('subpost', $subpost);
     replyUiHtml = "<div class=\"reply\">\n  <form method=\"post\" action=\"/resources/posts\">\n    <textarea name=\"body\"></textarea>\n    <input type=\"hidden\" name=\"forum_id\" value=\"" + window.activeForumId + "\">\n    <input type=\"hidden\" name=\"parent_id\" value=\"" + postId + "\">\n    <div>\n      <input type=\"submit\" value=\"Post\">\n    </div>\n  </form>\n</div>";
     return $subpost.append(replyUiHtml);
   };

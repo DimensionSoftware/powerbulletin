@@ -47,8 +47,10 @@ add-post = ->
 
 append-reply-ui = ->
   # find post div
-  $subpost = $(this).parents('.subpost')
+  $subpost = $(this).parents('.subpost:first')
   post-id  = $subpost.data('post-id')
+  window.$subpost = $subpost
+  console.log 'subpost', $subpost
   # FIXME html 
   reply-ui-html = """
   <div class="reply">

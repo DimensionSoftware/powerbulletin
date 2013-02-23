@@ -15,6 +15,7 @@ mixin subpost(p, sp, i)
     p.body!= sp.body
     .actions
       a.reply.onclick-append-reply-ui Reply
+    .reply
     if sp.posts
       .children
         each pp, ii in sp.posts
