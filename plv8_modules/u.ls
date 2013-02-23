@@ -55,7 +55,7 @@ export top-posts-recent = top-posts-recent = (limit, fields='p.*') ->
     AND a.site_id=1
     AND p.parent_id IS NULL
     AND p.forum_id=$1
-  ORDER BY p.created DESC, id DESC
+  ORDER BY p.created DESC, id ASC
   LIMIT $2
   """
   (...args) -> plv8.execute sql, args.concat([limit])
@@ -83,7 +83,7 @@ sub-posts = ->
   WHERE a.user_id=p.user_id
     AND a.site_id=1
     AND p.parent_id=$1
-  ORDER BY created DESC, id DESC
+  ORDER BY created DESC, id ASC
   '''
   plv8.execute sql, arguments
 
