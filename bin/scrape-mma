@@ -66,10 +66,11 @@ with-posts = (t, cb) -> # {{{1
 create-thread-for-site = (site-id, t, cb) --> # {{{1
   console.log 'inserting top post', { t.forum-id, t.title }
   top-post =
-    user_id  : 1
-    forum_id : t.forum-id
-    title    : t.title
-    body     : "\n"
+    user_id   : 1
+    forum_id  : t.forum-id
+    title     : t.title
+    body      : "\n"
+    build_docs: false
 
   pg.procs.add-post top-post, (err, insertion) ->
     if err then return cb(err)
