@@ -82,7 +82,6 @@ db = pg.procs
     if err then return next err
     if !doc then return next(404)
 
-    cw doc.subPost.posts
     doc.active-forum-id = doc.sub-post.forum_id
     doc.active-post-id = doc.id
 
