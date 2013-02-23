@@ -51,8 +51,9 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       # the post must be inserted before uri-for-post will work, thats why uri is a NULLABLE column
       plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [u.uri-for-post(nextval), nextval]
 
-      u.build-forum-doc(site-id, post.forum_id)
-      u.build-homepage-doc(site-id)
+      if post.build_docs is false
+        u.build-forum-doc(site-id, post.forum_id)
+        u.build-homepage-doc(site-id)
     else
       errors.push "forum_id invalid: #{post.forum_id}"
 
