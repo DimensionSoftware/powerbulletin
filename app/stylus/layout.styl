@@ -4,7 +4,8 @@
 // XXX decoration & embellishments belong in the theme.styl
 // XXX eventually each forum will have its own theme.{styl,css}
 
-header-height       = 50px
+header-height          = 50px
+header-scrolled-height = 30px
 forum-header-height = 0
 footer-height       = 32px
 left-content-width  = 200px
@@ -60,7 +61,7 @@ body.expanded header
       font-size 16px!important
 body.scrolled
   header
-    height 30px
+    height header-scrolled-height
     .container
       .menu
         .row:hover
@@ -228,6 +229,16 @@ header
   overflow-x hidden
   overflow-y scroll
   z-index 6
+  .handle
+    background-color #eee
+    border 3px solid #fff
+    height 15px
+    width 15px
+    top 20px
+    right -5px
+    cursor pointer
+    border-radius 15px
+    position absolute
   .title
     text-overflow ellipsis
     overflow hidden
@@ -340,7 +351,7 @@ section.left-chrome
       opacity 1!important
     .header.stuck
       position fixed
-      top 3px
+      top header-scrolled-height
       left 50px
       z-index 7
       overflow hidden
@@ -362,7 +373,7 @@ section.left-chrome
       right 0
       bottom -30px
     .post:hover
-      transform translateY(-15px)
+      //transform translateY(-15px)
       position relative
       z-index 4
       transition all .1s ease-out 1.3s
@@ -373,7 +384,7 @@ section.left-chrome
       float left
       margin grid
       overflow hidden
-      max-height max-post-height
+      //max-height max-post-height
       .photo
         float left
         width 25px
@@ -391,7 +402,7 @@ section.left-chrome
       position relative
       clear both
       overflow hidden
-      max-height (max-post-height / 2)
+      //max-height (max-post-height / 2)
       .photo
         overflow hidden
         width 40px
