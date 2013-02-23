@@ -10,9 +10,15 @@ backend default {
 
 sub vcl_recv {
   # force ssl
-  if ((req.request == "GET" || req.request == "HEAD") && req.http.X-Forwarded-Proto !~ "(?i)https") {
-    set req.http.Location = "https://" + req.http.host + req.url; 
-    error 302 "Found"; 
+  if (req.request == "GET" || req.request == "HEAD") {
+    if (req.url != "/" && req.url ~ "(?i)/$") {
+      set req.http.Location = "https://" + req.http.host + regsub(req.url, "(.+)/$", "\1");
+      error 302 "Found"; 
+    }
+    else if (req.http.X-Forwarded-Proto !~ "(?i)https") {
+      set req.http.Location = "https://" + req.http.host + req.url; 
+      error 302 "Found"; 
+    }
   }
 }
 
