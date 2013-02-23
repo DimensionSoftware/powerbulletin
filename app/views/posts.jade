@@ -8,11 +8,13 @@ mixin post(p, i)
         mixin subpost(p, sp, ii)
 
 mixin subpost(p, sp, i)
-  .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even')
+  .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id="#{sp.id}")
     h4.title!= sp.title
     .user= sp.user_name
     .date= sp.created
     p.body!= sp.body
+    .actions
+      a.reply.onclick-append-reply-ui Reply
 
 //- XXX - && typeof(forums) !== 'undefined' is a temporary hack to get the page to load
 if typeof(subPost) !== 'undefined'
