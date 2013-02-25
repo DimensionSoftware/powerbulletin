@@ -869,6 +869,9 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
   $d.on('click', '#add-post-submit', addPost);
   $d.on('click', '.onclick-add-post-dialog', addPostDialog);
   $d.on('click', '.onclick-append-reply-ui', appendReplyUi);
+  $.getJSON('/auth/user', function(user){
+    window.user = user;
+  });
 }).call(this);
 
 });

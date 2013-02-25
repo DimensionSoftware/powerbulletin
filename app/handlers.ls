@@ -136,4 +136,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
     res.content-type 'css'
     res.send body
 
+@user = (req, res, next) ->
+  res.json req.user
+
 # vim:fdm=indent
