@@ -43,6 +43,9 @@ app.get '/auth/logout' handlers.logout
 app.post '/auth/register', handlers.register
 # todo html for use in fancybox or modal dialog at get route
 
+# json response with user info
+app.get '/auth/user', handlers.user
+
 app.get '/',
   mw.geo,
   mw.add-js(common-js),

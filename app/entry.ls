@@ -73,4 +73,7 @@ $d.on \click '.onclick-add-post-dialog' add-post-dialog
 
 $d.on \click '.onclick-append-reply-ui' append-reply-ui
 
+# personalization ( based on parameters from user obj )
+window.user <- $.getJSON '/auth/user'
+
 # vim:fdm=marker
