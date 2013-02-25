@@ -805,7 +805,7 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
 require("/app/layout.ls");
 
 require.define("/app/entry.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
-  var $w, $d, addPostDialog, addPost, appendReplyUi;
+  var $w, $d, addPostDialog, addPost, appendReplyUi, login;
   $w = $(window);
   $d = $(document);
   $w.resize(function(){
@@ -866,9 +866,26 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
     replyUiHtml = "<div class=\"reply\">\n  <form method=\"post\" action=\"/resources/posts\">\n    <textarea name=\"body\"></textarea>\n    <input type=\"hidden\" name=\"forum_id\" value=\"" + window.activeForumId + "\">\n    <input type=\"hidden\" name=\"parent_id\" value=\"" + postId + "\">\n    <div>\n      <input type=\"submit\" value=\"Post\">\n    </div>\n  </form>\n</div>";
     return $subpost.append(replyUiHtml);
   };
+  login = function(){
+    var $form, params;
+    $form = $(this);
+    params = {
+      username: $form.find('input[name=username]').val(),
+      password: $form.find('input[name=password]').val()
+    };
+    $.post($form.attr('action'), params, function(r){
+      if (r.success) {
+        return window.location.reload();
+      } else {
+        return console.warn('invalid login');
+      }
+    });
+    return false;
+  };
   $d.on('click', '#add-post-submit', addPost);
   $d.on('click', '.onclick-add-post-dialog', addPostDialog);
   $d.on('click', '.onclick-append-reply-ui', appendReplyUi);
+  $d.on('submit', '.login form', login);
   $.getJSON('/auth/user', function(user){
     window.user = user;
   });

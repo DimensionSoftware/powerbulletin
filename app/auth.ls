@@ -17,10 +17,10 @@ export passport-for-site = {}
 
 # XXX - only exported for debugging convenience
 # XXX - what's a good way to hash local passwords?
-@hash = (s) -> s
+export hash = (s) -> s
 
 # site-aware passport middleware wrappers
-@mw =
+export mw =
   initialize: (req, res, next) ~>
     domain   = res.locals.site?.domain
     if passport = @passport-for-site[domain]
@@ -35,9 +35,9 @@ export passport-for-site = {}
       next(404)
 
 # XXX - only exported for debugging convenience
-@valid-password = (user, password) ->
+export valid-password = (user, password) ->
   return false if not user or not password
-  @hash(user?.auths?.local?.password) == @hash(password)
+  hash(user?.auths?.local?.password) == hash(password)
 
 # XXX - gotdamn
 pg.init ~>
@@ -72,7 +72,7 @@ pg.init ~>
       if not user
         console.warn 'no user'
         return done(null, false, { message: 'User not found' })
-      if not @valid-password(user, password)
+      if not valid-password(user, password)
         console.warn 'invalid password', password, user
         return done(null, false, { message: 'Incorrect password' })
       console.warn 'ok'
@@ -103,7 +103,7 @@ pg.init ~>
 
     cb(null, pass)
 
-  (err, passports) <- async.map domains, create-passport
+  (err) <- async.forEach domains, create-passport
   if err then return cb(err)
   #console.warn 'passport-for-site', keys passport-for-site
 
