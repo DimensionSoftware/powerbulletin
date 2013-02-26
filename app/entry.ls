@@ -45,6 +45,7 @@ add-post = ->
     console.log 'stub: do something fancy to confirm submission'
   false # stop event propagation
 
+# show reply ui
 append-reply-ui = ->
   # find post div
   $subpost = $(this).parents('.subpost:first')
@@ -67,6 +68,11 @@ append-reply-ui = ->
   # append dom for reply ui
   $subpost.append reply-ui-html
 
+#
+show-login-dialog = ->
+  $.fancybox.open '#auth'
+
+# login action
 login = ->
   $form = $(this)
   params =
@@ -75,11 +81,22 @@ login = ->
   $.post $form.attr(\action), params, (r) ->
     if r.success
       window.location.reload!
+      # XXX - need to make this not require a reload
+      # window.user = r.user
+      # XXX - then emit an event to let various client-side systems know that we're logged in now
     else
       $fancybox = $form.parents('.fancybox-wrap:first')
       $fancybox.remove-class \shake
       set-timeout (-> $fancybox.add-class(\shake)), 100
   return false
+
+# require that window.user exists before calling fn
+require-login = (fn) ->
+  ->
+    if window.user
+      fn.apply this, arguments
+    else
+      show-login-dialog!
 
 # delegated events
 $d.on \click '#add-post-submit' add-post
