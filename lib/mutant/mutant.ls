@@ -61,9 +61,8 @@ else
       if err then return cb(err)
       err <- onInitial.call params, window
       if err then return cb(err)
-      err <- onPersonalize.call params, user, window
+      err <- onPersonalize.call params, window, user
       if err then return cb(err)
-
     else
       # render static jade template, followed by dynamic mutator template
       window.render-jade = (target, tmpl) ->
@@ -72,11 +71,15 @@ else
       window.marshal = (key, val) ->
         window[key] = val
 
-      template.static.call params, window, (err) ->
-        if err then return cb(err)
-        onLoad.call params, window, (err) ->
-          if err then return cb(err)
-          onMutate.call params, window, cb
+      err <- template.static.call params, window
+      if err then return cb(err)
+      err <- onLoad.call params, window
+      if err then return cb(err)
+      err <- onMutate.call params, window
+      if err then return cb(err)
+      err <- onPersonalize.call params, window, user
+      if err then return cb(err)
+
 
   else if html
     # playskool pretend server-side window

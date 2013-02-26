@@ -467,7 +467,7 @@ require.define("/lib/mutant/mutant.ls",function(require,module,exports,__dirname
             if (err) {
               return cb(err);
             }
-            return onPersonalize.call(params, user, window, function(err){
+            return onPersonalize.call(params, window, user, function(err){
               if (err) {
                 return cb(err);
               }
@@ -489,7 +489,16 @@ require.define("/lib/mutant/mutant.ls",function(require,module,exports,__dirname
             if (err) {
               return cb(err);
             }
-            return onMutate.call(params, window, cb);
+            return onMutate.call(params, window, function(err){
+              if (err) {
+                return cb(err);
+              }
+              return onPersonalize.call(params, window, user, function(err){
+                if (err) {
+                  return cb(err);
+                }
+              });
+            });
           });
         });
       }
@@ -624,6 +633,11 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
       window.$('.forum .container').masonry('destroy');
       window.$('.forum .header').waypoint('destroy');
       window.$('.forum').waypoint('destroy');
+      return next();
+    },
+    onPersonalize: function(w, u, next){
+      console.log(w, u);
+      console.log('HARHAR');
       return next();
     }
   };
@@ -928,6 +942,7 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
   $d.on('submit', '.login form', login);
   $.getJSON('/auth/user', function(user){
     var onLoad, ref$, onPersonalize;
+    window.user = user;
     window.mutant = require('../lib/mutant/mutant');
     window.mutants = require('./mutants');
     window.mutate = function(e){
@@ -952,7 +967,7 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
       return next();
     };
     return onLoad.call(this, window, function(){
-      return onPersonalize.call(this, user, window, function(){
+      return onPersonalize.call(this, window, window.user, function(){
         var $w, $d, isIe, isMoz, isOpera, threshold, hasScrolled;
         $('#query').focus();
         $d.on('click', 'a.mutant', window.mutate);
@@ -974,7 +989,7 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
               try {
                 return window.mutant.run(window.mutants[r.mutant], {
                   locals: r.locals,
-                  user: user
+                  user: window.user
                 });
               } catch (e$) {
                 return e = e$;

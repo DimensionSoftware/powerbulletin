@@ -107,7 +107,7 @@ $d.on \click '.onclick-append-reply-ui' append-reply-ui
 $d.on \submit '.login form' login
 
 # personalization ( based on parameters from user obj )
-user <- $.getJSON '/auth/user'
+window.user <- $.getJSON '/auth/user'
 
 #{{{ Mutant init
 window.mutant  = require '../lib/mutant/mutant'
@@ -124,7 +124,8 @@ window.mutate  = (e) ->
 on-load = window.mutants[window.mutator]?.on-load or (window, next) -> next!
 on-personalize = window.mutants[window.mutator]?.on-personalize or (w, u, next) -> next!
 <- on-load.call this, window # fire on-load of initial mutant
-<- on-personalize.call this, user, window # fire on-load of personalize mutant
+<- on-personalize.call this, window, window.user # fire on-load of personalize mutant
+#XXX: this shit above doesn't belong here, mutant has an initial pageload mode
 $ '#query' .focus!
 
 $d.on \click 'a.mutant' window.mutate # hijack urls
@@ -136,7 +137,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
     on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
     on-unload window, -> # cleanup & run next mutant
       try
-        window.mutant.run window.mutants[r.mutant], {locals:r.locals, user}
+        window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}
       catch e
         # do nothing
   return false
