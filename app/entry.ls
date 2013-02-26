@@ -81,6 +81,9 @@ login = ->
   $.post $form.attr(\action), params, (r) ->
     if r.success
       window.location.reload!
+      # XXX - need to make this not require a reload
+      # window.user = r.user
+      # XXX - then emit an event to let various client-side systems know that we're logged in now
     else
       $fancybox = $form.parents('.fancybox-wrap:first')
       $fancybox.remove-class \shake
@@ -97,7 +100,7 @@ require-login = (fn) ->
 
 # delegated events
 $d.on \click '#add-post-submit' add-post
-$d.on \click '.onclick-add-post-dialog' require-login(add-post-dialog)
+$d.on \click '.onclick-add-post-dialog' add-post-dialog
 
 $d.on \click '.onclick-append-reply-ui' append-reply-ui
 
