@@ -54,19 +54,20 @@ append-reply-ui = ->
   console.log 'subpost', $subpost
   # FIXME html 
   reply-ui-html = """
-  <div class="reply">
-    <form method="post" action="/resources/posts">
-      <textarea name="body"></textarea>
-      <input type="hidden" name="forum_id" value="#{window.active-forum-id}">
-      <input type="hidden" name="parent_id" value="#{post-id}">
-      <div>
-        <input type="submit" value="Post">
-      </div>
-    </form>
-  </div>
+  <form method="post" action="/resources/posts">
+    <textarea name="body"></textarea>
+    <input type="hidden" name="forum_id" value="#{window.active-forum-id}">
+    <input type="hidden" name="parent_id" value="#{post-id}">
+    <div>
+      <input type="submit" value="Post">
+    </div>
+  </form>
   """
   # append dom for reply ui
-  $subpost.append reply-ui-html
+  if $subpost.find('.reply form').length is 0
+    $subpost.find('.reply:first').append reply-ui-html
+  else
+    $subpost.find('.reply:first form').remove!
 
 #
 show-login-dialog = ->

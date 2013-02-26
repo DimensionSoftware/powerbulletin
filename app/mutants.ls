@@ -78,12 +78,9 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-unload:
     (window, next) ->
-      try
-        window.$ '.forum .container' .masonry(\destroy)
-        window.$ '.forum .header' .waypoint(\destroy)
-        window.$ '.forum' .waypoint(\destroy)
-      catch e
-        # do nothing
+      window.$ '.forum .container' .masonry(\destroy)
+      window.$ '.forum .header' .waypoint(\destroy)
+      window.$ '.forum' .waypoint(\destroy)
       next!
 
 @forum =
@@ -99,11 +96,18 @@ flip-background = (w, cur, direction='down') ->
     (window, next) ->
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
       flip-background window, cur
+      $ = window.$
+      $ '.forum .breadcrumb' .waypoint \sticky { offset: -70 }
+      #$ '.forum .breadcrumb' .css(\left, (($ window .width!)-($ '.breadcrumb' .width!))/2)
       next!
   on-mutate:
     (window, next) ->
       window.scroll-to-top!
       window.s
+      next!
+  on-unload:
+    (window, next) ->
+      window.$ '.forum .breadcrumb' .waypoint(\destroy)
       next!
 
 @search =
