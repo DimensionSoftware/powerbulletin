@@ -80,8 +80,8 @@ body.scrolled
     .user-profile
       transition left .5s ease-out
   #left_content.container
-    padding-top (grid * 5)
-    transition padding-top .4s ease-out
+    padding-top (grid * 4)
+    transition padding-top .5s ease-out
   #main_content.container
     .forum.dark
       .post
@@ -157,7 +157,8 @@ a.mutant:hover
 
 //{{{ Header
 header
-  background-color rgba(255,255,255,0.1)
+  //background-color rgba(255,255,255,0.1)
+  background-color #fff
   border-top 2px solid #000
   border-bottom 1px solid rgba(200,200,200,.3)
   color #555
@@ -290,9 +291,11 @@ header
 #left_content.container:hover
   border-right 1px solid #ddd
 #left_content.container
-  background-color rgba(255,255,255,.9)
+  //background-color rgba(255,255,255,.9)
+  background-color #fcfcfc
   border-right 1px solid #eee
   padding grid
+  padding-top (grid*6)
   .handle:hover
     box-shadow 0 0 5px #888
     background-color #e8e8e8
