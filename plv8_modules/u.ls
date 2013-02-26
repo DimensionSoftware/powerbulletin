@@ -146,28 +146,36 @@ export uri-for-forum = (forum-id) ->
   else
     '/' + slug
 
-export uri-for-post = (post-id) ->
+export uri-for-post = (post-id, first-slug = null) ->
   sql = 'SELECT forum_id, parent_id, slug FROM posts WHERE id=$1'
   [{forum_id, parent_id, slug}] = plv8.execute sql, [post-id]
   if parent_id
-    @uri-for-post(parent_id) + '/' + slug
+    if first-slug
+      @uri-for-post(parent_id, first-slug) # carry first slug thru
+    else
+      @uri-for-post(parent_id, slug) # set slug once, and only once at the beginning
   else
-    @uri-for-forum(forum_id) + '/t/' + slug
+    if first-slug
+      @uri-for-forum(forum_id) + '/t/' + slug + '/' + first-slug
+    else
+      @uri-for-forum(forum_id) + '/t/' + slug
 
 export menu = (site-id) ->
   forums-tree(site-id,
     top-posts-recent(null, 'p.created,p.title,p.slug,p.id'),
     top-forums-recent(null, 'id,title,slug,classes'))
 
-export build-forum-doc = (site-id, forum-id) ->
+export build-forum-docs = (site-id, forum-id) ->
   menu = @menu(site-id)
 
-  build-forum-doc-for = (doctype, top-posts-fun) ~>
+  build-forum-docs-for = (doctype, top-posts-fun) ~>
     forum = {forums: [forum-tree(forum-id, top-posts-fun)], menu}
-    @put-doc site-id, doctype, forum-id, JSON.stringify(forum)
+    @put-doc site-id, "forum_#{doctype}", forum-id, JSON.stringify(forum)
+    posts = top-posts-fun(forum-id)
+    @put-doc site-id, "threads_#{doctype}", forum-id, JSON.stringify(posts)
 
-  build-forum-doc-for \forum_recent, top-posts-recent!
-  build-forum-doc-for \forum_active, top-posts-active!
+  build-forum-docs-for \recent, top-posts-recent!
+  build-forum-docs-for \active, top-posts-active!
   true
 
 export build-homepage-doc = (site-id) ->

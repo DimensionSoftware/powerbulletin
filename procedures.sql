@@ -22,7 +22,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       if post.parent_id
         [{thread_id}] = plv8.execute('SELECT thread_id FROM posts WHERE id=$1', [post.parent_id])
         # child posts use comment text for generating a slug
-        slug = u.title2slug(post.body, nextval)
+        slug = nextval
       else
         thread_id = nextval
         # top-level posts use title text for generating a slug
@@ -48,13 +48,12 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
         * post.body
 
       plv8.execute(sql, params)
-      plv8.elog WARNING, 'HERE4'
 
       # the post must be inserted before uri-for-post will work, thats why uri is a NULLABLE column
       plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [u.uri-for-post(nextval), nextval]
 
       if post.build_docs
-        u.build-forum-doc(site-id, post.forum_id)
+        u.build-forum-docs(site-id, post.forum_id)
         u.build-homepage-doc(site-id)
     else
       errors.push "forum_id invalid: #{post.forum_id}"
@@ -116,7 +115,7 @@ CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   auths = plv8.execute(sql, [ usr.name, usr.site_id ])
   make-user = (memo, auth) ->
     memo.id = auth.id
-    memo.site_id = auth.id
+    memo.site_id = auth.site_id
     memo.name = auth.name
     memo.auths[auth.type] = JSON.parse(auth.json)
     memo
@@ -147,8 +146,10 @@ DROP FUNCTION IF EXISTS forum_doc(site_id JSON, sort JSON, uri JSON);
 CREATE FUNCTION forum_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
   require! u
   res = plv8.execute('SELECT id FROM forums WHERE site_id=$1 AND uri=$2', [site_id, uri])
-  if id  = res[0]?.id
-    return u.doc site_id, "forum_#{sort}", id
+  if forum-id = res[0]?.id
+    doc = JSON.parse u.doc(site_id, "forum_#{sort}", forum-id)
+    doc.top-threads = JSON.parse u.doc(site_id, "threads_#{sort}", forum-id)
+    return doc
   else
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
@@ -173,9 +174,9 @@ CREATE FUNCTION thread_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
     #XXX: note to self, menu doc? this seems to be used in alot of places
     menu = u.menu site_id 
     #XXX: misnamed forums
-    posts = u.top-posts-recent(10)(sub-post.forum_id)
-    rval = {forums: [{posts}], sub-post, menu}
-    plv8.elog WARNING, JSON.stringify(rval)
+    top-threads = JSON.parse u.doc(site_id, \threads_recent, sub-post.forum_id)
+
+    rval = {top-threads, sub-post, menu}
     return rval
   else
     return null
@@ -184,7 +185,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS build_doc(site_id JSON, forum_id JSON);
 CREATE FUNCTION build_doc(site_id JSON, forum_id JSON) RETURNS JSON AS $$
   require! <[u]>
-  u.build-forum-doc(site_id, forum_id)
+  u.build-forum-docs(site_id, forum_id)
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -195,7 +196,7 @@ CREATE FUNCTION build_all_docs(site_id JSON) RETURNS JSON AS $$
   u.build-homepage-doc(site_id)
 
   for f in plv8.execute('SELECT id FROM forums WHERE site_id=$1', [site_id])
-    u.build-forum-doc(site_id, f.id)
+    u.build-forum-docs(site_id, f.id)
 
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;

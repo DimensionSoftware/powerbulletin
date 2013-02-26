@@ -24,6 +24,9 @@ mixin subpost(p, sp, i)
 //- XXX - && typeof(forums) !== 'undefined' is a temporary hack to get the page to load
 if typeof(subPost) !== 'undefined'
   .forum
+    h2= subPost.title
+    if subPost.body
+      p= subPost.body
     .breadcrumb breadcrumb
     each p, i in subPost.posts
       mixin subpost(subPost, p, i)
