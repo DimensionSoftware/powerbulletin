@@ -17,7 +17,7 @@ mixin subpost(sp, i)
     .user= sp.user_name
     .date= sp.created
     if sp.body
-      p.body= sp.body
+      p.body!= sp.body
     .actions
       a.onclick-append-reply-ui Reply
     .reply
