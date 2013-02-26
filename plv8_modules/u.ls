@@ -146,13 +146,19 @@ export uri-for-forum = (forum-id) ->
   else
     '/' + slug
 
-export uri-for-post = (post-id) ->
+export uri-for-post = (post-id, first-slug = null) ->
   sql = 'SELECT forum_id, parent_id, slug FROM posts WHERE id=$1'
   [{forum_id, parent_id, slug}] = plv8.execute sql, [post-id]
   if parent_id
-    @uri-for-post(parent_id) + '/' + slug
+    if first-slug
+      @uri-for-post(parent_id, first-slug) # carry first slug thru
+    else
+      @uri-for-post(parent_id, slug) # set slug once, and only once at the beginning
   else
-    @uri-for-forum(forum_id) + '/t/' + slug
+    if first-slug
+      @uri-for-forum(forum_id) + '/t/' + slug + '/' + first-slug
+    else
+      @uri-for-forum(forum_id) + '/t/' + slug
 
 export menu = (site-id) ->
   forums-tree(site-id,

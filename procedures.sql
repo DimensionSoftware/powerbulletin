@@ -22,7 +22,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       if post.parent_id
         [{thread_id}] = plv8.execute('SELECT thread_id FROM posts WHERE id=$1', [post.parent_id])
         # child posts use comment text for generating a slug
-        slug = u.title2slug(post.body, nextval)
+        slug = nextval
       else
         thread_id = nextval
         # top-level posts use title text for generating a slug

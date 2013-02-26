@@ -162,14 +162,23 @@
       return '/' + slug;
     }
   };
-  out$.uriForPost = uriForPost = function(postId){
+  out$.uriForPost = uriForPost = function(postId, firstSlug){
     var sql, ref$, forum_id, parent_id, slug;
+    firstSlug == null && (firstSlug = null);
     sql = 'SELECT forum_id, parent_id, slug FROM posts WHERE id=$1';
     ref$ = plv8.execute(sql, [postId])[0], forum_id = ref$.forum_id, parent_id = ref$.parent_id, slug = ref$.slug;
     if (parent_id) {
-      return this.uriForPost(parent_id) + '/' + slug;
+      if (firstSlug) {
+        return this.uriForPost(parent_id, firstSlug);
+      } else {
+        return this.uriForPost(parent_id, slug);
+      }
     } else {
-      return this.uriForForum(forum_id) + '/t/' + slug;
+      if (firstSlug) {
+        return this.uriForForum(forum_id) + '/t/' + slug + '/' + firstSlug;
+      } else {
+        return this.uriForForum(forum_id) + '/t/' + slug;
+      }
     }
   };
   out$.menu = menu = function(siteId){
