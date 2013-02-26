@@ -467,11 +467,13 @@ require.define("/lib/mutant/mutant.ls",function(require,module,exports,__dirname
             if (err) {
               return cb(err);
             }
-            return onPersonalize.call(params, window, user, function(err){
-              if (err) {
-                return cb(err);
-              }
-            });
+            if (user) {
+              return onPersonalize.call(params, window, user, function(err){
+                if (err) {
+                  return cb(err);
+                }
+              });
+            }
           });
         });
       } else {
@@ -493,11 +495,13 @@ require.define("/lib/mutant/mutant.ls",function(require,module,exports,__dirname
               if (err) {
                 return cb(err);
               }
-              return onPersonalize.call(params, window, user, function(err){
-                if (err) {
-                  return cb(err);
-                }
-              });
+              if (user) {
+                return onPersonalize.call(params, window, user, function(err){
+                  if (err) {
+                    return cb(err);
+                  }
+                });
+              }
             });
           });
         });
