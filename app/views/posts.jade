@@ -24,7 +24,7 @@ mixin subpost(p, sp, i)
     .date= sp.created
     p.body!= sp.body
     .actions
-      a.reply.onclick-append-reply-ui Reply
+      a.onclick-append-reply-ui Reply
     .reply
     if sp.posts
       .children
