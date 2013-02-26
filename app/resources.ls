@@ -17,9 +17,10 @@ require! {
     res.render \add-post
   new     : null
   create  : (req, res, next) ->
+    return next(404) unless req.user
     db = pg.procs
     post = req.body
-    post.user_id  = 1 # XXX/FIXME: in the future, this needs to be calculated from a cookie / session
+    post.user_id = req.user.id
     err, ap-res <- db.add-post post
     if err then return next err
     res.json ap-res
