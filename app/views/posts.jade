@@ -13,13 +13,14 @@ mixin subpost(sp, i)
   .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id="#{sp.id}")
     if sp.title
       h4.title= sp.title
-    a(href=sp.uri) permalink
     .user= sp.user_name
     .date= sp.created
     if sp.body
       p.body!= sp.body
     .actions
       a.onclick-append-reply-ui Reply
+      | 
+      a(href=sp.uri) Permalink
     .reply
     if sp.posts.length
       .children
