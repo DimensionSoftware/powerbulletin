@@ -863,8 +863,12 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
     postId = $subpost.data('post-id');
     window.$subpost = $subpost;
     console.log('subpost', $subpost);
-    replyUiHtml = "<div class=\"reply\">\n  <form method=\"post\" action=\"/resources/posts\">\n    <textarea name=\"body\"></textarea>\n    <input type=\"hidden\" name=\"forum_id\" value=\"" + window.activeForumId + "\">\n    <input type=\"hidden\" name=\"parent_id\" value=\"" + postId + "\">\n    <div>\n      <input type=\"submit\" value=\"Post\">\n    </div>\n  </form>\n</div>";
-    return $subpost.append(replyUiHtml);
+    replyUiHtml = "<form method=\"post\" action=\"/resources/posts\">\n  <textarea name=\"body\"></textarea>\n  <input type=\"hidden\" name=\"forum_id\" value=\"" + window.activeForumId + "\">\n  <input type=\"hidden\" name=\"parent_id\" value=\"" + postId + "\">\n  <div>\n    <input type=\"submit\" value=\"Post\">\n  </div>\n</form>";
+    if ($subpost.find('.reply form').length === 0) {
+      return $subpost.find('.reply:first').append(replyUiHtml);
+    } else {
+      return $subpost.find('.reply:first form').remove();
+    }
   };
   showLoginDialog = function(){
     return $.fancybox.open('#auth');
