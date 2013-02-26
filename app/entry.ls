@@ -76,7 +76,9 @@ login = ->
     if r.success
       window.location.reload!
     else
-      console.warn 'invalid login'
+      $fancybox = $form.parents('.fancybox-wrap:first')
+      $fancybox.remove-class \shake
+      set-timeout (-> $fancybox.add-class(\shake)), 100
   return false
 
 # delegated events

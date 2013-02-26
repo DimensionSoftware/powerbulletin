@@ -874,10 +874,15 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
       password: $form.find('input[name=password]').val()
     };
     $.post($form.attr('action'), params, function(r){
+      var $fancybox;
       if (r.success) {
         return window.location.reload();
       } else {
-        return console.warn('invalid login');
+        $fancybox = $form.parents('.fancybox-wrap:first');
+        $fancybox.removeClass('shake');
+        return setTimeout(function(){
+          return $fancybox.addClass('shake');
+        }, 100);
       }
     });
     return false;
