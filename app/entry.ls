@@ -45,6 +45,7 @@ add-post = ->
     console.log 'stub: do something fancy to confirm submission'
   false # stop event propagation
 
+# show reply ui
 append-reply-ui = ->
   # find post div
   $subpost = $(this).parents('.subpost:first')
@@ -67,6 +68,11 @@ append-reply-ui = ->
   # append dom for reply ui
   $subpost.append reply-ui-html
 
+#
+show-login-dialog = ->
+  $.fancybox.open '#auth'
+
+# login action
 login = ->
   $form = $(this)
   params =
@@ -81,9 +87,17 @@ login = ->
       set-timeout (-> $fancybox.add-class(\shake)), 100
   return false
 
+# require that window.user exists before calling fn
+require-login = (fn) ->
+  ->
+    if window.user
+      fn.apply this, arguments
+    else
+      show-login-dialog!
+
 # delegated events
 $d.on \click '#add-post-submit' add-post
-$d.on \click '.onclick-add-post-dialog' add-post-dialog
+$d.on \click '.onclick-add-post-dialog' require-login(add-post-dialog)
 
 $d.on \click '.onclick-append-reply-ui' append-reply-ui
 
