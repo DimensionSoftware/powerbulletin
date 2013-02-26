@@ -47,6 +47,12 @@ app = global.app = express!
 redir-to-domain  = express!
 cache-app        = express!
 
+apps = [app, redir-to-domain, cache-app]
+
+graceful-shutdown = ->
+  for a in apps
+    a.close!
+
 html_50x = fs.read-file-sync('public/50x.html').to-string!
 html_404 = fs.read-file-sync('public/404.html').to-string!
 
@@ -110,7 +116,12 @@ else
       timestamp = new Date
       console.warn 'timestamp', timestamp
       console.warn err.message
-      proc.exit 1
+      console.warn 'uncaught exception in worker, shutting down'
+      graceful-shutdown!
+
+    proc.on 'SIGTERM', ->
+      console.warn 'SIGTERM received by worker, shutting down'
+      graceful-shutdown!
 
     require('console-trace')({
       always: true
@@ -149,7 +160,7 @@ else
       console.warn 'user_agent'  , req.headers['user-agent']
       console.warn 'http_method' , req.method
       console.warn 'url'         , req.headers.host + req.url
-      proc.exit 1
+      graceful-shutdown!
 
   # routes
   require! './routes'
