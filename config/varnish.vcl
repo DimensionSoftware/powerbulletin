@@ -19,8 +19,8 @@ sub vcl_recv {
     error 302 "Found"; 
   }
 
-  # discard cookies on everything but login or personalization urls
-  if (req.url !~ "^/auth/") {
+  # discard cookies on everything but auth and resources urls
+  if (req.url !~ "^/(auth|resources)/") {
     unset req.http.cookie;
     unset req.http.cache-control;
     unset req.http.pragma;
@@ -29,7 +29,7 @@ sub vcl_recv {
 
 sub vcl_fetch {
   # discard cookies on everything but login or personalization urls
-  if (req.url !~ "^/auth/") {
+  if (req.url !~ "^/(auth|resources)/") {
     unset beresp.http.set-cookie;
   }
 }
