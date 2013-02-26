@@ -5,6 +5,16 @@
 $w = $ window
 $d = $ document
 
+window.mutant  = require '../lib/mutant/mutant'
+window.mutants = require './mutants'
+window.mutate  = (e) ->
+  href = $ this .attr \href
+  return false unless href # guard
+  return true if href?.match /#/
+  search-params = {}
+  History.push-state {search-params}, '', href
+  false
+
 #{{{ Waypoints
 $w.resize -> set-timeout (-> $.waypoints \refresh), 800
 set-timeout (-> # sort control
@@ -112,16 +122,6 @@ $d.on \submit '.login form' login
 window.user <- $.getJSON '/auth/user'
 
 #{{{ Mutant init
-window.mutant  = require '../lib/mutant/mutant'
-window.mutants = require './mutants'
-window.mutate  = (e) ->
-  href = $ this .attr \href
-  return false unless href # guard
-  return true if href?.match /#/
-  search-params = {}
-  History.push-state {search-params}, '', href
-  false
-
 window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}
 
 $ '#query' .focus!

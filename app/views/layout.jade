@@ -26,7 +26,7 @@ html
         link(rel='stylesheet',type='text/css',href=obj.url)
 
     //- the only .js in our <head> 
-    if cvars.env == 'development'
+    if cvars.env != 'production'
       script(type='text/javascript', src="#{cache5_url}/local/head-0.99.load.min.js") //- offline
     else
       script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
