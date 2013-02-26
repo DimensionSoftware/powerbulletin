@@ -108,6 +108,7 @@ $d.on \submit '.login form' login
 
 # personalization ( based on parameters from user obj )
 window.user <- $.getJSON '/auth/user'
+console.log 'getJSON called'
 
 #{{{ Mutant init
 window.mutant  = require '../lib/mutant/mutant'
@@ -120,12 +121,8 @@ window.mutate  = (e) ->
   History.push-state {search-params}, '', href
   false
 
-#XXX: needs more friendly api-like way to handle this case with mutant
-on-load = window.mutants[window.mutator]?.on-load or (window, next) -> next!
-on-personalize = window.mutants[window.mutator]?.on-personalize or (w, u, next) -> next!
-<- on-load.call this, window # fire on-load of initial mutant
-<- on-personalize.call this, window, window.user # fire on-load of personalize mutant
-#XXX: this shit above doesn't belong here, mutant has an initial pageload mode
+window.mutant.run window.mutants[window.mutator], {initial: true, window.user}
+
 $ '#query' .focus!
 
 $d.on \click 'a.mutant' window.mutate # hijack urls
@@ -143,77 +140,5 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   return false
 
 #}}}
-
-# vim:fdm=marker
-#
-# XXX layout-specific client-side
-
-# shortcuts
-$w = $ window
-$d = $ document
-
-is-ie     = false or \msTransform in document.documentElement.style
-is-moz    = false or \MozBoxSizing in document.documentElement.style
-is-opera  = !!(window.opera and window.opera.version)
-threshold = 10 # snap
-
-# main
-# ---------
-#{{{ Scrolling behaviors
-window.scroll-to-top = ->
-  return if ($ window).scroll-top! is 0 # guard
-  $e = $ 'html,body'
-  <- $e .animate { scroll-top:$ \body .offset!top }, 140
-  <- $e .animate { scroll-top:$ \body .offset!top+threshold }, 110
-  <- $e .animate { scroll-top:$ \body .offset!top }, 75
-
-# indicate to stylus that view scrolled
-has-scrolled = ->
-  st = $w.scrollTop!
-  $ \body .toggle-class 'scrolled' (st > threshold)
-set-timeout (->
-  $w.on \scroll -> has-scrolled!
-  has-scrolled!), 1300 # initially yield
-
-window.awesome-scroll-to = (e, duration, on-complete) ->
-  on-complete = -> noop=1 unless on-complete
-
-  e     := $ e
-  ms     = duration or 600
-  offset = 100
-
-  return unless e.length # guard
-  if is-ie or is-opera
-    e[0].scroll-into-view!
-    on-complete!
-  else # animate
-    dst-scroll = Math.round(e.position!top) - offset
-    cur-scroll = window.scrollY
-    if Math.abs(dst-scroll - cur-scroll) > 30
-      #<- $ 'html,body' .animate { scroll-top:dst-scroll }, 140
-      #<- $ 'html,body' .animate { scroll-top:dst-scroll+threshold }, 110
-      <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms
-    else
-      on-complete!
-  e
-
-# attach scroll-to's
-$d.on \click '.scroll-to' ->
-  awesome-scroll-to $(this).data \scroll-to
-  false
-
-# attach scroll-to-top's
-$d.on \mousedown '.scroll-to-top' ->
-  $ this .attr \title 'Scroll to Top!'
-  window.scroll-to-top!
-  false
-#}}}
-
-# header expansion
-$d.on \click 'header' (e) ->
-  $ \body .remove-class \expanded if e.target.class-name.index-of(\toggler) > -1 # guard
-  $ '#query' .focus!
-$d.on \keypress '#query' -> $ \body .add-class \expanded
-
 
 # vim:fdm=marker

@@ -23,7 +23,7 @@ common-js = [
   "#{cvars.cache5_url}/local/history.min.js",
   "#{cvars.cache5_url}/local/history.adapter.native.min.js",
   "#{cvars.cache3_url}/fancybox/jquery.fancybox.pack.js",
-  "#{cvars.cache4_url}/powerbulletin.min.js"]
+  "#{cvars.cache4_url}/powerbulletin.js"]
 common-css = [
   "#{cvars.cache2_url}/fancybox/jquery.fancybox.css",
   '/dynamic/css/theme.styl,layout.styl']
