@@ -34,7 +34,10 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
     $d.attr \title, r.locals.title if r.locals?.title # set title
     on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
     on-unload window, -> # cleanup & run next mutant
-      window.mutant.run window.mutants[r.mutant], locals:r.locals
+      try
+        window.mutant.run window.mutants[r.mutant], locals:r.locals
+      catch e
+        # do nothing
   return false
 
 #}}}

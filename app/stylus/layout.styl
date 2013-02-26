@@ -345,11 +345,23 @@ section.left-chrome
     clear both
     min-height 650px
     padding-left left-content-width
+    .breadcrumb.stuck
+      width 100%
+      left 0
+      text-align center
+      padding-top grid
+    .breadcrumb
+      text-transform capitalize
+      font-size .9em
+      a
+        padding (grid/2)
+        margin-right (grid)
+        letter-spacing -1px
     .container
       z-index 6
     .header.stuck::before
       opacity 1!important
-    .header.stuck
+    .header.stuck, .breadcrumb.stuck
       position fixed
       top header-scrolled-height
       left 50px
@@ -411,6 +423,11 @@ section.left-chrome
         float left
       img
         max-width 100%
+      .body
+        margin grid 0
+        blockquote
+          margin (grid/2)
+          padding 0
   .scroll-to-top
       clear both
 //}}}

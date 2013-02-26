@@ -1,4 +1,14 @@
 
+mixin breadcrumb(subPost)
+  path  = ''
+  parts = subPost.uri.split('/')
+  parts = parts.splice(1, parts.length-2)
+  each part in parts
+    if part != 't'
+      a.mutant(href="#{path}#{part}")= part.replace('-', ' ')
+    - path = path + part + '/'
+  != subPost.title
+
 mixin post(p, i)
   .post
     a.mutant(href=p.uri)!= p.title
@@ -27,7 +37,8 @@ if typeof(subPost) !== 'undefined'
     h2= subPost.title
     if subPost.body
       p= subPost.body
-    .breadcrumb breadcrumb
+    .breadcrumb
+      mixin breadcrumb(subPost)
     each p, i in subPost.posts
       mixin subpost(subPost, p, i)
 
