@@ -467,11 +467,13 @@ require.define("/lib/mutant/mutant.ls",function(require,module,exports,__dirname
             if (err) {
               return cb(err);
             }
-            return onPersonalize.call(params, window, user, function(err){
-              if (err) {
-                return cb(err);
-              }
-            });
+            if (user) {
+              return onPersonalize.call(params, window, user, function(err){
+                if (err) {
+                  return cb(err);
+                }
+              });
+            }
           });
         });
       } else {
@@ -493,11 +495,13 @@ require.define("/lib/mutant/mutant.ls",function(require,module,exports,__dirname
               if (err) {
                 return cb(err);
               }
-              return onPersonalize.call(params, window, user, function(err){
-                if (err) {
-                  return cb(err);
-                }
-              });
+              if (user) {
+                return onPersonalize.call(params, window, user, function(err){
+                  if (err) {
+                    return cb(err);
+                  }
+                });
+              }
             });
           });
         });
@@ -886,7 +890,6 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
   $d.on('submit', '.login form', login);
   $.getJSON('/auth/user', function(user){
     window.user = user;
-    console.log('getJSON called');
     window.mutant = require('../lib/mutant/mutant');
     window.mutants = require('./mutants');
     window.mutate = function(e){
@@ -904,7 +907,7 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
       }, '', href);
       return false;
     };
-    window.mutant.run(window.mutants[window.mutator], {
+    window.mutant.run(window.mutants[window.initialMutant], {
       initial: true,
       user: window.user
     });

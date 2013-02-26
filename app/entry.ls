@@ -110,7 +110,6 @@ $d.on \submit '.login form' login
 
 # personalization ( based on parameters from user obj )
 window.user <- $.getJSON '/auth/user'
-console.log 'getJSON called'
 
 #{{{ Mutant init
 window.mutant  = require '../lib/mutant/mutant'
@@ -123,7 +122,7 @@ window.mutate  = (e) ->
   History.push-state {search-params}, '', href
   false
 
-window.mutant.run window.mutants[window.mutator], {initial: true, window.user}
+window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}
 
 $ '#query' .focus!
 
