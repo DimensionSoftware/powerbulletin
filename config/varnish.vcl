@@ -28,6 +28,8 @@ sub vcl_recv {
 }
 
 sub vcl_fetch {
+  set beresp.do_gzip = true;
+
   # discard cookies on everything but login or personalization urls
   if (req.url !~ "^/(auth|resources)/") {
     unset beresp.http.set-cookie;
@@ -45,10 +47,6 @@ sub vcl_deliver {
   set resp.http.X-XSS-Protection = "1; mode=block";
   set resp.http.X-Frame-Options = "SAMEORIGIN";
   set resp.http.Strict-Transport-Security = "max-age=31536000; includeSubDomains";
-}
-
-sub vcl_fetch {
-  set beresp.do_gzip = true;
 }
 
 sub vcl_error { 
