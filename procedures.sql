@@ -50,7 +50,8 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       plv8.execute(sql, params)
 
       # the post must be inserted before uri-for-post will work, thats why uri is a NULLABLE column
-      plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [u.uri-for-post(nextval), nextval]
+      uri = u.uri-for-post(nextval)
+      plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [uri, nextval]
 
       if post.build_docs
         u.build-forum-docs(site-id, post.forum_id)
@@ -58,7 +59,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
     else
       errors.push "forum_id invalid: #{post.forum_id}"
 
-  return {success: !errors.length, errors, id: nextval, slug}
+  return {success: !errors.length, errors, id: nextval, uri}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS sub_posts_tree(id JSON);
