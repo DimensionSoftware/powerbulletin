@@ -12,7 +12,7 @@ mixin subforum(f, sf, i)
   li
     a.mutant.title(href=sf.uri)= sf.title
 
-mixin thread(f, t, i)
+mixin thread(t)
   li
     h4.title
       a.mutant(href=t.uri)= t.title
@@ -32,12 +32,8 @@ mixin thread(f, t, i)
 .create
   a(class='button onclick-add-post-dialog') Create Thread
 
-//- XXX - && typeof(forums) !== 'undefined' is a temporary hack to get the page to load
-if typeof(forums) !== 'undefined' && forums
-  each f,i in forums
-    if f.posts
-      ul.threads
-        each t,ii in f.posts
-          mixin thread(f, t, ii)
+ul.threads
+  each t,ii in topThreads
+    mixin thread(t)
 
 //- vim:fdm=marker
