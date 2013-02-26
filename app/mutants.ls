@@ -82,6 +82,10 @@ flip-background = (w, cur, direction='down') ->
       window.$ '.forum .header' .waypoint(\destroy)
       window.$ '.forum' .waypoint(\destroy)
       next!
+  on-personalize: (w, u, next) ->
+    console.log w, u
+    console.log 'HARHAR'
+    next!
 
 @forum =
   static:
