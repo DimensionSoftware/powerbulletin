@@ -80,8 +80,8 @@ body.scrolled
     .user-profile
       transition left .5s ease-out
   #left_content.container
-    padding-top (grid * 5)
-    transition padding-top .4s ease-out
+    padding-top (grid * 4)
+    transition padding-top .5s ease-out
   #main_content.container
     .forum.dark
       .post
@@ -157,7 +157,8 @@ a.mutant:hover
 
 //{{{ Header
 header
-  background-color rgba(255,255,255,0.1)
+  //background-color rgba(255,255,255,0.1)
+  background-color #fff
   border-top 2px solid #000
   border-bottom 1px solid rgba(200,200,200,.3)
   color #555
@@ -287,9 +288,25 @@ header
         height 20px
 //}}}
 //{{{ Left side
+#left_content.container:hover
+  border-right 1px solid #ddd
 #left_content.container
-  background-color rgba(255,255,255,.9)
+  //background-color rgba(255,255,255,.9)
+  background-color #fcfcfc
+  border-right 1px solid #eee
   padding grid
+  padding-top (grid*6)
+  .handle:hover
+    box-shadow 0 0 5px #888
+    background-color #e8e8e8
+    transition all .2s ease-out
+  .handle
+    border-radius 15px
+    background-color #eee
+    box-shadow 0 0 4px #aaa
+    border 4px solid #fff
+    line-height 23px
+    font-size .8em
   .title
     padding 2px 7px
     letter-spacing -1px
@@ -571,7 +588,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
 .button:hover, input[type="button"]:hover, input[type="submit"]:hover, button:hover
   background -moz-linear-gradient(center top , #ffce29, #f38437) repeat scroll 0 0 #ffffff
   background -webkit-gradient(linear, left top, left bottom, from(#ffce29), to(#f38437))
-  text-indent -2px
+  //text-indent -2px
   background-color #ffca27
   border-color #777
   border-top 1px solid #fff467
@@ -588,7 +605,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   bottom -5px
   top -5px
 .button:active, button:active, input[type='submit']:active,input[type='button']:active,button:focus, input[type="submit"]:focus, input[type="button"]:focus
-  text-indent 2px
+  //text-indent 2px
   border-top 1px solid #666
   border-left 1px solid #666
   box-shadow 0 0 2px #888, 1px 1px 1px #a33400 inset
