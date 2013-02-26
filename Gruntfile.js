@@ -106,7 +106,7 @@ module.exports = function(grunt) {
     // XXX surely there's a more automatic way to manage this?
     var config = require('./config/common');
     var file   = config.tmp+'/pb.pid';
-    exec("killall -9 pb-supervisor pb-worker powerbulletin");
+    exec('killall -9 pb-supervisor pb-worker powerbulletin');
     daemon('./bin/powerbulletin', file);
   });
 
