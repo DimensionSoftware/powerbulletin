@@ -89,6 +89,23 @@ html
 
     section#main_content.main-content.container
 
+    section#auth(style="display:none;")
+      .login
+        form(method="post", action="/auth/login")
+          h2 Login
+          fieldset
+            input(name="username", type="text", placeholder="Username")
+            input(name="password", type="password", placeholder="Password")
+            input(type="submit", value="Login")
+        .social
+          h2 Or Log In With:
+          a(href="/auth/facebook") 
+            img(src="#{cache2_url}/images/facebook_32.png")
+          a(href="/auth/google") 
+            img(src="#{cache3_url}/images/google_32.png")
+          a(href="/auth/twitter") 
+            img(src="#{cache4_url}/images/twitter_32.png")
+
     footer#chat_drawer.scroll-to-top
       h6
         small #{site.name} &nbsp;

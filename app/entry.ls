@@ -67,11 +67,27 @@ append-reply-ui = ->
   # append dom for reply ui
   $subpost.append reply-ui-html
 
+login = ->
+  $form = $(this)
+  params =
+    username: $form.find('input[name=username]').val!
+    password: $form.find('input[name=password]').val!
+  $.post $form.attr(\action), params, (r) ->
+    if r.success
+      window.location.reload!
+    else
+      $fancybox = $form.parents('.fancybox-wrap:first')
+      $fancybox.remove-class \shake
+      set-timeout (-> $fancybox.add-class(\shake)), 100
+  return false
+
 # delegated events
 $d.on \click '#add-post-submit' add-post
 $d.on \click '.onclick-add-post-dialog' add-post-dialog
 
 $d.on \click '.onclick-append-reply-ui' append-reply-ui
+
+$d.on \submit '.login form' login
 
 # personalization ( based on parameters from user obj )
 window.user <- $.getJSON '/auth/user'

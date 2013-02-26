@@ -24,6 +24,17 @@ grid = 10px
     transform scale(1.04)
   100%
     transform scale(1.0)
+@keyframes shake
+  0%
+    transform translateX(-20px)
+  25%
+    transform translateX(20px)
+  50%
+    transform translateX(-10px)
+  75%
+    transform translateX(10px)
+  100%
+    transform translateX(0)
 //}}}
 
 //{{{ Style applied after body scrolls
@@ -605,7 +616,12 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   padding 6px 15px
   text-align center
 //}}}
+//{{{ Fancybox
+.shake
+  animation-name shake
+  animation-duration .5s
 
+//}}}
 //{{{ jQuery UI
 .ui-widget-overlay
   opacity .9!important
