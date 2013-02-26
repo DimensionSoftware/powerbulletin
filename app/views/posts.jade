@@ -9,37 +9,28 @@ mixin breadcrumb(subPost)
     - path = path + part + '/'
   != subPost.title
 
-mixin post(p, i)
-  .post
-    a.mutant(href=p.uri)!= p.title
-    p.body!= p.body
-    if p.subposts
-      each sp,ii in p.subposts
-        mixin subpost(p, sp, ii)
-
-mixin subpost(p, sp, i)
+mixin subpost(sp, i)
   .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id="#{sp.id}")
-    h4.title!= sp.title
+    if sp.title
+      h4.title= sp.title
+    a(href=sp.uri) permalink
     .user= sp.user_name
     .date= sp.created
-    p.body!= sp.body
+    if sp.body
+      p.body= sp.body
     .actions
       a.onclick-append-reply-ui Reply
     .reply
-    if sp.posts
+    if sp.posts.length
       .children
         each pp, ii in sp.posts
-          mixin subpost(sp, pp, ii)
+          mixin subpost(pp, ii)
 
 //- XXX - && typeof(forums) !== 'undefined' is a temporary hack to get the page to load
 if typeof(subPost) !== 'undefined'
   .forum
-    h2= subPost.title
-    if subPost.body
-      p= subPost.body
     .breadcrumb
       mixin breadcrumb(subPost)
-    each p, i in subPost.posts
-      mixin subpost(subPost, p, i)
+    mixin subpost(subPost, 0)
 
 //- vim:fdm=marker
