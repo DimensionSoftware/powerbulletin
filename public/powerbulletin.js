@@ -438,11 +438,12 @@ require.define("/lib/mutant/mutant.ls",function(require,module,exports,__dirname
     
     onMutate only happens on a mutation (not on an initial pageload)
     */
-    var initial_run, params, html, onLoad, onInitial, onMutate;
+    var initial_run, params, html, user, onLoad, onInitial, onMutate, onPersonalize;
     cb == null && (cb = function(){});
     initial_run = opts.initial;
     params = opts.locals || {};
     html = opts.html;
+    user = opts.user;
     onLoad = template.onLoad || function(w, cb){
       return cb(null);
     };
@@ -452,6 +453,9 @@ require.define("/lib/mutant/mutant.ls",function(require,module,exports,__dirname
     onMutate = template.onMutate || function(w, cb){
       return cb(null);
     };
+    onPersonalize = template.onPersonalize || function(w, u, cb){
+      return cb(null);
+    };
     require('../../app/views/mutants.js');
     if (typeof window != 'undefined' && window !== null) {
       if (initial_run) {
@@ -459,7 +463,16 @@ require.define("/lib/mutant/mutant.ls",function(require,module,exports,__dirname
           if (err) {
             return cb(err);
           }
-          return onInitial.call(params, window, cb);
+          return onInitial.call(params, window, function(err){
+            if (err) {
+              return cb(err);
+            }
+            return onPersonalize.call(params, user, window, function(err){
+              if (err) {
+                return cb(err);
+              }
+            });
+          });
         });
       } else {
         window.renderJade = function(target, tmpl){
@@ -914,8 +927,153 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
   $d.on('click', '.onclick-append-reply-ui', appendReplyUi);
   $d.on('submit', '.login form', login);
   $.getJSON('/auth/user', function(user){
-    window.user = user;
+    var onLoad, ref$, onPersonalize;
+    window.mutant = require('../lib/mutant/mutant');
+    window.mutants = require('./mutants');
+    window.mutate = function(e){
+      var href, searchParams;
+      href = $(this).attr('href');
+      if (!href) {
+        return false;
+      }
+      if (href != null && href.match(/#/)) {
+        return true;
+      }
+      searchParams = {};
+      History.pushState({
+        searchParams: searchParams
+      }, '', href);
+      return false;
+    };
+    onLoad = ((ref$ = window.mutants[window.mutator]) != null ? ref$.onLoad : void 8) || function(window, next){
+      return next();
+    };
+    onPersonalize = ((ref$ = window.mutants[window.mutator]) != null ? ref$.onPersonalize : void 8) || function(w, u, next){
+      return next();
+    };
+    return onLoad.call(this, window, function(){
+      return onPersonalize.call(this, user, window, function(){
+        var $w, $d, isIe, isMoz, isOpera, threshold, hasScrolled;
+        $('#query').focus();
+        $d.on('click', 'a.mutant', window.mutate);
+        History.Adapter.bind(window, 'statechange', function(e){
+          var url;
+          url = History.getPageUrl().replace(/\/$/, '');
+          $.get(url, {
+            _surf: 1
+          }, function(r){
+            var ref$, onUnload;
+            if ((ref$ = r.locals) != null && ref$.title) {
+              $d.attr('title', r.locals.title);
+            }
+            onUnload = window.mutants[window.mutator].onUnload || function(w, cb){
+              return cb(null);
+            };
+            return onUnload(window, function(){
+              var e;
+              try {
+                return window.mutant.run(window.mutants[r.mutant], {
+                  locals: r.locals,
+                  user: user
+                });
+              } catch (e$) {
+                return e = e$;
+              }
+            });
+          });
+          return false;
+        });
+        $w = $(window);
+        $d = $(document);
+        isIe = false || in$('msTransform', document.documentElement.style);
+        isMoz = false || in$('MozBoxSizing', document.documentElement.style);
+        isOpera = !!(window.opera && window.opera.version);
+        threshold = 10;
+        window.scrollToTop = function(){
+          var $e;
+          if ($(window).scrollTop() === 0) {
+            return;
+          }
+          $e = $('html,body');
+          return $e.animate({
+            scrollTop: $('body').offset().top
+          }, 140, function(){
+            return $e.animate({
+              scrollTop: $('body').offset().top + threshold
+            }, 110, function(){
+              return $e.animate({
+                scrollTop: $('body').offset().top
+              }, 75, function(){});
+            });
+          });
+        };
+        hasScrolled = function(){
+          var st;
+          st = $w.scrollTop();
+          return $('body').toggleClass('scrolled', st > threshold);
+        };
+        setTimeout(function(){
+          $w.on('scroll', function(){
+            return hasScrolled();
+          });
+          return hasScrolled();
+        }, 1300);
+        window.awesomeScrollTo = function(e, duration, onComplete){
+          var ms, offset, dstScroll, curScroll;
+          onComplete = function(){
+            var noop;
+            if (!onComplete) {
+              return noop = 1;
+            }
+          };
+          e = $(e);
+          ms = duration || 600;
+          offset = 100;
+          if (!e.length) {
+            return;
+          }
+          if (isIe || isOpera) {
+            e[0].scrollIntoView();
+            onComplete();
+          } else {
+            dstScroll = Math.round(e.position().top) - offset;
+            curScroll = window.scrollY;
+            if (Math.abs(dstScroll - curScroll) > 30) {
+              $('html,body').animate({
+                scrollTop: dstScroll
+              }, ms, function(){});
+            } else {
+              onComplete();
+            }
+          }
+          return e;
+        };
+        $d.on('click', '.scroll-to', function(){
+          awesomeScrollTo($(this).data('scroll-to'));
+          return false;
+        });
+        $d.on('mousedown', '.scroll-to-top', function(){
+          $(this).attr('title', 'Scroll to Top!');
+          window.scrollToTop();
+          return false;
+        });
+        $d.on('click', 'header', function(e){
+          if (e.target.className.indexOf('toggler') > -1) {
+            $('body').removeClass('expanded');
+          }
+          return $('#query').focus();
+        });
+        return $d.on('keypress', '#query', function(){
+          return $('body').addClass('expanded');
+        });
+      });
+    });
   });
+  function in$(x, arr){
+    var i = -1, l = arr.length >>> 0;
+    while (++i < l) if (x === arr[i] && i in arr) return true;
+    return false;
+  }
 }).call(this);
 
 });
