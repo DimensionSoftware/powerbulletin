@@ -40,9 +40,6 @@ db = pg.procs
   req.logout()
   res.redirect redirect-url
 
-@forum-most-active = (req, res, next) ->
-  # nothing
-
 @homepage = (req, res, next) ->
   # TODO: 1 should be replaced with the real site-id here
   # TODO: need to allow ui to change between homepage_recent and homepage_active

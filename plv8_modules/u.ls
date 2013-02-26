@@ -159,15 +159,17 @@ export menu = (site-id) ->
     top-posts-recent(null, 'p.created,p.title,p.slug,p.id'),
     top-forums-recent(null, 'id,title,slug,classes'))
 
-export build-forum-doc = (site-id, forum-id) ->
+export build-forum-docs = (site-id, forum-id) ->
   menu = @menu(site-id)
 
-  build-forum-doc-for = (doctype, top-posts-fun) ~>
+  build-forum-docs-for = (doctype, top-posts-fun) ~>
     forum = {forums: [forum-tree(forum-id, top-posts-fun)], menu}
-    @put-doc site-id, doctype, forum-id, JSON.stringify(forum)
+    @put-doc site-id, "forum_#{doctype}", forum-id, JSON.stringify(forum)
+    posts = top-posts-fun(forum-id)
+    @put-doc site-id, "threads_#{doctype}", forum-id, JSON.stringify(posts)
 
-  build-forum-doc-for \forum_recent, top-posts-recent!
-  build-forum-doc-for \forum_active, top-posts-active!
+  build-forum-docs-for \recent, top-posts-recent!
+  build-forum-docs-for \active, top-posts-active!
   true
 
 export build-homepage-doc = (site-id) ->
