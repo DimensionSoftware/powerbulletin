@@ -891,7 +891,6 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
   $d.on('submit', '.login form', login);
   $.getJSON('/auth/user', function(user){
     window.user = user;
-    console.log('getJSON called');
     window.mutant = require('../lib/mutant/mutant');
     window.mutants = require('./mutants');
     window.mutate = function(e){
@@ -909,7 +908,7 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
       }, '', href);
       return false;
     };
-    window.mutant.run(window.mutants[window.mutator], {
+    window.mutant.run(window.mutants[window.initialMutant], {
       initial: true,
       user: window.user
     });

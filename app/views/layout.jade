@@ -32,6 +32,7 @@ html
       script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
     if js_urls
       |<script type="text/javascript">
+      |  window.initialMutant = !{JSON.stringify(initialMutant)};
       |  head.js.apply(head, !{JSON.stringify(cvars.base_js_urls.concat(js_urls))});
       |</script>
 
