@@ -287,8 +287,11 @@ header
         height 20px
 //}}}
 //{{{ Left side
+#left_content.container:hover
+  border-right 1px solid #ddd
 #left_content.container
   background-color rgba(255,255,255,.9)
+  border-right 1px solid #eee
   padding grid
   .title
     padding 2px 7px
@@ -565,7 +568,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
 .button:hover, input[type="button"]:hover, input[type="submit"]:hover, button:hover
   background -moz-linear-gradient(center top , #ffce29, #f38437) repeat scroll 0 0 #ffffff
   background -webkit-gradient(linear, left top, left bottom, from(#ffce29), to(#f38437))
-  text-indent -2px
+  //text-indent -2px
   background-color #ffca27
   border-color #777
   border-top 1px solid #fff467
@@ -582,7 +585,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   bottom -5px
   top -5px
 .button:active, button:active, input[type='submit']:active,input[type='button']:active,button:focus, input[type="submit"]:focus, input[type="button"]:focus
-  text-indent 2px
+  //text-indent 2px
   border-top 1px solid #666
   border-left 1px solid #666
   box-shadow 0 0 2px #888, 1px 1px 1px #a33400 inset

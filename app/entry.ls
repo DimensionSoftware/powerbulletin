@@ -29,6 +29,7 @@ $d.on \click 'html.forum header .menu a.title' window.mutate
 
 # main
 # ---------
+$ '#left_content' .resizable!
 add-post-dialog = ->
   query =
     fid: window.active-forum-id
@@ -97,9 +98,10 @@ require-login = (fn) ->
       fn.apply this, arguments
     else
       show-login-dialog!
+      false
 
 # delegated events
-$d.on \click '#add-post-submit' add-post
+$d.on \click '#add-post-submit' require-login(add-post)
 $d.on \click '.onclick-add-post-dialog' add-post-dialog
 
 $d.on \click '.onclick-append-reply-ui' append-reply-ui

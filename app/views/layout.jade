@@ -84,7 +84,6 @@ html
         .scroll-to-top
         //-.arrow
 
-    #handle.handle
     section#left_content.left-content.container
 
     section#main_content.main-content.container
@@ -114,7 +113,4 @@ html
     //- XXX  css not required for initial page render -- performance mod.
     link(href='//fonts.googleapis.com/css?family=Open+Sans:200,400,700|Open+Sans+Condensed:700', rel='stylesheet', type='text/css')
     //- link(href='//fonts.googleapis.com/css?family=Ubuntu:300,400,500,700', rel='stylesheet', type='text/css')
-    if cvars.env == 'development'
-      link(href="#{cache5_url}/local/jquery-ui.min.css", rel='stylesheet', type='text/css') //- offline
-    else
-      link(href='//code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css', rel='stylesheet', type='text/css')
+    link(href="#{cache5_url}/local/jquery-ui.min.css", rel='stylesheet', type='text/css') //- offline
