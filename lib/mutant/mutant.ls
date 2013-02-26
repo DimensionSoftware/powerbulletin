@@ -46,17 +46,23 @@ else
   # specify base html if we are serverside
   html = opts.html
 
-  onLoad    = template.onLoad    || ((w, cb) -> cb(null))
-  onInitial = template.onInitial || ((w, cb) -> cb(null))
-  onMutate  = template.onMutate  || ((w, cb) -> cb(null))
+  user = opts.user
+
+  onLoad         = template.onLoad        || ((w, cb) -> cb(null))
+  onInitial      = template.onInitial     || ((w, cb) -> cb(null))
+  onMutate       = template.onMutate      || ((w, cb) -> cb(null))
+  onPersonalize  = template.onPersonalize || ((w, u, cb) -> cb(null))
 
   require '../../app/views/mutants.js' # pre-built clientjade templates
 
   if window?
     if initial_run
-      onLoad.call params, window, (err) ->
-        if err then return cb(err)
-        onInitial.call params, window, cb
+      err <- onLoad.call params, window
+      if err then return cb(err)
+      err <- onInitial.call params, window
+      if err then return cb(err)
+      err <- onPersonalize.call params, user, window
+      if err then return cb(err)
 
     else
       # render static jade template, followed by dynamic mutator template
