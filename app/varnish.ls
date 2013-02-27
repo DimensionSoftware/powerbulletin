@@ -10,7 +10,7 @@ read-varnish-proto = (buf) ->
     body = m[3]
 
     if body.length is expected-len
-      code
+      [code, body]
     else
       throw new Error "Varnish Protocol Error (bad length: expected #{expected-len} but got #{body.length})"
 
@@ -43,9 +43,9 @@ export init = (cb = (->)) ->
   sock = net.connect 2000
   sock.on \error, console.warn
   sock.on \data, (buf) ~>
-    code = read-varnish-proto(buf)
+    [code, body] = read-varnish-proto(buf)
     if first-message-received
-      cb-q.shift! null, code  # call back with code of last request
+      cb-q.shift! null, code, body  # call back with code of last request
     else
       # we want to skip the initial message
       # that varnish sends us
