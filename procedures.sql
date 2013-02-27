@@ -218,3 +218,14 @@ CREATE FUNCTION build_all_uris(site_id JSON) RETURNS JSON AS $$
 
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS ban_patterns_for_forum(forum_id JSON);
+CREATE FUNCTION ban_patterns_for_forum(forum_id JSON) RETURNS JSON AS $$
+  if f = plv8.execute('SELECT parent_id, uri FROM forums WHERE id=$1', [forum_id])[0]
+    bans = []
+    bans.push '^/$' unless f.parent_id # sub-forums need not ban the homepage.. maybe??
+    bans.push "^#{f.uri}" # anything that beings with forum uri
+    return bans
+  else
+    return []
+$$ LANGUAGE plls IMMUTABLE STRICT;

@@ -60,3 +60,7 @@ export init = (cb = (->)) ->
 
   cb!
 
+# XXX: todo need to target only specific domain relative to site_id
+# ban a pattern, defaults to '.'
+export ban-url = (pattern = '.', cb) ->
+  @command "ban.url #{pattern}", cb
