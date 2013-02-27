@@ -793,7 +793,7 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
 require("/app/layout.ls");
 
 require.define("/app/entry.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
-  var $w, $d, addPostDialog, addPost, appendReplyUi, showLoginDialog, login, requireLogin;
+  var $w, $d, showLoginDialog, login, requireLogin, addPostDialog, addPost, appendReplyUi;
   $w = $(window);
   $d = $(document);
   window.mutant = require('../lib/mutant/mutant');
@@ -841,7 +841,55 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
     return false;
   });
   $d.on('click', 'html.forum header .menu a.title', window.mutate);
-  $('#left_content').resizable();
+  $('#left_content').resizable({
+    minWidth: 200,
+    maxWidth: 450,
+    resize: function(e, ui){
+      return $('#main_content.container .forum').css('padding-left', ui.size.width);
+    }
+  });
+  showLoginDialog = function(){
+    $.fancybox.open('#auth');
+    return setTimeout(function(){
+      return $('#auth input[name=username]').focus();
+    }, 100);
+  };
+  login = function(){
+    var $form, u, p, params;
+    $form = $(this);
+    u = $form.find('input[name=username]');
+    p = $form.find('input[name=password]');
+    params = {
+      username: u.val(),
+      password: p.val()
+    };
+    $.post($form.attr('action'), params, function(r){
+      var $fancybox;
+      if (r.success) {
+        return window.location.reload();
+      } else {
+        $fancybox = $form.parents('.fancybox-wrap:first');
+        $fancybox.removeClass('shake');
+        return setTimeout(function(){
+          $fancybox.addClass('shake');
+          return u.focus();
+        }, 100);
+      }
+    });
+    return false;
+  };
+  requireLogin = function(fn){
+    return function(){
+      if (window.user) {
+        return fn.apply(this, arguments);
+      } else {
+        showLoginDialog();
+        return false;
+      }
+    };
+  };
+  $d.on('submit', '.login form', login);
+  $('#query').focus();
   addPostDialog = function(){
     var query;
     query = {
@@ -874,51 +922,15 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
       return $subpost.find('.reply:first form').remove();
     }
   };
-  showLoginDialog = function(){
-    return $.fancybox.open('#auth');
-  };
-  login = function(){
-    var $form, params;
-    $form = $(this);
-    params = {
-      username: $form.find('input[name=username]').val(),
-      password: $form.find('input[name=password]').val()
-    };
-    $.post($form.attr('action'), params, function(r){
-      var $fancybox;
-      if (r.success) {
-        return window.location.reload();
-      } else {
-        $fancybox = $form.parents('.fancybox-wrap:first');
-        $fancybox.removeClass('shake');
-        return setTimeout(function(){
-          return $fancybox.addClass('shake');
-        }, 100);
-      }
-    });
-    return false;
-  };
-  requireLogin = function(fn){
-    return function(){
-      if (window.user) {
-        return fn.apply(this, arguments);
-      } else {
-        showLoginDialog();
-        return false;
-      }
-    };
-  };
   $d.on('click', '#add-post-submit', requireLogin(addPost));
   $d.on('click', '.onclick-add-post-dialog', addPostDialog);
-  $d.on('click', '.onclick-append-reply-ui', appendReplyUi);
-  $d.on('submit', '.login form', login);
+  $d.on('click', '.onclick-append-reply-ui', requireLogin(appendReplyUi));
   $.getJSON('/auth/user', function(user){
     window.user = user;
     window.mutant.run(window.mutants[window.initialMutant], {
       initial: true,
       user: window.user
     });
-    $('#query').focus();
     $d.on('click', 'a.mutant', window.mutate);
     return History.Adapter.bind(window, 'statechange', function(e){
       var url;

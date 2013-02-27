@@ -1,5 +1,5 @@
 
-# XXX client-side entry for homepage/forum mutants
+# XXX client-side entry for homepage & forum mutants
 
 # shortcuts
 $w = $ window
@@ -15,7 +15,8 @@ window.mutate  = (e) ->
   History.push-state {search-params}, '', href
   false
 
-#{{{ Waypoints
+#{{{ UI Interactions
+# waypoints
 $w.resize -> set-timeout (-> $.waypoints \refresh), 800
 set-timeout (-> # sort control
   $ '#sort li' .waypoint {
@@ -30,20 +31,64 @@ set-timeout (-> # sort control
       $ '#sort li.active' .remove-class \active
       e .add-class \active # set!
   }), 100
-#}}}
-#{{{ Main Menu
+
+# main menu
 $d.on \click 'html.homepage header .menu a.title' ->
   awesome-scroll-to $(this).data \scroll-to; false
 $d.on \click 'html.forum header .menu a.title' window.mutate
+
+# left nav
+$ '#left_content' .resizable(
+  min-width: 200
+  max-width: 450
+  resize: (e, ui) ->
+    $ '#main_content.container .forum'
+      .css('padding-left', ui.size.width))
+#}}}
+#{{{ Login
+show-login-dialog = ->
+  $.fancybox.open '#auth'
+  setTimeout (-> $ '#auth input[name=username]' .focus! ), 100
+
+# login action
+login = ->
+  $form = $(this)
+  u = $form.find('input[name=username]')
+  p = $form.find('input[name=password]')
+  params =
+    username: u.val!
+    password: p.val!
+  $.post $form.attr(\action), params, (r) ->
+    if r.success
+      window.location.reload!
+      # XXX - need to make this not require a reload
+      # window.user = r.user
+      # XXX - then emit an event to let various client-side systems know that we're logged in now
+    else
+      $fancybox = $form.parents('.fancybox-wrap:first')
+      $fancybox.remove-class \shake
+      set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100
+  return false
+
+# require that window.user exists before calling fn
+require-login = (fn) ->
+  ->
+    if window.user
+      fn.apply this, arguments
+    else
+      show-login-dialog!
+      false
+$d.on \submit '.login form' login
 #}}}
 
-# main
-# ---------
-$ '#left_content' .resizable!
+#.
+#### main   ###############>======-- -   -
+##
+$ '#query' .focus!
+
 add-post-dialog = ->
   query =
     fid: window.active-forum-id
-
   html <- $.get '/resources/posts', query
   $(html).dialog modal: true
   false # stop event propagation
@@ -79,52 +124,16 @@ append-reply-ui = ->
   else
     $subpost.find('.reply:first form').remove!
 
-#
-show-login-dialog = ->
-  $.fancybox.open '#auth'
-
-# login action
-login = ->
-  $form = $(this)
-  params =
-    username: $form.find('input[name=username]').val!
-    password: $form.find('input[name=password]').val!
-  $.post $form.attr(\action), params, (r) ->
-    if r.success
-      window.location.reload!
-      # XXX - need to make this not require a reload
-      # window.user = r.user
-      # XXX - then emit an event to let various client-side systems know that we're logged in now
-    else
-      $fancybox = $form.parents('.fancybox-wrap:first')
-      $fancybox.remove-class \shake
-      set-timeout (-> $fancybox.add-class(\shake)), 100
-  return false
-
-# require that window.user exists before calling fn
-require-login = (fn) ->
-  ->
-    if window.user
-      fn.apply this, arguments
-    else
-      show-login-dialog!
-      false
-
 # delegated events
 $d.on \click '#add-post-submit' require-login(add-post)
 $d.on \click '.onclick-add-post-dialog' add-post-dialog
-
-$d.on \click '.onclick-append-reply-ui' append-reply-ui
-
-$d.on \submit '.login form' login
+$d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 
 # personalization ( based on parameters from user obj )
 window.user <- $.getJSON '/auth/user'
 
 #{{{ Mutant init
 window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}
-
-$ '#query' .focus!
 
 $d.on \click 'a.mutant' window.mutate # hijack urls
 
@@ -139,7 +148,6 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
       catch e
         # do nothing
   return false
-
 #}}}
 
 # vim:fdm=marker
