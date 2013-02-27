@@ -67,5 +67,4 @@ $d.on \click 'header' (e) ->
   $ '#query' .focus!
 $d.on \keypress '#query' -> $ \body .add-class \expanded
 
-
 # vim:fdm=marker
