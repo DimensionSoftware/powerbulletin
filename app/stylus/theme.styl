@@ -292,18 +292,17 @@ header
   border-right 1px solid #ddd
 #left_content.container
   //background-color rgba(255,255,255,.9)
-  background-color #fcfcfc
+  background-color #eee
   border-right 1px solid #eee
   padding grid
   padding-top (grid*6)
   .handle:hover
-    box-shadow 0 0 5px #888
+    box-shadow 0 0 5px #999
     background-color #e8e8e8
     transition all .2s ease-out
   .handle
     border-radius 15px
     background-color #eee
-    box-shadow 0 0 4px #aaa
     border 4px solid #fff
     line-height 23px
     font-size .8em
@@ -409,8 +408,10 @@ section.left-chrome
         background-color #fff
         border-radius 3px
     .subpost
-      border-top 1px solid #888
-      margin-top 1em
+      padding-left (grid*2)
+      .children
+        .subpost
+          border-top 1px solid #eee
       .user
         font-weight bold
 
@@ -553,6 +554,13 @@ footer
     font-weight 100
 //}}}
 
+//{{{ Login
+#auth
+  h3
+    color #777
+  fieldset
+    border-color #eee
+///}}}
 //{{{ Controls
 input[type="password"], select, textarea, input[type="text"]
   //box-shadow 0 0 9px #cba inset, 0 0 0 #888

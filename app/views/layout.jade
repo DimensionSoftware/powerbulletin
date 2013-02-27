@@ -92,13 +92,13 @@ html
     section#auth(style="display:none;")
       .login
         form(method="post", action="/auth/login")
-          h2 Login
+          h2= site.name
           fieldset
             input(name="username", type="text", placeholder="Username")
             input(name="password", type="password", placeholder="Password")
             input(type="submit", value="Login")
         .social
-          h2 Or Log In With:
+          h3 Or Log In With
           a(href="/auth/facebook") 
             img(src="#{cache2_url}/images/facebook_32.png")
           a(href="/auth/google") 
