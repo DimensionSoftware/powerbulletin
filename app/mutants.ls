@@ -101,8 +101,15 @@ flip-background = (w, cur, direction='down') ->
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
       flip-background window, cur
       $ = window.$
-      $ '.forum .breadcrumb' .waypoint \sticky { offset: -70 }
-      #$ '.forum .breadcrumb' .css(\left, (($ window .width!)-($ '.breadcrumb' .width!))/2)
+      $ '.forum .breadcrumb' .waypoint(\sticky, { offset: -70 })
+      $f = $ '#main_content.container .forum'
+      $l = $ '#left_content'
+      $l.resizable(
+        min-width: 200
+        max-width: 450
+        resize: (e, ui) ->
+          $f.css('padding-left', ui.size.width))
+      $f.css('padding-left', ($l.width() + 20))
       next!
   on-mutate:
     (window, next) ->
@@ -112,6 +119,7 @@ flip-background = (w, cur, direction='down') ->
   on-unload:
     (window, next) ->
       window.$ '.forum .breadcrumb' .waypoint(\destroy)
+      window.$ '#left_content' .resizable(\destroy)
       next!
 
 @search =

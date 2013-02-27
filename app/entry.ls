@@ -36,14 +36,6 @@ set-timeout (-> # sort control
 $d.on \click 'html.homepage header .menu a.title' ->
   awesome-scroll-to $(this).data \scroll-to; false
 $d.on \click 'html.forum header .menu a.title' window.mutate
-
-# left nav
-$ '#left_content' .resizable(
-  min-width: 200
-  max-width: 450
-  resize: (e, ui) ->
-    $ '#main_content.container .forum'
-      .css('padding-left', ui.size.width))
 #}}}
 #{{{ Login
 show-login-dialog = ->

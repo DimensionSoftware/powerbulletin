@@ -357,11 +357,12 @@ section.left-chrome
     .breadcrumb
       text-transform capitalize
       font-size .9em
-      margin-left (grid*2)
       a
         padding (grid/2)
-        margin-right (grid)
+        margin-right 3px
         letter-spacing -1px
+      em
+        margin-left (grid/2)
     .container
       z-index 6
     .header.stuck::before
@@ -407,12 +408,6 @@ section.left-chrome
         width 25px
       img
         max-width 100%
-    .children
-      margin-bottom (grid*3)
-      .subpost
-        margin-left grid
-        margin-top grid
-        padding grid
     .comment 
       margin-top 2px
       padding 3px 7px
@@ -425,7 +420,17 @@ section.left-chrome
       position relative
       clear both
       overflow hidden
+      margin-left grid
       //max-height (max-post-height / 2)
+      .title
+        margin 0
+        font-size 1.5em
+      .children
+        margin-bottom (grid*3)
+        .subpost
+          margin-left grid
+          margin-top grid
+          padding grid
       .photo
         overflow hidden
         width 40px
@@ -501,6 +506,7 @@ footer
 #auth
   h2
     margin 15px 0 20px 0
+    letter-spacing 1px
   h3
     margin 20px 0 10px 0
   fieldset
