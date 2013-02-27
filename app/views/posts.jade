@@ -5,9 +5,11 @@ mixin breadcrumb(subPost)
   parts = parts.splice(1, parts.length-2)
   each part in parts
     if part != 't'
+      span /
       a.mutant(href="#{path}#{part}")= part.replace('-', ' ')
     - path = path + part + '/'
-  != subPost.title
+  span /
+  em= subPost.title
 
 mixin subpost(sp, i)
   .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id="#{sp.id}")
@@ -15,6 +17,9 @@ mixin subpost(sp, i)
       h4.title= sp.title
     .user= sp.user_name
     .date= sp.created
+    if i === 0
+      .breadcrumb
+        mixin breadcrumb(subPost)
     if sp.body
       p.body!= sp.body
     .actions
@@ -30,8 +35,6 @@ mixin subpost(sp, i)
 //- XXX - && typeof(forums) !== 'undefined' is a temporary hack to get the page to load
 if typeof(subPost) !== 'undefined'
   .forum
-    .breadcrumb
-      mixin breadcrumb(subPost)
     mixin subpost(subPost, 0)
 
 //- vim:fdm=marker
