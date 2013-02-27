@@ -53,7 +53,7 @@ export init = (cb = (->)) ->
       cmd-loop! # start command loop
 
   # once housekeeping completed, export command
-  export command = (cmd, cb) ->
+  export command = (cmd, cb = (->)) ->
     cmd-q.push cmd
     cb-q.push cb
     true
