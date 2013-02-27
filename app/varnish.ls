@@ -4,9 +4,9 @@ require! \net
 # BUAHAHAHAHAHA
 read-varnish-proto = (buf) ->
   raw = buf.to-string!
-  if m = raw.match /^(\d{3}) (\d[\d ]{7})\n([\s\S]*)$/
+  if m = raw.match /^(\d{3}) (\d[\d ]{7})\n([\s\S]*)\n$/
     code = parse-int m[1]
-    expected-len = parse-int(m[2]) + 1
+    expected-len = parse-int(m[2])
     body = m[3]
 
     if body.length is expected-len
