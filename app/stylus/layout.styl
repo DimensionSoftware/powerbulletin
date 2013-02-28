@@ -24,11 +24,14 @@ html.forum
       bottom 0
   body.expanded
     #left_content.left-content
-      padding-top 70px!important
-      transition padding-top .3s ease-out
+      padding-top 90px!important
+      transition padding-top .2s ease-out
+      .handle
+        top 104px
+        transition top .2s ease-out
     #main_content.main-content
-      padding-top 100px!important
-      transition padding-top .3s ease-out
+      padding-top 30px!important
+      transition padding-top .2s ease-out
   .left-content
     display block
   .left-chrome
@@ -75,7 +78,7 @@ body.scrolled
         .query
           font-size 1em
           width 340px!important
-          height 12px
+          height 15px
   .left-chrome
     .user-profile
       left -2px!important
@@ -85,6 +88,12 @@ body.scrolled
     bottom -(grid)
     line-height 16px
 
+  #left_content.container
+    padding-top (grid * 4)
+    transition padding-top .2s ease-out
+    .handle
+      top 52px
+      transition top .2s ease-out
   #main_content.container
     .forum
       .header::before
