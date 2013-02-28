@@ -82,23 +82,17 @@ body.scrolled
   .left-chrome
     .user-profile
       left -2px!important
-  footer
-    opacity 1
-    font-size .85em
-    bottom -(grid)
-    line-height 16px
-
   #left_content.container
     padding-top (grid * 4)
     transition padding-top .2s ease-out
     .handle
       top 52px
       transition top .2s ease-out
-  #main_content.container
-    .forum
-      .header::before
-        position absolute
-        opacity .8
+  footer
+    opacity 1
+    font-size .85em
+    bottom -(grid)
+    line-height 16px
 //}}}
 //{{{ Structure applied when header is expanded
 body.expanded
@@ -132,10 +126,11 @@ body.expanded
           height 51px
           width 500px!important
       .advanced
-        display block
+        opacity 1
         position absolute
         right 10%
         top 5px
+        transition opacity .5s ease-out
         .check, label
           cursor pointer
     .close
@@ -224,7 +219,7 @@ header
         width 300px
         font-size 1.3em
     .advanced
-      display none
+      opacity 0
 //}}}
 //{{{ Left side
 #left_content.container
@@ -429,18 +424,19 @@ section.left-chrome
       position relative
       clear both
       overflow hidden
-      margin-left grid
-      padding-left (grid*2)
+      margin-left (grid*2)
+      padding-left grid
+      padding-bottom (grid*2)
       //max-height (max-post-height / 2)
       .title
         margin 0
         font-size 1.5em
-      .children
-        margin-bottom (grid*3)
-        .subpost
-          margin-left grid
-          margin-top grid
-          padding grid
+    .children
+      margin-bottom (grid*3)
+      .subpost
+        margin-left grid
+        padding grid
+        font-size .9em
       .photo
         overflow hidden
         width 40px

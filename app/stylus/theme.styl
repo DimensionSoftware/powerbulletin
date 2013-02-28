@@ -26,13 +26,13 @@ grid = 10px
     transform scale(1.0)
 @keyframes shake
   0%
-    transform translateX(-20px)
+    transform translateX(-30px)
   25%
     transform translateX(20px)
   50%
     transform translateX(-10px)
   75%
-    transform translateX(10px)
+    transform translateX(5px)
   100%
     transform translateX(0)
 //}}}
@@ -91,8 +91,6 @@ body.scrolled
       .header::before
         position absolute
         opacity .25
-    .post
-      margin grid
   footer
     opacity 1
     //border-top 1px solid #555
@@ -405,12 +403,16 @@ section.left-chrome
         color #666
         background-color #fff
         border-radius 3px
+    .subpost:hover
+      border-bottom 1px solid #ccc
+      color #000
     .subpost
-      .children
-        .subpost
-          border-top 1px solid #eee
-      .user
-        font-weight bold
+      border-bottom 1px solid #dfdfdf
+      color #333
+    .subpost:last-child
+      border-bottom 0
+    .user
+      font-weight bold
 
   .forum.pins
     margin-bottom (grid * 2)
@@ -654,7 +656,12 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
 .shake
   animation-name shake
   animation-duration .5s
-
+.fancybox-overlay
+  background-color rgba(255,255,255,.9)!important
+  background none
+  .fancybox-wrap
+    .fancybox-skin
+      box-shadow 0px 1px 12px 2px rgba(0, 0, 0, 0.3)!important
 //}}}
 //{{{ jQuery UI
 .ui-widget-overlay
