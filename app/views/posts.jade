@@ -1,7 +1,7 @@
 
-mixin breadcrumb(subPost)
+mixin breadcrumb(p)
   path  = ''
-  parts = subPost.uri.split('/')
+  parts = p.uri.split('/')
   parts = parts.splice(1, parts.length-2)
   each part in parts
     if part != 't'
@@ -9,32 +9,48 @@ mixin breadcrumb(subPost)
       a.mutant(href="#{path}#{part}")= part.replace('-', ' ')
     - path = path + part + '/'
   span /
-  em= subPost.title
+  em= p.title
 
-mixin subpost(sp, i)
-  .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id="#{sp.id}")
-    if sp.title
-      h4.title= sp.title
-    .user= sp.user_name
-    .date= sp.created
-    if i === 0
-      .breadcrumb
-        mixin breadcrumb(subPost)
-    if sp.body
-      p.body!= sp.body
+mixin post(p)
+  .post(id="post#{p.id}", data-post-id="#{p.id}")
+    if p.title
+      h3.title= p.title
+    .user= p.user_name
+    .date= p.created
+    .breadcrumb
+      mixin breadcrumb(p)
+    if p.body
+      p.body!= p.body
     .actions
       a.onclick-append-reply-ui Reply
       | 
-      a(href=sp.uri) Permalink
+      a(href=p.uri) Permalink
     .reply
-    if sp.posts.length
-      .children
-        each pp, ii in sp.posts
-          mixin subpost(pp, ii)
+  if p.posts && p.posts.length
+    mixin subpost(p, -1)
 
-//- XXX - && typeof(forums) !== 'undefined' is a temporary hack to get the page to load
+mixin subpost(sp, i)
+  //- -1 means to skip drawing parent
+  if i > -1
+    .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id="#{sp.id}")
+      if sp.title
+        h4.title= sp.title
+      .user= sp.user_name
+      .date= sp.created
+      if sp.body
+        p.body!= sp.body
+      .actions
+        a.onclick-append-reply-ui Reply
+        | 
+        a(href=sp.uri) Permalink
+      .reply
+  if sp.posts && sp.posts.length
+    .children
+      each pp, ii in sp.posts
+        mixin subpost(pp, ii)
+
 if typeof(subPost) !== 'undefined'
   .forum
-    mixin subpost(subPost, 0)
+    mixin post(subPost)
 
 //- vim:fdm=marker

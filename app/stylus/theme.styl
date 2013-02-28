@@ -81,7 +81,7 @@ body.scrolled
       transition left .5s ease-out
   #left_content.container
     padding-top (grid * 4)
-    transition padding-top .5s ease-out
+    transition padding-top .2s ease-out
   #main_content.container
     .forum.dark
       .post
@@ -240,6 +240,7 @@ header
             background-image linear-gradient(bottom, #fff 10px, #eee)
             border-bottom 1px solid #ccc
             border-left 1px solid highlight-color2
+            border-right 1px solid highlight-color2
             a
               color #222
               animation-name 0
@@ -289,11 +290,11 @@ header
 //}}}
 //{{{ Left side
 #left_content.container:hover
-  border-right 1px solid #ddd
+  border-right 1px solid #ccc
 #left_content.container
   //background-color rgba(255,255,255,.9)
   background-color #eee
-  border-right 1px solid #eee
+  border-right 1px solid #ddd
   padding grid
   padding-top (grid*6)
   .handle:hover
@@ -408,7 +409,6 @@ section.left-chrome
         background-color #fff
         border-radius 3px
     .subpost
-      padding-left (grid*2)
       .children
         .subpost
           border-top 1px solid #eee
@@ -514,7 +514,7 @@ section.left-chrome
         .signature
           background-color #eee
           color #444
-      .subpost
+      .post, .subpost
         border-left 2px solid #eee
         padding (grid / 2)
         //background-color #f9f9f9

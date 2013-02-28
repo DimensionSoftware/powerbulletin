@@ -400,7 +400,7 @@ section.left-chrome
         transition height .05s ease-out 1.6s
     .post
       float left
-      margin grid
+      margin 0 grid grid grid
       overflow hidden
       //max-height max-post-height
       .photo
@@ -416,11 +416,12 @@ section.left-chrome
         font-size .9em
         font-style italic
         width 70%
-    .subpost
+    .post, .subpost
       position relative
       clear both
       overflow hidden
       margin-left grid
+      padding-left (grid*2)
       //max-height (max-post-height / 2)
       .title
         margin 0
@@ -505,10 +506,12 @@ footer
 //{{{ Login
 #auth
   h2
-    margin 15px 0 20px 0
+    margin 15px 0 20px 15px
     letter-spacing 1px
   h3
-    margin 20px 0 10px 0
+    margin 0 0 10px 0
+  .social
+    margin 20px 0 10px 35px
   fieldset
     padding 20px 33px
   input[name="username"]
