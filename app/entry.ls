@@ -24,8 +24,10 @@ window.save-ui = ->
     $ '#left_content' .width!
   $.cookie \s, vals.join(sep)
 window.load-ui = ->
-  [expand, w] = ($.cookie \s).split sep
-  $ '#left_content' .width(parseInt(w)+20)
+  s = ($.cookie \s)
+  if s
+    [expand, w] = s.split sep
+    $ '#left_content' .width(parseInt(w)+20)
   if expand is not '0' then $ \body .add-class(\expanded)
 
 # waypoints

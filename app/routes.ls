@@ -18,7 +18,7 @@ app.resource 'resources/posts',  resources.post
 # ---------
 common-js = [
   "#{cvars.cache3_url}/local/jquery.masonry.min.js",
-  "#{cvars.cache2_url}/local/jquery.cookie.min.js",
+  "#{cvars.cache2_url}/local/jquery.cookie-1.3.1.min.js",
   "#{cvars.cache2_url}/local/waypoints.min.js",
   "#{cvars.cache2_url}/local/waypoints-sticky.min.js",
   "#{cvars.cache5_url}/local/history.min.js",

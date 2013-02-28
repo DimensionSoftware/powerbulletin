@@ -823,9 +823,12 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
     return $.cookie('s', vals.join(sep));
   };
   window.loadUi = function(){
-    var ref$, expand, w;
-    ref$ = $.cookie('s').split(sep), expand = ref$[0], w = ref$[1];
-    $('#left_content').width(parseInt(w) + 20);
+    var s, ref$, expand, w;
+    s = $.cookie('s');
+    if (s) {
+      ref$ = s.split(sep), expand = ref$[0], w = ref$[1];
+      $('#left_content').width(parseInt(w) + 20);
+    }
     if (expand !== '0') {
       return $('body').addClass('expanded');
     }
