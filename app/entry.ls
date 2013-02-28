@@ -16,6 +16,18 @@ window.mutate  = (e) ->
   false
 
 #{{{ UI Interactions
+# save state
+sep = \-
+window.save-ui = ->
+  vals =
+    if $ \body .has-class(\expanded) then 1 else 0
+    $ '#left_content' .width!
+  $.cookie \s, vals.join(sep)
+window.load-ui = ->
+  [expand, w] = ($.cookie \s).split sep
+  $ '#left_content' .width(parseInt(w)+20)
+  if expand is not '0' then $ \body .add-class(\expanded)
+
 # waypoints
 $w.resize -> set-timeout (-> $.waypoints \refresh), 800
 set-timeout (-> # sort control
@@ -36,6 +48,13 @@ set-timeout (-> # sort control
 $d.on \click 'html.homepage header .menu a.title' ->
   awesome-scroll-to $(this).data \scroll-to; false
 $d.on \click 'html.forum header .menu a.title' window.mutate
+
+# header expansion
+$d.on \click 'header' (e) ->
+  $ \body .remove-class \expanded if e.target.class-name.index-of(\toggler) > -1 # guard
+  $ '#query' .focus!
+  save-ui!
+$d.on \keypress '#query' -> $ \body .add-class \expanded; save-ui!
 #}}}
 #{{{ Login
 show-login-dialog = ->
@@ -76,6 +95,7 @@ $d.on \submit '.login form' login
 #.
 #### main   ###############>======-- -   -
 ##
+load-ui!
 $ '#query' .focus!
 
 add-post-dialog = ->

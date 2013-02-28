@@ -668,7 +668,8 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
         minWidth: 200,
         maxWidth: 450,
         resize: function(e, ui){
-          return $f.css('padding-left', ui.size.width);
+          $f.css('padding-left', ui.size.width);
+          return window.saveUi();
         }
       });
       $f.css('padding-left', $l.width() + 20);
@@ -784,15 +785,6 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
     window.scrollToTop();
     return false;
   });
-  $d.on('click', 'header', function(e){
-    if (e.target.className.indexOf('toggler') > -1) {
-      $('body').removeClass('expanded');
-    }
-    return $('#query').focus();
-  });
-  $d.on('keypress', '#query', function(){
-    return $('body').addClass('expanded');
-  });
   function in$(x, arr){
     var i = -1, l = arr.length >>> 0;
     while (++i < l) if (x === arr[i] && i in arr) return true;
@@ -804,7 +796,7 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
 require("/app/layout.ls");
 
 require.define("/app/entry.ls",function(require,module,exports,__dirname,__filename,process,global){(function(){
-  var $w, $d, showLoginDialog, login, requireLogin, addPostDialog, addPost, appendReplyUi;
+  var $w, $d, sep, showLoginDialog, login, requireLogin, addPostDialog, addPost, appendReplyUi;
   $w = $(window);
   $d = $(document);
   window.mutant = require('../lib/mutant/mutant');
@@ -823,6 +815,20 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
       searchParams: searchParams
     }, '', href);
     return false;
+  };
+  sep = '-';
+  window.saveUi = function(){
+    var vals;
+    vals = [$('body').hasClass('expanded') ? 1 : 0, $('#left_content').width()];
+    return $.cookie('s', vals.join(sep));
+  };
+  window.loadUi = function(){
+    var ref$, expand, w;
+    ref$ = $.cookie('s').split(sep), expand = ref$[0], w = ref$[1];
+    $('#left_content').width(parseInt(w) + 20);
+    if (expand !== '0') {
+      return $('body').addClass('expanded');
+    }
   };
   $w.resize(function(){
     return setTimeout(function(){
@@ -852,6 +858,17 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
     return false;
   });
   $d.on('click', 'html.forum header .menu a.title', window.mutate);
+  $d.on('click', 'header', function(e){
+    if (e.target.className.indexOf('toggler') > -1) {
+      $('body').removeClass('expanded');
+    }
+    $('#query').focus();
+    return saveUi();
+  });
+  $d.on('keypress', '#query', function(){
+    $('body').addClass('expanded');
+    return saveUi();
+  });
   showLoginDialog = function(){
     $.fancybox.open('#auth');
     return setTimeout(function(){
@@ -893,6 +910,7 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
     };
   };
   $d.on('submit', '.login form', login);
+  loadUi();
   $('#query').focus();
   addPostDialog = function(){
     var query;

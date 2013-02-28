@@ -29,7 +29,6 @@ flip-background = (w, cur, direction='down') ->
       w.bg-anim = 0
     ), 100
 
-
 @homepage =
   static:
     (window, next) ->
@@ -108,8 +107,8 @@ flip-background = (w, cur, direction='down') ->
         min-width: 200
         max-width: 450
         resize: (e, ui) ->
-          $f.css('padding-left', ui.size.width))
-      $f.css('padding-left', ($l.width() + 20))
+          $f.css('padding-left', ui.size.width);window.save-ui!)
+      $f.css('padding-left', ($l.width! + 20))
       next!
   on-mutate:
     (window, next) ->

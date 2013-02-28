@@ -9,8 +9,9 @@ is-moz    = false or \MozBoxSizing in document.documentElement.style
 is-opera  = !!(window.opera and window.opera.version)
 threshold = 10 # snap
 
-# main
-# ---------
+#.
+#### main   ###############>======-- -   -
+##
 #{{{ Scrolling behaviors
 window.scroll-to-top = ->
   return if ($ window).scroll-top! is 0 # guard
@@ -60,11 +61,5 @@ $d.on \mousedown '.scroll-to-top' ->
   window.scroll-to-top!
   false
 #}}}
-
-# header expansion
-$d.on \click 'header' (e) ->
-  $ \body .remove-class \expanded if e.target.class-name.index-of(\toggler) > -1 # guard
-  $ '#query' .focus!
-$d.on \keypress '#query' -> $ \body .add-class \expanded
 
 # vim:fdm=marker
