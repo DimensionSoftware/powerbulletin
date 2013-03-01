@@ -22,7 +22,7 @@ html.forum
   body.scrolled
     #left_content.container
       bottom 0
-  body.expanded
+  body.searching
     #left_content.left-content
       padding-top 90px!important
       transition padding-top .2s ease-out
@@ -56,7 +56,7 @@ body
   transition opacity .4s ease-out
 
 //{{{ Structure applied after body scrolls
-body.expanded header
+body.searching header
   .menu
     .row
       line-height 30px!important
@@ -94,8 +94,22 @@ body.scrolled
     bottom -(grid)
     line-height 16px
 //}}}
-//{{{ Structure applied when header is expanded
-body.expanded
+//{{{ Structure applied when body is collapsed
+body.collapsed
+  .left-content
+    width grid!important
+    transition width .2s ease-out
+    .handle
+      transform rotate(180deg)
+    .button
+      display none
+  .main-content
+    .forum
+      padding-left (grid*2)!important
+      transition padding-left .3s ease-out
+//}}}
+//{{{ Structure applied when header is expanded for search
+body.searching
   .stuck
     display none!important
   header

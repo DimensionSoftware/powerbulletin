@@ -11,16 +11,25 @@ window.mutants = require './mutants'
 # save state
 sep = \-
 window.save-ui = ->
+  w = $ '#left_content' .width!
+  s = ($.cookie \s)
+  if s then [_, _, prev] = s.split sep
+  w = if w > 30 then w else prev or 200 # default
   vals =
-    if $ \body .has-class(\expanded) then 1 else 0
-    $ '#left_content' .width!
+    if $ \body .has-class(\searching) then 1 else 0
+    if $ \body .has-class(\collapsed) then 1 else 0
+    w
   $.cookie \s, vals.join(sep)
 window.load-ui = ->
   s = ($.cookie \s)
   if s
-    [expand, w] = s.split sep
+    [searching, collapsed, w] = s.split sep
     $ '#left_content' .width(parseInt(w)+20)
-  if expand is not '0' then $ \body .add-class(\expanded)
+  if searching is not '0' then $ \body .add-class(\searching)
+  if collapsed is not '0' then $ \body .add-class(\collapsed)
+
+# handle
+$ '#handle' .on \click -> $ \body .toggle-class \collapsed; save-ui!
 
 # waypoints
 $w.resize -> set-timeout (-> $.waypoints \refresh), 800
@@ -45,10 +54,10 @@ $d.on \click 'html.forum header .menu a.title' window.mutate
 
 # header expansion
 $d.on \click 'header' (e) ->
-  $ \body .remove-class \expanded if e.target.class-name.index-of(\toggler) > -1 # guard
+  $ \body .remove-class \searching if e.target.class-name.index-of(\toggler) > -1 # guard
   $ '#query' .focus!
   save-ui!
-$d.on \keypress '#query' -> $ \body .add-class \expanded; save-ui!
+$d.on \keypress '#query' -> $ \body .add-class \searching; save-ui!
 #}}}
 #{{{ Login
 show-login-dialog = ->
