@@ -11,10 +11,11 @@ window.mutants = require './mutants'
 # save state
 sep = \-
 window.save-ui = ->
+  min-width = 200
   w = $ '#left_content' .width!
   s = ($.cookie \s)
   if s then [_, _, prev] = s.split sep
-  w = if w > 30 then w else prev or 200 # default
+  w = if w > min-width then w else prev or min-width # default
   vals =
     if $ \body .has-class(\searching) then 1 else 0
     if $ \body .has-class(\collapsed) then 1 else 0
@@ -29,7 +30,11 @@ window.load-ui = ->
   if collapsed is not '0' then $ \body .add-class(\collapsed)
 
 # handle
-$ '#handle' .on \click -> $ \body .toggle-class \collapsed; save-ui!
+$d.on \click '#handle' ->
+  $ \body .toggle-class \collapsed
+  $ '#main_content.container .forum'
+    .css('padding-left', ($ '#left_content' .width! + 20))
+  save-ui!
 
 # waypoints
 $w.resize -> set-timeout (-> $.waypoints \refresh), 800

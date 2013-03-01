@@ -846,15 +846,16 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
   window.mutants = require('./mutants');
   sep = '-';
   window.saveUi = function(){
-    var w, s, ref$, _, prev, vals;
+    var minWidth, w, s, ref$, _, prev, vals;
+    minWidth = 200;
     w = $('#left_content').width();
     s = $.cookie('s');
     if (s) {
       ref$ = s.split(sep), _ = ref$[0], _ = ref$[1], prev = ref$[2];
     }
-    w = w > 30
+    w = w > minWidth
       ? w
-      : prev || 200;
+      : prev || minWidth;
     vals = [$('body').hasClass('searching') ? 1 : 0, $('body').hasClass('collapsed') ? 1 : 0, w];
     return $.cookie('s', vals.join(sep));
   };
@@ -872,8 +873,9 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
       return $('body').addClass('collapsed');
     }
   };
-  $('#handle').on('click', function(){
+  $d.on('click', '#handle', function(){
     $('body').toggleClass('collapsed');
+    $('#main_content.container .forum').css('padding-left', $('#left_content').width() + 20);
     return saveUi();
   });
   $w.resize(function(){
