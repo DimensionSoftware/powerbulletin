@@ -717,6 +717,50 @@ require.define("/app/layout.ls",function(require,module,exports,__dirname,__file
   isMoz = false || in$('MozBoxSizing', document.documentElement.style);
   isOpera = !!(window.opera && window.opera.version);
   threshold = 10;
+  window.mutant = require('../lib/mutant/mutant');
+  window.mutate = function(e){
+    var href, searchParams;
+    href = $(this).attr('href');
+    if (!href) {
+      return false;
+    }
+    if (href != null && href.match(/#/)) {
+      return true;
+    }
+    searchParams = {};
+    History.pushState({
+      searchParams: searchParams
+    }, '', href);
+    return false;
+  };
+  $d.on('click', 'a.mutant', window.mutate);
+  History.Adapter.bind(window, 'statechange', function(e){
+    var url;
+    url = History.getPageUrl().replace(/\/$/, '');
+    $.get(url, {
+      _surf: 1
+    }, function(r){
+      var ref$, onUnload;
+      if ((ref$ = r.locals) != null && ref$.title) {
+        $d.attr('title', r.locals.title);
+      }
+      onUnload = window.mutants[window.mutator].onUnload || function(w, cb){
+        return cb(null);
+      };
+      return onUnload(window, function(){
+        var e;
+        try {
+          return window.mutant.run(window.mutants[r.mutant], {
+            locals: r.locals,
+            user: window.user
+          });
+        } catch (e$) {
+          return e = e$;
+        }
+      });
+    });
+    return false;
+  });
   window.scrollToTop = function(){
     var $e;
     if ($(window).scrollTop() === 0) {
@@ -799,23 +843,7 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
   var $w, $d, sep, showLoginDialog, login, requireLogin, addPostDialog, addPost, appendReplyUi;
   $w = $(window);
   $d = $(document);
-  window.mutant = require('../lib/mutant/mutant');
   window.mutants = require('./mutants');
-  window.mutate = function(e){
-    var href, searchParams;
-    href = $(this).attr('href');
-    if (!href) {
-      return false;
-    }
-    if (href != null && href.match(/#/)) {
-      return true;
-    }
-    searchParams = {};
-    History.pushState({
-      searchParams: searchParams
-    }, '', href);
-    return false;
-  };
   sep = '-';
   window.saveUi = function(){
     var vals;
@@ -952,37 +980,9 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
   $d.on('click', '.onclick-append-reply-ui', requireLogin(appendReplyUi));
   $.getJSON('/auth/user', function(user){
     window.user = user;
-    window.mutant.run(window.mutants[window.initialMutant], {
+    return window.mutant.run(window.mutants[window.initialMutant], {
       initial: true,
       user: window.user
-    });
-    $d.on('click', 'a.mutant', window.mutate);
-    return History.Adapter.bind(window, 'statechange', function(e){
-      var url;
-      url = History.getPageUrl().replace(/\/$/, '');
-      $.get(url, {
-        _surf: 1
-      }, function(r){
-        var ref$, onUnload;
-        if ((ref$ = r.locals) != null && ref$.title) {
-          $d.attr('title', r.locals.title);
-        }
-        onUnload = window.mutants[window.mutator].onUnload || function(w, cb){
-          return cb(null);
-        };
-        return onUnload(window, function(){
-          var e;
-          try {
-            return window.mutant.run(window.mutants[r.mutant], {
-              locals: r.locals,
-              user: window.user
-            });
-          } catch (e$) {
-            return e = e$;
-          }
-        });
-      });
-      return false;
     });
   });
 }).call(this);

@@ -5,15 +5,7 @@
 $w = $ window
 $d = $ document
 
-window.mutant  = require '../lib/mutant/mutant'
 window.mutants = require './mutants'
-window.mutate  = (e) ->
-  href = $ this .attr \href
-  return false unless href # guard
-  return true if href?.match /#/
-  search-params = {}
-  History.push-state {search-params}, '', href
-  false
 
 #{{{ UI Interactions
 # save state
@@ -146,22 +138,7 @@ $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 # personalization ( based on parameters from user obj )
 window.user <- $.getJSON '/auth/user'
 
-#{{{ Mutant init
+# run initial mutant
 window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}
-
-$d.on \click 'a.mutant' window.mutate # hijack urls
-
-History.Adapter.bind window, \statechange, (e) -> # history manipulaton
-  url = History.get-page-url!replace /\/$/, ''
-  $.get url, _surf:1, (r) ->
-    $d.attr \title, r.locals.title if r.locals?.title # set title
-    on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
-    on-unload window, -> # cleanup & run next mutant
-      try
-        window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}
-      catch e
-        # do nothing
-  return false
-#}}}
 
 # vim:fdm=marker
