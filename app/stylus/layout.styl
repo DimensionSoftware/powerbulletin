@@ -106,7 +106,7 @@ body.collapsed
   .main-content
     .forum
       padding-left (grid*2)!important
-      transition padding-left .3s ease-out
+      transition padding-left .2s ease-out
 //}}}
 //{{{ Structure applied when header is expanded for search
 body.searching
@@ -271,6 +271,8 @@ header
     overflow-y scroll
     height 100%
     margin 0
+    li:last-child
+      margin-bottom (grid*10)
   .forum 
     margin 0 0 (grid*2) 0
     padding 0
