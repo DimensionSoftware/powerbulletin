@@ -30,7 +30,7 @@
   };
   topForumsActive = function(limit){
     var sql;
-    sql = 'SELECT\n  f.*,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=f.id) sort\nFROM forums f\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY sort\nLIMIT $2';
+    sql = 'SELECT\n  f.*,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=f.id AND archived=\'f\') sort\nFROM forums f\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY sort\nLIMIT $2';
     return function(){
       var args;
       args = slice$.call(arguments);
@@ -45,7 +45,7 @@
   out$.topPostsRecent = topPostsRecent = topPostsRecent = function(limit, fields){
     var sql;
     fields == null && (fields = 'p.*');
-    sql = "SELECT\n  " + fields + ",\n  a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY p.created DESC, id ASC\nLIMIT $2";
+    sql = "SELECT\n  " + fields + ",\n  a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND p.archived='f'\nORDER BY p.created DESC, id ASC\nLIMIT $2";
     return function(){
       var args;
       args = slice$.call(arguments);
@@ -55,7 +55,7 @@
   topPostsActive = function(limit, fields){
     var sql;
     fields == null && (fields = 'p.*');
-    sql = "SELECT\n  " + fields + ",\n  a.name user_name,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1) sort\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\nORDER BY sort\nLIMIT $2";
+    sql = "SELECT\n  " + fields + ",\n  a.name user_name,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1 AND archived='f') sort\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND p.archived='f'\nORDER BY sort\nLIMIT $2";
     return function(){
       var args;
       args = slice$.call(arguments);
@@ -64,7 +64,7 @@
   };
   subPosts = function(){
     var sql;
-    sql = 'SELECT p.*, a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id=$1\nORDER BY created DESC, id ASC';
+    sql = 'SELECT p.*, a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id=$1\n  AND p.archived=\'f\'\nORDER BY created DESC, id ASC';
     return plv8.execute(sql, arguments);
   };
   out$.subPostsTree = subPostsTree = subPostsTree = function(parentId, depth){

@@ -30,7 +30,7 @@ top-forums-active = (limit) ->
   sql = '''
   SELECT
     f.*,
-    (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=f.id) sort
+    (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=f.id AND archived='f') sort
   FROM forums f
   WHERE parent_id IS NULL AND site_id=$1
   ORDER BY sort
@@ -57,6 +57,7 @@ export top-posts-recent = top-posts-recent = (limit, fields='p.*') ->
     AND a.site_id=1
     AND p.parent_id IS NULL
     AND p.forum_id=$1
+    AND p.archived='f'
   ORDER BY p.created DESC, id ASC
   LIMIT $2
   """
@@ -67,12 +68,13 @@ top-posts-active = (limit, fields='p.*') ->
   SELECT
     #{fields},
     a.name user_name,
-    (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1) sort
+    (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1 AND archived='f') sort
   FROM posts p, aliases a
   WHERE a.user_id=p.user_id
     AND a.site_id=1
     AND p.parent_id IS NULL
     AND p.forum_id=$1
+    AND p.archived='f'
   ORDER BY sort
   LIMIT $2
   """
@@ -85,6 +87,7 @@ sub-posts = ->
   WHERE a.user_id=p.user_id
     AND a.site_id=1
     AND p.parent_id=$1
+    AND p.archived='f'
   ORDER BY created DESC, id ASC
   '''
   plv8.execute sql, arguments

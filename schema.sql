@@ -105,6 +105,7 @@ CREATE TABLE posts (
   uri       TEXT,
   body      TEXT NOT NULL,
   loc       POINT,
+  archived  BOOLEAN NOT NULL DEFAULT 'f',
   created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated   TIMESTAMP,
   CONSTRAINT potential_loop_prevention CHECK (parent_id <= id),
