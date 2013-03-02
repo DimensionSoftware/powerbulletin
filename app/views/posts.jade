@@ -12,7 +12,7 @@ mixin breadcrumb(p)
   em= p.title
 
 mixin post(p)
-  .post(id="post#{p.id}", data-post-id="#{p.id}")
+  .post(id="post_#{p.id}", data-post-id="#{p.id}")
     if p.title
       h3.title= p.title
     .user= p.user_name
@@ -32,7 +32,7 @@ mixin post(p)
 mixin subpost(sp, i)
   //- -1 means to skip drawing parent
   if i > -1
-    .subpost(id="subpost#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id="#{sp.id}")
+    .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id="#{sp.id}")
       if sp.title
         h4.title= sp.title
       .user= sp.user_name

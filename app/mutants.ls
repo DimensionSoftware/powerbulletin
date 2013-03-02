@@ -29,6 +29,17 @@ flip-background = (w, cur, direction='down') ->
       w.bg-anim = 0
     ), 100
 
+dom-insert = (w, target, view) ->
+  # FIXME double-buffered replace of view with target
+  $t = w.$ target
+  $b = w.$ '<div id="double-buffer">'
+  $b.hide!
+  $t.prepend $b # add new
+  $t.hide!      # hide original
+  console.log w
+  w.render-jade $b, view
+  $b.show 300
+
 @homepage =
   static:
     (window, next) ->
@@ -94,14 +105,25 @@ flip-background = (w, cur, direction='down') ->
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
       layout-static window, \forum, @active-forum-id
+
+      # handle in-line editing
+      m = window.location.pathname.match /new\/?([\d+]*)/
+      if m
+        id = m[1] or 0
+        id = if id then "subpost_#{id}" else \BOTTOM
+        dom-insert window, id, \edit_post
       next!
   on-load:
     (window, next) ->
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
       flip-background window, cur
       $ = window.$
+
+      # handle main content
       $ '.forum .breadcrumb' .waypoint(\sticky, { offset: -70 })
       $f = $ '#main_content.container .forum'
+
+      # handle left
       $l = $ '#left_content'
       $l.resizable(
         min-width: 200
@@ -113,7 +135,6 @@ flip-background = (w, cur, direction='down') ->
   on-mutate:
     (window, next) ->
       window.scroll-to-top!
-      window.s
       next!
   on-unload:
     (window, next) ->
