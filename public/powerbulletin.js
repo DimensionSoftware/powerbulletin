@@ -645,6 +645,12 @@ require.define("/app/mutants.ls",function(require,module,exports,__dirname,__fil
       return next();
     }
   };
+  this.forumNew = {
+    onLoad: function(window, next){
+      console.log('new');
+      return next();
+    }
+  };
   this.forum = {
     'static': function(window, next){
       window.renderJade('left_content', 'nav');
