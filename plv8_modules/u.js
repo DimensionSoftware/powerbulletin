@@ -13,7 +13,10 @@
     title = title.replace(new RegExp('[^a-z0-9 ]', 'g'), '');
     title = title.replace(new RegExp(' +', 'g'), '-');
     title = title.slice(0, 30);
-    return title.concat("-" + id);
+    if (id) {
+      title = title.concat("-" + id);
+    }
+    return title;
   };
   topForumsRecent = function(limit, fields){
     var sql;
