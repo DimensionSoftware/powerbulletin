@@ -72,6 +72,17 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   return {success: !errors.length, errors, id: nextval, uri}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS archive_post(post_id JSON);
+CREATE FUNCTION archive_post(post_id JSON) RETURNS JSON AS $$
+  require! u
+  [{forum_id}] = plv8.execute "SELECT forum_id FROM posts WHERE id=$1", [post_id]
+  [{site_id}] = plv8.execute 'SELECT site_id FROM forums WHERE forum_id=$1', [forum_id]
+  plv8.execute "UPDATE posts SET archived='t' WHERE id=$1", [post_id]
+  u.build-forum-docs(site_id, forum_id)
+  u.build-homepage-doc(site_id)
+  return true
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 DROP FUNCTION IF EXISTS sub_posts_tree(id JSON);
 CREATE FUNCTION sub_posts_tree(id JSON) RETURNS JSON AS $$
   require! u

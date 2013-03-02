@@ -32,4 +32,14 @@ require! {
   show    : null
   edit    : null
   update  : null
-  destroy : null
+  destroy : (req, res, next) ->
+    return next(404) unless req.user
+    db = pg.procs
+
+    if post-id = parse-int(req.params.post)
+      # we don't really destroy, we just archive
+      err <- db.archive-post(post-id)
+      if err then return next err
+      res.json {success: true}
+    else
+      next 404
