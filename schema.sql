@@ -85,7 +85,7 @@ CREATE TABLE forums (
   classes     VARCHAR(128),
   created     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated     TIMESTAMP,
-  UNIQUE (parent_id, slug),
+  UNIQUE (site_id, uri),
   PRIMARY KEY (id)
 );
 CREATE TRIGGER forums_timestamp BEFORE UPDATE ON forums FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
@@ -108,7 +108,7 @@ CREATE TABLE posts (
   created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated   TIMESTAMP,
   CONSTRAINT potential_loop_prevention CHECK (parent_id <= id),
-  UNIQUE (parent_id, slug),
+  UNIQUE (forum_id, uri), -- would rather have site_id in here but oh well
   PRIMARY KEY (id)
 );
 CREATE TRIGGER posts_timestamp BEFORE UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();

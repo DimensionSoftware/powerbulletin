@@ -19,14 +19,17 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
     if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])[0]?.site_id
       [{nextval}] = plv8.execute("SELECT nextval('posts_id_seq')", [])
 
+      forum-id = parse-int(post.forum_id) or null
+      parent-id = parse-int(post.parent_id) or null
       if post.parent_id
         [{thread_id}] = plv8.execute('SELECT thread_id FROM posts WHERE id=$1', [post.parent_id])
-        # child posts use comment text for generating a slug
+        # child posts use id for slug
+        # XXX: todo flatten this into a hash or singular id in the uri instead of nesting subcomments
         slug = nextval
       else
         thread_id = nextval
         # top-level posts use title text for generating a slug
-        slug = u.title2slug(post.title, nextval)
+        slug = u.title2slug(post.title) # try pretty version first
 
       # TODO: don't use numeric identifier in slug unless you have to, use subtransaction to catch the case and use the more-unique version
       # TODO: kill comment url recursions and go flat with the threads side of things (hashtag like reddit?) or keep it the same
@@ -41,8 +44,8 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
         * nextval
         * thread_id
         * parse-int(post.user_id) or null
-        * parse-int(post.forum_id) or null
-        * parse-int(post.parent_id) or null
+        * forum-id
+        * parent-id
         * post.title
         * slug
         * post.body
@@ -50,8 +53,15 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       plv8.execute(sql, params)
 
       # the post must be inserted before uri-for-post will work, thats why uri is a NULLABLE column
-      uri = u.uri-for-post(nextval)
-      plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [uri, nextval]
+      try
+        plv8.subtransaction ->
+          uri = u.uri-for-post(nextval)
+          plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [uri, nextval]
+      catch
+        slug = u.title2slug(post.title, nextval) # add uniqueness since there is one which exists already
+        plv8.execute 'UPDATE posts SET slug=$1 WHERE id=$2', [slug, nextval]
+        uri = u.uri-for-post(nextval)
+        plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [uri, nextval]
 
       if post.build_docs
         u.build-forum-docs(site-id, post.forum_id)
