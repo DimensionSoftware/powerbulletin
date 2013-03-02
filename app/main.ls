@@ -12,6 +12,7 @@ require! {
   fluidity
   './auth'
   pg: './postgres'
+  v: './varnish'
 }
 global <<< require \prelude-ls
 
@@ -109,7 +110,10 @@ else
   console.log "[1;30;30m  `+ worker #{proc.pid}[0;m"
   # XXX/FIXME: would like to actually block until initialized, except voltdb never calls back...
   # then we can use back-calls before initializing the worker....
-  <- pg.init
+  err <- pg.init
+  if err then throw err
+  err <- v.init
+  if err then throw err
 
   if proc.env.NODE_ENV == 'production'
     proc.on 'uncaughtException', (err) ->

@@ -1,5 +1,6 @@
 require! {
-  pg: './postgres'
+  pg: './postgres',
+  c: './cache'
 }
 
 
@@ -23,6 +24,10 @@ require! {
     post.user_id = req.user.id
     err, ap-res <- db.add-post post
     if err then return next err
+
+    if ap-res.success # if success then blow cache
+      c.invalidate-forum post.forum_id, console.warn
+
     res.json ap-res
   show    : null
   edit    : null

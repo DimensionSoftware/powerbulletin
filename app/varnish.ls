@@ -60,6 +60,9 @@ export init = (cb = (->)) ->
 
   cb!
 
+# this gets overwritten after init is called
+export command = -> throw new Error 'You must initialize varnish (call init!)'
+
 # XXX: todo need to target only specific domain relative to site_id
 # ban a pattern, defaults to '.'
 export ban-url = (pattern = '.', cb) ->
