@@ -966,9 +966,7 @@ require.define("/app/entry.ls",function(require,module,exports,__dirname,__filen
       fid: window.activeForumId
     };
     return $.get('/resources/posts', query, function(html){
-      $(html).dialog({
-        modal: true
-      });
+      $.fancybox(html);
       return false;
     });
   };

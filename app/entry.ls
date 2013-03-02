@@ -110,7 +110,7 @@ add-post-dialog = ->
   query =
     fid: window.active-forum-id
   html <- $.get '/resources/posts', query
-  $(html).dialog modal: true
+  $.fancybox(html)
   false # stop event propagation
 
 # assumes immediate parent is form (in case of submit button)
