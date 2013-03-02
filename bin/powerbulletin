@@ -3,6 +3,7 @@
 # main
 # ---------
 if [ "$NODE_ENV" = production ] ; then
+  grunt procs browserify uglify
   node_modules/LiveScript/bin/livescript -d app/main.ls 2>> error_log
 else
   export NODE_WORKERS=${NODE_WORKERS:=1}

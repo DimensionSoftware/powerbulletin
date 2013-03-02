@@ -6,3 +6,5 @@
 *.jar
 .*.swp
 nohup.out
+public/powerbulletin.min.js
+public/powerbulletin.js
