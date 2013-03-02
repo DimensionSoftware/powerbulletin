@@ -1,0 +1,14 @@
+
+mixin edit-post(p)
+  .post(id="post_edit_#{p.id}")
+    form#add-post-form(action='/resources/posts', method='post')
+    label(for="post_title")
+    input#post_title.title= p.title
+    textarea.body= p.body
+    input(type='hidden', name='forum_id', value=p.id)
+    input(type='hidden', name='csrf', value=p.csrf)
+    input.button(type='submit', value='Save')
+    .preview
+
+if typeof(post) !== 'undefined'
+  mixin edit-post(post)
