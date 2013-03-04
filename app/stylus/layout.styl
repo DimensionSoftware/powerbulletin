@@ -140,11 +140,10 @@ body.searching
           height 51px
           width 500px!important
       .advanced
-        opacity 1
         position absolute
-        right 10%
+        right 100px
         top 5px
-        transition opacity .5s ease-out
+        transition right .2s ease-out
         .check, label
           cursor pointer
     .close
@@ -233,7 +232,7 @@ header
         width 300px
         font-size 1.3em
     .advanced
-      opacity 0
+      right -500px
 //}}}
 //{{{ Left side
 #left_content.container
@@ -458,10 +457,12 @@ section.left-chrome
       .title
         margin 0
         font-size 1.5em
+      .body
+        margin 0
     .children
       margin-bottom (grid*3)
       .subpost
-        margin-left grid
+        margin-left (grid*2)
         padding grid
         font-size .9em
       .photo
