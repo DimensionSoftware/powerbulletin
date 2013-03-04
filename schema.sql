@@ -138,4 +138,4 @@ CREATE TABLE moderations (
   updated TIMESTAMP,
   PRIMARY KEY (user_id, post_id)
 );
-CREATE TRIGGER moderations_timestamp BEFORE UPDATE ON docs FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+CREATE TRIGGER moderations_timestamp BEFORE UPDATE ON moderations FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();

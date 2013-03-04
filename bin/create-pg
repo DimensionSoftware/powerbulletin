@@ -6,6 +6,7 @@ bin/psql -c "CREATE DATABASE pb"
 bin/psql pb -c "CREATE EXTENSION plls"
 bin/psql pb < schema.sql
 bin/psql pb < procedures.sql
+set +e
 bin/load-fixtures
 
 # populate absolute uris from slugs and tree layout
