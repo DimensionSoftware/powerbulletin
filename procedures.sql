@@ -12,6 +12,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- TODO: needs to support nested posts also, and update correct thread-id
 DROP FUNCTION IF EXISTS add_post(post JSON);
 CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
+  var uri
   post.build_docs ||= true
   require! <[u validations]>
   errors = validations.post(post)
@@ -55,12 +56,12 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       # the post must be inserted before uri-for-post will work, thats why uri is a NULLABLE column
       try
         plv8.subtransaction ->
-          uri = u.uri-for-post(nextval)
+          uri := u.uri-for-post(nextval)
           plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [uri, nextval]
       catch
         slug = u.title2slug(post.title, nextval) # add uniqueness since there is one which exists already
         plv8.execute 'UPDATE posts SET slug=$1 WHERE id=$2', [slug, nextval]
-        uri = u.uri-for-post(nextval)
+        uri := u.uri-for-post(nextval)
         plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [uri, nextval]
 
       if post.build_docs

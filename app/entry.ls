@@ -124,7 +124,9 @@ add-post = ->
 # show reply ui
 append-reply-ui = ->
   # find post div
-  $subpost = $(this).parents('.subpost:first')
+  $subpost = $(this).parents('.post:first')
+  unless $subpost.length
+    $subpost = $(this).parents('.subpost:first')
   post-id  = $subpost.data('post-id')
 
   # FIXME html 
