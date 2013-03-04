@@ -133,6 +133,7 @@ CREATE TRIGGER docs_timestamp BEFORE UPDATE ON docs FOR EACH ROW EXECUTE PROCEDU
 CREATE TABLE moderations (
   user_id BIGINT NOT NULL references users(id),
   post_id BIGINT NOT NULL references forums(id),
+  reason  TEXT NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
   PRIMARY KEY (user_id, post_id)

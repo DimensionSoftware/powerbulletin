@@ -29,11 +29,22 @@ sub vcl_recv {
   }
 
   # always depersonalize all cdn resources, ttls set automatically by backend
-  if (req.http.host ~ "(?i)^muscache\d\.(pb|pbstage|powerbulletin)\.com$") { call depersonalize; }
-  # depersonalize unless nocache cookie is set
-  else if (req.http.cookie !~ "nocache=") { call depersonalize; }
-  # XXX: TODO: 
-  # depersonalize profile page, the req.http.cookie  for nocache rule should be last so that people cannot override cache for cacheable pages
+  if (req.http.host ~ "(?i)^muscache\d?\.(pb|pbstage|powerbulletin)\.com$") {
+    call depersonalize;
+  }
+  # homepage and forum page have guest/login split
+  #XXX: below will not work right until we implement nocache cookie
+  #else if (req.uri == "/" && req.http.cookie !~ "nocache=") {
+  #  # if we get in here then we are not 'logged in'
+  #  call depersonalize;
+  #}
+  # TODO: depersonalize profile page, hopefully same for logged in and logged out (can still augment with on-personalize)
+  # this is flooder proof since they can't use a cookie to get around it, whereas homepage/profile pages are not, easy to spoof
+  # we could try to mask it by using a weird keyname that is nondescript...
+  #else if (req.uri ~ "^/profile") {
+  #  call depersonalize;
+  #}
+
 }
 
 sub vcl_fetch {
