@@ -8,32 +8,36 @@ backend default {
   .between_bytes_timeout = 60s;
 }
 
+sub depersonalize {
+  # strip cookies so request is depersonalized (not able to be identified as a particular user by backend by stripping cookies)
+  # this also allows default varnish logic to cache request (it avoids cookie requests by default)
+  unset req.http.cookie;
+  unset req.http.cache-control;
+  unset req.http.pragma;
+}
+
 sub vcl_recv {
-  # force ssl
+  # force no trailing slash (except for homepage)
   if (req.url != "/" && req.url ~ "(?i)/$") {
     set req.http.Location = "https://" + req.http.host + regsub(req.url, "(.+)/$", "\1");
     error 302 "Found"; 
   }
+  # force ssl
   else if (req.http.X-Forwarded-Proto !~ "(?i)https") {
     set req.http.Location = "https://" + req.http.host + req.url; 
     error 302 "Found"; 
   }
 
-  # discard cookies on everything but auth and resources urls
-  if (req.url !~ "^/(auth|resources)/") {
-    unset req.http.cookie;
-    unset req.http.cache-control;
-    unset req.http.pragma;
-  }
+  # always depersonalize all cdn resources, ttls set automatically by backend
+  if (req.http.host ~ "(?i)^muscache\d\.(pb|pbstage|powerbulletin)\.com$") { call depersonalize; }
+  # depersonalize unless nocache cookie is set
+  else if (req.http.cookie !~ "nocache=") { call depersonalize; }
+  # XXX: TODO: 
+  # depersonalize profile page, the req.http.cookie  for nocache rule should be last so that people cannot override cache for cacheable pages
 }
 
 sub vcl_fetch {
   set beresp.do_gzip = true;
-
-  # discard cookies on everything but login or personalization urls
-  if (req.url !~ "^/(auth|resources)/") {
-    unset beresp.http.set-cookie;
-  }
 }
 
 sub vcl_deliver {
