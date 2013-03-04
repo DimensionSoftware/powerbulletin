@@ -7,11 +7,13 @@ LANGUAGE plpgsql
 AS
 $$
 BEGIN
-  IF (NEW != OLD) THEN                    
-    NEW.updated = CURRENT_TIMESTAMP;
-    RETURN NEW;
-  END IF;   
-  RETURN OLD;          
+  --XXX: there is no equality operator for point so line below broken
+  --IF (NEW != OLD) THEN                    
+  NEW.updated = CURRENT_TIMESTAMP;
+  RETURN NEW;
+  --  RETURN NEW;
+  --END IF;   
+  --RETURN OLD;          
 END;
 $$;
 
@@ -105,6 +107,7 @@ CREATE TABLE posts (
   uri       TEXT,
   body      TEXT NOT NULL,
   loc       POINT,
+  archived  BOOLEAN NOT NULL DEFAULT 'f',
   created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated   TIMESTAMP,
   CONSTRAINT potential_loop_prevention CHECK (parent_id <= id),
@@ -125,3 +128,13 @@ CREATE TABLE docs (
   PRIMARY KEY (site_id, key, type)
 );
 CREATE TRIGGER docs_timestamp BEFORE UPDATE ON docs FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
+-- keep track of who moderated what
+CREATE TABLE moderations (
+  user_id BIGINT NOT NULL references users(id),
+  post_id BIGINT NOT NULL references forums(id),
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated TIMESTAMP,
+  PRIMARY KEY (user_id, post_id)
+);
+CREATE TRIGGER moderations_timestamp BEFORE UPDATE ON docs FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
