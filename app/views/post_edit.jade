@@ -1,14 +1,15 @@
 
-mixin edit-post(p)
-  .post(id="post_edit_#{p.id}")
+mixin post-edit(p)
+  .post-edit(id="post_edit_#{p.id}")
     form#add-post-form(action='/resources/posts', method='post')
-    label(for="post_title")
-    input#post_title.title= p.title
+    label(for="post_title") Title
+    input#post_title.title(type='text')= p.title
     textarea.body= p.body
     input(type='hidden', name='forum_id', value=p.id)
     input(type='hidden', name='csrf', value=p.csrf)
     input.button(type='submit', value='Save')
+    button.cancel Cancel
     .preview
 
 if typeof(post) !== 'undefined'
-  mixin edit-post(post)
+  mixin post-edit(post)

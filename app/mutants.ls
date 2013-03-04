@@ -29,21 +29,19 @@ flip-background = (w, cur, direction='down') ->
       w.bg-anim = 0
     ), 100
 
-dom-insert = (w, target, view) ->
-  # FIXME double-buffered replace of view with target
+dom-insert = (w, target, tmpl, params) ->
+  # double-buffered replace of view with target
   $t = w.$ target
-  $b = w.$ '<div id="double-buffer">'
+  $b = w.$ "<div class='container'>"
   $b.hide!
-  $t.prepend $b # add new
-  $t.hide!      # hide original
-  console.log w
-  w.render-jade $b, view
-  $b.show 300
+  $t.prepend $b
+  jade.render $b[0], tmpl, params
+  $b.slide-down 300
 
 @homepage =
   static:
     (window, next) ->
-      window.render-jade 'main_content' \homepage
+      window.render-mutant 'main_content' \homepage
       layout-static window, \homepage, @active-forum-id
       next!
   on-load:
@@ -100,18 +98,11 @@ dom-insert = (w, target, view) ->
 @forum =
   static:
     (window, next) ->
-      window.render-jade 'left_content' \nav
-      window.render-jade 'main_content' \posts
+      window.render-mutant 'left_content' \nav
+      window.render-mutant 'main_content' \posts
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
       layout-static window, \forum, @active-forum-id
-
-      # handle in-line editing
-      m = window.location.pathname.match /new\/?([\d+]*)/
-      if m
-        id = m[1] or 0
-        id = if id then "subpost_#{id}" else \BOTTOM
-        dom-insert window, id, \edit_post
       next!
   on-load:
     (window, next) ->
@@ -131,6 +122,13 @@ dom-insert = (w, target, view) ->
         resize: (e, ui) ->
           $f.css('padding-left', ui.size.width);window.save-ui!)
       $f.css('padding-left', ($l.width! + 20))
+
+      # handle in-line editing
+      m = window.location.pathname.match /new\/?([\d+]*)/
+      if m
+        id = m[1] or 0
+        id = if id then '#'+"subpost_#{id}" else \BOTTOM
+        dom-insert window, id, \post_edit, {post:{id:123}}
       next!
   on-mutate:
     (window, next) ->

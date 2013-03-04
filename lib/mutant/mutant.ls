@@ -2,10 +2,11 @@ if window?
   true
 else
   require! {
-    \jsdom
+    jsdom
+    #chimera.chimera
   }
 
-  gen_dom_window = (html, cb) ->
+  dom-window = (html, cb) ->
     scripts = ['../../public/local/jquery-1.8.3.min.js']
 
     jsdom_opts = {html, scripts}
@@ -66,7 +67,7 @@ else
         if err then return cb(err)
     else
       # render static jade template, followed by dynamic mutator template
-      window.render-jade = (target, tmpl) ->
+      window.render-mutant = (target, tmpl) ->
         cb null, jade.render window.document.get-element-by-id(target), tmpl, params
 
       window.marshal = (key, val) ->
@@ -85,10 +86,10 @@ else
 
   else if html
     # playskool pretend server-side window
-    gen_dom_window html, (err, window) ->
+    dom-window html, (err, window) ->
       if err then return cb err
 
-      window.render-jade = (target, tmpl) ->
+      window.render-mutant = (target, tmpl) ->
         jade.render window.document.get-element-by-id(target), tmpl, params
 
       window.marshal = (key, val) ->
