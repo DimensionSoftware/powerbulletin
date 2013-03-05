@@ -205,6 +205,15 @@ CREATE FUNCTION thread_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS add_thread_impression(thread_id JSON);
+CREATE FUNCTION add_thread_impression(thread_id JSON) RETURNS JSON AS $$
+  sql = '''
+  UPDATE posts SET views = views + 1 WHERE id = $1 RETURNING views
+  '''
+  res = plv8.execute sql, [thread_id]
+  return res[0]?.views
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 DROP FUNCTION IF EXISTS build_doc(site_id JSON, forum_id JSON);
 CREATE FUNCTION build_doc(site_id JSON, forum_id JSON) RETURNS JSON AS $$
   require! <[u]>
