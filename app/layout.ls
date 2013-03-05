@@ -15,7 +15,6 @@ threshold = 10 # snap
 #{{{ Bootstrap Mutant Common
 window.mutant  = require '../lib/mutant/mutant'
 window.mutate  = (e) ->
-  window.has-mutated = true
   href = $ this .attr \href
   return false unless href # guard
   return true if href?.match /#/

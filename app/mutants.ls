@@ -98,7 +98,7 @@ dom-insert = (w, target, tmpl, params) ->
 @forum =
   static:
     (window, next) ->
-      window.render-mutant 'left_content' \nav unless window.has-mutated
+      window.render-mutant 'left_content' \nav unless window.has-mutated-forum
       window.render-mutant 'main_content' \posts
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
@@ -130,6 +130,9 @@ dom-insert = (w, target, tmpl, params) ->
         id = if id then '#'+"subpost_#{id}" else \BOTTOM
         dom-insert window, id, \post_edit, {post:{id:123}}
       next!
+  on-initial:
+    (window, next) ->
+      window.has-mutated-forum = true
   on-mutate:
     (window, next) ->
       window.scroll-to-top!
