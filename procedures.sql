@@ -207,6 +207,10 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS add_thread_impression(thread_id JSON);
 CREATE FUNCTION add_thread_impression(thread_id JSON) RETURNS JSON AS $$
+  plv8.elog WARNING, thread_id
+  if not thread_id or thread_id is \undefined
+    return false
+  plv8.elog WARNING, 'should have bailed'
   sql = '''
   UPDATE posts SET views = views + 1 WHERE id = $1 RETURNING *
   '''
