@@ -13,11 +13,12 @@ mixin subforum(f, sf, i)
     a.mutant.title(href=sf.uri)= sf.title
 
 mixin thread(t)
-  li
+  li.thread
     h4.title
       a.mutant(href=t.uri)= t.title
     .user-name= t.user_name
     .post-count= t.post_count
+    .created= t.created_human
 
 //- main
 //- ---------

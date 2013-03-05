@@ -11,41 +11,21 @@ mixin breadcrumb(p)
   span /
   em= p.title
 
-mixin post(p)
-  .post(id="post_#{p.id}", data-post-id="#{p.id}")
-    if p.title
-      h3.title= p.title
-    .user= p.user_name
-    .date= p.created
-    .breadcrumb
-      mixin breadcrumb(p)
-    if p.body
-      p.body!= p.body
+mixin subpost(sp, i)
+  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id="#{sp.id}")
+    if sp.title
+      h4.title= sp.title
+    .user= sp.user_name
+    .date= sp.created_human
+    if sp.body
+      p.body!= sp.body
     .actions
       a.onclick-append-reply-ui Reply
+      |
+      a.mutant(href="#{sp.uri.replace(/\/\d+$/, '')}/edit/#{sp.id}") Edit
       | 
-      a(href=p.uri) Permalink
+      a(href=sp.uri) Permalink
     .reply
-  if p.posts && p.posts.length
-    mixin subpost(p, -1)
-
-mixin subpost(sp, i)
-  //- -1 means to skip drawing parent
-  if i > -1
-    .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id="#{sp.id}")
-      if sp.title
-        h4.title= sp.title
-      .user= sp.user_name
-      .date= sp.created
-      if sp.body
-        p.body!= sp.body
-      .actions
-        a.onclick-append-reply-ui Reply
-        |
-        a.mutant(href="#{sp.uri.replace(/\/\d+$/, '')}/edit/#{sp.id}") Edit
-        | 
-        a(href=sp.uri) Permalink
-      .reply
   if sp.posts && sp.posts.length
     .children
       each pp, ii in sp.posts
@@ -53,6 +33,22 @@ mixin subpost(sp, i)
 
 if typeof(subPost) !== 'undefined'
   .forum
-    mixin post(subPost)
+    .post(id="post_#{subPost.id}", data-post-id="#{subPost.id}")
+      if subPost.title
+        h3.title= subPost.title
+      .user= subPost.user_name
+      .date= subPost.created_human
+      .breadcrumb
+        mixin breadcrumb(subPost)
+      if subPost.body
+        subPost.body!= subPost.body
+      .actions
+        a.onclick-append-reply-ui Reply
+        | 
+        a(href=subPost.uri) Permalink
+      .reply
+    if subPost.posts && subPost.posts.length
+      each sp in subPost.posts
+        mixin subpost(sp, 0)
 
 //- vim:fdm=marker

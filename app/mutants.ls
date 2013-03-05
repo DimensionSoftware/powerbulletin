@@ -116,11 +116,12 @@ dom-insert = (w, target, tmpl, params) ->
 
       # handle left
       $l = $ '#left_content'
-      $l.resizable(
-        min-width: 200
-        max-width: 450
-        resize: (e, ui) ->
-          $f.css('padding-left', ui.size.width);window.save-ui!)
+      unless window.has-mutated-forum
+        $l.resizable(
+          min-width: 200
+          max-width: 450
+          resize: (e, ui) ->
+            $f.css('padding-left', ui.size.width);window.save-ui!)
       $f.css('padding-left', ($l.width! + 20))
 
       # handle in-line editing
@@ -140,7 +141,7 @@ dom-insert = (w, target, tmpl, params) ->
   on-unload:
     (window, next) ->
       window.$ '.forum .breadcrumb' .waypoint(\destroy)
-      window.$ '#left_content' .resizable(\destroy)
+      window.$ '#left_content' .resizable(\destroy) unless window.has-mutated-forum
       next!
 
 @search =

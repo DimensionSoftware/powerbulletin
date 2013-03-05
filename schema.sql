@@ -115,6 +115,7 @@ CREATE TABLE posts (
   PRIMARY KEY (id)
 );
 CREATE TRIGGER posts_timestamp BEFORE UPDATE ON posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+CREATE INDEX ON posts (parent_id);
 
 CREATE TABLE docs (
   site_id       BIGINT references sites(id) NOT NULL,
