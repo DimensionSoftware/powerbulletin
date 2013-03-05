@@ -90,8 +90,8 @@ db = pg.procs
 
   else # forum
     err, fdoc <- async.auto(
-      menu        : -> db.menu res.locals.site.id, it
-      forum-id    : -> db.uri-to-forum-id uri, it
+      menu        : db.menu res.locals.site.id, _
+      forum-id    : db.uri-to-forum-id uri, _
       forums      : ['forumId', (cb, a) -> db.forums(a.forum-id, cb)]
       top-threads : ['forumId', (cb, a) -> db.top-threads(a.forum-id, cb)])
 
