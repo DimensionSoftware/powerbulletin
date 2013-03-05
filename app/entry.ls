@@ -85,6 +85,7 @@ login = ->
       # XXX - then emit an event to let various client-side systems know that we're logged in now
     else
       $fancybox = $form.parents('.fancybox-wrap:first')
+      $fancybox.add-class \on-error
       $fancybox.remove-class \shake
       set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100
   return false
@@ -150,6 +151,7 @@ append-reply-ui = ->
 $d.on \click '#add-post-submit' require-login(add-post)
 $d.on \click '.onclick-add-post-dialog' add-post-dialog
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
+$d.on \click '.onclick-show-forgot' -> $ '.fancybox-wrap' .remove-class(\on-error).add-class(\on-forgot)
 
 # personalization ( based on parameters from user obj )
 window.user <- $.getJSON '/auth/user'

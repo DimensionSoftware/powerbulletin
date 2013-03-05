@@ -65,6 +65,10 @@ body.scrolled
   header
     height header-scrolled-height
     .container
+      .logo
+        a
+          top -10px
+          font-size .55em
       .menu
         .row:hover
           .submenu
@@ -123,10 +127,6 @@ body.searching
         position absolute
         top 25px
         left 0
-      .menu
-        .row
-          .submenu
-            top 33px!important
       .search
         top -7px!important
         right auto!important
@@ -182,16 +182,42 @@ header
   .container
     width 800px
     margin 0 auto
+    .logo
+      a
+        display inline-block
+        margin-top 15px
+        vertical-align top
+        font-size .75em
+        text-decoration none
+        font-weight 200
+        letter-spacing -2px
+        position absolute
+        top 1px
+        left 15px
+        strong
+          letter-spacing -1px
+          font-weight 500
+          padding-left 4px
     .menu
+      padding 0
       margin -3px auto 0 auto
       display inline-block
       position absolute
       bottom 0
+      > .row
+          position relative!important
+          z-index 50!important
+        .title
+          display inline-block
+          text-transform capitalize
+          padding 0 19px
       .row.active, .row:hover
         z-index 7
         .submenu
           opacity 1
           top 53px
+          padding 10px 15px
+          min-width 250px
           transition top .25s ease-out .3s, opacity .4s ease-out .4s
           .row:hover
             text-indent 19px
@@ -246,6 +272,8 @@ header
   //overflow-x hidden
   //overflow-y scroll
   z-index 6
+  padding grid
+  padding-top (grid*6)
   .handle
     height 25px
     width 25px
@@ -459,6 +487,8 @@ section.left-chrome
         font-size 1.5em
       .body
         margin 0
+    .subpost:last-child
+      margin-bottom (grid*3)
     .children
       margin-bottom (grid*3)
       .subpost
@@ -538,23 +568,28 @@ footer
 
 //{{{ Login
 #auth
+  .error
+    display none
   h2
     margin 15px 0 20px 15px
     letter-spacing 1px
   h3
     margin 0 0 10px 0
   .social
-    margin 20px 0 10px 35px
+    margin 20px auto
+    width 313px
   fieldset
-    padding 20px 33px
+    padding 20px 102px
   input[name="username"]
+    width 300px
     display block
-    width 450px
   input[name="password"]
     width 300px
   input[type="submit"]
-    height 38px
-    width 145px
-    margin-left 5px
+    height 42px
+    width 314px
+    margin-left 2px
+    margin-top 13px
+    display block
 //}}}
 // vim:fdm=marker

@@ -90,13 +90,22 @@ html
     section#main_content.main-content.container
 
     section#auth(style="display:none;")
+      .forgot(style="display:none;")
+        form(method="post", action="/auth/forgot")
+          h2 Ok.  What's your email address?
+          fieldset
+            input(name="email", type="text", placeholder="Email Address")
+            input(type="submit", value="Mail Me")
       .login
         form(method="post", action="/auth/login")
           h2= site.name
           fieldset
+            a.error.onclick-show-forgot
+              h3 Forgot?  
             input(name="username", type="text", placeholder="Username")
             input(name="password", type="password", placeholder="Password")
             input(type="submit", value="Login")
+            //- TODO ajax forgot in
         .social
           h3 Or Log In With
           a(href="/auth/facebook") 

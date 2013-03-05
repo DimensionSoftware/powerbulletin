@@ -26,13 +26,13 @@ grid = 10px
     transform scale(1.0)
 @keyframes shake
   0%
-    transform translateX(-30px)
+    transform translateX(-30px), skew(1deg, 2deg)
   25%
-    transform translateX(20px)
+    transform translateX(20px), skew(-2deg, -4deg)
   50%
-    transform translateX(-10px)
+    transform translateX(-10px), skew(0, 1deg)
   75%
-    transform translateX(5px)
+    transform translateX(5px), skew(0, 0)
   100%
     transform translateX(0)
 //}}}
@@ -46,10 +46,6 @@ body.scrolled
     border-bottom 1px solid #fff
     transition height .2s ease-out, background-color .5s ease-out
     .container
-      .logo
-        a
-          top -10px
-          font-size .55em
       menu.menu
         > .row
           a.title.active:hover
@@ -160,26 +156,12 @@ header
   .container
     .logo
       a
-        display inline-block
-        margin-top 15px
-        vertical-align top
         font-style italic
         color #777
-        font-size .75em
-        text-decoration none
-        font-weight 200
-        letter-spacing -2px
-        position absolute
-        top 1px
-        left 15px
         strong
-          letter-spacing -1px
-          font-weight 500
-          padding-left 4px
           font-style normal
           color #888
     .menu
-      padding 0
       > .row
         .title.active:hover
           background-image linear-gradient(bottom, #fff 43px, #ffe0c0)
@@ -204,11 +186,8 @@ header
           transition border-top .5s, background-color .3s, color .4s
       > .row
         .title
-          display inline-block
-          text-transform capitalize
           box-shadow 1px 0 0 #ddd inset,0 1px 0 0 #bbb
           text-decoration none
-          padding 0 19px
           border-top 3px solid #444
           color #777
           text-shadow 0 0 1px #fff
@@ -217,14 +196,12 @@ header
         .submenu
           box-shadow 0 2px 6px 0 #777
           border-right 1px solid #888
-          padding 10px 15px
           border-bottom 2px solid #888
           border-top 1px solid #bbb
           border-bottom-right-radius 10px
           border-bottom-left-radius 10px
           background-color #fff
           color #333
-          min-width 250px
           .row:last-child
             border-bottom 1px solid transparent
             border-bottom-right-radius 10px
@@ -290,8 +267,6 @@ header
   //background-color rgba(255,255,255,.9)
   background-color #eee
   border-right 1px solid #ddd
-  padding grid
-  padding-top (grid*6)
   .handle:hover
     box-shadow 0 0 5px #999
     background-color #e8e8e8
@@ -554,11 +529,41 @@ footer
 //}}}
 
 //{{{ Login
+.fancybox-wrap.on-forgot
+  .forgot
+    display block!important
+  .login
+    display none!important
+
+.fancybox-wrap.on-error
+  .error
+    display block!important
 #auth
+  .login
+    a.error
+      h3
+        text-shadow 0 0 1px highlight-color2
   h3
+    font-weight 200
+    font-size 15px
     color #777
   fieldset
     border-color #eee
+  input[name="password"]:focus
+    border-top-left-radius 3px
+    border-top-right-radius 3px
+  input[name="username"]:focus
+    border-bottom-left-radius 3px
+    border-bottom-right-radius 3px
+  input[name="username"]
+    border-bottom-left-radius 0
+    border-bottom-right-radius 0
+    padding-bottom grid
+  input[name="password"]
+    padding-top grid
+    margin-top -8px
+    border-top-left-radius 0
+    border-top-right-radius 0
 ///}}}
 //{{{ Controls
 input[type="password"], select, textarea, input[type="text"]
@@ -583,6 +588,8 @@ input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:h
   box-shadow 0 0 1px highlight-color2 inset,1px 0 2px highlight-color
 input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #000
+  position relative
+  z-index 10
   background-color #fffcfc
   border 1px solid highlight-color2
   border-bottom 1px solid highlight-color2
