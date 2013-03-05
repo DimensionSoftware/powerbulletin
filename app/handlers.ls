@@ -89,17 +89,11 @@ db = pg.procs
     finish doc
 
   else # forum
-    #TODO: refactor with async.auto
-    err, menu <- db.menu res.locals.site.id
-    if err then return next err
-    err, forum-id <- db.uri-to-forum-id uri
-    if err then return next err
-    err, forums <- db.forums forum-id
-    if err then return next err
-    err, top-threads <- db.top-threads forum-id
-    if err then return next err
-
-    fdoc = {forums, menu, top-threads}
+    err, fdoc <- async.auto(
+      menu        : -> db.menu res.locals.site.id, it
+      forum-id    : -> db.uri-to-forum-id uri, it
+      forums      : ['forumId', (cb, a) -> db.forums(a.forum-id, cb)]
+      top-threads : ['forumId', (cb, a) -> db.top-threads(a.forum-id, cb)])
 
     fdoc.active-forum-id = fdoc.forums[0]?.id
     finish fdoc
