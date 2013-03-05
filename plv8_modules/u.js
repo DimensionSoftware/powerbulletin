@@ -1,5 +1,5 @@
 (function(){
-  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, menu, buildForumDocs, buildHomepageDoc, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
+  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, menu, homepageForums, forums, topThreads, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
     args = slice$.call(arguments);
@@ -187,38 +187,20 @@
   out$.menu = menu = function(siteId){
     return forumsTree(siteId, topPostsRecent(null, 'p.created,p.title,p.slug,p.id'), topForumsRecent(null, 'id,title,slug,classes'));
   };
-  out$.buildForumDocs = buildForumDocs = function(siteId, forumId){
-    var menu, buildForumDocsFor, this$ = this;
-    menu = this.menu(siteId);
-    buildForumDocsFor = function(doctype, topPostsFun){
-      var forum, posts;
-      forum = {
-        forums: [forumTree(forumId, topPostsFun)],
-        menu: menu
-      };
-      this$.putDoc(siteId, "forum_" + doctype, forumId, JSON.stringify(forum));
-      posts = topPostsFun(forumId);
-      return this$.putDoc(siteId, "threads_" + doctype, forumId, JSON.stringify(posts));
-    };
-    buildForumDocsFor('recent', topPostsRecent());
-    buildForumDocsFor('active', topPostsActive());
-    return true;
+  out$.homepageForums = homepageForums = function(siteId){
+    return forumsTree(siteId, topPostsRecent(), topForumsRecent());
   };
-  out$.buildHomepageDoc = buildHomepageDoc = function(siteId){
-    var menu, buildHomepageDocFor, this$ = this;
-    menu = this.menu(siteId);
-    buildHomepageDocFor = function(doctype, topPostsFun, topForumsFun){
-      var forums, homepage;
-      forums = forumsTree(siteId, topPostsFun, topForumsFun);
-      homepage = {
-        forums: forums,
-        menu: menu
-      };
-      return this$.putDoc(siteId, doctype, siteId, JSON.stringify(homepage));
-    };
-    buildHomepageDocFor('homepage_recent', topPostsRecent(5), topForumsRecent());
-    buildHomepageDocFor('homepage_active', topPostsActive(5), topForumsActive());
-    return true;
+  out$.forums = forums = function(forumId){
+    var ft;
+    ft = forumTree(forumId, topPostsRecent());
+    if (ft) {
+      return [ft];
+    } else {
+      return [];
+    }
+  };
+  out$.topThreads = topThreads = function(forumId){
+    return topPostsRecent()(forumId);
   };
   function import$(obj, src){
     var own = {}.hasOwnProperty;

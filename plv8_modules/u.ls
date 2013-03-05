@@ -176,28 +176,13 @@ export menu = (site-id) ->
     top-posts-recent(null, 'p.created,p.title,p.slug,p.id'),
     top-forums-recent(null, 'id,title,slug,classes'))
 
-export build-forum-docs = (site-id, forum-id) ->
-  menu = @menu(site-id)
+export homepage-forums = (site-id) ->
+  forums-tree site-id, top-posts-recent!, top-forums-recent!
 
-  build-forum-docs-for = (doctype, top-posts-fun) ~>
-    forum = {forums: [forum-tree(forum-id, top-posts-fun)], menu}
-    @put-doc site-id, "forum_#{doctype}", forum-id, JSON.stringify(forum)
-    posts = top-posts-fun(forum-id)
-    @put-doc site-id, "threads_#{doctype}", forum-id, JSON.stringify(posts)
+export forums = (forum-id) ->
+  ft = forum-tree forum-id, top-posts-recent!
+  if ft then [ft] else []
 
-  build-forum-docs-for \recent, top-posts-recent!
-  build-forum-docs-for \active, top-posts-active!
-  true
-
-export build-homepage-doc = (site-id) ->
-  menu = @menu(site-id)
-
-  build-homepage-doc-for = (doctype, top-posts-fun, top-forums-fun) ~>
-    forums = forums-tree(site-id, top-posts-fun, top-forums-fun)
-    homepage = {forums, menu}
-    @put-doc site-id, doctype, site-id, JSON.stringify(homepage)
-
-  build-homepage-doc-for \homepage_recent, top-posts-recent(5), top-forums-recent!
-  build-homepage-doc-for \homepage_active, top-posts-active(5), top-forums-active!
-  true
+export top-threads = (forum-id) ->
+  top-posts-recent! forum-id
 
