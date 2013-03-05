@@ -41,10 +41,12 @@ db = pg.procs
   res.redirect redirect-url
 
 @homepage = (req, res, next) ->
-  # TODO: 1 should be replaced with the real site-id here
-  # TODO: need to allow ui to change between homepage_recent and homepage_active
-  err, doc <- db.doc res.locals.site.id, \homepage_recent, res.locals.site.id
-  if err then return next(err)
+  #TODO: refactor with async.auto
+  err, menu <- db.menu res.locals.site.id
+  if err then return next err
+  err, forums <- db.homepage-forums res.locals.site.id
+  if err then return next err
+  doc = {menu, forums}
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
   # for O(1) retrieval (assuming hashed index map)
@@ -75,6 +77,7 @@ db = pg.procs
   uri = uri.replace '&?_surf=1', ''
   uri = uri.replace /\?$/, '' # remove ? if its all thats left
 
+
   if post_part
     err, doc <- db.thread-doc res.locals.site.id, sorttype, uri
     if err then return next err
@@ -86,9 +89,11 @@ db = pg.procs
     finish doc
 
   else # forum
-    err, fdoc <- db.forum-doc res.locals.site.id, sorttype, uri
-    if err then return next err
-    if !fdoc then return next(404)
+    err, fdoc <- async.auto(
+      menu        : db.menu res.locals.site.id, _
+      forum-id    : db.uri-to-forum-id uri, _
+      forums      : ['forumId', (cb, a) -> db.forums(a.forum-id, cb)]
+      top-threads : ['forumId', (cb, a) -> db.top-threads(a.forum-id, cb)])
 
     fdoc.active-forum-id = fdoc.forums[0]?.id
     finish fdoc

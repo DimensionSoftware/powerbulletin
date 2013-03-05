@@ -13,7 +13,6 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS add_post(post JSON);
 CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   var uri
-  post.build_docs ||= true
   require! <[u validations]>
   errors = validations.post(post)
   if !errors.length
@@ -64,9 +63,6 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
         uri := u.uri-for-post(nextval)
         plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [uri, nextval]
 
-      if post.build_docs
-        u.build-forum-docs(site-id, post.forum_id)
-        u.build-homepage-doc(site-id)
     else
       errors.push "forum_id invalid: #{post.forum_id}"
 
@@ -79,8 +75,6 @@ CREATE FUNCTION archive_post(post_id JSON) RETURNS JSON AS $$
   [{forum_id}] = plv8.execute "SELECT forum_id FROM posts WHERE id=$1", [post_id]
   [{site_id}] = plv8.execute 'SELECT site_id FROM forums WHERE forum_id=$1', [forum_id]
   plv8.execute "UPDATE posts SET archived='t' WHERE id=$1", [post_id]
-  u.build-forum-docs(site_id, forum_id)
-  u.build-homepage-doc(site_id)
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -220,28 +214,7 @@ CREATE FUNCTION add_thread_impression(thread_id JSON) RETURNS JSON AS $$
     sql2 = 'SELECT site_id FROM forums WHERE id = $1'
     res2 = plv8.execute sql2, [forum-id]
     site-id = res2[0].site_id
-    build_doc = plv8.find_function 'build_doc'
-    build_doc(site-id, forum-id)
   return res[0]?.views
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-DROP FUNCTION IF EXISTS build_doc(site_id JSON, forum_id JSON);
-CREATE FUNCTION build_doc(site_id JSON, forum_id JSON) RETURNS JSON AS $$
-  require! <[u]>
-  u.build-forum-docs(site_id, forum_id)
-  return true
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-DROP FUNCTION IF EXISTS build_all_docs(site_id JSON);
-CREATE FUNCTION build_all_docs(site_id JSON) RETURNS JSON AS $$
-  require! u
-
-  u.build-homepage-doc(site_id)
-
-  for f in plv8.execute('SELECT id FROM forums WHERE site_id=$1', [site_id])
-    u.build-forum-docs(site_id, f.id)
-
-  return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS build_all_uris(site_id JSON);
@@ -271,3 +244,40 @@ CREATE FUNCTION ban_patterns_for_forum(forum_id JSON) RETURNS JSON AS $$
   else
     return []
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS menu(site_id JSON);
+CREATE FUNCTION menu(site_id JSON) RETURNS JSON AS $$
+  require! u
+  return u.menu site_id 
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS homepage_forums(forum_id JSON);
+CREATE FUNCTION homepage_forums(forum_id JSON) RETURNS JSON AS $$
+  require! u
+  return u.homepage-forums forum_id 
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- XXX: this should really be called 'forum' since it represents one forum (and nested forums)
+-- but until the template is updated to not be plural i'll leave it
+DROP FUNCTION IF EXISTS forums(forum_id JSON);
+CREATE FUNCTION forums(forum_id JSON) RETURNS JSON AS $$
+  require! u
+  return u.forums forum_id 
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS top_threads(forum_id JSON);
+CREATE FUNCTION top_threads(forum_id JSON) RETURNS JSON AS $$
+  require! u
+  return u.top-threads forum_id 
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS uri_to_forum_id(uri JSON);
+CREATE FUNCTION uri_to_forum_id(uri JSON) RETURNS JSON AS $$
+  require! u
+  try
+    [{id}] = plv8.execute 'SELECT id FROM forums WHERE uri=$1', [uri]
+    return id
+  catch
+    return null
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
