@@ -14,6 +14,8 @@ global <<< require './helpers' # pull helpers (common) into global (play nice :)
 # ---------
 app.resource 'resources/posts',  resources.post
 
+app.post '/resources/posts/:id/impression', handlers.add-impression
+
 # <PAGE HANDLERS & MISC.>
 # ---------
 common-js = [
@@ -78,6 +80,7 @@ if process.env.NODE_ENV != 'production'
     err, d <- db.sub-posts-tree req.params.post_id
     if err then return next(err)
     res.json d
+
 
 # forum + post
 app.all new RegExp('/(.+)/t/(.+)'),

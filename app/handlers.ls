@@ -139,4 +139,9 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   req.user ||= null
   res.json req.user
 
+@add-impression = (req, res, next) ->
+  (err, r) <- db.add-thread-impression req.params.id
+  if err then next err
+  res.json success: true
+
 # vim:fdm=indent

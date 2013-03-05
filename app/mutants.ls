@@ -130,6 +130,11 @@ dom-insert = (w, target, tmpl, params) ->
         id = m[2] or 0
         id = if id then '#'+"subpost_#{id}" else \BOTTOM
         dom-insert window, id, \post_edit, {post:{id:123}}
+      post-id = $('#main_content .post:first').data('post-id')
+
+      # add impression
+      $.post "/resources/posts/#{post-id}/impression"
+
       next!
   on-initial:
     (window, next) ->
