@@ -20,16 +20,6 @@ mixin thread(t)
     .post-count= t.post_count
     .created= t.created_human
 
-//- main
-//- ---------
-//-if forums
-//-  each f,i in forums
-//-    mixin forum(f, i)
-
-//-if threads
-//-  each t,i in threads
-//-    mixin thread(t, i)
-
 //-h3.title Threads
 #handle.handle(title='Toggle') &lt;
 .create
