@@ -45,7 +45,7 @@
   out$.topPostsRecent = topPostsRecent = topPostsRecent = function(limit, fields){
     var sql;
     fields == null && (fields = 'p.*');
-    sql = "SELECT\n  " + fields + ",\n  a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND p.archived='f'\nORDER BY p.created DESC, id ASC\nLIMIT $2";
+    sql = "SELECT\n  " + fields + ",\n  MIN(a.name) user_name,\n  COUNT(p2.id) post_count\nFROM aliases a,\n     posts p LEFT JOIN posts p2 ON p2.parent_id = p.id\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND p.archived='f'\nGROUP BY p.id\nORDER BY p.created DESC, id ASC\nLIMIT $2";
     return function(){
       var args;
       args = slice$.call(arguments);
@@ -55,7 +55,7 @@
   topPostsActive = function(limit, fields){
     var sql;
     fields == null && (fields = 'p.*');
-    sql = "SELECT\n  " + fields + ",\n  a.name user_name,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1 AND archived='f') sort\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND p.archived='f'\nORDER BY sort\nLIMIT $2";
+    sql = "SELECT\n  " + fields + ",\n  MIN(a.name) user_name,\n  COUNT(p2.id) post_count,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1 AND archived='f') sort\nFROM aliases a,\n     posts p LEFT JOIN posts p2 ON p2.parent_id = p.id\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND p.archived='f'\nGROUP BY p.id\nORDER BY sort\nLIMIT $2";
     return function(){
       var args;
       args = slice$.call(arguments);
