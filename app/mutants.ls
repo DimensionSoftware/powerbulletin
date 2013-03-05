@@ -124,9 +124,9 @@ dom-insert = (w, target, tmpl, params) ->
       $f.css('padding-left', ($l.width! + 20))
 
       # handle in-line editing
-      m = window.location.pathname.match /new\/?([\d+]*)/
+      m = window.location.pathname.match /(edit|new)\/?([\d+]*)/
       if m
-        id = m[1] or 0
+        id = m[2] or 0
         id = if id then '#'+"subpost_#{id}" else \BOTTOM
         dom-insert window, id, \post_edit, {post:{id:123}}
       next!

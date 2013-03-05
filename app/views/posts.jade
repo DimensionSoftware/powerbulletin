@@ -41,7 +41,8 @@ mixin subpost(sp, i)
         p.body!= sp.body
       .actions
         a.onclick-append-reply-ui Reply
-        a.mutant(href="#{sp.uri.replace(/\/\d+$/, '')}/new/#{sp.id}") Edit
+        |
+        a.mutant(href="#{sp.uri.replace(/\/\d+$/, '')}/edit/#{sp.id}") Edit
         | 
         a(href=sp.uri) Permalink
       .reply

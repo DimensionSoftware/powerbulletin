@@ -71,7 +71,7 @@ db = pg.procs
   sorttype = \recent
 
   parts = forum-path-parts uri
-  uri = uri.replace /\/new[\/\d+]*/, '' # strip for lookup
+  uri = uri.replace /\/(edit|new)[\/\d+]*/, '' # strip for lookup
   uri = uri.replace '&?_surf=1', ''
   uri = uri.replace /\?$/, '' # remove ? if its all thats left
 
