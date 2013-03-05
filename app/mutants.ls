@@ -98,7 +98,7 @@ dom-insert = (w, target, tmpl, params) ->
 @forum =
   static:
     (window, next) ->
-      window.render-mutant 'left_content' \nav
+      window.render-mutant 'left_content' \nav unless window.has-mutated
       window.render-mutant 'main_content' \posts
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id

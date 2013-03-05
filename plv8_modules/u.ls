@@ -51,13 +51,16 @@ export top-posts-recent = top-posts-recent = (limit, fields='p.*') ->
   sql = """
   SELECT
     #{fields},
-    a.name user_name
-  FROM posts p, aliases a
+    MIN(a.name) user_name,
+    COUNT(p2.id) post_count
+  FROM aliases a,
+       posts p LEFT JOIN posts p2 ON p2.parent_id = p.id
   WHERE a.user_id=p.user_id
     AND a.site_id=1
     AND p.parent_id IS NULL
     AND p.forum_id=$1
     AND p.archived='f'
+  GROUP BY p.id
   ORDER BY p.created DESC, id ASC
   LIMIT $2
   """
@@ -67,14 +70,17 @@ top-posts-active = (limit, fields='p.*') ->
   sql = """
   SELECT
     #{fields},
-    a.name user_name,
+    MIN(a.name) user_name,
+    COUNT(p2.id) post_count,
     (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1 AND archived='f') sort
-  FROM posts p, aliases a
+  FROM aliases a,
+       posts p LEFT JOIN posts p2 ON p2.parent_id = p.id
   WHERE a.user_id=p.user_id
     AND a.site_id=1
     AND p.parent_id IS NULL
     AND p.forum_id=$1
     AND p.archived='f'
+  GROUP BY p.id
   ORDER BY sort
   LIMIT $2
   """
