@@ -74,4 +74,12 @@ sub vcl_error {
 
     return(deliver); 
   }
+  else if (obj.status == 500
+           || obj.status == 502
+           || obj.status == 503
+           || obj.status == 504)
+  {
+    synthetic std.fileread("public/50x.html");
+    return(deliver); 
+  }
 } 
