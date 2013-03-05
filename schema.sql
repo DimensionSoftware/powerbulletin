@@ -107,6 +107,7 @@ CREATE TABLE posts (
   uri       TEXT,
   body      TEXT NOT NULL,
   loc       POINT,
+  views     BIGINT NOT NULL DEFAULT 0,
   archived  BOOLEAN NOT NULL DEFAULT 'f',
   created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated   TIMESTAMP,
