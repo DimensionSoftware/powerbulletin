@@ -86,4 +86,15 @@ $d.on \mousedown '.scroll-to-top' ->
   false
 #}}}
 
+# keep human readable time up to date
+time-updater = ->
+  now = new Date
+  $('[data-time]').each ->
+    $el = $(this)
+    d = new Date $el.data(\time)
+    elapsed = (now - d) / 1000 # seconds
+    hr = window.helpers.elapsed-to-human-readable elapsed
+    $el.text hr
+
+set-interval time-updater, 3000
 # vim:fdm=marker

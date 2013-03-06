@@ -19,7 +19,7 @@ mixin thread(t)
     .user-name= t.user_name
     .post-count= t.post_count
     .views= t.views
-    .created= t.created_human
+    .created(data-time=t.created.toISOString())= t.created_human
 
 //-h3.title Threads
 #handle.handle(title='Toggle') &lt;
