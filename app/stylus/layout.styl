@@ -302,7 +302,7 @@ header
         max-height 65px
         text-transform capitalize
         margin grid 0 0 0
-      .user-name
+      .username
         font-size .7em
         em
           font-weight 600
@@ -310,7 +310,7 @@ header
           font-size 1.1em
       .created
         font-size .9em
-      .created, .user-name, .post-count
+      .created, .username, .post-count
         white-space nowrap
         text-overflow ellipsis
         margin-bottom -6px
@@ -462,9 +462,6 @@ section.left-chrome
       position relative
       z-index 4
       transition all .1s ease-out 1.3s
-      .comment
-        height 30px
-        transition height .05s ease-out 1.6s
     .container
       position absolute
       height 100%
@@ -486,14 +483,6 @@ section.left-chrome
         width 25px
       img
         max-width 100%
-    .comment 
-      margin-top 2px
-      padding 3px 7px
-      height 0
-      .msg
-        font-size .9em
-        font-style italic
-        width 70%
     .post, .subpost
       position relative
       clear both
