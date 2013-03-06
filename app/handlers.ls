@@ -48,10 +48,13 @@ db = pg.procs
   domain   = res.locals.site.domain
   passport = auth.passport-for-site[domain]
   if passport
-    passport.authenticate('facebook', { success-redirect: '/', failure-redirect: '/fail' })(req, res, next)
+    passport.authenticate('facebook', { success-redirect: '/auth/facebook/finish', failure-redirect: '/auth/facebook/finish?fail=1' })(req, res, next)
   else
     console.warn "no passport for #{domain}"
     res.send "500", 500
+
+@login-facebook-finish = (req, res, next) ->
+  res.send 'facebook finish'
 
 @login-google = (req, res, next) ->
   domain   = res.locals.site.domain

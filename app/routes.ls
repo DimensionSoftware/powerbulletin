@@ -35,8 +35,11 @@ app.get '/hello' handlers.hello
 
 # local auth
 app.post '/auth/login'    handlers.login
-app.get  '/auth/facebook' handlers.login-facebook
+
+app.get  '/auth/facebook'        handlers.login-facebook
 app.get  '/auth/facebook/return' handlers.login-facebook-return
+app.get  '/auth/facebook/finish' handlers.login-facebook-finish
+
 app.get  '/auth/google'   handlers.login-google
 app.get  '/auth/twitter'  handlers.login-twitter
 app.get  '/auth/logout'   handlers.logout
