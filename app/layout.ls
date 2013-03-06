@@ -99,5 +99,5 @@ time-updater = ->
     hr = window.helpers.elapsed-to-human-readable elapsed
     $el.text hr
 
-set-interval time-updater, 3000
+set-interval time-updater, 30000
 # vim:fdm=marker
