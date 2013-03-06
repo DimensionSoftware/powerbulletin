@@ -262,29 +262,27 @@ header
 //}}}
 //{{{ Left side
 #left_content.container:hover
-  border-right 1px solid #ccc
+  border-right 1px solid #111
 #left_content.container
-  //background-color rgba(255,255,255,.9)
-  background-color #eee
-  border-right 1px solid #ddd
+  background-color rgba(100,100,100,.9)
+  //background-color #eee
+  border-right 1px solid #444
   .handle:hover
     box-shadow 0 0 5px #999
     background-color #e8e8e8
+    border-color highlight-color2
     transition box-shadow .2s ease-out
   .handle
-    border-radius 15px
     background-color #eee
     border 4px solid #fff
-    line-height 23px
-    font-size .8em
   .title
-    padding 2px 7px
     letter-spacing -1px
-    font-size 1em
+    font-size 1.1em
     margin (grid / 2) 0
   .forum, .threads
     a
-      color #333
+      text-decoration none
+      color #fff
     a:hover
       color #d1920b
 
@@ -370,16 +368,18 @@ section.left-chrome
       font-weight 100
       font-size 2.1em
       line-height 2em
-    .header.stuck
-      font-size 17px
+    .breadcrumb.stuck
+      background-color #eee
+      border-bottom 1px solid #ddd
+      border-right 1px solid #ddd
+      border-left 1px solid #ddd
+      color #333
     .breadcrumb
       color #444
       em, a
         color #666
-        background-color #fff
-        border-radius 3px
     .subpost:hover
-      border-bottom 1px solid #ccc
+      border-bottom 1px solid #bbb
       color #000
     .subpost
       border-bottom 1px solid #dfdfdf
