@@ -2,6 +2,7 @@
 
 # XXX: helpers probably has crap we don't want in the client, refactor appropriately
 window.helpers = require './helpers'
+window.mutants = require './mutants'
 
 # shortcuts
 $w = $ window
@@ -100,4 +101,11 @@ time-updater = ->
     $el.text hr
 
 set-interval time-updater, 30000
+
+# personalization ( based on parameters from user obj )
+window.user <- $.getJSON '/auth/user'
+
+# run initial mutant
+window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}
+
 # vim:fdm=marker
