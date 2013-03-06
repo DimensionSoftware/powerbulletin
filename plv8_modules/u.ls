@@ -192,6 +192,6 @@ export forums = (forum-id, sort) ->
   ft = forum-tree forum-id, top-posts(sort)
   if ft then [ft] else []
 
-export top-threads = (forum-id) ->
-  top-posts(\recent) forum-id
+export top-threads = (forum-id, sort) ->
+  top-posts(sort) forum-id
 

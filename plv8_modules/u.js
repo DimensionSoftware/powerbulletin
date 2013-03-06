@@ -209,8 +209,8 @@
       return [];
     }
   };
-  out$.topThreads = topThreads = function(forumId){
-    return topPosts('recent')(forumId);
+  out$.topThreads = topThreads = function(forumId, sort){
+    return topPosts(sort)(forumId);
   };
   function import$(obj, src){
     var own = {}.hasOwnProperty;

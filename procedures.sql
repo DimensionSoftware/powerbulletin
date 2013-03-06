@@ -268,7 +268,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS top_threads(forum_id JSON);
 CREATE FUNCTION top_threads(forum_id JSON) RETURNS JSON AS $$
   require! u
-  return u.top-threads forum_id 
+  return u.top-threads forum_id, \popular 
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS uri_to_forum_id(site_id JSON, uri JSON);
