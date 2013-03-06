@@ -12,8 +12,6 @@ require! {
 
 global <<< require './helpers'
 
-db = pg.procs
-
 @hello = (req, res) ->
   res.send "hello #{res.locals.remote-ip}!"
 
@@ -41,6 +39,7 @@ db = pg.procs
   res.redirect redirect-url
 
 @homepage = (req, res, next) ->
+  db = pg.procs
   #TODO: refactor with async.auto
   err, menu <- db.menu res.locals.site.id
   if err then return next err
@@ -61,11 +60,13 @@ db = pg.procs
   res.mutant \homepage
 
 @forum = (req, res, next) ->
+  db = pg.procs
   [forum_part, post_part] = req.params
 
-  finish = (doc) ->
-    res.locals doc
-    caching-strategies.etag res, sha1(JSON.stringify(doc)), 7200
+  finish = (adoc) ->
+    console.log {adoc.forum-id}
+    res.locals adoc
+    caching-strategies.etag res, sha1(JSON.stringify(adoc)), 7200
     res.mutant \forum
 
   # parse uri
@@ -89,13 +90,17 @@ db = pg.procs
     finish doc
 
   else # forum
-    err, fdoc <- async.auto(
+    tasks =
       menu        : db.menu res.locals.site.id, _
-      forum-id    : db.uri-to-forum-id uri, _
+      forum-id    : db.uri-to-forum-id res.locals.site.id, uri, _
       forums      : ['forumId', (cb, a) -> db.forums(a.forum-id, cb)]
-      top-threads : ['forumId', (cb, a) -> db.top-threads(a.forum-id, cb)])
+      top-threads : ['forumId', (cb, a) -> db.top-threads(a.forum-id, cb)]
 
-    fdoc.active-forum-id = fdoc.forums[0]?.id
+    err, fdoc <- async.auto tasks
+
+    console.log {fdoc}
+    fdoc.active-forum-id = fdoc.forum-id
+
     finish fdoc
 
 @register = (req, res) ->
@@ -145,6 +150,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   res.json req.user
 
 @add-impression = (req, res, next) ->
+  db = pg.procs
   (err, r) <- db.add-thread-impression req.params.id
   if err then next err
   res.json success: true

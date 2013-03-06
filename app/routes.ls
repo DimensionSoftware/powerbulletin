@@ -59,8 +59,9 @@ app.get '/',
 # dynamic serving
 app.get '/dynamic/css/:file' handlers.stylus
 
-#app.get '/favicon.ico', (req, res, next) ->
-#  next 404, \404
+app.get '/favicon.ico', (req, res, next) ->
+  # replace with real favicon
+  next 404, \404
 
 app.get '/:forum/most-active',
   mw.add-js(common-js),

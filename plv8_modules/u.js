@@ -1,5 +1,5 @@
 (function(){
-  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPostsRecent, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, menu, homepageForums, forums, topThreads, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
+  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPosts, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, menu, homepageForums, forums, topThreads, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
     args = slice$.call(arguments);
@@ -42,10 +42,20 @@
     sql = 'SELECT *\nFROM forums\nWHERE parent_id=$1\nORDER BY created DESC, id DESC';
     return plv8.execute(sql, arguments);
   };
-  out$.topPostsRecent = topPostsRecent = topPostsRecent = function(limit, fields){
-    var sql;
+  topPosts = function(sort, limit, fields){
+    var sortExpr, sql;
     fields == null && (fields = 'p.*');
-    sql = "SELECT\n  " + fields + ",\n  MIN(a.name) user_name,\n  COUNT(p2.id) post_count\nFROM aliases a,\n     posts p LEFT JOIN posts p2 ON p2.parent_id = p.id\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND p.archived='f'\nGROUP BY p.id\nORDER BY p.created DESC, id ASC\nLIMIT $2";
+    sortExpr = (function(){
+      switch (sort) {
+      case 'recent':
+        return 'p.created DESC, id ASC';
+      case 'popular':
+        return '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC';
+      default:
+        throw new Error("invalid sort for top-posts: " + sort);
+      }
+    }());
+    sql = "SELECT\n  " + fields + ",\n  MIN(a.name) user_name,\n  COUNT(p2.id) post_count\nFROM aliases a,\n     posts p LEFT JOIN posts p2 ON p2.parent_id = p.id\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND p.archived='f'\nGROUP BY p.id\nORDER BY " + sortExpr + "\nLIMIT $2";
     return function(){
       var args;
       args = slice$.call(arguments);
@@ -185,14 +195,14 @@
     }
   };
   out$.menu = menu = function(siteId){
-    return forumsTree(siteId, topPostsRecent(null, 'p.created,p.title,p.slug,p.id'), topForumsRecent(null, 'id,title,slug,classes'));
+    return forumsTree(siteId, topPosts('recent', null, 'p.created,p.title,p.slug,p.id'), topForumsRecent(null, 'id,title,slug,classes'));
   };
   out$.homepageForums = homepageForums = function(siteId){
-    return forumsTree(siteId, topPostsRecent(), topForumsRecent());
+    return forumsTree(siteId, topPosts('recent'), topForumsRecent());
   };
-  out$.forums = forums = function(forumId){
+  out$.forums = forums = function(forumId, sort){
     var ft;
-    ft = forumTree(forumId, topPostsRecent());
+    ft = forumTree(forumId, topPosts(sort));
     if (ft) {
       return [ft];
     } else {
@@ -200,7 +210,7 @@
     }
   };
   out$.topThreads = topThreads = function(forumId){
-    return topPostsRecent()(forumId);
+    return topPosts('recent')(forumId);
   };
   function import$(obj, src){
     var own = {}.hasOwnProperty;

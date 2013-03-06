@@ -47,7 +47,13 @@ sub-forums = ->
   '''
   plv8.execute sql, arguments
 
-export top-posts-recent = top-posts-recent = (limit, fields='p.*') ->
+top-posts = (sort, limit, fields='p.*') ->
+  sort-expr =
+    switch sort
+    | \recent   => 'p.created DESC, id ASC'
+    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC'
+    | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
+
   sql = """
   SELECT
     #{fields},
@@ -61,7 +67,7 @@ export top-posts-recent = top-posts-recent = (limit, fields='p.*') ->
     AND p.forum_id=$1
     AND p.archived='f'
   GROUP BY p.id
-  ORDER BY p.created DESC, id ASC
+  ORDER BY #{sort-expr}
   LIMIT $2
   """
   (...args) -> plv8.execute sql, args.concat([limit])
@@ -172,17 +178,20 @@ export uri-for-post = (post-id, first-slug = null) ->
       @uri-for-forum(forum_id) + '/t/' + slug
 
 export menu = (site-id) ->
+  # XXX: forums should always list in the same order, get rid of top-forums-recent, and list in static order
   forums-tree(site-id,
-    top-posts-recent(null, 'p.created,p.title,p.slug,p.id'),
+    top-posts(\recent, null, 'p.created,p.title,p.slug,p.id'),
     top-forums-recent(null, 'id,title,slug,classes'))
 
 export homepage-forums = (site-id) ->
-  forums-tree site-id, top-posts-recent!, top-forums-recent!
+  # XXX: forums should always list in the same order, get rid of top-forums-recent, and list in static order
+  forums-tree site-id, top-posts(\recent), top-forums-recent!
 
-export forums = (forum-id) ->
-  ft = forum-tree forum-id, top-posts-recent!
+# this is really for a single forum even though its called 'forums'
+export forums = (forum-id, sort) ->
+  ft = forum-tree forum-id, top-posts(sort)
   if ft then [ft] else []
 
 export top-threads = (forum-id) ->
-  top-posts-recent! forum-id
+  top-posts(\recent) forum-id
 
