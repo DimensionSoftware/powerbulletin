@@ -16,7 +16,7 @@ mixin thread(t)
     a.mutant(href=t.uri)
       h4.title= t.title
       .created(data-time=t.created_iso)= t.created_human
-      .user-name by
+      .username by
         em= t.user_name
       span.post-count= t.post_count
         i posts
