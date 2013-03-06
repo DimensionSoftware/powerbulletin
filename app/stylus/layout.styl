@@ -487,9 +487,9 @@ section.left-chrome
       position relative
       clear both
       overflow hidden
-      margin-left (grid*2)
+      margin-left (grid*4)
       margin-top (grid/2)
-      padding-left (grid*2)
+      margin-bottom grid
       .title
         margin 0
         font-size 1.5em
@@ -498,6 +498,8 @@ section.left-chrome
       .actions
         opacity 0
         letter-spacing -10px
+        margin-top (grid+2)
+        line-height 15px
         font-size .9em
         color #444
         a
@@ -509,6 +511,14 @@ section.left-chrome
         opacity 1
         letter-spacing 0
         transition opacity .3s, letter-spacing .09s
+    .subpost
+      padding-top (grid*2)
+      padding-bottom grid
+      .date
+        font-size .8em
+        color #555
+      p
+        margin 0
     .children
       margin-bottom (grid*3)
       .subpost
