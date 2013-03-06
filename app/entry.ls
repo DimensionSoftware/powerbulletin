@@ -6,6 +6,8 @@ $w = $ window
 $d = $ document
 
 window.mutants = require './mutants'
+# XXX: helpers probably has crap we don't want in the client, refactor appropriately
+window.helpers = require './helpers'
 
 #{{{ UI Interactions
 # save state
