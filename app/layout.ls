@@ -1,4 +1,7 @@
-# XXX layout-specific client-side
+# XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
+
+# XXX: helpers probably has crap we don't want in the client, refactor appropriately
+window.helpers = require './helpers'
 
 # shortcuts
 $w = $ window
