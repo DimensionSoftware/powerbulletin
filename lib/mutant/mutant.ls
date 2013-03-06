@@ -54,7 +54,7 @@ else
   onMutate       = template.onMutate      || ((w, cb) -> cb(null))
   onPersonalize  = template.onPersonalize || ((w, u, cb) -> cb(null))
 
-  require '../../app/views/mutants.js' # pre-built clientjade templates
+  require '../../app/views/templates.js' # pre-built clientjade templates
 
   if window?
     if initial_run
