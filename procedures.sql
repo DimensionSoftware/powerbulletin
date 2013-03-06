@@ -78,10 +78,10 @@ CREATE FUNCTION archive_post(post_id JSON) RETURNS JSON AS $$
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS sub_posts_tree(id JSON);
-CREATE FUNCTION sub_posts_tree(id JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS sub_posts_tree(post_id JSON);
+CREATE FUNCTION sub_posts_tree(post_id JSON) RETURNS JSON AS $$
   require! u
-  return u.sub-posts-tree id, u.top-posts-recent(10)
+  return u.sub-posts-tree post_id
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON);
@@ -171,34 +171,6 @@ CREATE FUNCTION forum_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
--- this one is on the fly cuz we don't wanna pregen N depth recursive tree docs
--- XXX sort is a placeholder and is not used currently
-DROP FUNCTION IF EXISTS thread_doc(site_id JSON, sort JSON, uri JSON);
-CREATE FUNCTION thread_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
-  require! u
-
-  sql = '''
-  SELECT p.*, f.id forum_id
-  FROM posts p
-  JOIN forums f ON f.id=p.forum_id
-  WHERE f.site_id=$1 AND p.uri=$2
-  '''
-  [doc] = plv8.execute(sql, [site_id, uri])
-
-  if doc
-    doc.posts = u.sub-posts-tree doc.id, u.top-posts-recent(10)
-    sub-post = doc
-    #XXX: note to self, menu doc? this seems to be used in alot of places
-    menu = u.menu site_id 
-    #XXX: misnamed forums
-    top-threads = JSON.parse u.doc(site_id, \threads_recent, sub-post.forum_id)
-
-    rval = {top-threads, sub-post, menu}
-    return rval
-  else
-    return null
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
 DROP FUNCTION IF EXISTS add_thread_impression(thread_id JSON);
 CREATE FUNCTION add_thread_impression(thread_id JSON) RETURNS JSON AS $$
   plv8.elog WARNING, thread_id
@@ -248,7 +220,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS menu(site_id JSON);
 CREATE FUNCTION menu(site_id JSON) RETURNS JSON AS $$
   require! u
-  return u.menu site_id 
+  return u.menu site_id
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS homepage_forums(forum_id JSON);
@@ -281,3 +253,18 @@ CREATE FUNCTION uri_to_forum_id(site_id JSON, uri JSON) RETURNS JSON AS $$
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS uri_to_post(site_id JSON, uri JSON);
+CREATE FUNCTION uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
+  require! u
+  try
+    sql = '''
+    SELECT p.*
+    FROM posts p
+    JOIN forums f ON p.forum_id=f.id
+    WHERE f.site_id=$1 AND p.uri=$2
+    '''
+    [post] = plv8.execute sql, [site_id, uri]
+    return post
+  catch
+    return null
+$$ LANGUAGE plls IMMUTABLE STRICT;

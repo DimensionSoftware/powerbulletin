@@ -119,14 +119,22 @@ global <<< require './helpers'
 
 
   if post_part
-    err, doc <- db.thread-doc res.locals.site.id, sorttype, uri
+    tasks =
+      menu           : db.menu res.locals.site.id, _
+      sub-post       : db.uri-to-post res.locals.site.id, uri, _
+      sub-posts-tree : [\subPost, (cb, a) -> db.sub-posts-tree(a.sub-post.id, cb)]
+      top-threads    : [\subPost, (cb, a) -> db.top-threads(a.sub-post.forum_id, cb)]
+
+    err, fdoc <- async.auto tasks
     if err then return next err
-    if !doc then return next(404)
+    if !fdoc then return next(404)
+    # attach sub-posts-tree to sub-post toplevel item
+    fdoc.sub-post.posts = delete fdoc.sub-posts-tree
 
-    doc.active-forum-id = doc.sub-post.forum_id
-    doc.active-post-id = doc.id
+    fdoc.active-forum-id = fdoc.sub-post.forum_id
+    fdoc.active-post-id = fdoc.id
 
-    finish doc
+    finish fdoc
 
   else # forum
     tasks =
@@ -136,6 +144,8 @@ global <<< require './helpers'
       top-threads : ['forumId', (cb, a) -> db.top-threads(a.forum-id, cb)]
 
     err, fdoc <- async.auto tasks
+    if err then return next err
+    if !fdoc then return next(404)
 
     console.log {fdoc}
     fdoc.active-forum-id = fdoc.forum-id

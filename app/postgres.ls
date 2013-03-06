@@ -10,9 +10,12 @@ under2camel = (s) ->
 # assumes @query is populated (must call init)
 # assumes all procs take one json argument and return a json response
 init-proc = (proname) ->
-  @procs[under2camel(proname)] = ~>
+  ls-name = under2camel(proname)
+  @procs[ls-name] = ~>
     pargs = arguments[0 to -2].map(JSON.stringify)
     cb = arguments[arguments.length - 1]
+    if typeof cb != 'function'
+      throw new Error "Wrong arity for procedure #{ls-name}"
 
     pdollars = if pargs.length then [1 to pargs.length] else []
     pdollars = ["$#{i}" for i in pdollars].join(',')
