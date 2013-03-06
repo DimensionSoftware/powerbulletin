@@ -90,6 +90,16 @@ html
     section#main_content.main-content.container
 
     section#auth(style="display:none;")
+      .choose(style="display:none;")
+        form(method="post", action="/auth/choose-username")
+          label(for="username")
+            h2 Choose a User Name
+              i !
+          fieldset
+            input(id="username", name="username", type="text", placeholder="Your User Name")
+            input(type="submit", value="Save")
+            a.msg.onclick-show-login
+              h3 &lt; Back
       .forgot(style="display:none;")
         form(method="post", action="/auth/forgot")
           label(for="email")
