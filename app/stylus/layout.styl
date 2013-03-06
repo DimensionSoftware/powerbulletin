@@ -488,8 +488,8 @@ section.left-chrome
       clear both
       overflow hidden
       margin-left (grid*2)
-      margin-top (grid*2)
-      padding-left grid
+      margin-top (grid/2)
+      padding-left (grid*2)
       .title
         margin 0
         font-size 1.5em
@@ -498,6 +498,8 @@ section.left-chrome
       .actions
         opacity 0
         letter-spacing -10px
+        font-size .9em
+        color #444
         a
           margin-right grid
     .subpost:last-child
@@ -505,8 +507,8 @@ section.left-chrome
     .subpost:hover
       .actions
         opacity 1
-        letter-spacing -1px
-        transition opacity .3s, letter-spacing .1s
+        letter-spacing 0
+        transition opacity .3s, letter-spacing .09s
     .children
       margin-bottom (grid*3)
       .subpost
@@ -586,7 +588,7 @@ footer
 
 //{{{ Login
 #auth
-  .forgot
+  .choose, .forgot
     h3
       margin-top (grid+2)
       float right

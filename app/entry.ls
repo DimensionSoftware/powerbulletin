@@ -152,11 +152,14 @@ $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 
 # login delegated events
 switch-and-focus = (e, remove, add, focus-on) ->
-  $ e .remove-class(remove).add-class(add)
-  setTimeout (-> $ focus-on .focus! ), 100
+  $e = $ e
+  $e .remove-class("#{remove} shake slide").add-class(add)
+  setTimeout (-> $e.add-class \slide; $ focus-on .focus! ), 10
 $d.on \click '.onclick-show-login' ->
   switch-and-focus '.fancybox-wrap' \on-forgot \on-login '#auth input[name=username]'
 $d.on \click '.onclick-show-forgot' ->
   switch-and-focus '.fancybox-wrap' \on-error \on-forgot '#auth input[name=email]'
+$d.on \click '.onclick-show-choose' -> # XXX beppusan-- renders the dialog for choosing a username
+  switch-and-focus '.fancybox-wrap' \on-login \on-choose '#auth input[name=username]'
 
 # vim:fdm=marker

@@ -35,6 +35,13 @@ grid = 10px
     transform translateX(5px), skew(0, 0)
   100%
     transform translateX(0)
+@keyframes slide
+  0%
+    transform translateY(-50px), skew(0, -1deg)
+  45%
+    transform translateY(20px), skew(-1deg, 1deg)
+  100%
+    transform translateY(0px), skew(0, 0)
 //}}}
 
 //{{{ Style applied after body scrolls
@@ -516,13 +523,22 @@ footer
 //}}}
 
 //{{{ Login
+.fancybox-wrap.on-choose
+  #auth
+    .choose
+      display block!important
+    .login
+      display none
+    .forgot
+      display none
 .fancybox-wrap.on-forgot
   #auth
     .forgot
       display block!important
     .login
       display none
-
+    .choose
+      display none
 .fancybox-wrap.on-error
   #auth
     .msg
@@ -655,9 +671,12 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   text-align center
 //}}}
 //{{{ Fancybox
+.slide
+  animation-name slide
+  animation-duration .2s
 .shake
   animation-name shake
-  animation-duration .5s
+  animation-duration .6s
 .fancybox-overlay
   background-color rgba(255,255,255,.9)!important
   background none
