@@ -95,6 +95,12 @@ dom-insert = (w, target, tmpl, params) ->
     console.log 'HARHAR'
     next!
 
+@forum-new =
+  on-load:
+    (window, next) ->
+      console.log \new
+      next!
+
 @forum =
   static:
     (window, next) ->

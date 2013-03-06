@@ -530,17 +530,25 @@ footer
 
 //{{{ Login
 .fancybox-wrap.on-forgot
-  .forgot
-    display block!important
-  .login
-    display none!important
+  #auth
+    .forgot
+      display block!important
+    .login
+      display none
 
 .fancybox-wrap.on-error
-  .error
-    display block!important
+  #auth
+    .msg
+      height 30px
+      opacity 1
+      transition height .2s, opacity 1s
 #auth
   .login
-    a.error
+    .msg
+      overflow hidden
+      display block
+      height 0
+      opacity 0
       h3
         text-shadow 0 0 1px highlight-color2
   h3

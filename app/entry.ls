@@ -151,7 +151,15 @@ append-reply-ui = ->
 $d.on \click '#add-post-submit' require-login(add-post)
 $d.on \click '.onclick-add-post-dialog' add-post-dialog
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
-$d.on \click '.onclick-show-forgot' -> $ '.fancybox-wrap' .remove-class(\on-error).add-class(\on-forgot)
+
+# login delegated events
+switch-and-focus = (e, remove, add, focus-on) ->
+  $ e .remove-class(remove).add-class(add)
+  setTimeout (-> $ focus-on .focus! ), 100
+$d.on \click '.onclick-show-login' ->
+  switch-and-focus '.fancybox-wrap' \on-forgot \on-login '#auth input[name=username]'
+$d.on \click '.onclick-show-forgot' ->
+  switch-and-focus '.fancybox-wrap' \on-error \on-forgot '#auth input[name=email]'
 
 # personalization ( based on parameters from user obj )
 window.user <- $.getJSON '/auth/user'
