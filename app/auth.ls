@@ -79,12 +79,17 @@ pg.init ~>
       done(null, user)
 
     facebook-options =
-      clientID      : \xxx
-      client-secret : \xxx
-      callbackURL   : "http://#{domain}/auth/facebook/return" # XXX - should not hardcodd site
+      clientID      : '454403507966007'  # TODO - move this info into the db
+      client-secret : 'b604975dfb351fe458b1cc0891eb8a87'
+      callbackURL   : "http://#{domain}/auth/facebook/return" # XXX - should not hardcode site
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
-      (err, user) <- db.find-or-create-user {}
-      done(err, user)
+      console.warn 'profile', profile
+      # TODO 
+      # - see if a user matching this profile exists
+      # - if not, create a user and auth
+      #   - take them to a page where they can fill in the data for an alias
+      # - if so, return the user  
+      done(null, { id: 1, site_id: site.id, name: 'fake' })
 
     twitter-options =
       consumer-key    : \xxx

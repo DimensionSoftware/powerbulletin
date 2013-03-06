@@ -33,6 +33,45 @@ global <<< require './helpers'
     console.warn "no passport for #{domain}"
     res.send "500", 500
 
+@login-facebook = (req, res, next) ->
+  domain   = res.locals.site.domain
+  passport = auth.passport-for-site[domain]
+  if passport
+    passport.authenticate('facebook')(req, res, next)
+  else
+    console.warn "no passport for #{domain}"
+    res.send "500", 500
+
+@login-facebook-return = (req, res, next) ->
+  domain   = res.locals.site.domain
+  passport = auth.passport-for-site[domain]
+  if passport
+    passport.authenticate('facebook', { success-redirect: '/auth/facebook/finish', failure-redirect: '/auth/facebook/finish?fail=1' })(req, res, next)
+  else
+    console.warn "no passport for #{domain}"
+    res.send "500", 500
+
+@login-facebook-finish = (req, res, next) ->
+  res.send 'facebook finish'
+
+@login-google = (req, res, next) ->
+  domain   = res.locals.site.domain
+  passport = auth.passport-for-site[domain]
+  if passport
+    passport.authenticate('google')(req, res, next)
+  else
+    console.warn "no passport for #{domain}"
+    res.send "500", 500
+
+@login-twitter = (req, res, next) ->
+  domain   = res.locals.site.domain
+  passport = auth.passport-for-site[domain]
+  if passport
+    passport.authenticate('twitter')(req, res, next)
+  else
+    console.warn "no passport for #{domain}"
+    res.send "500", 500
+
 @logout = (req, res, next) ->
   redirect-url = req.param('redirect-url') || '/'
   req.logout()
