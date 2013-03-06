@@ -8,20 +8,21 @@ mixin forum(f, i)
         mixin subforum(f, sf, ii)
 
 mixin subforum(f, sf, i)
-  //-.subforum(class="#{(i % 2) ? 'odd' : 'even'}")
-  li
+  li.subforum
     a.mutant.title(href=sf.uri)= sf.title
 
 mixin thread(t)
   li.thread
-    h4.title
-      a.mutant(href=t.uri)= t.title
-    .user-name= t.user_name
-    .post-count= t.post_count
-    .views= t.views
-    .created(data-time=t.created_iso)= t.created_human
+    a.mutant(href=t.uri)
+      h4.title= t.title
+      .created(data-time=t.created_iso)= t.created_human
+      .user-name by
+        em= t.user_name
+      span.post-count= t.post_count
+        i posts
+      span.views= t.views
+        i views
 
-//-h3.title Threads
 #handle.handle(title='Toggle') &lt;
 .create
   a(class='button onclick-add-post-dialog') Create Thread

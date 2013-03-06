@@ -5,7 +5,6 @@ mixin breadcrumb(p)
   parts = parts.splice(1, parts.length-2)
   each part in parts
     if part != 't'
-      span /
       a.mutant(href="#{path}#{part}")= part.replace('-', ' ')
     - path = path + part + '/'
   span /
@@ -21,9 +20,7 @@ mixin subpost(sp, i)
       p.body!= sp.body
     .actions
       a.onclick-append-reply-ui Reply
-      |
       a.mutant(href="#{sp.uri.replace(/\/\d+$/, '')}/edit/#{sp.id}") Edit
-      | 
       a(href=sp.uri) Permalink
     .reply
   if sp.posts && sp.posts.length
