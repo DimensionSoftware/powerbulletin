@@ -1,11 +1,9 @@
 
-# XXX client-side entry for homepage & forum mutants
+# XXX client-side entry
 
 # shortcuts
 $w = $ window
 $d = $ document
-
-window.mutants = require './mutants'
 
 #{{{ UI Interactions
 # save state
@@ -160,11 +158,5 @@ $d.on \click '.onclick-show-login' ->
   switch-and-focus '.fancybox-wrap' \on-forgot \on-login '#auth input[name=username]'
 $d.on \click '.onclick-show-forgot' ->
   switch-and-focus '.fancybox-wrap' \on-error \on-forgot '#auth input[name=email]'
-
-# personalization ( based on parameters from user obj )
-window.user <- $.getJSON '/auth/user'
-
-# run initial mutant
-window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}
 
 # vim:fdm=marker
