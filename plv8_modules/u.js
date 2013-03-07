@@ -1,5 +1,5 @@
 (function(){
-  var merge, title2slug, topForumsRecent, topForumsActive, subForums, topPosts, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, menu, homepageForums, forums, topThreads, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
+  var merge, title2slug, topForums, subForums, topPosts, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, menu, homepageForums, forums, topThreads, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
     args = slice$.call(arguments);
@@ -18,19 +18,10 @@
     }
     return title;
   };
-  topForumsRecent = function(limit, fields){
+  topForums = function(limit, fields){
     var sql;
     fields == null && (fields = '*');
     sql = "SELECT " + fields + " FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id ASC\nLIMIT $2";
-    return function(){
-      var args;
-      args = slice$.call(arguments);
-      return plv8.execute(sql, args.concat([limit]));
-    };
-  };
-  topForumsActive = function(limit){
-    var sql;
-    sql = 'SELECT\n  f.*,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=f.id AND archived=\'f\') sort\nFROM forums f\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY sort\nLIMIT $2';
     return function(){
       var args;
       args = slice$.call(arguments);
@@ -74,7 +65,7 @@
   };
   subPosts = function(){
     var sql;
-    sql = 'SELECT p.*, a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id=$1\n  AND p.archived=\'f\'\nORDER BY created DESC, id ASC';
+    sql = 'SELECT p.*, a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id=$1\n  AND p.archived=\'f\'\nORDER BY created ASC, id ASC';
     return plv8.execute(sql, arguments);
   };
   out$.subPostsTree = subPostsTree = subPostsTree = function(parentId, depth){
@@ -195,10 +186,10 @@
     }
   };
   out$.menu = menu = function(siteId){
-    return forumsTree(siteId, topPosts('recent', null, 'p.created,p.title,p.slug,p.id'), topForumsRecent(null, 'id,title,slug,classes'));
+    return forumsTree(siteId, topPosts('recent', null, 'p.created,p.title,p.slug,p.id'), topForums(null, 'id,title,slug,classes'));
   };
   out$.homepageForums = homepageForums = function(siteId){
-    return forumsTree(siteId, topPosts('recent'), topForumsRecent());
+    return forumsTree(siteId, topPosts('recent'), topForums());
   };
   out$.forums = forums = function(forumId, sort){
     var ft;

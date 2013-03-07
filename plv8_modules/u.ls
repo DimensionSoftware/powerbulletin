@@ -17,25 +17,13 @@ export title2slug = (title, id) ->
 
 ## END PURE FUNCTIONS ##
 
-top-forums-recent = (limit, fields='*') ->
+top-forums = (limit, fields='*') ->
   sql = """
   SELECT #{fields} FROM forums
   WHERE parent_id IS NULL AND site_id=$1
   ORDER BY created DESC, id ASC
   LIMIT $2
   """
-  (...args) -> plv8.execute sql, args.concat([limit])
-
-top-forums-active = (limit) ->
-  sql = '''
-  SELECT
-    f.*,
-    (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=f.id AND archived='f') sort
-  FROM forums f
-  WHERE parent_id IS NULL AND site_id=$1
-  ORDER BY sort
-  LIMIT $2
-  '''
   (...args) -> plv8.execute sql, args.concat([limit])
 
 sub-forums = ->
@@ -100,7 +88,7 @@ sub-posts = ->
     AND a.site_id=1
     AND p.parent_id=$1
     AND p.archived='f'
-  ORDER BY created DESC, id ASC
+  ORDER BY created ASC, id ASC
   '''
   plv8.execute sql, arguments
 
@@ -178,14 +166,14 @@ export uri-for-post = (post-id, first-slug = null) ->
       @uri-for-forum(forum_id) + '/t/' + slug
 
 export menu = (site-id) ->
-  # XXX: forums should always list in the same order, get rid of top-forums-recent, and list in static order
+  # XXX: forums should always list in the same order, get rid of top-forums, and list in static order
   forums-tree(site-id,
     top-posts(\recent, null, 'p.created,p.title,p.slug,p.id'),
-    top-forums-recent(null, 'id,title,slug,classes'))
+    top-forums(null, 'id,title,slug,classes'))
 
 export homepage-forums = (site-id) ->
-  # XXX: forums should always list in the same order, get rid of top-forums-recent, and list in static order
-  forums-tree site-id, top-posts(\recent), top-forums-recent!
+  # XXX: forums should always list in the same order, get rid of top-forums, and list in static order
+  forums-tree site-id, top-posts(\recent), top-forums!
 
 # this is really for a single forum even though its called 'forums'
 export forums = (forum-id, sort) ->
