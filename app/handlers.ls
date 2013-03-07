@@ -52,7 +52,6 @@ global <<< require './helpers'
     res.send "500", 500
 
 @login-facebook-finish = (req, res, next) ->
-  # this should close the popup window and tell window.opener to show the alias dialog if necessary
   res.send 'facebook finish'
 
 @login-google = (req, res, next) ->
