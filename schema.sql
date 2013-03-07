@@ -63,7 +63,6 @@ CREATE TRIGGER aliases_timestamp BEFORE UPDATE ON aliases FOR EACH ROW EXECUTE P
 CREATE TABLE auths (
   id      BIGINT NOT NULL,
   user_id BIGINT NOT NULL references users(id),
-  x_id    BIGINT NOT NULL,
   type    VARCHAR(16),
   json    VARCHAR(1024),
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
