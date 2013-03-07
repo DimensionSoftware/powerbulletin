@@ -122,7 +122,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS usr(usr JSON);
 CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   sql = """
-  SELECT u.id, a.name, a.site_id, auths.type, auths.json 
+  SELECT u.id, u.rights, a.name, a.site_id, auths.type, auths.json 
   FROM users u
   JOIN aliases a ON a.user_id = u.id
   LEFT JOIN auths ON auths.user_id = u.id
@@ -136,7 +136,9 @@ CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
     memo.name = auth.name
     memo.auths[auth.type] = JSON.parse(auth.json)
     memo
-  return auths.reduce make-user, { auths: {} }
+  user = auths.reduce make-user, { auths: {} }
+  user.rights = auths[0].rights
+  return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- @param Object site

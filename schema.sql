@@ -24,6 +24,7 @@ $$;
 CREATE TABLE users (
   id      BIGSERIAL NOT NULL,
   email   VARCHAR(256),
+  rights  JSON NOT NULL DEFAULT '{}',
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
   UNIQUE (email),
