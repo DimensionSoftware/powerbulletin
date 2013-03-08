@@ -1,5 +1,5 @@
 (function(){
-  var merge, title2slug, topForums, subForums, topPosts, topPostsActive, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, menu, homepageForums, forums, topThreads, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
+  var merge, title2slug, topForums, subForums, topPosts, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, menu, homepageForums, forums, topThreads, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
     args = slice$.call(arguments);
@@ -46,17 +46,7 @@
         throw new Error("invalid sort for top-posts: " + sort);
       }
     }());
-    sql = "SELECT\n  " + fields + ",\n  MIN(a.name) user_name,\n  COUNT(p2.id) post_count\nFROM aliases a,\n     posts p LEFT JOIN posts p2 ON p2.parent_id = p.id\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND p.archived='f'\nGROUP BY p.id\nORDER BY " + sortExpr + "\nLIMIT $2";
-    return function(){
-      var args;
-      args = slice$.call(arguments);
-      return plv8.execute(sql, args.concat([limit]));
-    };
-  };
-  topPostsActive = function(limit, fields){
-    var sql;
-    fields == null && (fields = 'p.*');
-    sql = "SELECT\n  " + fields + ",\n  MIN(a.name) user_name,\n  COUNT(p2.id) post_count,\n  (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1 AND archived='f') sort\nFROM aliases a,\n     posts p LEFT JOIN posts p2 ON p2.parent_id = p.id\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND p.archived='f'\nGROUP BY p.id\nORDER BY sort\nLIMIT $2";
+    sql = "SELECT\n  " + fields + ",\n  MIN(a.name) user_name,\n  COUNT(p2.id) post_count\nFROM aliases a\nJOIN posts p ON a.user_id=p.user_id\nLEFT JOIN posts p2 ON p2.parent_id=p.id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND m.post_id IS NULL\nGROUP BY p.id\nORDER BY " + sortExpr + "\nLIMIT $2";
     return function(){
       var args;
       args = slice$.call(arguments);
@@ -65,7 +55,7 @@
   };
   subPosts = function(){
     var sql;
-    sql = 'SELECT p.*, a.name user_name\nFROM posts p, aliases a\nWHERE a.user_id=p.user_id\n  AND a.site_id=1\n  AND p.parent_id=$1\n  AND p.archived=\'f\'\nORDER BY created ASC, id ASC';
+    sql = 'SELECT p.*, a.name user_name\nFROM posts p\nJOIN aliases a ON a.user_id=p.user_id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=1\n  AND p.parent_id=$1\n  AND m.post_id IS NULL\nORDER BY created ASC, id ASC';
     return plv8.execute(sql, arguments);
   };
   out$.subPostsTree = subPostsTree = subPostsTree = function(parentId, depth){

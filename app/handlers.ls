@@ -207,8 +207,17 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   res.json success: true
 
 @censor = (req, res, next) ->
+  return next(404) unless req.user
   db = pg.procs
-  (err, r) <- db.censor req.body
+
+  # XXX: stub for reason, need to have ui to capture moderation reason
+  command = req.body <<< {
+    user_id: req.user.id
+    post_id: req.params.id
+    reason: \STUBBBBBB
+  }
+
+  (err, r) <- db.censor command
   if err then next err
   res.json r
 

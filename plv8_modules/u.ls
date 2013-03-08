@@ -47,35 +47,16 @@ top-posts = (sort, limit, fields='p.*') ->
     #{fields},
     MIN(a.name) user_name,
     COUNT(p2.id) post_count
-  FROM aliases a,
-       posts p LEFT JOIN posts p2 ON p2.parent_id = p.id
-  WHERE a.user_id=p.user_id
-    AND a.site_id=1
+  FROM aliases a
+  JOIN posts p ON a.user_id=p.user_id
+  LEFT JOIN posts p2 ON p2.parent_id=p.id
+  LEFT JOIN moderations m ON m.post_id=p.id
+  WHERE a.site_id=1
     AND p.parent_id IS NULL
     AND p.forum_id=$1
-    AND p.archived='f'
+    AND m.post_id IS NULL
   GROUP BY p.id
   ORDER BY #{sort-expr}
-  LIMIT $2
-  """
-  (...args) -> plv8.execute sql, args.concat([limit])
-
-top-posts-active = (limit, fields='p.*') ->
-  sql = """
-  SELECT
-    #{fields},
-    MIN(a.name) user_name,
-    COUNT(p2.id) post_count,
-    (SELECT AVG(EXTRACT(EPOCH FROM created)) FROM posts WHERE forum_id=$1 AND archived='f') sort
-  FROM aliases a,
-       posts p LEFT JOIN posts p2 ON p2.parent_id = p.id
-  WHERE a.user_id=p.user_id
-    AND a.site_id=1
-    AND p.parent_id IS NULL
-    AND p.forum_id=$1
-    AND p.archived='f'
-  GROUP BY p.id
-  ORDER BY sort
   LIMIT $2
   """
   (...args) -> plv8.execute sql, args.concat([limit])
@@ -83,11 +64,12 @@ top-posts-active = (limit, fields='p.*') ->
 sub-posts = ->
   sql = '''
   SELECT p.*, a.name user_name
-  FROM posts p, aliases a
-  WHERE a.user_id=p.user_id
-    AND a.site_id=1
+  FROM posts p
+  JOIN aliases a ON a.user_id=p.user_id
+  LEFT JOIN moderations m ON m.post_id=p.id
+  WHERE a.site_id=1
     AND p.parent_id=$1
-    AND p.archived='f'
+    AND m.post_id IS NULL
   ORDER BY created ASC, id ASC
   '''
   plv8.execute sql, arguments
@@ -182,4 +164,3 @@ export forums = (forum-id, sort) ->
 
 export top-threads = (forum-id, sort) ->
   top-posts(sort) forum-id
-

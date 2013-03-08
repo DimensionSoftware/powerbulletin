@@ -123,9 +123,9 @@ add-post = ->
 # show reply ui
 append-reply-ui = ->
   # find post div
-  $subpost = $(this).parents('.post:first')
+  $subpost = $(this).parents('.subpost:first')
   unless $subpost.length
-    $subpost = $(this).parents('.subpost:first')
+    $subpost = $(this).parents('.post:first')
   post-id  = $subpost.data('post-id')
 
   # FIXME html 
@@ -147,15 +147,15 @@ append-reply-ui = ->
 
 censor = ->
   # find post div
-  $subpost = $(this).parents('.post:first')
+  $subpost = $(this).parents('.subpost:first')
   unless $subpost.length
-    $subpost = $(this).parents('.subpost:first')
+    $subpost = $(this).parents('.post:first')
+  post-id  = $subpost.data('post-id')
 
-  console.log $subpost.text!
-  post_id  = $subpost.data('post-id')
-  $.post "/resources/posts/#{post_id}/censor", (r) ->
+  console.log {post-id}
+  $.post "/resources/posts/#{post-id}/censor", (r) ->
     if r.success
-      console.log "censored post ##{post_id}"
+      console.log "censored post ##{post-id}"
       $subpost.transition { opacity: 0, scale: 0.3 }, 300, 'in', ->
         $subpost.hide!
     else
