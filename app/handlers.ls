@@ -107,7 +107,6 @@ global <<< require './helpers'
   [forum_part, post_part] = req.params
 
   finish = (adoc) ->
-    console.log {adoc.forum-id}
     res.locals adoc
     caching-strategies.etag res, sha1(JSON.stringify(adoc)), 7200
     res.mutant \forum
@@ -136,7 +135,7 @@ global <<< require './helpers'
     fdoc.sub-post.posts = delete fdoc.sub-posts-tree
 
     fdoc.active-forum-id = fdoc.sub-post.forum_id
-    fdoc.active-post-id = fdoc.id
+    fdoc.active-post-id  = fdoc.id
 
     finish fdoc
 
@@ -151,7 +150,6 @@ global <<< require './helpers'
     if err then return next err
     if !fdoc then return next(404)
 
-    console.log {fdoc}
     fdoc.active-forum-id = fdoc.forum-id
 
     finish fdoc

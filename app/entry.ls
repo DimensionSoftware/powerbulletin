@@ -162,4 +162,5 @@ $d.on \click '.onclick-show-forgot' ->
 $d.on \click '.onclick-show-choose' -> # XXX beppusan-- renders the dialog for choosing a username
   switch-and-focus '.fancybox-wrap' \on-login \on-choose '#auth input[name=username]'
 
+window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker
