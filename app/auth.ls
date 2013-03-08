@@ -84,11 +84,6 @@ pg.init ~>
       callbackURL   : "http://#{domain}/auth/facebook/return"
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
       console.warn 'profile', profile
-      # TODO 
-      # - see if a user matching this profile exists
-      # - if not, create a user and auth
-      #   - take them to a page where they can fill in the data for an alias
-      # - if so, return the user  
       u =
         type    : \facebook
         id      : profile.id

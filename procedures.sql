@@ -139,6 +139,16 @@ CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
   return find-or-create(sel, sel-params, ins, ins-params)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+-- change alias
+DROP FUNCTION IF EXISTS change_alias(usr JSON);
+CREATE FUNCTION change_alias(usr JSON) RETURNS JSON AS $$
+  sql = '''
+  UPDATE aliases SET name = $1 WHERE user_id = $2 AND site_id = $3
+    RETURNING *
+  '''
+  return plv8.execute(sql, [usr.name, usr.user_id, usr.site_id])
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 -- @param Object usr
 --   @param String  name       user name
 --   @param Integer site_id    site id
