@@ -100,6 +100,10 @@ global <<< require './helpers'
 
 @forum = (req, res, next) ->
   db = pg.procs
+
+  #XXX: this is one of the pages which is not depersonalized
+  res.locals.user = req.user
+
   [forum_part, post_part] = req.params
 
   finish = (adoc) ->
@@ -118,7 +122,7 @@ global <<< require './helpers'
   uri = uri.replace /\?$/, '' # remove ? if its all thats left
 
 
-  if post_part
+  if post_part # post
     tasks =
       menu           : db.menu res.locals.site.id, _
       sub-post       : db.uri-to-post res.locals.site.id, uri, _

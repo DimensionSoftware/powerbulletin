@@ -92,17 +92,21 @@ else
       window.render-mutant = (target, tmpl) ->
         jade.render window.document.get-element-by-id(target), tmpl, params
 
+      var-statements = []
       window.marshal = (key, val) ->
-        s = window.document.createElement \script
-        window.$ s .attr('type', 'text/javascript')
-        window.$ s .text "window['#{key}'] = #{JSON.stringify(val)};"
-        window.document.body.appendChild s
+        var-statements.push "window['#{key}']=#{JSON.stringify(val)}"
 
       template.static.call params, window, (err) ->
         if err then return cb err
 
         # mutating / loading of jquery already accomplished, don't pollute html page load
         window.$('script.jsdom').remove!
+
+        # append marshalled vars
+        s = window.document.createElement \script
+        window.$ s .attr('type', 'text/javascript')
+        window.$ s .text var-statements.join(';')
+        window.document.body.appendChild s
 
         # finally return html
         cb null "<!doctype html>#{window.document.outerHTML}"
