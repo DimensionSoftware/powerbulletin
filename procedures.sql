@@ -122,7 +122,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS usr(usr JSON);
 CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   sql = """
-  SELECT u.id, a.name, a.site_id, auths.type, auths.json 
+  SELECT u.id, u.rights, a.name, a.site_id, auths.type, auths.json 
   FROM users u
   JOIN aliases a ON a.user_id = u.id
   LEFT JOIN auths ON auths.user_id = u.id
@@ -136,7 +136,9 @@ CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
     memo.name = auth.name
     memo.auths[auth.type] = JSON.parse(auth.json)
     memo
-  return auths.reduce make-user, { auths: {} }
+  user = auths.reduce make-user, { auths: {} }
+  user.rights = auths[0].rights
+  return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- @param Object site
@@ -267,4 +269,22 @@ CREATE FUNCTION uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
     return post
   catch
     return null
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- c is for 'command'
+DROP FUNCTION IF EXISTS censor(c JSON);
+CREATE FUNCTION censor(c JSON) RETURNS JSON AS $$
+  require! {u, validations}
+
+  sql = '''
+  INSERT INTO moderations (user_id, post_id, reason)
+  VALUES ($1, $2, $3)
+  '''
+
+  errors = validations.censor(c)
+
+  if !errors.length
+    plv8.execute sql, [c.user_id, c.post_id, c.reason]
+
+  return {success: !errors.length, errors}
 $$ LANGUAGE plls IMMUTABLE STRICT;

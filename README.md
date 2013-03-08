@@ -33,3 +33,6 @@ Post-Modern, Realtime, FREE (as in freedom) Community
     # on mac os x:
     ipfw add fwd 127.0.0.1,3001 tcp from any to me dst-port 80
     ipfw add fwd 127.0.0.1,3002 tcp from any to me dst-port 443 
+
+
+# IDEA: let people upvote or downvote moderation decisions
