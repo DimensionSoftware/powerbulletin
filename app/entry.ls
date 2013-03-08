@@ -148,10 +148,16 @@ append-reply-ui = ->
 censor = ->
   # find post div
   $subpost = $(this).parents('.post:first')
+  unless $subpost.length
+    $subpost = $(this).parents('.subpost:first')
+
+  console.log $subpost.text!
   post_id  = $subpost.data('post-id')
   $.post "/resources/posts/#{post_id}/censor", (r) ->
     if r.success
       console.log "censored post ##{post_id}"
+      $subpost.transition { opacity: 0, scale: 0.3 }, 300, 'in', ->
+        $subpost.hide!
     else
       console.warn r.errors.join(', ')
 
