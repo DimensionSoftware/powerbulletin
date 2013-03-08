@@ -34,10 +34,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
     $d.attr \title, r.locals.title if r.locals?.title # set title
     on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
     on-unload window, -> # cleanup & run next mutant
-      try
-        window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}
-      catch e
-        # do nothing
+      window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}
   return false
 #}}}
 #{{{ Scrolling behaviors
