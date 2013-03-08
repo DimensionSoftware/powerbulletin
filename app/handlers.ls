@@ -52,7 +52,12 @@ global <<< require './helpers'
     res.send "500", 500
 
 @login-facebook-finish = (req, res, next) ->
-  res.send 'facebook finish'
+  res.send '''
+  <script type="text/javascript">
+    window.opener.switchAndFocus('.fancybox-wrap', 'on-login', 'on-choose', '#auth input[name=username]');
+    window.close();
+  </script>
+  '''
 
 @login-google = (req, res, next) ->
   domain   = res.locals.site.domain

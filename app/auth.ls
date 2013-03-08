@@ -81,7 +81,7 @@ pg.init ~>
     facebook-options =
       clientID      : '454403507966007'  # TODO - move this info into the db
       client-secret : 'b604975dfb351fe458b1cc0891eb8a87'
-      callbackURL   : "http://#{domain}/auth/facebook/return" # XXX - should not hardcode site
+      callbackURL   : "http://#{domain}/auth/facebook/return"
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
       console.warn 'profile', profile
       # TODO 
@@ -89,7 +89,19 @@ pg.init ~>
       # - if not, create a user and auth
       #   - take them to a page where they can fill in the data for an alias
       # - if so, return the user  
-      done(null, { id: 1, site_id: site.id, name: 'fake' })
+      u =
+        type    : \facebook
+        id      : profile.id
+        profile : profile._json
+        site_id : site.id
+        name    : profile.username
+      console.warn \u, u
+      (err, usr) <- db.find-or-create-user u
+      if err
+        console.warn 'err', err
+        return done(err)
+      console.log 'usr', usr
+      done(null, usr)
 
     twitter-options =
       consumer-key    : \xxx

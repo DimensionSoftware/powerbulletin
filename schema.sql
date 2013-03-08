@@ -24,7 +24,7 @@ $$;
 CREATE TABLE users (
   id      BIGSERIAL NOT NULL,
   email   VARCHAR(256),
-  rights  JSON NOT NULL DEFAULT '{}',
+  rights  JSON NOT NULL DEFAULT '{"super":0}',
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
   UNIQUE (email),
@@ -64,7 +64,7 @@ CREATE TABLE auths (
   id      BIGINT NOT NULL,
   user_id BIGINT NOT NULL references users(id),
   type    VARCHAR(16),
-  json    VARCHAR(1024),
+  profile JSON NOT NULL DEFAULT '{}',
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
   UNIQUE (type, id),

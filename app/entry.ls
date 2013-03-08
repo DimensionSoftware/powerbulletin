@@ -168,7 +168,7 @@ $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 $d.on \click '.onclick-censor-post' require-login(censor)
 
 # login delegated events
-switch-and-focus = (e, remove, add, focus-on) ->
+window.switch-and-focus = (e, remove, add, focus-on) ->
   $e = $ e
   $e .remove-class("#{remove} shake slide").add-class(add)
   setTimeout (-> $e.add-class \slide; $ focus-on .focus! ), 10
