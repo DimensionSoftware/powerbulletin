@@ -152,10 +152,8 @@ censor = ->
     $subpost = $(this).parents('.post:first')
   post-id  = $subpost.data('post-id')
 
-  console.log {post-id}
   $.post "/resources/posts/#{post-id}/censor", (r) ->
     if r.success
-      console.log "censored post ##{post-id}"
       $subpost.transition { opacity: 0, scale: 0.3 }, 300, 'in', ->
         $subpost.hide!
     else

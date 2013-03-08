@@ -135,7 +135,7 @@ CREATE TRIGGER docs_timestamp BEFORE UPDATE ON docs FOR EACH ROW EXECUTE PROCEDU
 -- keep track of who moderated what
 CREATE TABLE moderations (
   user_id BIGINT NOT NULL references users(id),
-  post_id BIGINT NOT NULL references forums(id),
+  post_id BIGINT NOT NULL references posts(id),
   reason  TEXT NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,

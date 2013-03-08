@@ -219,7 +219,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   command = req.body <<< {
     user_id: req.user.id
     post_id: req.params.id
-    reason: \STUBBBBBB
+    reason: \STUBBBBBB # XXX: fix me
   }
 
   (err, r) <- db.censor command
