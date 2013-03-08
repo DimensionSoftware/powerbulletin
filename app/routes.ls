@@ -36,7 +36,8 @@ common-css = [
 app.get '/hello' handlers.hello
 
 # local auth
-app.post '/auth/login'    handlers.login
+app.post '/auth/login'           handlers.login
+app.post '/auth/choose-username' handlers.choose-username
 
 app.get  '/auth/facebook'        handlers.login-facebook
 app.get  '/auth/facebook/return' handlers.login-facebook-return

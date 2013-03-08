@@ -33,6 +33,21 @@ global <<< require './helpers'
     console.warn "no passport for #{domain}"
     res.send "500", 500
 
+# TODO - validate username
+@choose-username = (req, res, next) ->
+  if not req.user
+    return res.send "500", 500
+  db = pg.procs
+  usr =
+    user_id : req.user.id
+    site_id : req.user.site_id
+    name    : req.body.username
+  (err, r) <- db.change-alias usr
+  if err then return res.send "500", 500
+  console.warn "Changed name to #{req.body.username}"
+  req.session?.passport?.user = "#{req.body.username}:#{req.user.site_id}"
+  res.redirect req.header 'Referer'
+
 @login-facebook = (req, res, next) ->
   domain   = res.locals.site.domain
   passport = auth.passport-for-site[domain]
