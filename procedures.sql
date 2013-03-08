@@ -270,3 +270,21 @@ CREATE FUNCTION uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
   catch
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- c is for 'command'
+DROP FUNCTION IF EXISTS censor(c JSON);
+CREATE FUNCTION censor(c JSON) RETURNS JSON AS $$
+  require! {u, validations}
+
+  sql = '''
+  INSERT INTO moderations (user_id, post_id, reason)
+  VALUES ($1, $2, $3)
+  '''
+
+  errors = validations.censor(c)
+
+  if !errors.length
+    plv8.execute sql, [c.user_id, c.post_id, c.reason]
+
+  return {success: !errors.length, errors}
+$$ LANGUAGE plls IMMUTABLE STRICT;

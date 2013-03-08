@@ -9,3 +9,13 @@ export post = (post) ->
   unless post.body
     errors.push 'body cannot be blank'
   errors
+
+export censor = (c) ->
+  errors = []
+  unless c.user_id
+    errors.push 'user_id cannot be blank'
+  unless c.post_id
+    errors.push 'post_id cannot be blank'
+  unless c.reason
+    errors.push 'reason cannot be blank'
+  errors

@@ -9,3 +9,7 @@ export post = (post) ->
   # they might add to errors array
   errors
 
+export censor = (post) ->
+  errors = pv.censor(post)
+  errors
+
