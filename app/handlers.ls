@@ -79,7 +79,7 @@ global <<< require './helpers'
 
 @logout = (req, res, next) ->
   redirect-url = req.param('redirect-url') || '/'
-  req.logout()
+  req.logout!
   res.redirect redirect-url
 
 @homepage = (req, res, next) ->

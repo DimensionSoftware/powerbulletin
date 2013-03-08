@@ -7,7 +7,8 @@ $d = $ document
 
 #{{{ UI Interactions
 # save state
-sep = \-
+sep    = \-
+offset = 20
 window.save-ui = ->
   min-width = 200
   w = $ '#left_content' .width!
@@ -23,7 +24,9 @@ window.load-ui = ->
   s = ($.cookie \s)
   if s
     [searching, collapsed, w] = s.split sep
-    $ '#left_content' .width(parseInt(w)+20)
+    $ '#left_content' .transition({width:(parseInt(w)+offset)} 100, -> # restore left nav
+      $ '#main_content.container .forum' # ... & snap to main content
+        .css('padding-left', ($ '#left_content' .width! + offset)))
   if searching is not '0' then $ \body .add-class(\searching)
   if collapsed is not '0' then $ \body .add-class(\collapsed)
 
@@ -31,7 +34,7 @@ window.load-ui = ->
 $d.on \click '#handle' ->
   $ \body .toggle-class \collapsed
   $ '#main_content.container .forum'
-    .css('padding-left', ($ '#left_content' .width! + 20))
+    .css('padding-left', ($ '#left_content' .width! + offset))
   save-ui!
 
 # waypoints
