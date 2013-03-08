@@ -11,7 +11,7 @@ mixin breadcrumb(p)
   em= p.title
 
 mixin subpost(sp, i)
-  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id="#{sp.id}")
+  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id=sp.id)
     if sp.title
       h4.title= sp.title
     .user= sp.user_name
@@ -32,7 +32,7 @@ mixin subpost(sp, i)
 
 if typeof(subPost) !== 'undefined'
   .forum
-    .post(id="post_#{subPost.id}", data-post-id="#{subPost.id}")
+    .post(id="post_#{subPost.id}", data-post-id=subPost.id)
       if subPost.title
         h3.title= subPost.title
       .user= subPost.user_name
@@ -43,8 +43,9 @@ if typeof(subPost) !== 'undefined'
         subPost.body!= subPost.body
       .actions
         a.onclick-append-reply-ui Reply
-        | 
         a(href=subPost.uri) Permalink
+        if user.rights.super
+          a.onclick-censor-post Censor
       .reply
     if subPost.posts && subPost.posts.length
       each sp in subPost.posts

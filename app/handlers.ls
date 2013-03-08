@@ -208,4 +208,10 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   if err then next err
   res.json success: true
 
+@censor = (req, res, next) ->
+  db = pg.procs
+  (err, r) <- db.censor req.body
+  if err then next err
+  res.json r
+
 # vim:fdm=indent

@@ -15,6 +15,7 @@ global <<< require './helpers' # pull helpers (common) into global (play nice :)
 app.resource 'resources/posts',  resources.post
 
 app.post '/resources/posts/:id/impression', handlers.add-impression
+app.post '/resources/posts/:id/censor', handlers.censor
 
 # <PAGE HANDLERS & MISC.>
 # ---------

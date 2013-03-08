@@ -145,10 +145,21 @@ append-reply-ui = ->
   else
     $subpost.find('.reply:first form').remove!
 
+censor = ->
+  # find post div
+  $subpost = $(this).parents('.post:first')
+  post_id  = $subpost.data('post-id')
+  $.post "/resources/posts/#{post_id}/censor", (r) ->
+    if r.success
+      console.log "censored post ##{post_id}"
+    else
+      console.warn r.errors.join(', ')
+
 # delegated events
 $d.on \click '#add-post-submit' require-login(add-post)
 $d.on \click '.onclick-add-post-dialog' add-post-dialog
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
+$d.on \click '.onclick-censor-post' require-login(censor)
 
 # login delegated events
 switch-and-focus = (e, remove, add, focus-on) ->
