@@ -22,7 +22,7 @@ mixin subpost(sp, i)
       a.onclick-append-reply-ui Reply
       a.mutant(href="#{sp.uri.replace(/\/\d+$/, '')}/edit/#{sp.id}") Edit
       a(href=sp.uri) Permalink
-      if user.rights.super
+      if typeof(user) !== 'undefined' && user.rights.super
         a.onclick-censor-post Censor
     .reply
   if sp.posts && sp.posts.length
@@ -44,7 +44,7 @@ if typeof(subPost) !== 'undefined'
       .actions
         a.onclick-append-reply-ui Reply
         a(href=subPost.uri) Permalink
-        if user.rights.super
+        if typeof(user) !== 'undefined' && user.rights.super
           a.onclick-censor-post Censor
       .reply
     if subPost.posts && subPost.posts.length
