@@ -44,7 +44,7 @@ if typeof(subPost) !== 'undefined'
       .actions
         a.onclick-append-reply-ui Reply
         a(href=subPost.uri) Permalink
-        if user.rights.super
+        if typeof(user) !== 'undefined' && user.rights.super
           a.onclick-censor-post Censor
       .reply
     if subPost.posts && subPost.posts.length
