@@ -86,9 +86,12 @@ dom-insert = (w, target, tmpl, params) ->
       next!
   on-unload:
     (window, next) ->
-      window.$ '.forum .container' .masonry(\destroy)
-      window.$ '.forum .header' .waypoint(\destroy)
-      window.$ '.forum' .waypoint(\destroy)
+      try
+        window.$ '.forum .container' .masonry(\destroy)
+        window.$ '.forum .header' .waypoint(\destroy)
+        window.$ '.forum' .waypoint(\destroy)
+      catch
+        # do nothing
       next!
   on-personalize: (w, u, next) ->
     console.log w, u
@@ -150,8 +153,11 @@ dom-insert = (w, target, tmpl, params) ->
       next!
   on-unload:
     (window, next) ->
-      window.$ '.forum .breadcrumb' .waypoint(\destroy)
-      window.$ '#left_content' .resizable(\destroy)
+      try
+        window.$ '.forum .breadcrumb' .waypoint(\destroy)
+        window.$ '#left_content' .resizable(\destroy)
+      catch
+        # do nothing
       next!
 
 @search =
