@@ -1,7 +1,7 @@
 # Common
-layout-static = (w, mutator, id) ->
+layout-static = (w, mutator, forum-id) ->
   # indicate current
-  forum-class = if id then " forum-#{id}" else ''
+  forum-class = if forum-id then " forum-#{forum-id}" else ''
   w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
   w.marshal \mutator, mutator                        # js
   # handle active forum background
@@ -10,9 +10,10 @@ layout-static = (w, mutator, id) ->
   # handle active main menu
   w.$ 'header .menu' .find '.active' .remove-class \active # remove prev
   w.$ 'menu .row' # add current
-    .has ".forum-#{id}"
+    .has ".forum-#{forum-id}"
     .find '.title'
     .add-class \active
+  w.$ "menu .submenu .forum-#{forum-id}" .parent().add-class \active
 
 flip-background = (w, cur, direction='down') ->
   clear-timeout w.bg-anim if w.bg-anim
@@ -86,9 +87,12 @@ dom-insert = (w, target, tmpl, params) ->
       next!
   on-unload:
     (window, next) ->
-      window.$ '.forum .container' .masonry(\destroy)
-      window.$ '.forum .header' .waypoint(\destroy)
-      window.$ '.forum' .waypoint(\destroy)
+      try
+        window.$ '.forum .container' .masonry(\destroy)
+        window.$ '.forum .header' .waypoint(\destroy)
+        window.$ '.forum' .waypoint(\destroy)
+      catch
+        # do nothing
       next!
   on-personalize: (w, u, next) ->
     console.log w, u
@@ -104,7 +108,7 @@ dom-insert = (w, target, tmpl, params) ->
 @forum =
   static:
     (window, next) ->
-      window.render-mutant 'left_content' \nav unless window.has-mutated-forum
+      window.render-mutant 'left_content' \nav unless window.has-mutated-forum is @active-forum-id
       window.render-mutant 'main_content' \posts
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
@@ -141,17 +145,18 @@ dom-insert = (w, target, tmpl, params) ->
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
       next!
-  on-initial:
-    (window, next) ->
-      window.has-mutated-forum = true
   on-mutate:
     (window, next) ->
       window.scroll-to-top!
+      window.has-mutated-forum = window.active-forum-id
       next!
   on-unload:
     (window, next) ->
-      window.$ '.forum .breadcrumb' .waypoint(\destroy)
-      window.$ '#left_content' .resizable(\destroy)
+      try
+        window.$ '.forum .breadcrumb' .waypoint(\destroy)
+        window.$ '#left_content' .resizable(\destroy)
+      catch
+        # do nothing
       next!
 
 @search =
