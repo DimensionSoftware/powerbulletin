@@ -113,7 +113,7 @@ program
   .option  '-d, --delay <milliseconds>', "amount of time to wait in between HTTP requests (default: #{defaults.delay})", parseInt, defaults.delay
   .parse process.argv
 
-delayed = delay-by program.delay # gratuitous use of currying ;)
+delayed = delay-by program.delay # gratuitous use of partial application ;)
 
 err, threads <- threads-from-forum program.forum
 if err then console.warn err
@@ -122,7 +122,7 @@ console.log "found #{threads.length} threads for forum #{program.forum}"
 err, threads-with-posts <- async.map-series threads, (delayed with-posts)
 if err then console.warn err
 
-(err, r) <- async.map-series threads-with-posts, (create-thread-for-site program.site)
+err, r <- async.map-series threads-with-posts, (create-thread-for-site program.site)
 if err then console.warn(err)
 console.log "the END"
 
