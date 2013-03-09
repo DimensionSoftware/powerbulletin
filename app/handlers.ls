@@ -216,7 +216,6 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
     res.send body
 
 @user = (req, res, next) ->
-  console.warn req.path, req.user, req.cookies
   req.user ||= null
   res.json req.user
 

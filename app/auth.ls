@@ -83,19 +83,16 @@ pg.init ~>
       client-secret : 'b604975dfb351fe458b1cc0891eb8a87'
       callbackURL   : "http://#{domain}/auth/facebook/return"
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
-      console.warn 'profile', profile
       u =
         type    : \facebook
         id      : profile.id
         profile : profile._json
         site_id : site.id
         name    : profile.username
-      console.warn \u, u
       (err, usr) <- db.find-or-create-user u
       if err
         console.warn 'err', err
         return done(err)
-      console.log 'usr', usr
       done(null, usr)
 
     twitter-options =
