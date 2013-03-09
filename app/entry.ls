@@ -72,6 +72,7 @@ show-login-dialog = ->
   $.fancybox.open '#auth'
   setTimeout (-> $ '#auth input[name=username]' .focus! ), 100
 
+# register action
 # login action
 login = ->
   $form = $(this)
