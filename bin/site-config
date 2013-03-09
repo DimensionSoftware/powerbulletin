@@ -7,7 +7,8 @@ require! {
   pg: '../app/postgres'
 }
 global <<< require \prelude-ls
-pg.init!
+
+<- pg.init!
 
 defaults =
   site  : 1
@@ -42,4 +43,4 @@ main = ->
   console.log site
   process.exit 0
 
-set-timeout main, 50
+main!
