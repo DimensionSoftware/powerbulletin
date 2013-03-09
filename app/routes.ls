@@ -44,8 +44,14 @@ app.get  '/auth/facebook'        handlers.login-facebook
 app.get  '/auth/facebook/return' handlers.login-facebook-return
 app.get  '/auth/facebook/finish' handlers.login-facebook-finish
 
-app.get  '/auth/google'   handlers.login-google
-app.get  '/auth/twitter'  handlers.login-twitter
+app.get  '/auth/google'          handlers.login-google
+app.get  '/auth/google/return'   handlers.login-google-return
+app.get  '/auth/google/finish'   handlers.login-google-finish
+
+app.get  '/auth/twitter'         handlers.login-twitter
+app.get  '/auth/twitter/return'  handlers.login-twitter-return
+app.get  '/auth/twitter/finish'  handlers.login-twitter-finish
+
 app.get  '/auth/logout'   handlers.logout
 # UI SKETCH UP:
 #

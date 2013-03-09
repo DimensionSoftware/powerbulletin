@@ -83,6 +83,7 @@ pg.init ~>
       client-secret : site.config?.facebook-client-secret or \x
       callbackURL   : "http://#{domain}/auth/facebook/return"
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
+      console.warn 'facebook profile', profile
       u =
         type    : \facebook
         id      : profile.id
@@ -113,13 +114,14 @@ pg.init ~>
       returnURL : "http://#{domain}/auth/google/return"
       realm     : "http://#{domain}/"
     pass.use new passport-google.Strategy google-options, (identifier, profile, done) ->
+      console.warn 'google id', identifier
       console.warn 'google profile', profile
       u =
         type    : \google
         id      : profile.id
         profile : profile._json
         site_id : site.id
-        name    : profile.username # TODO - make sure name isn't already in use
+        name    : profile.display-name # TODO - make sure name isn't already in use
       (err, user) <- db.find-or-create-user u
       console.warn 'err', err if err
       done(err, user)
