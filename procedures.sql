@@ -88,8 +88,6 @@ DROP FUNCTION IF EXISTS find_or_create(sel JSON, sel_params JSON, ins JSON, ins_
 CREATE FUNCTION find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON) RETURNS JSON AS $$
   thing = plv8.execute(sel, sel_params)
   return thing[0] if thing.length > 0
-  plv8.elog(WARNING, "-- INSERT --")
-  plv8.elog(WARNING, ins, ins_params)
   plv8.execute(ins, ins_params)
   return plv8.execute(sel, sel_params)[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
@@ -175,14 +173,33 @@ CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
--- @param Object site
---   @param String domain      domain of site
-DROP FUNCTION IF EXISTS site_by_domain(site JSON);
-CREATE FUNCTION site_by_domain(site JSON) RETURNS JSON AS $$
+-- @param String domain
+DROP FUNCTION IF EXISTS site_by_domain(domain JSON);
+CREATE FUNCTION site_by_domain(domain JSON) RETURNS JSON AS $$
   sql = """
   SELECT * FROM sites WHERE domain = $1
   """
-  s = plv8.execute(sql, [ site.domain ])
+  s = plv8.execute(sql, [ domain ])
+  return s[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- @param Integer id
+DROP FUNCTION IF EXISTS site_by_id(id JSON);
+CREATE FUNCTION site_by_id(id JSON) RETURNS JSON AS $$
+  sql = """
+  SELECT * FROM sites WHERE id = $1
+  """
+  s = plv8.execute(sql, [ id ])
+  return s[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS update_site(site JSON);
+CREATE FUNCTION update_site(site JSON) RETURNS JSON AS $$
+  sql = """
+  UPDATE sites SET name = $1, config = $2, domain = $3, user_id = $4 WHERE id = $5
+    RETURNING *
+  """
+  s = plv8.execute(sql, [ site.name, site.config, site.domain, site.user_id, site.id ])
   return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 

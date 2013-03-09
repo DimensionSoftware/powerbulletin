@@ -46,7 +46,7 @@ pg.init ~>
   if err then return throw err
 
   create-passport = (domain, cb) ->
-    (err, site) <~ db.site-by-domain { domain }
+    (err, site) <~ db.site-by-domain domain
     if err then return throw err
 
     passport-for-site[domain] = pass = new Passport
@@ -88,7 +88,7 @@ pg.init ~>
         id      : profile.id
         profile : profile._json
         site_id : site.id
-        name    : profile.username
+        name    : profile.username # TODO - make sure name isn't already in use
       (err, usr) <- db.find-or-create-user u
       if err
         console.warn 'err', err
