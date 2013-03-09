@@ -1,3 +1,5 @@
+
+-- {{{ Docs
 DROP FUNCTION IF EXISTS doc(site_id JSON, type JSON, key JSON);
 CREATE FUNCTION doc(site_id JSON, type JSON, key JSON) RETURNS JSON AS $$
   return require(\u).doc site_id, type, key
@@ -7,7 +9,8 @@ DROP FUNCTION IF EXISTS put_doc(site_id JSON, type JSON, key JSON, val JSON);
 CREATE FUNCTION put_doc(site_id JSON, type JSON, key JSON, val JSON) RETURNS JSON AS $$
   return require(\u).put-doc site_id, type, key, val
 $$ LANGUAGE plls IMMUTABLE STRICT;
-
+--}}}
+-- Posts {{{
 -- THIS IS ONLY FOR TOPLEVEL POSTS
 -- TODO: needs to support nested posts also, and update correct thread-id
 DROP FUNCTION IF EXISTS add_post(post JSON);
@@ -83,6 +86,7 @@ CREATE FUNCTION sub_posts_tree(post_id JSON) RETURNS JSON AS $$
   require! u
   return u.sub-posts-tree post_id
 $$ LANGUAGE plls IMMUTABLE STRICT;
+--}}}
 
 DROP FUNCTION IF EXISTS find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON);
 CREATE FUNCTION find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON) RETURNS JSON AS $$
@@ -92,6 +96,7 @@ CREATE FUNCTION find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params J
   return plv8.execute(sel, sel_params)[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+-- Users & Aliases {{{
 -- Find a user by auths.type and auths.id
 -- However, more information should be provided in case a new user needs to be created.
 -- @param Object usr
@@ -172,7 +177,8 @@ CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   user.rights = auths[0].rights
   return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
-
+--}}}
+-- {{{ Sites & Domains
 -- @param String domain
 DROP FUNCTION IF EXISTS site_by_domain(domain JSON);
 CREATE FUNCTION site_by_domain(domain JSON) RETURNS JSON AS $$
@@ -210,6 +216,8 @@ CREATE FUNCTION domains() RETURNS JSON AS $$
   """
   return plv8.execute(sql).map (d) -> d.domain
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- }}}
 
 -- XXX sort is used but will need to be reworked for geospatial
 DROP FUNCTION IF EXISTS forum_doc(site_id JSON, sort JSON, uri JSON);
@@ -337,3 +345,5 @@ CREATE FUNCTION censor(c JSON) RETURNS JSON AS $$
 
   return {success: !errors.length, errors}
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- vim:fdm=marker
