@@ -19,12 +19,12 @@ window.save-ui = ->
     if $ \body .has-class(\searching) then 1 else 0
     if $ \body .has-class(\collapsed) then 1 else 0
     w
-  $.cookie \s, vals.join(sep)
+  $.cookie \s, vals.join(sep),
+    path: '/'
 window.load-ui = ->
   s = ($.cookie \s)
   if s
     [searching, collapsed, w] = s.split sep
-    console.log w
     w = parseInt w
     $ '#left_content' .transition({width:w}, 500, 'easeOutExpo') # restore left nav
     set-timeout (-> # ... & snap
