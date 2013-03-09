@@ -110,6 +110,18 @@ html
             input(type="submit", value="Send Reset")
             a.msg.onclick-show-login
               h3 &lt; Back
+      .register(style="display:none;")
+        form(method="post", action="/auth/register")
+          label(for="username")
+            h2 Welcome
+              i !
+          fieldset
+            input(id="username", name="username", type="text", placeholder="Username")
+            input(name="password", type="password", placeholder="Password")
+            input(name="email", class="register-email", type="text", placeholder="Your Email Address")
+            input(type="submit", value="Register")
+            a.msg.onclick-show-login
+              h3 &lt; Back
       .login
         form(method="post", action="/auth/login")
           label(for="username")
@@ -120,7 +132,9 @@ html
             input(id="username", name="username", type="text", placeholder="Username")
             input(name="password", type="password", placeholder="Password")
             input(type="submit", value="Login")
-            //- TODO ajax forgot in
+            a.msg.onclick-show-register
+              h3 Register
+                i !
         .social
           h3 Or Log In With
           a(href="/auth/facebook") 

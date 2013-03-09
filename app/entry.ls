@@ -176,11 +176,13 @@ window.switch-and-focus = (e, remove, add, focus-on) ->
   $e .remove-class("#{remove} shake slide").add-class(add)
   setTimeout (-> $e.add-class \slide; $ focus-on .focus! ), 10
 $d.on \click '.onclick-show-login' ->
-  switch-and-focus '.fancybox-wrap' \on-forgot \on-login '#auth input[name=username]'
+  switch-and-focus '.fancybox-wrap' 'on-forgot on-register' \on-login '#auth input[name=username]'
 $d.on \click '.onclick-show-forgot' ->
   switch-and-focus '.fancybox-wrap' \on-error \on-forgot '#auth input[name=email]'
-$d.on \click '.onclick-show-choose' -> # XXX beppusan-- renders the dialog for choosing a username
+$d.on \click '.onclick-show-choose' ->
   switch-and-focus '.fancybox-wrap' \on-login \on-choose '#auth input[name=username]'
+$d.on \click '.onclick-show-register' ->
+  switch-and-focus '.fancybox-wrap' \on-login \on-register '#auth input[name=username]'
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker

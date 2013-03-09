@@ -33,6 +33,9 @@ global <<< require './helpers'
     console.warn "no passport for #{domain}"
     res.send "500", 500
 
+@register = (req, res, next) ->
+  res.json { success: false }
+
 # TODO - validate username
 @choose-username = (req, res, next) ->
   if not req.user
