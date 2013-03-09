@@ -24,9 +24,11 @@ window.load-ui = ->
   s = ($.cookie \s)
   if s
     [searching, collapsed, w] = s.split sep
-    $ '#left_content' .transition({width:(parseInt(w)+offset)} 100, -> # restore left nav
-      $ '#main_content.container .forum' # ... & snap to main content
-        .css('padding-left', ($ '#left_content' .width! + offset)))
+    console.log w
+    w = parseInt w
+    $ '#left_content' .transition({width:w}, 500, 'easeOutExpo') # restore left nav
+    set-timeout (-> # ... & snap
+      $ '#main_content.container .forum' .transition({padding-left:w}, 450, \snap)), 200
   if searching is not '0' then $ \body .add-class(\searching)
   if collapsed is not '0' then $ \body .add-class(\collapsed)
 
