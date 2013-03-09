@@ -79,8 +79,8 @@ pg.init ~>
       done(null, user)
 
     facebook-options =
-      clientID      : site.config?.facebook-client-id
-      client-secret : site.config?.facebook-client-secret
+      clientID      : site.config?.facebook-client-id     or \x
+      client-secret : site.config?.facebook-client-secret or \x
       callbackURL   : "http://#{domain}/auth/facebook/return"
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
       u =
@@ -94,8 +94,8 @@ pg.init ~>
       done(err, user)
 
     twitter-options =
-      consumer-key    : site.config?.twitter-consumer-key
-      consumer-secret : site.config?.twitter-consumer-secret
+      consumer-key    : site.config?.twitter-consumer-key    or \x
+      consumer-secret : site.config?.twitter-consumer-secret or \x
       callbackURL     : "http://#{domain}/auth/twitter/return"
     pass.use new passport-twitter.Strategy twitter-options, (access-token, refresh-token, profile, done) ->
       console.warn 'twitter profile', profile
