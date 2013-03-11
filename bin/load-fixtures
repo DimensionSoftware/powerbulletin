@@ -7,3 +7,5 @@ for f in fixtures/{users,sites,aliases,auths,forums,posts,moderations}.csv; do
   bin/psql -d pb -c '\d' | grep "${table}_id_seq" > /dev/null &&
     bin/psql -d pb -c "SELECT setval('${table}_id_seq', (SELECT MAX(id) FROM $table));"
 done
+bin/site-config  facebookClientId    454403507966007         facebookClientSecret   b604975dfb351fe458b1cc0891eb8a87 \
+                 twitterConsumerKey  SWdznKt4ah1K4lK3KgDZGg  twitterConsumerSecret  O0Sp2vMsxTnQhYJq7YumIfY7UGprh8mmFzArfIr5c
