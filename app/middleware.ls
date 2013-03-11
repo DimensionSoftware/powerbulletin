@@ -6,7 +6,7 @@ require! {
 
 @multi-domain = (req, res, next) ->
   db = pg.procs # XXX - I can't do it earlier, because pg.procs might not be initialized
-  (err, site) <- db.site-by-domain { domain: req.headers.host }
+  (err, site) <- db.site-by-domain req.headers.host
   res.locals.site = site
   for i in ['', 2, 3, 4, 5]
     res.locals["cache#{i}_url"] = cvars["cache#{i}_url"]

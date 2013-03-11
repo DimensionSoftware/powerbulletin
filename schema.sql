@@ -39,6 +39,7 @@ CREATE TABLE sites (
   id      BIGSERIAL NOT NULL,
   name    VARCHAR(256) NOT NULL,
   domain  VARCHAR(256) NOT NULL,
+  config  JSON NOT NULL DEFAULT '{}',
   user_id BIGINT NOT NULL references users(id),
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,

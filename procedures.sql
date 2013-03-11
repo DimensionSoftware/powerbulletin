@@ -1,3 +1,5 @@
+
+-- {{{ Docs
 DROP FUNCTION IF EXISTS doc(site_id JSON, type JSON, key JSON);
 CREATE FUNCTION doc(site_id JSON, type JSON, key JSON) RETURNS JSON AS $$
   return require(\u).doc site_id, type, key
@@ -7,7 +9,8 @@ DROP FUNCTION IF EXISTS put_doc(site_id JSON, type JSON, key JSON, val JSON);
 CREATE FUNCTION put_doc(site_id JSON, type JSON, key JSON, val JSON) RETURNS JSON AS $$
   return require(\u).put-doc site_id, type, key, val
 $$ LANGUAGE plls IMMUTABLE STRICT;
-
+--}}}
+-- Posts {{{
 -- THIS IS ONLY FOR TOPLEVEL POSTS
 -- TODO: needs to support nested posts also, and update correct thread-id
 DROP FUNCTION IF EXISTS add_post(post JSON);
@@ -83,17 +86,17 @@ CREATE FUNCTION sub_posts_tree(post_id JSON) RETURNS JSON AS $$
   require! u
   return u.sub-posts-tree post_id
 $$ LANGUAGE plls IMMUTABLE STRICT;
+--}}}
 
 DROP FUNCTION IF EXISTS find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON);
 CREATE FUNCTION find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON) RETURNS JSON AS $$
   thing = plv8.execute(sel, sel_params)
   return thing[0] if thing.length > 0
-  plv8.elog(WARNING, "-- INSERT --")
-  plv8.elog(WARNING, ins, ins_params)
   plv8.execute(ins, ins_params)
   return plv8.execute(sel, sel_params)[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+-- Users & Aliases {{{
 -- Find a user by auths.type and auths.id
 -- However, more information should be provided in case a new user needs to be created.
 -- @param Object usr
@@ -174,15 +177,35 @@ CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   user.rights = auths[0].rights
   return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
-
--- @param Object site
---   @param String domain      domain of site
-DROP FUNCTION IF EXISTS site_by_domain(site JSON);
-CREATE FUNCTION site_by_domain(site JSON) RETURNS JSON AS $$
+--}}}
+-- {{{ Sites & Domains
+-- @param String domain
+DROP FUNCTION IF EXISTS site_by_domain(domain JSON);
+CREATE FUNCTION site_by_domain(domain JSON) RETURNS JSON AS $$
   sql = """
   SELECT * FROM sites WHERE domain = $1
   """
-  s = plv8.execute(sql, [ site.domain ])
+  s = plv8.execute(sql, [ domain ])
+  return s[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- @param Integer id
+DROP FUNCTION IF EXISTS site_by_id(id JSON);
+CREATE FUNCTION site_by_id(id JSON) RETURNS JSON AS $$
+  sql = """
+  SELECT * FROM sites WHERE id = $1
+  """
+  s = plv8.execute(sql, [ id ])
+  return s[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS update_site(site JSON);
+CREATE FUNCTION update_site(site JSON) RETURNS JSON AS $$
+  sql = """
+  UPDATE sites SET name = $1, config = $2, domain = $3, user_id = $4 WHERE id = $5
+    RETURNING *
+  """
+  s = plv8.execute(sql, [ site.name, site.config, site.domain, site.user_id, site.id ])
   return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -193,6 +216,8 @@ CREATE FUNCTION domains() RETURNS JSON AS $$
   """
   return plv8.execute(sql).map (d) -> d.domain
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- }}}
 
 -- XXX sort is used but will need to be reworked for geospatial
 DROP FUNCTION IF EXISTS forum_doc(site_id JSON, sort JSON, uri JSON);
@@ -209,10 +234,8 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS add_thread_impression(thread_id JSON);
 CREATE FUNCTION add_thread_impression(thread_id JSON) RETURNS JSON AS $$
-  plv8.elog WARNING, thread_id
   if not thread_id or thread_id is \undefined
     return false
-  plv8.elog WARNING, 'should have bailed'
   sql = '''
   UPDATE posts SET views = views + 1 WHERE id = $1 RETURNING *
   '''
@@ -322,3 +345,5 @@ CREATE FUNCTION censor(c JSON) RETURNS JSON AS $$
 
   return {success: !errors.length, errors}
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- vim:fdm=marker

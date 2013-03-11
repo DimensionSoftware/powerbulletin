@@ -33,6 +33,9 @@ global <<< require './helpers'
     console.warn "no passport for #{domain}"
     res.send "500", 500
 
+@register = (req, res, next) ->
+  res.json { success: false }
+
 # TODO - validate username
 @choose-username = (req, res, next) ->
   if not req.user
@@ -83,6 +86,26 @@ global <<< require './helpers'
     console.warn "no passport for #{domain}"
     res.send "500", 500
 
+@login-google-return = (req, res, next) ->
+  domain   = res.locals.site.domain
+  passport = auth.passport-for-site[domain]
+  if passport
+    passport.authenticate('google', { success-redirect: '/auth/google/finish', failure-redirect: '/auth/google/finish?fail=1' })(req, res, next)
+  else
+    console.warn "no passport for #{domain}"
+    res.send "500", 500
+
+@login-google-finish = (req, res, next) ->
+  user = req.user
+  console.log user
+  res.send """
+  <script type="text/javascript">
+    window.opener.$('#auth input[name=username]').val('#{user.name}');
+    window.opener.switchAndFocus('.fancybox-wrap', 'on-login', 'on-choose', '#auth input[name=username]');
+    window.close();
+  </script>
+  """
+
 @login-twitter = (req, res, next) ->
   domain   = res.locals.site.domain
   passport = auth.passport-for-site[domain]
@@ -91,6 +114,23 @@ global <<< require './helpers'
   else
     console.warn "no passport for #{domain}"
     res.send "500", 500
+
+@login-twitter-return = (req, res, next) ->
+  domain   = res.locals.site.domain
+  passport = auth.passport-for-site[domain]
+  if passport
+    passport.authenticate('twitter', { success-redirect: '/auth/twitter/finish', failure-redirect: '/auth/twitter/finish?fail=1' })(req, res, next)
+  else
+    console.warn "no passport for #{domain}"
+    res.send "500", 500
+
+@login-twitter-finish = (req, res, next) ->
+  res.send '''
+  <script type="text/javascript">
+    window.opener.switchAndFocus('.fancybox-wrap', 'on-login', 'on-choose', '#auth input[name=username]');
+    window.close();
+  </script>
+  '''
 
 @logout = (req, res, next) ->
   redirect-url = req.param('redirect-url') || '/'
@@ -216,7 +256,6 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
     res.send body
 
 @user = (req, res, next) ->
-  console.warn req.path, req.user, req.cookies
   req.user ||= null
   res.json req.user
 

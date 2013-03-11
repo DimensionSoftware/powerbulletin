@@ -46,7 +46,7 @@ pg.init ~>
   if err then return throw err
 
   create-passport = (domain, cb) ->
-    (err, site) <~ db.site-by-domain { domain }
+    (err, site) <~ db.site-by-domain domain
     if err then return throw err
 
     passport-for-site[domain] = pass = new Passport
@@ -79,38 +79,51 @@ pg.init ~>
       done(null, user)
 
     facebook-options =
-      clientID      : '454403507966007'  # TODO - move this info into the db
-      client-secret : 'b604975dfb351fe458b1cc0891eb8a87'
+      clientID      : site.config?.facebook-client-id     or \x
+      client-secret : site.config?.facebook-client-secret or \x
       callbackURL   : "http://#{domain}/auth/facebook/return"
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
-      console.warn 'profile', profile
+      console.warn 'facebook profile', profile
       u =
         type    : \facebook
         id      : profile.id
         profile : profile._json
         site_id : site.id
-        name    : profile.username
-      console.warn \u, u
-      (err, usr) <- db.find-or-create-user u
-      if err
-        console.warn 'err', err
-        return done(err)
-      console.log 'usr', usr
-      done(null, usr)
+        name    : profile.username # TODO - make sure name isn't already in use
+      (err, user) <- db.find-or-create-user u
+      console.warn 'err', err if err
+      done(err, user)
 
     twitter-options =
-      consumer-key    : \xxx
-      consumer-secret : \xxx
-      callbackURL     : "http://#{domain}/auth/twitter/return" # XXX - should not hardcode site
+      consumer-key    : site.config?.twitter-consumer-key    or \x
+      consumer-secret : site.config?.twitter-consumer-secret or \x
+      callbackURL     : "http://#{domain}/auth/twitter/return"
     pass.use new passport-twitter.Strategy twitter-options, (access-token, refresh-token, profile, done) ->
-      (err, user) <- db.find-or-create-user {}
+      console.warn 'twitter profile', profile
+      u =
+        type    : \twitter
+        id      : profile.id
+        profile : profile._json
+        site_id : site.id
+        name    : profile.username # TODO - make sure name isn't already in use
+      (err, user) <- db.find-or-create-user u
+      console.warn 'err', err if err
       done(err, user)
 
     google-options =
-      returnURL : "http://#{domain}/auth/google/return"  # XXX - should not hardcode site
+      returnURL : "http://#{domain}/auth/google/return"
       realm     : "http://#{domain}/"
     pass.use new passport-google.Strategy google-options, (identifier, profile, done) ->
-      (err, user) <- db.find-or-create-user {}
+      console.warn 'google id', identifier
+      console.warn 'google profile', profile
+      u =
+        type    : \google
+        id      : profile.id
+        profile : profile._json
+        site_id : site.id
+        name    : profile.display-name # TODO - make sure name isn't already in use
+      (err, user) <- db.find-or-create-user u
+      console.warn 'err', err if err
       done(err, user)
 
     cb(null, pass)

@@ -36,8 +36,6 @@ html.forum
     display block
   .left-chrome
     display none
-//  #main_content
-//    padding forum-header-height 0 0 (left-content-width / 2)!important
 //}}}
 
 section
@@ -70,7 +68,7 @@ body.scrolled
           top -10px
           font-size .55em
       .menu
-        .row:hover
+        > .row:hover
           .submenu
             top 33px
         .row
@@ -102,10 +100,9 @@ body.scrolled
 body.collapsed
   .left-content
     width grid!important
-    transition width .2s ease-out
+    transition width .1s
     .handle
       transform rotate(180deg)
-      transition all .3s ease-out
     .button
       display none
   .main-content
@@ -117,7 +114,7 @@ body.collapsed
 body.searching
   header
     menu
-      .row
+      > .row:hover
         .submenu
           top (header-scrolled-height+3)!important
 body.searching
@@ -238,7 +235,7 @@ header
           z-index 55
         .submenu
           z-index 51
-          top -500px
+          top -600px
           max-height 450px
           overflow-y scroll
           opacity 0
@@ -603,17 +600,16 @@ footer
 // }}}
 
 //{{{ Login
-.fancybox-wrap.on-choose
-  h3
-    display none
+.fancybox-wrap.on-register
+  #auth
+    .register
+      display block!important
+    .choose, .login, .forgot
+      display none
 .fancybox-wrap.on-choose
   #auth
-    .choose
+    h3, .choose, .login, .forgot
       display block!important
-    .login
-      display none
-    .forgot
-      display none
 .fancybox-wrap.on-forgot
   #auth
     .forgot
@@ -629,7 +625,7 @@ footer
       opacity 1
       transition height .5s, opacity 1s
 #auth
-  .choose, .forgot
+  .choose, .forgot, .register
     h3
       margin-top (grid+2)
       float right

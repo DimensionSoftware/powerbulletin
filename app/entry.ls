@@ -19,14 +19,16 @@ window.save-ui = ->
     if $ \body .has-class(\searching) then 1 else 0
     if $ \body .has-class(\collapsed) then 1 else 0
     w
-  $.cookie \s, vals.join(sep)
+  $.cookie \s, vals.join(sep),
+    path: '/'
 window.load-ui = ->
   s = ($.cookie \s)
   if s
     [searching, collapsed, w] = s.split sep
-    $ '#left_content' .transition({width:(parseInt(w)+offset)} 100, -> # restore left nav
-      $ '#main_content.container .forum' # ... & snap to main content
-        .css('padding-left', ($ '#left_content' .width! + offset)))
+    w = parseInt w
+    $ '#left_content' .transition({width:w}, 500, 'easeOutExpo') # restore left nav
+    set-timeout (-> # ... & snap
+      $ '#main_content.container .forum' .transition({padding-left:w}, 450, \snap)), 200
   if searching is not '0' then $ \body .add-class(\searching)
   if collapsed is not '0' then $ \body .add-class(\collapsed)
 
@@ -70,6 +72,7 @@ show-login-dialog = ->
   $.fancybox.open '#auth'
   setTimeout (-> $ '#auth input[name=username]' .focus! ), 100
 
+# register action
 # login action
 login = ->
   $form = $(this)
@@ -174,11 +177,13 @@ window.switch-and-focus = (e, remove, add, focus-on) ->
   $e .remove-class("#{remove} shake slide").add-class(add)
   setTimeout (-> $e.add-class \slide; $ focus-on .focus! ), 10
 $d.on \click '.onclick-show-login' ->
-  switch-and-focus '.fancybox-wrap' \on-forgot \on-login '#auth input[name=username]'
+  switch-and-focus '.fancybox-wrap' 'on-forgot on-register' \on-login '#auth input[name=username]'
 $d.on \click '.onclick-show-forgot' ->
   switch-and-focus '.fancybox-wrap' \on-error \on-forgot '#auth input[name=email]'
-$d.on \click '.onclick-show-choose' -> # XXX beppusan-- renders the dialog for choosing a username
+$d.on \click '.onclick-show-choose' ->
   switch-and-focus '.fancybox-wrap' \on-login \on-choose '#auth input[name=username]'
+$d.on \click '.onclick-show-register' ->
+  switch-and-focus '.fancybox-wrap' \on-login \on-register '#auth input[name=username]'
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker

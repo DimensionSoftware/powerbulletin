@@ -37,9 +37,11 @@ grid = 10px
     transform translateX(0)
 @keyframes slide
   0%
-    transform translateY(-60px), skew(0, -1deg)
+    transform translateY(-80px), skew(0, -1deg)
+  25%
+    transform translateY(-50px), skew(0, -1deg)
   45%
-    transform translateY(20px), skew(-1deg, 1deg)
+    transform translateY(30px), skew(-1deg, 3deg)
   100%
     transform translateY(0px), skew(0, 0)
 //}}}
@@ -283,6 +285,7 @@ header
   .handle
     background-color #eee
     border 4px solid #fff
+    transition all .4s ease-out
   .title
     letter-spacing -1px
     font-size 1.1em
@@ -526,6 +529,13 @@ footer
 //{{{ Login
 #auth
   .login
+    .msg.onclick-show-register
+      opacity 1
+      height 30px
+      h3
+        float right
+        margin-top grid
+        text-shadow none
     .msg
       overflow hidden
       display block
@@ -554,6 +564,10 @@ footer
     margin-top -8px
     border-top-left-radius 0
     border-top-right-radius 0
+  input.register-email
+    padding-left 9px!important
+    width 292px!important
+    display block
 ///}}}
 //{{{ Controls
 input[type="password"], select, textarea, input[type="text"]
@@ -655,7 +669,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   animation-duration .2s
 .shake
   animation-name shake
-  animation-duration .6s
+  animation-duration .7s
 .fancybox-overlay
   background-color rgba(255,255,255,.9)!important
   background none

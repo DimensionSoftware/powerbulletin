@@ -1,0 +1,46 @@
+#!./node_modules/.bin/lsc
+
+require! {
+  \fs
+  \async
+  program: \commander
+  pg: '../app/postgres'
+}
+global <<< require \prelude-ls
+
+<- pg.init!
+
+defaults =
+  site  : 1
+
+program
+  .usage '[OPTION]... [<KEY> <VALUE>]...'
+  .option  '-s, --site <id>',            "site id  (default: #{defaults.site})",                                         parseInt, defaults.site
+  .option  '-n, --name <string>',        "site name"
+  .option  '-d, --domain <string>',      "domain"
+  .option  '-x, --delete <key>',         "config key to delete"
+  .parse process.argv
+
+main = ->
+  (err, site) <- pg.procs.site-by-id program.site
+  if err then throw err
+  pair = (memo, v) ->
+    if memo[*-1] and memo[*-1].length < 2
+      memo[*-1].push v
+    else
+      memo.push [v]
+    memo
+  kv = fold(pair, [], program.args)
+  kv.for-each ([key,value]) -> site.config[key] = value
+  if program.delete
+    delete site.config[program.delete]
+  if program.name
+    site.name = program.name
+  if program.domain
+    site.domain = program.domain
+  (err, r) <- pg.procs.update-site site
+  if err then throw err
+  console.log site
+  process.exit 0
+
+main!
