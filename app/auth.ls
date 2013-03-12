@@ -84,12 +84,13 @@ pg.init ~>
       callbackURL   : "http://#{domain}/auth/facebook/return"
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
       console.warn 'facebook profile', profile
+      err, name <- db.unique-name profile.display-name
       u =
         type    : \facebook
         id      : profile.id
         profile : profile._json
         site_id : site.id
-        name    : profile.username # TODO - make sure name isn't already in use
+        name    : name
       (err, user) <- db.find-or-create-user u
       console.warn 'err', err if err
       done(err, user)
@@ -100,12 +101,13 @@ pg.init ~>
       callbackURL     : "http://#{domain}/auth/twitter/return"
     pass.use new passport-twitter.Strategy twitter-options, (access-token, refresh-token, profile, done) ->
       console.warn 'twitter profile', profile
+      err, name <- db.unique-name profile.display-name
       u =
         type    : \twitter
         id      : profile.id
         profile : profile._json
         site_id : site.id
-        name    : profile.username # TODO - make sure name isn't already in use
+        name    : name
       (err, user) <- db.find-or-create-user u
       console.warn 'err', err if err
       done(err, user)
@@ -116,12 +118,14 @@ pg.init ~>
     pass.use new passport-google.Strategy google-options, (identifier, profile, done) ->
       console.warn 'google id', identifier
       console.warn 'google profile', profile
+      err, name <- db.unique-name profile.display-name
+      if err then cb err;return
       u =
         type    : \google
         id      : profile.id
         profile : profile._json
         site_id : site.id
-        name    : profile.display-name # TODO - make sure name isn't already in use
+        name    : name
       (err, user) <- db.find-or-create-user u
       console.warn 'err', err if err
       done(err, user)

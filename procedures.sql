@@ -142,6 +142,17 @@ CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
   return find-or-create(sel, sel-params, ins, ins-params)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS unique_name(name JSON);
+CREATE FUNCTION unique_name(name JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT name FROM aliases WHERE name=$1
+  '''
+  [n,i]=[name,0]
+  while plv8.execute(sql, [n])[0]
+    n="#{name}#{++i}"
+  return JSON.stringify n # XXX why stringify??!
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 -- change alias
 DROP FUNCTION IF EXISTS change_alias(usr JSON);
 CREATE FUNCTION change_alias(usr JSON) RETURNS JSON AS $$
