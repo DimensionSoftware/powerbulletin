@@ -43,10 +43,11 @@ if typeof(subPost) !== 'undefined'
       .breadcrumb
         mixin breadcrumb(subPost)
       if subPost.body
-        subPost.body!= subPost.body
+        .subPost.body!= subPost.body
       mixin actions(subPost)
     if subPost.posts && subPost.posts.length
-      each sp in subPost.posts
-        mixin subpost(sp, 0)
+      .children
+        each sp in subPost.posts
+          mixin subpost(sp, 0)
 
 //- vim:fdm=marker
