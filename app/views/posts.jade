@@ -48,7 +48,8 @@ if typeof(subPost) !== 'undefined'
           a.onclick-censor-post Censor
       .reply
     if subPost.posts && subPost.posts.length
-      each sp in subPost.posts
-        mixin subpost(sp, 0)
+      .children
+        each sp in subPost.posts
+          mixin subpost(sp, 0)
 
 //- vim:fdm=marker
