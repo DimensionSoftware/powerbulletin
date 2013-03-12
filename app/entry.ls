@@ -109,13 +109,7 @@ window.after-login = ->
 # logout
 window.logout = ->
   r <- $.get '/auth/logout'
-  after-logout!
-
-# clear the user after a successful logout
-window.after-logout = ->
-  window.user = null
-  console.info 'logged out - need to undo customizations somehow'
-  # TODO - undo user-specific page customizations
+  window.location.reload!
 
 $d.on \submit '.login form' login
 #}}}
@@ -200,6 +194,21 @@ $d.on \click '.onclick-show-choose' ->
   switch-and-focus '.fancybox-wrap' \on-login \on-choose '#auth input[name=username]'
 $d.on \click '.onclick-show-register' ->
   switch-and-focus '.fancybox-wrap' \on-login \on-register '#auth input[name=username]'
+
+# infinity scroll
+# TODO: pull data in from actual live feed
+# TODO: lazy scroll when you hit bottom (scrolltop madness)
+var lv
+infinity-load-more = ->
+  unless lv # lazy initialize
+    lv = new infinity.ListView($('#main_content > .forum > .children'))
+
+  lv.append('<div class=\"post\">infinity WUZ here!</div>')
+
+  return false
+
+# TODO: debounce with lodash
+$(window).scroll infinity-load-more
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker
