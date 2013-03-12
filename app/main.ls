@@ -112,6 +112,7 @@ else
   # then we can use back-calls before initializing the worker....
   err <- pg.init
   if err then throw err
+  global.db = pg.procs
   err <- v.init
   if err then throw err
 

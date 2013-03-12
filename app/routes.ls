@@ -81,6 +81,15 @@ app.get '/favicon.ico', (req, res, next) ->
   # replace with real favicon
   next 404, \404
 
+app.get '/u/:name', (req, res, next) ->
+  res.redirect "/user/#{req.params.name}/", 301
+
+app.get '/user/:name',
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.profile
+
 app.get '/:forum/most-active',
   mw.add-js(common-js),
   mw.add-css(common-css),

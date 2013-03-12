@@ -1,5 +1,5 @@
 # Common
-layout-static = (w, mutator, forum-id) ->
+layout-static = (w, mutator, forum-id=0) ->
   # indicate current
   forum-class = if forum-id then " forum-#{forum-id}" else ''
   w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
@@ -166,6 +166,22 @@ is-editing = ->
         window.$ '#left_content' .resizable(\destroy)
       catch
         # do nothing
+      next!
+
+@profile =
+  static:
+    (window, next) ->
+      window.render-mutant 'main_content' \profile
+      layout-static window, \profile
+      next!
+  on-load:
+    (window, next) ->
+      next!
+  on-unload:
+    (window, next) ->
+      next!
+  on-personalize:
+    (w, u, next) ->
       next!
 
 @search =

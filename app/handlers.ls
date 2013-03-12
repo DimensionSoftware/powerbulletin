@@ -220,6 +220,19 @@ auth-finisher = (req, res, next) ->
 
     finish fdoc
 
+# user profiles /user/:name
+@profile = (req, res, next) ->
+  site = res.locals.site
+
+  tasks =
+    menu           : db.menu site.id, _
+
+  err, fdoc <- async.auto tasks
+  if err then return next err
+
+  res.locals fdoc
+  res.mutant \profile
+
 @register = (req, res) ->
   req.assert('login').is-alphanumeric!
 
