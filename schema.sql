@@ -143,3 +143,22 @@ CREATE TABLE moderations (
   PRIMARY KEY (user_id, post_id)
 );
 CREATE TRIGGER moderations_timestamp BEFORE UPDATE ON moderations FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
+CREATE TABLE tags (
+  id      BIGSERIAL NOT NULL,
+  name    VARCHAR(64),
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated TIMESTAMP,
+  UNIQUE (name),
+  PRIMARY KEY (id)
+);
+CREATE TRIGGER tags_timestamp BEFORE UPDATE ON tags FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
+CREATE TABLE tags_posts (
+  tag_id  BIGINT NOT NULL REFERENCES tags(id),
+  post_id BIGINT NOT NULL REFERENCES posts(id),
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated TIMESTAMP,
+  PRIMARY KEY (tag_id, post_id)
+); 
+CREATE TRIGGER tags_posts_timestamp BEFORE UPDATE ON tags_posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
