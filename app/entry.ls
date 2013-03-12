@@ -92,6 +92,7 @@ window.login = ->
     password: p.val!
   $.post $form.attr(\action), params, (r) ->
     if r.success
+      $.fancybox.close!
       after-login!
     else
       $fancybox = $form.parents('.fancybox-wrap:first')

@@ -84,7 +84,7 @@ auth-finisher = (req, res, next) ->
   else
     res.send """
     <script type="text/javascript">
-      window.opener.$.fancybox.close('\#auth');
+      window.opener.$.fancybox.close();
       window.opener.afterLogin();
       window.close();
     </script>
@@ -196,7 +196,6 @@ auth-finisher = (req, res, next) ->
     err, fdoc <- async.auto tasks
     if err then return next err
     if !fdoc then return next(404)
-    console.log fdoc.forum
     # attach sub-post to fdoc
     fdoc <<< {sub-post, forum-id:sub-post.forum_id}
     # attach sub-posts-tree to sub-post toplevel item
@@ -219,7 +218,6 @@ auth-finisher = (req, res, next) ->
 
     err, fdoc <- async.auto tasks
     if err then return next err
-    console.log fdoc.forum
     if !fdoc then return next(404)
 
     fdoc <<< {forum-id}
