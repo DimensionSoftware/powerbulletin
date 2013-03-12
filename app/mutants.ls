@@ -147,6 +147,8 @@ dom-insert = (w, target, tmpl, params) ->
       next!
   on-mutate:
     (window, next) ->
+      # find position to scroll to
+      # else
       window.scroll-to-top!
       window.has-mutated-forum = window.active-forum-id
       next!
