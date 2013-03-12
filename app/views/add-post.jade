@@ -1,5 +1,5 @@
 div(title='Add Post')
-  form#add-post-form(action='/resources/posts', method='post')
+  form#add_post_form(action='/resources/posts', method='post')
     label
       strong Title
       input(type='text', name='title')
@@ -7,4 +7,5 @@ div(title='Add Post')
       strong Body
       textarea(name='body')
     input(type='hidden', name='forum_id', value=fid)
-    input#add-post-submit(type='submit', value='Post')
+    //-input(type='hidden', name='csrf', value=csrf)
+    input#add_post_submit(type='submit', value='Post')

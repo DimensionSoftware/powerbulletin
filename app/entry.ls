@@ -98,7 +98,7 @@ window.login = ->
       $fancybox.add-class \on-error
       $fancybox.remove-class \shake
       set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100
-  return false
+  false
 
 # get the user after a successful login
 window.after-login = ->
@@ -134,12 +134,12 @@ add-post-dialog = ->
   false # stop event propagation
 
 # assumes immediate parent is form (in case of submit button)
-add-post = ->
-  form = $ '#add-post-form'
-  $.post '/resources/posts', form.serialize!, (_r1, _r2, res) ->
-    console.log 'success! post added', res
-    console.log 'stub: do something fancy to confirm submission'
-  false # stop event propagation
+submit-form = ->
+  $f = $ this .closest(\form)
+  $.post $f.attr(\action), $f.serialize!, (_r1, _r2, res) ->
+    $f.hide 300
+    # TODO -- render jade post on client side
+  false
 
 # show reply ui
 append-reply-ui = ->
@@ -149,9 +149,9 @@ append-reply-ui = ->
     $subpost = $(this).parents('.post:first')
   post-id  = $subpost.data('post-id')
 
-  # FIXME html 
+  # FIXME html -- move to clientJade
   reply-ui-html = """
-  <form method="post" action="/resources/posts">
+  <form id="add_reply_submit" method="post" action="/resources/posts">
     <textarea name="body"></textarea>
     <input type="hidden" name="forum_id" value="#{window.active-forum-id}">
     <input type="hidden" name="parent_id" value="#{post-id}">
@@ -181,7 +181,8 @@ censor = ->
       console.warn r.errors.join(', ')
 
 # delegated events
-$d.on \click '#add-post-submit' require-login(add-post)
+$d.on \click '#add_post_submit' require-login(submit-form)
+$d.on \click '#add_reply_submit input[type="submit"]' require-login(submit-form)
 $d.on \click '.onclick-add-post-dialog' add-post-dialog
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 $d.on \click '.onclick-censor-post' require-login(censor)

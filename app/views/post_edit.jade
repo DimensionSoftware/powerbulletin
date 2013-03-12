@@ -1,7 +1,7 @@
 
 mixin post-edit(p)
   .post-edit(id="post_edit_#{p.id}")
-    form#add-post-form(action='/resources/posts', method='post')
+    form#add_post_form(action='/resources/posts', method='post')
     label(for="post_title") Title
     input#post_title.title(type='text')= p.title
     textarea.body= p.body

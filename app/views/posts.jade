@@ -17,7 +17,6 @@ mixin actions(post)
     a(href=post.uri) Permalink
     if (typeof(user) !== 'undefined' && user) && user.rights.super
       a.onclick-censor-post Censor
-    .reply
 
 mixin subpost(sp, i)
   .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-user-id=sp.user_id, data-post-id=sp.id)
@@ -27,6 +26,7 @@ mixin subpost(sp, i)
     .date= sp.created_human
     if sp.body
       p.body!= sp.body
+    .reply
     mixin actions(sp)
   if sp.posts && sp.posts.length
     .children
@@ -44,6 +44,7 @@ if typeof(subPost) !== 'undefined'
         mixin breadcrumb(subPost)
       if subPost.body
         .subPost.body!= subPost.body
+      .reply
       mixin actions(subPost)
     if subPost.posts && subPost.posts.length
       .children

@@ -93,7 +93,7 @@ window.popup = (url) ->
 $('.social a') .click ->
   url = $(this).attr \href
   popup url
-  return false
+  false
 
 # keep human readable time up to date
 time-updater = ->
