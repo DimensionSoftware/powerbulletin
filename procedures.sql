@@ -321,7 +321,10 @@ CREATE FUNCTION uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
     SELECT p.*
     FROM posts p
     JOIN forums f ON p.forum_id=f.id
-    WHERE f.site_id=$1 AND p.uri=$2
+    LEFT JOIN moderations m ON m.post_id=p.id
+    WHERE f.site_id=$1
+      AND p.uri=$2
+      AND m.post_id IS NULL
     '''
     [post] = plv8.execute sql, [site_id, uri]
     return post

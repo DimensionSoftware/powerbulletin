@@ -183,15 +183,20 @@ auth-finisher = (req, res, next) ->
 
 
   if post_part # post
+    err, sub-post <- db.uri-to-post site.id, uri
+    if err then return next err
+    if !sub-post then return next(404)
+
     tasks =
       menu           : db.menu site.id, _
-      sub-post       : db.uri-to-post site.id, uri, _
-      sub-posts-tree : [\subPost, (cb, a) -> db.sub-posts-tree(site.id, a.sub-post.id, 25, 0, cb)]
-      top-threads    : [\subPost, (cb, a) -> db.top-threads(a.sub-post.forum_id, cb)]
+      sub-posts-tree : db.sub-posts-tree site.id, a.sub-post.id, 25, 0, _
+      top-threads    : db.top-threads a.sub-post.forum_id, _
 
     err, fdoc <- async.auto tasks
     if err then return next err
     if !fdoc then return next(404)
+    # attach sub-post to fdoc
+    fdoc <<< {sub-post}
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.sub-post.posts = delete fdoc.sub-posts-tree
 
