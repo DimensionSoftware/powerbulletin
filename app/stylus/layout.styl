@@ -293,7 +293,7 @@ header
     cursor pointer
     z-index 95
   .create
-    margin (grid*2) 0 (grid*2) 4px
+    margin (grid*2) 4px
     a
       padding 8px 10px
       display block
@@ -528,22 +528,24 @@ section.left-chrome
       p
         margin 0
     .children
-      margin-bottom (grid*3)
-      .subpost
-        margin-left (grid*2)
-        padding grid
-        font-size .9em
-      .photo
-        overflow hidden
-        width 40px
-        float left
-      img
-        max-width 100%
-      .body
-        margin grid 0
-        blockquote
-          margin (grid/2)
-          padding 0
+      .children
+        margin-left (grid*3)
+        margin-bottom (grid*3)
+        .subpost
+          margin-left (grid*2)
+          padding grid
+          font-size .85em
+        .photo
+          overflow hidden
+          width 40px
+          float left
+        img
+          max-width 100%
+        .body
+          margin grid 0
+          blockquote
+            margin (grid/2)
+            padding 0
   .scroll-to-top
       clear both
 //}}}
