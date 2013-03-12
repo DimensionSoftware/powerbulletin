@@ -1,3 +1,4 @@
+window.__ = require \lodash
 
 # XXX client-side entry
 
@@ -201,7 +202,7 @@ infinity-load-more = ->
   return false
 
 # TODO: debounce with lodash
-#$(window).scroll infinity-load-more
+#$(window).scroll __.debounce(infinity-load-more, 300)
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker
