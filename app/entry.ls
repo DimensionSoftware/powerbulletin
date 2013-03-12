@@ -109,13 +109,7 @@ window.after-login = ->
 # logout
 window.logout = ->
   r <- $.get '/auth/logout'
-  after-logout!
-
-# clear the user after a successful logout
-window.after-logout = ->
-  window.user = null
-  console.info 'logged out - need to undo customizations somehow'
-  # TODO - undo user-specific page customizations
+  window.location.reload!
 
 $d.on \submit '.login form' login
 #}}}
