@@ -53,21 +53,21 @@
       return plv8.execute(sql, args.concat([limit]));
     };
   };
-  subPosts = function(){
+  subPosts = function(siteId, postId, limit, offset){
     var sql;
-    sql = 'SELECT p.*, a.name user_name\nFROM posts p\nJOIN aliases a ON a.user_id=p.user_id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=1\n  AND p.parent_id=$1\n  AND m.post_id IS NULL\nORDER BY created ASC, id ASC';
-    return plv8.execute(sql, arguments);
+    sql = 'SELECT p.*, a.name user_name\nFROM posts p\nJOIN aliases a ON a.user_id=p.user_id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=$1\n  AND p.parent_id=$2\n  AND m.post_id IS NULL\nORDER BY created ASC, id ASC\nLIMIT $3 OFFSET $4';
+    return plv8.execute(sql, [siteId, postId, limit, offset]);
   };
   out$.subPostsTree = subPostsTree = subPostsTree = function(parentId, depth){
     var sp, i$, len$, p, results$ = [];
     depth == null && (depth = 3);
-    sp = subPosts(parentId);
+    sp = subPosts(1, parentId, 25, 0);
     if (depth <= 0) {
       for (i$ = 0, len$ = sp.length; i$ < len$; ++i$) {
         p = sp[i$];
         results$.push(merge(p, {
           posts: [],
-          morePosts: !!subPosts(p.id).length
+          morePosts: !!subPosts(1, p.id, 25, 0).length
         }));
       }
       return results$;

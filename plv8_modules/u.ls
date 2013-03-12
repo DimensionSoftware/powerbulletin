@@ -61,28 +61,29 @@ top-posts = (sort, limit, fields='p.*') ->
   """
   (...args) -> plv8.execute sql, args.concat([limit])
 
-sub-posts = ->
+sub-posts = (site-id, post-id, limit, offset) ->
   sql = '''
   SELECT p.*, a.name user_name
   FROM posts p
   JOIN aliases a ON a.user_id=p.user_id
   LEFT JOIN moderations m ON m.post_id=p.id
-  WHERE a.site_id=1
-    AND p.parent_id=$1
+  WHERE a.site_id=$1
+    AND p.parent_id=$2
     AND m.post_id IS NULL
   ORDER BY created ASC, id ASC
+  LIMIT $3 OFFSET $4
   '''
-  plv8.execute sql, arguments
+  plv8.execute sql, [site-id, post-id, limit, offset]
 
 # recurses to build entire comment tree
 export sub-posts-tree = sub-posts-tree = (parent-id, depth=3) ->
-  sp = sub-posts(parent-id)
+  sp = sub-posts(1, parent-id, 25, 0)
   if depth <= 0
     # more-posts flag will be used to put 'load more' links,
     # vs not showing the 'load more' links when there are no children yet
     # we only show 'load more' links when we hit an empty child list
     # and if and only if more-posts flag is true
-    [merge(p, {posts: [], more-posts: !!sub-posts(p.id).length}) for p in sp]
+    [merge(p, {posts: [], more-posts: !!sub-posts(1, p.id, 25, 0).length}) for p in sp]
   else
     [merge(p, {posts: sub-posts-tree(p.id, depth - 1)}) for p in sp]
 
