@@ -163,6 +163,7 @@ global <<< require './helpers'
 
   #XXX: this is one of the pages which is not depersonalized
   res.locals.user = req.user
+  site = res.locals.site
 
   [forum_part, post_part] = req.params
 
@@ -183,9 +184,9 @@ global <<< require './helpers'
 
   if post_part # post
     tasks =
-      menu           : db.menu res.locals.site.id, _
-      sub-post       : db.uri-to-post res.locals.site.id, uri, _
-      sub-posts-tree : [\subPost, (cb, a) -> db.sub-posts-tree(a.sub-post.id, cb)]
+      menu           : db.menu site.id, _
+      sub-post       : db.uri-to-post site.id, uri, _
+      sub-posts-tree : [\subPost, (cb, a) -> db.sub-posts-tree(site.id, a.sub-post.id, 25, 0, cb)]
       top-threads    : [\subPost, (cb, a) -> db.top-threads(a.sub-post.forum_id, cb)]
 
     err, fdoc <- async.auto tasks

@@ -81,10 +81,10 @@ CREATE FUNCTION archive_post(post_id JSON) RETURNS JSON AS $$
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS sub_posts_tree(post_id JSON);
-CREATE FUNCTION sub_posts_tree(post_id JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS sub_posts_tree(site_id JSON, post_id JSON, lim JSON, oft JSON);
+CREATE FUNCTION sub_posts_tree(site_id JSON, post_id JSON, lim JSON, oft JSON) RETURNS JSON AS $$
   require! u
-  return u.sub-posts-tree post_id
+  return u.sub-posts-tree site_id, post_id, lim, oft
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 

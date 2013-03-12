@@ -53,21 +53,21 @@
       return plv8.execute(sql, args.concat([limit]));
     };
   };
-  subPosts = function(){
+  subPosts = function(siteId, postId, limit, offset){
     var sql;
-    sql = 'SELECT p.*, a.name user_name\nFROM posts p\nJOIN aliases a ON a.user_id=p.user_id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=1\n  AND p.parent_id=$1\n  AND m.post_id IS NULL\nORDER BY created ASC, id ASC';
-    return plv8.execute(sql, arguments);
+    sql = 'SELECT p.*, a.name user_name\nFROM posts p\nJOIN aliases a ON a.user_id=p.user_id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=$1\n  AND p.parent_id=$2\n  AND m.post_id IS NULL\nORDER BY created ASC, id ASC\nLIMIT $3 OFFSET $4';
+    return plv8.execute(sql, [siteId, postId, limit, offset]);
   };
-  out$.subPostsTree = subPostsTree = subPostsTree = function(parentId, depth){
+  out$.subPostsTree = subPostsTree = subPostsTree = function(siteId, parentId, limit, offset, depth){
     var sp, i$, len$, p, results$ = [];
     depth == null && (depth = 3);
-    sp = subPosts(parentId);
+    sp = subPosts(siteId, parentId, limit, offset);
     if (depth <= 0) {
       for (i$ = 0, len$ = sp.length; i$ < len$; ++i$) {
         p = sp[i$];
         results$.push(merge(p, {
           posts: [],
-          morePosts: !!subPosts(p.id).length
+          morePosts: !!subPosts(siteId, p.id, limit, offset).length
         }));
       }
       return results$;
@@ -75,18 +75,18 @@
       for (i$ = 0, len$ = sp.length; i$ < len$; ++i$) {
         p = sp[i$];
         results$.push(merge(p, {
-          posts: subPostsTree(p.id, depth - 1)
+          posts: subPostsTree(siteId, p.id, limit, offset, depth - 1)
         }));
       }
       return results$;
     }
   };
-  postsTree = function(forumId, topPosts){
+  postsTree = function(siteId, forumId, topPosts){
     var i$, len$, p, results$ = [];
     for (i$ = 0, len$ = topPosts.length; i$ < len$; ++i$) {
       p = topPosts[i$];
       results$.push(merge(p, {
-        posts: subPostsTree(p.id)
+        posts: subPostsTree(siteId, p.id, 25, 0)
       }));
     }
     return results$;
@@ -94,7 +94,7 @@
   decorateForum = function(f, topPostsFun){
     var sf;
     return merge(f, {
-      posts: postsTree(f.id, topPostsFun(f.id)),
+      posts: postsTree(f.site_id, f.id, topPostsFun(f.id)),
       forums: (function(){
         var i$, ref$, len$, results$ = [];
         for (i$ = 0, len$ = (ref$ = subForums(f.id)).length; i$ < len$; ++i$) {
@@ -133,7 +133,7 @@
   };
   forumTree = function(forumId, topPostsFun){
     var sql, f;
-    sql = 'SELECT id,parent_id,title,slug,description,media_url,classes FROM forums WHERE id=$1 LIMIT 1';
+    sql = 'SELECT id,site_id,parent_id,title,slug,description,media_url,classes FROM forums WHERE id=$1 LIMIT 1';
     if (f = plv8.execute(sql, [forumId])[0]) {
       return decorateForum(f, topPostsFun);
     }
