@@ -76,23 +76,23 @@ sub-posts = (site-id, post-id, limit, offset) ->
   plv8.execute sql, [site-id, post-id, limit, offset]
 
 # recurses to build entire comment tree
-export sub-posts-tree = sub-posts-tree = (parent-id, depth=3) ->
-  sp = sub-posts(1, parent-id, 25, 0)
+export sub-posts-tree = sub-posts-tree = (site-id, parent-id, limit, offset, depth=3) ->
+  sp = sub-posts(site-id, parent-id, limit, offset)
   if depth <= 0
     # more-posts flag will be used to put 'load more' links,
     # vs not showing the 'load more' links when there are no children yet
     # we only show 'load more' links when we hit an empty child list
     # and if and only if more-posts flag is true
-    [merge(p, {posts: [], more-posts: !!sub-posts(1, p.id, 25, 0).length}) for p in sp]
+    [merge(p, {posts: [], more-posts: !!sub-posts(site-id, p.id, limit, offset).length}) for p in sp]
   else
-    [merge(p, {posts: sub-posts-tree(p.id, depth - 1)}) for p in sp]
+    [merge(p, {posts: sub-posts-tree(site-id, p.id, limit, offset, depth - 1)}) for p in sp]
 
 # gets entire list of top posts and inlines all sub-posts to them
-posts-tree = (forum-id, top-posts) ->
-  [merge(p, {posts: sub-posts-tree(p.id)}) for p in top-posts]
+posts-tree = (site-id, forum-id, top-posts) ->
+  [merge(p, {posts: sub-posts-tree(site-id, p.id, 25, 0)}) for p in top-posts]
 
 decorate-forum = (f, top-posts-fun) ->
-  merge f, {posts: posts-tree(f.id, top-posts-fun(f.id)), forums: [decorate-forum(sf, top-posts-fun) for sf in sub-forums(f.id)]}
+  merge f, {posts: posts-tree(f.site_id, f.id, top-posts-fun(f.id)), forums: [decorate-forum(sf, top-posts-fun) for sf in sub-forums(f.id)]}
 
 export doc = ->
   if res = plv8.execute('SELECT json FROM docs WHERE site_id=$1 AND type=$2 AND key=$3', arguments)[0]
@@ -118,7 +118,7 @@ export put-doc = (...args) ->
 
 # single forum
 forum-tree = (forum-id, top-posts-fun) ->
-  sql = 'SELECT id,parent_id,title,slug,description,media_url,classes FROM forums WHERE id=$1 LIMIT 1'
+  sql = 'SELECT id,site_id,parent_id,title,slug,description,media_url,classes FROM forums WHERE id=$1 LIMIT 1'
   if f = plv8.execute(sql, [forum-id])[0]
     decorate-forum(f, top-posts-fun)
 

@@ -96,7 +96,8 @@ if process.env.NODE_ENV != 'production'
 
   app.get '/debug/sub-posts-tree/:post_id', (req, res, next) ->
     db = pg.procs
-    err, d <- db.sub-posts-tree req.params.post_id
+    site = res.locals.site
+    err, d <- db.sub-posts-tree site.id, req.params.post_id, 25, 0
     if err then return next(err)
     res.json d
 
