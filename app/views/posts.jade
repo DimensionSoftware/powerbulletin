@@ -10,21 +10,24 @@ mixin breadcrumb(p)
   span /
   em= p.title
 
+mixin actions(post)
+  .actions
+    a.onclick-append-reply-ui Reply
+    a.edit.mutant(href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
+    a(href=post.uri) Permalink
+    if (typeof(user) !== 'undefined' && user) && user.rights.super
+      a.onclick-censor-post Censor
+    .reply
+
 mixin subpost(sp, i)
-  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-post-id=sp.id)
+  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-user-id=sp.user_id, data-post-id=sp.id)
     if sp.title
       h4.title= sp.title
     .user= sp.user_name
     .date= sp.created_human
     if sp.body
       p.body!= sp.body
-    .actions
-      a.onclick-append-reply-ui Reply
-      a.mutant(href="#{sp.uri.replace(/\/\d+$/, '')}/edit/#{sp.id}") Edit
-      a(href=sp.uri) Permalink
-      if (typeof(user) !== 'undefined' && user) && user.rights.super
-        a.onclick-censor-post Censor
-    .reply
+    mixin actions(sp)
   if sp.posts && sp.posts.length
     .children
       each pp, ii in sp.posts
@@ -32,7 +35,7 @@ mixin subpost(sp, i)
 
 if typeof(subPost) !== 'undefined'
   .forum
-    .post(id="post_#{subPost.id}", data-post-id=subPost.id)
+    .post(id="post_#{subPost.id}", data-user-id=subPost.user_id, data-post-id=subPost.id)
       if subPost.title
         h3.title= subPost.title
       .user= subPost.user_name
@@ -41,12 +44,7 @@ if typeof(subPost) !== 'undefined'
         mixin breadcrumb(subPost)
       if subPost.body
         subPost.body!= subPost.body
-      .actions
-        a.onclick-append-reply-ui Reply
-        a(href=subPost.uri) Permalink
-        if (typeof(user) !== 'undefined' && user) && user.rights.super
-          a.onclick-censor-post Censor
-      .reply
+      mixin actions(subPost)
     if subPost.posts && subPost.posts.length
       each sp in subPost.posts
         mixin subpost(sp, 0)

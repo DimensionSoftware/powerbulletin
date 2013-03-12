@@ -96,7 +96,6 @@ dom-insert = (w, target, tmpl, params) ->
       next!
   on-personalize: (w, u, next) ->
     console.log w, u
-    console.log 'HARHAR'
     next!
 
 @forum-new =
@@ -104,6 +103,10 @@ dom-insert = (w, target, tmpl, params) ->
     (window, next) ->
       console.log \new
       next!
+
+is-editing = ->
+  m = window.location.pathname.match /(edit|new)\/?([\d+]*)/
+  return if m then m[2] else 0
 
 @forum =
   static:
@@ -134,11 +137,9 @@ dom-insert = (w, target, tmpl, params) ->
       $f.css('padding-left', ($l.width! + 20))
 
       # handle in-line editing
-      m = window.location.pathname.match /(edit|new)\/?([\d+]*)/
-      if m
-        id = m[2] or 0
-        id = if id then '#'+"subpost_#{id}" else \BOTTOM
-        dom-insert window, id, \post_edit, {post:{id:123}}
+      id = is-editing!
+      id = if id then '#'+"subpost_#{id}" else \BOTTOM
+      dom-insert window, id, \post_edit, {post:{id:123}}
 
       # add impression
       post-id = $('#main_content .post:first').data('post-id')
@@ -147,11 +148,17 @@ dom-insert = (w, target, tmpl, params) ->
       next!
   on-mutate:
     (window, next) ->
-      # find position to scroll to
-      # else
-      window.scroll-to-top!
+      id = is-editing!
+      if id then # scroll to id
+        awesome-scroll-to "#subpost_#{id}"
+      else
+        window.scroll-to-top!
       window.has-mutated-forum = window.active-forum-id
       next!
+  on-personalize: (w, u, next) ->
+    $ ".subpost[data-user-id=#{u.id}] .edit, .post[data-user-id=#{u.id}] .edit"
+      .css(\display \inline) # enable edit
+    next!
   on-unload:
     (window, next) ->
       try
