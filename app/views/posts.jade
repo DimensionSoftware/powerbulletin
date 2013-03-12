@@ -40,7 +40,7 @@ if typeof(subPost) !== 'undefined'
       .breadcrumb
         mixin breadcrumb(subPost)
       if subPost.body
-        subPost.body!= subPost.body
+        .subPost.body!= subPost.body
       .actions
         a.onclick-append-reply-ui Reply
         a(href=subPost.uri) Permalink
