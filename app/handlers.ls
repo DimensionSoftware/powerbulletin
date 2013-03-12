@@ -189,8 +189,8 @@ auth-finisher = (req, res, next) ->
 
     tasks =
       menu           : db.menu site.id, _
-      sub-posts-tree : db.sub-posts-tree site.id, a.sub-post.id, 25, 0, _
-      top-threads    : db.top-threads a.sub-post.forum_id, _
+      sub-posts-tree : db.sub-posts-tree site.id, sub-post.id, 25, 0, _
+      top-threads    : db.top-threads sub-post.forum_id, _
 
     err, fdoc <- async.auto tasks
     if err then return next err
