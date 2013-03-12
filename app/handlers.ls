@@ -69,13 +69,28 @@ global <<< require './helpers'
     console.warn "no passport for #{domain}"
     res.send "500", 500
 
-@login-facebook-finish = (req, res, next) ->
-  res.send '''
-  <script type="text/javascript">
-    window.opener.switchAndFocus('.fancybox-wrap', 'on-login', 'on-choose', '#auth input[name=username]');
-    window.close();
-  </script>
-  '''
+auth-finisher = (req, res, next) ->
+  user = req.user
+  console.warn 'user', user
+  first-visit = user.created_human.match /just now/
+  if first-visit
+    res.send """
+    <script type="text/javascript">
+      window.opener.$('\#auth input[name=username]').val('#{user.name}');
+      window.opener.switchAndFocus('.fancybox-wrap', 'on-login', 'on-choose', '\#auth input[name=username]');
+      window.close();
+    </script>
+    """
+  else
+    res.send """
+    <script type="text/javascript">
+      window.opener.$.fancybox.close('\#auth');
+      window.opener.afterLogin();
+      window.close();
+    </script>
+    """
+
+@login-facebook-finish = auth-finisher
 
 @login-google = (req, res, next) ->
   domain   = res.locals.site.domain
@@ -95,16 +110,7 @@ global <<< require './helpers'
     console.warn "no passport for #{domain}"
     res.send "500", 500
 
-@login-google-finish = (req, res, next) ->
-  user = req.user
-  console.log user
-  res.send """
-  <script type="text/javascript">
-    window.opener.$('#auth input[name=username]').val('#{user.name}');
-    window.opener.switchAndFocus('.fancybox-wrap', 'on-login', 'on-choose', '#auth input[name=username]');
-    window.close();
-  </script>
-  """
+@login-google-finish = auth-finisher
 
 @login-twitter = (req, res, next) ->
   domain   = res.locals.site.domain
@@ -124,13 +130,7 @@ global <<< require './helpers'
     console.warn "no passport for #{domain}"
     res.send "500", 500
 
-@login-twitter-finish = (req, res, next) ->
-  res.send '''
-  <script type="text/javascript">
-    window.opener.switchAndFocus('.fancybox-wrap', 'on-login', 'on-choose', '#auth input[name=username]');
-    window.close();
-  </script>
-  '''
+@login-twitter-finish = auth-finisher
 
 @logout = (req, res, next) ->
   redirect-url = req.param('redirect-url') || '/'

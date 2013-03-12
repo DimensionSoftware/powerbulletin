@@ -72,28 +72,6 @@ show-login-dialog = ->
   $.fancybox.open '#auth'
   setTimeout (-> $ '#auth input[name=username]' .focus! ), 100
 
-# register action
-# login action
-login = ->
-  $form = $(this)
-  u = $form.find('input[name=username]')
-  p = $form.find('input[name=password]')
-  params =
-    username: u.val!
-    password: p.val!
-  $.post $form.attr(\action), params, (r) ->
-    if r.success
-      window.location.reload!
-      # XXX - need to make this not require a reload
-      # window.user = r.user
-      # XXX - then emit an event to let various client-side systems know that we're logged in now
-    else
-      $fancybox = $form.parents('.fancybox-wrap:first')
-      $fancybox.add-class \on-error
-      $fancybox.remove-class \shake
-      set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100
-  return false
-
 # require that window.user exists before calling fn
 require-login = (fn) ->
   ->
@@ -102,6 +80,43 @@ require-login = (fn) ->
     else
       show-login-dialog!
       false
+
+# register action
+# login action
+window.login = ->
+  $form = $(this)
+  u = $form.find('input[name=username]')
+  p = $form.find('input[name=password]')
+  params =
+    username: u.val!
+    password: p.val!
+  $.post $form.attr(\action), params, (r) ->
+    if r.success
+      after-login!
+    else
+      $fancybox = $form.parents('.fancybox-wrap:first')
+      $fancybox.add-class \on-error
+      $fancybox.remove-class \shake
+      set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100
+  return false
+
+# get the user after a successful login
+window.after-login = ->
+  window.user <- $.getJSON '/auth/user'
+  console.info 'logged in as:', window.user
+  window.mutants?[window.mutator]?.on-personalize window, user, ->
+
+# logout
+window.logout = ->
+  r <- $.get '/auth/logout'
+  after-logout!
+
+# clear the user after a successful logout
+window.after-logout = ->
+  window.user = null
+  console.info 'logged out - need to undo customizations somehow'
+  # TODO - undo user-specific page customizations
+
 $d.on \submit '.login form' login
 #}}}
 
