@@ -191,12 +191,14 @@ auth-finisher = (req, res, next) ->
       menu           : db.menu site.id, _
       sub-posts-tree : db.sub-posts-tree site.id, sub-post.id, 25, 0, _
       top-threads    : db.top-threads sub-post.forum_id, _
+      forum          : db.forum sub-post.forum_id, _
 
     err, fdoc <- async.auto tasks
     if err then return next err
     if !fdoc then return next(404)
+    console.log fdoc.forum
     # attach sub-post to fdoc
-    fdoc <<< {sub-post}
+    fdoc <<< {sub-post, forum-id:sub-post.forum_id}
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.sub-post.posts = delete fdoc.sub-posts-tree
 
@@ -206,16 +208,21 @@ auth-finisher = (req, res, next) ->
     finish fdoc
 
   else # forum
+    err, forum-id <- db.uri-to-forum-id res.locals.site.id, uri
+    if err then return next err
+    if !forum-id then return next 404
     tasks =
       menu        : db.menu res.locals.site.id, _
-      forum-id    : db.uri-to-forum-id res.locals.site.id, uri, _
-      forums      : ['forumId', (cb, a) -> db.forums(a.forum-id, cb)]
-      top-threads : ['forumId', (cb, a) -> db.top-threads(a.forum-id, cb)]
+      forum       : db.forum forum-id, _
+      forums      : db.forums forum-id, _
+      top-threads : db.top-threads forum-id, _
 
     err, fdoc <- async.auto tasks
     if err then return next err
+    console.log fdoc.forum
     if !fdoc then return next(404)
 
+    fdoc <<< {forum-id}
     fdoc.active-forum-id = fdoc.forum-id
 
     finish fdoc

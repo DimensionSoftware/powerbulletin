@@ -313,6 +313,11 @@ CREATE FUNCTION uri_to_forum_id(site_id JSON, uri JSON) RETURNS JSON AS $$
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS forum(id JSON);
+CREATE FUNCTION forum(id JSON) RETURNS JSON AS $$
+  return plv8.execute('SELECT * FROM forums WHERE id=$1', [id])[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 DROP FUNCTION IF EXISTS uri_to_post(site_id JSON, uri JSON);
 CREATE FUNCTION uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
   require! u

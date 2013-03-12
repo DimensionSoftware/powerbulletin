@@ -98,15 +98,15 @@ dom-insert = (w, target, tmpl, params) ->
     console.log w, u
     next!
 
+is-editing = ->
+  m = window.location.pathname.match /(edit|new)\/?([\d+]*)/
+  return if m then m[2] else false
+
 @forum-new =
   on-load:
     (window, next) ->
       console.log \new
       next!
-
-is-editing = ->
-  m = window.location.pathname.match /(edit|new)\/?([\d+]*)/
-  return if m then m[2] else 0
 
 @forum =
   static:

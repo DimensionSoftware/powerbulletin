@@ -120,19 +120,12 @@ $d.on \submit '.login form' login
 load-ui!
 $ '#query' .focus!
 
-add-post-dialog = ->
-  query =
-    fid: window.active-forum-id
-  html <- $.get '/resources/posts', query
-  $.fancybox(html)
-  false # stop event propagation
-
 # assumes immediate parent is form (in case of submit button)
 submit-form = ->
   $f = $ this .closest(\form)
   $.post $f.attr(\action), $f.serialize!, (_r1, _r2, res) ->
     $f.hide 300
-    # TODO -- render jade post on client side
+    # TODO -- render jade post on client side with from-server json objects
   false
 
 # show reply ui
@@ -177,7 +170,6 @@ censor = ->
 # delegated events
 $d.on \click '#add_post_submit' require-login(submit-form)
 $d.on \click '#add_reply_submit input[type="submit"]' require-login(submit-form)
-$d.on \click '.onclick-add-post-dialog' add-post-dialog
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 $d.on \click '.onclick-censor-post' require-login(censor)
 
@@ -208,7 +200,7 @@ infinity-load-more = ->
   return false
 
 # TODO: debounce with lodash
-$(window).scroll infinity-load-more
+#$(window).scroll infinity-load-more
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker
