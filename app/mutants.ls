@@ -39,6 +39,9 @@ dom-insert = (w, target, tmpl, params) ->
   jade.render $b[0], tmpl, params
   $b.slide-down 300
 
+align-breadcrumb = ->
+  set-timeout (-> $ '.breadcrumb.stuck' .css(\left, $('#left_content').width! + 20)), 100
+
 @homepage =
   static:
     (window, next) ->
@@ -124,7 +127,7 @@ is-editing = ->
       $ = window.$
 
       # handle main content
-      $ '.forum .breadcrumb' .waypoint(\sticky, { offset: -70 })
+      $ '.forum .breadcrumb' .waypoint(\sticky, { handler:align-breadcrumb, offset:-70 })
       $f = $ '#main_content.container .forum'
 
       # handle left
@@ -133,6 +136,7 @@ is-editing = ->
         min-width: 200
         max-width: 450
         resize: (e, ui) ->
+          align-breadcrumb!
           $f.css('padding-left', ui.size.width);window.save-ui!)
       $f.css('padding-left', ($l.width! + 20))
 

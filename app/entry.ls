@@ -33,11 +33,16 @@ window.load-ui = ->
   if searching is not '0' then $ \body .add-class(\searching)
   if collapsed is not '0' then $ \body .add-class(\collapsed)
 
+window.align-breadcrumb = ->
+  $ '.breadcrumb.stuck' .css(\left, $('#left_content').width! + offset)
+
 # handle
 $d.on \click '#handle' ->
+  $l = $ '#left_content'
   $ \body .toggle-class \collapsed
   $ '#main_content.container .forum'
-    .css('padding-left', ($ '#left_content' .width! + offset))
+    .css('padding-left', ($l.width! + offset))
+  align-breadcrumb!
   save-ui!
 
 # waypoints
@@ -119,11 +124,13 @@ $d.on \submit '.login form' login
 #.
 #### main   ###############>======-- -   -
 ##
+align-breadcrumb!
 load-ui!
 $ '#query' .focus!
 
 # assumes immediate parent is form (in case of submit button)
 submit-form = ->
+  # TODO guard
   $f = $ this .closest(\form)
   $.post $f.attr(\action), $f.serialize!, (_r1, _r2, res) ->
     $f.hide 300
