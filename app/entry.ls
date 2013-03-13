@@ -189,20 +189,25 @@ $d.on \click '.onclick-show-choose' ->
 $d.on \click '.onclick-show-register' ->
   switch-and-focus '.fancybox-wrap' \on-login \on-register '#auth input[name=username]'
 
+at-bottom = ->
+  # thx, stack overflow guy:
+  # http://stackoverflow.com/a/12279215
+  ($w.scrollTop! isnt 0) && ($w.height! + $w.scroll-top! >= $d.height!)
+
 # infinity scroll
 # TODO: pull data in from actual live feed
 # TODO: lazy scroll when you hit bottom (scrolltop madness)
 var lv
 infinity-load-more = ->
-  unless lv # lazy initialize
-    lv = new infinity.ListView($('#main_content > .forum > .children'))
+  if at-bottom!
+    unless lv # lazy initialize
+      lv = new infinity.ListView($('#main_content > .forum > .children'))
 
-  lv.append('<div class=\"post\">infinity WUZ here!</div>')
-
-  return false
+    console.log 'b00m'
+    lv.append('<div class=\"post\">infinity WUZ here!</div>')
 
 # TODO: debounce with lodash
-#$(window).scroll __.debounce(infinity-load-more, 300)
+$(window).scroll __.debounce(infinity-load-more, 100)
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker
