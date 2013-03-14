@@ -33,9 +33,6 @@ global <<< require './helpers'
     console.warn "no passport for #{domain}"
     res.send "500", 500
 
-@register = (req, res, next) ->
-  res.json { success: false }
-
 # TODO - validate username
 @choose-username = (req, res, next) ->
   if not req.user
@@ -238,13 +235,38 @@ auth-finisher = (req, res, next) ->
   res.locals fdoc
   res.mutant \profile
 
-@register = (req, res) ->
-  req.assert('login').is-alphanumeric!
+@register = (req, res, next) ->
+  site     = res.locals.site
+  domain   = site.domain
+  passport = auth.passport-for-site[domain]
+
+  # TODO more validation
+  req.assert('username').is-alphanumeric!  # .len(min, max) .regex(/pattern/)
+  req.assert('password').not-empty!  # .len(min, max) .regex(/pattern/)
+  req.assert('email').is-email!
 
   if errors = req.validation-errors!
+    console.warn 'you fucked up', errors
     res.json {errors}
   else
-    res.json req.body
+    username = req.body.username
+    password = req.body.password
+    email    = req.body.email
+
+    console.warn 'username', { username, password, email }
+    u =
+      type    : \local
+      id      : 0
+      profile : { password }
+      site_id : site.id
+      name    : username
+      email   : email
+
+    err, r <- db.find-or-create-user u
+    if err then return next(err)
+
+    # TODO on successful registration, log them in automagically (or require verification email?)
+    res.json success: true
 
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->

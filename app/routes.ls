@@ -61,7 +61,7 @@ app.get  '/auth/logout'   handlers.logout
 # OR
 # Register @ <Forum Name>.com
 # # post endpoint
-app.post '/auth/register', handlers.register
+# app.post '/auth/register', handlers.register
 # todo html for use in fancybox or modal dialog at get route
 
 # json response with user info
