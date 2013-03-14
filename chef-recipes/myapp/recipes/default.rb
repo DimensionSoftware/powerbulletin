@@ -14,6 +14,7 @@ include_recipe 'varnish'
 include_recipe 'haproxy'
 include_recipe 'postgres'
 include_recipe 'redis'
+include_recipe 'phantomjs'
 
 # XXX this should perhaps go somewhere else, but for now, i like having this always
 package 'tmux'
@@ -31,8 +32,8 @@ unless File.file? '/etc/NPM_GLOBAL_PACKAGES_COMPLETED'
       set -e
       npm install -g git://github.com/gruntjs/grunt-cli.git
       npm install -g LiveScript
-      npm install -g component
       npm install -g contextify
+      npm install -g mocha-phantomjs
       touch /etc/NPM_GLOBAL_PACKAGES_COMPLETED
     EOH
   end
