@@ -42,6 +42,14 @@ dom-insert = (w, target, tmpl, params) ->
 align-breadcrumb = ->
   set-timeout (-> $ '.breadcrumb.stuck' .css(\left, $('#left_content').width! + 20)), 100
 
+scroll-to-edit = ->
+  id = is-editing!
+  if id then # scroll to id
+    awesome-scroll-to "\#subpost_#{id}"
+    true
+  else
+    false
+
 @homepage =
   static:
     (window, next) ->
@@ -149,13 +157,14 @@ is-editing = ->
       post-id = $('#main_content .post:first').data('post-id')
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
+      # handle scrolling
+      scroll-to-edit!
+
       next!
   on-mutate:
     (window, next) ->
-      id = is-editing!
-      if id then # scroll to id
-        awesome-scroll-to "#subpost_#{id}"
-      else
+      # handle scrolling
+      unless scroll-to-edit!
         window.scroll-to-top!
       window.has-mutated-forum = window.active-forum-id
       next!

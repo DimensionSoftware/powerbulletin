@@ -93,6 +93,7 @@ window.login = ->
   $form = $(this)
   u = $form.find('input[name=username]')
   p = $form.find('input[name=password]')
+  console.log \login
   params =
     username: u.val!
     password: p.val!
