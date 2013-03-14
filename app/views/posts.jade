@@ -14,7 +14,7 @@ mixin actions(post)
   .actions
     a.onclick-append-reply-ui Reply
     a.edit.mutant(href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
-    a(href=post.uri) Permalink
+    a.mutant(href=post.uri) Permalink
     if (typeof(user) !== 'undefined' && user) && user.rights.super
       a.onclick-censor-post Censor
 
