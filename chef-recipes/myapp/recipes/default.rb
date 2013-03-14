@@ -34,6 +34,7 @@ unless File.file? '/etc/NPM_GLOBAL_PACKAGES_COMPLETED'
       npm install -g LiveScript
       npm install -g contextify
       npm install -g mocha-phantomjs
+      npm install -g chai
       touch /etc/NPM_GLOBAL_PACKAGES_COMPLETED
     EOH
   end
