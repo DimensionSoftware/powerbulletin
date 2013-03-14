@@ -86,7 +86,7 @@
     for (i$ = 0, len$ = topPosts.length; i$ < len$; ++i$) {
       p = topPosts[i$];
       results$.push(merge(p, {
-        posts: subPostsTree(siteId, p.id, 25, 0)
+        posts: subPostsTree(siteId, p.id, 10, 0)
       }));
     }
     return results$;
@@ -179,7 +179,7 @@
     return forumsTree(siteId, topPosts('recent', null, 'p.created,p.title,p.slug,p.id'), topForums(null, 'id,title,slug,classes'));
   };
   out$.homepageForums = homepageForums = function(siteId){
-    return forumsTree(siteId, topPosts('recent'), topForums());
+    return forumsTree(siteId, topPosts('recent', 10), topForums());
   };
   out$.forums = forums = function(forumId, sort){
     var ft;

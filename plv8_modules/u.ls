@@ -89,7 +89,7 @@ export sub-posts-tree = sub-posts-tree = (site-id, parent-id, limit, offset, dep
 
 # gets entire list of top posts and inlines all sub-posts to them
 posts-tree = (site-id, forum-id, top-posts) ->
-  [merge(p, {posts: sub-posts-tree(site-id, p.id, 25, 0)}) for p in top-posts]
+  [merge(p, {posts: sub-posts-tree(site-id, p.id, 10, 0)}) for p in top-posts]
 
 decorate-forum = (f, top-posts-fun) ->
   merge f, {posts: posts-tree(f.site_id, f.id, top-posts-fun(f.id)), forums: [decorate-forum(sf, top-posts-fun) for sf in sub-forums(f.id)]}
@@ -156,7 +156,7 @@ export menu = (site-id) ->
 
 export homepage-forums = (site-id) ->
   # XXX: forums should always list in the same order, get rid of top-forums, and list in static order
-  forums-tree site-id, top-posts(\recent), top-forums!
+  forums-tree site-id, top-posts(\recent, 10), top-forums!
 
 # this is really for a single forum even though its called 'forums'
 export forums = (forum-id, sort) ->
