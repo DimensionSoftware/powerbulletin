@@ -84,7 +84,7 @@ pg.init ~>
       callbackURL   : "http://#{domain}/auth/facebook/return"
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
       console.warn 'facebook profile', profile
-      err, name <- db.unique-name profile.display-name
+      err, name <- db.unique-name name: profile.display-name, site_id: site.id
       u =
         type    : \facebook
         id      : profile.id
@@ -101,7 +101,7 @@ pg.init ~>
       callbackURL     : "http://#{domain}/auth/twitter/return"
     pass.use new passport-twitter.Strategy twitter-options, (access-token, refresh-token, profile, done) ->
       console.warn 'twitter profile', profile
-      err, name <- db.unique-name profile.display-name
+      err, name <- db.unique-name name: profile.display-name, site_id: site.id
       u =
         type    : \twitter
         id      : profile.id
@@ -118,7 +118,7 @@ pg.init ~>
     pass.use new passport-google.Strategy google-options, (identifier, profile, done) ->
       console.warn 'google id', identifier
       console.warn 'google profile', profile
-      err, name <- db.unique-name profile.display-name
+      err, name <- db.unique-name name: profile.display-name, site_id: site.id
       if err then cb err;return
       u =
         type    : \google

@@ -166,14 +166,14 @@ CREATE FUNCTION register_local_user(usr JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- XXX - need site_id
-DROP FUNCTION IF EXISTS unique_name(name JSON);
-CREATE FUNCTION unique_name(name JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS unique_name(usr JSON);
+CREATE FUNCTION unique_name(usr JSON) RETURNS JSON AS $$
   sql = '''
-  SELECT name FROM aliases WHERE name=$1
+  SELECT name FROM aliases WHERE name=$1 AND site_id=$2
   '''
-  [n,i]=[name,0]
-  while plv8.execute(sql, [n])[0]
-    n="#{name}#{++i}"
+  [n,i]=[usr.name,0]
+  while plv8.execute(sql, [n, usr.site_id])[0]
+    n="#{usr.name}#{++i}"
   return JSON.stringify n # XXX why stringify??!
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
