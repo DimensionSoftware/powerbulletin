@@ -241,7 +241,7 @@ auth-finisher = (req, res, next) ->
   passport = auth.passport-for-site[domain]
 
   # TODO more validation
-  req.assert('username').is-alphanumeric!  # .len(min, max) .regex(/pattern/)
+  req.assert('username').not-empty!is-alphanumeric!  # .len(min, max) .regex(/pattern/)
   req.assert('password').not-empty!  # .len(min, max) .regex(/pattern/)
   req.assert('email').is-email!
 
@@ -257,16 +257,17 @@ auth-finisher = (req, res, next) ->
     u =
       type    : \local
       id      : 0
-      profile : { password }
+      profile : { password } # TODO hash password
       site_id : site.id
       name    : username
       email   : email
 
     err, r <- db.find-or-create-user u
-    if err then return next(err)
-
-    # TODO on successful registration, log them in automagically (or require verification email?)
-    res.json success: true
+    if err
+      res.json success: false, err: err
+    else
+      # TODO on successful registration, log them in automagically (or require verification email?)
+      res.json success: true
 
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->

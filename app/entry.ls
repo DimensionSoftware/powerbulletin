@@ -119,7 +119,23 @@ window.logout = ->
   r <- $.get '/auth/logout'
   window.location.reload!
 
+# register
+window.register = ->
+  $form = $(this)
+  $form.find("input").remove-class \validation-error
+  $.post $form.attr(\action), $form.serialize!, (r) ->
+    if r.success
+      console.warn \success
+      $.fancybox.close!
+      $form.find("input").remove-class(\validation-error).val ''
+    else
+      console.warn 'display errors', r
+      r.errors?.for-each (e) ->
+        $form.find("input[name=#{e.param}]").add-class \validation-error
+  return false
+
 $d.on \submit '.login form' login
+$d.on \submit '.register form' register
 #}}}
 
 #.
