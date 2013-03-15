@@ -125,7 +125,7 @@ CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
         RETURNING id
     ), a AS (
       INSERT INTO auths (id, user_id, type, profile)
-        SELECT $1::bigint, u.id, $2::varchar, $3::json FROM u
+        SELECT $1::decimal, u.id, $2::varchar, $3::json FROM u
         RETURNING *
     )
   INSERT INTO aliases (user_id, site_id, name)
