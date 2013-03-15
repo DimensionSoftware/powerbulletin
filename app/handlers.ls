@@ -310,7 +310,10 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 
 @user = (req, res, next) ->
   req.user ||= null
-  res.json req.user
+  if req.user
+    res.json __.omit(req.user, \auths)
+  else
+    res.json null
 
 @add-impression = (req, res, next) ->
   db = pg.procs
