@@ -235,7 +235,7 @@ auth-finisher = (req, res, next) ->
   res.locals fdoc
   res.mutant \profile
 
-@register = (req, res, next) ->
+@register = (req, res, next) ~>
   site     = res.locals.site
   domain   = site.domain
   passport = auth.passport-for-site[domain]
@@ -253,7 +253,7 @@ auth-finisher = (req, res, next) ->
     password = req.body.password
     email    = req.body.email
 
-    err, r <- db.name-exists name: username, site_id: site.id
+    err, r <~ db.name-exists name: username, site_id: site.id
     user-id = 0
     if err
       return res.json success: false, errors: err
@@ -268,14 +268,12 @@ auth-finisher = (req, res, next) ->
         name    : username
         email   : email
 
-      err, r <- db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
+      err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
       if err
         return res.json success: false, errors: err
       else
-        # TODO on successful registration, log them in automagically
-        # TODO maybe require verification via email
-        console.log 'success?', r
-        res.json success: true
+        # on successful registration, automagically @login, too
+        @login(req, res, next)
 
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->

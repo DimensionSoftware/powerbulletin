@@ -128,6 +128,7 @@ window.register = ->
       console.warn \success
       $.fancybox.close!
       $form.find("input:text,input:password").remove-class(\validation-error).val ''
+      after-login!
     else
       console.warn 'display errors', r
       r.errors?.for-each (e) ->
