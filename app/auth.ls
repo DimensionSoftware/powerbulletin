@@ -7,7 +7,7 @@ require! {
   \passport-local
   \passport-facebook
   \passport-twitter
-  \passport-google
+  \passport-google-oauth
 
   pg: './postgres'
   passport.Passport
@@ -79,9 +79,9 @@ pg.init ~>
       done(null, user)
 
     facebook-options =
-      clientID      : site.config?.facebook-client-id     or \x
+      client-ID     : site.config?.facebook-client-id     or \x
       client-secret : site.config?.facebook-client-secret or \x
-      callbackURL   : "http://#{domain}/auth/facebook/return"
+      callback-URL  : "http://#{domain}/auth/facebook/return"
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
       console.warn 'facebook profile', profile
       err, name <- db.unique-name name: profile.display-name, site_id: site.id
@@ -98,7 +98,7 @@ pg.init ~>
     twitter-options =
       consumer-key    : site.config?.twitter-consumer-key    or \x
       consumer-secret : site.config?.twitter-consumer-secret or \x
-      callbackURL     : "http://#{domain}/auth/twitter/return"
+      callback-URL    : "http://#{domain}/auth/twitter/return"
     pass.use new passport-twitter.Strategy twitter-options, (access-token, refresh-token, profile, done) ->
       console.warn 'twitter profile', profile
       err, name <- db.unique-name name: profile.display-name, site_id: site.id
@@ -113,19 +113,20 @@ pg.init ~>
       done(err, user)
 
     google-options =
-      returnURL : "http://#{domain}/auth/google/return"
-      realm     : "http://#{domain}/"
-    pass.use new passport-google.Strategy google-options, (identifier, profile, done) ->
-      console.warn 'google id', identifier
+      client-ID     : site.config?.google-consumer-key    or \x
+      client-secret : site.config?.google-consumer-secret or \x
+      callback-URL  : "https://#{domain}/auth/google/return"
+    pass.use new passport-google-oauth.OAuth2Strategy google-options, (access-token, refresh-token, profile, done) ->
       console.warn 'google profile', profile
       err, name <- db.unique-name name: profile.display-name, site_id: site.id
-      if err then cb err;return
+      if err then return cb err
       u =
         type    : \google
         id      : profile.id
         profile : profile._json
         site_id : site.id
         name    : name
+      console.warn \u, u
       (err, user) <- db.find-or-create-user u
       console.warn 'err', err if err
       done(err, user)

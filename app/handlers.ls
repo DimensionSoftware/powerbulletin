@@ -92,8 +92,10 @@ auth-finisher = (req, res, next) ->
 @login-google = (req, res, next) ->
   domain   = res.locals.site.domain
   passport = auth.passport-for-site[domain]
+  scope    = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
+
   if passport
-    passport.authenticate('google')(req, res, next)
+    passport.authenticate('google', {scope})(req, res, next)
   else
     console.warn "no passport for #{domain}"
     res.send "500", 500
