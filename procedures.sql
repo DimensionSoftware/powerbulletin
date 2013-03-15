@@ -125,7 +125,7 @@ CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
         RETURNING id
     ), a AS (
       INSERT INTO auths (id, user_id, type, profile)
-        SELECT $1::bigint, u.id, $2::varchar, $3::json FROM u
+        SELECT $1::decimal, u.id, $2::varchar, $3::json FROM u
         RETURNING *
     )
   INSERT INTO aliases (user_id, site_id, name)
@@ -142,15 +142,51 @@ CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
   return find-or-create(sel, sel-params, ins, ins-params)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS unique_name(name JSON);
-CREATE FUNCTION unique_name(name JSON) RETURNS JSON AS $$
-  sql = '''
-  SELECT name FROM aliases WHERE name=$1
+DROP FUNCTION IF EXISTS register_local_user(usr JSON);
+CREATE FUNCTION register_local_user(usr JSON) RETURNS JSON AS $$
+  ins = '''
+  WITH u AS (
+      INSERT INTO users (email) VALUES ($1)
+        RETURNING id
+    ), a AS (
+      INSERT INTO auths (id, user_id, type, profile)
+        SELECT u.id, u.id, $2::varchar, $3::json FROM u
+        RETURNING *
+    )
+  INSERT INTO aliases (user_id, site_id, name)
+    SELECT u.id, $4::bigint, $5::varchar FROM u;
   '''
-  [n,i]=[name,0]
-  while plv8.execute(sql, [n])[0]
-    n="#{name}#{++i}"
+  ins-params =
+    * usr.email
+    * usr.type
+    * JSON.stringify(usr.profile)
+    * usr.site_id
+    * usr.name
+  return plv8.execute ins, ins-params
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- XXX - need site_id
+DROP FUNCTION IF EXISTS unique_name(usr JSON);
+CREATE FUNCTION unique_name(usr JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT name FROM aliases WHERE name=$1 AND site_id=$2
+  '''
+  [n,i]=[usr.name,0]
+  while plv8.execute(sql, [n, usr.site_id])[0]
+    n="#{usr.name}#{++i}"
   return JSON.stringify n # XXX why stringify??!
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS name_exists(usr JSON);
+CREATE FUNCTION name_exists(usr JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT user_id, name FROM aliases WHERE name = $1 and site_id = $2
+  '''
+  r = plv8.execute sql, [usr.name, usr.site_id]
+  if !!r.length
+    return r[0].user_id
+  else
+    return 0 # relying on 0 to be false
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- change alias

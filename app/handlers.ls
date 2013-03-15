@@ -92,8 +92,10 @@ auth-finisher = (req, res, next) ->
 @login-google = (req, res, next) ->
   domain   = res.locals.site.domain
   passport = auth.passport-for-site[domain]
+  scope    = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
+
   if passport
-    passport.authenticate('google')(req, res, next)
+    passport.authenticate('google', {scope})(req, res, next)
   else
     console.warn "no passport for #{domain}"
     res.send "500", 500
@@ -235,13 +237,13 @@ auth-finisher = (req, res, next) ->
   res.locals fdoc
   res.mutant \profile
 
-@register = (req, res, next) ->
+@register = (req, res, next) ~>
   site     = res.locals.site
   domain   = site.domain
   passport = auth.passport-for-site[domain]
 
   # TODO more validation
-  req.assert('username').is-alphanumeric!  # .len(min, max) .regex(/pattern/)
+  req.assert('username').not-empty!is-alphanumeric!  # .len(min, max) .regex(/pattern/)
   req.assert('password').not-empty!  # .len(min, max) .regex(/pattern/)
   req.assert('email').is-email!
 
@@ -253,20 +255,27 @@ auth-finisher = (req, res, next) ->
     password = req.body.password
     email    = req.body.email
 
-    console.warn 'username', { username, password, email }
-    u =
-      type    : \local
-      id      : 0
-      profile : { password }
-      site_id : site.id
-      name    : username
-      email   : email
+    err, r <~ db.name-exists name: username, site_id: site.id
+    user-id = 0
+    if err
+      return res.json success: false, errors: err
+    else if r
+      console.warn 'username already exists', r
+      res.json success: false, errors: []
+    else
+      u =
+        type    : \local
+        profile : { password } # TODO hash password
+        site_id : site.id
+        name    : username
+        email   : email
 
-    err, r <- db.find-or-create-user u
-    if err then return next(err)
-
-    # TODO on successful registration, log them in automagically (or require verification email?)
-    res.json success: true
+      err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
+      if err
+        return res.json success: false, errors: err
+      else
+        # on successful registration, automagically @login, too
+        @login(req, res, next)
 
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->
@@ -303,7 +312,10 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 
 @user = (req, res, next) ->
   req.user ||= null
-  res.json req.user
+  if req.user
+    res.json __.omit(req.user, \auths)
+  else
+    res.json null
 
 @add-impression = (req, res, next) ->
   db = pg.procs
