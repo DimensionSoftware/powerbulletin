@@ -142,6 +142,29 @@ CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
   return find-or-create(sel, sel-params, ins, ins-params)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS register_local_user(usr JSON);
+CREATE FUNCTION register_local_user(usr JSON) RETURNS JSON AS $$
+  ins = '''
+  WITH u AS (
+      INSERT INTO users (email) VALUES ($1)
+        RETURNING id
+    ), a AS (
+      INSERT INTO auths (id, user_id, type, profile)
+        SELECT u.id, u.id, $2::varchar, $3::json FROM u
+        RETURNING *
+    )
+  INSERT INTO aliases (user_id, site_id, name)
+    SELECT u.id, $4::bigint, $5::varchar FROM u;
+  '''
+  ins-params =
+    * usr.email
+    * usr.type
+    * JSON.stringify(usr.profile)
+    * usr.site_id
+    * usr.name
+  return plv8.execute ins, ins-params
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 -- XXX - need site_id
 DROP FUNCTION IF EXISTS unique_name(name JSON);
 CREATE FUNCTION unique_name(name JSON) RETURNS JSON AS $$
@@ -163,7 +186,7 @@ CREATE FUNCTION name_exists(usr JSON) RETURNS JSON AS $$
   if !!r.length
     return r[0].user_id
   else
-    return false
+    return 0 # relying on 0 to be false
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- change alias

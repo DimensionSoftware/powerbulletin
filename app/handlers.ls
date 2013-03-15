@@ -253,21 +253,29 @@ auth-finisher = (req, res, next) ->
     password = req.body.password
     email    = req.body.email
 
-    console.warn 'username', { username, password, email }
-    u =
-      type    : \local
-      id      : 0
-      profile : { password } # TODO hash password
-      site_id : site.id
-      name    : username
-      email   : email
-
-    err, r <- db.find-or-create-user u
+    err, r <- db.name-exists name: username, site_id: site.id
+    user-id = 0
     if err
-      res.json success: false, err: err
+      return res.json success: false, errors: err
+    else if r
+      console.warn 'username already exists', r
+      res.json success: false, errors: []
     else
-      # TODO on successful registration, log them in automagically (or require verification email?)
-      res.json success: true
+      u =
+        type    : \local
+        profile : { password } # TODO hash password
+        site_id : site.id
+        name    : username
+        email   : email
+
+      err, r <- db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
+      if err
+        return res.json success: false, errors: err
+      else
+        # TODO on successful registration, log them in automagically
+        # TODO maybe require verification via email
+        console.log 'success?', r
+        res.json success: true
 
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->
