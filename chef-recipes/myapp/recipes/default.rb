@@ -15,6 +15,7 @@ include_recipe 'haproxy'
 include_recipe 'postgres'
 include_recipe 'redis'
 include_recipe 'phantomjs'
+include_recipe 'selenium'
 
 # XXX this should perhaps go somewhere else, but for now, i like having this always
 package 'tmux'
