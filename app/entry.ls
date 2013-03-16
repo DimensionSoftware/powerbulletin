@@ -132,7 +132,9 @@ window.register = ->
     else
       console.warn 'display errors', r
       r.errors?.for-each (e) ->
-        $form.find("input[name=#{e.param}]").add-class \validation-error
+        $form.find("input[name=#{e.param}]").add-class \validation-error .focus!
+      $fancybox = $form.parents('.fancybox-wrap:first') .remove-class \shake
+      set-timeout (-> $fancybox.add-class(\shake)), 100
   return false
 
 $d.on \submit '.login form' login
@@ -194,7 +196,7 @@ censor = ->
     else
       console.warn r.errors.join(', ')
 
-# delegated events
+#{{{ Delegated Events
 $d.on \click '#add_post_submit' require-login(submit-form)
 $d.on \click '#add_reply_submit input[type="submit"]' require-login(submit-form)
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
@@ -213,6 +215,7 @@ $d.on \click '.onclick-show-choose' ->
   switch-and-focus '.fancybox-wrap' \on-login \on-choose '#auth input[name=username]'
 $d.on \click '.onclick-show-register' ->
   switch-and-focus '.fancybox-wrap' \on-login \on-register '#auth input[name=username]'
+#}}}
 
 at-bottom = ->
   # thx, stack overflow guy:

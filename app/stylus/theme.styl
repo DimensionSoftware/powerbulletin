@@ -218,9 +218,10 @@ header
             border-bottom-left-radius 10px
           .row:last-child:hover
             border-bottom 1px solid #aaa
+            border-bottom 1px solid highlight-color2
           .row.active, .row:hover
             background-image linear-gradient(bottom, #fff 10px, #eee)
-            border-bottom 1px solid #ccc
+            border-bottom 1px solid #ddd
             border-left 1px solid highlight-color2
             border-right 1px solid highlight-color2
             a
@@ -230,7 +231,7 @@ header
           .row
             line-height (grid*4)
             border-left 1px solid transparent
-            border-bottom 1px solid #eee
+            border-bottom 1px solid #f0f0f0
             a
               color #444
               text-decoration none
@@ -382,7 +383,7 @@ section.left-chrome
       font-size 2.1em
       line-height 2em
     .breadcrumb.stuck
-      background-color #eee
+      background-color #fafafa
       border-bottom 1px solid #ddd
       border-right 1px solid #ddd
       border-left 1px solid #ddd
@@ -392,10 +393,10 @@ section.left-chrome
       em, a
         color #666
     .subpost:hover
-      border-bottom 1px solid #bbb
+      border-bottom 1px solid #ddd
       color #000
     .subpost
-      border-bottom 1px solid #dfdfdf
+      border-bottom 1px solid #eee
       color #333
     .subpost:last-child
       border-bottom 0
@@ -571,7 +572,7 @@ footer
     width 292px!important
     display block
   input.validation-error
-    border-color #f42
+    border-left 2px solid #f42
 ///}}}
 //{{{ Controls
 input[type="password"], select, textarea, input[type="text"]
