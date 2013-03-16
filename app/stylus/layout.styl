@@ -433,7 +433,7 @@ section.left-chrome
       text-transform capitalize
       font-size .9em
       a
-        padding (grid/2)
+        padding-right (grid/2)
         margin-right 3px
         letter-spacing -1px
       em
@@ -522,7 +522,6 @@ section.left-chrome
         letter-spacing 0
         transition opacity .3s, letter-spacing .09s
     .subpost
-      padding-top (grid*2)
       padding-bottom grid
       .date
         font-size .8em
@@ -533,6 +532,10 @@ section.left-chrome
       .children
         margin-left (grid*3)
         margin-bottom (grid*3)
+        .user, .date
+          display inline-block
+        .date
+          margin-left grid
         .subpost
           margin-left (grid*2)
           padding grid
@@ -544,7 +547,6 @@ section.left-chrome
         img
           max-width 100%
         .body
-          margin grid 0
           blockquote
             margin (grid/2)
             padding 0
