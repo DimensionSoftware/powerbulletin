@@ -22,6 +22,7 @@ mixin subpost(sp, i)
   .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-user-id=sp.user_id, data-post-id=sp.id)
     if sp.title
       h4.title= sp.title
+    .profile.photo
     .user= sp.user_name
     .date= sp.created_human
     if sp.body
@@ -38,6 +39,7 @@ if typeof(subPost) !== 'undefined'
     .post(id="post_#{subPost.id}", data-user-id=subPost.user_id, data-post-id=subPost.id)
       if subPost.title
         h3.title= subPost.title
+      .profile.photo
       .user= subPost.user_name
       .date= subPost.created_human
       .breadcrumb

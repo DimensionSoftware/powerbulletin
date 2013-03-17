@@ -479,20 +479,28 @@ section.left-chrome
         .title
           display block
         .body
-          width 100%
+          width 90%
+          display block
+          margin grid 0
           min-height 40px
+    .post, .subpost
+      .photo
+        float left
+        padding 2px
+        margin-right grid
+        width 35px
+        height 35px
+        float left
     .post
       float left
       margin 0 grid grid grid
       overflow hidden
       //max-height max-post-height
-      .photo
-        float left
-        width 25px
       img
         max-width 100%
     .post.editing, .subpost.editing
       min-height 200px
+      padding-left (grid/2)
     .post, .subpost
       position relative
       clear both
@@ -544,7 +552,8 @@ section.left-chrome
           font-size .85em
         .photo
           overflow hidden
-          width 40px
+          width 15px
+          height 15px
           float left
         img
           max-width 100%
