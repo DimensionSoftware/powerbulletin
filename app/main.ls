@@ -168,7 +168,7 @@ else
       graceful-shutdown!
 
   # routes
-  require! './routes'
+  require! './pb_routes'
 
   # 404 handler, if not 404, punt
   app.use (err, req, res, next) ~>

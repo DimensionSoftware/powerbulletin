@@ -428,12 +428,12 @@ section.left-chrome
       text-indent grid
       border-bottom-left-radius 5px
       border-bottom-right-radius 5px
-      padding (grid/2) (grid*2) 2px (grid*2)
+      padding (grid/2+2) (grid*2) 2px (grid*2)
     .breadcrumb
       text-transform capitalize
       font-size .9em
       a
-        padding (grid/2)
+        padding-right (grid/2)
         margin-right 3px
         letter-spacing -1px
       em
@@ -479,18 +479,28 @@ section.left-chrome
         .title
           display block
         .body
-          width 100%
+          width 90%
+          display block
+          margin grid 0
           min-height 40px
+    .post, .subpost
+      .photo
+        float left
+        padding 2px
+        margin-right grid
+        width 35px
+        height 35px
+        float left
     .post
       float left
       margin 0 grid grid grid
       overflow hidden
       //max-height max-post-height
-      .photo
-        float left
-        width 25px
       img
         max-width 100%
+    .post.editing, .subpost.editing
+      min-height 200px
+      padding-left (grid/2)
     .post, .subpost
       position relative
       clear both
@@ -522,7 +532,6 @@ section.left-chrome
         letter-spacing 0
         transition opacity .3s, letter-spacing .09s
     .subpost
-      padding-top (grid*2)
       padding-bottom grid
       .date
         font-size .8em
@@ -533,18 +542,22 @@ section.left-chrome
       .children
         margin-left (grid*3)
         margin-bottom (grid*3)
+        .user, .date
+          display inline-block
+        .date
+          margin-left grid
         .subpost
           margin-left (grid*2)
           padding grid
           font-size .85em
         .photo
           overflow hidden
-          width 40px
+          width 15px
+          height 15px
           float left
         img
           max-width 100%
         .body
-          margin grid 0
           blockquote
             margin (grid/2)
             padding 0

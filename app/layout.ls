@@ -2,7 +2,7 @@
 
 # XXX: helpers probably has crap we don't want in the client, refactor appropriately
 window.helpers = require './helpers'
-window.mutants = require './mutants'
+window.mutants = require './pb_mutants'
 
 # shortcuts
 $w = $ window

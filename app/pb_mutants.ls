@@ -79,7 +79,7 @@ scroll-to-edit = ->
 
             # handle menu active
             id = if direction is \down then eid else
-              $ '#'+eid .prev-all '.forum:first' .attr \id
+              $ "\##{eid}" .prev-all '.forum:first' .attr \id
             return unless id # guard
             $ 'header .menu' .find '.active' .remove-class \active # remove prev
             cur = $ 'header .menu'
@@ -150,8 +150,9 @@ is-editing = ->
 
       # handle in-line editing
       id = is-editing!
-      id = if id then '#'+"subpost_#{id}" else \BOTTOM
+      id = if id then "\#subpost_#{id}" else \BOTTOM
       dom-insert window, id, \post_edit, {post:{id:123}}
+      $ id .add-class \editing
 
       # add impression
       post-id = $('#main_content .post:first').data('post-id')
