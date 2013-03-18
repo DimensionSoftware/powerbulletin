@@ -1,13 +1,13 @@
 require! {
   \mutant
   \cssmin
-  './resources'
   mmw: 'mutant/middleware'
   pg: './postgres'
   mw: './middleware'
 
   mutants:  './pb_mutants'
   handlers: './pb_handlers'
+  resources:'./pb_resources'
 }
 global <<< require './helpers' # pull helpers (common) into global (play nice :)
 
