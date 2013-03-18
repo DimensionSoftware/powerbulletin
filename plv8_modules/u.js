@@ -55,7 +55,7 @@
   };
   subPosts = function(siteId, postId, limit, offset){
     var sql;
-    sql = 'SELECT p.*, a.name user_name\nFROM posts p\nJOIN aliases a ON a.user_id=p.user_id\nJOIN users u ON u.id=a.user_id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=$1\n  AND p.parent_id=$2\n  AND m.post_id IS NULL\nORDER BY created ASC, id ASC\nLIMIT $3 OFFSET $4';
+    sql = 'SELECT p.*, a.name user_name, u.photo user_photo\nFROM posts p\nJOIN aliases a ON a.user_id=p.user_id\nJOIN users u ON u.id=a.user_id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=$1\n  AND p.parent_id=$2\n  AND m.post_id IS NULL\nORDER BY created ASC, id ASC\nLIMIT $3 OFFSET $4';
     return plv8.execute(sql, [siteId, postId, limit, offset]);
   };
   out$.subPostsTree = subPostsTree = subPostsTree = function(siteId, parentId, limit, offset, depth){

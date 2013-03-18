@@ -65,7 +65,7 @@ top-posts = (sort, limit, fields='p.*') ->
 
 sub-posts = (site-id, post-id, limit, offset) ->
   sql = '''
-  SELECT p.*, a.name user_name
+  SELECT p.*, a.name user_name, u.photo user_photo
   FROM posts p
   JOIN aliases a ON a.user_id=p.user_id
   JOIN users u ON u.id=a.user_id
