@@ -25,7 +25,7 @@ mixin subpost(sp, i)
     .profile.photo
       img(src="#{cache_url}/#{sp.user_photo}")
     .user= sp.user_name
-    .date= sp.created_human
+    .date(data-time=sp.created_iso)= sp.created_human
     if sp.body
       p.body!= sp.body
     .reply
@@ -45,7 +45,7 @@ if typeof(subPost) !== 'undefined'
       .profile.photo
         img(src="#{cache_url}/#{subPost.user_photo}")
       .user= subPost.user_name
-      .date= subPost.created_human
+      .date(data-time=subPost.created_iso)= subPost.created_human
       .breadcrumb
         mixin breadcrumb(subPost)
       if subPost.body
