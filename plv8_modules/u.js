@@ -46,7 +46,7 @@
         throw new Error("invalid sort for top-posts: " + sort);
       }
     }());
-    sql = "SELECT\n  " + fields + ",\n  MIN(a.name) user_name,\n  COUNT(p2.id) post_count\nFROM aliases a\nJOIN posts p ON a.user_id=p.user_id\nLEFT JOIN posts p2 ON p2.parent_id=p.id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND m.post_id IS NULL\nGROUP BY p.id\nORDER BY " + sortExpr + "\nLIMIT $2";
+    sql = "SELECT\n  " + fields + ",\n  MIN(a.name) user_name,\n  MIN(u.photo) user_photo,\n  COUNT(p2.id) post_count\nFROM aliases a\nJOIN posts p ON a.user_id=p.user_id\nJOIN users u ON u.id=a.user_id\nLEFT JOIN posts p2 ON p2.parent_id=p.id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=1\n  AND p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND m.post_id IS NULL\nGROUP BY p.id\nORDER BY " + sortExpr + "\nLIMIT $2";
     return function(){
       var args;
       args = slice$.call(arguments);
@@ -55,7 +55,7 @@
   };
   subPosts = function(siteId, postId, limit, offset){
     var sql;
-    sql = 'SELECT p.*, a.name user_name\nFROM posts p\nJOIN aliases a ON a.user_id=p.user_id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=$1\n  AND p.parent_id=$2\n  AND m.post_id IS NULL\nORDER BY created ASC, id ASC\nLIMIT $3 OFFSET $4';
+    sql = 'SELECT p.*, a.name user_name\nFROM posts p\nJOIN aliases a ON a.user_id=p.user_id\nJOIN users u ON u.id=a.user_id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE a.site_id=$1\n  AND p.parent_id=$2\n  AND m.post_id IS NULL\nORDER BY created ASC, id ASC\nLIMIT $3 OFFSET $4';
     return plv8.execute(sql, [siteId, postId, limit, offset]);
   };
   out$.subPostsTree = subPostsTree = subPostsTree = function(siteId, parentId, limit, offset, depth){

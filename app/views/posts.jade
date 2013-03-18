@@ -23,6 +23,7 @@ mixin subpost(sp, i)
     if sp.title
       h4.title= sp.title
     .profile.photo
+      img(src="#{cache_url}/#{sp.user_photo}")
     .user= sp.user_name
     .date= sp.created_human
     if sp.body
@@ -40,6 +41,7 @@ if typeof(subPost) !== 'undefined'
       if subPost.title
         h3.title= subPost.title
       .profile.photo
+        img(src="#{cache_url}/#{subPost.user_photo}")
       .user= subPost.user_name
       .date= subPost.created_human
       .breadcrumb
