@@ -186,15 +186,23 @@ auth-finisher = (req, res, next) ->
     if err then return next err
     if !sub-post then return next(404)
 
+    page = parseInt(req.query.page) || 1
+    if page < 1 then return next(404)
+
+    limit = 5
+    offset = (page - 1) * 5
+
     tasks =
       menu           : db.menu site.id, _
-      sub-posts-tree : db.sub-posts-tree site.id, sub-post.id, 25, 0, _
+      sub-posts-tree : db.sub-posts-tree site.id, sub-post.id, limit, offset, _
       top-threads    : db.top-threads sub-post.forum_id, _
       forum          : db.forum sub-post.forum_id, _
 
     err, fdoc <- async.auto tasks
     if err then return next err
     if !fdoc then return next(404)
+    if fdoc.sub-posts-tree.length < 1 then return next(404)
+
     # attach sub-post to fdoc
     fdoc <<< {sub-post, forum-id:sub-post.forum_id}
     # attach sub-posts-tree to sub-post toplevel item

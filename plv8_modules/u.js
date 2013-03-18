@@ -67,7 +67,7 @@
         p = sp[i$];
         results$.push(merge(p, {
           posts: [],
-          morePosts: !!subPosts(siteId, p.id, limit, offset).length
+          morePosts: !!subPosts(siteId, p.id, limit, 0).length
         }));
       }
       return results$;
@@ -75,7 +75,7 @@
       for (i$ = 0, len$ = sp.length; i$ < len$; ++i$) {
         p = sp[i$];
         results$.push(merge(p, {
-          posts: subPostsTree(siteId, p.id, limit, offset, depth - 1)
+          posts: subPostsTree(siteId, p.id, limit, 0, depth - 1)
         }));
       }
       return results$;

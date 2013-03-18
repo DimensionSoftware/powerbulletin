@@ -86,9 +86,9 @@ export sub-posts-tree = sub-posts-tree = (site-id, parent-id, limit, offset, dep
     # vs not showing the 'load more' links when there are no children yet
     # we only show 'load more' links when we hit an empty child list
     # and if and only if more-posts flag is true
-    [merge(p, {posts: [], more-posts: !!sub-posts(site-id, p.id, limit, offset).length}) for p in sp]
+    [merge(p, {posts: [], more-posts: !!sub-posts(site-id, p.id, limit, 0).length}) for p in sp]
   else
-    [merge(p, {posts: sub-posts-tree(site-id, p.id, limit, offset, depth - 1)}) for p in sp]
+    [merge(p, {posts: sub-posts-tree(site-id, p.id, limit, 0, depth - 1)}) for p in sp]
 
 # gets entire list of top posts and inlines all sub-posts to them
 posts-tree = (site-id, forum-id, top-posts) ->
