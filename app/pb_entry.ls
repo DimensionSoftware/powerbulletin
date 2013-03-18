@@ -217,10 +217,27 @@ $d.on \click '.onclick-show-register' ->
   switch-and-focus '.fancybox-wrap' \on-login \on-register '#auth input[name=username]'
 #}}}
 
-at-bottom = ->
+at-bottom = (pct-threshold = 0.9) ->
   # thx, stack overflow guy:
   # http://stackoverflow.com/a/12279215
-  ($w.scrollTop! isnt 0) && ($w.height! + $w.scroll-top! >= $d.height!)
+  # I super distilled it though... and added a threshold
+  # and... more heuristics
+  [st, wh, dh] = [$w.scroll-top!, $w.height!, $d.height!]
+
+  # represents roughly the percentage scrolled down in window
+  rough-scroll-percent = (wh + st) / dh
+
+  # additional debug annotations
+  console.log {st, wh, dh}
+  console.log {wh-plus-st: wh + st, rough-scroll-percent}
+
+  # Not at the top of the page
+  #      | We're definitely at the end, motherfucker
+  #      |                   |     
+  #      |                   | Alternatively, the boss (programmer) said we are at the end, motherfucker
+  #      |                   |                                         |
+  #      \/                  \/                                        \/
+  (st > 0) && ((wh + st >= dh) || (rough-scroll-percent > pct-threshold))
 
 # infinity scroll
 # TODO: pull data in from actual live feed
@@ -232,10 +249,36 @@ infinity-load-more = ->
       lv = new infinity.ListView($('#main_content > .forum > .children'))
 
     console.log 'b00m'
-    lv.append('<div class=\"post\">infinity WUZ here!</div>')
+    html = '''
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    <div class=\"post\">infinity WUZ here!</div>
+    '''
+    set-timeout (-> lv.append(html)), 1
 
 # TODO: debounce with lodash
-$(window).scroll __.debounce(infinity-load-more, 100)
+$(window).scroll __.debounce(infinity-load-more, 10)
+
+# this is always chuggin along ; )
+# just in case scroll events fail to pre-emptively load
+#set-interval infinity-load-more, 500
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker
