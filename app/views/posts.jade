@@ -30,10 +30,12 @@ mixin subpost(sp, i)
       p.body!= sp.body
     .reply
     mixin actions(sp)
-  if sp.posts && sp.posts.length
+  if sp.posts.length
     .children
       each pp, ii in sp.posts
         mixin subpost(pp, ii)
+  else if sp.morePosts
+    a(href='#') Load More Sub-Posts . . .
 
 if typeof(subPost) !== 'undefined'
   .forum
@@ -50,9 +52,11 @@ if typeof(subPost) !== 'undefined'
         .subPost.body!= subPost.body
       .reply
       mixin actions(subPost)
-    if subPost.posts && subPost.posts.length
+    if subPost.posts.length
       .children
         each sp in subPost.posts
           mixin subpost(sp, 0)
+    else if subPost.morePosts
+      a(href='#') Load More Sub-Posts . . .
 
 //- vim:fdm=marker
