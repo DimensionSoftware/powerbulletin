@@ -228,8 +228,8 @@ at-bottom = (pct-threshold = 0.9) ->
   rough-scroll-percent = (wh + st) / dh
 
   # additional debug annotations
-  console.log {st, wh, dh}
-  console.log {wh-plus-st: wh + st, rough-scroll-percent}
+  #console.log {st, wh, dh}
+  #console.log {wh-plus-st: wh + st, rough-scroll-percent}
 
   # Not at the top of the page
   #      | We're definitely at the end, motherfucker
@@ -246,9 +246,8 @@ var lv
 infinity-load-more = ->
   if at-bottom!
     unless lv # lazy initialize
-      lv = new infinity.ListView($('#main_content > .forum > .children'))
+      lv := new infinity.ListView($('#main_content > .forum > .children'))
 
-    console.log 'b00m'
     html = '''
     <div class=\"post\">infinity WUZ here!</div>
     <div class=\"post\">infinity WUZ here!</div>
