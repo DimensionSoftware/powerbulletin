@@ -209,7 +209,7 @@ auth-finisher = (req, res, next) ->
     fdoc.sub-post.posts = delete fdoc.sub-posts-tree
 
     fdoc.active-forum-id = fdoc.sub-post.forum_id
-    fdoc.active-post-id  = fdoc.id
+    fdoc.active-post-id  = sub-post.id
 
     finish fdoc
 
