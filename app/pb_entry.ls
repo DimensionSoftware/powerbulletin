@@ -248,7 +248,7 @@ infinity-load-more = ->
     unless lv # lazy initialize
       lv := new infinity.ListView($('#main_content > .forum > .children'))
 
-    $.getJSON '/resources/posts/6/sub-posts', {window.page}, (sub-posts) ->
+    $.getJSON "/resources/posts/#{window.active-post-id}/sub-posts", {window.page}, (sub-posts) ->
       if sub-posts.length # only append if there is something to append!
         lv.append "<div>#{JSON.stringify(sub-posts)}</div>"
       else
@@ -258,7 +258,7 @@ infinity-load-more = ->
     window.page = window.page + 1 # increment page for next operation
 
 # TODO: debounce with lodash
-$(window).scroll __.debounce(infinity-load-more, 10)
+$(window).scroll __.debounce(infinity-load-more, 25)
 
 # this is always chuggin along ; )
 # just in case scroll events fail to pre-emptively load

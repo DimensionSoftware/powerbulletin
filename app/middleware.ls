@@ -91,6 +91,9 @@ require! {
 ip-hits  = {}
 html_509 = fs.read-file-sync('public/509.html').to-string!
 @rate-limit = (req, res, next) ->
+  # in dev mode don't rate limit!! for goodness sakes man ; )
+  unless process.env.NODE_ENV in [\production \staging] then return next!
+
   whitelist = []
   ip = res.locals.remote-ip
   # don't block whitelisted people!
@@ -100,7 +103,7 @@ html_509 = fs.read-file-sync('public/509.html').to-string!
   ttl = 3 * 60 * 1000
 
   # how many hits allowed within ttl
-  threshold = 200
+  threshold = 300
 
   # algorithm:
   # 1. increment ip hit count
