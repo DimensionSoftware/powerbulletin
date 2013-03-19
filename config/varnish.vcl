@@ -17,17 +17,23 @@ sub depersonalize {
 }
 
 sub vcl_recv {
-  # force no trailing slash (except for homepage)
-  if (req.url != "/" && req.url ~ "(?i)/$") {
-    set req.http.Location = "https://" + req.http.host + regsub(req.url, "(.+)/$", "\1");
-    error 302 "Found"; 
-  }
-  # force ssl
-  else if (req.http.X-Forwarded-Proto !~ "(?i)https") {
+  # REDIRECT: force ssl
+  if (req.http.X-Forwarded-Proto !~ "(?i)https") {
     set req.http.Location = "https://" + req.http.host + req.url; 
     error 302 "Found"; 
   }
 
+  # pipe any socket.io requests
+  if (req.url ~ "(?i)^/socket\.io/") {
+    return (pipe);
+  }
+
+  # REDIRECT: force no trailing slash (except for homepage)
+  if (req.url != "/" && req.url ~ "(?i)/$") {
+    set req.http.Location = "https://" + req.http.host + regsub(req.url, "(.+)/$", "\1");
+    error 302 "Found"; 
+  }
+  
   # always depersonalize all cdn resources, ttls set automatically by backend
   if (req.http.host ~ "(?i)^muscache\d?\.(pb|pbstage|powerbulletin)\.com$") {
     call depersonalize;
@@ -72,7 +78,7 @@ sub vcl_error {
     # never cache this type of redirect
     set obj.ttl = 0s;
 
-    return(deliver); 
+    return (deliver); 
   }
   else if (obj.status == 500
            || obj.status == 502
@@ -80,6 +86,13 @@ sub vcl_error {
            || obj.status == 504)
   {
     synthetic std.fileread("public/50x.html");
-    return(deliver); 
+    return (deliver); 
   }
 } 
+
+sub vcl_pipe {
+  # WEBSOCKET support enabled, (have to get to pipe first, though)
+  if (req.http.upgrade ~ "(?i)websocket") {
+    set bereq.http.upgrade = req.http.upgrade;
+  }
+}
