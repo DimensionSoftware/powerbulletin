@@ -32,14 +32,20 @@ require! {
   show    : (req, res, next) ->
     db = pg.procs
     if post-id = parse-int(req.params.post)
-      console.log post-id
       err, post <- db.post post-id
       if err then return next err
       res.json post
     else
       return next 404
-  edit    : null
-  update  : null
+  edit    : (req, res, next) ->
+    console.log "editing #{req.params.post}"
+    return next(404) unless req.user # and authorized_as \admin
+    # TODO secure save/csrf, etc...
+    # TODO save post
+    #err <- db.edit-post(req.params.title, req.params.body)
+    res.json {success: true}
+  update  : (req, res, next) ->
+    console.log "editing #{req.params.post}"
   destroy : (req, res, next) ->
     return next(404) unless req.user
     db = pg.procs
