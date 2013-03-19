@@ -242,15 +242,14 @@ at-bottom = (pct-threshold = 0.9) ->
 # infinity scroll
 # TODO: pull data in from actual live feed
 # TODO: lazy scroll when you hit bottom (scrolltop madness)
-var lv
 infinity-load-more = ->
   if at-bottom! and !window.infinity-stop
-    unless lv # lazy initialize
-      lv := new infinity.ListView($('#main_content > .forum > .children'))
+    unless window.lv # lazy initialize
+      window.lv = new infinity.ListView($('#main_content > .forum > .children'))
 
     $.getJSON "/resources/posts/#{window.active-post-id}/sub-posts", {window.page}, (sub-posts) ->
       if sub-posts.length # only append if there is something to append!
-        lv.append "<div>#{JSON.stringify(sub-posts)}</div>"
+        window.lv.append "<div>#{JSON.stringify(sub-posts)}</div>"
       else
         # XXX: clear this flag once we want to infinity scroll again (ie after mutation?)
         window.infinity-stop = true
