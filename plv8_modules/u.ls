@@ -26,14 +26,14 @@ top-forums = (limit, fields='*') ->
   """
   (...args) -> plv8.execute sql, args.concat([limit])
 
-sub-forums = ->
-  sql = '''
-  SELECT *
+sub-forums = (id, fields='*') ->
+  sql = """
+  SELECT #{fields}
   FROM forums
   WHERE parent_id=$1
   ORDER BY created DESC, id DESC
-  '''
-  plv8.execute sql, arguments
+  """
+  plv8.execute sql, [id]
 
 top-posts = (sort, limit, fields='p.*') ->
   sort-expr =
@@ -94,6 +94,9 @@ export sub-posts-tree = sub-posts-tree = (site-id, parent-id, limit, offset, dep
 posts-tree = (site-id, forum-id, top-posts) ->
   [merge(p, {posts: sub-posts-tree(site-id, p.id, 10, 0)}) for p in top-posts]
 
+decorate-menu = (f) ->
+  merge f, {forums: [decorate-menu(sf) for sf in sub-forums(f.id, 'id,title,slug,uri,description,media_url')]}
+
 decorate-forum = (f, top-posts-fun) ->
   merge f, {posts: posts-tree(f.site_id, f.id, top-posts-fun(f.id)), forums: [decorate-forum(sf, top-posts-fun) for sf in sub-forums(f.id)]}
 
@@ -153,9 +156,8 @@ export uri-for-post = (post-id, first-slug = null) ->
 
 export menu = (site-id) ->
   # XXX: forums should always list in the same order, get rid of top-forums, and list in static order
-  forums-tree(site-id,
-    top-posts(\recent, null, 'p.created,p.title,p.slug,p.id'),
-    top-forums(null, 'id,title,slug,classes'))
+  top-menu-fun = top-forums(null, 'id,title,slug,uri,description,media_url')
+  [decorate-menu(f, top-menu-fun) for f in top-menu-fun(site-id)]
 
 export homepage-forums = (site-id) ->
   # XXX: forums should always list in the same order, get rid of top-forums, and list in static order

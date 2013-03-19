@@ -165,8 +165,7 @@ append-reply-ui = ->
     $subpost = $(this).parents('.post:first')
   post-id  = $subpost.data('post-id')
 
-  # FIXME html -- move to clientJade
-  reply-ui-html = """
+  # FIXME html -- move to clientJade reply-ui-html = """
   <form id="add_reply_submit" method="post" action="/resources/posts">
     <textarea name="body"></textarea>
     <input type="hidden" name="forum_id" value="#{window.active-forum-id}">

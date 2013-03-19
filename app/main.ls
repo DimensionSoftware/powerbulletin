@@ -44,6 +44,8 @@ proc = process
 
 proc.on 'uncaughtException', (e) -> throw e
 
+# XXX instead of rallying the troops, encapsulate for quicker & more resilient teardown/startup:
+#   - new System(config, db, express-apps...) # worker
 app = global.app = express!
 redir-to-domain  = express!
 cache-app        = express!
