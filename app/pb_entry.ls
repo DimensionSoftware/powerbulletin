@@ -256,6 +256,7 @@ infinity-load-more = ->
 
     $.getJSON "/resources/posts/#{window.active-post-id}/sub-posts", {window.page}, (sub-posts) ->
       if sub-posts.length # only append if there is something to append!
+        # TODO double-buffer jade template to DOM and append below
         window.lv.append "<div>#{JSON.stringify(sub-posts)}</div>"
       else
         # XXX: clear this flag once we want to infinity scroll again (ie after mutation?)
