@@ -256,6 +256,8 @@ infinity-load-more = ->
     unless window.lv # lazy initialize
       window.lv = new infinity.ListView($('#main_content > .forum > .children'))
 
+    window.page = window.page + 1 # increment page for next operation
+
     $.getJSON "/resources/posts/#{window.active-post-id}/sub-posts", {window.page}, (sub-posts) ->
       if sub-posts.length # only append if there is something to append!
         # TODO double-buffer jade template to DOM and append below
@@ -263,8 +265,6 @@ infinity-load-more = ->
       else
         # XXX: clear this flag once we want to infinity scroll again (ie after mutation?)
         window.infinity-stop = true
-
-    window.page = window.page + 1 # increment page for next operation
 
 # TODO: debounce with lodash
 $(window).scroll __.debounce(infinity-load-more, 25)
