@@ -244,33 +244,18 @@ at-bottom = (pct-threshold = 0.9) ->
 # TODO: lazy scroll when you hit bottom (scrolltop madness)
 var lv
 infinity-load-more = ->
-  if at-bottom!
+  if at-bottom! and !window.infinity-stop
     unless lv # lazy initialize
       lv := new infinity.ListView($('#main_content > .forum > .children'))
 
-    html = '''
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    <div class=\"post\">infinity WUZ here!</div>
-    '''
-    set-timeout (-> lv.append(html)), 1
+    $.getJSON '/resources/posts/6/sub-posts', {window.page}, (sub-posts) ->
+      if sub-posts.length # only append if there is something to append!
+        lv.append "<div>#{JSON.stringify(sub-posts)}</div>"
+      else
+        # XXX: clear this flag once we want to infinity scroll again (ie after mutation?)
+        window.infinity-stop = true
+
+    window.page = window.page + 1 # increment page for next operation
 
 # TODO: debounce with lodash
 $(window).scroll __.debounce(infinity-load-more, 10)

@@ -203,8 +203,8 @@ auth-finisher = (req, res, next) ->
     if !fdoc then return next(404)
     if fdoc.sub-posts-tree.length < 1 then return next(404)
 
-    # attach sub-post to fdoc
-    fdoc <<< {sub-post, forum-id:sub-post.forum_id}
+    # attach sub-post to fdoc, among other things
+    fdoc <<< {sub-post, forum-id:sub-post.forum_id, page}
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.sub-post.posts = delete fdoc.sub-posts-tree
 
@@ -345,5 +345,20 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   (err, r) <- db.censor command
   if err then next err
   res.json r
+
+@sub-posts = (req, res, next) ->
+  post-id = parse-int(req.params.id) || null
+  if post-id is null then return next(404)
+
+  page = parse-int(req.query.page) || 1
+  if page < 1 then return next(404)
+
+  limit = 5
+  offset = (page - 1) * limit
+
+  err, sub-posts <- db.sub-posts-tree res.locals.site.id, post-id, limit, offset
+  if err then return next err
+
+  res.json sub-posts
 
 # vim:fdm=indent

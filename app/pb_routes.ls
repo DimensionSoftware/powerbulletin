@@ -13,7 +13,9 @@ global <<< require './helpers' # pull helpers (common) into global (play nice :)
 
 # <API RESOURCES>
 # ---------
-app.resource 'resources/posts',  resources.post
+app.resource 'resources/posts', resources.posts
+
+app.get '/resources/posts/:id/sub-posts', handlers.sub-posts
 
 app.post '/resources/posts/:id/impression', handlers.add-impression
 app.post '/resources/posts/:id/censor', handlers.censor

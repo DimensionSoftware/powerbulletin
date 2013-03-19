@@ -11,7 +11,7 @@ require! {
     (err, user) <- db.find-or-create user
     res.json user
 
-@post =
+@posts =
   index   : (req, res) ->
     res.locals.fid = req.query.fid
     res.locals.pid = req.query.pid

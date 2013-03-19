@@ -126,6 +126,7 @@ is-editing = ->
       window.render-mutant 'main_content' \posts
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
+      window.marshal \page @page
       layout-static window, \forum, @active-forum-id
       next!
   on-load:
