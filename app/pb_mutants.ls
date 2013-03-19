@@ -127,6 +127,7 @@ is-editing = ->
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
       window.marshal \page @page
+      window.marshal \lv null # clear list view, so it can be re-initialized
       window.marshal \infinityStop false # clear flag to stop infinity at end of pages
       layout-static window, \forum, @active-forum-id
       next!
