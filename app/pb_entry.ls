@@ -1,4 +1,5 @@
 window.__ = require \lodash
+window.ioc = require './io_client'
 
 # XXX client-side entry
 

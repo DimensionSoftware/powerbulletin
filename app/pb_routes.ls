@@ -30,6 +30,7 @@ common-js = [
   "#{cvars.cache3_url}/fancybox/jquery.fancybox.pack.js",
   "#{cvars.cache3_url}/local/jquery.transit-0.9.9.min.js",
   "#{cvars.cache3_url}/local/infinity.min.js",
+  "#{cvars.cache4_url}/socket.io/socket.io.js",
   "#{cvars.cache4_url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
 common-css = [
   "#{cvars.cache2_url}/fancybox/jquery.fancybox.css",
