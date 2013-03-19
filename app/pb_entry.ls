@@ -155,12 +155,14 @@ submit-form = ->
   $f = $ this .closest(\form)
 
   # TODO use $.ajax
-  if $f.attr \method is \get
-    # do something
-  else
-    $.post $f.attr(\action), $f.serialize!, (_r1, _r2, res) ->
-      $f.hide 300
+  $.ajax $f.attr(\action), {
+    type:$f.attr(\method)
+    data:$f.serialize!
+    success: (data, _r2, res) ->
       # TODO -- render jade post on client side with from-server json objects
+      console.log data
+      $f.hide 300
+  }
   false
 
 # show reply ui
