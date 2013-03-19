@@ -29,7 +29,15 @@ require! {
       c.invalidate-forum post.forum_id, console.warn
 
     res.json ap-res
-  show    : null
+  show    : (req, res, next) ->
+    db = pg.procs
+    if post-id = parse-int(req.params.post)
+      console.log post-id
+      err, post <- db.post post-id
+      if err then return next err
+      res.json post
+    else
+      return next 404
   edit    : null
   update  : null
   destroy : (req, res, next) ->
