@@ -14,11 +14,9 @@ global <<< require './helpers' # pull helpers (common) into global (play nice :)
 # <API RESOURCES>
 # ---------
 app.resource 'resources/posts', resources.posts
-
-app.get '/resources/posts/:id/sub-posts', handlers.sub-posts
-
+app.get  '/resources/posts/:id/sub-posts',  handlers.sub-posts
 app.post '/resources/posts/:id/impression', handlers.add-impression
-app.post '/resources/posts/:id/censor', handlers.censor
+app.post '/resources/posts/:id/censor',     handlers.censor
 
 # <PAGE HANDLERS & MISC.>
 # ---------
@@ -32,6 +30,7 @@ common-js = [
   "#{cvars.cache3_url}/fancybox/jquery.fancybox.pack.js",
   "#{cvars.cache3_url}/local/jquery.transit-0.9.9.min.js",
   "#{cvars.cache3_url}/local/infinity.min.js",
+  "#{cvars.cache4_url}/socket.io/socket.io.js",
   "#{cvars.cache4_url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
 common-css = [
   "#{cvars.cache2_url}/fancybox/jquery.fancybox.css",

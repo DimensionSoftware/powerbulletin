@@ -1,4 +1,5 @@
 window.__ = require \lodash
+window.ioc = require './io_client'
 
 # XXX client-side entry
 
@@ -152,9 +153,14 @@ $ '#query' .focus!
 submit-form = ->
   # TODO guard
   $f = $ this .closest(\form)
-  $.post $f.attr(\action), $f.serialize!, (_r1, _r2, res) ->
-    $f.hide 300
-    # TODO -- render jade post on client side with from-server json objects
+
+  # TODO use $.ajax
+  if $f.attr \method is \get
+    # do something
+  else
+    $.post $f.attr(\action), $f.serialize!, (_r1, _r2, res) ->
+      $f.hide 300
+      # TODO -- render jade post on client side with from-server json objects
   false
 
 # show reply ui
@@ -197,7 +203,8 @@ censor = ->
       console.warn r.errors.join(', ')
 
 #{{{ Delegated Events
-$d.on \click '#add_post_submit' require-login(submit-form)
+#$d.on \click '#add_post_submit' require-login(submit-form)
+$d.on \click '#edit_post_form input[type="submit"]' require-login(submit-form)
 $d.on \click '#add_reply_submit input[type="submit"]' require-login(submit-form)
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 $d.on \click '.onclick-censor-post' require-login(censor)
@@ -249,6 +256,7 @@ infinity-load-more = ->
 
     $.getJSON "/resources/posts/#{window.active-post-id}/sub-posts", {window.page}, (sub-posts) ->
       if sub-posts.length # only append if there is something to append!
+        # TODO double-buffer jade template to DOM and append below
         window.lv.append "<div>#{JSON.stringify(sub-posts)}</div>"
       else
         # XXX: clear this flag once we want to infinity scroll again (ie after mutation?)

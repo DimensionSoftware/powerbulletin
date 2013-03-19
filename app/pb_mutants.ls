@@ -152,10 +152,11 @@ is-editing = ->
       $f.css('padding-left', ($l.width! + 20))
 
       # handle in-line editing
-      id = is-editing!
-      id = if id then "\#subpost_#{id}" else \BOTTOM
-      dom-insert window, id, \post_edit, {post:{id:123}}
-      $ id .add-class \editing
+      id  = is-editing!
+      sel = if id then "\#subpost_#{id}" else \BOTTOM
+      $.get "/resources/posts/#{id}" (p) ->
+        dom-insert window, sel, \post_edit, {post:p?[0]}
+        $ sel .add-class \editing
 
       # add impression
       post-id = $('#main_content .post:first').data('post-id')

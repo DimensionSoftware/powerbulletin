@@ -1,5 +1,5 @@
 (function(){
-  var merge, title2slug, topForums, subForums, topPosts, subPosts, subPostsTree, postsTree, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, menu, homepageForums, forums, topThreads, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
+  var merge, title2slug, topForums, subForums, topPosts, subPosts, subPostsTree, postsTree, decorateMenu, decorateForum, doc, putDoc, forumTree, forumsTree, uriForForum, uriForPost, menu, homepageForums, forums, topThreads, out$ = typeof exports != 'undefined' && exports || this, slice$ = [].slice;
   out$.merge = merge = merge = function(){
     var args, r;
     args = slice$.call(arguments);
@@ -28,10 +28,11 @@
       return plv8.execute(sql, args.concat([limit]));
     };
   };
-  subForums = function(){
+  subForums = function(id, fields){
     var sql;
-    sql = 'SELECT *\nFROM forums\nWHERE parent_id=$1\nORDER BY created DESC, id DESC';
-    return plv8.execute(sql, arguments);
+    fields == null && (fields = '*');
+    sql = "SELECT " + fields + "\nFROM forums\nWHERE parent_id=$1\nORDER BY created DESC, id DESC";
+    return plv8.execute(sql, [id]);
   };
   topPosts = function(sort, limit, fields){
     var sortExpr, sql;
@@ -90,6 +91,19 @@
       }));
     }
     return results$;
+  };
+  decorateMenu = function(f){
+    var sf;
+    return merge(f, {
+      forums: (function(){
+        var i$, ref$, len$, results$ = [];
+        for (i$ = 0, len$ = (ref$ = subForums(f.id, 'id,title,slug,uri,description,media_url')).length; i$ < len$; ++i$) {
+          sf = ref$[i$];
+          results$.push(decorateMenu(sf));
+        }
+        return results$;
+      }())
+    });
   };
   decorateForum = function(f, topPostsFun){
     var sf;
@@ -176,7 +190,13 @@
     }
   };
   out$.menu = menu = function(siteId){
-    return forumsTree(siteId, topPosts('recent', null, 'p.created,p.title,p.slug,p.id'), topForums(null, 'id,title,slug,classes'));
+    var topMenuFun, i$, ref$, len$, f, results$ = [];
+    topMenuFun = topForums(null, 'id,title,slug,uri,description,media_url');
+    for (i$ = 0, len$ = (ref$ = topMenuFun(siteId)).length; i$ < len$; ++i$) {
+      f = ref$[i$];
+      results$.push(decorateMenu(f, topMenuFun));
+    }
+    return results$;
   };
   out$.homepageForums = homepageForums = function(siteId){
     return forumsTree(siteId, topPosts('recent', 10), topForums());

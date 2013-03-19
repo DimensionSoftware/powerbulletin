@@ -6,6 +6,7 @@ require! {
   async
   cluster
   express
+  http
   \express-resource
   \express-validator
   stylus
@@ -13,6 +14,7 @@ require! {
   './auth'
   pg: './postgres'
   v: './varnish'
+  io-server: './io_server'
 }
 global <<< require \prelude-ls
 
@@ -44,6 +46,8 @@ proc = process
 
 proc.on 'uncaughtException', (e) -> throw e
 
+# XXX instead of rallying the troops, encapsulate for quicker & more resilient teardown/startup:
+#   - new System(config, db, express-apps...) # worker
 app = global.app = express!
 redir-to-domain  = express!
 cache-app        = express!
@@ -202,6 +206,11 @@ else
   for i in ['', 2, 3, 4, 5]
     sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{cvars.cache_domain}", cache-app)
 
-  sock.listen proc.env['NODE_PORT'] || cvars.port
+  # need this for socket.io
+  server = http.create-server sock
+  io-server.init server
+
+  server.listen proc.env['NODE_PORT'] || cvars.port
+  #sock.listen   proc.env['NODE_PORT'] || cvars.port
 #}}}
 # vim:fdm=marker

@@ -11,6 +11,11 @@ CREATE FUNCTION put_doc(site_id JSON, type JSON, key JSON, val JSON) RETURNS JSO
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 -- Posts {{{
+DROP FUNCTION IF EXISTS post(id JSON);
+CREATE FUNCTION post(id JSON) RETURNS JSON AS $$
+  return plv8.execute('SELECT * FROM posts WHERE id=$1', [id])
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 -- THIS IS ONLY FOR TOPLEVEL POSTS
 -- TODO: needs to support nested posts also, and update correct thread-id
 DROP FUNCTION IF EXISTS add_post(post JSON);
