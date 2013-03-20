@@ -18,7 +18,16 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS edit_post(post JSON);
 CREATE FUNCTION edit_post(post JSON) RETURNS JSON AS $$
-  return plv8.execute('UPDATE posts SET title=$1,body=$2 WHERE id=$3', [post.title, post.body, post.id])
+  require! <[u validations]>
+  errors = validations.post(post)
+
+  # check ownership & access
+  fn = plv8.find_function('post')
+  r = fn(post.id)
+  errors.push "Higher access required" unless r.length
+  unless errors.length
+    return plv8.execute('UPDATE posts SET title=$1,body=$2 WHERE id=$3', [post.title, post.body, post.id])
+  return {success: !errors.length, errors}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- THIS IS ONLY FOR TOPLEVEL POSTS

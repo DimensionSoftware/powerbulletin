@@ -39,14 +39,13 @@ require! {
       return next 404
   edit    : null
   update  : (req, res, next) ->
-    console.log "editing #{req.params.post}"
-    console.log "editing #{JSON.stringify req.params.title}"
-    return next(404) unless req.user # and authorized_as \admin
-    # TODO secure save/csrf, etc...
-    # TODO save post
-    err <- db.edit-post(req.params.title)
+    return next(404) unless req.user # or authorized_as \admin
+    # TODO secure csrf, etc...
+    # save post
+    req.body.user_id = req.user.id
+    err, r <- db.edit-post(req.body)
     if err then return next err
-    res.json {success: true}
+    res.json r
   destroy : (req, res, next) ->
     return next(404) unless req.user
     db = pg.procs
