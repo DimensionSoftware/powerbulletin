@@ -240,8 +240,8 @@ CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
     memo.auths[auth.type] = auth.profile
     memo
   user = auths.reduce make-user, { auths: {} }
-  user.rights = auths[0].rights
-  user.created = auths[0].created
+  user.rights = auths[0]?.rights
+  user.created = auths[0]?.created
   return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
@@ -419,6 +419,16 @@ CREATE FUNCTION censor(c JSON) RETURNS JSON AS $$
     plv8.execute sql, [c.user_id, c.post_id, c.reason]
 
   return {success: !errors.length, errors}
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+DROP FUNCTION IF EXISTS all_sub_post_ids(parent_id JSON);
+CREATE FUNCTION all_sub_post_ids(parent_id JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT id FROM posts
+  WHERE parent_id=$1
+  ORDER BY created DESC, id ASC
+  '''
+  return plv8.execute(sql, [parent_id]).map (.id)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- vim:fdm=marker
