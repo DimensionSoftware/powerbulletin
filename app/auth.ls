@@ -57,12 +57,12 @@ pg.init ~>
 
     pass.serialize-user (user, done) ~>
       parts = "#{user.name}:#{user.site_id}"
-      console.warn "serialize", parts
+      #console.warn "serialize", parts
       done null, parts
 
     pass.deserialize-user (parts, done) ~>
       [name, site_id] = parts.split ':'
-      console.warn "deserialize", name, site_id
+      #console.warn "deserialize", name, site_id
       (err, user) <~ db.usr {name, site_id}
       done err, user
 
