@@ -57,12 +57,13 @@ body
 body.searching header
   .menu
     .row
-      line-height 30px!important
+      top -1px
+      line-height 29px!important
       font-size 16px!important
 body.scrolled
   .logo
     a
-      top -(grid/2)
+      top -(grid - 2)
       font-size .68em
   header
     height header-scrolled-height
@@ -72,7 +73,8 @@ body.scrolled
           .submenu
             top 33px
         .row
-          line-height 30px
+          top -1px
+          line-height 29px
           font-size 16px
       .search
         top 0!important
@@ -88,7 +90,7 @@ body.scrolled
     padding-top (grid * 4)
     transition padding-top .2s ease-out
     .handle
-      top (header-scrolled-height - (grid+5))
+      top (header-scrolled-height - (grid*2))
       transition top .2s ease-out
   footer
     opacity 1
@@ -99,7 +101,7 @@ body.scrolled
 //{{{ Structure applied when body is collapsed
 body.collapsed
   .logo a
-    left 56px
+    left 50px
   .left-content.container
     width grid!important
     transition width .1s
@@ -286,7 +288,7 @@ header
     height 30px
     width 30px
     top (header-height - (grid*2))
-    right -20px
+    right -26px
     cursor pointer
     position absolute
     text-align center

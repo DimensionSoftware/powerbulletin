@@ -2,8 +2,9 @@
 
 // XXX default theme containing all color decoration & embellishments
 
-highlight-color  = #ffeedd
-highlight-color2 = #ff6803
+highlight-color             = #ffeedd
+highlight-color2            = #ff6803
+highlight-color-translucent = rgba(255,100,50,.3)
 mouse-intent = .2s
 grid = 10px
 
@@ -44,14 +45,25 @@ grid = 10px
     transform translateY(30px), skew(-1deg, 3deg)
   100%
     transform translateY(0px), skew(0, 0)
+@keyframes shrink
+  0%
+    opacity 0
+    transform scale(.9)
+  70%
+    transform scale(1)
+  85%
+    opacity 1
+    transform scale(.99)
+  100%
+    transform scale(1)
 //}}}
 
 //{{{ Style applied after body scrolls
 body.scrolled
   header
     //background-color rgba(0,0,0,0.7)
-    background-color rgba(255,255,255,0.85)
-    box-shadow 0 -1px 15px 4px #ddd,0 1px 0 0 #bbb
+    background-color rgba(255,255,255,0.95)
+    box-shadow 0 -1px 15px 4px #ddd,0 -1px 0px 0 #bbb inset
     border-bottom 1px solid #fff
     transition height .2s ease-out, background-color .5s ease-out
     .container
@@ -279,16 +291,15 @@ header
   //background-color #eee
   border-right 1px solid #444
   .handle:hover
-    box-shadow 0 0 5px #999, 0 0 1px 1px #777
-    background-color #fff
-    color #000
-    border-color highlight-color2
-    transition box-shadow .2s ease-out
+    //box-shadow 0 0 5px #999, 0 0 1px 1px #777
+    color #fff
+    border-color #eee
+    transition border-color .2s ease-out
   .handle
-    box-shadow 0 0 1px 1px #999
-    background-color #ddd
-    border 4px solid #fff
-    transition all .4s ease-out
+    //box-shadow 0 0 1px 1px #999
+    background-color #888
+    border 5px solid #fff
+    color #eee
   .title
     letter-spacing -1px
     font-size 1.1em
@@ -585,23 +596,23 @@ footer
 input[type="password"], select, textarea, input[type="text"]
   //box-shadow 0 0 9px #cba inset, 0 0 0 #888
   border-radius 3px
-  color #888
+  color #777
   background-image linear-gradient(top, highlight-color 1px, #fff 10px)
   outline none
   margin-bottom 4px
   padding 8px
   border 1px solid #ddd
-  border-right 1px solid #888
-  border-bottom 1px solid #666
+  border-right 1px solid #999
+  border-bottom 1px solid #888
   font-size 18px
   vertical-align middle
   outline none
 input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:hover
   color #555
   border-color #ddd
-  border-bottom 1px solid #555
-  border-right 1px solid #666
-  box-shadow 0 0 1px highlight-color2 inset,1px 0 2px highlight-color
+  border-bottom 1px solid #888
+  border-right 1px solid #999
+  box-shadow 1px 1px 1px highlight-color-translucent,1px 0 2px highlight-color
 input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #000
   position relative
@@ -609,7 +620,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   background-color #fffcfc
   border 1px solid highlight-color2
   border-bottom 1px solid highlight-color2
-  box-shadow -1px 0px 2px #aaa inset,0 0 1px orange,-1px 0px 0 #ff3800,1px 1px 0 #555,0 0 4px #faa
+  box-shadow -1px 0px 2px #aaa inset,0 0 1px highlight-color-translucent,1px 1px 0 #666
   transition all .15s
   border-radius 4px
 .button:hover::before
@@ -620,11 +631,11 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   background -webkit-gradient(linear, left top, left bottom, from(#ffce29), to(#f38437))
   //text-indent -2px
   background-color #ffca27
-  border-color #777
+  border-color #555
   border-top 1px solid #fff467
   border-left 1px solid #fff467
   border-bottom 1px solid #444
-  box-shadow 0 0 5px #888, 0 0 3px 1px #c35407
+  box-shadow 0 0 5px #bbb, 0 0 3px 1px #c35407
   text-shadow 0px 1px 0 black,1px 1px 0 black
   transition text-indent .2s, border-color .1s, box-shadow .1s
 .button:active::before
@@ -664,9 +675,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   background -webkit-gradient(linear, left top, left bottom, from(#FFC447), to(#F38437))
   background-color #F38437
   box-shadow 0px 0px 3px #C35407
-  border 1px solid #999
-  border-bottom 1px solid #555
-  border-right  1px solid #666
+  border 1px solid #555
   border-top 1px solid #ffe457
   border-left 1px solid #ffe457
   color #fff
@@ -676,6 +685,9 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   text-align center
 //}}}
 //{{{ Fancybox
+.shrink
+  animation-name shrink
+  animation-duration .4s
 .slide
   animation-name slide
   animation-duration .2s
