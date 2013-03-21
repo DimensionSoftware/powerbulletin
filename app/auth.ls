@@ -3,6 +3,7 @@
 
 require! {
   \async
+  \bcrypt
   \passport
   \passport-local
   \passport-facebook
@@ -17,7 +18,8 @@ export passport-for-site = {}
 
 # XXX - only exported for debugging convenience
 # XXX - what's a good way to hash local passwords?
-export hash = (s) -> s
+export hash = (s) ->
+  bcrypt.hash-sync s, 5
 
 # site-aware passport middleware wrappers
 export mw =
@@ -37,7 +39,7 @@ export mw =
 # XXX - only exported for debugging convenience
 export valid-password = (user, password) ->
   return false if not user or not password
-  hash(user?.auths?.local?.password) == hash(password)
+  bcrypt.compare-sync password, user?.auths?.local?.password
 
 # XXX - gotdamn
 pg.init ~>
