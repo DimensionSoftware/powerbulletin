@@ -233,6 +233,8 @@ CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   AND a.site_id = $2
   """
   auths = plv8.execute(sql, [ usr.name, usr.site_id ])
+  if auths.length == 0
+    return null
   make-user = (memo, auth) ->
     memo.id = auth.id
     memo.site_id = auth.site_id

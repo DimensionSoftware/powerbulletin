@@ -24,11 +24,13 @@ window.save-ui = ->
   $.cookie \s, vals.join(sep),
     path: '/'
 window.load-ui = ->
-  s = ($.cookie \s)
+  s  = ($.cookie \s)
+  $l = $ '#left_content'
   if s
     [searching, collapsed, w] = s.split sep
     w = parseInt w
-    $ '#left_content' .transition({width:w}, 500, 'easeOutExpo') # restore left nav
+    $l.transition({width:w}, 500, 'easeOutExpo' -> # restore left nav
+      $l.toggle-class \narrow ($l.width! < 300))
     set-timeout (-> # ... & snap
       $ '#main_content.container .forum' .transition({padding-left:w}, 450, \snap)), 200
   if searching is not '0' then $ \body .add-class(\searching)

@@ -141,17 +141,15 @@ is-editing = ->
       $f = $ '#main_content.container .forum'
 
       # handle left
-      classes = (w) -> if w < 300 then $l.add-class \narrow else $l.remove-class \narrow
       $l = $ '#left_content'
       $l.resizable(
         min-width: 200
         max-width: 450
         resize: (e, ui) ->
           align-breadcrumb!
-          classes ui.size.width
+          $l.toggle-class \narrow (ui.size.width < 300)
           $f.css('padding-left', ui.size.width); window.save-ui!)
       $f.css('padding-left', ($l.width! + 20))
-      classes $l.width!
 
       # handle in-line editing
       id  = is-editing!

@@ -18,23 +18,27 @@ threshold = 10 # snap
 ##
 #{{{ Bootstrap Mutant Common
 window.mutant  = require '../lib/mutant/mutant'
-window.mutate  = (e) ->
-  href = $ this .attr \href
+window.mutate  = (event) ->
+  $e = $ this
+  href = $e .attr \href
   return false unless href # guard
   return true if href?.match /#/
-  search-params = {}
-  History.push-state {search-params}, '', href
+  params = {}
+  params.no-surf = true if $e.has-class \no-surf
+  History.push-state {params}, '', href
   false
 
 $d.on \click 'a.mutant' window.mutate # hijack urls
 
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
-  url = History.get-page-url!replace /\/$/, ''
-  $.get url, _surf:1, (r) ->
-    $d.attr \title, r.locals.title if r.locals?.title # set title
-    on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
-    on-unload window, -> # cleanup & run next mutant
-      window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}
+  url    = History.get-page-url!replace /\/$/, ''
+  params = History.get-state!data?.params
+  unless params.no-surf # DOM update handled outside mutant
+    $.get url, _surf:1, (r) ->
+      $d.attr \title, r.locals.title if r.locals?.title # set title
+      on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
+      on-unload window, -> # cleanup & run next mutant
+        window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}
   return false
 #}}}
 #{{{ Scrolling behaviors
