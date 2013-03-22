@@ -17,14 +17,15 @@ if typeof(subPost) !== 'undefined'
       mixin actions(subPost)
     if subPost.posts.length
       .children
-        each sp in subPost.posts
-          mixin subpost(sp, 0)
+        div(data-page=1)
+          each sp in subPost.posts
+            mixin subpost(sp, 0)
 
     else if subPost.morePosts
       a(href='#') Load More Sub-Posts . . .
 
 #paginator
   each pg in pages
-    a.page= pg
+    a.page(class=(pg == 1 ? 'active' : ''))= pg
 
 //- vim:fdm=marker
