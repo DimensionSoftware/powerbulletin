@@ -619,6 +619,8 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   background-color #fffcfc
   border 1px solid highlight-color2
   border-bottom 1px solid highlight-color2
+  border-top 1px solid #fca
+  border-left 1px solid #eb9
   box-shadow -1px 0px 2px #aaa inset,0 0 1px highlight-color-translucent,1px 1px 0 #666
   transition all .15s
   border-radius 4px
@@ -634,9 +636,9 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   border-top 1px solid #fff467
   border-left 1px solid #fff467
   border-bottom 1px solid #444
-  box-shadow 0 0 5px #bbb, 0 0 3px 1px #c35407
+  box-shadow 0 0 5px #bbb,0 1px 5px 0 #c35407
   text-shadow 0px 1px 0 black,1px 1px 0 black
-  transition text-indent .2s, border-color .1s, box-shadow .1s
+  transition box-shadow .08s
 .button:active::before
   background-color rgba(0,0,0,.15)
   border-radius 7px
@@ -648,12 +650,11 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   //text-indent 2px
   border-top 1px solid #666
   border-left 1px solid #666
-  box-shadow 0 0 2px #888, 1px 1px 1px #a33400 inset
-  box-shadow 0px 0px 3px #C35407
-  text-shadow 1px 1px 0 black
+  box-shadow 0 0 1px #777, 1px 1px 1px #a33400 inset,0 1px 3px #aaa
+  text-shadow 1px 1px 2px black,0 1px 1px black
   border-bottom 1px solid highlight-color2
   border-right 1px solid highlight-color2
-  transition text-indent .3s, border-color .2s, box-shadow .2s
+  transition box-shadow .08s
 .button::before
   position absolute
   content ''
