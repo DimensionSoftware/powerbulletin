@@ -33,6 +33,7 @@ html
     if js_urls
       |<script type="text/javascript">
       |  window.initialMutant = !{JSON.stringify(initialMutant)};
+      |  window.cache_url = !{JSON.stringify(cvars.cache_url)};
       |  head.js.apply(head, !{JSON.stringify(cvars.base_js_urls.concat(js_urls))});
       |</script>
 

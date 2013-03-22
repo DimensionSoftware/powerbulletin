@@ -5,7 +5,6 @@ layout-static = (w, mutator, forum-id=0) ->
   forum-class = if forum-id then " forum-#{forum-id}" else ''
   w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
   w.marshal \mutator, mutator                        # js
-  w.marshal \cache_url, @cvars.cache_url
   # handle active forum background
   w.$ '.bg-set' .remove!
   w.$ '.bg' .each -> w.$ this .add-class \bg-set .remove!prepend-to w.$ 'body' # position behind
