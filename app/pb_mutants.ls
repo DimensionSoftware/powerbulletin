@@ -5,6 +5,7 @@ layout-static = (w, mutator, forum-id=0) ->
   forum-class = if forum-id then " forum-#{forum-id}" else ''
   w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
   w.marshal \mutator, mutator                        # js
+  w.marshal \cache_url, @cvars.cache_url
   # handle active forum background
   w.$ '.bg-set' .remove!
   w.$ '.bg' .each -> w.$ this .add-class \bg-set .remove!prepend-to w.$ 'body' # position behind
@@ -141,6 +142,9 @@ align-breadcrumb = ->
       # handle scrolling
       scroll-to-edit!
 
+      render-sp = (sub-post) ->
+        window.jade.templates._sub_post({window.cache_url, sub-post})
+
       lazy = ->
         $(this).find('[data-page]:not(.page-loaded)').each ->
           $pg = $(this)
@@ -149,8 +153,8 @@ align-breadcrumb = ->
           page = $pg.data(\page)
 
           sub-posts <- $.getJSON "/resources/posts/#{window.active-post-id}/sub-posts", {page}
-          $pg.html "<b>loaded page #page at #{new Date}</b><div>#{JSON.stringify(sub-posts)}</div>"
-          $pg.height
+          for sub-post in sub-posts
+            $pg.append render-sp(sub-post)
 
       # initialize ListView
       $children = $('#main_content > .forum > .children')
