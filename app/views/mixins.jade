@@ -1,0 +1,38 @@
+mixin breadcrumb(p)
+  path  = ''
+  parts = p.uri.split('/')
+  parts = parts.splice(1, parts.length-2)
+  each part in parts
+    if part != 't'
+      a.mutant(href="/#{path}#{part}")= part.replace('-', ' ')
+    - path = path + part + '/'
+  span /
+  em= p.title
+
+mixin actions(post)
+  .actions
+    a.onclick-append-reply-ui Reply
+    a.edit.mutant.no-surf(href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
+    a.mutant(href=post.uri) Permalink
+    if (typeof(user) !== 'undefined' && user) && user.rights.super
+      a.onclick-censor-post Censor
+
+mixin subpost(sp, i)
+  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even', data-user-id=sp.user_id, data-post-id=sp.id)
+    if sp.title
+      h4.title= sp.title
+    .profile.photo
+      img(src="#{cache_url}/#{sp.user_photo}")
+    .user= sp.user_name
+    .date(data-time=sp.created_iso)= sp.created_human
+    if sp.body
+      p.body!= sp.body
+    .reply
+    mixin actions(sp)
+  if sp.posts.length
+    .children
+      each pp, ii in sp.posts
+        mixin subpost(pp, ii)
+  else if sp.morePosts
+    a(href='#') Load More Sub-Posts . . .
+
