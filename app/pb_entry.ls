@@ -228,6 +228,12 @@ $d.on \click '.onclick-show-choose' ->
   switch-and-focus '.fancybox-wrap' \on-login \on-choose '#auth input[name=username]'
 $d.on \click '.onclick-show-register' ->
   switch-and-focus '.fancybox-wrap' \on-login \on-register '#auth input[name=username]'
+
+# catch esc key events on input boxes for login box
+$d.on \keyup '.fancybox-inner input' ->
+  if it.which is 27 # enter key
+    $.fancybox.close!
+    return false
 #}}}
 
 at-bottom = (pct-threshold = 0.7) ->
