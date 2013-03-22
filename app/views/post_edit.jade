@@ -9,7 +9,7 @@ mixin post-edit(p)
       input(type='hidden', name='forum_id', value=p.forum_id)
       input(type='hidden', name='csrf', value=p.csrf)
       input.button(type='submit', value='Save')
-      input.button.cancel(type='button', value='Cancel', onclick="window.history.go(-1)")
+      input.button.cancel(type='button', value='Cancel')
     .preview
 
 if typeof(post) !== 'undefined'
