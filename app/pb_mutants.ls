@@ -127,8 +127,7 @@ is-editing = ->
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
       window.marshal \page @page
-      window.marshal \lv null # clear list view, so it can be re-initialized
-      window.marshal \infinityStop false # clear flag to stop infinity at end of pages
+      window.marshal \morePostIds @more-post-ids # posts which infinity.js will load
       layout-static window, \forum, @active-forum-id
       next!
   on-load:
@@ -167,6 +166,24 @@ is-editing = ->
 
       # handle scrolling
       scroll-to-edit!
+
+      lazy = ->
+        $(this).find('[data-page]:not(.page-loaded)').each ->
+          $pg = $(this)
+          $pg.add-class \page-loaded
+          $pg.css height:\auto
+          page = $pg.data(\page)
+
+          sub-posts <- $.getJSON "/resources/posts/#{window.active-post-id}/sub-posts", {page}
+          $pg.html "<b>loaded page #page at #{new Date}</b><div>#{JSON.stringify(sub-posts)}</div>"
+          $pg.height
+
+      # initialize ListView
+      $children = $('#main_content > .forum > .children')
+      html = $children.html!
+      $children.html ''
+      window.lv = new infinity.ListView($children, {lazy})
+      window.lv.append(html) # lift static html into the listview
 
       next!
   on-mutate:
