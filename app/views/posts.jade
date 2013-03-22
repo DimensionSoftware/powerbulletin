@@ -23,4 +23,8 @@ if typeof(subPost) !== 'undefined'
     else if subPost.morePosts
       a(href='#') Load More Sub-Posts . . .
 
+#paginator
+  each pg in pages
+    a.page= pg
+
 //- vim:fdm=marker
