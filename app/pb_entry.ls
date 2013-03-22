@@ -255,7 +255,7 @@ at-bottom = (pct-threshold = 0.7) ->
 # infinity scroll -- function to add placeholders divs for pages
 # TODO: calculate actual number of pages to be appended (there is a max)
 infinity-load-more-placeholders = ->
-  if at-bottom! and window.lv
+  if at-bottom! and window.lv and window.page < window.pages-count
     window.page = window.page + 1 # increment page for next operation
     window.lv.append "<div data-page=\"#{window.page}\">Placeholder Page ##{window.page}</div>"
 
