@@ -232,6 +232,7 @@ auth-finisher = (req, res, next) ->
 
     fdoc <<< {forum-id}
     fdoc.active-forum-id = fdoc.forum-id
+    fdoc.pages = [1] # XXX - @matt - what's the right value to put here?
 
     finish fdoc
 
