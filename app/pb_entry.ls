@@ -1,5 +1,6 @@
-window.__ = require \lodash
+window.__  = require \lodash
 window.ioc = require './io_client'
+global <<< require './pb_helpers'
 
 # XXX client-side entry
 
@@ -153,20 +154,16 @@ align-breadcrumb!
 load-ui!
 $ '#query' .focus!
 
-# assumes immediate parent is form (in case of submit button)
-submit-form = ->
-  # TODO guard
-  $f = $ this .closest(\form)
-
-  # TODO use $.ajax
-  $.ajax $f.attr(\action), {
-    type:$f.attr(\method)
-    data:$f.serialize!
-    success: (data, _r2, res) ->
-      # TODO -- render jade post on client side with from-server json objects
-      console.log data
-      $f.hide 300
-  }
+# for general form submission
+submit-form = (event, fn) ->
+  $f = $ event.target .closest(\form) # get event's form
+  $.ajax {
+    url:      $f.attr(\action)
+    type:     $f.attr(\method)
+    data:     $f.serialize!
+    data-type: \json
+    success:  (data) ->
+      if fn then fn.call $f, data}
   false
 
 # show reply ui
@@ -209,8 +206,18 @@ censor = ->
       console.warn r.errors.join(', ')
 
 #{{{ Delegated Events
-#$d.on \click '#add_post_submit' require-login(submit-form)
-$d.on \click '#edit_post_form input[type="submit"]' require-login(submit-form)
+$d.on \click '.no-surf' require-login(-> edit-post is-editing!)
+$d.on \click '#edit_post_form input[type="submit"]' require-login(
+  (e) -> submit-form(e, (data) ->
+    $f = $ this .closest('.container') # form
+    $p = $f .closest('.editing')       # post being edited
+    # render updated post
+    $p.find '.title' .html data[0]?.title
+    $p.find '.body'  .html(data[0]?.body)
+    $f.remove-class(\shrink).hide(300) # & hide
+    History.push-state {no-surf:true} '' window.location.href.replace(/\/edit\/[\/\d+]+$/, '')
+    false
+    ))
 $d.on \click '#add_reply_submit input[type="submit"]' require-login(submit-form)
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 $d.on \click '.onclick-censor-post' require-login(censor)

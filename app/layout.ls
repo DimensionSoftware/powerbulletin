@@ -25,15 +25,15 @@ window.mutate  = (event) ->
   return true if href?.match /#/
   params = {}
   params.no-surf = true if $e.has-class \no-surf
-  History.push-state {params}, '', href
+  History.push-state params, '', href
   false
 
 $d.on \click 'a.mutant' window.mutate # hijack urls
 
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url    = History.get-page-url!replace /\/$/, ''
-  params = History.get-state!data?.params
-  unless params.no-surf # DOM update handled outside mutant
+  params = History.get-state!data
+  unless params?.no-surf # DOM update handled outside mutant
     $.get url, _surf:1, (r) ->
       $d.attr \title, r.locals.title if r.locals?.title # set title
       on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
