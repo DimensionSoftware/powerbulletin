@@ -272,18 +272,37 @@ infinity-load-more-placeholders = ->
     window.page = window.page + 1 # increment page for next operation
     el = window.lv.append "<div data-page=\"#{window.page}\"/>"
 
+toggle-page = (num) ->
+  $ '#paginator .page' .remove-class \active
+  $ "\#paginator .page:contains(#{num})" .add-class \active
+
 track-pages = ->
+  current-top = $w.scroll-top! + $w.height!
   pages = []
 
   $('[data-page]').each ->
     $el = $(this)
-    pages.push {$el, pos: $el.pos}
+    top = $el.position().top
+    dist = Math.abs(current-top - top)
+    pages.push {$el, top, dist}
 
-  # XXX: need to perhaps use infinity.js interface to find out if these items are visible
-  console.log pages
+  # choose page with lowest 
+  closest = pages.reduce (p1, p2) ->
+    if p1.dist > p2.dist
+      p2
+    else
+      p1
+
+  cur-page = closest.$el.data \page
+  toggle-page cur-page
+
+#track-pages = ->
+  # tops is the list of tops for
+  # beppus fun: c is current position
+  #function page(c, tops) { return 1 + tops.indexOf(__.find(tops, function(t){ return t > c })) }
 
 $(window).scroll __.debounce(infinity-load-more-placeholders, 25)
-#$(window).scroll __.debounce(track-pages, 50)
+$(window).scroll __.debounce(track-pages, 50)
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker
