@@ -37,7 +37,7 @@ align-breadcrumb = ->
 @homepage =
   static:
     (window, next) ->
-      window.render-mutant 'main_content' \homepage
+      window.render-mutant \main_content \homepage
       layout-static window, \homepage, @active-forum-id
       next!
   on-load:
@@ -94,16 +94,21 @@ align-breadcrumb = ->
     next!
 
 @forum-new =
+  static:
+    (window, next) ->
+      console.log \static
+      window.render-mutant \main_content \post_edit
+      next!
   on-load:
     (window, next) ->
-      console.log \new
+      console.log \load
       next!
 
 @forum =
   static:
     (window, next) ->
-      window.render-mutant 'left_content' \nav unless window.has-mutated-forum is @active-forum-id
-      window.render-mutant 'main_content' \posts
+      window.render-mutant \main_content (if @uri.match(/\/new/) then \post_edit else \posts)
+      window.render-mutant \left_content \nav unless window.has-mutated-forum is @active-forum-id
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
       window.marshal \page @page
@@ -123,13 +128,13 @@ align-breadcrumb = ->
       # handle left
       $l = $ '#left_content'
       $l.resizable(
-        min-width: 200
-        max-width: 450
+        min-width: 200px
+        max-width: 450px
         resize: (e, ui) ->
           align-breadcrumb!
-          $l.toggle-class \narrow (ui.size.width < 300)
+          $l.toggle-class \narrow (ui.size.width < 300px)
           $f.css('padding-left', ui.size.width); window.save-ui!)
-      $f.css('padding-left', ($l.width! + 20))
+      $f.css('padding-left', ($l.width! + 20px))
 
       # editing handler
       edit-post is-editing!
