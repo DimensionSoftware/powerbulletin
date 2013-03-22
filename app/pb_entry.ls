@@ -270,14 +270,20 @@ at-bottom = (pct-threshold = 0.7) ->
 infinity-load-more-placeholders = ->
   if at-bottom! and window.lv and window.page < window.pages-count
     window.page = window.page + 1 # increment page for next operation
-    window.lv.append "<div data-page=\"#{window.page}\"/>"
+    el = window.lv.append "<div data-page=\"#{window.page}\"/>"
 
-# TODO: debounce with lodash
+track-pages = ->
+  pages = []
+
+  $('[data-page]').each ->
+    $el = $(this)
+    pages.push {$el, pos: $el.pos}
+
+  # XXX: need to perhaps use infinity.js interface to find out if these items are visible
+  console.log pages
+
 $(window).scroll __.debounce(infinity-load-more-placeholders, 25)
-
-# this is always chuggin along ; )
-# just in case scroll events fail to pre-emptively load
-#set-interval infinity-load-more, 500
+#$(window).scroll __.debounce(track-pages, 50)
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker
