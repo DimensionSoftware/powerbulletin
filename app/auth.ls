@@ -4,6 +4,7 @@
 require! {
   \async
   \bcrypt
+  \nodemailer
   \passport
   \passport-local
   \passport-facebook
@@ -16,10 +17,6 @@ require! {
 
 export passport-for-site = {}
 
-# XXX - only exported for debugging convenience
-# XXX - what's a good way to hash local passwords?
-export hash = (s) ->
-  bcrypt.hash-sync s, 5
 
 # site-aware passport middleware wrappers
 export mw =
@@ -36,10 +33,43 @@ export mw =
     else
       next(404)
 
-# XXX - only exported for debugging convenience
+#
+export hash = (s) ->
+  bcrypt.hash-sync s, 5
+
+#
 export valid-password = (user, password) ->
   return false if not user or not password
   bcrypt.compare-sync password, user?.auths?.local?.password
+
+export email-template-text = """
+Welcome to {{site-name}}, {{user-name}}.
+
+  https://{{site-domain}}/
+"""
+
+export email-template-html = """
+"""
+
+#
+export expand-handlebars = (tmpl, vars) ->
+  tmpl.replace /{{([\w-]+)}}/g, (m, p) ->
+    vars?[p] || ""
+
+#
+export send-registration-email = (user, site, cb) ->
+  smtp = nodemailer.create-transport 'SMTP'
+  vars =
+    # I have to quote the keys so that the template-vars with dashes will get replaced.
+    "site-name"   : site.name
+    "site-domain" : site.domain
+    "user-name"   : user.name
+  email =
+    from    : "noreply@powerbulletin.com"
+    to      : user.email
+    subject : "Welcome to #{site.name}"
+    text    : expand-handlebars email-template-text, vars
+  smtp.send-mail email, cb
 
 # XXX - gotdamn
 pg.init ~>
@@ -135,7 +165,7 @@ pg.init ~>
 
     cb(null, pass)
 
-  (err) <- async.forEach domains, create-passport
+  (err) <- async.for-each domains, create-passport
   if err then return cb(err)
   #console.warn 'passport-for-site', keys passport-for-site
 
