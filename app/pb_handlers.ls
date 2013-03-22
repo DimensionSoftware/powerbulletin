@@ -186,18 +186,18 @@ auth-finisher = (req, res, next) ->
     if err then return next err
     if !sub-post then return next(404)
 
-    page = parseInt(req.query.page) || 1
+    page = parse-int(req.query.page) || 1
     if page < 1 then return next(404)
 
     limit = 5
     offset = (page - 1) * 5
 
     tasks =
-      menu           : db.menu site.id, _
-      sub-posts-tree : db.sub-posts-tree site.id, sub-post.id, limit, offset, _
-      more-post-ids  : db.all-sub-post-ids sub-post.id, offset + limit, _ # infinity.js in charge of loading these
-      top-threads    : db.top-threads sub-post.forum_id, _
-      forum          : db.forum sub-post.forum_id, _
+      menu            : db.menu site.id, _
+      sub-posts-tree  : db.sub-posts-tree site.id, sub-post.id, limit, offset, _
+      sub-posts-count : db.sub-posts-count sub-post.id, _
+      top-threads     : db.top-threads sub-post.forum_id, _
+      forum           : db.forum sub-post.forum_id, _
 
     err, fdoc <- async.auto tasks
     if err then return next err
@@ -208,6 +208,7 @@ auth-finisher = (req, res, next) ->
     fdoc <<< {sub-post, forum-id:sub-post.forum_id, page}
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.sub-post.posts = delete fdoc.sub-posts-tree
+    fdoc.pages-count = Math.ceil(delete fdoc.sub-posts-count / limit)
 
     fdoc.active-forum-id = fdoc.sub-post.forum_id
     fdoc.active-post-id  = sub-post.id

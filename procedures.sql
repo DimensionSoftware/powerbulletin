@@ -423,15 +423,17 @@ CREATE FUNCTION censor(c JSON) RETURNS JSON AS $$
   return {success: !errors.length, errors}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS all_sub_post_ids(parent_id JSON, off JSON);
-CREATE FUNCTION all_sub_post_ids(parent_id JSON, off JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS sub_posts_count(parent_id JSON);
+CREATE FUNCTION sub_posts_count(parent_id JSON) RETURNS JSON AS $$
   sql = '''
-  SELECT id FROM posts
-  WHERE parent_id=$1
-  ORDER BY created DESC, id ASC
-  LIMIT ALL OFFSET $2
+  SELECT COUNT(*)
+  FROM posts p
+  LEFT JOIN moderations m ON m.post_id=p.id
+  WHERE p.parent_id=$1
+    AND m.post_id IS NULL
   '''
-  return plv8.execute(sql, [parent_id, parse-int(off) or null]).map (.id)
+  [{count}] = plv8.execute sql, [parent_id]
+  return count
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- vim:fdm=marker
