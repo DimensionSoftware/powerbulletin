@@ -195,6 +195,7 @@ auth-finisher = (req, res, next) ->
     tasks =
       menu           : db.menu site.id, _
       sub-posts-tree : db.sub-posts-tree site.id, sub-post.id, limit, offset, _
+      more-post-ids  : db.all-sub-post-ids sub-post.id, offset + limit, _ # infinity.js in charge of loading these
       top-threads    : db.top-threads sub-post.forum_id, _
       forum          : db.forum sub-post.forum_id, _
 

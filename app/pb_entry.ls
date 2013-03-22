@@ -230,7 +230,7 @@ $d.on \click '.onclick-show-register' ->
   switch-and-focus '.fancybox-wrap' \on-login \on-register '#auth input[name=username]'
 #}}}
 
-at-bottom = (pct-threshold = 0.9) ->
+at-bottom = (pct-threshold = 0.7) ->
   # thx, stack overflow guy:
   # http://stackoverflow.com/a/12279215
   # I super distilled it though... and added a threshold
@@ -252,26 +252,15 @@ at-bottom = (pct-threshold = 0.9) ->
   #      \/                  \/                                        \/
   (st > 0) && ((wh + st >= dh) || (rough-scroll-percent > pct-threshold))
 
-# infinity scroll
-# TODO: pull data in from actual live feed
-# TODO: lazy scroll when you hit bottom (scrolltop madness)
-infinity-load-more = ->
-  if at-bottom! and !window.infinity-stop
-    unless window.lv # lazy initialize
-      window.lv = new infinity.ListView($('#main_content > .forum > .children'))
-
+# infinity scroll -- function to add placeholders divs for pages
+# TODO: calculate actual number of pages to be appended (there is a max)
+infinity-load-more-placeholders = ->
+  if at-bottom! and window.lv
     window.page = window.page + 1 # increment page for next operation
-
-    $.getJSON "/resources/posts/#{window.active-post-id}/sub-posts", {window.page}, (sub-posts) ->
-      if sub-posts.length # only append if there is something to append!
-        # TODO double-buffer jade template to DOM and append below
-        window.lv.append "<div>#{JSON.stringify(sub-posts)}</div>"
-      else
-        # XXX: clear this flag once we want to infinity scroll again (ie after mutation?)
-        window.infinity-stop = true
+    window.lv.append "<div data-page=\"#{window.page}\">Placeholder Page ##{window.page}</div>"
 
 # TODO: debounce with lodash
-$(window).scroll __.debounce(infinity-load-more, 25)
+$(window).scroll __.debounce(infinity-load-more-placeholders, 25)
 
 # this is always chuggin along ; )
 # just in case scroll events fail to pre-emptively load
