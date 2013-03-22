@@ -157,12 +157,13 @@ $ '#query' .focus!
 # for general form submission
 submit-form = (event, fn) ->
   $f = $ event.target .closest(\form) # get event's form
-  $.ajax $f.attr(\action), {          # ...and ajax request!
-    type:$f.attr(\method)
-    data:$f.serialize!
-    success: (data, _r2, res) ->
-      if fn then fn.call $f, data     # cb
-  }
+  $.ajax {
+    url:      $f.attr(\action)
+    type:     $f.attr(\method)
+    data:     $f.serialize!
+    data-type: \json
+    success:  (data) ->
+      if fn then fn.call $f, data}
   false
 
 # show reply ui
@@ -208,9 +209,13 @@ censor = ->
 $d.on \click '.no-surf' require-login(-> edit-post is-editing!)
 $d.on \click '#edit_post_form input[type="submit"]' require-login(
   (e) -> submit-form(e, (data) ->
+    $f = $ this .closest('.container') # form
+    $p = $f .closest('.editing')       # post being edited
     # render updated post
-    $f = $ this # form
-    $f.closest('.container').remove-class(\shrink).hide(300)
+    $p.find '.title' .html data[0]?.title
+    $p.find '.body'  .html(data[0]?.body)
+    $f.remove-class(\shrink).hide(300) # & hide
+    History.push-state {no-surf:true} '' window.location.href.replace(/\/edit\/[\/\d+]+$/, '')
     false
     ))
 $d.on \click '#add_reply_submit input[type="submit"]' require-login(submit-form)

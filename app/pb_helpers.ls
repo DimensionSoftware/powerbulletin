@@ -29,6 +29,8 @@
   sel = if id then "\#subpost_#{id}" else \BOTTOM
   $.get "/resources/posts/#{id}" (p) ->
     insert-dom window, sel, \post_edit, {post:p?[0]}
-    $ sel .add-class \editing
+    $e = $ sel
+    $e .add-class \editing
+    $e .find('input[type="text"]').focus!
 
 # vim:fdm=indent
