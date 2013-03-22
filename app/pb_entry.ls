@@ -31,7 +31,7 @@ window.load-ui = ->
     [searching, collapsed, w] = s.split sep
     w = parseInt w
     $l.transition({width:w}, 500, 'easeOutExpo' -> # restore left nav
-      $l.toggle-class \narrow ($l.width! < 300))
+      $l.toggle-class \narrow ($l.width! < 300s))
     set-timeout (-> # ... & snap
       $ '#main_content.container .forum' .transition({padding-left:w}, 450, \snap)), 200
   if searching is not '0' then $ \body .add-class(\searching)
@@ -97,7 +97,6 @@ window.login = ->
   $form = $(this)
   u = $form.find('input[name=username]')
   p = $form.find('input[name=password]')
-  console.log \login
   params =
     username: u.val!
     password: p.val!
@@ -115,7 +114,6 @@ window.login = ->
 # get the user after a successful login
 window.after-login = ->
   window.user <- $.getJSON '/auth/user'
-  console.info 'logged in as:', window.user
   window.mutants?[window.mutator]?.on-personalize window, user, ->
     socket.disconnect()
     socket.socket.connect()
@@ -131,12 +129,10 @@ window.register = ->
   $form.find("input").remove-class \validation-error
   $.post $form.attr(\action), $form.serialize!, (r) ->
     if r.success
-      console.warn \success
       $.fancybox.close!
       $form.find("input:text,input:password").remove-class(\validation-error).val ''
       after-login!
     else
-      console.warn 'display errors', r
       r.errors?.for-each (e) ->
         $form.find("input[name=#{e.param}]").add-class \validation-error .focus!
       $fancybox = $form.parents('.fancybox-wrap:first') .remove-class \shake
@@ -200,13 +196,17 @@ censor = ->
 
   $.post "/resources/posts/#{post-id}/censor", (r) ->
     if r.success
-      $subpost.transition { opacity: 0, scale: 0.3 }, 300, 'in', ->
+      $subpost.transition { opacity: 0, scale: 0.3 }, 300s, 'in', ->
         $subpost.hide!
     else
       console.warn r.errors.join(', ')
 
 #{{{ Delegated Events
 $d.on \click '.no-surf' require-login(-> edit-post is-editing!)
+$d.on \click '#edit_post_form .cancel' ->
+  $f = $ this .closest '.container'  # form
+  $f.remove-class \shrink .hide 300s # & hide
+
 $d.on \click '#edit_post_form input[type="submit"]' require-login(
   (e) -> submit-form(e, (data) ->
     $f = $ this .closest('.container') # form
@@ -214,7 +214,7 @@ $d.on \click '#edit_post_form input[type="submit"]' require-login(
     # render updated post
     $p.find '.title' .html data[0]?.title
     $p.find '.body'  .html(data[0]?.body)
-    $f.remove-class(\shrink).hide(300) # & hide
+    $f.remove-class(\shrink).hide(300s) # & hide
     History.push-state {no-surf:true} '' window.location.href.replace(/\/edit\/[\/\d+]+$/, '')
     false
     ))
