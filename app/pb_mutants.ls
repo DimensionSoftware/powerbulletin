@@ -1,3 +1,4 @@
+
 # Common
 layout-static = (w, mutator, forum-id=0) ->
   # indicate current
@@ -30,25 +31,8 @@ flip-background = (w, cur, direction='down') ->
       w.bg-anim = 0
     ), 100
 
-dom-insert = (w, target, tmpl, params) ->
-  # double-buffered replace of view with target
-  $t = w.$ target
-  $b = w.$ "<div class='container'>"
-  $b.hide!
-  $t.prepend $b
-  jade.render $b[0], tmpl, params
-  $b.slide-down 300
-
 align-breadcrumb = ->
   set-timeout (-> $ '.breadcrumb.stuck' .css(\left, $('#left_content').width! + 20)), 100
-
-scroll-to-edit = ->
-  id = is-editing!
-  if id then # scroll to id
-    awesome-scroll-to "\#subpost_#{id}"
-    true
-  else
-    false
 
 @homepage =
   static:
@@ -109,10 +93,6 @@ scroll-to-edit = ->
     console.log w, u
     next!
 
-is-editing = ->
-  m = window.location.pathname.match /(edit|new)\/?([\d+]*)/
-  return if m then m[2] else false
-
 @forum-new =
   on-load:
     (window, next) ->
@@ -152,19 +132,12 @@ is-editing = ->
           $f.css('padding-left', ui.size.width); window.save-ui!)
       $f.css('padding-left', ($l.width! + 20))
 
-      # handle in-line editing
-      id  = is-editing!
-      sel = if id then "\#subpost_#{id}" else \BOTTOM
-      $.get "/resources/posts/#{id}" (p) ->
-        dom-insert window, sel, \post_edit, {post:p?[0]}
-        $ sel .add-class \editing
+      # editing handler
+      edit-post is-editing!
 
       # add impression
       post-id = $('#main_content .post:first').data('post-id')
       $.post "/resources/posts/#{post-id}/impression" if post-id
-
-      # handle scrolling
-      scroll-to-edit!
 
       next!
   on-mutate:
