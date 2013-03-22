@@ -209,6 +209,7 @@ auth-finisher = (req, res, next) ->
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.sub-post.posts = delete fdoc.sub-posts-tree
     fdoc.pages-count = Math.ceil(delete fdoc.sub-posts-count / limit)
+    fdoc.pages = [1 to fdoc.pages-count]
 
     fdoc.active-forum-id = fdoc.sub-post.forum_id
     fdoc.active-post-id  = sub-post.id
