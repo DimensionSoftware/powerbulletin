@@ -116,6 +116,8 @@ window.after-login = ->
   window.user <- $.getJSON '/auth/user'
   console.info 'logged in as:', window.user
   window.mutants?[window.mutator]?.on-personalize window, user, ->
+    socket.disconnect()
+    socket.socket.connect()
 
 # logout
 window.logout = ->
