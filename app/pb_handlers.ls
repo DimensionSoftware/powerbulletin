@@ -276,7 +276,7 @@ auth-finisher = (req, res, next) ->
     else
       u =
         type    : \local
-        profile : { password } # TODO hash password
+        profile : { password: auth.hash(password) }
         site_id : site.id
         name    : username
         email   : email
@@ -286,6 +286,8 @@ auth-finisher = (req, res, next) ->
         return res.json success: false, errors: err
       else
         # on successful registration, automagically @login, too
+        auth.send-registration-email u, site, (err, r) ->
+          console.warn 'registration email', err, r
         @login(req, res, next)
 
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
