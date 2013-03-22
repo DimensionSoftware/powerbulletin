@@ -11,16 +11,14 @@ require! {
 }
 global <<< require './helpers' # pull helpers (common) into global (play nice :)
 
-# <API RESOURCES>
-# ---------
+#{{{ API Resources
 app.resource 'resources/posts', resources.posts
 app.get  '/resources/posts/:id/sub-posts',  handlers.sub-posts
 app.post '/resources/posts/:id/impression', handlers.add-impression
 app.post '/resources/posts/:id/censor',     handlers.censor
+#}}}
 
-# <PAGE HANDLERS & MISC.>
-# ---------
-common-js = [
+common-js = [ #{{{ Common JS
   "#{cvars.cache3_url}/local/jquery.masonry.min.js",
   "#{cvars.cache2_url}/local/jquery.cookie-1.3.1.min.js",
   "#{cvars.cache2_url}/local/waypoints.min.js",
@@ -32,13 +30,15 @@ common-js = [
   "#{cvars.cache3_url}/local/infinity.min.js",
   "#{cvars.cache4_url}/socket.io/socket.io.js",
   "#{cvars.cache4_url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
-common-css = [
+#}}}
+common-css = [ #{{{ Common CSS
   "#{cvars.cache2_url}/fancybox/jquery.fancybox.css",
   '/dynamic/css/theme.styl,layout.styl']
+#}}}
 
 app.get '/hello' handlers.hello
 
-# local auth
+#{{{ Local auth
 app.post '/auth/login'           handlers.login
 app.post '/auth/register'        handlers.register
 app.post '/auth/choose-username' handlers.choose-username
@@ -56,6 +56,7 @@ app.get  '/auth/twitter/return'  handlers.login-twitter-return
 app.get  '/auth/twitter/finish'  handlers.login-twitter-finish
 
 app.get  '/auth/logout'   handlers.logout
+#}}}
 # UI SKETCH UP:
 #
 # Connect to a social network:
@@ -76,8 +77,7 @@ app.get '/',
   mmw.mutant-layout(\layout, mutants),
   handlers.homepage
 
-# dynamic serving
-app.get '/dynamic/css/:file' handlers.stylus
+app.get '/dynamic/css/:file' handlers.stylus # dynamic serving
 
 app.get '/favicon.ico', (req, res, next) ->
   # replace with real favicon
@@ -98,21 +98,6 @@ app.get '/:forum/most-active',
   mmw.mutant-layout(\layout, mutants),
   handlers.forum
 
-if process.env.NODE_ENV != 'production'
-  app.get '/debug/docs/:type/:key', (req, res, next) ->
-    db = pg.procs
-    err, d <- db.doc res.locals.site.id, req.params.type, req.params.key
-    if err then return next(err)
-    res.json d
-
-  app.get '/debug/sub-posts-tree/:post_id', (req, res, next) ->
-    db = pg.procs
-    site = res.locals.site
-    err, d <- db.sub-posts-tree site.id, req.params.post_id, 25, 0
-    if err then return next(err)
-    res.json d
-
-
 # forum + post
 app.all new RegExp('/(.+)/t/(.+)'),
   mw.add-js(common-js),
@@ -126,3 +111,21 @@ app.all new RegExp('/(.+)'),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   handlers.forum
+
+#{{{ Development Debug
+if process.env.NODE_ENV != 'production'
+  app.get '/debug/docs/:type/:key', (req, res, next) ->
+    db = pg.procs
+    err, d <- db.doc res.locals.site.id, req.params.type, req.params.key
+    if err then return next(err)
+    res.json d
+
+  app.get '/debug/sub-posts-tree/:post_id', (req, res, next) ->
+    db = pg.procs
+    site = res.locals.site
+    err, d <- db.sub-posts-tree site.id, req.params.post_id, 25, 0
+    if err then return next(err)
+    res.json d
+#}}}
+
+# vim:fdm=marker

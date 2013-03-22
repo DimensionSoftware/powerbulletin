@@ -11,9 +11,9 @@ $d = $ document
 #{{{ UI Interactions
 # save state
 sep    = \-
-offset = 20
+offset = 20px
 window.save-ui = ->
-  min-width = 200
+  min-width = 200px
   w = $ '#left_content' .width!
   s = ($.cookie \s)
   if s then [_, _, prev] = s.split sep
@@ -30,10 +30,10 @@ window.load-ui = ->
   if s
     [searching, collapsed, w] = s.split sep
     w = parseInt w
-    $l.transition({width:w}, 500, 'easeOutExpo' -> # restore left nav
+    $l.transition({width:w}, 500ms, 'easeOutExpo' -> # restore left nav
       $l.toggle-class \narrow ($l.width! < 300s))
     set-timeout (-> # ... & snap
-      $ '#main_content.container .forum' .transition({padding-left:w}, 450, \snap)), 200
+      $ '#main_content.container .forum' .transition({padding-left:w}, 450ms, \snap)), 200ms
   if searching is not '0' then $ \body .add-class(\searching)
   if collapsed is not '0' then $ \body .add-class(\collapsed)
 
@@ -50,11 +50,11 @@ $d.on \click '#handle' ->
   save-ui!
 
 # waypoints
-$w.resize -> set-timeout (-> $.waypoints \refresh), 800
+$w.resize -> set-timeout (-> $.waypoints \refresh), 800ms
 set-timeout (-> # sort control
   $ '#sort li' .waypoint {
     context: \ul
-    offset : 30
+    offset : 30px
     handler: (direction) ->
       e = $ this # figure active element
       if direction is \up
@@ -63,7 +63,7 @@ set-timeout (-> # sort control
 
       $ '#sort li.active' .remove-class \active
       e .add-class \active # set!
-  }), 100
+  }), 100ms
 
 # main menu
 $d.on \click 'html.homepage header .menu a.title' ->
@@ -226,7 +226,7 @@ $d.on \click '.onclick-censor-post' require-login(censor)
 window.switch-and-focus = (e, remove, add, focus-on) ->
   $e = $ e
   $e .remove-class("#{remove} shake slide").add-class(add)
-  setTimeout (-> $e.add-class \slide; $ focus-on .focus! ), 10
+  setTimeout (-> $e.add-class \slide; $ focus-on .focus! ), 10ms
 $d.on \click '.onclick-show-login' ->
   switch-and-focus '.fancybox-wrap' 'on-forgot on-register' \on-login '#auth input[name=username]'
 $d.on \click '.onclick-show-forgot' ->
@@ -277,13 +277,13 @@ track-pages = ->
 
   $('[data-page]').each ->
     $el = $(this)
-    pages.push {$el, pos: $el.pos}
+    pages.push {$el, pos: $el.position!}
 
   # XXX: need to perhaps use infinity.js interface to find out if these items are visible
   console.log pages
 
 $(window).scroll __.debounce(infinity-load-more-placeholders, 25)
-#$(window).scroll __.debounce(track-pages, 50)
+$(window).scroll __.debounce(track-pages, 50)
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker

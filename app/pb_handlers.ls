@@ -166,14 +166,15 @@ auth-finisher = (req, res, next) ->
 
   [forum_part, post_part] = req.params
 
-  finish = (adoc) ->
-    res.locals adoc
-    caching-strategies.etag res, sha1(JSON.stringify(adoc)), 7200
-    res.mutant \forum
-
   # parse uri
   uri = req.path
   sorttype = \recent
+
+  finish = (adoc) ->
+    adoc.uri = req.path
+    res.locals adoc
+    caching-strategies.etag res, sha1(JSON.stringify(adoc)), 7200
+    res.mutant \forum
 
   parts = forum-path-parts uri
   uri = uri.replace /\/(edit|new)[\/\d+]*/, '' # strip for lookup
