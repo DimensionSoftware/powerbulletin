@@ -51,6 +51,23 @@ export verify-string = ->
     String.from-char-code c3
   [ char v for v,i in buffer ].join ''
 
+export unique-verify-string-for-site = (site-id, cb) ->
+  # if all these fail, you've won the lottery
+  # one should pass,
+  # usually the first
+  candidates = [ verify-string! for i from 1 to 10 ] # it's too bad this couldn't be an infinite lazy list
+
+  unique = (v, cb) ->
+    (err, found-alias) <- pg.procs.alias-by-verify site-id, v
+    if err then return cb err
+    if found-alias
+      cb false
+    else
+      cb true
+
+  async.detect candidates, unique, (uv) ->
+    cb null, uv
+
 export email-template-text = """
 Welcome to {{site-name}}, {{user-name}}.
 
@@ -80,7 +97,6 @@ export send-registration-email = (user, site, cb) ->
     text    : expand-handlebars email-template-text, vars
   smtp.send-mail email, cb
 
-# XXX - gotdamn
 pg.init ~>
   db = pg.procs
   (err, domains) <~ db.domains
@@ -89,6 +105,8 @@ pg.init ~>
   create-passport = (domain, cb) ->
     (err, site) <~ db.site-by-domain domain
     if err then return throw err
+    console.warn "_" * 40
+    console.warn \site, site
 
     passport-for-site[domain] = pass = new Passport
 
@@ -126,12 +144,16 @@ pg.init ~>
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
       console.warn 'facebook profile', profile
       err, name <- db.unique-name name: profile.display-name, site_id: site.id
+      if err then return cb err
+      err, vstring <- unique-verify-string-for-site site.id
+      if err then return cb err
       u =
         type    : \facebook
         id      : profile.id
         profile : profile._json
         site_id : site.id
         name    : name
+        verify  : vstring
       (err, user) <- db.find-or-create-user u
       console.warn 'err', err if err
       done(err, user)
@@ -143,12 +165,16 @@ pg.init ~>
     pass.use new passport-twitter.Strategy twitter-options, (access-token, refresh-token, profile, done) ->
       console.warn 'twitter profile', profile
       err, name <- db.unique-name name: profile.display-name, site_id: site.id
+      if err then return cb err
+      err, vstring <- unique-verify-string-for-site site.id
+      if err then return cb err
       u =
         type    : \twitter
         id      : profile.id
         profile : profile._json
         site_id : site.id
         name    : name
+        verify  : vstring
       (err, user) <- db.find-or-create-user u
       console.warn 'err', err if err
       done(err, user)
@@ -161,12 +187,15 @@ pg.init ~>
       console.warn 'google profile', profile
       err, name <- db.unique-name name: profile.display-name, site_id: site.id
       if err then return cb err
+      err, vstring <- unique-verify-string-for-site site.id
+      if err then return cb err
       u =
         type    : \google
         id      : profile.id
         profile : profile._json
         site_id : site.id
         name    : name
+        verify  : vstring
       console.warn \u, u
       (err, user) <- db.find-or-create-user u
       console.warn 'err', err if err
