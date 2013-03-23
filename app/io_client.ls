@@ -11,9 +11,11 @@ socket.on \disconnect, ->
 
 socket.on \enter-site, (message, cb) ->
   console.log \enter-site, message
+  $ "[data-user-id=#{message.id}] .profile.photo" .add-class \online
 
 socket.on \leave-site, (message, cb) ->
   console.log \leave-site, message
+  $ "[data-user-id=#{message.id}] .profile.photo" .remove-class \online
 
 socket.on \debug, (message, cb) ->
   console.log \debug, message
