@@ -36,7 +36,7 @@ window.load-ui = ->
       $ '#main_content.container .forum' .transition({padding-left:w}, 450ms, \snap)), 200ms
   if searching is not '0' then $ \body .add-class(\searching)
   if collapsed is not '0' then $ \body .add-class(\collapsed)
-  set-timeout align-breadcrumb 500ms
+  set-timeout align-breadcrumb, 500ms
 
 # handle
 $d.on \click '#handle' ->
