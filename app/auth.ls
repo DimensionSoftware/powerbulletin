@@ -4,6 +4,7 @@
 require! {
   \async
   \bcrypt
+  \crypto
   \nodemailer
   \passport
   \passport-local
@@ -41,6 +42,14 @@ export hash = (s) ->
 export valid-password = (user, password) ->
   return false if not user or not password
   bcrypt.compare-sync password, user?.auths?.local?.password
+
+export verify-string = ->
+  buffer = crypto.random-bytes(32)
+  char = (c) ->
+    c2 = Math.floor(c / 10.24) # fp-math? really??
+    c3 = c2 + 97
+    String.from-char-code c3
+  [ char v for v,i in buffer ].join ''
 
 export email-template-text = """
 Welcome to {{site-name}}, {{user-name}}.
