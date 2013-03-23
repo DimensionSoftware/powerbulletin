@@ -158,16 +158,25 @@ auth-finisher = (req, res, next) ->
   res.mutant \homepage
 
 @forum = (req, res, next) ->
-  db = pg.procs
+  db   = pg.procs
+  user = req.user
+  uri  = req.path
+
+  # secure
+  is-editing = /\/(edit|new)[\/\d+]*/
+  what = uri.match is-editing
+  if what?.1 is \edit
+    return 404 unless user # FIXME owns post!
+  else if what?.1 is \new
+    return 404 unless user
 
   #XXX: this is one of the pages which is not depersonalized
-  res.locals.user = req.user
+  res.locals.user = user
   site = res.locals.site
 
   [forum_part, post_part] = req.params
 
   # parse uri
-  uri = req.path
   sorttype = \recent
 
   finish = (adoc) ->
@@ -177,10 +186,9 @@ auth-finisher = (req, res, next) ->
     res.mutant \forum
 
   parts = forum-path-parts uri
-  uri = uri.replace /\/(edit|new)[\/\d+]*/, '' # strip for lookup
+  uri = uri.replace is-editing, '' # strip for lookup
   uri = uri.replace '&?_surf=1', ''
   uri = uri.replace /\?$/, '' # remove ? if its all thats left
-
 
   if post_part # post
     err, sub-post <- db.uri-to-post site.id, uri

@@ -1,5 +1,6 @@
 window.__  = require \lodash
 window.ioc = require './io_client'
+
 global <<< require './pb_helpers'
 
 # XXX client-side entry
@@ -182,6 +183,7 @@ append-reply-ui = ->
     $subpost.find('.reply:first').append reply-ui-html
   else
     $subpost.find('.reply:first form').remove!
+  $subpost.find('textarea[name="body"]').focus!
 
 censor = ->
   # find post div
