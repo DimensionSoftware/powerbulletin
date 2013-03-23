@@ -63,8 +63,8 @@ body.scrolled
   header
     //background-color rgba(0,0,0,0.7)
     background-color rgba(255,255,255,0.95)
-    box-shadow 0 -1px 15px 4px #ddd,0 -1px 0px 0 #bbb inset
-    border-bottom 1px solid #fff
+    box-shadow 0 -1px 18px 4px #ccc
+    border-bottom 1px solid #bbb
     transition height .2s ease-out, background-color .5s ease-out
     .container
       menu.menu
@@ -180,7 +180,7 @@ header
   //background-color rgba(255,255,255,0.1)
   background-color #fff
   border-top 2px solid #000
-  border-bottom 1px solid rgba(200,200,200,.3)
+  border-bottom 1px solid rgba(200,200,200,.4)
   color #555
   .container
     .menu
@@ -208,7 +208,7 @@ header
           transition border-top .5s, background-color .3s, color .4s
       > .row
         .title
-          box-shadow 1px 0 0 #ddd inset,0 1px 0 0 #bbb
+          box-shadow 1px 0 0 #f3f3f3 inset, -1px 0 0 #ddd inset,0 1px 0 0 #ccc
           text-decoration none
           border-top 3px solid #222
           color #777
@@ -395,9 +395,11 @@ section.left-chrome
     border-bottom 1px solid #ddd
     border-right 1px solid #ddd
     border-left 1px solid #ddd
+    box-shadow 0 1px 0px 0px #aaa
+    font-style italic
     color #ddd
-    em, a
-      color #666
+    a, em
+      color #555
 
   .forum.light
     .header
@@ -667,7 +669,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   text-shadow 1px 1px 1px black,0 1px 1px black
   border-bottom 1px solid highlight-color2
   border-right 1px solid highlight-color2
-  transition box-shadow .08s
+  transition box-shadow .15s ease-out
 .button::before
   position absolute
   content ''
