@@ -283,14 +283,15 @@ track-pages = ->
     pages.push {$el, top, dist}
 
   # choose page with lowest 
-  closest = pages.reduce (p1, p2) ->
-    if p1.dist > p2.dist
-      p2
-    else
-      p1
+  if pages.length
+    closest = pages.reduce (p1, p2) ->
+      if p1.dist > p2.dist
+        p2
+      else
+        p1
 
-  cur-page = closest.$el.data \page
-  toggle-page cur-page
+    cur-page = closest.$el.data \page
+    toggle-page cur-page
 
 #track-pages = ->
   # tops is the list of tops for
