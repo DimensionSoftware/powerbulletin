@@ -44,7 +44,9 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       forum-id = parse-int(post.forum_id) or null
       parent-id = parse-int(post.parent_id) or null
       if post.parent_id
-        [{thread_id}] = plv8.execute('SELECT thread_id FROM posts WHERE id=$1', [post.parent_id])
+        r = plv8.execute('SELECT thread_id FROM posts WHERE id=$1', [post.parent_id])
+        unless thread_id = r.0?thread_id
+          errors.push 'Invalid thread ID'; return {success: !errors.length, errors}
         # child posts use id for slug
         # XXX: todo flatten this into a hash or singular id in the uri instead of nesting subcomments
         slug = nextval
