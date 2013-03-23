@@ -92,6 +92,22 @@ body.scrolled
     .handle
       top (header-scrolled-height - (grid*2))
       transition top .2s ease-out
+  #main_content.container
+    .breadcrumb
+      text-align center
+      top header-scrolled-height
+      border-bottom-left-radius 5px
+      border-bottom-right-radius 5px
+      padding (grid/2+2) (grid*2) 2px (grid*2)
+      text-transform capitalize
+      font-size .9em
+      transition top .35s ease-out
+      a
+        padding-right (grid/2)
+        margin-right 3px
+        letter-spacing -1px
+      em
+        margin-left (grid/2)
   footer
     opacity 1
     font-size .85em
@@ -418,6 +434,9 @@ section.left-chrome
   grid(100%, 800px)
   padding forum-header-height 0 0 0!important
   z-index 5
+  .breadcrumb
+    top -100px
+    position fixed
   .forum:first-child
     padding-top (grid * 7)!important
   .forum
@@ -425,29 +444,13 @@ section.left-chrome
     clear both
     min-height 650px
     padding-left left-content-width
-    .breadcrumb.stuck
-      text-align center
-      text-indent grid
-      border-bottom-left-radius 5px
-      border-bottom-right-radius 5px
-      padding (grid/2+2) (grid*2) 2px (grid*2)
-    .breadcrumb
-      text-transform capitalize
-      font-size .9em
-      a
-        padding-right (grid/2)
-        margin-right 3px
-        letter-spacing -1px
-      em
-        margin-left (grid/2)
     .container
       z-index 6
     .header.stuck::before
       opacity 1!important
-    .header.stuck, .breadcrumb.stuck
+    .header.stuck, .breadcrumb
       position fixed
       top header-scrolled-height
-      left 50px
       z-index 7
       overflow hidden
     .header

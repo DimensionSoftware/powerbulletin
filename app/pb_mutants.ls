@@ -31,9 +31,6 @@ flip-background = (w, cur, direction='down') ->
       w.bg-anim = 0
     ), 100
 
-align-breadcrumb = ->
-  set-timeout (-> $ '.breadcrumb.stuck' .css(\left, $('#left_content').width! + 20)), 100
-
 @homepage =
   static:
     (window, next) ->
@@ -50,9 +47,9 @@ align-breadcrumb = ->
         is-resizable:  true)
       #{{{ Waypoints
       set-timeout (->
-        # sticky forum headers
-        $ = window.$
-        $ '.forum .header' .waypoint \sticky { offset: -70 }
+        # TODO use breadcrumb for sticky forum headers
+        #$ = window.$
+        #$ '.forum .header' .waypoint \sticky { offset: -70 }
 
         # forum switches
         $ '.forum' .waypoint {
@@ -122,7 +119,7 @@ align-breadcrumb = ->
       $ = window.$
 
       # handle main content
-      $ '.forum .breadcrumb' .waypoint(\sticky, { handler:align-breadcrumb, offset:-70 })
+      align-breadcrumb!
       $f = $ '#main_content.container .forum'
 
       # handle left
@@ -131,10 +128,9 @@ align-breadcrumb = ->
         min-width: 200px
         max-width: 450px
         resize: (e, ui) ->
-          align-breadcrumb!
           $l.toggle-class \narrow (ui.size.width < 300px)
-          $f.css('padding-left', ui.size.width); window.save-ui!)
-      $f.css('padding-left', ($l.width! + 20px))
+          $f.css 'padding-left' ui.size.width ; window.save-ui!)
+      $f.css 'padding-left' ($l.width! + 20px)
 
       # editing handler
       edit-post is-editing!

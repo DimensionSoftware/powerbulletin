@@ -22,7 +22,7 @@ common-js = [ #{{{ Common JS
   "#{cvars.cache3_url}/local/jquery.masonry.min.js",
   "#{cvars.cache2_url}/local/jquery.cookie-1.3.1.min.js",
   "#{cvars.cache2_url}/local/waypoints.min.js",
-  "#{cvars.cache2_url}/local/waypoints-sticky.min.js",
+#  "#{cvars.cache2_url}/local/waypoints-sticky.min.js",
   "#{cvars.cache5_url}/local/history.min.js",
   "#{cvars.cache5_url}/local/history.adapter.native.min.js",
   "#{cvars.cache3_url}/fancybox/jquery.fancybox.pack.js",

@@ -36,9 +36,7 @@ window.load-ui = ->
       $ '#main_content.container .forum' .transition({padding-left:w}, 450ms, \snap)), 200ms
   if searching is not '0' then $ \body .add-class(\searching)
   if collapsed is not '0' then $ \body .add-class(\collapsed)
-
-window.align-breadcrumb = ->
-  $ '.breadcrumb.stuck' .css(\left, $('#left_content').width! + offset)
+  set-timeout align-breadcrumb 500ms
 
 # handle
 $d.on \click '#handle' ->
@@ -146,7 +144,6 @@ $d.on \submit '.register form' register
 #.
 #### main   ###############>======-- -   -
 ##
-align-breadcrumb!
 load-ui!
 $ '#query' .focus!
 

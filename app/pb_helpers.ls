@@ -33,4 +33,9 @@
     $e .add-class \editing
     $e .find('input[type="text"]').focus!
 
+@align-breadcrumb = ->
+  b = $ '.breadcrumb'
+  m = $ '.menu'
+  b.css \left ((m.width! - b.width!)/2 + m.offset!left)
+
 # vim:fdm=indent
