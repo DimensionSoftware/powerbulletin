@@ -15,6 +15,8 @@ mixin thread(t)
   li.thread
     a.mutant(href=t.uri)
       h4.title= t.title
+      .profile.photo
+        img(src="#{cache_url}/#{t.user_photo}")
       .created(data-time=t.created_iso)= t.created_human
       .username by
         em= t.user_name

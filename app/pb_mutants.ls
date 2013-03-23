@@ -124,13 +124,15 @@ flip-background = (w, cur, direction='down') ->
 
       # handle left
       $l = $ '#left_content'
+      size-nav = (w) -> $l.toggle-class \wide (w > 300px)
       $l.resizable(
         min-width: 200px
         max-width: 450px
         resize: (e, ui) ->
-          $l.toggle-class \narrow (ui.size.width < 300px)
+          size-nav ui.size.width
           $f.css 'padding-left' ui.size.width ; window.save-ui!)
       $f.css 'padding-left' ($l.width! + 20px)
+      size-nav ($l.width! + 40px)
 
       # editing handler
       edit-post is-editing!

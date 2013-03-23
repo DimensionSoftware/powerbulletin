@@ -34,6 +34,8 @@ html.forum
       transition padding-top .2s ease-out
   .left-content
     display block
+    .photo, .created, .username
+      display none
   .left-chrome
     display none
 //}}}
@@ -241,7 +243,7 @@ header
           opacity 1
           top 53px
           min-width 250px
-          transition top .25s ease-out .3s, opacity .4s ease-out .4s
+          transition top .25s ease-out .3s, opacity .3s ease-out .4s
           .row:hover
             text-indent 19px
             transition text-indent .1s ease-out
@@ -297,6 +299,8 @@ header
   z-index 8
   padding grid
   padding-top (grid*6)
+  .photo
+    margin-top 8px
   .handle
     border-radius 20px
     line-height 28px
@@ -430,6 +434,17 @@ section.left-chrome
 .col2
   width 425px
 
+.photo
+  overflow hidden
+  float left
+  padding 2px
+  margin-right grid
+  width 35px
+  height 35px
+  float left
+  img
+    width 100%
+
 #main_content.container
   grid(100%, 800px)
   padding forum-header-height 0 0 0!important
@@ -488,17 +503,6 @@ section.left-chrome
           display block
           margin grid 0
           min-height 40px
-    .post, .subpost
-      .photo
-        overflow hidden
-        float left
-        padding 2px
-        margin-right grid
-        width 35px
-        height 35px
-        float left
-        img
-          width 100%
     .post
       float left
       margin 0 grid grid grid
@@ -628,10 +632,10 @@ footer
     .left-chrome
       display none!important
 
-#left_content.narrow
+#left_content.wide
   .thread
-    .created, .username
-      display none
+    .photo, .created, .username
+      display block
 // }}}
 
 //{{{ Login

@@ -49,11 +49,11 @@ grid = 10px
   0%
     opacity 0
     transform scale(.9)
-  70%
+  80%
     transform scale(1)
-  85%
+  95%
     opacity 1
-    transform scale(.99)
+    transform scale(.995)
   100%
     transform scale(1)
 //}}}
@@ -286,7 +286,7 @@ header
 #left_content.container:hover
   border-right 1px solid #111
 #left_content.container
-  background-color rgba(100,100,100,.9)
+  background-color rgba(100,100,100,0.7)
   //background-color #eee
   border-right 1px solid #444
   .handle:hover
@@ -303,12 +303,20 @@ header
     letter-spacing -1px
     font-size 1.1em
     margin (grid / 2) 0
+  .title, .post-count, .views
+    text-shadow 0 -1px 0 #333
   .forum, .threads
     a
       text-decoration none
-      color #fff
+      color #eee
+      display block
+      border-bottom 1px solid transparent
     a:hover
-      color #d1920b
+      color #fff
+      border-bottom 1px solid #aaa
+      animation-name none
+      .title
+        text-shadow 0 -1px 0 #000, 0 0 2px highlight-color2
 
 #left_content.container.dark
   background-color rgba(0,0,0,.1)
@@ -340,9 +348,6 @@ section.left-chrome
     border-bottom 2px solid #bbb
     border-right-width 1px
     padding 2px
-    .photo
-      background-color #fff
-      border-top-right-radius 2px
     a
       display block
       padding 8px
@@ -367,6 +372,11 @@ section.left-chrome
           animation-name tiny-grow
           animation-duration .25s
 //}}}
+
+.photo
+  background-color #fff
+  border-top-right-radius 2px
+
 //{{{ Main Content
 #main_content.container
   a:hover
@@ -686,7 +696,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
 //{{{ Fancybox
 .shrink
   animation-name shrink
-  animation-duration .4s
+  animation-duration .3s
 .slide
   animation-name slide
   animation-duration .2s

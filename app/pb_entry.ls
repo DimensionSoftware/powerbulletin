@@ -44,7 +44,6 @@ $d.on \click '#handle' ->
   $ \body .toggle-class \collapsed
   $ '#main_content.container .forum'
     .css('padding-left', ($l.width! + offset))
-  align-breadcrumb!
   save-ui!
 
 # waypoints
