@@ -105,8 +105,6 @@ pg.init ~>
   create-passport = (domain, cb) ->
     (err, site) <~ db.site-by-domain domain
     if err then return throw err
-    console.warn "_" * 40
-    console.warn \site, site
 
     passport-for-site[domain] = pass = new Passport
 
