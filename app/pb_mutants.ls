@@ -1,4 +1,6 @@
 
+global <<< require './pb_helpers'
+
 # Common
 layout-static = (w, mutator, forum-id=0) ->
   # indicate current

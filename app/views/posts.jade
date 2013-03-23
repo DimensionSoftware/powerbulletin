@@ -26,8 +26,9 @@ if typeof(subPost) !== 'undefined'
   #breadcrumb.breadcrumb
     mixin breadcrumb(subPost)
 
-#paginator
-  each pg in pages
-    a.page(class=(pg == 1 ? 'active' : ''))= pg
+if pages.length > 1
+  #paginator
+    each pg in pages
+      a.page(class=(pg == 1 ? 'active' : ''))= pg
 
 //- vim:fdm=marker
