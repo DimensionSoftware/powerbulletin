@@ -1,6 +1,6 @@
 {
   "host": "powerbulletin.com",
-  "workers": 4
+  "workers": 4,
 
   "base_js_urls":
   [ "//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"

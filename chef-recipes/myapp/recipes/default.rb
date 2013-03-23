@@ -8,6 +8,11 @@ unless File.file? '/etc/APT_GET_INITIAL_UPDATE_COMPLETED'
   end
 end
 
+user 'powerbulletin' do
+  system true
+  shell '/bin/false'
+end
+
 # other stuff...
 include_recipe 'nodejs'
 include_recipe 'varnish'

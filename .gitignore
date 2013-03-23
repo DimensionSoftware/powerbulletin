@@ -5,7 +5,8 @@
 *.log
 *.jar
 .*.swp
-nohup.out
-public/powerbulletin.min.js
-public/powerbulletin.js
-app/views/templates.js
+/nohup.out
+/error_log
+/public/powerbulletin.min.js
+/public/powerbulletin.js
+/app/views/templates.js
