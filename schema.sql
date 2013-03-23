@@ -51,12 +51,15 @@ CREATE TRIGGER sites_timestamp BEFORE UPDATE ON sites FOR EACH ROW EXECUTE PROCE
 
 -- alias belongs to user
 CREATE TABLE aliases (
-  user_id BIGINT NOT NULL references users(id),
-  site_id BIGINT NOT NULL references sites(id),
-  name    VARCHAR(64) NOT NULL,
-  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated TIMESTAMP,
+  user_id  BIGINT NOT NULL references users(id),
+  site_id  BIGINT NOT NULL references sites(id),
+  name     VARCHAR(64) NOT NULL,
+  verify   VARCHAR(32) NOT NULL,
+  verified BOOLEAN NOT NULL DEFAULT FALSE,
+  created  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated  TIMESTAMP,
   UNIQUE (site_id, name),
+  UNIQUE (site_id, verify),
   PRIMARY KEY (user_id, site_id)
 );
 CREATE TRIGGER aliases_timestamp BEFORE UPDATE ON aliases FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();

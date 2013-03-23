@@ -118,6 +118,7 @@ CREATE FUNCTION find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params J
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- Users & Aliases {{{
+
 -- Find a user by auths.type and auths.id
 -- However, more information should be provided in case a new user needs to be created.
 -- @param Object usr
@@ -126,6 +127,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param JSON   profile      auths.profile (3rd party profile object)
 --   @param Number site_id      aliases.site_id
 --   @param String name         aliases.name
+--   @param String verify       aliases.verify
 DROP FUNCTION IF EXISTS find_or_create_user(usr JSON);
 CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
   sel = '''
@@ -149,8 +151,8 @@ CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
         SELECT $1::decimal, u.id, $2::varchar, $3::json FROM u
         RETURNING *
     )
-  INSERT INTO aliases (user_id, site_id, name)
-    SELECT u.id, $4::bigint, $5::varchar FROM u;
+  INSERT INTO aliases (user_id, site_id, name, verify)
+    SELECT u.id, $4::bigint, $5::varchar, $6::varchar FROM u;
   '''
   ins-params =
     * usr.id
@@ -158,11 +160,23 @@ CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
     * JSON.stringify(usr.profile)
     * usr.site_id
     * usr.name
+    * usr.verify
 
   find-or-create = plv8.find_function('find_or_create')
   return find-or-create(sel, sel-params, ins, ins-params)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+-- register_local_user(usr)
+--
+-- Find a user by auths.type and auths.id
+-- However, more information should be provided in case a new user needs to be created.
+-- @param Object usr
+--   @param String type         auths.type (facebook|google|twitter|local)
+--   @param Number id           auths.id (3rd party user id)
+--   @param JSON   profile      auths.profile (3rd party profile object)
+--   @param Number site_id      aliases.site_id
+--   @param String name         aliases.name
+--   @param String verify       aliases.verify
 DROP FUNCTION IF EXISTS register_local_user(usr JSON);
 CREATE FUNCTION register_local_user(usr JSON) RETURNS JSON AS $$
   ins = '''
@@ -174,8 +188,8 @@ CREATE FUNCTION register_local_user(usr JSON) RETURNS JSON AS $$
         SELECT u.id, u.id, $2::varchar, $3::json FROM u
         RETURNING *
     )
-  INSERT INTO aliases (user_id, site_id, name)
-    SELECT u.id, $4::bigint, $5::varchar FROM u;
+  INSERT INTO aliases (user_id, site_id, name, verify)
+    SELECT u.id, $4::bigint, $5::varchar, $6::varchar FROM u;
   '''
   ins-params =
     * usr.email
@@ -183,6 +197,7 @@ CREATE FUNCTION register_local_user(usr JSON) RETURNS JSON AS $$
     * JSON.stringify(usr.profile)
     * usr.site_id
     * usr.name
+    * usr.verify
   return plv8.execute ins, ins-params
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -218,6 +233,15 @@ CREATE FUNCTION change_alias(usr JSON) RETURNS JSON AS $$
     RETURNING *
   '''
   return plv8.execute(sql, [usr.name, usr.user_id, usr.site_id])
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- find an alias by site_id and verify string
+DROP FUNCTION IF EXISTS alias_by_verify(site_id JSON, verify JSON);
+CREATE FUNCTION alias_by_verify(site_id JSON, verify JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT * FROM aliases WHERE site_id = $1 AND verify = $2
+  '''
+  return plv8.execute(sql, [site_id, verify])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- @param Object usr

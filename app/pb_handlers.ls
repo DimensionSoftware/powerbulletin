@@ -276,12 +276,15 @@ auth-finisher = (req, res, next) ->
       console.warn 'username already exists', r
       res.json success: false, errors: []
     else
+      err, vstring <~ auth.unique-verify-string-for-site site.id
+      if err then return next err
       u =
         type    : \local
         profile : { password: auth.hash(password) }
         site_id : site.id
         name    : username
         email   : email
+        verify  : vstring
 
       err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
       if err
