@@ -1,4 +1,4 @@
 include mixins
 
 .forum
-  mixin post-edit({id:0, title:'', forum_id:0, csrf:0})
+  mixin post-edit({method:'post', id:activeForumId, title:'', csrf:0})

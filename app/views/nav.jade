@@ -27,7 +27,7 @@ mixin thread(t)
 
 #handle.handle(title='Toggle') &lt;
 .create
-  a.mutant.button(href="#{forum.uri}/new") Create Thread
+  a.mutant.require-login.button(href="#{forum.uri}/new") Create Thread
 
 ul.threads
   each t,ii in topThreads

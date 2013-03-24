@@ -1,19 +1,4 @@
-
-mixin post-edit(p)
-  .post-edit(id="post_edit_#{p.id}")
-    form#edit_post_form(action="/resources/posts/#{p.id}", method='put')
-      //-label(for="post_title") Title
-      if !p.parent_id
-        input#post_title.title(name='title', type='text', placeholder='Title')
-      textarea.body(name='body')= p.body
-      input(type='hidden', name='id', value=p.id)
-      input(type='hidden', name='forum_id', value=p.forum_id)
-      input(type='hidden', name='csrf', value=p.csrf)
-      input.button(type='submit', value='Save')
-      input.button.cancel(type='button', value='Cancel')
-    .preview
+include mixins
 
 if typeof(post) !== 'undefined'
   mixin post-edit(post)
-else
-  mixin post-edit({id:0, title:'', forum_id:0, csrf:0})

@@ -78,7 +78,7 @@ $d.on \keypress '#query' -> $ \body .add-class \searching; save-ui!
 #{{{ Login
 show-login-dialog = ->
   $.fancybox.open '#auth'
-  setTimeout (-> $ '#auth input[name=username]' .focus! ), 100
+  setTimeout (-> $ '#auth input[name=username]' .focus! ), 100ms
 
 # require that window.user exists before calling fn
 require-login = (fn) ->
@@ -106,7 +106,7 @@ window.login = ->
       $fancybox = $form.parents('.fancybox-wrap:first')
       $fancybox.add-class \on-error
       $fancybox.remove-class \shake
-      set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100
+      set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100ms
   false
 
 # get the user after a successful login
@@ -134,7 +134,7 @@ window.register = ->
       r.errors?.for-each (e) ->
         $form.find("input[name=#{e.param}]").add-class \validation-error .focus!
       $fancybox = $form.parents('.fancybox-wrap:first') .remove-class \shake
-      set-timeout (-> $fancybox.add-class(\shake)), 100
+      set-timeout (-> $fancybox.add-class(\shake)), 100ms
   return false
 
 $d.on \submit '.login form' login
@@ -200,22 +200,25 @@ censor = ->
       console.warn r.errors.join(', ')
 
 #{{{ Delegated Events
-$d.on \click '.no-surf' require-login(-> edit-post is-editing!)
-$d.on \click '#edit_post_form .cancel' ->
-  $f = $ this .closest '.container'  # form
-  $f.remove-class \shrink .hide 300s # & hide
+# TODO new post
 
+# edit post
+$d.on \click '.edit.no-surf' require-login(-> edit-post is-editing!)
+$d.on \click '#edit_post_form .cancel' ->
+  f = $ this .closest '.container'  # form
+  f.remove-class \shrink .hide 300s # & hide
 $d.on \click '#edit_post_form input[type="submit"]' require-login(
   (e) -> submit-form(e, (data) ->
-    $f = $ this .closest('.container') # form
-    $p = $f .closest('.editing')       # post being edited
+    f = $ this .closest('.container') # form
+    p = f .closest('.editing')        # post being edited
     # render updated post
-    $p.find '.title' .html data[0]?.title
-    $p.find '.body'  .html(data[0]?.body)
-    $f.remove-class(\shrink).hide(300s) # & hide
+    p.find '.title' .html data[0]?.title
+    p.find '.body'  .html(data[0]?.body)
+    f.remove-class(\shrink).hide(300s) # & hide
     History.push-state {no-surf:true} '' window.location.href.replace(/\/edit\/[\/\d+]+$/, '')
-    false
-    ))
+    false))
+
+$d.on \click '.require-login' require-login(-> this.click)
 $d.on \click '#add_reply_submit input[type="submit"]' require-login(submit-form)
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 $d.on \click '.onclick-censor-post' require-login(censor)
@@ -300,8 +303,8 @@ track-pages = ->
   # beppus fun: c is current position
   #function page(c, tops) { return 1 + tops.indexOf(__.find(tops, function(t){ return t > c })) }
 
-$(window).scroll __.debounce(infinity-load-more-placeholders, 25)
-$(window).scroll __.debounce(track-pages, 50)
+$(window).scroll __.debounce(infinity-load-more-placeholders, 25ms)
+$(window).scroll __.debounce(track-pages, 50ms)
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker
