@@ -26,7 +26,7 @@ CREATE FUNCTION edit_post(post JSON) RETURNS JSON AS $$
   r = fn(post.id)
   errors.push "Higher access required" unless r.length
   unless errors.length
-    return plv8.execute('UPDATE posts SET title=$1,body=$2 WHERE id=$3 RETURNING id,title,body', [post.title, post.body, post.id])
+    return plv8.execute('UPDATE posts SET title=$1,body=$2 WHERE id=$3 RETURNING id,title,body,forum_id', [post.title, post.body, post.id])
   return {success: !errors.length, errors}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 

@@ -39,12 +39,14 @@ require! {
       return next 404
   edit    : null
   update  : (req, res, next) ->
-    return next(404) unless req.user # or authorized_as \admin
+    return next(404) unless req.user # is_owner user, post_id  or is_authorized_as \admin (rights)
+    # TODO rights needs to be moved from users to aliases
     # TODO secure csrf, etc...
     # save post
     req.body.user_id = req.user.id
     err, r <- db.edit-post(req.body)
     if err then return next err
+    c.invalidate-forum r.forum_id, console.warn
     res.json r
   destroy : (req, res, next) ->
     return next(404) unless req.user
