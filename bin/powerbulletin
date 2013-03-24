@@ -2,7 +2,7 @@
 
 # main
 # ---------
-if [ $NODE_ENV = 'production' ] ; then
+if [ "$NODE_ENV" = 'production' ] ; then
   grunt procs jade browserify uglify
   node_modules/LiveScript/bin/livescript -d app/main.ls 2>> error_log
 else

@@ -32,7 +32,7 @@ window.load-ui = ->
     [searching, collapsed, w] = s.split sep
     w = parseInt w
     $l.transition({width:w}, 500ms, 'easeOutExpo' -> # restore left nav
-      $l.toggle-class \narrow ($l.width! < 300s))
+      $l.toggle-class \wide ($l.width! > 300px))
     set-timeout (-> # ... & snap
       $ '#main_content.container .forum' .transition({padding-left:w}, 450ms, \snap)), 200ms
   if searching is not '0' then $ \body .add-class(\searching)
