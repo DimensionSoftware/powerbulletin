@@ -195,16 +195,13 @@ else
     res.redirect url, 301
 
   sock = express!
-  (err, domains) <- pg.procs.domains
-  for domain in ['pbstage.com', 'pb.com', cvars.host] ++ domains
-    sock # bind all domains
-      .use(express.vhost domain, app)
-      .use(express.vhost "m.#{domain}", redir-to-domain)
-      .use(express.vhost "www.#{domain}", redir-to-domain)
 
   # bind shared cache domains
   for i in ['', 2, 3, 4, 5]
     sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{cvars.cache_domain}", cache-app)
+
+  # dynamic app can automatically check req.host
+  sock.use(app)
 
   # need this for socket.io
   server = http.create-server sock
