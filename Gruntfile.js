@@ -59,7 +59,7 @@ module.exports = function(grunt) {
       },
       jade: {
         files: ['app/views/*.jade'],
-        tasks: ['jade', 'launch'],
+        tasks: ['jade', 'browserify', 'launch'],
         options: {
           interrupt: true,
           debounceDelay: 100
