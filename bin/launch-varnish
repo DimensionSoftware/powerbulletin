@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ $NODE_ENV = 'production' ]; then
+if [ "$NODE_ENV" = 'production' ]; then
   export VARNISH_TTL=${VARNISH_TTL:=3600}
   export VARNISH_PORT=${VARNISH_PORT:=80}
 else # dev
