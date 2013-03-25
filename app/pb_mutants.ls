@@ -92,17 +92,6 @@ flip-background = (w, cur, direction='down') ->
     console.log w, u
     next!
 
-@forum-new =
-  static:
-    (window, next) ->
-      console.log \static
-      window.render-mutant \main_content \post_new
-      next!
-  on-load:
-    (window, next) ->
-      console.log \load
-      next!
-
 @forum =
   static:
     (window, next) ->

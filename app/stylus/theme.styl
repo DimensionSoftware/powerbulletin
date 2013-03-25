@@ -45,17 +45,11 @@ grid = 10px
     transform translateY(30px), skew(-1deg, 3deg)
   100%
     transform translateY(0px), skew(0, 0)
-@keyframes shrink
+@keyframes fadein
   0%
     opacity 0
-    transform scale(.9)
-  80%
-    transform scale(1)
-  95%
-    opacity 1
-    transform scale(.995)
   100%
-    transform scale(1)
+    opacity 1
 //}}}
 
 //{{{ Style applied after body scrolls
@@ -700,9 +694,9 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   text-align center
 //}}}
 //{{{ Fancybox
-.shrink
-  animation-name shrink
-  animation-duration .3s
+.fadein
+  animation-name fadein
+  animation-duration .4s
 .slide
   animation-name slide
   animation-duration .2s

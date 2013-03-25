@@ -206,7 +206,7 @@ censor = ->
 $d.on \click '.edit.no-surf' require-login(-> edit-post is-editing!)
 $d.on \click '#edit_post_form .cancel' ->
   f = $ this .closest '.container'  # form
-  f.remove-class \shrink .hide 300s # & hide
+  f.remove-class \fadein .hide 300s # & hide
 $d.on \click '#edit_post_form input[type="submit"]' require-login(
   (e) -> submit-form(e, (data) ->
     f = $ this .closest('.container') # form
@@ -214,7 +214,7 @@ $d.on \click '#edit_post_form input[type="submit"]' require-login(
     # render updated post
     p.find '.title' .html data[0]?.title
     p.find '.body'  .html(data[0]?.body)
-    f.remove-class(\shrink).hide(300s) # & hide
+    f.remove-class(\fadein).hide(300s) # & hide
     History.push-state {no-surf:true} '' window.location.href.replace(/\/edit\/[\/\d+]+$/, '')
     false))
 
