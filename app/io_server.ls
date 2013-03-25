@@ -65,6 +65,7 @@ site = (id, cb) ->
         session = connect.utils.parse-JSON-cookie(unsigned) || {}
         #console.log \session, session
         data.session = session
+        data.domain  = data.headers.host
         return accept(null, true)
       else
         return accept("bad session?", false)
@@ -90,6 +91,10 @@ site = (id, cb) ->
       console.warn \disconnected
       if user and site
         leave-site socket, site, user
+
+    socket.on \online-now, ->
+      if site
+        in-site socket, site
 
     socket.on \debug ->
       socket.emit \debug, 'hi'
