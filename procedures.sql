@@ -251,7 +251,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS usr(usr JSON);
 CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   sql = """
-  SELECT u.id, u.rights, a.name, a.created, a.site_id, auths.type, auths.profile 
+  SELECT u.id, a.rights, a.name, a.created, a.site_id, auths.type, auths.profile 
   FROM users u
   JOIN aliases a ON a.user_id = u.id
   LEFT JOIN auths ON auths.user_id = u.id
