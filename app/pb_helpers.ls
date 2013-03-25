@@ -8,7 +8,7 @@
   $b.hide!
   $t.prepend $b
   jade.render $b[0], tmpl, params
-  $b.show!add-class \shrink
+  $b.show!add-class \fadein
 
 @is-editing = ->
   m = window.location.pathname.match /(edit|new)\/?([\d+]*)/
