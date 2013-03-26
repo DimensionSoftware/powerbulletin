@@ -261,7 +261,7 @@ at-bottom = (pct-threshold = 0.7) ->
 # infinity scroll -- function to add placeholders divs for pages
 # TODO: calculate actual number of pages to be appended (there is a max)
 infinity-load-more-placeholders = ->
-  if at-bottom! and window.lv and window.page < window.pages-count
+  if window.lv and window.page < window.pages-count
     window.page = window.page + 1 # increment page for next operation
     el = window.lv.append "<div data-page=\"#{window.page}\"/>"
 
@@ -295,8 +295,17 @@ track-pages = ->
   # beppus fun: c is current position
   #function page(c, tops) { return 1 + tops.indexOf(__.find(tops, function(t){ return t > c })) }
 
-$(window).scroll __.debounce(infinity-load-more-placeholders, 25ms)
-$(window).scroll __.debounce(track-pages, 50ms)
+$(window).scroll __.debounce((-> if at-bottom! then infinity-load-more-placeholders!), 25)
+$(window).scroll __.debounce(track-pages, 100)
+
+$d.on \click, '#paginator a.page', ->
+  target-page = parse-int $(this).text!
+
+  # load at most this many extra placeholders, since there are already some loaded
+  for p in [window.page to target-page]
+    infinity-load-more-placeholders!
+
+  set-timeout (-> awesome-scroll-to("[data-page=#{target-page}]")), 100
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker
