@@ -64,13 +64,13 @@ body.scrolled
       menu.menu
         > .row
           a.title.active:hover
-            background-image linear-gradient(bottom, #fff 23px, #ffe0c0)
+            background-image linear-gradient(bottom, #fff 22px, #ffe0c0)
           a.title.active
-            background-image linear-gradient(bottom, #fff 23px, #ffe0c0)
+            background-image linear-gradient(bottom, #fff 22px, #ffe0c0)
           a.title:hover, a.title.hover
-            background-image linear-gradient(bottom, #fff 15px, #eee)
+            background-image linear-gradient(bottom, #fff 22px, #fed)
           a.title
-            background-image linear-gradient(bottom, #fff 20px, #ddd)
+            background-image linear-gradient(bottom, #fff 25px, #fed)
         .row
           transition line-height .2s ease-out
           .submenu
@@ -150,9 +150,9 @@ body.searching header
       a.title.active
         background-image linear-gradient(bottom, #fff 23px, #ffe0c0)
       a.title:hover, a.title.hover
-        background-image linear-gradient(bottom, #fff 15px, #eee)
+        background-image linear-gradient(bottom, #fff 15px, #fed)
       a.title
-        background-image linear-gradient(bottom, #fff 20px, #ddd)
+        background-image linear-gradient(bottom, #fff 20px, #fed)
 //}}}
 
 body
@@ -194,7 +194,7 @@ header
       > .row
         .title:hover, .title.hover
           border-top 3px solid highlight-color2
-          background-image linear-gradient(bottom, #fff 30px, #eee)
+          background-image linear-gradient(bottom, #fff 25px, #fed)
           color #000
           background-color #eee
           animation-name tiny-grow!important
@@ -208,7 +208,7 @@ header
           color #777
           text-shadow 0 0 1px #fff
           background-color #eee
-          background-image linear-gradient(bottom, #fff 40px, #ddd)
+          background-image linear-gradient(bottom, #fff 45px, #fed)
         .submenu
           box-shadow 0 2px 6px 0 #777
           border-right 1px solid #888
@@ -225,7 +225,7 @@ header
           .row:last-child:hover
             border-bottom 1px solid highlight-color2
           .row.active, .row:hover
-            background-image linear-gradient(bottom, #fff 10px, #eee)
+            background-image linear-gradient(bottom, #fff 10px, #fed)
             border-bottom 1px solid #ddd
             border-left 1px solid highlight-color2
             border-right 1px solid highlight-color2
@@ -297,8 +297,12 @@ header
     letter-spacing -1px
     font-size 1.1em
     margin (grid / 2) 0
-  .title, .post-count, .views
-    text-shadow 0 -1px 0 #333
+    text-shadow 0 -1px 0 #222
+  .thread.active
+    border-bottom 1px solid #aaa
+    .title
+      color #fff
+      text-shadow 0 0 2px #000
   .forum, .threads
     a
       text-decoration none
@@ -309,8 +313,6 @@ header
       color #fff
       border-bottom 1px solid #aaa
       animation-name none
-      .title
-        text-shadow 0 -1px 0 #000, 0 0 2px highlight-color2
 
 #left_content.container.dark
   background-color rgba(0,0,0,.1)

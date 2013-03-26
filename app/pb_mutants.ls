@@ -121,7 +121,10 @@ flip-background = (w, cur, direction='down') ->
         max-width: 450px
         resize: (e, ui) ->
           size-nav $l.width!
-          $f.css 'padding-left' ui.size.width ; window.save-ui!)
+          $f.css 'padding-left' ui.size.width; window.save-ui!)
+      $f.css 'padding-left' ($l.width! + 20px) # snap
+      $l.find '.active' .remove-class \active  # set active post
+      $l.find ".thread[data-id='#{active-post-id}']" .add-class \active
 
       # editing handler
       edit-post is-editing!
