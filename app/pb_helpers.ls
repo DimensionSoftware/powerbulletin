@@ -33,11 +33,15 @@
   return unless id # guard
   scroll-to-edit!
   sel = if id then "\#subpost_#{id}" else \BOTTOM
-  $.get "/resources/posts/#{id}" (p) ->
-    insert-dom window, sel, \post_edit, {post:p?[0]}
-    $e = $ sel
-    $e .add-class \editing
-    $e .find('input[type="text"]').focus!
+  $e  = $ sel
+  focus = -> $e.find('input[type="text"]').focus!
+  unless $e.find('.container:first:visible').length # guard
+    $.get "/resources/posts/#{id}" (p) ->
+      insert-dom window, "#{sel}", \post_edit, {post:p?0}
+      $e .add-class \editing
+      focus!
+  else
+    focus!
 
 @align-breadcrumb = ->
   b = $ '.breadcrumb'

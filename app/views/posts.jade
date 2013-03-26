@@ -8,6 +8,7 @@ if typeof(subPost) !== 'undefined'
         img(src="#{cache_url}/#{subPost.user_photo}")
       .user= subPost.user_name
       .date(data-time=subPost.created_iso)= subPost.created_human
+      .edit-container
       mixin breadcrumb(subPost)
       if subPost.body
         .subPost.body!= subPost.body
