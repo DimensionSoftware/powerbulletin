@@ -149,7 +149,11 @@ flip-background = (w, cur, direction='down') ->
           sub-posts <- $.getJSON "/resources/posts/#{window.active-post-id}/sub-posts", {page}
           for sub-post in sub-posts
             $pg.append render-sp(sub-post)
-        set-timeout (-> socket.emit('online-now')), 500 # update presence info
+
+        personalize = ->
+          socket.emit \online-now # update presence info
+          window.mutants[window.mutator].on-personalize window, window.user
+        set-timeout personalize, 500
 
       # initialize ListView
       $children = $('#main_content > .forum > .children')
