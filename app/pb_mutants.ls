@@ -164,7 +164,7 @@ flip-background = (w, cur, direction='down') ->
       unless scroll-to-edit!
         window.scroll-to-top!
       window.has-mutated-forum = window.active-forum-id
-      window.socket.emit \online-now
+      window.socket?emit \online-now
       next!
   on-personalize: (w, u, next) ->
     $ ".subpost[data-user-id=#{u.id}] .edit, .post[data-user-id=#{u.id}] .edit"

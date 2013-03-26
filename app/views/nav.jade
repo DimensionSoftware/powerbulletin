@@ -12,7 +12,7 @@ mixin subforum(f, sf, i)
     a.mutant.title(href=sf.uri)= sf.title
 
 mixin thread(t)
-  li.thread(data-user-id="#{t.user_id}")
+  li.thread(data-id=t.id, data-user-id=t.user_id)
     a.mutant(href=t.uri)
       h4.title= t.title
       .profile.photo

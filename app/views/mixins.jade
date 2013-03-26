@@ -18,14 +18,15 @@ mixin actions(post)
       a.onclick-censor-post Censor
 
 mixin post-edit(p)
-  .post-edit(id="post_edit_#{p.id}")
-    form#edit_post_form(action="/resources/posts/#{p.id}", method="#{p.method || 'put'}")
-      //-label(for="post_title") Title
-      //-if !p.parent_id
-      input#post_title.title(name='title', type='text', placeholder='Title')
+  action = p.id && '/'+p.id || ''
+  .post-edit.onclick-submit(class=p.is_comment ? 'comment' : '')
+    form#post_edit_form(action="/resources/posts#{action}", method="#{p.method || 'put'}")
+      if !p.is_comment
+        input.title(name='title', type='text', placeholder='Title', value=p.title)
       textarea.body(name='body')= p.body
-      input(type='hidden', name='id', value=p.id)
+      input(type='hidden', name='id', value=p.id || 0)
       input(type='hidden', name='forum_id', value=p.forum_id)
+      input(type='hidden', name='parent_id', value=p.parent_id)
       input(type='hidden', name='csrf', value=p.csrf)
       input.button(type='submit', value='Save')
       input.button.cancel(type='button', value='Cancel')

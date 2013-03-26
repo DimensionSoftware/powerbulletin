@@ -113,8 +113,8 @@ window.login = ->
 window.after-login = ->
   window.user <- $.getJSON '/auth/user'
   window.mutants?[window.mutator]?.on-personalize window, user, ->
-    socket.disconnect()
-    socket.socket.connect()
+    socket?disconnect()
+    socket?socket?connect()
 
 # logout
 window.logout = ->
@@ -162,28 +162,20 @@ submit-form = (event, fn) ->
 # show reply ui
 append-reply-ui = ->
   # find post div
-  $subpost = $(this).parents('.subpost:first')
-  unless $subpost.length
-    $subpost = $(this).parents('.post:first')
-  post-id  = $subpost.data('post-id')
+  $p = $ this .parents('.subpost:first')
+  unless $p.length
+    $p = $ this .parents('.post:first')
 
-  # FIXME html -- move to clientJade
-  reply-ui-html = """
-  <form id="add_reply_submit" method="post" action="/resources/posts">
-    <textarea name="body"></textarea>
-    <input type="hidden" name="forum_id" value="#{window.active-forum-id}">
-    <input type="hidden" name="parent_id" value="#{post-id}">
-    <div>
-      <input type="submit" value="Post">
-    </div>
-  </form>
-  """
   # append dom for reply ui
-  if $subpost.find('.reply form').length is 0
-    $subpost.find('.reply:first').append reply-ui-html
+  if $p.find('.reply form').length is 0
+    $p.find('.reply:first').append jade.templates.post_edit post:
+      method:     \post
+      forum_id:   active-forum-id
+      parent_id:  $p.data 'post-id'
+      is_comment: true
   else
-    $subpost.find('.reply:first form').remove!
-  $subpost.find('textarea[name="body"]').focus!
+    $p.find('.reply:first form').remove!
+  $p.find('textarea[name="body"]').focus!
 
 censor = ->
   # find post div
@@ -202,24 +194,23 @@ censor = ->
 #{{{ Delegated Events
 # TODO new post
 
-# edit post
+# generic form-handling ui
 $d.on \click '.edit.no-surf' require-login(-> edit-post is-editing!)
-$d.on \click '#edit_post_form .cancel' ->
+$d.on \click '.onclick-submit .cancel' ->
   f = $ this .closest '.container'  # form
   f.remove-class \fadein .hide 300s # & hide
-$d.on \click '#edit_post_form input[type="submit"]' require-login(
+$d.on \click '.onclick-submit input[type="submit"]' require-login(
   (e) -> submit-form(e, (data) ->
     f = $ this .closest('.container') # form
     p = f .closest('.editing')        # post being edited
     # render updated post
-    p.find '.title' .html data[0]?.title
-    p.find '.body'  .html(data[0]?.body)
-    f.remove-class(\fadein).hide(300s) # & hide
+    p.find '.title' .html(data.0?title)
+    p.find '.body'  .html(data.0?body)
+    f.remove-class \fadein .hide(300s) # & hide
     History.push-state {no-surf:true} '' window.location.href.replace(/\/edit\/[\/\d+]+$/, '')
     false))
 
 $d.on \click '.require-login' require-login(-> this.click)
-$d.on \click '#add_reply_submit input[type="submit"]' require-login(submit-form)
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 $d.on \click '.onclick-censor-post' require-login(censor)
 
