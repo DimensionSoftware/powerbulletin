@@ -68,8 +68,9 @@ date-fields =
   | otherwise => o
 
 @forum-path-parts = (path) ->
-  parts = path.split /\//
-  parts.shift!
+  parts = path?split /\//
+  return unless parts # guard
+  parts?shift!
   m     = last parts .match /-([\d]+)$/
   id    = m?[1]
   if id

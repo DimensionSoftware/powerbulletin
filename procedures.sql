@@ -11,19 +11,24 @@ CREATE FUNCTION put_doc(site_id JSON, type JSON, key JSON, val JSON) RETURNS JSO
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 -- Posts {{{
+DROP FUNCTION IF EXISTS owns_post(post_id JSON, user_id JSON);
+CREATE FUNCTION owns_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
+  return plv8.execute('SELECT id FROM posts WHERE id=$1 AND user_id=$2', [post_id, user_id])
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 DROP FUNCTION IF EXISTS post(id JSON);
 CREATE FUNCTION post(id JSON) RETURNS JSON AS $$
   return plv8.execute('SELECT * FROM posts WHERE id=$1', [id])
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS edit_post(post JSON);
-CREATE FUNCTION edit_post(post JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS edit_post(usr JSON, post JSON);
+CREATE FUNCTION edit_post(usr JSON, post JSON) RETURNS JSON AS $$
   require! <[u validations]>
   errors = validations.post(post)
 
   # check ownership & access
-  fn = plv8.find_function('post')
-  r = fn(post.id)
+  fn = plv8.find_function('owns_post')
+  r = fn(post.id, usr.id)
   errors.push "Higher access required" unless r.length
   unless errors.length
     return plv8.execute('UPDATE posts SET title=$1,body=$2 WHERE id=$3 RETURNING id,title,body,forum_id', [post.title, post.body, post.id])

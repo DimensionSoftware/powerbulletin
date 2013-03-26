@@ -117,6 +117,7 @@ body.scrolled
   #main_content.container
     .breadcrumb
       text-align center
+      z-index 9
       top header-scrolled-height
       border-bottom-left-radius 5px
       border-bottom-right-radius 5px
@@ -490,7 +491,6 @@ section.left-chrome
       transition all .1s ease-out 1.3s
     .container
       position absolute
-      height 100%
       width 100%
       background-color #fff
       .post-edit
@@ -534,6 +534,16 @@ section.left-chrome
           margin-right grid
         .edit
           display none
+      .comment
+        position relative
+        width 250px
+        .body
+          height 65px
+        .submit
+          position absolute
+          z-index 5
+          top grid
+          right grid
     .subpost:last-child
       margin-bottom (grid*3)
     .post:hover, .subpost:hover

@@ -168,13 +168,13 @@ append-reply-ui = ->
 
   # append dom for reply ui
   if $p.find('.reply form').length is 0
-    $p.find('.reply:first').append jade.templates.post_edit post:
+    insert-dom window,  $p.find('.reply:first'), \post_edit, post:
       method:     \post
       forum_id:   active-forum-id
       parent_id:  $p.data 'post-id'
       is_comment: true
   else
-    $p.find('.reply:first form').remove!
+    $p.find('.cancel').click!
   $p.find('textarea[name="body"]').focus!
 
 censor = ->

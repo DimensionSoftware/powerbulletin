@@ -162,13 +162,14 @@ auth-finisher = (req, res, next) ->
   user = req.user
   uri  = req.path
 
-  # secure
-  is-editing = /\/(edit|new)[\/\d+]*/
+  # guards
+  is-editing = /\/(edit|new)\/?([\d+]*)/
   what = uri.match is-editing
-  if what?.1 is \edit
-    return 404 unless user # FIXME owns post!
-  else if what?.1 is \new
-    return 404 unless user
+  if what # is editing, so:
+    if what?1 then return next 404 unless user     # must be logged in
+    err, owns-post <- db.owns-post what?2, user.id # must own post
+    if err then return next err
+    if what?.1 is \edit then return next 404 unless owns-post.length
 
   #XXX: this is one of the pages which is not depersonalized
   res.locals.user = user
@@ -193,10 +194,10 @@ auth-finisher = (req, res, next) ->
   if post_part # post
     err, sub-post <- db.uri-to-post site.id, uri
     if err then return next err
-    if !sub-post then return next(404)
+    if !sub-post then return next 404
 
     page = parse-int(req.query.page) || 1
-    if page < 1 then return next(404)
+    if page < 1 then return next 404
 
     limit = 5
     offset = (page - 1) * 5
@@ -209,9 +210,9 @@ auth-finisher = (req, res, next) ->
       forum           : db.forum sub-post.forum_id, _
 
     err, fdoc <- async.auto tasks
-    if err then return next err
-    if !fdoc then return next(404)
-    if fdoc.sub-posts-tree.length < 1 then return next(404)
+    if err   then return next err
+    if !fdoc then return next 404
+    if fdoc.sub-posts-tree.length < 1 then return next 404
 
     # attach sub-post to fdoc, among other things
     fdoc <<< {sub-post, forum-id:sub-post.forum_id, page}
@@ -237,7 +238,7 @@ auth-finisher = (req, res, next) ->
 
     err, fdoc <- async.auto tasks
     if err then return next err
-    if !fdoc then return next(404)
+    if !fdoc then return next 404
 
     fdoc <<< {forum-id}
     fdoc.active-forum-id = fdoc.forum-id
@@ -312,7 +313,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   render-css = (file-name, cb) ->
     if file-name in cvars.acceptable-stylus-files # concat files
       fs.read-file "app/stylus/#{file-name}", (err, buffer) ->
-        if err then return cb(err)
+        if err then return cb err
 
         options =
           compress: true
