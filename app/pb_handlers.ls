@@ -165,9 +165,9 @@ auth-finisher = (req, res, next) ->
   # guards
   is-editing = /\/(edit|new)\/?([\d+]*)/
   what = uri.match is-editing
-  if what # is editing, so:
-    if what?1 then return next 404 unless user     # must be logged in
-    err, owns-post <- db.owns-post what?2, user.id # must own post
+  if what?1 then return next 404 unless user # editing!  so, must be logged in
+  if what?2 is \edit # ... and must own post
+    err, owns-post <- db.owns-post what?2, user.id
     if err then return next err
     if what?.1 is \edit then return next 404 unless owns-post.length
 

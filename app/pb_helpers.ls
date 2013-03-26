@@ -10,9 +10,15 @@
   jade.render $b[0], tmpl, params
   $b.show!add-class \fadein
 
+@is-editing-regexp = /(edit|new)\/?([\d+]*)/
+
 @is-editing = ->
-  m = window.location.pathname.match /(edit|new)\/?([\d+]*)/
+  m = window.location.pathname.match @is-editing-regexp
   return if m then m[2] else false
+
+@remove-editing-url = ->
+  if window.location.href.match is-editing-regexp
+    History.push-state {no-surf:true} '' window.location.href.replace(/\/edit\/[\/\d+]+$/, '')
 
 @scroll-to-edit = ->
   id = is-editing!

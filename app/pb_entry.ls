@@ -167,7 +167,7 @@ append-reply-ui = ->
     $p = $ this .parents('.post:first')
 
   # append dom for reply ui
-  if $p.find('.reply form').length is 0
+  unless $p.find('.reply .container:visible').length
     insert-dom window,  $p.find('.reply:first'), \post_edit, post:
       method:     \post
       forum_id:   active-forum-id
@@ -199,6 +199,7 @@ $d.on \click '.edit.no-surf' require-login(-> edit-post is-editing!)
 $d.on \click '.onclick-submit .cancel' ->
   f = $ this .closest '.container'  # form
   f.remove-class \fadein .hide 300s # & hide
+  remove-editing-url!
 $d.on \click '.onclick-submit input[type="submit"]' require-login(
   (e) -> submit-form(e, (data) ->
     f = $ this .closest('.container') # form
@@ -207,7 +208,7 @@ $d.on \click '.onclick-submit input[type="submit"]' require-login(
     p.find '.title' .html(data.0?title)
     p.find '.body'  .html(data.0?body)
     f.remove-class \fadein .hide(300s) # & hide
-    History.push-state {no-surf:true} '' window.location.href.replace(/\/edit\/[\/\d+]+$/, '')
+    remove-editing-url!
     false))
 
 $d.on \click '.require-login' require-login(-> this.click)
