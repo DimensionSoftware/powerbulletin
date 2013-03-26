@@ -120,10 +120,8 @@ flip-background = (w, cur, direction='down') ->
         min-width: 200px
         max-width: 450px
         resize: (e, ui) ->
-          size-nav ui.size.width
+          size-nav $l.width!
           $f.css 'padding-left' ui.size.width ; window.save-ui!)
-      $f.css 'padding-left' ($l.width! + 20px)
-      size-nav ($l.width!)
 
       # editing handler
       edit-post is-editing!

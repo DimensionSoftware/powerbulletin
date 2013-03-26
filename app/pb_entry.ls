@@ -30,7 +30,7 @@ window.load-ui = ->
   $l = $ '#left_content'
   if s
     [searching, collapsed, w] = s.split sep
-    w = parseInt w
+    w = (parseInt w) + 20px
     $l.transition({width:w}, 500ms, 'easeOutExpo' -> # restore left nav
       $l.toggle-class \wide ($l.width! > 300px))
     set-timeout (-> # ... & snap
