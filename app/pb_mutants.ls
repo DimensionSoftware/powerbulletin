@@ -152,7 +152,7 @@ flip-background = (w, cur, direction='down') ->
 
         personalize = ->
           socket.emit \online-now # update presence info
-          window.mutants[window.mutator].on-personalize window, window.user
+          window.mutants[window.mutator].on-personalize window, window.user, (->)
         set-timeout personalize, 500
 
       # initialize ListView
