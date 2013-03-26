@@ -298,12 +298,18 @@ header
     font-size 1.1em
     margin (grid / 2) 0
     text-shadow 0 -1px 0 #222
+  .thread
+    border-bottom 1px solid transparent
+    border-top 1px solid transparent
   .thread.active
     border-bottom 1px solid #aaa
+    border-top 1px solid #aaa
+    background-color rgba(50, 50, 50, .2)
     .title
       color #fff
       text-shadow 0 0 2px #000
   .forum, .threads
+    border-bottom 1px solid #eee
     a
       text-decoration none
       color #eee
@@ -311,7 +317,6 @@ header
       border-bottom 1px solid transparent
     a:hover
       color #fff
-      border-bottom 1px solid #aaa
       animation-name none
 
 #left_content.container.dark

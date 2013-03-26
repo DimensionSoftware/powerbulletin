@@ -198,7 +198,7 @@ censor = ->
 $d.on \click '.edit.no-surf' require-login(-> edit-post is-editing!)
 $d.on \click '.onclick-submit .cancel' ->
   f = $ this .closest '.container'  # form
-  f.remove-class \fadein .hide 300s # & hide
+  f.hide 350ms \easeOutExpo
   remove-editing-url!
 $d.on \click '.onclick-submit input[type="submit"]' require-login(
   (e) -> submit-form(e, (data) ->

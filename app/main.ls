@@ -181,7 +181,8 @@ else
     else if proc.env.NODE_ENV is \production
       err-handler (res) -> res.send html_50x, 500
     else
-      next err
+      console.warn "last err handler: #{next} #{err}"
+      res.json err
 
   # all domain-based catch-alls & redirects
   max-age = if DISABLE_HTTP_CACHE then 0 else 7200 * 1000
