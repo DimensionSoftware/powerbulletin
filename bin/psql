@@ -6,4 +6,4 @@ else
   user='postgres'
 fi
 
-psql -U$user -h127.0.0.1 "$@"
+psql -U$user -dpb -h127.0.0.1 "$@"
