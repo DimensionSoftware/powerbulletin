@@ -172,8 +172,9 @@ flip-background = (w, cur, direction='down') ->
       window.socket?emit \online-now
       next!
   on-personalize: (w, u, next) ->
-    $ ".subpost[data-user-id=#{u.id}] .edit, .post[data-user-id=#{u.id}] .edit"
-      .css(\display \inline) # enable edit
+    if u # guard
+      $ ".subpost[data-user-id=#{u.id}] .edit, .post[data-user-id=#{u.id}] .edit"
+        .css(\display \inline) # enable edit
     next!
   on-unload:
     (window, next) ->

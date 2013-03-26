@@ -112,9 +112,9 @@ window.login = ->
 # get the user after a successful login
 window.after-login = ->
   window.user <- $.getJSON '/auth/user'
-  window.mutants?[window.mutator]?.on-personalize window, user, ->
-    socket?disconnect()
-    socket?socket?connect()
+  if user then window.mutants?[window.mutator]?on-personalize window, user, ->
+    socket?disconnect!
+    socket?socket?connect!
 
 # logout
 window.logout = ->
