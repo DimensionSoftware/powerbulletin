@@ -178,11 +178,8 @@ else
   app.use (err, req, res, next) ~>
     if err is 404
       res.send html_404, 404
-    else if proc.env.NODE_ENV is \production
-      err-handler (res) -> res.send html_50x, 500
     else
-      console.warn "last err handler: #{next} #{err}"
-      res.json err
+      err-handler (res) -> res.send html_50x, 500
 
   # all domain-based catch-alls & redirects
   max-age = if DISABLE_HTTP_CACHE then 0 else 7200 * 1000
