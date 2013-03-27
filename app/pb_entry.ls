@@ -270,13 +270,13 @@ toggle-page = (num) ->
   $ "\#paginator .page:contains(#{num})" .add-class \active
 
 track-pages = ->
-  current-top = $w.scroll-top! + $w.height!
+  current-top = $w.scroll-top!
   pages = []
 
   $('[data-page]').each ->
     $el = $(this)
-    top = $el.position().top
-    dist = Math.abs(current-top - top)
+    top = $el.position!.top
+    dist = Math.abs(top - current-top)
     pages.push {$el, top, dist}
 
   # choose page with lowest 

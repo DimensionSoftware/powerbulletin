@@ -137,7 +137,6 @@ auth-finisher = (req, res, next) ->
   res.redirect redirect-url
 
 @homepage = (req, res, next) ->
-  db = pg.procs
   #TODO: refactor with async.auto
   err, menu <- db.menu res.locals.site.id
   if err then return next err
@@ -220,6 +219,10 @@ auth-finisher = (req, res, next) ->
     fdoc.sub-post.posts = delete fdoc.sub-posts-tree
     fdoc.pages-count = Math.ceil(delete fdoc.sub-posts-count / limit)
     fdoc.pages = [1 to fdoc.pages-count]
+    if page > 1
+      fdoc.prev-pages = [1 til page]
+    else
+      fdoc.prev-pages = []
 
     fdoc.active-forum-id = fdoc.sub-post.forum_id
     fdoc.active-post-id  = sub-post.id
