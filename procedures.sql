@@ -423,10 +423,12 @@ CREATE FUNCTION uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
   require! u
   try
     sql = '''
-    SELECT p.*
+    SELECT p.*, u.photo user_photo, a.name user_name
     FROM posts p
     JOIN forums f ON p.forum_id=f.id
     LEFT JOIN moderations m ON m.post_id=p.id
+    JOIN users u ON p.user_id=u.id
+    JOIN aliases a ON a.user_id=u.id
     WHERE f.site_id=$1
       AND p.uri=$2
       AND m.post_id IS NULL
