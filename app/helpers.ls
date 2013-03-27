@@ -1,5 +1,6 @@
 require! {
   crypto
+  bbcode
   __: \lodash
 }
 
@@ -94,6 +95,21 @@ date-fields =
     s = s.substr(0 len) # chop
     s = s.substr(0 s.last-index-of(' '))+suffix if s.last-index-of(' ') > 0 # trunc
   s
+
+# find all #hashtags in a string
+@hash-tags = (body) ->
+  body.match(/#\w+/g)?map (tag) -> tag.replace(/^#/, '').toLowerCase!
+
+# find all @attags in a string
+@at-tags = (body) ->
+  body.match(/@\w+/g)?.map (tag) -> tag.replace(/^@/, '')
+
+# take marked up text and turn it into html
+@html = (body) ->
+  # TODO - escape html before sending to bbcode parser
+  # TODO - add #hashtag and @attag support
+  bbcode.parse body
+
 #}}}
 #{{{ Time functions
 # human readable day name based on int
