@@ -305,6 +305,7 @@ header
     border-bottom 1px solid #aaa
     border-top 1px solid #aaa
     background-color rgba(50, 50, 50, .2)
+    transition background-color .1s ease-out
     .title
       color #fff
       text-shadow 0 0 2px #000
@@ -317,6 +318,7 @@ header
       border-bottom 1px solid transparent
     a:hover
       color #fff
+      transition color .3s ease-out
       animation-name none
 
 #left_content.container.dark
@@ -665,6 +667,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
 .button:active, button:active, input[type='submit']:active,input[type='button']:active,button:focus, input[type="submit"]:focus, input[type="button"]:focus
   //text-indent 2px
   border-top 1px solid #666
+  margin-right (grid/2 - 1)
   text-indent 1px
   border-left 1px solid #666
   box-shadow 0 0 1px #777, 1px 1px 1px #a33400 inset,0 1px 3px #aaa

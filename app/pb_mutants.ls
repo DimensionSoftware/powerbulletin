@@ -153,7 +153,7 @@ flip-background = (w, cur, direction='down') ->
         personalize = ->
           socket.emit \online-now # update presence info
           window.mutants[window.mutator].on-personalize window, window.user, (->)
-        set-timeout personalize, 500
+        set-timeout personalize, 500ms
 
       # initialize ListView
       $children = $ '#main_content > .forum > .children > [data-page]'
