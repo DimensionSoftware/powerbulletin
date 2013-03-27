@@ -18,7 +18,7 @@ if typeof(subPost) !== 'undefined'
       .children
         #listview
         each pg in prevPages
-          div(data-page=pg, style='height:250px')
+          div(data-page=pg)
         div(data-page=page)
           each sp in subPost.posts
             mixin subpost(sp, 0)

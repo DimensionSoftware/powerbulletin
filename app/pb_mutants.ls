@@ -144,7 +144,6 @@ flip-background = (w, cur, direction='down') ->
         $(this).find('[data-page]:not(.page-loaded)').each ->
           $pg = $(this)
           $pg.add-class \page-loaded
-          $pg.css height:\auto
           page = $pg.data(\page)
 
           sub-posts <- $.getJSON "/resources/posts/#{window.active-post-id}/sub-posts", {page}

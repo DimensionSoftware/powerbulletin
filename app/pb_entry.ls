@@ -270,18 +270,14 @@ toggle-page = (num) ->
   $ "\#paginator .page:contains(#{num})" .add-class \active
 
 track-pages = ->
-  current-top = $w.scroll-top! + $w.height!
+  current-top = $w.scroll-top!
   pages = []
 
   $('[data-page]').each ->
     $el = $(this)
-    top = $el.position().top
+    top = $el.position!.top
     dist = Math.abs(top - current-top)
     pages.push {$el, top, dist}
-
-  console.warn pages.map (.top)
-  console.warn pages.map (.dist)
-  console.warn {current-top}
 
   # choose page with lowest 
   if pages.length
@@ -293,8 +289,6 @@ track-pages = ->
 
     cur-page = closest.$el.data \page
     toggle-page cur-page
-
-  console.log cur-page
 
 #track-pages = ->
   # tops is the list of tops for
