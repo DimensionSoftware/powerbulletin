@@ -101,6 +101,7 @@ flip-background = (w, cur, direction='down') ->
       window.marshal \activePostId @active-post-id
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
+      window.marshal \prevPages @prev-pages
       layout-static window, \forum, @active-forum-id
       next!
   on-load:
@@ -156,11 +157,28 @@ flip-background = (w, cur, direction='down') ->
         set-timeout personalize, 500
 
       # initialize ListView
-      $children = $('#main_content > .forum > .children')
-      html = $children.html!
-      $children.html ''
-      window.lv = new infinity.ListView($children, {lazy})
-      window.lv.append(html) # lift static html into the listview
+      $children = $ '#main_content > .forum > .children > [data-page]'
+      $listview = $ '#listview'
+
+      # save for inserting into listview after previous placeholder pages
+      $children.each -> $(this).detach!
+
+      window.lv = new infinity.ListView($listview, {lazy})
+
+      $children.each ->
+        $c = $(this)
+        $c.detach!
+        $c.css \height, \auto
+        window.lv.append $c
+
+      # this is so we can 'scroll up' to the previous pages after initially loading a particular page
+      # scroll into view before LV madness starts
+      #set-timeout awesome-scroll-to "[data-page=#{window.page}]", 1000
+
+      # start at bottom
+      #scrollto = -> $listview.last![0].scroll-into-view!
+      scrollto = -> $("[data-page=#{window.page}]")[0].scroll-into-view!
+      set-timeout scrollto, 1000
 
       next!
   on-mutate:
