@@ -71,7 +71,10 @@ export unique-verify-string-for-site = (site-id, cb) ->
 export email-template-text = """
 Welcome to {{site-name}}, {{user-name}}.
 
-  https://{{site-domain}}/
+To verify your account, please visit:
+
+  https://{{site-domain}}/verify/{{user-verify}}
+
 """
 
 export email-template-html = """
@@ -90,6 +93,7 @@ export send-registration-email = (user, site, cb) ->
     "site-name"   : site.name
     "site-domain" : site.domain
     "user-name"   : user.name
+    "user-verify" : user.verify
   email =
     from    : "noreply@powerbulletin.com"
     to      : user.email

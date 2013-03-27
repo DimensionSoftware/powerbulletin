@@ -12,7 +12,8 @@ require! {
 
 global <<< require './helpers'
 
-@hello = (req, res) ->
+@hello = (req, res, next) ->
+  console.log req.session
   res.send "hello #{res.locals.remote-ip}!"
 
 @login = (req, res, next) ->
@@ -305,7 +306,19 @@ auth-finisher = (req, res, next) ->
         # on successful registration, automagically @login, too
         auth.send-registration-email u, site, (err, r) ->
           console.warn 'registration email', err, r
-        @login(req, res, next)
+        #@login(req, res, next)
+        res.json { success: true, errors: [] }
+
+@verify = (req, res, next) ->
+  v    = req.param \v
+  site = res.locals.site
+  err, r <- db.verify-user site.id, v
+  if err then return next err
+  if r
+    req.session?passport?user = "#{r.name}:#{site.id}"
+    res.redirect '/#validate'
+  else
+    res.redirect '/#invalid'
 
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->

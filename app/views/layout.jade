@@ -111,6 +111,11 @@ html
             input(type="submit", value="Send Reset")
             a.msg.onclick-show-login
               h3 &lt; Back
+      .validate(style="display:none;")
+        h2 Check your inbox for activation
+          i !
+          a.msg.onclick-close
+            h3 &lt; Close
       .register(style="display:none;")
         form(method="post", action="/auth/register")
           label(for="username")

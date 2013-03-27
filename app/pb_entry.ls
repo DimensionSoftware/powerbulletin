@@ -127,11 +127,10 @@ window.register = ->
   $form.find("input").remove-class \validation-error
   $.post $form.attr(\action), $form.serialize!, (r) ->
     if r.success
-      $.fancybox.close!
       $form.find("input:text,input:password").remove-class(\validation-error).val ''
-      after-login!
+      switch-and-focus \on-register \on-validate ''
     else
-      r.errors?.for-each (e) ->
+      r.errors?for-each (e) ->
         $form.find("input[name=#{e.param}]").add-class \validation-error .focus!
       $fancybox = $form.parents('.fancybox-wrap:first') .remove-class \shake
       set-timeout (-> $fancybox.add-class(\shake)), 100ms
@@ -144,6 +143,7 @@ $d.on \submit '.register form' register
 #.
 #### main   ###############>======-- -   -
 ##
+if window.location.hash is '#validate' then after-login! # email activation
 load-ui!
 $ '#query' .focus!
 
@@ -192,9 +192,8 @@ censor = ->
       console.warn r.errors.join(', ')
 
 #{{{ Delegated Events
-# TODO new post
-
 # generic form-handling ui
+$d.on \click '.create .no-surf' require-login(-> edit-post is-editing!, forum_id:window.active-forum-id)
 $d.on \click '.edit.no-surf' require-login(-> edit-post is-editing!)
 $d.on \click '.onclick-submit .cancel' ->
   f = $ this .closest '.container'  # form
@@ -216,18 +215,20 @@ $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 $d.on \click '.onclick-censor-post' require-login(censor)
 
 # login delegated events
-window.switch-and-focus = (e, remove, add, focus-on) ->
-  $e = $ e
+window.switch-and-focus = (remove, add, focus-on) ->
+  $e = $ '.fancybox-wrap'
   $e .remove-class("#{remove} shake slide").add-class(add)
   setTimeout (-> $e.add-class \slide; $ focus-on .focus! ), 10ms
+$d.on \click '.onclick-close' ->
+  $.fancybox.close!
 $d.on \click '.onclick-show-login' ->
-  switch-and-focus '.fancybox-wrap' 'on-forgot on-register' \on-login '#auth input[name=username]'
+  switch-and-focus 'on-forgot on-register' \on-login '#auth input[name=username]'
 $d.on \click '.onclick-show-forgot' ->
-  switch-and-focus '.fancybox-wrap' \on-error \on-forgot '#auth input[name=email]'
+  switch-and-focus \on-error \on-forgot '#auth input[name=email]'
 $d.on \click '.onclick-show-choose' ->
-  switch-and-focus '.fancybox-wrap' \on-login \on-choose '#auth input[name=username]'
+  switch-and-focus \on-login \on-choose '#auth input[name=username]'
 $d.on \click '.onclick-show-register' ->
-  switch-and-focus '.fancybox-wrap' \on-login \on-register '#auth input[name=username]'
+  switch-and-focus \on-login \on-register '#auth input[name=username]'
 
 # catch esc key events on input boxes for login box
 $d.on \keyup '.fancybox-inner input' ->
