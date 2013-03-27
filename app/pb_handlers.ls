@@ -305,7 +305,8 @@ auth-finisher = (req, res, next) ->
         # on successful registration, automagically @login, too
         auth.send-registration-email u, site, (err, r) ->
           console.warn 'registration email', err, r
-        @login(req, res, next)
+        #@login(req, res, next)
+        res.json { success: true }
 
 @verify = (req, res, next) ->
   v    = req.param \v
