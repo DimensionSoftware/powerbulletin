@@ -83,6 +83,8 @@ app.get '/favicon.ico', (req, res, next) ->
   # replace with real favicon
   next 404, \404
 
+app.get '/verify/:v', handlers.verify
+
 app.get '/u/:name', (req, res, next) ->
   res.redirect "/user/#{req.params.name}/", 301
 

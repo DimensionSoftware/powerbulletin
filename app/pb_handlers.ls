@@ -307,6 +307,16 @@ auth-finisher = (req, res, next) ->
           console.warn 'registration email', err, r
         @login(req, res, next)
 
+@verify = (req, res, next) ->
+  v    = req.param \v
+  site = res.locals.site
+  err, r <- db.verify-user site.id, v
+  if err then return next err
+  if r
+    res.redirect '/#validate'
+  else
+    res.redirect '/#invalid'
+
 cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 @stylus = (req, res, next) ->
   r = req.route.params
