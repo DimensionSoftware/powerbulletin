@@ -132,7 +132,7 @@ body.scrolled
     opacity 1
     font-size .85em
     bottom -(grid)
-    line-height 16px
+    line-height (grid*2)
 //}}}
 //{{{ Structure applied when body is collapsed
 body.collapsed
@@ -508,6 +508,8 @@ section.left-chrome
       margin 0 grid grid grid
       overflow hidden
       //max-height max-post-height
+      .title
+        text-transform capitalize
       img
         max-width 100%
     .post.editing, .subpost.editing
@@ -586,6 +588,15 @@ section.left-chrome
       clear both
 //}}}
 //{{{ Footer
+footer::before
+  box-shadow 0 1px 10px 2px #fff
+  background-color #bbb
+  top 0
+  left 0
+  right 0
+  height 1px
+  content ''
+  position absolute
 footer
   text-align center
   position fixed
@@ -594,6 +605,7 @@ footer
   left 0
   height footer-height
   z-index 7
+  width auto
 //}}}
 
 //{{{ RESPONSIVEness

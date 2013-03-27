@@ -116,13 +116,14 @@ flip-background = (w, cur, direction='down') ->
 
       # handle left
       $l = $ '#left_content'
-      size-nav = (w) -> $l.toggle-class \wide (w > 300px)
       $l.resizable(
         min-width: 200px
         max-width: 450px
         resize: (e, ui) ->
-          size-nav $l.width!
-          $f.css 'padding-left' ui.size.width; window.save-ui!)
+          $l.toggle-class \wide ($l.width! > 300px) # resize left nav
+          $ \footer .css 'left' ui.size.width       # " footer
+          $f.css 'padding-left' ui.size.width       # " forum
+          window.save-ui!)
       $f.css 'padding-left' ($l.width! + 20px) # snap
       $l.find '.active' .remove-class \active  # set active post
       $l.find ".thread[data-id='#{active-post-id}']" .add-class \active

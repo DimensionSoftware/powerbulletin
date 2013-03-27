@@ -10,10 +10,10 @@ $w = $ window
 $d = $ document
 
 #{{{ UI Interactions
-# save state
+# ui save state
 sep    = \-
 offset = 20px
-window.save-ui = ->
+window.save-ui = -> # serealize ui state to cookie
   min-width = 200px
   w = $ '#left_content' .width!
   s = ($.cookie \s)
@@ -25,14 +25,15 @@ window.save-ui = ->
     w
   $.cookie \s, vals.join(sep),
     path: '/'
-window.load-ui = ->
+window.load-ui = -> # restore ui state from cookie
   s  = ($.cookie \s)
   $l = $ '#left_content'
   if s
     [searching, collapsed, w] = s.split sep
     w = (parseInt w) + 20px
-    $l.transition({width:w}, 500ms, 'easeOutExpo' -> # restore left nav
-      $l.toggle-class \wide ($l.width! > 300px))
+    $l.transition({width:w}, 500ms, \easeOutExpo -> # restore
+      $ \footer .css \left $l.width!                # ..footer
+      $l.toggle-class \wide ($l.width! > 300px))    # ..left nav
     set-timeout (-> # ... & snap
       $ '#main_content.container .forum' .transition({padding-left:w}, 450ms, \snap)), 200ms
   if searching is not '0' then $ \body .add-class(\searching)
@@ -43,6 +44,7 @@ window.load-ui = ->
 $d.on \click '#handle' ->
   $l = $ '#left_content'
   $ \body .toggle-class \collapsed
+  $ \footer .css \left $l.width!  # ..footer
   $ '#main_content.container .forum'
     .css('padding-left', ($l.width! + offset))
   save-ui!
