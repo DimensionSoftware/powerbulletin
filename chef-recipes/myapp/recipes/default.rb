@@ -30,6 +30,7 @@ package 'zsh'
 package 'git'
 package 'libgeoip-dev'
 package 'libgeoip1'
+package 'postfix'
 
 # lets install a few extra packages globally from npm (lets not get carried away kids)
 unless File.file? '/etc/NPM_GLOBAL_PACKAGES_COMPLETED'
