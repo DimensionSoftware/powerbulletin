@@ -306,7 +306,7 @@ auth-finisher = (req, res, next) ->
         auth.send-registration-email u, site, (err, r) ->
           console.warn 'registration email', err, r
         #@login(req, res, next)
-        res.json { success: true }
+        res.json { success: true, errors: [] }
 
 @verify = (req, res, next) ->
   v    = req.param \v
