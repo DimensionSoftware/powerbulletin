@@ -314,6 +314,7 @@ auth-finisher = (req, res, next) ->
   err, r <- db.verify-user site.id, v
   if err then return next err
   if r
+    req.session?passport?user = "#{r.name}:#{site.id}"
     res.redirect '/#validate'
   else
     res.redirect '/#invalid'

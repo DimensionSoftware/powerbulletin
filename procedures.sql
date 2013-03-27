@@ -254,9 +254,9 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS verify_user(site_id JSON, verify JSON);
 CREATE FUNCTION verify_user(site_id JSON, verify JSON) RETURNS JSON AS $$
   sql = '''
-  UPDATE aliases SET verified = true WHERE site_id = $1 AND verify = $2
+  UPDATE aliases SET verified = true WHERE site_id = $1 AND verify = $2 RETURNING *
   '''
-  return plv8.execute(sql, [site_id, verify])
+  return plv8.execute(sql, [site_id, verify])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- @param Object usr

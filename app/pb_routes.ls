@@ -36,7 +36,9 @@ common-css = [ #{{{ Common CSS
   '/dynamic/css/theme.styl,layout.styl']
 #}}}
 
-app.get '/hello' handlers.hello
+app.get '/hello', (req, res, next) ->
+  console.log req.session
+  res.send "hi\n"
 
 #{{{ Local auth
 app.post '/auth/login'           handlers.login
