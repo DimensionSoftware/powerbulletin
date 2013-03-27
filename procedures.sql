@@ -250,6 +250,15 @@ CREATE FUNCTION alias_by_verify(site_id JSON, verify JSON) RETURNS JSON AS $$
   return plv8.execute(sql, [site_id, verify])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+--
+DROP FUNCTION IF EXISTS verify_user(site_id JSON, verify JSON);
+CREATE FUNCTION verify_user(site_id JSON, verify JSON) RETURNS JSON AS $$
+  sql = '''
+  UPDATE aliases SET verified = true WHERE site_id = $1 AND verify = $2
+  '''
+  return plv8.execute(sql, [site_id, verify])
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 -- @param Object usr
 --   @param String  name       user name
 --   @param Integer site_id    site id
