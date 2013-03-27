@@ -211,7 +211,7 @@ auth-finisher = (req, res, next) ->
     err, fdoc <- async.auto tasks
     if err   then return next err
     if !fdoc then return next 404
-    if fdoc.sub-posts-tree.length < 1 then return next 404
+    if page > 1 and fdoc.sub-posts-tree.length < 1 then return next 404
 
     # attach sub-post to fdoc, among other things
     fdoc <<< {sub-post, forum-id:sub-post.forum_id, page}
