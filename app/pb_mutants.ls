@@ -176,8 +176,9 @@ flip-background = (w, cur, direction='down') ->
 
       # start at bottom
       #scrollto = -> $listview.last![0].scroll-into-view!
-      scrollto = -> $("[data-page=#{window.page}]").0?scroll-into-view!
-      set-timeout scrollto, 1000ms
+      if window.page > 1
+        scrollto = -> $("[data-page=#{window.page}]").0?scroll-into-view!
+        set-timeout scrollto, 1000ms
 
       next!
   on-mutate:
