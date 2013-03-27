@@ -4,8 +4,11 @@ require! {
   \fs
   \jsdom
   \async
+  \util
   program: \commander
   pg: '../app/postgres'
+  __: \lodash
+  h: '../app/helpers'
 }
 global <<< require \prelude-ls
 pg.init!
@@ -13,8 +16,8 @@ pg.init!
 url = # {{{1
   forum: (forum-id) ->
     "http://www.mixedmartialarts.com/mma.cfm?go=forum.splash&forum=#{forum-id}"
-  thread: (forum-id, thread-id) ->
-    "http://www.mixedmartialarts.com/mma.cfm?go=forum.posts&thread=#{thread-id}&forum=#{forum-id}&page=1&pc=143"
+  thread: (forum-id, thread-id, page=1) ->
+    "http://www.mixedmartialarts.com/mma.cfm?go=forum.posts&thread=#{thread-id}&forum=#{forum-id}&page=#{page}&pc=143"
 
 threads-from-forum = (forum-id, cb) -> # {{{1
   threads = []
@@ -27,6 +30,8 @@ threads-from-forum = (forum-id, cb) -> # {{{1
       $ = window.$
       $('.ThreadList td.First').each (i, td) ->
         $a = $(td).find('a:first')
+        count = parseInt $(td).next().next().text()
+        pages = Math.ceil(count / 25)
         if $a.length
           id    = $a.attr('href').match(/thread=(\d+)/)?[1]
           title = $a.text()
@@ -35,48 +40,60 @@ threads-from-forum = (forum-id, cb) -> # {{{1
             forum-id  : forum-id
             title     : title
             posts     : [ ]
+            pages     : pages
+            count     : count
           }
       cb null, threads
   )
 
-with-posts = (t, cb) -> # {{{1
-  posts = []
+with-posts = (max, t, cb) --> # {{{1
   forum-id = t.forum-id
   thread-id = t.thread-id
-  console.log "fetching posts for thread - #{t.title}"
-  jsdom.env(
-    url.thread(forum-id, thread-id)
-    ["http://code.jquery.com/jquery.js"],
-    (err, window) ->
-      if err then return cb(err)
-      $ = window.$
-      $('.PostList .PostContent').each (i, p) ->
-        html = $(p).html()
-        post =
-          parent-id : thread-id
-          forum-id  : forum-id
-          user-id   : 3
-          title     : ""
-          body      : html
-        posts.push post
-      t.posts = posts
-      cb null, t
-  )
+  actual-pages = Math.min(max, t.pages)
+  console.log "fetching #{actual-pages} pages of posts for thread - #{t.title}"
+  fetch-posts = (page, cb) ->
+    util.print "#page "
+    jsdom.env(
+      url.thread(forum-id, thread-id, page)
+      ["http://code.jquery.com/jquery.js"],
+      (err, window) ->
+        if err then return cb(err)
+        $ = window.$
+        _posts = []
+        $('.PostList .PostContent').each (i, p) ->
+          html = $(p).html!
+          post =
+            parent-id : thread-id
+            forum-id  : forum-id
+            user-id   : 3
+            title     : ""
+            body      : html
+            html      : html
+          _posts.push post
+        cb null, _posts
+    )
+  async.map-series [1 to actual-pages], fetch-posts, (err, posts) ->
+    util.print "\n"
+    t.posts = __.flatten posts
+    t.body = t.posts?0?body || "\n"
+    t.html = t.posts?0?html || "\n"
+    t.posts.shift!
+    cb null, t
 
 create-thread-for-site = (site-id, t, cb) --> # {{{1
-  console.log 'inserting top post', { t.forum-id, t.title }
+  console.log "\ninserting top post f:#{t.forum-id} title:'#{t.title}'"
   top-post =
-    user_id   : 1
-    forum_id  : t.forum-id
-    title     : t.title
-    body      : "\n"
-    build_docs: false
+    user_id    : 1
+    forum_id   : t.forum-id
+    title      : t.title
+    body       : t.body
+    html       : t.html
+    build_docs : false
 
   pg.procs.add-post top-post, (err, insertion) ->
     if err then return cb(err)
 
     create-post = (p, cb) ->
-
       q = {}
       for k,v of p
         key = k.replace(/([A-Z])/g, ($1) -> return "_"+$1.toLowerCase())
@@ -85,7 +102,7 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
       q.build_docs = false
 
       pg.procs.add-post q, (err, r) ->
-        console.warn err
+        util.print "." if not err
         cb(err, r)
 
     async.map-series t.posts, create-post, cb
@@ -106,11 +123,13 @@ defaults =
   site  : 1
   forum : 1
   delay : 1500
+  max   : 3
 
 program
   .option  '-s, --site <id>',            "site id  (default: #{defaults.site})",                                         parseInt, defaults.site
   .option  '-f, --forum <id>',           "forum id (default: #{defaults.forum})",                                        parseInt, defaults.forum
   .option  '-d, --delay <milliseconds>', "amount of time to wait in between HTTP requests (default: #{defaults.delay})", parseInt, defaults.delay
+  .option  '-m, --max <pages>',          "maximum pages per thread to scrape (default: #{defaults.max})",                parseInt, defaults.max
   .parse process.argv
 
 delayed = delay-by program.delay # gratuitous use of partial application ;)
@@ -119,11 +138,13 @@ err, threads <- threads-from-forum program.forum
 if err then console.warn err
 console.log "found #{threads.length} threads for forum #{program.forum}"
 
-err, threads-with-posts <- async.map-series threads, (delayed with-posts)
+with-posts-max = with-posts program.max
+err, threads-with-posts <- async.map-series threads, (delayed with-posts-max)
 if err then console.warn err
 
 err, r <- async.map-series threads-with-posts, (create-thread-for-site program.site)
 if err then console.warn(err)
-console.log "the END"
+console.log "\n"
+process.exit 0
 
 # vim:ft=ls fdm=marker

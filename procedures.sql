@@ -31,7 +31,7 @@ CREATE FUNCTION edit_post(usr JSON, post JSON) RETURNS JSON AS $$
   r = fn(post.id, usr.id)
   errors.push "Higher access required" unless r.length
   unless errors.length
-    return plv8.execute('UPDATE posts SET title=$1,body=$2 WHERE id=$3 RETURNING id,title,body,forum_id', [post.title, post.body, post.id])
+    return plv8.execute('UPDATE posts SET title=$1,body=$2,html=$3 WHERE id=$4 RETURNING id,title,body,forum_id', [post.title, post.body, post.html, post.id])
   return {success: !errors.length, errors}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -65,8 +65,8 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       #       its a question of url length
 
       sql = '''
-      INSERT INTO posts (id, thread_id, user_id, forum_id, parent_id, title, slug, body)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO posts (id, thread_id, user_id, forum_id, parent_id, title, slug, body, html)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       '''
 
       params =
@@ -77,7 +77,8 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
         * parent-id
         * post.title
         * slug
-        * post.body
+        * post.body || ""
+        * post.html || ""
 
       plv8.execute(sql, params)
 

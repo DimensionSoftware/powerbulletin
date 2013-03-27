@@ -112,6 +112,7 @@ CREATE TABLE posts (
   slug      VARCHAR(256) NOT NULL,
   uri       TEXT,
   body      TEXT NOT NULL,
+  html      TEXT NOT NULL,
   loc       POINT,
   views     BIGINT NOT NULL DEFAULT 0,
   archived  BOOLEAN NOT NULL DEFAULT 'f',
