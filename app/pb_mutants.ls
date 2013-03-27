@@ -136,8 +136,6 @@ flip-background = (w, cur, direction='down') ->
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
       # handle scrolling
-      scroll-to-edit!
-
       render-sp = (sub-post) ->
         window.jade.templates._sub_post({window.cache_url, sub-post})
 
@@ -178,15 +176,13 @@ flip-background = (w, cur, direction='down') ->
       # start at bottom
       #scrollto = -> $listview.last![0].scroll-into-view!
       if window.page > 1
-        scrollto = -> $("[data-page=#{window.page}]").0?scroll-into-view!
-        set-timeout scrollto, 1000ms
+          scrollto = -> $("[data-page=#{window.page}]").0?scroll-into-view!
+          set-timeout scrollto, 1000ms
 
       next!
   on-mutate:
     (window, next) ->
       # handle scrolling
-      unless scroll-to-edit!
-        window.scroll-to-top!
       window.has-mutated-forum = window.active-forum-id
       window.socket?emit \online-now
       next!

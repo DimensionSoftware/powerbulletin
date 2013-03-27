@@ -21,13 +21,14 @@
   if window.location.href.match @is-editing-regexp
     History.push-state {no-surf:true} '' window.location.href.replace(@is-editing-regexp, '')
 
-@scroll-to-edit = ->
+@scroll-to-edit = (cb) ->
+  cb = -> noop=1 unless cb
   id = is-editing!
   if id then # scroll to id
-    awesome-scroll-to "\#subpost_#{id}"
+    awesome-scroll-to "\#subpost_#{id}" 600ms cb
     true
   else
-    scroll-to-top!
+    scroll-to-top cb
     false
 
 # handle in-line editing
