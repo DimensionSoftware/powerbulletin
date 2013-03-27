@@ -43,11 +43,11 @@ user-from-session = (s, cb) ->
   (err, user) <- db.usr {name, site_id}
   cb err, user
 
-site = (id, cb) ->
-  if not id
+site-by-domain = (domain, cb) ->
+  if not domain
     cb(null, null)
   else
-    db.site-by-id id, cb
+    db.site-by-domain domain, cb
 
 @init = (server) ->
   io = sio.listen server
@@ -77,14 +77,14 @@ site = (id, cb) ->
     err, user <- user-from-session socket.handshake.session
     if err then console.warn err
 
-    # XXX - it would be nice to not rely on user for this
-    err, site <- site user?.site_id
+    err, site <- site-by-domain socket.handshake.domain
     if err then console.warn err
 
     if user and site
-      console.warn { site: site.name, user: user.name }
+      #console.warn { site: site.name, user: user.name }
       enter-site socket, site, user
     if site
+      #console.warn { site: site.name }
       in-site socket, site
 
     socket.on \disconnect, ->
