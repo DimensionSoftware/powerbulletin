@@ -1,6 +1,7 @@
 require! {
-  pg: './postgres',
+  pg: './postgres'
   c: './cache'
+  h: './helpers'
 }
 
 
@@ -22,6 +23,7 @@ require! {
     db = pg.procs
     post = req.body
     post.user_id = req.user.id
+    post.html = h.html post.body
     err, ap-res <- db.add-post post
     if err then return next err
 
@@ -44,6 +46,7 @@ require! {
     # TODO secure csrf, etc...
     # save post
     req.body.user_id = req.user.id
+    req.html = h.html req.body.body
     err, r <- db.edit-post(req.body)
     if err then return next err
     c.invalidate-forum r.forum_id, console.warn
