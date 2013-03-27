@@ -383,4 +383,17 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 
   res.json sub-posts
 
+@admin = (req, res, next) ->
+  site = res.locals.site
+
+  tasks =
+    menu           : db.menu site.id, _
+
+  err, fdoc <- async.auto tasks
+  if err then return next err
+
+  res.locals fdoc
+
+  res.mutant \admin
+
 # vim:fdm=indent

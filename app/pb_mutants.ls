@@ -205,7 +205,7 @@ flip-background = (w, cur, direction='down') ->
 @profile =
   static:
     (window, next) ->
-      window.render-mutant 'main_content' \profile
+      window.render-mutant \main_content \profile
       layout-static window, \profile
       next!
   on-load:
@@ -236,6 +236,7 @@ flip-background = (w, cur, direction='down') ->
 @admin =
   static:
     (window, next) ->
+      window.render-mutant \main_content \admin
       next!
 
 # vim:fdm=indent
