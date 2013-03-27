@@ -47,7 +47,7 @@ top-posts = (sort, limit, fields='p.*') ->
     #{fields},
     MIN(a.name) user_name,
     MIN(u.photo) user_photo,
-    COUNT(p2.id) post_count
+    COUNT(p2.id)+1 post_count
   FROM aliases a
   JOIN posts p ON a.user_id=p.user_id
   JOIN users u ON u.id=a.user_id
