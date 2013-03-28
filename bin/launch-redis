@@ -1,0 +1,5 @@
+#!/bin/sh -e
+killall redis-server
+sleep 1
+killall -9 redis-server
+redis-server config/redis.conf
