@@ -196,7 +196,6 @@ flip-background = (w, cur, direction='down') ->
   on-unload:
     (window, next) ->
       try
-        window.$ '.forum .breadcrumb' .waypoint(\destroy)
         window.$ '#left_content' .resizable(\destroy)
       catch
         # do nothing

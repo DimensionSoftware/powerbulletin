@@ -54,7 +54,7 @@
       focus e
 
 @align-breadcrumb = ->
-  b = $ '.breadcrumb'
+  b = $ '#breadcrumb'
   m = $ '.menu'
   b.css \left ((m.width! - b.width!)/2 + m.offset!left)
 

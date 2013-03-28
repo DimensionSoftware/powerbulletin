@@ -115,7 +115,7 @@ body.scrolled
       top (header-scrolled-height - (grid*2))
       transition top .2s ease-out
   #main_content.container
-    .breadcrumb
+    #breadcrumb
       text-align center
       z-index 12
       top header-scrolled-height
@@ -125,9 +125,6 @@ body.scrolled
       text-transform capitalize
       font-size .9em
       transition top .35s ease-out
-      a, em, span
-        padding-right (grid/2)
-        margin-right 3px
   footer
     opacity 1
     font-size .85em
@@ -355,6 +352,7 @@ header
       .username
         font-size .7em
         em
+          text-transform capitalize
           font-weight 600
           margin-left (grid/2)
           font-size 1.1em
@@ -450,9 +448,15 @@ section.left-chrome
   grid(100%, 800px)
   padding forum-header-height 0 0 0!important
   z-index 5
-  .breadcrumb
+  #breadcrumb
     top -100px
     position fixed
+  .breadcrumb
+    text-transform capitalize
+    margin-bottom (grid/2)
+    a, em, span
+      padding-right (grid/2)
+      margin-right 3px
   .forum:first-child
     padding-top (grid * 7)!important
   .forum
@@ -460,11 +464,13 @@ section.left-chrome
     clear both
     min-height 650px
     padding-left left-content-width
+    p
+      margin 0
     .container
       z-index 6
     .header.stuck::before
       opacity 1!important
-    .header.stuck, .breadcrumb
+    .header.stuck, #breadcrumb
       position fixed
       top header-scrolled-height
       z-index 7
@@ -505,27 +511,31 @@ section.left-chrome
           min-height 40px
     .post
       float left
-      margin 0 grid grid grid
       overflow hidden
-      //max-height max-post-height
-      .title
-        text-transform capitalize
+      .breadcrumb
+        span, em
+          display none
+      .profile
+        width 50px
+        height 50px
       img
         max-width 100%
-    .post.editing, .subpost.editing
-      padding-left (grid/2)
+    //.post.editing, .subpost.editing
+    //  padding-left (grid/2)
     .post, .subpost
       position relative
       clear both
       // overflow hidden
-      margin-left (grid*4)
+      margin-left (grid*5)
       margin-top (grid/2)
       margin-bottom grid
       .title
-        margin 0
+        margin 0 0 (grid/2) 0
         font-size 1.5em
+      .title, .user, .date
+        text-transform capitalize
       .body
-        margin 0
+        margin 2px 0 0 0
       .actions
         opacity 0
         letter-spacing -10px
@@ -559,9 +569,14 @@ section.left-chrome
       .date
         font-size .8em
         color #555
+        margin-top -3px
       p
         margin 0
+      .photo
+        height 30px
+        width 30px
     .children
+      margin-left (grid*3)
       .children
         margin-left (grid*3)
         margin-bottom (grid*3)
@@ -570,13 +585,13 @@ section.left-chrome
         .date
           margin-left grid
         .subpost
-          margin-left (grid*2)
+          margin-left (grid*3)
           padding grid
           font-size .85em
         .photo
           overflow hidden
-          width 15px
-          height 15px
+          width 20px
+          height 20px
           float left
         img
           max-width 100%

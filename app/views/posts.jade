@@ -4,12 +4,13 @@ if typeof(subPost) !== 'undefined'
   .forum
     .post(id="post_#{subPost.id}", data-user-id=subPost.user_id, data-post-id=subPost.id)
       h3.title= subPost.title
+      .breadcrumb
+        mixin breadcrumb(subPost)
       .profile.photo
         img(src="#{cache_url}/#{subPost.user_photo}")
       .user= subPost.user_name
       .date(data-time=subPost.created_iso)= subPost.created_human
       .edit-container
-      mixin breadcrumb(subPost)
       if subPost.body
         .subPost.body!= subPost.body
       .reply
