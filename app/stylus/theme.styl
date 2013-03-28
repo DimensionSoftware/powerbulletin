@@ -104,7 +104,7 @@ body.scrolled
         position absolute
         opacity .25
   #left_content.container::after
-    bottom footer-height
+    bottom (footer-height - 4)
   footer
     opacity 1
     border-top 1px solid #ddd
@@ -561,6 +561,15 @@ section.left-chrome
             margin-right 5px
 ///}}}
 //{{{ Footer
+footer::before
+  box-shadow 0 1px 5px 1px #ddd
+  background-color #aaa
+  top 0
+  left 0
+  right 0
+  height 1px
+  content ''
+  position absolute
 footer
   opacity 0
   color #ddd
