@@ -1,0 +1,2 @@
+#!/bin/bash -e
+java -jar /opt/selenium-server-standalone-2.31.0.jar &> selenium.out &
