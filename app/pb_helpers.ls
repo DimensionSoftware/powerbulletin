@@ -2,7 +2,7 @@
 # XXX shared by pb_mutants & pb_entry
 
 # double-buffered replace of view with target
-@insert-dom = (w, target, tmpl, params) ->
+@insert-and-render = (w, target, tmpl, params) ->
   $t = w.$ target
   $b = w.$ "<div class='container'>"
   $b.hide!
@@ -35,7 +35,7 @@
   focus  = (e) -> set-timeout (-> e.find 'input[type="text"]' .focus!), 100
   render = (sel, locals) ->
     e = $ sel
-    insert-dom window, sel, \post_edit, post:locals
+    insert-and-render window, sel, \post_edit, post:locals
     focus e
 
   scroll-to-edit!
