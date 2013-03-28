@@ -137,7 +137,6 @@ flip-background = (w, cur, direction='down') ->
       post-id = $('#main_content .post:first').data('post-id')
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
-      # handle scrolling
       render-sp = (sub-post) ->
         window.jade.templates._sub_post({window.cache_url, sub-post})
 
@@ -176,7 +175,6 @@ flip-background = (w, cur, direction='down') ->
       #set-timeout awesome-scroll-to "[data-page=#{window.page}]", 1000
 
       # start at bottom
-      #scrollto = -> $listview.last![0].scroll-into-view!
       if window.page > 1
           scrollto = -> $("[data-page=#{window.page}]").0?scroll-into-view!
           set-timeout scrollto, 1000ms
@@ -184,7 +182,7 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-mutate:
     (window, next) ->
-      # handle scrolling
+      scroll-to-top!
       window.has-mutated-forum = window.active-forum-id
       window.socket?emit \online-now
       next!
