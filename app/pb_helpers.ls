@@ -8,7 +8,6 @@
   $b.hide!
   $t.prepend $b
   jade.render $b.0, tmpl, params
-  console.log "rendered #{tmpl} to #{params}"
   $b.show!add-class \fadein
 
 @is-editing-regexp = /(edit|new)\/?([\d+]*)/
@@ -43,7 +42,7 @@
   if not id.length and data # render new
     data.action = '/resources/post'
     data.method = \post
-    render '.forum.new', data
+    render '.forum', data
   else # fetch existing & render
     sel = "\#subpost_#{id}"
     e   = $ sel

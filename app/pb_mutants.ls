@@ -129,7 +129,9 @@ flip-background = (w, cur, direction='down') ->
       $l.find ".thread[data-id='#{active-post-id}']" .add-class \active
 
       # editing handler
-      edit-post is-editing!
+      id = is-editing!
+      unless id is false
+        edit-post id, (if id.length is 0 then forum_id:window.active-forum-id else void)
 
       # add impression
       post-id = $('#main_content .post:first').data('post-id')
