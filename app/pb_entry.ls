@@ -30,7 +30,7 @@ window.load-ui = -> # restore ui state from cookie
   $l = $ '#left_content'
   if s
     [searching, collapsed, w] = s.split sep
-    w = (parseInt w) + 20px
+    w = parseInt w
     $l.transition({width:w}, 500ms, \easeOutExpo -> # restore
       $ \footer .css \left $l.width!                # ..footer
       $l.toggle-class \wide ($l.width! > 300px))    # ..left nav
