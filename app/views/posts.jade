@@ -27,6 +27,9 @@ if typeof(subPost) !== 'undefined'
     else if subPost.morePosts
       a(href='#') Load More Sub-Posts . . .
 
+else //- placeholder
+  .forum
+
 if typeof(subPost) !== 'undefined'
   #breadcrumb.breadcrumb
     mixin breadcrumb(subPost)
