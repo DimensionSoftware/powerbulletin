@@ -1,6 +1,6 @@
+package 'openjdk-7-jdk'
 
 unless File.file? '/opt/selenium-server-standalone-2.31.0.jar'
-  package 'build-essential'
 
   bash "install selenium & soda" do
     cwd '/opt'
