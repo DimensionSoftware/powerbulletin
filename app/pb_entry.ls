@@ -35,7 +35,7 @@ window.load-ui = -> # restore ui state from cookie
       $ \footer .css \left $l.width!                # ..footer
       $l.toggle-class \wide ($l.width! > 300px))    # ..left nav
     set-timeout (-> # ... & snap
-      $ '#main_content.container .forum' .transition({padding-left:w}, 450ms, \snap)), 200ms
+      $ '#main_content.container .forum' .transition({padding-left:w + 20px}, 450ms, \snap)), 200ms
   if searching is not '0' then $ \body .add-class(\searching)
   if collapsed is not '0' then $ \body .add-class(\collapsed)
   set-timeout align-breadcrumb, 500ms
@@ -76,90 +76,6 @@ $d.on \click 'header' (e) ->
   $ '#query' .focus!
   save-ui!
 $d.on \keypress '#query' -> $ \body .add-class \searching; save-ui!
-#}}}
-#{{{ Login
-show-login-dialog = ->
-  $.fancybox.open '#auth'
-  setTimeout (-> $ '#auth input[name=username]' .focus! ), 100ms
-
-# require that window.user exists before calling fn
-require-login = (fn) ->
-  ->
-    if window.user
-      fn.apply this, arguments
-    else
-      show-login-dialog!
-      false
-
-# register action
-# login action
-window.login = ->
-  $form = $(this)
-  u = $form.find('input[name=username]')
-  p = $form.find('input[name=password]')
-  params =
-    username: u.val!
-    password: p.val!
-  $.post $form.attr(\action), params, (r) ->
-    if r.success
-      $.fancybox.close!
-      after-login!
-    else
-      $fancybox = $form.parents('.fancybox-wrap:first')
-      $fancybox.add-class \on-error
-      $fancybox.remove-class \shake
-      set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100ms
-  false
-
-# get the user after a successful login
-window.after-login = ->
-  window.user <- $.getJSON '/auth/user'
-  if user then window.mutants?[window.mutator]?on-personalize window, user, ->
-    socket?disconnect!
-    socket?socket?connect!
-
-# logout
-window.logout = ->
-  r <- $.get '/auth/logout'
-  window.location.reload!
-
-# register
-window.register = ->
-  $form = $(this)
-  $form.find("input").remove-class \validation-error
-  $.post $form.attr(\action), $form.serialize!, (r) ->
-    if r.success
-      $form.find("input:text,input:password").remove-class(\validation-error).val ''
-      switch-and-focus \on-register \on-validate ''
-    else
-      r.errors?for-each (e) ->
-        $form.find("input[name=#{e.param}]").add-class \validation-error .focus!
-      $fancybox = $form.parents('.fancybox-wrap:first') .remove-class \shake
-      set-timeout (-> $fancybox.add-class(\shake)), 100ms
-  return false
-
-$d.on \submit '.login form' login
-$d.on \submit '.register form' register
-#}}}
-
-#.
-#### main   ###############>======-- -   -
-##
-if window.location.hash is '#validate' then after-login! # email activation
-load-ui!
-$ '#query' .focus!
-
-# for general form submission
-submit-form = (event, fn) ->
-  $f = $ event.target .closest(\form) # get event's form
-  $.ajax {
-    url:      $f.attr(\action)
-    type:     $f.attr(\method)
-    data:     $f.serialize!
-    data-type: \json
-    success:  (data) ->
-      if fn then fn.call $f, data}
-  false
 
 # show reply ui
 append-reply-ui = ->
@@ -170,7 +86,7 @@ append-reply-ui = ->
 
   # append dom for reply ui
   unless $p.find('.reply .container:visible').length
-    insert-dom window,  $p.find('.reply:first'), \post_edit, post:
+    insert-and-render window,  $p.find('.reply:first'), \post_edit, post:
       method:     \post
       forum_id:   active-forum-id
       parent_id:  $p.data 'post-id'
@@ -192,6 +108,14 @@ censor = ->
         $subpost.hide!
     else
       console.warn r.errors.join(', ')
+#}}}
+
+#.
+#### main   ###############>======-- -   -
+##
+if window.location.hash is '#validate' then after-login! # email activation
+load-ui!
+$ '#query' .focus!
 
 #{{{ Delegated Events
 # generic form-handling ui
@@ -214,7 +138,6 @@ $d.on \click '.onclick-submit input[type="submit"]' require-login(
     remove-editing-url!
     false))
 
-$d.on \click '.require-login' require-login(-> this.click)
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 $d.on \click '.onclick-censor-post' require-login(censor)
 
@@ -240,7 +163,7 @@ $d.on \keyup '.fancybox-inner input' ->
     $.fancybox.close!
     return false
 #}}}
-
+#{{{ Infinity JS
 at-bottom = (pct-threshold = 0.7) ->
   # thx, stack overflow guy:
   # http://stackoverflow.com/a/12279215
@@ -300,8 +223,8 @@ track-pages = ->
   # beppus fun: c is current position
   #function page(c, tops) { return 1 + tops.indexOf(__.find(tops, function(t){ return t > c })) }
 
-$(window).scroll __.debounce((-> if at-bottom! then infinity-load-more-placeholders!), 25)
-$(window).scroll __.debounce(track-pages, 100)
+$(window).scroll __.debounce((-> if at-bottom! then infinity-load-more-placeholders!), 25ms)
+$(window).scroll __.debounce(track-pages, 100ms)
 
 $d.on \click, '#paginator a.page', ->
   target-page = parse-int $(this).text!
@@ -310,7 +233,8 @@ $d.on \click, '#paginator a.page', ->
   for p in [window.page to target-page]
     infinity-load-more-placeholders!
 
-  set-timeout (-> awesome-scroll-to("[data-page=#{target-page}]")), 100
+  set-timeout (-> awesome-scroll-to("[data-page=#{target-page}]")), 100ms
+#}}}
 
 window.has-mutated-forum = window.active-forum-id
 # vim:fdm=marker

@@ -91,13 +91,87 @@ $d.on \mousedown '.scroll-to-top' ->
   window.scroll-to-top!
   false
 #}}}
-#{{{ 3rd-party auth
-window.popup = (url) ->
-  window.open url, "popup", "width=980,height=650,scrollbars=no,toolbar=no,location=no,directories=no,status=no,menubar=no"
+#{{{ Login & Authentication
+show-login-dialog = ->
+  $.fancybox.open '#auth'
+  setTimeout (-> $ '#auth input[name=username]' .focus! ), 100ms
 
-$('.social a') .click ->
-  url = $(this).attr \href
-  popup url
+# register action
+# login action
+window.login = ->
+  $form = $(this)
+  u = $form.find('input[name=username]')
+  p = $form.find('input[name=password]')
+  params =
+    username: u.val!
+    password: p.val!
+  $.post $form.attr(\action), params, (r) ->
+    if r.success
+      $.fancybox.close!
+      after-login!
+    else
+      $fancybox = $form.parents('.fancybox-wrap:first')
+      $fancybox.add-class \on-error
+      $fancybox.remove-class \shake
+      set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100ms
+  false
+
+# get the user after a successful login
+window.after-login = ->
+  window.user <- $.getJSON '/auth/user'
+  if user then window.mutants?[window.mutator]?on-personalize window, user, ->
+    socket?disconnect!
+    socket?socket?connect!
+
+# logout
+window.logout = ->
+  r <- $.get '/auth/logout'
+  window.location.reload!
+
+# register
+window.register = ->
+  $form = $(this)
+  $form.find("input").remove-class \validation-error
+  $.post $form.attr(\action), $form.serialize!, (r) ->
+    if r.success
+      $form.find("input:text,input:password").remove-class(\validation-error).val ''
+      switch-and-focus \on-register \on-validate ''
+    else
+      r.errors?for-each (e) ->
+        $form.find("input[name=#{e.param}]").add-class \validation-error .focus!
+      $fancybox = $form.parents('.fancybox-wrap:first') .remove-class \shake
+      set-timeout (-> $fancybox.add-class(\shake)), 100ms
+  return false
+
+$d.on \submit '.login form' login
+$d.on \submit '.register form' register
+
+# require that window.user exists before calling fn
+window.require-login = (fn) ->
+  ->
+    if window.user
+      fn.apply this, arguments
+    else
+      show-login-dialog!
+      false
+$d.on \click '.require-login' require-login(-> this.click)
+
+# 3rd-party auth
+$ '.social a' .click ->
+  url = $ this .attr \href
+  window.open url \popup "width=980,height=650,scrollbars=no,toolbar=no,location=no,directories=no,status=no,menubar=no"
+  false
+#}}}
+#{{{ Form submission
+submit-form = (event, fn) ->
+  $f = $ event.target .closest(\form) # get event's form
+  $.ajax {
+    url:      $f.attr(\action)
+    type:     $f.attr(\method)
+    data:     $f.serialize!
+    data-type: \json
+    success:  (data) ->
+      if fn then fn.call $f, data}
   false
 #}}}
 #{{{ Keep human readable time up to date

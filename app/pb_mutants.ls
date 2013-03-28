@@ -176,8 +176,8 @@ flip-background = (w, cur, direction='down') ->
 
       # start at bottom
       if window.page > 1
-          scrollto = -> $("[data-page=#{window.page}]").0?scroll-into-view!
-          set-timeout scrollto, 1000ms
+        scrollto = -> $("[data-page=#{window.page}]").0?scroll-into-view!
+        set-timeout scrollto, 1000ms
 
       next!
   on-mutate:
