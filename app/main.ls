@@ -161,7 +161,6 @@ else
   # give us some context in error_log when exceptions happen
   err-handler = (responder) ~>
     (err, req, res, next) ~>
-      responder res
       timestamp = new Date
       console.warn err.message
       console.warn 'timestamp'   , timestamp
@@ -169,6 +168,7 @@ else
       console.warn 'user_agent'  , req.headers['user-agent']
       console.warn 'http_method' , req.method
       console.warn 'url'         , req.headers.host + req.url
+      responder res
       graceful-shutdown!
 
   # routes
@@ -179,7 +179,8 @@ else
     if err is 404
       res.send html_404, 404
     else
-      err-handler (res) -> res.send html_50x, 500
+      explain = err-handler (res) -> res.send html_50x, 500
+      explain err, req, res, next
 
   # all domain-based catch-alls & redirects
   max-age = if DISABLE_HTTP_CACHE then 0 else 7200 * 1000
