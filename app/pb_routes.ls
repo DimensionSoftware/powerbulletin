@@ -36,6 +36,9 @@ common-css = [ #{{{ Common CSS
   '/dynamic/css/theme.styl,layout.styl']
 #}}}
 
+app.get '/hello',
+  handlers.hello
+
 app.get '/admin',
   mw.add-js(common-js),
   mw.add-css(common-css),
