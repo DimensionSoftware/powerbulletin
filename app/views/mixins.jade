@@ -44,12 +44,12 @@ mixin subpost(sp, i)
       p.body!= sp.html
     .reply
     mixin actions(sp)
-  if sp.posts.length
-    .children
+  .children
+    if sp.posts.length
       each pp, ii in sp.posts
         mixin subpost(pp, ii)
-  else if sp.morePosts
-    a(href='#') Load More Sub-Posts . . .
+    else if sp.morePosts
+      a(href='#') Load More Sub-Posts . . .
 
 mixin thread(t)
   li.thread(data-id=t.id, data-user-id=t.user_id)

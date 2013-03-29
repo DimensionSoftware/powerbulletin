@@ -36,6 +36,11 @@ announce = sioa.create-client!
     unless post.parent_id
       err, new-post <- db.post post.id
       announce.emit \thread-create new-post
+    else
+      err, new-post <- db.post post.id
+      new-post.posts = []
+      announce.emit \post-create new-post
+
     res.json ap-res
   show    : (req, res, next) ->
     db = pg.procs
