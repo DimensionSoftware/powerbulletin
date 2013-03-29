@@ -37,6 +37,13 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- THIS IS ONLY FOR TOPLEVEL POSTS
 -- TODO: needs to support nested posts also, and update correct thread-id
+-- @param Object post
+--   @param Number forum_id
+--   @param Number user_id
+--   @param String title
+--   @param String body
+--   @param String html
+-- @returns Object
 DROP FUNCTION IF EXISTS add_post(post JSON);
 CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   var uri
