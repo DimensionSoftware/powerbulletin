@@ -95,7 +95,7 @@ flip-background = (w, cur, direction='down') ->
 @forum =
   static:
     (window, next) ->
-      window.render-mutant \main_content (if @uri.match(/\/new/) then \post_new else \posts)
+      window.render-mutant \main_content (if @uri.match(window.is-editing-regexp) then \post_new else \posts)
       window.render-mutant \left_content \nav unless window.has-mutated-forum is @active-forum-id
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
