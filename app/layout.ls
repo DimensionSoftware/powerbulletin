@@ -91,7 +91,7 @@ $d.on \mousedown '.scroll-to-top' ->
   false
 #}}}
 #{{{ Login & Authentication
-show-login-dialog = ->
+window.show-login-dialog = ->
   $.fancybox.open '#auth'
   setTimeout (-> $ '#auth input[name=username]' .focus! ), 100ms
 
@@ -162,7 +162,7 @@ $ '.social a' .click ->
   false
 #}}}
 #{{{ Form submission
-submit-form = (event, fn) ->
+window.submit-form = (event, fn) ->
   $f = $ event.target .closest(\form) # get event's form
   $.ajax {
     url:      $f.attr(\action)
