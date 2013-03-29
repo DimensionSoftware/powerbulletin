@@ -3,6 +3,8 @@ require! {
   crc32: 'express/node_modules/buffer-crc32'
   cookie: 'express/node_modules/cookie'
   connect: 'express/node_modules/connect'
+  RedisStore: 'socket.io/lib/stores/redis'
+  redis: 'socket.io/node_modules/redis'
 }
 
 # might need to put this somewhere more persistent
@@ -53,6 +55,12 @@ site-by-domain = (domain, cb) ->
   io = sio.listen server
   io.set 'log level', 1
 
+  redisPub    = redis.create-client!
+  redisSub    = redis.create-client!
+  redisClient = redis.create-client!
+  redisStore  = new RedisStore({ redis, redisPub, redisSub, redisClient })
+  io.set \store, redisStore
+
   io.set \authorization, (data, accept) ->
     if data.headers.cookie
       data.cookies = cookie.parse data.headers.cookie
@@ -96,7 +104,15 @@ site-by-domain = (domain, cb) ->
       if site
         in-site socket, site
 
-    socket.on \debug ->
+    socket.on 'posts.create', (post, cb) ->
+      err, ap-res <- db.add-post post
+      if err
+        console.log err
+        return
+      else
+        socket.in().broadcast.emit 'posts.create', post
+
+    socket.on \debug, ->
       socket.emit \debug, 'hi'
       socket.emit \debug, socket.manager.rooms
       socket.in('1').emit \debug, 'hi again to 1'
