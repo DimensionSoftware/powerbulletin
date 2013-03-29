@@ -18,7 +18,17 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS post(id JSON);
 CREATE FUNCTION post(id JSON) RETURNS JSON AS $$
-  return plv8.execute('SELECT * FROM posts WHERE id=$1', [id])
+  sql = '''
+  SELECT p.*,
+  a.name AS user_name ,
+  u.photo AS user_photo,
+  (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count
+  FROM posts p
+  JOIN users u ON p.user_id = u.id
+  JOIN aliases a ON u.id = a.user_id
+  WHERE p.id = $1;
+  '''
+  return plv8.execute(sql, [id])?0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS edit_post(usr JSON, post JSON);
