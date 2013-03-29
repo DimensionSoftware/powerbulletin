@@ -56,6 +56,7 @@ apps = [app, redir-to-domain, cache-app]
 
 graceful-shutdown = ->
   for a in apps
+    a
     #a.close!
 
 html_50x = fs.read-file-sync('public/50x.html').to-string!
