@@ -163,7 +163,7 @@ auth-finisher = (req, res, next) ->
   uri  = req.path
 
   # guards
-  is-editing = /\/(edit|new)\/?([\d+]*)/
+  is-editing = /\/(edit|new)\/?([\d+]*)$/
   what = uri.match is-editing
   if what?1 then return next 404 unless user # editing!  so, must be logged in
   if what?2 is \edit # ... and must own post
@@ -174,6 +174,7 @@ auth-finisher = (req, res, next) ->
   #XXX: this is one of the pages which is not depersonalized
   res.locals.user = user
   site = res.locals.site
+  delete site.config
 
   [forum_part, post_part] = req.params
 

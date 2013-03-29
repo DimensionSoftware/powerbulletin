@@ -33,7 +33,9 @@ announce = sioa.create-client!
       c.invalidate-forum post.forum_id, console.warn
 
     post.id = ap-res.id
-    announce.emit \post-create post
+    unless post.parent_id
+      err, new-post <- db.post post.id
+      announce.emit \thread-create new-post
     res.json ap-res
   show    : (req, res, next) ->
     db = pg.procs
@@ -50,8 +52,8 @@ announce = sioa.create-client!
     # TODO secure csrf, etc...
     # save post
     req.body.user_id = req.user.id
-    req.html = h.html req.body.body
-    err, r <- db.edit-post(req.body)
+    req.body.html = h.html req.body.body
+    err, r <- db.edit-post(req.user, req.body)
     if err then return next err
     c.invalidate-forum r.forum_id, console.warn
     res.json r

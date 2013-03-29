@@ -10,7 +10,7 @@
   jade.render $b.0, tmpl, params
   $b.show!add-class \fadein
 
-@is-editing-regexp = /(edit|new)\/?([\d+]*)/
+@is-editing-regexp = /(edit|new)\/?([\d+]*)$/
 
 @is-editing = ->
   m = window.location.pathname.match @is-editing-regexp
@@ -48,7 +48,7 @@
     e   = $ sel
     unless e.find('.container:first:visible').length # guard
       $.get "/resources/posts/#{id}" (p) ->
-        render sel, p?0
+        render sel, p
         e .add-class \editing
     else
       focus e
