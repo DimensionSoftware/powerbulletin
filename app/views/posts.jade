@@ -11,8 +11,8 @@ if typeof(subPost) !== 'undefined'
       .user= subPost.user_name
       .date(data-time=subPost.created_iso)= subPost.created_human
       .edit-container
-      if subPost.body
-        .subPost.body!= subPost.body
+      if subPost.html
+        .subPost.body!= subPost.html
       .reply
       mixin actions(subPost)
     if subPost.posts.length

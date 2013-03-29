@@ -40,8 +40,8 @@ mixin subpost(sp, i)
       img(src="#{cache_url}/#{sp.user_photo}")
     .user= sp.user_name
     .date(data-time=sp.created_iso)= sp.created_human
-    if sp.body
-      p.body!= sp.body
+    if sp.html
+      p.body!= sp.html
     .reply
     mixin actions(sp)
   if sp.posts.length
