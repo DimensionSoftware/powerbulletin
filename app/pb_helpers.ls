@@ -10,7 +10,7 @@
   jade.render $b.0, tmpl, params
   $b.show!add-class \fadein
 
-@is-editing-regexp = /(edit|new)\/?([\d+]*)$/
+@is-editing-regexp = /\/?(edit|new)\/?([\d+]*)\/?$/
 
 @is-editing = ->
   m = window.location.pathname.match @is-editing-regexp
