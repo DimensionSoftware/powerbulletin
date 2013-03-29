@@ -206,7 +206,7 @@ auth-finisher = (req, res, next) ->
       menu            : db.menu site.id, _
       sub-posts-tree  : db.sub-posts-tree site.id, sub-post.id, limit, offset, _
       sub-posts-count : db.sub-posts-count sub-post.id, _
-      top-threads     : db.top-threads sub-post.forum_id, _
+      top-threads     : db.top-threads sub-post.forum_id, \recent, _
       forum           : db.forum sub-post.forum_id, _
 
     err, fdoc <- async.auto tasks
@@ -238,7 +238,7 @@ auth-finisher = (req, res, next) ->
       menu        : db.menu res.locals.site.id, _
       forum       : db.forum forum-id, _
       forums      : db.forums forum-id, _
-      top-threads : db.top-threads forum-id, _
+      top-threads : db.top-threads forum-id, \recent, _
 
     err, fdoc <- async.auto tasks
     if err then return next err
