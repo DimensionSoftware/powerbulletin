@@ -81,6 +81,8 @@ app.get '/',
   mmw.mutant-layout(\layout, mutants),
   handlers.homepage
 
+app.get '/hello', handlers.hello
+
 app.get '/dynamic/css/:file' handlers.stylus # dynamic serving
 
 app.get '/favicon.ico', (req, res, next) ->
