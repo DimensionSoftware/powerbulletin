@@ -159,16 +159,12 @@ flip-background = (w, cur, direction='down') ->
       $children = $ '#main_content > .forum > .children > [data-page]'
       $listview = $ '#listview'
 
-      # save for inserting into listview after previous placeholder pages
-      $children.each -> $(this).detach!
-
-      window.lv = new infinity.ListView($listview, {lazy})
+      window.lv = new infinity.ListView $listview, {lazy}
 
       $children.each ->
         $c = $(this)
-        $c.detach!
-        $c.css \height, \auto
-        window.lv.append $c
+        $c.remove!
+        window.lv.append $c.html!
 
       # this is so we can 'scroll up' to the previous pages after initially loading a particular page
       # scroll into view before LV madness starts
