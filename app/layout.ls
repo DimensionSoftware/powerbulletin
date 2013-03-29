@@ -157,8 +157,8 @@ $d.on \click '.require-login' require-login(-> this.click)
 
 # 3rd-party auth
 $ '.social a' .click ->
-  url = $ this .attr \href
-  window.open url \popup "width=980,height=650,scrollbars=no,toolbar=no,location=no,directories=no,status=no,menubar=no"
+  url = $ this .attr(\href)
+  window.open url, \popup, "width=980,height=650,scrollbars=no,toolbar=no,location=no,directories=no,status=no,menubar=no"
   false
 #}}}
 #{{{ Form submission
