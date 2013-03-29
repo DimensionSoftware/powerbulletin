@@ -13,7 +13,8 @@ require! {
 global <<< require './helpers'
 
 @hello = (req, res, next) ->
-  console.log req.session
+  console.log req.headers
+  console.log req.foo.bar
   res.send "hello #{res.locals.remote-ip}!"
 
 @login = (req, res, next) ->
