@@ -162,12 +162,17 @@ else
   err-handler = (responder) ~>
     (err, req, res, next) ~>
       timestamp = new Date
-      console.warn err.message
-      console.warn 'timestamp'   , timestamp
-      console.warn 'client_ip'   , req.headers['x-real-client-ip']
-      console.warn 'user_agent'  , req.headers['user-agent']
-      console.warn 'http_method' , req.method
-      console.warn 'url'         , req.headers.host + req.url
+      console.error """
+
+      timestamp    : #timestamp
+      client_ip    : #{req.headers['x-real-client-ip']}
+      user_agent   : #{req.headers['user-agent']}
+      http_method  : #{req.method}
+      url          : #{req.headers.host + req.url}
+      user         : #{req.user?name}
+
+      #{err.stack}
+      """
       responder res
       graceful-shutdown!
 
