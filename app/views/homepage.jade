@@ -18,7 +18,7 @@ mixin post(f, p, i)
     a.mutant(href=p.uri)
       h5.title!= p.title
         span.date #{p.date}
-    p.body!= p.body
+    p.body!- p.html
     if p.posts
       each sp,i in p.posts
         mixin subpost(sp, i)
@@ -27,7 +27,7 @@ mixin subpost(sp, i)
  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even')
     .photo
       img(src="#{cache_url}/images/profile.jpg")
-    p.body!= sp.body
+    p.body!- sp.html
     .signature
       span.username - #{sp.user_name}
       span.date= sp.date

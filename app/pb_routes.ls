@@ -36,6 +36,9 @@ common-css = [ #{{{ Common CSS
   '/dynamic/css/theme.styl,layout.styl']
 #}}}
 
+app.get '/hello',
+  handlers.hello
+
 app.get '/admin',
   mw.add-js(common-js),
   mw.add-css(common-css),
@@ -80,6 +83,8 @@ app.get '/',
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   handlers.homepage
+
+app.get '/hello', handlers.hello
 
 app.get '/dynamic/css/:file' handlers.stylus # dynamic serving
 
