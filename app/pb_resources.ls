@@ -2,8 +2,10 @@ require! {
   pg: './postgres'
   c: './cache'
   h: './helpers'
+  sioa: 'socket.io-announce'
 }
 
+announce = sioa.create-client!
 
 @users =
   create : (req, res) ->
@@ -30,6 +32,8 @@ require! {
     if ap-res.success # if success then blow cache
       c.invalidate-forum post.forum_id, console.warn
 
+    post.id = ap-res.id
+    announce.emit \post-create post
     res.json ap-res
   show    : (req, res, next) ->
     db = pg.procs

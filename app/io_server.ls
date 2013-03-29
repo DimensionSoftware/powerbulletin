@@ -47,7 +47,7 @@ user-from-session = (s, cb) ->
 
 site-by-domain = (domain, cb) ->
   if not domain
-    cb(null, null)
+    cb null null
   else
     db.site-by-domain domain, cb
 
@@ -103,14 +103,6 @@ site-by-domain = (domain, cb) ->
     socket.on \online-now, ->
       if site
         in-site socket, site
-
-    socket.on 'posts.create', (post, cb) ->
-      err, ap-res <- db.add-post post
-      if err
-        console.log err
-        return
-      else
-        socket.in().broadcast.emit 'posts.create', post
 
     socket.on \debug, ->
       socket.emit \debug, 'hi'
