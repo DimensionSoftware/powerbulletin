@@ -93,10 +93,10 @@ body.scrolled
       .menu
         > .row:hover
           .submenu
-            top 32px
+            top 34px
         .row
-          top -1px
-          line-height 29px
+          top 1px
+          line-height header-scrolled-height + 1
           font-size 16px
       .search
         top 0!important
@@ -272,7 +272,7 @@ header
           position relative
           z-index 55
         .submenu
-          z-index 51
+          z-index 65
           top -600px
           max-height 450px
           overflow-y scroll
@@ -458,7 +458,7 @@ section.left-chrome
       padding-right (grid/2)
       margin-right 3px
   .forum:first-child
-    padding-top (grid * 7)!important
+    padding-top (grid * 5)!important
   .forum
     position relative
     clear both
@@ -526,7 +526,7 @@ section.left-chrome
       position relative
       clear both
       // overflow hidden
-      margin-left (grid*5)
+      margin-left (grid*3)
       margin-top (grid/2)
       margin-bottom grid
       .title
@@ -557,8 +557,8 @@ section.left-chrome
           z-index 5
           top grid
           right grid
-    .subpost:last-child
-      margin-bottom (grid*3)
+    .page-loaded:last-child
+      padding-bottom (grid*4)
     .post:hover, .subpost:hover
       .actions
         opacity 1
@@ -610,7 +610,7 @@ footer
   right 0
   left 0
   height footer-height
-  z-index 7
+  z-index 9
   width auto
 //}}}
 

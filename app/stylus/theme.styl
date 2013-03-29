@@ -55,11 +55,20 @@ footer-height = 25px
 
 //{{{ Style applied after body scrolls
 body.scrolled
+  header::after
+    border-bottom 1px solid #aaa
+    box-shadow 0 2px 8px 2px #ccc
+    bottom -3px
+    left 0
+    right 0
+    height 1px
+    content ''
+    position absolute
   header
     //background-color rgba(0,0,0,0.7)
     background-color rgba(255,255,255,0.95)
-    box-shadow 0 -1px 18px 4px #ccc
-    border-bottom 1px solid #bbb
+    box-shadow 0 -1px 18px 5px #ddd
+    border-bottom 1px solid #fff
     transition height .2s ease-out, background-color .5s ease-out
     .container
       menu.menu
@@ -107,8 +116,6 @@ body.scrolled
     bottom (footer-height - 4)
   footer
     opacity 1
-    border-top 1px solid #ddd
-    color #ddd
     transition bottom .4s ease-out
 //}}}
 //{{{ Style applied when header is expanded for search
@@ -282,7 +289,7 @@ header
   border-right 1px solid #333
   width 1px
   background-color #999
-#left_content.container, footer
+#left_content.container
   background-color rgba(100,100,100,0.7)
 #left_content.container::after
   position absolute
@@ -562,8 +569,8 @@ section.left-chrome
 ///}}}
 //{{{ Footer
 footer::before
-  box-shadow 0 1px 5px 1px #ddd
-  background-color #aaa
+  border-top 1px solid #bbb
+  box-shadow 0 1px 8px 2px #ddd
   top 0
   left 0
   right 0
@@ -573,10 +580,11 @@ footer::before
 footer
   opacity 0
   color #ddd
+  background-color #f7f7f7
   //background-image linear-gradient(top, #000, #333)
   //background-color rgba(0,0,0,0.1)
   text-align center
-  color #999
+  color #777
   h6
     font-size .9em
     letter-spacing 3px
