@@ -370,6 +370,8 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   (err, r) <- db.add-thread-impression req.params.id
   if err then next err
   site = res.locals.site
+  # TODO make add-thread-impression return forum_id
+  # TODO make room name based on site.id and forum_id
   announce.in(site.id).emit \thread-impression { id: req.params.id, views: r }
   res.json success: true
 
