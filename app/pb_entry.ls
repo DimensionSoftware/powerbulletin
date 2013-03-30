@@ -81,19 +81,18 @@ $d.on \keypress '#query' -> $ \body .add-class \searching; save-ui!
 append-reply-ui = ->
   # find post div
   $p = $ this .parents('.subpost:first')
-  unless $p.length
-    $p = $ this .parents('.post:first')
+  $p = $ this .parents('.post:first') unless $p.length
 
   # append dom for reply ui
-  unless $p.find('.reply .container:visible').length
-    insert-and-render window,  $p.find('.reply:first'), \post_edit, post:
+  unless $p.find('.post-edit:visible').length
+    render-and-append window,  $p.find('.reply:first'), \post_edit, (post:
       method:     \post
       forum_id:   active-forum-id
       parent_id:  $p.data 'post-id'
-      is_comment: true
+      is_comment: true), ->
+        $p.find('textarea[name="body"]').focus!
   else
     $p.find('.cancel').click!
-  $p.find('textarea[name="body"]').focus!
 
 censor = ->
   # find post div
@@ -124,12 +123,12 @@ $d.on \click '.create .no-surf' require-login(->
   edit-post is-editing!, forum_id:window.active-forum-id)
 $d.on \click '.edit.no-surf' require-login(-> edit-post is-editing!)
 $d.on \click '.onclick-submit .cancel' ->
-  f = $ this .closest '.container'  # form
+  f = $ this .closest '.post-edit'  # form
   f.hide 350ms \easeOutExpo
   remove-editing-url!
 $d.on \click '.onclick-submit input[type="submit"]' require-login(
   (e) -> submit-form(e, (data) ->
-    f = $ this .closest('.container') # form
+    f = $ this .closest('.post-edit') # form
     p = f .closest('.editing')        # post being edited
     # render updated post
     p.find '.title' .html(data.0?title)

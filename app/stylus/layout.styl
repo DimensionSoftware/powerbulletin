@@ -497,18 +497,15 @@ section.left-chrome
       position relative
       z-index 4
       transition all .1s ease-out 1.3s
-    .container
-      width 100%
-      background-color #fff
-      .post-edit
-        margin-bottom (grid*4)
-        .title
-          display block
-        .body
-          width 90%
-          display block
-          margin grid 0
-          min-height 40px
+    .post-edit
+      margin-bottom (grid*4)
+      .title
+        display block
+      .body
+        width 90%
+        display block
+        margin grid 0
+        min-height 40px
     .post
       float left
       //overflow hidden
@@ -526,6 +523,7 @@ section.left-chrome
       position relative
       clear both
       // overflow hidden
+      margin-right (grid*4)
       margin-left (grid*3)
       margin-top (grid/2)
       margin-bottom grid
@@ -579,7 +577,7 @@ section.left-chrome
       margin-left (grid/2)
       .children
         margin-left (grid*3)
-        margin-bottom (grid*3)
+        //margin-bottom (grid*3)
         .user, .date
           display inline-block
         .date

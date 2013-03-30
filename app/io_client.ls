@@ -20,13 +20,15 @@ socket.on \thread-impression (thread, cb) ->
   $("ul.threads li[data-id=#{thread.id}] span.views").html("#{thread.views} <i>views</i>")
 
 socket.on \thread-create (thread, cb) ->
-  insert-and-render window,  $('#left_content .threads li:first'), \_thread, thread:thread
+  if active-forum-id is thread.forum_id
+    render-and-prepend window,  $('#left_content .threads'), \_thread, thread:thread
 
 socket.on \post-create (post, cb) ->
-  console.log post
-  window.post = post
-  console.log "\#subpost_#{post.parent_id} .children"
-  insert-and-render window, $("\#subpost_#{post.parent_id} + .children"), \_sub_post, sub-post:post
+  if post.thread_id is active-post-id
+    render-and-append window, $("\#subpost_#{post.parent_id} + .children"), \_sub_post, sub-post:post, (e) ->
+      $e = $ e
+      $e .effect(\highlight 1000ms \easeOutExpo)
+      set-timeout (-> awesome-scroll-to e), 100ms
 
 socket.on \debug, (message, cb) ->
   console.log \debug, message

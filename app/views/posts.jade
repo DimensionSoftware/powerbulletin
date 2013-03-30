@@ -2,7 +2,7 @@ include mixins
 
 if typeof(subPost) !== 'undefined'
   .forum
-    .post(id="post_#{subPost.id}", data-user-id=subPost.user_id, data-post-id=subPost.id)
+    .post.subpost(id="post_#{subPost.id}", data-user-id=subPost.user_id, data-post-id=subPost.id)
       h3.title= subPost.title
       .breadcrumb
         mixin breadcrumb(subPost)

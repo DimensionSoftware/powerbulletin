@@ -40,21 +40,19 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   return false
 #}}}
 #{{{ Scrolling behaviors
-window.scroll-to-top = (cb) ->
+window.scroll-to-top = (cb=->) ->
   return if ($ window).scroll-top! is 0 # guard
   $e = $ 'html,body'
   do
     <- $e .animate { scroll-top:$ \body .offset!top }, 140ms
     <- $e .animate { scroll-top:$ \body .offset!top+threshold }, 110ms
     <- $e .animate { scroll-top:$ \body .offset!top }, 75ms
-  if cb then cb!
+  cb!
 
-window.awesome-scroll-to = (e, duration, cb) ->
-  cb = -> noop=1 unless cb
-
+window.awesome-scroll-to = (e, duration, cb=->) ->
   e     := $ e
   ms     = duration or 600ms
-  offset = 100px
+  offset = 200px
 
   return unless e.length # guard
   if is-ie or is-opera

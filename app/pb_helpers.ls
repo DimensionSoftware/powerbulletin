@@ -2,13 +2,18 @@
 # XXX shared by pb_mutants & pb_entry
 
 # double-buffered replace of view with target
-@insert-and-render = (w, target, tmpl, params) ->
+@render-and = (fn, w, target, tmpl, params, cb) -->
   $t = w.$ target
-  $b = w.$ "<div class='container'>"
+  $b = w.$ '<div>'
   $b.hide!
-  $t.prepend $b
+  $t[fn] $b
   jade.render $b.0, tmpl, params
+  #$t[fn] $b.html!
+  #$b.remove!
   $b.show!add-class \fadein
+  cb $b
+@render-and-append  = @render-and \append
+@render-and-prepend = @render-and \prepend
 
 @is-editing-regexp = /\/?(edit|new)\/?([\d+]*)\/?$/
 
@@ -33,10 +38,10 @@
 # handle in-line editing
 @edit-post = (id, data) ->
   focus  = (e) -> set-timeout (-> e.find 'input[type="text"]' .focus!), 100
-  render = (sel, locals) ->
+  render = (sel, locals) ~>
     e = $ sel
-    insert-and-render window, sel, \post_edit, post:locals
-    focus e
+    @render-and-prepend window, sel, \post_edit, post:locals, ->
+      focus e
 
   scroll-to-edit!
   if not id.length and data # render new
