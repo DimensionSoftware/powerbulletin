@@ -8,7 +8,10 @@ require! {
   __: \lodash
   pg: './postgres'
   auth: './auth'
+  sioa: 'socket.io-announce'
 }
+
+announce = sioa.create-client!
 
 global <<< require './helpers'
 
@@ -366,6 +369,8 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   db = pg.procs
   (err, r) <- db.add-thread-impression req.params.id
   if err then next err
+  site = res.locals.site
+  announce.in(site.id).emit \thread-impression { id: req.params.id, views: r }
   res.json success: true
 
 @censor = (req, res, next) ->
