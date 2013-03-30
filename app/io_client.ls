@@ -16,9 +16,7 @@ socket.on \leave-site, (message, cb) ->
   $ "[data-user-id=#{message.id}] .profile.photo" .remove-class \online
 
 socket.on \thread-impression (thread, cb) ->
-  console.log \thread thread
   #if thread.forum_id is active-forum-id
-  console.log("ul.threads li[data-id=#{thread.id}] span.views")
   $("ul.threads li[data-id=#{thread.id}] span.views").html("#{thread.views} <i>views</i>")
 
 socket.on \thread-create (thread, cb) ->
