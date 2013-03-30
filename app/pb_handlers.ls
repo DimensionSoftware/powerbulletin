@@ -372,7 +372,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   site = res.locals.site
   # TODO make add-thread-impression return forum_id
   # TODO make room name based on site.id and forum_id
-  announce.in(site.id).emit \thread-impression { id: req.params.id, views: r }
+  announce.in(site.id).emit \thread-impression r #{ id: req.params.id, views: r.views, forum_id: r.thread_id }
   res.json success: true
 
 @censor = (req, res, next) ->

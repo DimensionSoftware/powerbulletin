@@ -367,12 +367,7 @@ CREATE FUNCTION add_thread_impression(thread_id JSON) RETURNS JSON AS $$
   UPDATE posts SET views = views + 1 WHERE id = $1 RETURNING *
   '''
   res = plv8.execute sql, [thread_id]
-  if res.length
-    forum-id = res[0].forum_id
-    sql2 = 'SELECT site_id FROM forums WHERE id = $1'
-    res2 = plv8.execute sql2, [forum-id]
-    site-id = res2[0].site_id
-  return res[0]?.views
+  return res[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS build_all_uris(site_id JSON);
