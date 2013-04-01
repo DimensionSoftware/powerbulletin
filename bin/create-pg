@@ -3,9 +3,9 @@
 bin/psql -c "DROP DATABASE pb"
 set -e
 bin/psql -c "CREATE DATABASE pb WITH ENCODING 'UTF8' TEMPLATE=template0"
-bin/psql pb -c "CREATE EXTENSION plls"
-bin/psql pb < schema.sql
-bin/psql pb < procedures.sql
+bin/psql -d pb -c "CREATE EXTENSION plls"
+bin/psql -d pb < schema.sql
+bin/psql -d pb < procedures.sql
 set +e
 bin/load-fixtures
 

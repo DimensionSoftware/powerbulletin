@@ -8,8 +8,4 @@ fi
 
 export PGCLIENTENCODING=UTF8
 
-if [ $# -eq 0 ] ; then
-  psql -U$user -h127.0.0.1 pb
-else
-  psql -U$user -h127.0.0.1 $@
-fi
+psql "$@" -U$user -h127.0.0.1
