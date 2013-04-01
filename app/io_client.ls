@@ -21,7 +21,8 @@ socket.on \thread-impression (thread, cb) ->
 
 socket.on \thread-create (thread, cb) ->
   if active-forum-id is thread.forum_id
-    render-and-prepend window,  $('#left_content .threads'), \_thread, thread:thread
+    render-and-prepend window,  $('#left_content .threads'), \_thread, thread:thread, ->
+      $ '#left_content .threads div.fadein li' .unwrap!
 
 socket.on \post-create (post, cb) ->
   if post.thread_id is active-post-id
