@@ -2,7 +2,7 @@
 
 bin/psql -c "DROP DATABASE pb"
 set -e
-bin/psql -c "CREATE DATABASE pb"
+bin/psql -c "CREATE DATABASE pb WITH ENCODING 'UTF8' TEMPLATE=template0"
 bin/psql pb -c "CREATE EXTENSION plls"
 bin/psql pb < schema.sql
 bin/psql pb < procedures.sql
