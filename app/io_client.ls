@@ -21,8 +21,8 @@ socket.on \thread-impression (thread, cb) ->
 
 socket.on \thread-create (thread, cb) ->
   if active-forum-id is thread.forum_id
-    render-and-prepend window,  $('#left_content .threads'), \_thread, thread:thread, ->
-      $ '#left_content .threads div.fadein li' .unwrap!
+    <- render-and-prepend window,  $('#left_content .threads'), \_thread, thread:thread
+    $ '#left_content .threads div.fadein li' .unwrap!
 
 socket.on \post-create (post, cb) ->
   if post.thread_id is active-post-id
@@ -32,8 +32,13 @@ socket.on \post-create (post, cb) ->
     pc.html ("#{(parse-int pc.text!) + 1} <i>posts</i>")
 
     # & render new post
+    sel =
+      if post.parent_id is post.thread_id
+        "\#post_#{post.parent_id} + .children [data-infinity-pageid]"
+      else
+        "\#subpost_#{post.parent_id} + .children"
     render-and-append(
-      window, $("\#subpost_#{post.parent_id} + .children"), \_sub_post, sub-post:post, (e) ->
+      window, $(sel), \_sub_post, sub-post:post, (e) ->
         $e = $ e
         $e .effect(\highlight 1000ms \easeOutExpo)
         set-timeout (-> awesome-scroll-to e), 100ms if $e .data(\user-id) is user.id) # & scroll-to
