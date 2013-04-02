@@ -28,7 +28,6 @@ socket.on \post-create (post, cb) ->
   if post.thread_id is active-post-id
     # update post count
     pc = $ "\#left_content ul.threads li[data-id=#{post.thread_id}] span.post-count"
-    console.log parse-int pc.text!
     pc.html ("#{(parse-int pc.text!) + 1} <i>posts</i>")
 
     # & render new post
@@ -41,7 +40,8 @@ socket.on \post-create (post, cb) ->
       window, $(sel), \_sub_post, sub-post:post, (e) ->
         $e = $ e
         $e .effect(\highlight 1000ms \easeOutExpo)
-        set-timeout (-> awesome-scroll-to e), 100ms if $e .data(\user-id) is user.id) # & scroll-to
+        if post.user_id is user.id # & scroll-to
+          set-timeout (-> awesome-scroll-to e), 100ms)
 
 socket.on \debug, (message, cb) ->
   console.log \debug, message
