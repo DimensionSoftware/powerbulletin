@@ -45,3 +45,5 @@ socket.on \post-create (post, cb) ->
 
 socket.on \debug, (message, cb) ->
   console.log \debug, message
+
+# vim:fdm=indent
