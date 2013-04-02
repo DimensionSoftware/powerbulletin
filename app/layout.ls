@@ -18,6 +18,7 @@ threshold = 10px # snap
 window.mutant  = require '../lib/mutant/mutant'
 window.mutate  = (event) ->
   $e = $ this
+  return if $e.has-class \require-login and !user # guard
   href = $e .attr \href
   return false unless href # guard
   return true if href?.match /#/

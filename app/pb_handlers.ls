@@ -12,6 +12,7 @@ require! {
 }
 
 announce = sioa.create-client!
+is-editing = /\/(edit|new)\/?([\d+]*)$/
 
 global <<< require './helpers'
 
@@ -137,9 +138,10 @@ auth-finisher = (req, res, next) ->
 @login-twitter-finish = auth-finisher
 
 @logout = (req, res, next) ->
-  redirect-url = req.param('redirect-url') || '/'
-  req.logout!
-  res.redirect redirect-url
+  if req.user # guard
+    redirect-url = req.param('redirect-url') || '/'
+    req.logout!
+    res.redirect redirect-url.replace(is-editing, '')
 
 @homepage = (req, res, next) ->
   #TODO: refactor with async.auto
@@ -167,7 +169,6 @@ auth-finisher = (req, res, next) ->
   uri  = req.path
 
   # guards
-  is-editing = /\/(edit|new)\/?([\d+]*)$/
   what = uri.match is-editing
   if what?1 then return next 404 unless user # editing!  so, must be logged in
   if what?2 is \edit # ... and must own post
