@@ -7,6 +7,7 @@ global.v = require './varnish'
 global.c = require './cache'
 global.auth = require './auth'
 global.fsm = require './fsm'
+global.furl = require './forum_urls'
 
 global <<< require \prelude-ls
 
