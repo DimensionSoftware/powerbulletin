@@ -6,6 +6,7 @@ global.cw = console.warn
 global.v = require './varnish'
 global.c = require './cache'
 global.auth = require './auth'
+global.fsm = require './fsm'
 
 global <<< require \prelude-ls
 
