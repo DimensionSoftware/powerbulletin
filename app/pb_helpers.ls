@@ -3,13 +3,11 @@
 
 # double-buffered replace of view with target
 @render-and = (fn, w, target, tmpl, params, cb) -->
-  $t = w.$ target
-  $b = w.$ '<div>'
+  $t = w.$ target  # target
+  $b = w.$ '<div>' # buffer
   $b.hide!
   $t[fn] $b
   jade.render $b.0, tmpl, params
-  #$t[fn] $b.html!
-  #$b.remove!
   $b.show!add-class \fadein
   cb $b
 @render-and-append  = @render-and \append

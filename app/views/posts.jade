@@ -15,8 +15,8 @@ if typeof(subPost) !== 'undefined'
         .subPost.body!= subPost.html
       .reply
       mixin actions(subPost)
+    .children
     if subPost.posts.length
-      .children
         #listview
         each pg in prevPages
           div(data-page=pg)
@@ -25,7 +25,7 @@ if typeof(subPost) !== 'undefined'
             mixin subpost(sp, 0)
 
     else if subPost.morePosts
-      a(href='#') Load More Sub-Posts . . .
+      a(href='#') Load more posts ...
 
 else //- placeholder
   .forum
