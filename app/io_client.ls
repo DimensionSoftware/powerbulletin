@@ -40,6 +40,7 @@ socket.on \post-create (post, cb) ->
       window, $(sel), \_sub_post, sub-post:post, (e) ->
         $ e .effect(\highlight 1000ms \easeOutExpo)
         if post.user_id is user.id # & scroll-to
+          mutants.forum.on-personalize window, user, (->) # enable edit, etc...
           set-timeout (-> awesome-scroll-to e), 100ms)
 
 socket.on \debug, (message, cb) ->
