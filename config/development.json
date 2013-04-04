@@ -5,5 +5,7 @@
   "base_js_urls":
   [ "//muscache3.pb.com/local/jquery-1.8.3.min.js"
   , "//muscache5.pb.com/local/jquery-ui.min.js"
+  , "//muscache4.pb.com/local/mocha.js"
+  , "//muscache2.pb.com/local/chai.js"
   ]
 }

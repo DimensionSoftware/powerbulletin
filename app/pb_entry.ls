@@ -236,4 +236,9 @@ $d.on \click, '#paginator a.page', ->
 #}}}
 
 window.has-mutated-forum = window.active-forum-id
+
+if mocha? and window.location.search.match /test=1/
+  mocha.setup \bdd
+  $.get-script '//muscache5.pb.com/tests/test1.js', mocha.run
+
 # vim:fdm=marker
