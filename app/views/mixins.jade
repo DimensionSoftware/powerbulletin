@@ -49,7 +49,7 @@ mixin subpost(sp, i)
       each pp, ii in sp.posts
         mixin subpost(pp, ii)
     else if sp.morePosts
-      a(href='#') Load More Sub-Posts . . .
+      a(href='#') Load more posts ...
 
 mixin thread(t)
   li.thread(data-id=t.id, data-user-id=t.user_id)
