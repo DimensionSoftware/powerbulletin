@@ -3,6 +3,7 @@
 #   fsm.new-state fsm.example, \B, \a
 #   fsm.new-state fsm.example, \C, \a
 #   fsm.new-state fsm.example, \C, \b
+/*
 export example =
   A:
     a: "B"
@@ -13,11 +14,12 @@ export example =
   C:
     a: "C"
     b: "C"
+*/
 
 # new state of a state machine given an initial state and a list of inputs
 export new-state = (machine, state, ...inputs) ->
   transition = (t, i) ->
     state = machine[t][i]
     #console.log "#t #i -> #state"
-    state
+    #state
   fold transition, state, inputs
