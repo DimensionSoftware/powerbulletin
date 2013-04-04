@@ -80,7 +80,7 @@ export machine =
     t      : \thread
     page   : \thread
   thread:
-    string : \error
+    string : \thread-permalink
     number : \thread-permalink
     new    : \error
     edit   : \-edit-marker
