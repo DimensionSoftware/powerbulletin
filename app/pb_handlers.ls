@@ -9,6 +9,7 @@ require! {
   pg: './postgres'
   auth: './auth'
   sioa: 'socket.io-announce'
+  furl: './forum_urls'
 }
 
 announce = sioa.create-client!
@@ -168,13 +169,19 @@ auth-finisher = (req, res, next) ->
   user = req.user
   uri  = req.path
 
+  meta = furl.parse req.path
+  console.warn meta
+
   # guards
-  what = uri.match is-editing
-  if what?1 then return next 404 unless user # editing!  so, must be logged in
-  if what?2 is \edit # ... and must own post
-    err, owns-post <- db.owns-post what?2, user.id
-    if err then return next err
-    if what?.1 is \edit then return next 404 unless owns-post.length
+  if meta.incomplete
+    console.error meta
+    return next 404
+  if meta.type in <[new-thread edit]>
+    return next 404 unless user # editing!  so, must be logged in
+  err, owns-post <- db.owns-post meta.id, user.id
+  if err then return next err
+  if meta.type is \edit
+    return next 404 unless owns-post.length
 
   #XXX: this is one of the pages which is not depersonalized
   res.locals.user = user
@@ -183,22 +190,14 @@ auth-finisher = (req, res, next) ->
 
   [forum_part, post_part] = req.params
 
-  # parse uri
-  sorttype = \recent
-
   finish = (adoc) ->
     adoc.uri = req.path
     res.locals adoc
     caching-strategies.etag res, sha1(JSON.stringify(adoc)), 7200
     res.mutant \forum
 
-  parts = forum-path-parts uri
-  uri = uri.replace is-editing, '' # strip for lookup
-  uri = uri.replace '&?_surf=1', ''
-  uri = uri.replace /\?$/, '' # remove ? if its all thats left
-
   if post_part # post
-    err, sub-post <- db.uri-to-post site.id, uri
+    err, sub-post <- db.uri-to-post site.id, meta.thread-uri
     if err then return next err
     if !sub-post then return next 404
 
@@ -237,7 +236,7 @@ auth-finisher = (req, res, next) ->
     finish fdoc
 
   else # forum
-    err, forum-id <- db.uri-to-forum-id res.locals.site.id, uri
+    err, forum-id <- db.uri-to-forum-id res.locals.site.id, meta.forum-uri
     if err then return next err
     if !forum-id then return next 404
     tasks =
