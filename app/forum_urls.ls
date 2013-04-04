@@ -151,7 +151,24 @@ export parse = (path) ->
   parts  = path.split '/' |> reject (-> it is '')
   inputs = map type-of-part, parts
   type   = fsm.new-state machine, \initial, ...inputs
-  { type, path } # TODO - add more metadata based on type
+  meta   = switch type
+  | \initial               => { incomplete: true }
+  | \forum                 => { forum-uri: "/#{parts.join '/'}" }
+  | \new-thread            => { forum-uri: "/#{parts[0 til parts.length - 1].join '/'}" }
+  | \thread                => { thread-uri: "/#{parts.join '/'}" }
+  | \thread-page           =>
+    [ uri-parts, [page, n] ] = split-at parts.length - 2, parts
+    { thread-uri: "/#{uri-parts.join '/'}", page: parseInt n }
+  | \thread-permalink      =>
+    { thread-uri: "/#{parts.join '/'}", slug: parts[*-1] }
+  | \thread-permalink-page =>
+    [ uri-parts, [page, n] ] = split-at parts.length - 2, parts
+    { thread-uri: "/#{uri-parts.join '/'}", page: parseInt n }
+  | \edit                  =>
+    [ uri-parts, [edit, id] ] = split-at parts.length - 2, parts
+    { thread-uri: "/#{uri-parts.join '/'}", id }
+  | otherwise              => { incomplete: true }
+  { type, parts, path: "/#{parts.join '/'}" } <<< meta
 
 
 /*
@@ -167,7 +184,6 @@ furl.parse '/otherground-forum/supportground/t/edit/edit/1234'                  
 furl.parse '/otherground-forum/supportground/t/new-thing'                  
 furl.parse '/otherground-forum/supportground/t/new-thing/page/5'                    # pretty page urls are not a problem
 furl.parse '/otherground-forum/supportground/t/this-is-a-test/edit/2108'
-
 */
 
 # vim:fdm=indent
