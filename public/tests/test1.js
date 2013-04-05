@@ -1,15 +1,24 @@
-describe('test data', function(){
+describe('homepage', function(){
   var expect = chai.expect
-  it('should be loaded', function(done){
+  it('typing keywords should take you to /search', function(done){
     window.$('#query').focus().val('foo')
     // XXX: replace with bacon streams to ease testing?
     window.$(document).trigger('search')
 
-    function w() {
-      expect(window.location.pathname).to.equal('/search')
-      done()
+    function work() {
+      //expect(window.location.pathname).to.equal('/search')
+      // XXX: create helper for this to make error reporting better
+      // and test writing with callbacks less verbose
+      // big thanks to this thread:
+      // http://stackoverflow.com/questions/11235815/is-there-a-way-to-get-chai-working-with-asynchronous-mocha-tests
+      try {
+        expect(window.location.pathname).to.equal('/search')
+        done()
+      } catch(e) {
+        done(e)
+      }
     }
-    // allow 1000 ms for the app to complete its search routine
-    setTimeout(w, 1000)
+    // allow 500ms for the app to complete its search routine
+    window.setTimeout(work, 500)
   })
 })
