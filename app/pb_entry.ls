@@ -247,7 +247,7 @@ if mocha? and window.location.search.match /test=1/
   mocha.setup \bdd
 
   # actual tests
-  $.get-script '//muscache5.pb.com/tests/test1.js', ->
+  $.get-script "#{window.cache_url}/tests/test1.js", ->
     run = ->
       mocha.run cleanup-output
     set-timeout run, 2000 # gotta give time for tests to load

@@ -209,7 +209,9 @@ else
 
   # bind shared cache domains
   for i in ['', 2, 3, 4, 5]
-    sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{cvars.cache_domain}", cache-app)
+    #XXX: this is a hack but hey we are always using protocol-less urls so should never break :)
+    #  removing leading //
+    sock.use(express.vhost cvars["cache#{i}_url"].slice(2), cache-app)
 
   # dynamic app can automatically check req.host
   sock.use(app)
