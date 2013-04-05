@@ -9,9 +9,11 @@ require! {
   pg: '../app/postgres'
   __: \lodash
   h: '../app/helpers'
+  sioa: 'socket.io-announce'
 }
 global <<< require \prelude-ls
 pg.init!
+announce = sioa.create-client!
 
 url = # {{{1
   forum: (forum-id) ->
@@ -90,8 +92,13 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
     html       : t.html
     build_docs : false
 
+  emit = (type, id) ->
+    err, new-post <- pg.procs.post id
+    announce.emit type, new-post
+
   pg.procs.add-post top-post, (err, insertion) ->
     if err then return cb(err)
+    emit \thread-create, insertion.id
 
     create-post = (p, cb) ->
       q = {}
@@ -102,7 +109,9 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
       q.build_docs = false
 
       pg.procs.add-post q, (err, r) ->
-        util.print "." if not err
+        if not err
+          util.print "."
+          emit \post-create, r.id
         cb(err, r)
 
     async.map-series t.posts, create-post, cb
@@ -139,7 +148,7 @@ if err then console.warn err
 console.log "found #{threads.length} threads for forum #{program.forum}"
 
 with-posts-max = with-posts program.max
-err, threads-with-posts <- async.map-series threads, (delayed with-posts-max)
+err, threads-with-posts <- async.map-series threads[0 to 1], (delayed with-posts-max)
 if err then console.warn err
 
 err, r <- async.map-series threads-with-posts, (create-thread-for-site program.site)
