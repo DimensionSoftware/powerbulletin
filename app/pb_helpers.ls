@@ -1,3 +1,6 @@
+require! {
+  furl: './forum_urls'
+}
 
 # XXX shared by pb_mutants & pb_entry
 
@@ -13,19 +16,21 @@
 @render-and-append  = @render-and \append
 @render-and-prepend = @render-and \prepend
 
-@is-editing-regexp = /\/?(edit|new)\/?([\d+]*)\/?$/
-
-@is-editing = ->
-  m = window.location.pathname.match @is-editing-regexp
-  return if m then m[2] else false
+@is-editing = (path) ->
+  meta = furl.parse path
+  switch meta.type
+  | \new-thread => true
+  | \edit       => meta.id
+  | otherwise   => false
 
 @remove-editing-url = ->
-  if window.location.href.match @is-editing-regexp
-    History.push-state {no-surf:true} '' window.location.href.replace(@is-editing-regexp, '')
+  meta = furl.parse window.location.pathname
+  if meta.type is \edit
+    History.push-state {no-surf:true} '' meta.thread-uri
 
 @scroll-to-edit = (cb) ->
   cb = -> noop=1 unless cb
-  id = is-editing!
+  id = is-editing window.location.pathname
   if id then # scroll to id
     awesome-scroll-to "\#subpost_#{id}" 600ms cb
     true

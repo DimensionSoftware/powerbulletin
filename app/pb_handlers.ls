@@ -170,6 +170,7 @@ auth-finisher = (req, res, next) ->
   uri  = req.path
 
   meta = furl.parse req.path
+  console.log meta
 
   # guards
   if meta.incomplete

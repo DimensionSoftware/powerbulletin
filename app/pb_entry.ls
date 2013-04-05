@@ -2,6 +2,7 @@ window.__  = require \lodash
 window.ioc = require './io_client'
 
 global <<< require './pb_helpers'
+global <<< require('prelude-ls/prelude-browser-min').prelude
 
 # XXX client-side entry
 
@@ -120,8 +121,8 @@ $ '#query' .focus!
 # generic form-handling ui
 $d.on \click '.create .no-surf' require-login(->
   $ '#main_content .forum' .html '' # clear canvas
-  edit-post is-editing!, forum_id:window.active-forum-id)
-$d.on \click '.edit.no-surf' require-login(-> edit-post is-editing!)
+  edit-post is-editing(window.location.pathname), forum_id:window.active-forum-id)
+$d.on \click '.edit.no-surf' require-login(-> edit-post is-editing(window.location.pathname))
 $d.on \click '.onclick-submit .cancel' ->
   f = $ this .closest '.post-edit'  # form
   f.hide 350ms \easeOutExpo
