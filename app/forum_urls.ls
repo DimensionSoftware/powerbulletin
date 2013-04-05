@@ -166,7 +166,7 @@ export parse = (path) ->
     { thread-uri: "/#{uri-parts.join '/'}", page: parseInt n }
   | \edit                  =>
     [ uri-parts, [edit, id] ] = split-at parts.length - 2, parts
-    { thread-uri: "/#{uri-parts.join '/'}", id }
+    { thread-uri: "/#{uri-parts.join '/'}", id: parseInt id }
   | otherwise              => { incomplete: true }
   { type, parts, path: "/#{parts.join '/'}" } <<< meta
 
