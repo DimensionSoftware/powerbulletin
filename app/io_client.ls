@@ -26,18 +26,16 @@ socket.on \thread-create (thread, cb) ->
 
 socket.on \post-create (post, cb) ->
   if post.thread_id is active-post-id
-    type = if post.parent_id is post.thread_id then \post else \subpost
-    return if $ "#{type}_#{post.id}" .length # guard (exists)
+    return if $ "post_#{post.id}" .length # guard (exists)
 
     # update post count
     pc = $ "\#left_content ul.threads li[data-id=#{post.thread_id}] span.post-count"
     pc.html ("#{(parse-int pc.text!) + 1} <i>posts</i>")
 
     # & render new post
-    sel = "\##{type}_#{post.parent_id} + .children"
-    #if type is \post then sel += ' [data-infinity-pageid]' # for infinity.js (prune soon)
+    sel = "\#post_#{post.parent_id} + .children"
     render-and-append(
-      window, $(sel), \_sub_post, sub-post:post, (e) ->
+      window, $(sel), \_post, post:post, (e) ->
         $ e .effect(\highlight 1000ms \easeOutExpo)
         if post.user_id is user.id # & scroll-to
           mutants.forum.on-personalize window, user, (->) # enable edit, etc...

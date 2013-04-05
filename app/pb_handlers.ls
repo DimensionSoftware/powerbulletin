@@ -197,9 +197,9 @@ auth-finisher = (req, res, next) ->
     res.mutant \forum
 
   if post_part # post
-    err, sub-post <- db.uri-to-post site.id, meta.thread-uri
+    err, post <- db.uri-to-post site.id, meta.thread-uri
     if err then return next err
-    if !sub-post then return next 404
+    if !post then return next 404
 
     page = parse-int(req.query.page) || 1
     if page < 1 then return next 404
@@ -209,10 +209,10 @@ auth-finisher = (req, res, next) ->
 
     tasks =
       menu            : db.menu site.id, _
-      sub-posts-tree  : db.sub-posts-tree site.id, sub-post.id, limit, offset, _
-      sub-posts-count : db.sub-posts-count sub-post.id, _
-      top-threads     : db.top-threads sub-post.forum_id, \recent, _
-      forum           : db.forum sub-post.forum_id, _
+      sub-posts-tree  : db.sub-posts-tree site.id, post.id, limit, offset, _
+      sub-posts-count : db.sub-posts-count post.id, _
+      top-threads     : db.top-threads post.forum_id, \recent, _
+      forum           : db.forum post.forum_id, _
 
     err, fdoc <- async.auto tasks
     if err   then return next err
@@ -220,9 +220,9 @@ auth-finisher = (req, res, next) ->
     if page > 1 and fdoc.sub-posts-tree.length < 1 then return next 404
 
     # attach sub-post to fdoc, among other things
-    fdoc <<< {sub-post, forum-id:sub-post.forum_id, page}
+    fdoc <<< {post, forum-id:post.forum_id, page}
     # attach sub-posts-tree to sub-post toplevel item
-    fdoc.sub-post.posts = delete fdoc.sub-posts-tree
+    fdoc.post.posts = delete fdoc.sub-posts-tree
     fdoc.pages-count = Math.ceil(delete fdoc.sub-posts-count / limit)
     fdoc.pages = [1 to fdoc.pages-count]
     if page > 1
@@ -230,8 +230,8 @@ auth-finisher = (req, res, next) ->
     else
       fdoc.prev-pages = []
 
-    fdoc.active-forum-id = fdoc.sub-post.forum_id
-    fdoc.active-post-id  = sub-post.id
+    fdoc.active-forum-id = fdoc.post.forum_id
+    fdoc.active-post-id  = post.id
 
     finish fdoc
 

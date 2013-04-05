@@ -81,8 +81,7 @@ $d.on \keypress '#query' -> $ \body .add-class \searching; save-ui!
 # show reply ui
 append-reply-ui = ->
   # find post div
-  $p = $ this .parents('.subpost:first')
-  $p = $ this .parents('.post:first') unless $p.length
+  $p = $ this .parents('.post:first')
 
   # append dom for reply ui
   unless $p.find('.post-edit:visible').length
@@ -97,15 +96,13 @@ append-reply-ui = ->
 
 censor = ->
   # find post div
-  $subpost = $(this).parents('.subpost:first')
-  unless $subpost.length
-    $subpost = $(this).parents('.post:first')
-  post-id  = $subpost.data('post-id')
+  $p = $(this).parents('.post:first')
+  post-id = $p.data('post-id')
 
   $.post "/resources/posts/#{post-id}/censor", (r) ->
     if r.success
-      $subpost.transition { opacity: 0, scale: 0.3 }, 300s, 'in', ->
-        $subpost.hide!
+      $p.transition { opacity: 0, scale: 0.3 }, 300s, \in, ->
+        $p.hide!
     else
       console.warn r.errors.join(', ')
 #}}}

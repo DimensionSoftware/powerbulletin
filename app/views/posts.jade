@@ -1,38 +1,37 @@
 include mixins
 
-if typeof(subPost) !== 'undefined'
+//- posts tree
+if typeof(post) !== 'undefined'
   .forum
-    .post.subpost(id="post_#{subPost.id}", data-user-id=subPost.user_id, data-post-id=subPost.id)
-      h3.title= subPost.title
+    .post(id="post_#{post.id}", data-user-id=post.user_id, data-post-id=post.id)
+      h3.title= post.title
       .breadcrumb
-        mixin breadcrumb(subPost)
+        mixin breadcrumb(post)
       .profile.photo
-        img(src="#{cache_url}/#{subPost.user_photo}")
-      .user= subPost.user_name
-      .date(data-time=subPost.created_iso)= subPost.created_human
+        img(src="#{cache_url}/#{post.user_photo}")
+      .user= post.user_name
+      .date(data-time=post.created_iso)= post.created_human
       .edit-container
-      if subPost.html
-        .subPost.body!= subPost.html
+      if post.html
+        .post.body!= post.html
       .reply
-      mixin actions(subPost)
+      mixin actions(post)
     .children
-    if subPost.posts.length
+    if post.posts.length
         #listview
         each pg in prevPages
           div(data-page=pg)
         div(data-page=page)
-          each sp in subPost.posts
-            mixin subpost(sp, 0)
-
-    else if subPost.morePosts
+          each sp in post.posts
+            mixin post(sp, 0)
+    else if post.morePosts
       a(href='#') Load more posts ...
-
 else //- placeholder
   .forum
 
-if typeof(subPost) !== 'undefined'
+if typeof(post) !== 'undefined'
   #breadcrumb.breadcrumb
-    mixin breadcrumb(subPost)
+    mixin breadcrumb(post)
 
 if pages.length > 1
   #paginator
