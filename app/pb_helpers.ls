@@ -32,7 +32,7 @@ require! {
   cb = -> noop=1 unless cb
   id = is-editing window.location.pathname
   if id then # scroll to id
-    awesome-scroll-to "\#subpost_#{id}" 600ms cb
+    awesome-scroll-to "\#post_#{id}" 600ms cb
     true
   else
     scroll-to-top cb
@@ -40,10 +40,12 @@ require! {
 
 # handle in-line editing
 @edit-post = (id, data) ->
+  console.log \edit-post
   focus  = (e) -> set-timeout (-> e.find 'input[type="text"]' .focus!), 100
   render = (sel, locals) ~>
+    console.log sel
     e = $ sel
-    @render-and-prepend window, sel, \post_edit, post:locals, ->
+    @render-and-append window, sel, \post_edit, post:locals, ->
       focus e
 
   scroll-to-edit!
@@ -52,7 +54,8 @@ require! {
     data.method = \post
     render '.forum', data
   else # fetch existing & render
-    sel = "\#subpost_#{id}"
+    console.log data
+    sel = "\#post_#{id}"
     e   = $ sel
     unless e.find('.container:first:visible').length # guard
       $.get "/resources/posts/#{id}" (p) ->

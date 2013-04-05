@@ -184,7 +184,7 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-personalize: (w, u, next) ->
     if u # guard
-      $ ".subpost[data-user-id=#{u.id}] .edit, .post[data-user-id=#{u.id}] .edit"
+      $ ".post[data-user-id=#{u.id}] .edit"
         .css(\display \inline) # enable edit
     next!
   on-unload:
