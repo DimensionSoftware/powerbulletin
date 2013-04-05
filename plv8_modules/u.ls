@@ -47,11 +47,11 @@ top-posts = (sort, limit, fields='p.*') ->
     #{fields},
     MIN(a.name) user_name,
     MIN(u.photo) user_photo,
-    COUNT(p2.id)+1 post_count
+    COUNT(p.id) post_count
   FROM aliases a
   JOIN posts p ON a.user_id=p.user_id
   JOIN users u ON u.id=a.user_id
-  LEFT JOIN posts p2 ON p2.parent_id=p.id
+  LEFT JOIN posts p2 ON p2.thread_id=p.id
   LEFT JOIN moderations m ON m.post_id=p.id
   WHERE a.site_id=1
     AND p.parent_id IS NULL
