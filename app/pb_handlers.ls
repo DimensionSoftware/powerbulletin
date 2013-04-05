@@ -9,6 +9,7 @@ require! {
   pg: './postgres'
   auth: './auth'
   sioa: 'socket.io-announce'
+  furl: './forum_urls'
 }
 
 announce = sioa.create-client!
@@ -168,13 +169,19 @@ auth-finisher = (req, res, next) ->
   user = req.user
   uri  = req.path
 
+  meta = furl.parse req.path
+  console.log meta
+
   # guards
-  what = uri.match is-editing
-  if what?1 then return next 404 unless user # editing!  so, must be logged in
-  if what?2 is \edit # ... and must own post
-    err, owns-post <- db.owns-post what?2, user.id
-    if err then return next err
-    if what?.1 is \edit then return next 404 unless owns-post.length
+  if meta.incomplete
+    console.error meta
+    return next 404
+  if meta.type in <[new-thread edit]>
+    return next 404 unless user # editing!  so, must be logged in
+  err, owns-post <- db.owns-post meta.id, user.id
+  if err then return next err
+  if meta.type is \edit
+    return next 404 unless owns-post.length
 
   #XXX: this is one of the pages which is not depersonalized
   res.locals.user = user
@@ -183,24 +190,16 @@ auth-finisher = (req, res, next) ->
 
   [forum_part, post_part] = req.params
 
-  # parse uri
-  sorttype = \recent
-
   finish = (adoc) ->
     adoc.uri = req.path
     res.locals adoc
     caching-strategies.etag res, sha1(JSON.stringify(adoc)), 7200
     res.mutant \forum
 
-  parts = forum-path-parts uri
-  uri = uri.replace is-editing, '' # strip for lookup
-  uri = uri.replace '&?_surf=1', ''
-  uri = uri.replace /\?$/, '' # remove ? if its all thats left
-
   if post_part # post
-    err, sub-post <- db.uri-to-post site.id, uri
+    err, post <- db.uri-to-post site.id, meta.thread-uri
     if err then return next err
-    if !sub-post then return next 404
+    if !post then return next 404
 
     page = parse-int(req.query.page) || 1
     if page < 1 then return next 404
@@ -210,10 +209,10 @@ auth-finisher = (req, res, next) ->
 
     tasks =
       menu            : db.menu site.id, _
-      sub-posts-tree  : db.sub-posts-tree site.id, sub-post.id, limit, offset, _
-      sub-posts-count : db.sub-posts-count sub-post.id, _
-      top-threads     : db.top-threads sub-post.forum_id, \recent, _
-      forum           : db.forum sub-post.forum_id, _
+      sub-posts-tree  : db.sub-posts-tree site.id, post.id, limit, offset, _
+      sub-posts-count : db.sub-posts-count post.id, _
+      top-threads     : db.top-threads post.forum_id, \recent, _
+      forum           : db.forum post.forum_id, _
 
     err, fdoc <- async.auto tasks
     if err   then return next err
@@ -221,9 +220,9 @@ auth-finisher = (req, res, next) ->
     if page > 1 and fdoc.sub-posts-tree.length < 1 then return next 404
 
     # attach sub-post to fdoc, among other things
-    fdoc <<< {sub-post, forum-id:sub-post.forum_id, page}
+    fdoc <<< {post, forum-id:post.forum_id, page}
     # attach sub-posts-tree to sub-post toplevel item
-    fdoc.sub-post.posts = delete fdoc.sub-posts-tree
+    fdoc.post.posts = delete fdoc.sub-posts-tree
     fdoc.pages-count = Math.ceil(delete fdoc.sub-posts-count / limit)
     fdoc.pages = [1 to fdoc.pages-count]
     if page > 1
@@ -231,13 +230,13 @@ auth-finisher = (req, res, next) ->
     else
       fdoc.prev-pages = []
 
-    fdoc.active-forum-id = fdoc.sub-post.forum_id
-    fdoc.active-post-id  = sub-post.id
+    fdoc.active-forum-id = fdoc.post.forum_id
+    fdoc.active-post-id  = post.id
 
     finish fdoc
 
   else # forum
-    err, forum-id <- db.uri-to-forum-id res.locals.site.id, uri
+    err, forum-id <- db.uri-to-forum-id res.locals.site.id, meta.forum-uri
     if err then return next err
     if !forum-id then return next 404
     tasks =

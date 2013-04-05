@@ -95,7 +95,7 @@ flip-background = (w, cur, direction='down') ->
 @forum =
   static:
     (window, next) ->
-      window.render-mutant \main_content (if @uri.match(/\/?(edit|new)\/?([\d+]*)\/?$/) then \post_new else \posts)
+      window.render-mutant \main_content (if is-editing(window.location.pathname) then \post_new else \posts)
       window.render-mutant \left_content \nav unless window.has-mutated-forum is @active-forum-id
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
@@ -129,7 +129,7 @@ flip-background = (w, cur, direction='down') ->
       $l.find ".thread[data-id='#{active-post-id}']" .add-class \active
 
       # editing handler
-      id = is-editing!
+      id = is-editing window.location.pathname
       unless id is false
         edit-post id, (if id.length is 0 then forum_id:window.active-forum-id else void)
 
@@ -184,7 +184,7 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-personalize: (w, u, next) ->
     if u # guard
-      $ ".subpost[data-user-id=#{u.id}] .edit, .post[data-user-id=#{u.id}] .edit"
+      $ ".post[data-user-id=#{u.id}] .edit"
         .css(\display \inline) # enable edit
     next!
   on-unload:
