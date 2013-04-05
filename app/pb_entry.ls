@@ -238,7 +238,16 @@ $d.on \click, '#paginator a.page', ->
 window.has-mutated-forum = window.active-forum-id
 
 if mocha? and window.location.search.match /test=1/
+  cleanup-output = ->
+    $('body > *:not(#mocha)').remove!
+
   mocha.setup \bdd
-  $.get-script '//muscache5.pb.com/tests/test1.js', mocha.run
+
+  # actual tests
+  $.get-script '//muscache5.pb.com/tests/test1.js', ->
+    run = ->
+      mocha.run cleanup-output
+    set-timeout run, 2000 # gotta give time for tests to load
+
 
 # vim:fdm=marker
