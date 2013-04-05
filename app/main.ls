@@ -65,6 +65,8 @@ html_404 = fs.read-file-sync('public/404.html').to-string!
 try # load config.json
   global.cvars = require '../config/common'
   global.cvars <<< require "../config/#{proc.env.NODE_ENV or \development}"
+  global.cvars <<< require '../config/local' # local settings which aren't in version control
+
   for i in ['', 2, 3, 4, 5]
     cvars["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}.#{cvars.cache_domain}" # expand
 
