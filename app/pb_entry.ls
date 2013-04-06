@@ -241,7 +241,7 @@ if mocha? and window.location.search.match /test=1/
 
     # mocha style (JUST IN TIME!)
     mocha-css-el =
-      $('<link rel="stylesheet" type="text/css" href="//muscache.pb.com/local/mocha.css" />')
+      $("<link rel=\"stylesheet\" type=\"text/css\" href=\"#{window.cache_url}/local/mocha.css\">")
     $('head').append(mocha-css-el)
 
   mocha.setup \bdd
