@@ -1,5 +1,6 @@
 describe('homepage', function(){
   var expect = chai.expect
+
   it('typing keywords should take you to /search', function(done){
     window.$('#query').focus().val('foo')
     // XXX: replace with bacon streams to ease testing?
@@ -18,7 +19,22 @@ describe('homepage', function(){
         done(e)
       }
     }
-    // allow 500ms for the app to complete its search routine
-    window.setTimeout(work, 500)
+    // allow 1000ms for the app to complete its search routine
+    setTimeout(work, 1000)
+  })
+
+  it('should be able to mutate to the training forum', function(done){
+    window.$("a.mutant[href='/training-forum']:first").trigger('click')
+
+    function work() {
+      try {
+        expect($('html.forum-3').length).to.equal(1)
+        done()
+      } catch(e) {
+        done(e)
+      }
+    }
+    // allow 1200ms for the app to complete its mutation 
+    setTimeout(work, 1200)
   })
 })
