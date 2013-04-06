@@ -178,7 +178,7 @@ auth-finisher = (req, res, next) ->
     return next 404
   if meta.type in <[new-thread edit]>
     return next 404 unless user # editing!  so, must be logged in
-  err, owns-post <- db.owns-post meta.id, user.id
+  err, owns-post <- db.owns-post meta.id, user?.id
   if err then return next err
   if meta.type is \edit
     return next 404 unless owns-post.length
