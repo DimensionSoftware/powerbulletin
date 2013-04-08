@@ -4,7 +4,7 @@ mixin post(sp, i)
       h4.title= sp.title
     .profile.photo
       img(src="#{cache_url}/#{sp.user_photo}")
-    .user= sp.user_name
+    a.user.mutant(href="/user/#{sp.user_name}")= sp.user_name
     .date(data-time=sp.created_iso)= sp.created_human
     if sp.html
       p.body!= sp.html
@@ -59,7 +59,7 @@ mixin thread(t)
         img(src="#{cache_url}/#{t.user_photo}")
       .created(data-time=t.created_iso)= t.created_human
       .username by
-        em= t.user_name
+        em= t.user_name // XXX weird things happened when I tried to turn this into an anchor
       span.post-count= t.post_count
         i posts
       span.views= t.views
