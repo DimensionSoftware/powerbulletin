@@ -1,0 +1,50 @@
+
+// RESPONSIVEness
+@media screen and (max-width: 800px)
+  .logo
+    font-size 1.1em!important
+    margin-top 4px!important
+  header
+    height 30px
+    .menu
+      .row
+        line-height 30px!important
+    .search
+      float right!important
+      position relative!important
+      top 0!important
+      right 0!important
+      .query
+        height 9px
+  body
+    grid(100%,475px)
+    .left-chrome
+      display none!important
+    #main_content.container
+      margin 0 auto 0 grid!important
+      .forum
+        padding-left 0!important
+  
+@media screen and (max-width: 500px)
+  header
+    font-size 0.8em
+    display none
+  body
+    grid(100%,320px)
+    #main_content.container
+      margin-left 0!important
+      padding 25px 15px!important
+      .forum
+        margin-bottom grid!important
+        padding-left 0!important
+  body.scrolled
+    .container
+      margin-left 0!important
+      padding 25px 15px!important
+    .left-chrome
+      display none!important
+
+#left_content.wide
+  .thread
+    .photo, .created, .username
+      display block
