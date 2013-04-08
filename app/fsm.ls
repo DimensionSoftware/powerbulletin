@@ -18,5 +18,5 @@ export example =
 
 # new state of a state machine given an initial state and a list of inputs
 export new-state = (machine, state, inputs) ->
-  transition = (t, i) -> machine[t][i]
+  transition = (s, i) -> machine[s][i]
   fold transition, state, inputs
