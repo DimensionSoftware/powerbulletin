@@ -38,7 +38,7 @@ common-js = [ #{{{ Common JS
 #}}}
 common-css = [ #{{{ Common CSS
   "#{cvars.cache2_url}/fancybox/jquery.fancybox.css",
-  '/dynamic/css/theme.styl,layout.styl']
+  '/dynamic/css/master.styl']
 #}}}
 
 app.get '/hello',

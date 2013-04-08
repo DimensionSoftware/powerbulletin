@@ -1,4 +1,3 @@
-@import 'common'
 
 // XXX below defines the layout's skeleton
 // XXX decoration & embellishments belong in the theme.styl
@@ -6,39 +5,12 @@
 
 header-height          = 50px
 header-scrolled-height = 30px
+
 forum-header-height = 0
 footer-height       = 32px
 left-content-width  = 200px
-max-post-height     = 2000px
 
-grid = 10px
-
-//{{{Mutant States
-html.homepage
-  .left-content
-    display none
-  
-html.forum
-  body.scrolled
-    #left_content.container
-      bottom 0
-  body.searching
-    #left_content.left-content
-      padding-top 90px!important
-      transition padding-top .2s ease-out
-      .handle
-        top 63px
-        transition top .2s ease-out
-    #main_content.main-content
-      padding-top 30px!important
-      transition padding-top .2s ease-out
-  .left-content
-    display block
-    .photo, .created, .username
-      display none
-  .left-chrome
-    display none
-//}}}
+@import './app/stylus/layout_states'
 
 section
   box-sizing border-box
@@ -50,168 +22,6 @@ body
     cursor pointer
   .scroll-to, .scroll-to-top
     cursor pointer
-
-.invisible
-  opacity 0
-  transition opacity .4s ease-out
-
-#paginator, #sort
-  position relative
-  box-sizing border-box
-  padding (grid) (grid) (grid*7) (grid*2)
-  text-align center
-  overflow-y scroll
-  height 109px
-  margin 0
-  list-style none
-  li
-    font-size .8em
-    padding 0 0 1px 0
-    margin 0 0 5px 0
-.indicator
-  top 21px
-  position absolute
-  left 0
-  width 140px
-  height 1px
-
-//{{{ Structure applied after body scrolls
-body.searching header
-  .menu
-    .row
-      top -1px
-      line-height 29px!important
-      font-size 16px!important
-body.scrolled
-  .logo
-    a
-      top -(grid - 2)
-      font-size .68em
-  header
-    height header-scrolled-height
-    .container
-      .menu
-        > .row:hover
-          .submenu
-            top 34px
-        .row
-          top 1px
-          line-height header-scrolled-height + 1
-          font-size 16px
-      .search
-        top 0!important
-        right 0!important
-        .query
-          font-size 1em
-          width 340px!important
-          height 15px
-  .left-chrome
-    .user-profile
-      left -2px!important
-  #left_content.container
-    padding-top (grid * 4)
-    transition padding-top .2s ease-out
-    .handle
-      top (header-scrolled-height - (grid*2))
-      transition top .2s ease-out
-  #main_content.container
-    #breadcrumb
-      text-align center
-      z-index 12
-      top header-scrolled-height
-      border-bottom-left-radius 5px
-      border-bottom-right-radius 5px
-      padding (grid/2+2) (grid*2) 2px (grid*2)
-      text-transform capitalize
-      font-size .9em
-      transition top .35s ease-out
-  footer
-    opacity 1
-    font-size .85em
-    bottom -(grid)
-    line-height (grid*2)
-//}}}
-//{{{ Structure applied when body is collapsed
-body.collapsed
-  .logo a
-    left 50px
-  .left-content.container
-    width grid!important
-    transition width .1s
-    .handle
-      transform rotate(180deg)
-      right -32px!important
-    .create a
-      display none!important
-  .main-content
-    .forum
-      padding-left (grid*2)!important
-      transition padding-left .2s ease-out
-//}}}
-//{{{ Structure applied when header is expanded for search
-body.searching
-  header
-    menu
-      > .row:hover
-        .submenu
-          top (header-scrolled-height+3)!important
-body.searching
-  .stuck
-    display none!important
-  header
-    height 80px!important
-    transition background-color .25s ease-out, height .2s ease-out
-    .container
-      .search::before
-        content ''
-        border-top 8px solid transparent
-        border-bottom 8px solid transparent
-        position absolute
-        top 25px
-        left 0
-      .search
-        top -7px!important
-        right auto!important
-        #query.query
-          position relative
-          z-index 9
-          font-size 31px
-          padding 5px 20px
-          letter-spacing 3px
-          font-weight 100
-          height 51px
-          width 500px!important
-      .advanced
-        right 100px
-        top 5px
-        transition right .2s ease-out
-        .check, label
-          cursor pointer
-    .close
-      cursor pointer
-      position absolute
-      right 12px
-      top grid
-      display block
-//}}}
-
-//{{{ Background layer
-img.bg
-  position fixed
-  height 100%
-  width 100%
-  z-index 0
-  left 0
-  display none
-  top 300px
-img.bg.active
-  top 0!important
-  transition top .3s
-  z-index 1!important
-  //transition opacity .8s ease-out
-  //opacity 1
-  //display block
-//}}}
 
 //{{{ Header
 .logo
@@ -613,57 +423,6 @@ footer
   width auto
 //}}}
 
-//{{{ RESPONSIVEness
-@media screen and (max-width: 800px)
-  .logo
-    font-size 1.1em!important
-    margin-top 4px!important
-  header
-    height 30px
-    .menu
-      .row
-        line-height 30px!important
-    .search
-      float right!important
-      position relative!important
-      top 0!important
-      right 0!important
-      .query
-        height 9px
-  body
-    grid(100%,475px)
-    .left-chrome
-      display none!important
-    #main_content.container
-      margin 0 auto 0 grid!important
-      .forum
-        padding-left 0!important
-  
-@media screen and (max-width: 500px)
-  header
-    font-size 0.8em
-    display none
-  body
-    grid(100%,320px)
-    #main_content.container
-      margin-left 0!important
-      padding 25px 15px!important
-      .forum
-        margin-bottom grid!important
-        padding-left 0!important
-  body.scrolled
-    .container
-      margin-left 0!important
-      padding 25px 15px!important
-    .left-chrome
-      display none!important
-
-#left_content.wide
-  .thread
-    .photo, .created, .username
-      display block
-// }}}
-
 //{{{ Login
 .fancybox-wrap.on-validate
   .validate
@@ -753,4 +512,44 @@ footer
     text-decoration none
 
 //}}}
+
+//{{{ Overlays (pagination & sorting)
+#paginator, #sort
+  position relative
+  box-sizing border-box
+  padding (grid) (grid) (grid*7) (grid*2)
+  text-align center
+  overflow-y scroll
+  height 109px
+  margin 0
+  list-style none
+  li
+    font-size .8em
+    padding 0 0 1px 0
+    margin 0 0 5px 0
+.indicator
+  top 21px
+  position absolute
+  left 0
+  width 140px
+  height 1px
+//}}}
+//{{{ Background layer
+img.bg
+  position fixed
+  height 100%
+  width 100%
+  z-index 0
+  left 0
+  display none
+  top 300px
+img.bg.active
+  top 0!important
+  transition top .3s
+  z-index 1!important
+  //transition opacity .8s ease-out
+  //opacity 1
+  //display block
+//}}}
+
 // vim:fdm=marker

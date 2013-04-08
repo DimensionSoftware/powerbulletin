@@ -1,0 +1,115 @@
+
+// Structure applied to ...
+
+//{{{ Scrolled <body>
+body.scrolled
+  header::after
+    border-bottom 1px solid #aaa
+    box-shadow 0 2px 8px 2px #ccc
+    bottom -3px
+    left 0
+    right 0
+    height 1px
+    content ''
+    position absolute
+  header
+    //background-color rgba(0,0,0,0.7)
+    background-color rgba(255,255,255,0.95)
+    box-shadow 0 -1px 18px 5px #ddd
+    border-bottom 1px solid #fff
+    transition height .2s ease-out, background-color .5s ease-out
+    .container
+      menu.menu
+        > .row
+          a.title.active:hover
+            background-image linear-gradient(bottom, #fff 22px, #ffe0c0)
+          a.title.active
+            background-image linear-gradient(bottom, #fff 22px, #ffe0c0)
+          a.title:hover, a.title.hover
+            background-image linear-gradient(bottom, #fff 22px, #fed)
+          a.title
+            background-image linear-gradient(bottom, #fff 25px, #fed)
+        .row
+          transition line-height .2s ease-out
+          .submenu
+            .row
+              line-height (grid*3)
+      .search
+        .query
+          border-bottom-width 2px
+        .query::-webkit-input-placeholder
+            color #bbb
+        .query:-moz-placeholder
+            color #bbb
+        .query::-moz-placeholder
+            color #bbb
+        .query:-ms-input-placeholder
+            color #bbb
+  .left-chrome
+    .user-profile
+      transition left .5s ease-out
+  #main_content.container
+    .forum.dark
+      .post
+        background-color rgba(255,255,255, .77)
+        .title
+          background-color transparent
+        .body
+          background-color transparent
+    .forum.light
+      .header::before
+        position absolute
+        opacity .25
+  #left_content.container::after
+    bottom (footer-height - 4)
+  footer
+    opacity 1
+    transition bottom .4s ease-out
+//}}}
+//{{{ Expanded header (advanced searching)
+body.searching header
+  //background-color rgba(0,0,0,0.85)!important
+  background-color rgba(255,255,255,0.85)!important
+  border-bottom 1px solid #fff
+  .close:hover
+    font-weight 500
+    color #555
+  .close
+    font-weight 200
+    font-size 1.3em
+    transform rotate(10deg)
+    padding 0
+    height 9px
+    width 8px
+    line-height 7px
+    border-radius 25px
+    color #777
+    text-indent -2px
+  .search
+    #query.query
+      text-align left
+  .advanced
+    font-weight 100
+    font-size .9em
+    label:hover
+      color #222
+    .check
+      margin 0 8px
+    label
+      margin-right 10px
+  .menu
+    .row
+      transition line-height .2s ease-out!important
+    > .row
+      a.title.active:hover
+        background-image linear-gradient(bottom, #fff 23px, #ffe0c0)
+      a.title.active
+        background-image linear-gradient(bottom, #fff 23px, #ffe0c0)
+      a.title:hover, a.title.hover
+        background-image linear-gradient(bottom, #fff 15px, #fed)
+      a.title
+        background-image linear-gradient(bottom, #fff 20px, #fed)
+//}}}
+// XXX Mutant states
+
+// vim:fdm=marker
