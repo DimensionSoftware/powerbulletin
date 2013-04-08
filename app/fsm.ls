@@ -1,8 +1,8 @@
 # Examples:
-#   fsm.new-state fsm.example, \A, \a \a \a
-#   fsm.new-state fsm.example, \B, \a
-#   fsm.new-state fsm.example, \C, \a
-#   fsm.new-state fsm.example, \C, \b
+#   fsm.new-state fsm.example, \A, [\a \a \a]
+#   fsm.new-state fsm.example, \B, [\a]
+#   fsm.new-state fsm.example, \C, [\a]
+#   fsm.new-state fsm.example, \C, [\b]
 /*
 export example =
   A:
@@ -17,9 +17,6 @@ export example =
 */
 
 # new state of a state machine given an initial state and a list of inputs
-export new-state = (machine, state, ...inputs) ->
-  transition = (t, i) ->
-    state = machine[t][i]
-    #console.log "#t #i -> #state"
-    #state
+export new-state = (machine, state, inputs) ->
+  transition = (t, i) -> machine[t][i]
   fold transition, state, inputs

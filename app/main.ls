@@ -65,8 +65,14 @@ html_404 = fs.read-file-sync('public/404.html').to-string!
 try # load config.json
   global.cvars = require '../config/common'
   global.cvars <<< require "../config/#{proc.env.NODE_ENV or \development}"
+
   for i in ['', 2, 3, 4, 5]
     cvars["cache#{i}_url"] = "//#{cvars.cache_prefix}#{i}.#{cvars.cache_domain}" # expand
+
+  try
+    global.cvars <<< require '../config/local' # local settings which aren't in version control
+  catch
+    # do nothing
 
   cvars.env                = proc.env.NODE_ENV
   cvars.process-start-date = new Date!
@@ -203,7 +209,9 @@ else
 
   # bind shared cache domains
   for i in ['', 2, 3, 4, 5]
-    sock.use(express.vhost "#{cvars.cache_prefix}#{i}.#{cvars.cache_domain}", cache-app)
+    #XXX: this is a hack but hey we are always using protocol-less urls so should never break :)
+    #  removing leading //
+    sock.use(express.vhost cvars["cache#{i}_url"].slice(2), cache-app)
 
   # dynamic app can automatically check req.host
   sock.use(app)

@@ -241,13 +241,13 @@ if mocha? and window.location.search.match /test=1/
 
     # mocha style (JUST IN TIME!)
     mocha-css-el =
-      $('<link rel="stylesheet" type="text/css" href="//muscache.pb.com/local/mocha.css" />')
+      $("<link rel=\"stylesheet\" type=\"text/css\" href=\"#{window.cache_url}/local/mocha.css\">")
     $('head').append(mocha-css-el)
 
   mocha.setup \bdd
 
   # actual tests
-  $.get-script '//muscache5.pb.com/tests/test1.js', ->
+  $.get-script "#{window.cache_url}/tests/test1.js", ->
     run = ->
       mocha.run cleanup-output
     set-timeout run, 2000 # gotta give time for tests to load
