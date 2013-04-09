@@ -19,8 +19,6 @@ if typeof(post) !== 'undefined'
     .children
     if post.posts.length
         #listview
-        each pg in prevPages
-          div(data-page=pg)
         div(data-page=page)
           each sp in post.posts
             mixin post(sp, 0)
