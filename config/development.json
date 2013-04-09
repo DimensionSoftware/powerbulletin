@@ -3,10 +3,6 @@
   "workers": 1,
 
   "base_js_urls":
-  [ "//muscache.pb.com/local/jquery-1.9.1.min.js"
-  , "//muscache2.pb.com/local/jquery-ui.min.js"
-  , "//muscache3.pb.com/local/mocha.js"
-  , "//muscache4.pb.com/local/chai.js"
-  , "//swarm.powerbulletin.com/js/inject.js"
+  [ "//swarm.powerbulletin.com/js/inject.js"
   ]
 }

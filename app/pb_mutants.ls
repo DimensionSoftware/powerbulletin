@@ -140,41 +140,6 @@ flip-background = (w, cur, direction='down') ->
       render-sp = (sub-post) ->
         window.jade.templates._sub_post({window.cache_url, sub-post})
 
-      lazy = ->
-        $(this).find('[data-page]:not(.page-loaded)').each ->
-          $pg = $(this)
-          $pg.add-class \page-loaded
-          page = $pg.data(\page)
-
-          sub-posts <- $.getJSON "/resources/posts/#{window.active-post-id}/sub-posts", {page}
-          for sub-post in sub-posts
-            $pg.append render-sp(sub-post)
-
-        personalize = ->
-          socket.emit \online-now # update presence info
-          window.mutants[window.mutator].on-personalize window, window.user, (->)
-        set-timeout personalize, 500ms
-
-      # initialize ListView
-      $children = $ '#main_content > .forum > .children > [data-page]'
-      $listview = $ '#listview'
-
-      window.lv = new infinity.ListView $listview, {lazy}
-
-      $children.each ->
-        $c = $(this)
-        $c.remove!
-        window.lv.append $c.html!
-
-      # this is so we can 'scroll up' to the previous pages after initially loading a particular page
-      # scroll into view before LV madness starts
-      #set-timeout awesome-scroll-to "[data-page=#{window.page}]", 1000
-
-      # start at bottom
-      if window.page > 1
-        scrollto = -> $("[data-page=#{window.page}]").0?scroll-into-view!
-        set-timeout scrollto, 1000ms
-
       next!
   on-mutate:
     (window, next) ->
