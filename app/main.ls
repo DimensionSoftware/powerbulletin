@@ -55,6 +55,7 @@ cache-app        = express!
 apps = [app, redir-to-domain, cache-app]
 
 graceful-shutdown = ->
+  console.warn 'Graceful shutdown called and no handler!'
   for a in apps
     a
     #a.close!
