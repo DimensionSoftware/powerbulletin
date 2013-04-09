@@ -262,9 +262,10 @@ section.left-chrome
     top -100px
     position fixed
   .breadcrumb
-    text-transform capitalize
     margin-bottom (grid/2)
+    text-transform capitalize
     a, em, span
+      text-transform capitalize
       padding-right (grid/2)
       margin-right 3px
   .forum:first-child
@@ -280,11 +281,6 @@ section.left-chrome
       z-index 6
     .header.stuck::before
       opacity 1!important
-    .header.stuck, #breadcrumb
-      position fixed
-      top header-scrolled-height
-      z-index 7
-      overflow hidden
     .header
       width 95%
       overflow visible
