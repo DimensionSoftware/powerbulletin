@@ -33,25 +33,23 @@ window.load-ui = -> # restore ui state from cookie
     [searching, collapsed, w] = s.split sep
     w = parseInt w
     $l.transition({width:w}, 500ms, \easeOutExpo -> # restore
-      #$ \footer .css \left $l.width!                # ..footer
       $l.toggle-class \wide ($l.width! > 300px))    # ..left nav
     set-timeout (-> # ... & snap
       $ '#main_content.container .forum' .transition({padding-left:w + 20px}, 450ms, \snap)), 200ms
-  if searching is not '0' then $ \body .add-class(\searching)
-  if collapsed is not '0' then $ \body .add-class(\collapsed)
+  if searching is '1' then $ \body .add-class(\searching)
+  if collapsed is '1' then $ \body .add-class(\collapsed)
   set-timeout align-breadcrumb, 500ms
 
 # handle
 $d.on \click '#handle' ->
   $l = $ '#left_content'
   $ \body .toggle-class \collapsed
-  #$ \footer .css \left $l.width!  # ..footer
   $ '#main_content.container .forum'
     .css('padding-left', ($l.width! + offset))
   save-ui!
 
 # waypoints
-$w.resize -> set-timeout (-> $.waypoints \refresh), 800ms
+$w.resize (__.debounce (-> $.waypoints \refresh; align-breadcrumb!), 800ms)
 set-timeout (-> # sort control
   $ '#sort li' .waypoint {
     context: \ul
