@@ -19,8 +19,6 @@ if typeof(post) !== 'undefined'
     .children
     if post.posts.length
         #listview
-        each pg in prevPages
-          div(data-page=pg)
         div(data-page=page)
           each sp in post.posts
             mixin post(sp, 0)
@@ -36,6 +34,6 @@ if typeof(post) !== 'undefined'
 if pages.length > 1
   #paginator
     each pg in pages
-      a.page(class=(pg == page ? 'active' : ''))= pg
+      a.page(class=(pg == page ? 'active' : ''), href=(pg == 1 ? post.uri : post.uri + '/page/' + pg))= pg
 
 //- vim:fdm=marker
