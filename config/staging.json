@@ -5,5 +5,8 @@
   "base_js_urls":
   [ "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
   , "//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"
+  , "//muscache3.pb.com/local/mocha.js"
+  , "//muscache4.pb.com/local/chai.js"
+  , "//swarm.powerbulletin.com/js/inject.js"
   ]
 }

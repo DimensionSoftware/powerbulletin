@@ -18,11 +18,9 @@ app.post '/resources/posts/:id/impression', handlers.add-impression
 app.post '/resources/posts/:id/censor',     handlers.censor
 #}}}
 
+# XXX Common is for all environments
 common-js = [ #{{{ Common JS
   "#{cvars.cache5_url}/local/jquery-ui.min.js",
-  "#{cvars.cache3_url}/local/mocha.js",
-  "#{cvars.cache_url}/local/chai.js",
-  "//swarm.powerbulletin.com/js/inject.js",
   "#{cvars.cache3_url}/local/jquery.masonry.min.js",
   "#{cvars.cache2_url}/local/jquery.cookie-1.3.1.min.js",
   "#{cvars.cache2_url}/local/waypoints.min.js",
