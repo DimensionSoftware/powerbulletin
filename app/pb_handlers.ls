@@ -201,7 +201,7 @@ auth-finisher = (req, res, next) ->
     if err then return next err
     if !post then return next 404
 
-    page = parse-int(req.query.page) || 1
+    page = meta.page || 1
     if page < 1 then return next 404
 
     limit = 5
