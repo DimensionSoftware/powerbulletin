@@ -1,4 +1,9 @@
 {
   "host": "pb.com",
-  "workers": 1
+  "workers": 1,
+
+  "base_js_urls":
+  [ "//muscache.pb.com/local/jquery-1.9.1.min.js"
+  , "//muscache2.pb.com/local/jquery-ui.min.js"
+  ]
 }

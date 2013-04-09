@@ -19,7 +19,6 @@ app.post '/resources/posts/:id/censor',     handlers.censor
 #}}}
 
 common-js = [ #{{{ Common JS
-  "#{cvars.cache5_url}/local/jquery-1.8.3.min.js",
   "#{cvars.cache5_url}/local/jquery-ui.min.js",
   "#{cvars.cache3_url}/local/mocha.js",
   "#{cvars.cache_url}/local/chai.js",
@@ -27,7 +26,6 @@ common-js = [ #{{{ Common JS
   "#{cvars.cache3_url}/local/jquery.masonry.min.js",
   "#{cvars.cache2_url}/local/jquery.cookie-1.3.1.min.js",
   "#{cvars.cache2_url}/local/waypoints.min.js",
-#  "#{cvars.cache2_url}/local/waypoints-sticky.min.js",
   "#{cvars.cache5_url}/local/history.min.js",
   "#{cvars.cache5_url}/local/history.adapter.native.min.js",
   "#{cvars.cache3_url}/fancybox/jquery.fancybox.pack.js",

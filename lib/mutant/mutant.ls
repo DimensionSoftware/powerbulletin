@@ -3,11 +3,10 @@ if window?
 else
   require! {
     jsdom
-    #chimera.chimera
   }
 
   dom-window = (html, cb) ->
-    scripts = ['../../public/local/jquery-1.8.3.min.js']
+    scripts = ['../../public/local/jquery-1.9.1.min.js']
 
     jsdom_opts = {html, scripts}
 
