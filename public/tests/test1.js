@@ -1,4 +1,5 @@
 describe('homepage', function(){
+  this.timeout(15000)
   var expect = chai.expect
 
   it('typing keywords should take you to /search', function(done){
@@ -19,8 +20,8 @@ describe('homepage', function(){
         done(e)
       }
     }
-    // allow 1000ms for the app to complete its search routine
-    setTimeout(work, 1000)
+    // allow 5000ms for the app to complete its search routine
+    setTimeout(work, 5000)
   })
 
   it('should be able to mutate to the training forum', function(done){
@@ -34,7 +35,7 @@ describe('homepage', function(){
         done(e)
       }
     }
-    // allow 1200ms for the app to complete its mutation 
-    setTimeout(work, 1200)
+    // allow 10000ms for the app to complete its mutation 
+    setTimeout(work, 10000)
   })
 })
