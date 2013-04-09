@@ -310,7 +310,9 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS site_by_domain(domain JSON);
 CREATE FUNCTION site_by_domain(domain JSON) RETURNS JSON AS $$
   sql = """
-  SELECT * FROM sites WHERE domain = $1
+  SELECT s.*, d.name AS domain
+  FROM sites s JOIN domains d ON s.id = d.site_id
+  WHERE d.name = $1
   """
   s = plv8.execute(sql, [ domain ])
   return s[0]
@@ -320,7 +322,9 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS site_by_id(id JSON);
 CREATE FUNCTION site_by_id(id JSON) RETURNS JSON AS $$
   sql = """
-  SELECT * FROM sites WHERE id = $1
+  SELECT s.*, d.name AS domain
+  FROM sites s JOIN domains d ON s.id = d.site_id
+  WHERE s.id = $1
   """
   s = plv8.execute(sql, [ id ])
   return s[0]
@@ -329,19 +333,19 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS update_site(site JSON);
 CREATE FUNCTION update_site(site JSON) RETURNS JSON AS $$
   sql = """
-  UPDATE sites SET name = $1, config = $2, domain = $3, user_id = $4 WHERE id = $5
+  UPDATE sites SET name = $1, config = $2, user_id = $3 WHERE id = $4
     RETURNING *
   """
-  s = plv8.execute(sql, [ site.name, site.config, site.domain, site.user_id, site.id ])
+  s = plv8.execute(sql, [ site.name, site.config, site.user_id, site.id ])
   return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS domains();
 CREATE FUNCTION domains() RETURNS JSON AS $$
   sql = """
-  SELECT domain FROM sites
+  SELECT name FROM domains
   """
-  return plv8.execute(sql).map (d) -> d.domain
+  return plv8.execute(sql).map (d) -> d.name
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- }}}

@@ -33,20 +33,31 @@ CREATE TABLE users (
 CREATE TRIGGER users_timestamp BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 -- site has many forums
+-- site has many domains
 -- site belongs to user (if they are an admin)
 -- NOTE: id is the base domain (string)
 CREATE TABLE sites (
   id      BIGSERIAL NOT NULL,
   name    VARCHAR(256) NOT NULL,
-  domain  VARCHAR(256) NOT NULL,
   config  JSON NOT NULL DEFAULT '{}',
   user_id BIGINT NOT NULL references users(id),
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
-  UNIQUE (domain),
   PRIMARY KEY (id)
 );
 CREATE TRIGGER sites_timestamp BEFORE UPDATE ON sites FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
+-- domain belongs to site
+CREATE TABLE domains (
+  id      BIGSERIAL NOT NULL,
+  site_id BIGINT NOT NULL references sites(id),
+  name    VARCHAR(256) NOT NULL,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated TIMESTAMP,
+  UNIQUE (name),
+  PRIMARY KEY (id)
+);
+CREATE TRIGGER domains_timestamp BEFORE UPDATE ON domains FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 -- alias belongs to user
 CREATE TABLE aliases (
