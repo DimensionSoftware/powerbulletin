@@ -24,13 +24,14 @@ common-js = [ #{{{ Common JS
   "#{cvars.cache5_url}/local/jquery-ui.min.js",
   "#{cvars.cache3_url}/local/jquery.masonry.min.js",
   "#{cvars.cache2_url}/local/jquery.cookie-1.3.1.min.js",
-  "#{cvars.cache2_url}/local/waypoints.min.js",
+  "#{cvars.cache4_url}/local/jquery.sceditor.bbcode.min.js",
+  "#{cvars.cache_url}/local/waypoints.min.js",
   "#{cvars.cache5_url}/local/history.min.js",
   "#{cvars.cache5_url}/local/history.adapter.native.min.js",
   "#{cvars.cache3_url}/fancybox/jquery.fancybox.pack.js",
   "#{cvars.cache3_url}/local/jquery.transit-0.9.9.min.js",
   "#{cvars.cache4_url}/socket.io/socket.io.js",
-  "#{cvars.cache4_url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
+  "#{cvars.cache_url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
 #}}}
 
 # inject testing code in dev only
@@ -42,6 +43,7 @@ app.configure \development ->
 
 common-css = [ #{{{ Common CSS
   "#{cvars.cache2_url}/fancybox/jquery.fancybox.css",
+  "#{cvars.cache3_url}/local/jquery.sceditor.default.min.css",
   '/dynamic/css/master.styl']
 #}}}
 

@@ -48,21 +48,29 @@ require! {
     @render-and-append window, sel, \post_edit, post:locals, ->
       focus e
 
-  scroll-to-edit!
-  if not id.length and data # render new
-    data.action = '/resources/post'
+  if id is true # render new
+    scroll-to-top!
+    data.action = \/resources/post
     data.method = \post
-    render '.forum', data
+    render \.forum, data
   else # fetch existing & render
+    scroll-to-edit!
     console.log data
     sel = "\#post_#{id}"
     e   = $ sel
-    unless e.find('.container:first:visible').length # guard
+    unless e.find(\.container:first:visible).length # guard
       $.get "/resources/posts/#{id}" (p) ->
         render sel, p
         e .add-class \editing
     else
       focus e
+
+  # init sceditor
+  $ \textarea.body .sceditor(
+    plugins:       \bbcode
+    style:         \http://muscache.pb.com/local/jquery.sceditor.default.min.css
+    toolbar:       'bold,italic,underline|emoticons|source'
+    emoticons-root:'http://muscache.pb.com/')
 
 @align-breadcrumb = ->
   b = $ '#breadcrumb'

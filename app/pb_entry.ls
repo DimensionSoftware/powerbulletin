@@ -124,8 +124,8 @@ $d.on \click '.onclick-submit .cancel' ->
   remove-editing-url!
 $d.on \click '.onclick-submit input[type="submit"]' require-login(
   (e) -> submit-form(e, (data) ->
-    f = $ this .closest('.post-edit') # form
-    p = f .closest('.editing')        # post being edited
+    f = $ this .closest(\.post-edit) # form
+    p = f .closest(\.editing)        # post being edited
     # render updated post
     p.find '.title' .html(data.0?title)
     p.find '.body'  .html(data.0?body)
