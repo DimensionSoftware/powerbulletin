@@ -48,6 +48,7 @@ export type-of-part = (i) ->
   | \edit     => \edit
   | \new      => \new
   | otherwise =>
+    if i.match /[\.]/ then return \fbdn #forbidden
     if i.match /^\d+$/ then \number else \string
 
 export machine =
@@ -58,6 +59,7 @@ export machine =
     edit   : \forum
     t      : \forum
     page   : \forum
+    fbdn   : \error
   forum:
     string : \forum
     number : \forum
@@ -65,6 +67,7 @@ export machine =
     edit   : \forum
     t      : \-thread-marker
     page   : \forum
+    fbdn   : \error
   'new-thread':
     string : \error
     number : \error
@@ -72,6 +75,7 @@ export machine =
     edit   : \error
     t      : \error
     page   : \error
+    fbdn   : \error
   '-thread-marker':
     string : \thread
     number : \thread
@@ -79,6 +83,7 @@ export machine =
     edit   : \thread
     t      : \thread
     page   : \thread
+    fbdn   : \error
   thread:
     string : \thread-permalink
     number : \thread-permalink
@@ -86,6 +91,7 @@ export machine =
     edit   : \-edit-marker
     t      : \error
     page   : \-page-marker
+    fbdn   : \error
   'thread-permalink':
     string : \error
     number : \error
@@ -93,6 +99,7 @@ export machine =
     edit   : \-edit-marker
     t      : \error
     page   : \-permalink-page-marker
+    fbdn   : \error
   '-edit-marker':
     string : \error
     number : \edit
@@ -100,6 +107,7 @@ export machine =
     edit   : \error
     t      : \error
     page   : \error
+    fbdn   : \error
   edit:
     string : \error
     number : \error
@@ -107,6 +115,7 @@ export machine =
     edit   : \error
     t      : \error
     page   : \error
+    fbdn   : \error
   '-permalink-page-marker':
     string : \error
     number : \thread-permalink-page
@@ -114,6 +123,7 @@ export machine =
     edit   : \error
     t      : \error
     page   : \error
+    fbdn   : \error
   'thread-permalink-page':
     string : \error
     number : \error
@@ -121,6 +131,7 @@ export machine =
     edit   : \error
     t      : \error
     page   : \error
+    fbdn   : \error
   '-page-marker':
     string : \error
     number : \thread-page
@@ -128,6 +139,7 @@ export machine =
     edit   : \error
     t      : \error
     page   : \error
+    fbdn   : \error
   'thread-page':
     string : \error
     number : \error
@@ -135,6 +147,7 @@ export machine =
     edit   : \error
     t      : \error
     page   : \error
+    fbdn   : \error
   error:
     string : \error
     number : \error
@@ -142,6 +155,7 @@ export machine =
     edit   : \error
     t      : \error
     page   : \error
+    fbdn   : \error
 
 
 # Given a URL path, return the type of forum url and the associated metadata
