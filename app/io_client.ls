@@ -10,7 +10,7 @@ socket.on \disconnect, ->
   console.log \disconnected
 
 socket.on \enter-site, (message, cb) ->
-  $ "[data-user-id=#{message.id}] .profile.photo" .add-class \online
+  set-online-user message?id
 
 socket.on \leave-site, (message, cb) ->
   $ "[data-user-id=#{message.id}] .profile.photo" .remove-class \online
@@ -20,7 +20,7 @@ socket.on \thread-impression (thread, cb) ->
     $("\#left_content ul.threads li[data-id=#{thread.id}] span.views").html("#{thread.views} <i>views</i>")
 
 socket.on \thread-create (thread, cb) ->
-  if active-forum-id is thread.forum_id
+  if active-forum-id is thread?forum_id
     <- render-and-prepend window,  $('#left_content .threads'), \_thread, thread:thread
     $ '#left_content .threads div.fadein li' .unwrap!
 

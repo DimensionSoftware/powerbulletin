@@ -4,6 +4,9 @@ require! {
 
 # XXX shared by pb_mutants & pb_entry
 
+@set-online-user = (id) ->
+  $ "[data-user-id=#{id}] .profile.photo" .add-class \online
+
 # double-buffered replace of view with target
 @render-and = (fn, w, target, tmpl, params, cb) -->
   $t = w.$ target  # target
@@ -39,7 +42,7 @@ require! {
     false
 
 # handle in-line editing
-@edit-post = (id, data) ->
+@edit-post = (id, data={}) ->
   console.log \edit-post
   focus  = (e) -> set-timeout (-> e.find 'input[type="text"]' .focus!), 100
   render = (sel, locals) ~>

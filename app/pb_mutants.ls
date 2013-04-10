@@ -130,8 +130,7 @@ flip-background = (w, cur, direction='down') ->
 
       # editing handler
       id = is-editing window.location.pathname
-      unless id is false
-        edit-post id, (if id.length is 0 then forum_id:window.active-forum-id else void)
+      if id then edit-post id, forum_id:window.active-forum-id
 
       # add impression
       post-id = $('#main_content .post:first').data('post-id')
@@ -149,6 +148,7 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-personalize: (w, u, next) ->
     if u # guard
+      set-online-user u.id
       $ ".post[data-user-id=#{u.id}] .edit"
         .css(\display \inline) # enable edit
     next!

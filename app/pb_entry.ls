@@ -108,7 +108,7 @@ censor = ->
 #.
 #### main   ###############>======-- -   -
 ##
-if window.location.hash is '#validate' then after-login! # email activation
+if window.location.hash is \#validate then after-login! # email activation
 load-ui!
 $ '#query' .focus!
 
