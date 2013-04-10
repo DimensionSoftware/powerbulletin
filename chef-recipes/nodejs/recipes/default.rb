@@ -1,21 +1,17 @@
 
-ver = '0.8.22'
-
 unless File.file? '/usr/local/bin/node'
   package 'build-essential'
+  package 'systemtap'
+  package 'systemtap-sdt-dev'
 
-  remote_file '/tmp/node-v0.8.22.tar.gz' do
-    source 'http://nodejs.org/dist/v0.8.22/node-v0.8.22.tar.gz'
-    checksum '703207d7b394bd3d4035dc3c94b417ee441fd3ea66aa90cd3d7c9bb28e5f9df4'
-  end
-
-  bash "build & install nodejs #{ver}" do
+  bash "build & install nodejs" do
     cwd '/tmp'
     code <<-EOH
       set -e
-      tar -xzf node-v0.8.22.tar.gz
-      cd node-v0.8.22
-      ./configure
+      wget http://nodejs.org/dist/v0.10.3/node-v0.10.3.tar.gz
+      tar -xzf node-v0.10.3.tar.gz
+      cd node-v0.10.3
+      ./configure --with-dtrace
       make
       make install
     EOH
