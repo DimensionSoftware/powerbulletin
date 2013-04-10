@@ -61,19 +61,17 @@ site-by-domain = (domain, cb) ->
   redisStore  = new RedisStore({ redis, redisPub, redisSub, redisClient })
   io.set \store, redisStore
 
-  io.set \authorization, (data, accept) ->
-    if data.headers.cookie
-      data.cookies = cookie.parse data.headers.cookie
-      #console.log \cookie, data.cookies
-      unsigned = connect.utils.parse-signed-cookie data.cookies['connect.sess'], cvars.secret
-      #console.log \unsigned, unsigned
+  io.set \authorization, (handshake, accept) ->
+    if handshake.headers.cookie
+      handshake.cookies = cookie.parse handshake.headers.cookie
+      unsigned = connect.utils.parse-signed-cookie handshake.cookies['connect.sess'], cvars.secret
 
       if unsigned
         original-hash = crc32.signed unsigned
         session = connect.utils.parse-JSON-cookie(unsigned) || {}
         #console.log \session, session
-        data.session = session
-        data.domain  = data.headers.host
+        handshake.session = session
+        handshake.domain  = handshake.headers.host
         return accept(null, true)
       else
         return accept("bad session?", false)
