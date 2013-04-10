@@ -31,8 +31,8 @@ CREATE FUNCTION post(id JSON) RETURNS JSON AS $$
   return plv8.execute(sql, [id])?0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS posts_by_user(user_id JSON);
-CREATE FUNCTION posts_by_user(user_id JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS posts_by_user(usr JSON);
+CREATE FUNCTION posts_by_user(usr JSON) RETURNS JSON AS $$
   sql = '''
   SELECT
   p.*,
@@ -42,11 +42,12 @@ CREATE FUNCTION posts_by_user(user_id JSON) RETURNS JSON AS $$
   FROM posts p
   JOIN users u ON p.user_id = u.id
   JOIN aliases a ON u.id = a.user_id
-  WHERE p.user_id = $1
+  WHERE p.forum_id IN (SELECT id FROM forums WHERE site_id = $1)
+  AND a.name = $2
   ORDER BY p.created DESC
   LIMIT 20
   '''
-  return plv8.execute(sql, [user_id])
+  return plv8.execute(sql, [usr.site_id, usr.name])
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS edit_post(usr JSON, post JSON);
