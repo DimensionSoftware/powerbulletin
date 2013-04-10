@@ -75,13 +75,12 @@ global <<< require './helpers'
 
 auth-finisher = (req, res, next) ->
   user = req.user
-  console.warn 'user', user
   first-visit = user.created_human.match /just now/
   if first-visit
     res.send """
     <script type="text/javascript">
       window.opener.$('\#auth input[name=username]').val('#{user.name}');
-      window.opener.switchAndFocus('.fancybox-wrap', 'on-login', 'on-choose', '\#auth input[name=username]');
+      window.opener.switchAndFocus('on-login', 'on-choose', '\#auth input[name=username]');
       window.close();
     </script>
     """

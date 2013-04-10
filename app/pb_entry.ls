@@ -139,7 +139,7 @@ $d.on \click '.onclick-censor-post' require-login(censor)
 # login delegated events
 window.switch-and-focus = (remove, add, focus-on) ->
   $e = $ '.fancybox-wrap'
-  $e .remove-class("#{remove} shake slide").add-class(add)
+  $e.remove-class("#remove shake slide").add-class(add)
   setTimeout (-> $e.add-class \slide; $ focus-on .focus! ), 10ms
 $d.on \click '.onclick-close' ->
   $.fancybox.close!
