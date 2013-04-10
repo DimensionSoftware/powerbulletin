@@ -3,7 +3,10 @@ mixin post(sp, i)
     if sp.title
       h4.title= sp.title
     .profile.photo
-      img(src="#{cache_url}/#{sp.user_photo}")
+      if sp.user_photo.match(/^http/)
+        img(src="#{sp.user_photo}")
+      else
+        img(src="#{cache_url}/#{sp.user_photo}")
     a.user.mutant(href="/user/#{sp.user_name}")= sp.user_name
     .date(data-time=sp.created_iso)= sp.created_human
     if sp.html
