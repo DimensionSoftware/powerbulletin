@@ -20,6 +20,7 @@ layout-static = (w, mutator, forum-id=0) ->
 
 layout-on-load = (w) ->
   $ = window.$
+  left-offset = 50px
 
   # handle main content
   $r = $ '#main_content.container .resizable'
@@ -30,12 +31,12 @@ layout-on-load = (w) ->
     min-width: 200px
     max-width: 450px
     resize: (e, ui) ->
-      $l.toggle-class \wide ($l.width! > 300px)  # resize left nav
-      $ \footer .css 'left' ui.size.width        # " footer
-      $r.css 'padding-left' (ui.size.width+20px) # " resizable
+      $l.toggle-class \wide ($l.width! > 300px)         # resize left nav
+      $ \footer .css 'left' ui.size.width               # " footer
+      $r.css 'padding-left' (ui.size.width+left-offset) # " resizable
       window.save-ui!)
   if $r.length
-    $r.css 'padding-left' ($l.width! + 20px) # snap
+    $r.css 'padding-left' ($l.width!+left-offset) # snap
 
 flip-background = (w, cur, direction='down') ->
   clear-timeout w.bg-anim if w.bg-anim
@@ -133,6 +134,7 @@ flip-background = (w, cur, direction='down') ->
 
       layout-on-load window
 
+      $l = $ '#left_content'
       $l.find '.active' .remove-class \active  # set active post
       $l.find ".thread[data-id='#{active-post-id}']" .add-class \active
 

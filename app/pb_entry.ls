@@ -10,10 +10,11 @@ global <<< require('prelude-ls/prelude-browser-min').prelude
 $w = $ window
 $d = $ document
 
+left-offset = 50px
+
 #{{{ UI Interactions
 # ui save state
-sep    = \-
-offset = 20px
+sep = \-
 window.save-ui = -> # serealize ui state to cookie
   min-width = 200px
   w = $ '#left_content' .width!
@@ -35,7 +36,7 @@ window.load-ui = -> # restore ui state from cookie
     $l.transition({width:w}, 500ms, \easeOutExpo -> # restore
       $l.toggle-class \wide ($l.width! > 300px))    # ..left nav
     set-timeout (-> # ... & snap
-      $ '#main_content.container .resizable' .transition({padding-left:w + 20px}, 450ms, \snap)), 200ms
+      $ '#main_content.container .resizable' .transition({padding-left:w + left-offset}, 450ms, \snap)), 200ms
   if searching is '1' then $ \body .add-class(\searching)
   if collapsed is '1' then $ \body .add-class(\collapsed)
   set-timeout align-breadcrumb, 500ms
@@ -45,7 +46,7 @@ $d.on \click '#handle' ->
   $l = $ '#left_content'
   $ \body .toggle-class \collapsed
   $ '#main_content.container .resizable'
-    .css('padding-left', ($l.width! + offset))
+    .css('padding-left', ($l.width! + left-offset))
   save-ui!
 
 # waypoints
