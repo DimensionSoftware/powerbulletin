@@ -61,8 +61,9 @@ body.scrolled
     .user-profile
       left -2px!important
   #left_content.container
-    padding-top (grid * 4)
-    transition padding-top .2s ease-out
+    top (header-scrolled-height+5)
+    padding-top (grid * 1)
+    transition padding-top .2s ease-out, top .2s ease-out
     .handle
       top (header-scrolled-height - (grid*2))
       transition top .2s ease-out
@@ -85,7 +86,7 @@ body.scrolled
 //{{{ Collapsed left nav
 body.collapsed
   .logo a
-    left 50px
+    left 53px
   .left-content.container
     width grid!important
     transition width .1s
@@ -96,7 +97,7 @@ body.collapsed
       display none!important
   .main-content
     .forum
-      padding-left (grid*2)!important
+      padding-left (grid*5)!important
       transition padding-left .2s ease-out
 //}}}
 //{{{ Expanded header (advanced searching)
