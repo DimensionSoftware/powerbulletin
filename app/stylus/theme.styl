@@ -286,134 +286,23 @@ section.left-chrome
       font-weight 100
       font-size 2.1em
       line-height 2em
-    .subpost:hover
-      border-bottom 1px solid #ddd
-      color #000
-    .subpost
-      border-bottom 1px solid #eee
-      color #333
-    .subpost:last-child
-      border-bottom 0
-    .subpost, .post
+    .post
       .profile
         background-color #fafafa
         border 1px solid #eee
-    .user
-      font-weight bold
-    .post, .subpost
       .actions a
         color highlight-color2
-
-  .forum.pins
-    margin-bottom (grid * 2)
-    .header.stuck
-      color #fff!important
-      text-shadow 1px 1px 0 rgba(0,0,0,.5)!important
-      font-size 17px
-      letter-spacing 0
-    .header::before
-      position absolute
-      opacity .55
-      top -50px
-      left 30%
-      content ''
-      width 640px
-      height 200px
-      z-index 1
-      background-image url(cache_url+'/images/blob.png')
-      background-repeat no-repeat
-    .header
-      text-shadow 0 1px 1px #000,0 2px 0 #000
-      text-overflow ellipsis
-      letter-spacing -1px
-      white-space nowrap
-      margin (grid*3) grid
-      color #fff
-      .description
-        a
-          color #fff
-      h4, span
-        display inline-block
-        margin 0 grid
-        padding 1px 6px
-        //background-color rgba(0,0,0,.08)
-        border-radius 4px
-    .container
-      padding-bottom (grid * 2)!important
-      border-bottom 1px dotted #111
-      .scroll-to:hover
-        border-bottom 14px solid #444
-      .scroll-to
-        border-bottom 13px solid #222
-        border-left 10px solid transparent
-        border-right 10px solid transparent
-        padding 1px
-        width 1px
-        height 20px
-      .post.grow
-        animation-name tiny-grow
-        animation-duration .5s
-      .post:hover
-        background-color #fff
-        border-radius 5px
-        border 1px solid #aaa
-        border-right 2px solid #aaa
-        border-bottom 3px solid #aaa
-        box-shadow 0 0 2px 0 #fff, 0 0 2px 0 #111
-      .post
-        background-color rgba(255,255,255,.9)
-        border 1px solid #ccc
-        border-right 2px solid #ccc
-        border-bottom 3px solid #bbb
-        border-radius 3px
-        > .body
-          padding 0 0 grid grid
-          margin 0
-          color #111
-          background-color #fff
+      .post-edit
+        .sceditor-container
+          border-top-left-radius 0
+          .sceditor-toolbar
+            background-color #fafafa
+            border-bottom 1px solid #eee
         .title
-          margin 0
-          padding grid 0 0 grid
-          border-top-left-radius 5px
-          border-top-right-radius 5px
-          background-color #fff
-          .date
-            position absolute
-            font-size .6em
-            color #777
-            right grid
-            top (grid / 2)
-      .subpost:hover
-        border-bottom 1px solid #ddd
-        color #000
-        background-color rgba(255,255,255,.3)
-        .signature
-          background-color #eee
-          color #444
-      .post, .subpost
-        border-left 2px solid #eee
-        padding (grid / 2)
-        //background-color #f9f9f9
-        color #333
-        border-bottom 1px solid #eee
-        .photo
-          margin-right grid
-          margin-top (grid/2)
-        p
-          font-size .8em
-          padding 0 0 (grid) (grid/2)
-          margin 0
-        .signature
-          font-style italic
-          border-top-left-radius 6px
-          padding 0 grid
-          color #888
-          font-size .7em
-          position absolute
-          bottom 0
-          right 0
-          .username
-            margin-right 5px
+          border-bottom-left-radius 0
+          border-bottom-right-radius 0
+    .user
+      font-weight bold
 
 #paginator
   border 1px solid black
@@ -562,6 +451,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   border-bottom 1px solid highlight-color2
   border-right 1px solid highlight-color2
   transition box-shadow .3s ease-out
+  border-radius 2px
 .button::before
   position absolute
   content ''

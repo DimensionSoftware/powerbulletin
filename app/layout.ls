@@ -163,6 +163,11 @@ $ '.social a' .click ->
 #{{{ Form submission
 window.submit-form = (event, fn) ->
   $f = $ event.target .closest(\form) # get event's form
+
+  # update textarea body from sceditor
+  $e = $ \textarea.body
+  $e.html $e.data!sceditor?val! if $e.length and $e.data!sceditor
+
   $.ajax {
     url:      $f.attr(\action)
     type:     $f.attr(\method)

@@ -120,10 +120,7 @@ header
   height auto
   width left-content-width
   width 200px
-  //overflow-x hidden
-  //overflow-y scroll
   z-index 8
-  //padding grid
   padding-top (grid*6)
   .photo
     margin-top 8px
@@ -299,14 +296,27 @@ section.left-chrome
       right 0
       bottom -30px
     .post:hover
-      //transform translateY(-15px)
       position relative
       z-index 4
       transition all .1s ease-out 1.3s
     .post-edit
       margin-bottom (grid*4)
+      margin-left (grid/2)
+      .sceditor-container
+        margin-bottom (grid*2)
+        border-top-left-radius 0
+        right 0
+        .sceditor-toolbar
+          background-color #fafafa
+          border-bottom 1px solid #eee
+        iframe
+          width 99%!important
       .title
         display block
+        width 75%
+        margin-bottom 0
+        border-bottom-left-radius 0
+        border-bottom-right-radius 0
       .body
         width 90%
         display block
@@ -314,7 +324,6 @@ section.left-chrome
         min-height 40px
     .post
       float left
-      //overflow hidden
       .breadcrumb
         span, em
           display none
@@ -323,12 +332,9 @@ section.left-chrome
         height 50px
       img
         max-width 100%
-    //.post.editing, .subpost.editing
-    //  padding-left (grid/2)
-    .post, .subpost
+    .post
       position relative
       clear both
-      // overflow hidden
       margin-right (grid*4)
       margin-left (grid*3)
       margin-top (grid/2)
@@ -364,46 +370,19 @@ section.left-chrome
           right grid
     .page-loaded:last-child, #listview div[data-infinity-pageid]
       padding-bottom (grid*4) !important
-    .post:hover, .subpost:hover
+    .post:hover
       .actions
         opacity 1
         letter-spacing 0
         transition opacity .3s, letter-spacing .09s
-    .subpost
-      padding-bottom grid
-      .date
-        font-size .8em
-        color #555
-        margin-top -3px
-      p
-        margin 0
-      .photo
-        height 30px
-        width 30px
     .children
       margin-left (grid/2)
       .children
         margin-left (grid*3)
-        //margin-bottom (grid*3)
         .user, .date
           display inline-block
         .date
           margin-left grid
-        .subpost
-          margin-left (grid*3)
-          padding grid
-          font-size .85em
-        .photo
-          overflow hidden
-          width 20px
-          height 20px
-          float left
-        img
-          max-width 100%
-        .body
-          blockquote
-            margin (grid/2)
-            padding 0
   .scroll-to-top
       clear both
 //}}}
