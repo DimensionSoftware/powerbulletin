@@ -256,13 +256,20 @@ auth-finisher = (req, res, next) ->
 
 # user profiles /user/:name
 @profile = (req, res, next) ->
+  db   = pg.procs
   site = res.locals.site
+  name = req.params.name
+  usr  = { name: name, site_id: site.id }
 
   tasks =
     menu           : db.menu site.id, _
+    profile        : db.usr usr, _
+    posts-by-user  : db.posts-by-user usr, _
 
   err, fdoc <- async.auto tasks
   if err then return next err
+
+  console.log fdoc.profile
 
   res.locals fdoc
   res.mutant \profile
