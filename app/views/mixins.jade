@@ -3,7 +3,7 @@ mixin post(sp, i)
     if sp.title
       h4.title= sp.title
     .profile.photo
-      if sp.user_photo.match(/^http/)
+      if sp.user_photo && sp.user_photo.match(/^http/)
         img(src="#{sp.user_photo}")
       else
         img(src="#{cache_url}/#{sp.user_photo}")
