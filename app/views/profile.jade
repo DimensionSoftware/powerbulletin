@@ -1,3 +1,13 @@
 
+#handle.handle(title='Toggle') &lt;
+
 h1 Profile
 
+.profile
+  .profile-photo
+    img(src="#{profile.photo}")
+  h2.name= profile.name
+
+  h3.since User since #{profile.created_human}
+
+  h3.count #{profile.post_count} posts

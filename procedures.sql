@@ -31,8 +31,8 @@ CREATE FUNCTION post(id JSON) RETURNS JSON AS $$
   return plv8.execute(sql, [id])?0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS posts_by_user(user_id JSON);
-CREATE FUNCTION posts_by_user(user_id JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS posts_by_user(usr JSON);
+CREATE FUNCTION posts_by_user(usr JSON) RETURNS JSON AS $$
   sql = '''
   SELECT
   p.*,
@@ -42,11 +42,12 @@ CREATE FUNCTION posts_by_user(user_id JSON) RETURNS JSON AS $$
   FROM posts p
   JOIN users u ON p.user_id = u.id
   JOIN aliases a ON u.id = a.user_id
-  WHERE p.user_id = $1
+  WHERE p.forum_id IN (SELECT id FROM forums WHERE site_id = $1)
+  AND a.name = $2
   ORDER BY p.created DESC
   LIMIT 20
   '''
-  return plv8.execute(sql, [user_id])
+  return plv8.execute(sql, [usr.site_id, usr.name])
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS edit_post(usr JSON, post JSON);
@@ -301,7 +302,11 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS usr(usr JSON);
 CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   sql = """
-  SELECT u.id, a.rights, a.name, a.created, a.site_id, auths.type, auths.profile 
+  SELECT
+    u.id, u.photo, u.email,
+    a.rights, a.name, a.created, a.site_id,
+    (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2) AS post_count,
+    auths.type, auths.profile 
   FROM users u
   JOIN aliases a ON a.user_id = u.id
   LEFT JOIN auths ON auths.user_id = u.id
@@ -312,14 +317,19 @@ CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   if auths.length == 0
     return null
   make-user = (memo, auth) ->
-    memo.id = auth.id
-    memo.site_id = auth.site_id
-    memo.name = auth.name
     memo.auths[auth.type] = auth.profile
     memo
-  user = auths.reduce make-user, { auths: {} }
-  user.rights = auths[0].rights
-  user.created = auths[0].created
+  u =
+    auths      : {}
+    id         : auths.0?id
+    site_id    : auths.0?site_id
+    name       : auths.0?name
+    photo      : auths.0?photo
+    email      : auths.0?email
+    rights     : auths.0?rights
+    created    : auths.0?created
+    post_count : auths.0?post_count
+  user = auths.reduce make-user, u
   return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}

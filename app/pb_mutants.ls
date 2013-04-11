@@ -18,6 +18,25 @@ layout-static = (w, mutator, forum-id=0) ->
     .add-class \active
   w.$ "menu .submenu .forum-#{forum-id}" .parent().add-class \active
 
+layout-on-load = (w) ->
+  $ = window.$
+
+  # handle main content
+  $r = $ '#main_content.container .resizable'
+
+  # handle left
+  $l = $ '#left_content'
+  $l.resizable(
+    min-width: 200px
+    max-width: 450px
+    resize: (e, ui) ->
+      $l.toggle-class \wide ($l.width! > 300px)  # resize left nav
+      $ \footer .css 'left' ui.size.width        # " footer
+      $r.css 'padding-left' (ui.size.width+20px) # " resizable
+      window.save-ui!)
+  if $r.length
+    $r.css 'padding-left' ($l.width! + 20px) # snap
+
 flip-background = (w, cur, direction='down') ->
   clear-timeout w.bg-anim if w.bg-anim
   last = w.$ '.bg.active'
@@ -110,21 +129,10 @@ flip-background = (w, cur, direction='down') ->
       flip-background window, cur
       $ = window.$
 
-      # handle main content
       align-breadcrumb!
-      $f = $ '#main_content.container .forum'
 
-      # handle left
-      $l = $ '#left_content'
-      $l.resizable(
-        min-width: 200px
-        max-width: 450px
-        resize: (e, ui) ->
-          $l.toggle-class \wide ($l.width! > 300px)  # resize left nav
-          $ \footer .css 'left' ui.size.width        # " footer
-          $f.css 'padding-left' (ui.size.width+20px) # " forum
-          window.save-ui!)
-      $f.css 'padding-left' ($l.width! + 20px) # snap
+      layout-on-load window
+
       $l.find '.active' .remove-class \active  # set active post
       $l.find ".thread[data-id='#{active-post-id}']" .add-class \active
 
@@ -163,11 +171,16 @@ flip-background = (w, cur, direction='down') ->
 @profile =
   static:
     (window, next) ->
-      window.render-mutant \main_content \profile
+      window.render-mutant \left_content \profile
+      window.render-mutant \main_content \posts_by_user
       layout-static window, \profile
       next!
   on-load:
     (window, next) ->
+      $ = window.$
+
+      layout-on-load window
+
       next!
   on-unload:
     (window, next) ->

@@ -191,6 +191,7 @@ pg.init ~>
       if err then return cb err
       err, vstring <- unique-verify-string-for-site site.id
       if err then return cb err
+      # TODO - store profile.picture if available
       u =
         type    : \google
         id      : profile.id
