@@ -302,7 +302,11 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 DROP FUNCTION IF EXISTS usr(usr JSON);
 CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
   sql = """
-  SELECT u.id, u.photo, u.email, a.rights, a.name, a.created, a.site_id, auths.type, auths.profile 
+  SELECT
+    u.id, u.photo, u.email,
+    a.rights, a.name, a.created, a.site_id,
+    (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2) AS post_count,
+    auths.type, auths.profile 
   FROM users u
   JOIN aliases a ON a.user_id = u.id
   LEFT JOIN auths ON auths.user_id = u.id
@@ -316,14 +320,15 @@ CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
     memo.auths[auth.type] = auth.profile
     memo
   u =
-    auths   : {}
-    id      : auths.0.id
-    site_id : auths.0.site_id
-    name    : auths.0.name
-    photo   : auths.0.photo
-    email   : auths.0.email
-    rights  : auths.0.rights
-    created : auths.0.created
+    auths      : {}
+    id         : auths.0?id
+    site_id    : auths.0?site_id
+    name       : auths.0?name
+    photo      : auths.0?photo
+    email      : auths.0?email
+    rights     : auths.0?rights
+    created    : auths.0?created
+    post_count : auths.0?post_count
   user = auths.reduce make-user, u
   return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
