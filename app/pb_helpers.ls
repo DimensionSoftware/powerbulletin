@@ -71,9 +71,10 @@ require! {
   # init sceditor
   $ \textarea.body .sceditor(
     plugins:       \bbcode
-    style:         \http://muscache.pb.com/local/jquery.sceditor.default.min.css
-    toolbar:       'bold,italic,underline|emoticons|source'
-    emoticons-root:'http://muscache.pb.com/')
+    style:         \//muscache.pb.com/local/jquery.sceditor.default.min.css
+    toolbar:       'bold,italic,underline|image,link,youtube|emoticon|source'
+    width:         \85%
+    emoticons-root:'//muscache.pb.com/')
 
 @align-breadcrumb = ->
   b = $ '#breadcrumb'

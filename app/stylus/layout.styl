@@ -299,14 +299,27 @@ section.left-chrome
       right 0
       bottom -30px
     .post:hover
-      //transform translateY(-15px)
       position relative
       z-index 4
       transition all .1s ease-out 1.3s
     .post-edit
       margin-bottom (grid*4)
+      margin-left (grid/2)
+      .sceditor-container
+        margin-bottom (grid*2)
+        border-top-left-radius 0
+        right 0
+        .sceditor-toolbar
+          background-color #fafafa
+          border-bottom 1px solid #eee
+        iframe
+          width 99%!important
       .title
         display block
+        width 75%
+        margin-bottom 0
+        border-bottom-left-radius 0
+        border-bottom-right-radius 0
       .body
         width 90%
         display block
