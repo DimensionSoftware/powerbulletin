@@ -182,6 +182,7 @@ flip-background = (w, cur, direction='down') ->
       $ = window.$
 
       layout-on-load window
+      window.has-mutated-forum = true # force redraw
 
       next!
   on-unload:
