@@ -5,6 +5,10 @@
 html.homepage
   .left-content
     display none
+  body.scrolled
+    .left-chrome
+      .user-profile
+        left -2px!important
   
 html.forum
   body.scrolled
@@ -26,6 +30,14 @@ html.forum
       display none
   .left-chrome
     display none
+
+html.profile
+  #left_content
+    padding 0 (grid*2)
+    .container
+      overflow hidden
+  h1, h2, h3
+    margin 0
 //}}}
 //{{{ Scrolled <body>
 body.searching header
@@ -57,9 +69,6 @@ body.scrolled
           font-size 1em
           width 340px!important
           height 15px
-  .left-chrome
-    .user-profile
-      left -2px!important
   #left_content.container
     top (header-scrolled-height+5)
     padding-top (grid * 1)
@@ -98,7 +107,7 @@ body.collapsed
     .create a
       display none!important
   .main-content
-    .forum
+    .resizable
       padding-left (grid*5)!important
       transition padding-left .2s ease-out
 //}}}
