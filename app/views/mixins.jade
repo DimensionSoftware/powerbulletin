@@ -14,7 +14,7 @@ mixin post(sp, i)
     .reply
     mixin actions(sp)
   .children
-    if sp.posts.length
+    if sp.posts && sp.posts.length
       each pp, ii in sp.posts
         mixin post(pp, ii)
     else if sp.morePosts

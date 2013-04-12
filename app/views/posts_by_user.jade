@@ -1,2 +1,7 @@
+include mixins
+
 .resizable
   h1 Posts By User
+
+  each p, i in postsByUser
+    mixin post(p, i)
