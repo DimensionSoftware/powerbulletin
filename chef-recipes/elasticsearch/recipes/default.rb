@@ -1,4 +1,4 @@
-#unless File.file? '/usr/local/jars/jackson-core-2.1.1.jar'
+unless File.file? '/opt/elasticsearch/elasticsearch-0.20.6/bin/elasticsearch'
   package 'openjdk-7-jdk'
 
   bash "installing elasticsearch" do
@@ -9,7 +9,7 @@
       wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.20.6.tar.gz
       cd /opt
       tar -xvzf /tmp/elasticsearch-0.20.6.tar.gz
-      ln -s elasticsearch-0.20.6 elasticsearch
+      ln -s elasticsearch-0.20.6 elasticsearch &> /dev/null
     EOH
   end
-#end
+end
