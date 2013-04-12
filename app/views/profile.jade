@@ -4,8 +4,8 @@
 .container
   h1 Profile
 
-  .profile
-    .profile-photo
+  .profile(data-user-id="#{profile.id}")
+    .profile.photo
       if profile.photo.match(/^http/)
         img(src="#{profile.photo}")
       else
