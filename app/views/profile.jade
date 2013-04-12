@@ -6,7 +6,10 @@
 
   .profile
     .profile-photo
-      img(src="#{profile.photo}")
+      if profile.photo.match(/^http/)
+        img(src="#{profile.photo}")
+      else
+        img(src="#{cache_url}/#{profile.photo}")
     h2.name= profile.name
 
     h3.since User since #{profile.created_human}
