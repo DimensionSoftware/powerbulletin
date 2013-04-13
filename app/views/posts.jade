@@ -18,10 +18,9 @@ if typeof(post) !== 'undefined'
       mixin actions(post)
     .children
     if post.posts.length
-        #listview
-        div(data-page=page)
-          each sp in post.posts
-            mixin post(sp, 0)
+      div(data-page=page)
+        each sp in post.posts
+          mixin post(sp, 0)
     else if post.morePosts
       a(href='#') Load more posts ...
 else //- placeholder
