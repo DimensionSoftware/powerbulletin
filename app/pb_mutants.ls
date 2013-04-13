@@ -202,6 +202,7 @@ flip-background = (w, cur, direction='down') ->
   static:
     (window, next) ->
       window.render-mutant \main_content \search
+      layout-static window, \search, @active-forum-id
       next!
 
 # vim:fdm=indent

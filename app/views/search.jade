@@ -1,3 +1,9 @@
-.search
+.search.resizable
   each hit in elres.hits
-    div= JSON.stringify(hit._source)
+    div
+      if cvars.env != 'production'
+        strong #{hit._source.title} (score: #{hit._score})
+      else
+        strong #{hit._source.title}
+    p= hit._source.body
+    div= JSON.stringify(hit)
