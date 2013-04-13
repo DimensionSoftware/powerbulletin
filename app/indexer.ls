@@ -42,4 +42,4 @@ export run = ->
       #console.warn "indexed posts: #{posts.map((.id)).join(',')}"
       process.next-tick run # try again!
   else
-      set-timeout run, 250 # wait a bit before trying again
+    set-timeout run, 250 # wait a bit before trying again
