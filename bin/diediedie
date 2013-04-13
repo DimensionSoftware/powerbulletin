@@ -1,2 +1,2 @@
 #!/bin/sh -e
-killall -9 pb-worker pb-supervisor powerbulletin node java
+killall -9 pb-worker pb-supervisor pb-indexer powerbulletin

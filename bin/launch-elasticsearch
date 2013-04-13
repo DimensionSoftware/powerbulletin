@@ -1,0 +1,19 @@
+#!/bin/bash
+
+killall elasticsearch
+sleep 2
+killall -9  elasticsearch
+
+set -e
+# for memory locking
+ulimit -l unlimited
+# have an open file buffet baby!
+ulimit -n 1024000
+
+# lock memory at this size
+# (mlockall is set to true in elasticsearch.yml)
+export ES_HEAP_SIZE=256m
+ 
+# TODO/XXX: please lets figure out how to drop priv this motherfucker ; )
+mkdir -p elasticsearch-logs
+/opt/elasticsearch/bin/elasticsearch -f config/elasticsearch/elasticsearch.yml -p /tmp/elasticsearch.pid &>> elasticsearch-logs/elastisearch-stdout.log &
