@@ -15,6 +15,7 @@ require! {
   pg: './postgres'
   v: './varnish'
   io-server: './io_server'
+  './elastic'
 }
 global <<< require \prelude-ls
 
@@ -130,8 +131,13 @@ else
   err <- pg.init
   if err then throw err
   global.db = pg.procs
+
   err <- v.init
   if err then throw err
+
+  err <- elastic.init
+  if err then throw err
+  global.elc = elastic.client
 
   if proc.env.NODE_ENV == 'production'
     proc.on 'uncaughtException', (err) ->

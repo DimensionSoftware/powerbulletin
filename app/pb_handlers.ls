@@ -424,4 +424,15 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 
   res.mutant \admin
 
+@search = (req, res, next) ->
+  site = res.locals.site
+  query =
+    index: \pb
+    type: \post
+    query: req.query.q
+
+  err, elres <- elc.search query
+  if err then return next(err)
+
+  res.json elres
 # vim:fdm=indent

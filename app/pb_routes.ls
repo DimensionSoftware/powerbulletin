@@ -47,8 +47,11 @@ common-css = [ #{{{ Common CSS
   '/dynamic/css/master.styl']
 #}}}
 
-app.get '/hello',
-  handlers.hello
+app.get '/search',
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.search
 
 app.get '/admin',
   mw.add-js(common-js),
@@ -137,13 +140,11 @@ app.all new RegExp('/(.+)'),
 #{{{ Development Debug
 if process.env.NODE_ENV != 'production'
   app.get '/debug/docs/:type/:key', (req, res, next) ->
-    db = pg.procs
     err, d <- db.doc res.locals.site.id, req.params.type, req.params.key
     if err then return next(err)
     res.json d
 
   app.get '/debug/sub-posts-tree/:post_id', (req, res, next) ->
-    db = pg.procs
     site = res.locals.site
     err, d <- db.sub-posts-tree site.id, req.params.post_id, 25, 0
     if err then return next(err)
