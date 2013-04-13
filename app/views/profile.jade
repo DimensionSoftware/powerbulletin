@@ -6,10 +6,13 @@
 
   .profile(data-user-id="#{profile.id}")
     .avatar
-      if profile.photo.match(/^http/)
-        img(src="#{profile.photo}")
+      if profile.photo
+        if profile.photo.match(/^http/)
+          img(src="#{profile.photo}")
+        else
+          img(src="#{cache_url}/#{profile.photo}")
       else
-        img(src="#{cache_url}/#{profile.photo}")
+        img(src="#{cache_url}/images/profile.jpg")
     h2.name= profile.name
 
     h3.since Joined #{profile.created_human}
