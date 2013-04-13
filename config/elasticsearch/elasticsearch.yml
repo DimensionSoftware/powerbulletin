@@ -146,7 +146,6 @@ path.conf: config/elasticsearch
 # Path to directory where to store index data allocated for this node.
 #
 # path.data: /path/to/data
-path.data: elastic-data
 
 # Can optionally include more than one location, causing data to be striped across
 # the locations (a la RAID 0) on a file level, favouring locations with most free
@@ -366,3 +365,17 @@ bootstrap.mlockall: true
 #monitor.jvm.gc.ConcurrentMarkSweep.warn: 10s
 #monitor.jvm.gc.ConcurrentMarkSweep.info: 5s
 #monitor.jvm.gc.ConcurrentMarkSweep.debug: 2s
+
+index.analysis:
+  analyzer:
+    default_index:
+      tokenizer: standard
+      filter: [lowercase, pb_ngram]
+    default_search:
+      tokenizer: standard
+      filter: [lowercase]
+  filter:
+    pb_ngram:
+      type: NGram
+      min_gram: 2
+      max_gram: 15
