@@ -38,10 +38,10 @@ html
       |</script>
 
   body
-    h1.logo
-      a.mutant(href='/') Power
-        strong Bulletin
     header.header.toggler
+      h1.logo
+        a.mutant(href='/') Power
+          strong Bulletin
       .close.toggler(title='Close!') x
       .container
         menu.menu
@@ -65,98 +65,21 @@ html
           input#option_3.check(type='checkbox')
           label(for='option_3') Favorites Only
 
-    section#left_chrome.left-chrome
-      //-{{{ data-fid is how we pass in the forum id of the post, this way
-      //- we can put a hotlink wherever without having to write new
-      //- javascript (other than calculating the fid)
-      //- TODO move this into posts :hover tools }}}
-      .user-profile
-        //-.photo
-        //-  img#user-photo(src="#{cache_url}/images/profile.jpg")
-        //-div
-        //-  a(class='button onclick-add-post-dialog', data-fid=33) Post
-        .sort
-          .indicator
-          ul#sort
-            li(data-value='popular').active Popular
-            li(data-value='recent') Most Recent
-            li(data-value='active') Most Active
-            li(data-value='controversal') Controversal
-            li(data-value='nearest') Nearby
-        .scroll-to-top
-        //-.arrow
+    section#left_content.container
 
-    section#left_content.left-content.container
-
-    section#main_content.main-content.container
+    section#main_content.container
 
     section#auth(style="display:none;")
-      .choose(style="display:none;")
-        form(method="post", action="/auth/choose-username")
-          label(for="username")
-            h2 Choose a User Name
-              i !
-          fieldset
-            input(id="username", name="username", type="text", placeholder="Your User Name")
-            input(type="submit", value="Save")
-            a.msg.onclick-show-login
-              h3 &lt; Back
-      .forgot(style="display:none;")
-        form(method="post", action="/auth/forgot")
-          label(for="email")
-            h2 Tell Us Your Email Address
-              i !
-          fieldset
-            input(id="email", name="email", type="text", placeholder="Email Address")
-            input(type="submit", value="Send Reset")
-            a.msg.onclick-show-login
-              h3 &lt; Back
-      .validate(style="display:none;")
-        h2 Check your inbox for activation
-          i !
-          a.msg.onclick-close
-            h3 &lt; Close
-      .register(style="display:none;")
-        form(method="post", action="/auth/register")
-          label(for="username")
-            h2 Welcome
-              i !
-          fieldset
-            input(id="username", name="username", type="text", placeholder="Username")
-            input(name="password", type="password", placeholder="Password")
-            input(name="email", class="register-email", type="text", placeholder="Your Email Address")
-            input(type="submit", value="Register")
-            a.msg.onclick-show-login
-              h3 &lt; Back
-      .login
-        form(method="post", action="/auth/login")
-          label(for="username")
-            h2= site.name
-          fieldset
-            a.msg.onclick-show-forgot
-              h3 Forgot?  
-            input(id="username", name="username", type="text", placeholder="Username")
-            input(name="password", type="password", placeholder="Password")
-            input(type="submit", value="Login")
-            a.msg.onclick-show-register
-              h3 Register
-                i !
-        .social
-          h3 Or Log In With
-          a(href="/auth/facebook") 
-            img(src="#{cache2_url}/images/facebook_32.png")
-          a(href="/auth/google") 
-            img(src="#{cache3_url}/images/google_32.png")
-          a(href="/auth/twitter") 
-            img(src="#{cache4_url}/images/twitter_32.png")
+      include auth
+
+    //- for mocha testing
+    if cvars.env != 'production'
+      #mocha
 
     footer#chat_drawer.scroll-to-top
       h6
         small #{site.name} &nbsp;
         b= new Date().getFullYear()
 
-    //- XXX  css not required for initial page render -- performance mod.
-    //- link(href='//fonts.googleapis.com/css?family=Open+Sans:200,400,700|Open+Sans+Condensed:700', rel='stylesheet', type='text/css')
-    //- link(href='//fonts.googleapis.com/css?family=Ubuntu:300,400,500,700', rel='stylesheet', type='text/css')
-    link(href="#{cache5_url}/local/jquery-ui.min.css", rel='stylesheet', type='text/css') //- offline
-    #mocha
+    //- css not required for initial page render -- performance mod.
+    link(href="#{cache5_url}/local/jquery-ui.min.css", rel='stylesheet', type='text/css')

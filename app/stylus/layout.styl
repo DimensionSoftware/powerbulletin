@@ -10,7 +10,7 @@ forum-header-height = 0
 footer-height       = 32px
 left-content-width  = 210px
 
-@import './app/stylus/layout_states'
+@import './app/stylus/states_layout'
 
 section
   box-sizing border-box
@@ -25,6 +25,8 @@ body
 
 //{{{ Header
 .logo
+  margin 0
+  padding 0
   a
     margin-top 15px
     vertical-align top
@@ -112,7 +114,7 @@ header
       right -800px
 //}}}
 //{{{ Left side
-#left_content.container
+#left_content
   position fixed
   left 0
   bottom 0
@@ -138,102 +140,6 @@ header
     text-align center
     cursor pointer
     z-index 95
-  .create
-    margin (grid/2) 25px (grid/2) 15px
-    a
-      text-decoration none
-      animation-name none
-      padding 8px 10px
-      display block
-  .threads
-    overflow-y scroll
-    height 100%
-    margin 0
-    padding-top grid
-    .thread
-      padding 1px 15px 8px 16px
-      .title
-        overflow hidden
-        max-height 65px
-        text-transform capitalize
-        margin grid 0 0 0
-      .username
-        font-size .7em
-        em
-          text-transform capitalize
-          font-weight 600
-          margin-left (grid/2)
-          font-size 1.1em
-      .created
-        font-size .9em
-      .created, .username, .post-count
-        white-space nowrap
-        text-overflow ellipsis
-        margin-bottom -6px
-      .post-count, .views
-        font-weight bold
-        font-size .8em
-      .post-count, .views
-        i
-          font-weight 100
-          font-size .9em
-          margin 0 grid 0 (grid/2)
-
-    .thread:last-child
-      margin-bottom (grid*10)
-
-section.left-chrome
-  z-index 7
-  top 80px
-  width 175px
-  position fixed
-  .user-profile
-    position absolute
-    top 35px
-    left 0
-    width 150px
-    height 95px
-    .photo
-      overflow hidden
-      margin-bottom 5px
-      width 148px
-      height 100px
-      img
-        width 100%
-    .arrow
-      content ''
-      position absolute
-      top 87px
-      right -16px
-      border-bottom 20px solid transparent
-      border-top 20px solid transparent
-      height 0
-      width 0
-    .sort::before
-      content ''
-      width 1px
-      height 1px
-      position absolute
-      left 0
-      top 11px
-      z-index 3
-      border-top-color transparent
-      border-right-color transparent
-      border-bottom-color transparent
-    .sort
-      position relative
-      height 95px
-      overflow hidden
-      cursor pointer
-  .scroll-to-top:hover
-    border-bottom 10px solid #777
-  .scroll-to-top
-    position absolute
-    right 1px
-    bottom 0
-    border-left 8px solid transparent
-    border-right 8px solid transparent
-    border-bottom 10px solid #555
 //}}}
 //{{{ Main Content
 .col1
@@ -252,9 +158,10 @@ section.left-chrome
   img
     width 100%
 
-#main_content.container
+#main_content
   grid(100%, 800px)
   padding forum-header-height 0 0 0!important
+  padding-top (grid*8)!important
   z-index 5
   #breadcrumb
     top -100px
@@ -268,122 +175,6 @@ section.left-chrome
       margin-right 3px
   .resizable
     padding-left left-content-width
-  .resizable:first-child
-    padding-top (grid*6)!important
-  .forum
-    position relative
-    clear both
-    min-height 650px
-    p
-      margin 0
-    .container
-      z-index 6
-    .header.stuck::before
-      opacity 1!important
-    .header
-      width 95%
-      overflow visible
-      text-align center
-      .description
-        text-rendering optimizelegibility
-        text-transform capitalize
-        overflow hidden
-        text-overflow ellipsis
-        width 45%
-        left 19%
-        position relative
-        z-index 2
-    .scroll-to
-      position absolute
-      right 0
-      bottom -30px
-    .post:hover
-      position relative
-      z-index 4
-      transition all .1s ease-out 1.3s
-    .post-edit
-      margin-bottom (grid*4)
-      margin-left (grid/2)
-      .sceditor-container
-        margin-bottom (grid*2)
-        border-top-left-radius 0
-        right 0
-        .sceditor-toolbar
-          background-color #fafafa
-          border-bottom 1px solid #eee
-        iframe
-          width 99%!important
-      .title
-        display block
-        width 75%
-        margin-bottom 0
-        border-bottom-left-radius 0
-        border-bottom-right-radius 0
-      .body
-        width 90%
-        display block
-        margin grid 0
-        min-height 40px
-    .post
-      float left
-      .breadcrumb
-        span, em
-          display none
-      .profile
-        width 50px
-        height 50px
-      img
-        max-width 100%
-    .post
-      position relative
-      clear both
-      margin-right (grid*4)
-      margin-top (grid/2)
-      margin-bottom grid
-      .title
-        margin 0 0 (grid/2) 0
-        font-size 1.5em
-      .title, .user, .date
-        text-transform capitalize
-      .body
-        margin 2px 0 grid 0
-      .actions
-        opacity 0
-        letter-spacing -10px
-        margin-top (grid+2)
-        line-height 15px
-        font-size .9em
-        color #444
-        a
-          margin-right grid
-        .edit
-          display none
-      .comment
-        position relative
-        width 250px
-        .body
-          height 65px
-          margin-bottom grid
-        .submit
-          position absolute
-          z-index 5
-          top grid
-          right grid
-    .page-loaded:last-child, #listview div[data-infinity-pageid]
-      padding-bottom (grid*4) !important
-    .post:hover
-      .actions
-        opacity 1
-        letter-spacing 0
-        transition opacity .3s, letter-spacing .09s
-    .children
-      margin-left (grid/2)
-      .children
-        margin-left (grid*3)
-        .user, .date
-          display inline-block
-        .date
-          margin-left grid
   .scroll-to-top
       clear both
 //}}}
@@ -487,28 +278,6 @@ footer
   a.page:hover, a.active
     text-decoration none
 
-//}}}
-
-//{{{ Overlays (pagination & sorting)
-#paginator, #sort
-  position relative
-  box-sizing border-box
-  padding (grid) (grid) (grid*7) (grid*2)
-  text-align center
-  overflow-y scroll
-  height 109px
-  margin 0
-  list-style none
-  li
-    font-size .8em
-    padding 0 0 1px 0
-    margin 0 0 5px 0
-.indicator
-  top 21px
-  position absolute
-  left 0
-  width 140px
-  height 1px
 //}}}
 //{{{ Background layer
 img.bg

@@ -1,6 +1,68 @@
 
 // Structure applied to ...
 
+// Mutant-specific states
+html.homepage
+  #left_chrome
+    .sorter::before
+      border-left 15px solid #ddd
+      border-top 10px solid transparent
+      border-bottom 10px solid transparent
+    .sorter:hover
+      background-image linear-gradient(bottom, #fcfcfc 0%, #fff 23%, #cfcfcf 85%, #cfcfcf 100%)
+    .sorter
+      border-bottom-right-radius 5px
+      border-top-right-radius 5px
+      background-image linear-gradient(bottom, #fff 0%, #fff 23%, #ccc 85%, #ccc 100%)
+      border 1px solid #ccc
+      border-bottom 2px solid #bbb
+      border-right-width 1px
+      padding 2px
+      a
+        display block
+        padding 8px
+      color #555
+      font-weight 100
+      li
+        letter-spacing 2px
+      .indicator
+        opacity .3
+        background-color #666
+      #sort
+        li.active
+          color #000
+          font-weight 500
+          font-size .95em
+          animation-name tiny-grow
+          animation-duration .25s
+html.forum, html.profile
+  .thread
+    border-bottom 1px solid transparent
+    border-top 1px solid transparent
+  .thread.active
+    border-bottom 1px solid #aaa
+    border-top 1px solid #aaa
+    background-color rgba(50, 50, 50, .2)
+    transition background-color .1s ease-out
+    .title
+      color #fff
+      text-shadow 0 0 2px #000
+  .forum, .threads
+    border-bottom 1px solid #eee
+    a
+      text-decoration none
+      color #eee
+      display block
+      border-bottom 1px solid transparent
+    a:hover
+      color #fff
+      transition color .3s ease-out
+      animation-name none
+html.profile
+  h1
+    color #222
+
+// General
 //{{{ Scrolled <body>
 body.scrolled
   header::after
@@ -45,22 +107,7 @@ body.scrolled
             color #bbb
         .query:-ms-input-placeholder
             color #bbb
-  .left-chrome
-    .user-profile
-      transition left .5s ease-out
-  #main_content.container
-    .forum.dark
-      .post
-        background-color rgba(255,255,255, .77)
-        .title
-          background-color transparent
-        .body
-          background-color transparent
-    .forum.light
-      .header::before
-        position absolute
-        opacity .25
-  #left_content.container::after
+  #left_content::after
     bottom (footer-height - 4)
   footer
     opacity 1
@@ -110,8 +157,5 @@ body.searching header
       a.title
         background-image linear-gradient(bottom, #fff 20px, #fed)
 //}}}
-// XXX Mutant states
-html.profile
-  h1
-    color #222
+
 // vim:fdm=marker

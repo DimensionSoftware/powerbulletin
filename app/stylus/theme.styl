@@ -10,7 +10,7 @@ highlight-color-translucent = rgba(255,100,50,.3)
 mouse-intent = .2s
 footer-height = 25px
 
-@import './app/stylus/theme_states'
+@import './app/stylus/states_theme'
 
 body
   font-family 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue'
@@ -142,24 +142,20 @@ header
         height 20px
 //}}}
 //{{{ Left side
-#left_content.container:hover::after
+#left_content:hover::after
   border-right 1px solid #333
   width 1px
   background-color #999
-#left_content.container
-  background-color rgba(100,100,100,0.7)
-#left_content.container::after
+#left_content::after
   position absolute
   right 0
   top 1px
   content ''
   bottom 0
   border-right 1px solid #666
-#left_content.container
-  //background-color #eee
-  //border-right 1px solid #444
+#left_content
+  background-color rgba(100,100,100,0.7)
   .handle:hover
-    //box-shadow 0 0 5px #999, 0 0 1px 1px #777
     background-color #777
     color #fff
     border-color #eee
@@ -174,85 +170,9 @@ header
     font-size 1.1em
     margin (grid / 2) 0
     text-shadow 0 -1px 0 #222
-  .thread
-    border-bottom 1px solid transparent
-    border-top 1px solid transparent
-  .thread.active
-    border-bottom 1px solid #aaa
-    border-top 1px solid #aaa
-    background-color rgba(50, 50, 50, .2)
-    transition background-color .1s ease-out
-    .title
-      color #fff
-      text-shadow 0 0 2px #000
-  .forum, .threads
-    border-bottom 1px solid #eee
-    a
-      text-decoration none
-      color #eee
-      display block
-      border-bottom 1px solid transparent
-    a:hover
-      color #fff
-      transition color .3s ease-out
-      animation-name none
-
-#left_content.container.dark
-  background-color rgba(0,0,0,.1)
-  border-right 1px solid #333
-#left_content.container.light
-  background-color rgba(255,255,255,.8)
-  border-right 1px solid #eee
-
-section.left-chrome
-  .user-profile:hover
-    //background-image linear-gradient(bottom, #f9f9f9 0%, #4a4a4a 23%, #a8a8a8 85%, #a8a8a8 100%)
-    background-image linear-gradient(bottom, #fcfcfc 0%, #fff 23%, #cfcfcf 85%, #cfcfcf 100%)
-    .arrow
-       //border-left-color rgba(255,255,255,.65)
-       border-left-color #eee
-       transition border-left-color .5s ease-out
-       //right -20px
-       //animation-name grow
-       //animation-duration .5s
-       //animation-iteration-count infinite
-  .user-profile
-    border-bottom-right-radius 5px
-    border-top-right-radius 5px
-    //background-color rgba(0,0,0,.4)
-    //background-image linear-gradient(bottom, #fff 0%, #555 23%, #aaa 85%, #aaa 100%)
-    background-image linear-gradient(bottom, #fff 0%, #fff 23%, #ccc 85%, #ccc 100%)
-    left -160px!important
-    border 1px solid #ccc
-    border-bottom 2px solid #bbb
-    border-right-width 1px
-    padding 2px
-    a
-      display block
-      padding 8px
-    .arrow
-      //border-left 15px solid rgba(255,255,255,.45)
-      border-left 15px solid #ddd
-    .sort::before
-      border 10px solid #333
-    .sort
-      color #555
-      font-weight 100
-      li
-        letter-spacing 2px
-      .indicator
-        opacity .3
-        background-color #666
-      #sort
-        li.active
-          color #000
-          font-weight 500
-          font-size .95em
-          animation-name tiny-grow
-          animation-duration .25s
 //}}}
 //{{{ Main Content
-#main_content.container
+#main_content
   a:hover
     color #000
     text-decoration underline

@@ -23,7 +23,7 @@ layout-on-load = (w) ->
   left-offset = 50px
 
   # handle main content
-  $r = $ '#main_content.container .resizable'
+  $r = $ '#main_content .resizable'
 
   # handle left
   $l = $ '#left_content'
@@ -179,12 +179,12 @@ flip-background = (w, cur, direction='down') ->
       next!
   on-load:
     (window, next) ->
-      $ = window.$
-
       layout-on-load window
       window.has-mutated-forum = true # force redraw
-
       next!
+  on-mutate:
+    (window, next) ->
+      scroll-to-top!
   on-unload:
     (window, next) ->
       next!

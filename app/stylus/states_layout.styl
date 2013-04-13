@@ -1,0 +1,376 @@
+
+// Structure applied to ...
+
+// Mutant-specific States
+//{{{ - homepage
+html.homepage
+  #left_content
+    display none
+  #main_content
+    #left_chrome
+      left -300px
+      z-index 7
+      top 80px
+      width 175px
+      position fixed
+      .sorter::before
+        content ''
+        width 1px
+        height 1px
+        position absolute
+        left 0
+        top 11px
+        z-index 3
+        border-top-color transparent
+        border-right-color transparent
+        border-bottom-color transparent
+      .sorter
+        position relative
+        height 95px
+        overflow hidden
+        cursor pointer
+        .scroll-to-top:hover
+          border-bottom 10px solid #777
+        .scroll-to-top
+          position absolute
+          right 1px
+          bottom 0
+          border-left 8px solid transparent
+          border-right 8px solid transparent
+          border-bottom 10px solid #555
+  body.scrolled
+    #main_content
+      #left_chrome
+        left -2px
+        transition left .4s ease-out
+//}}}
+//{{{ - profile
+html.profile
+  #left_content
+    .container
+      margin 0 (grid*2)
+      overflow hidden
+  h1, h2, h3
+    margin 0
+//}}}
+//{{{ - forum & profile
+html.forum, html.profile
+  body.scrolled
+    #left_content
+      bottom 0
+  body.searching
+    #left_content
+      padding-top 90px!important
+      transition padding-top .2s ease-out
+      .handle
+        top 63px
+        transition top .2s ease-out
+    #main_content
+      padding-top 30px!important
+      transition padding-top .2s ease-out
+  #left_content
+    display block
+    .photo, .created, .username
+      display none
+    .create
+      margin (grid/2) 25px (grid/2) 15px
+      a
+        text-decoration none
+        animation-name none
+        padding 8px 10px
+        display block
+    .threads
+      overflow-y scroll
+      height 100%
+      margin 0
+      padding-top grid
+      .thread
+        padding 1px 15px 8px 16px
+        .title
+          overflow hidden
+          max-height 65px
+          text-transform capitalize
+          margin grid 0 0 0
+        .username
+          font-size .7em
+          em
+            text-transform capitalize
+            font-weight 600
+            margin-left (grid/2)
+            font-size 1.1em
+        .created
+          font-size .9em
+        .created, .username, .post-count
+          white-space nowrap
+          text-overflow ellipsis
+          margin-bottom -6px
+        .post-count, .views
+          font-weight bold
+          font-size .8em
+        .post-count, .views
+          i
+            font-weight 100
+            font-size .9em
+            margin 0 grid 0 (grid/2)
+
+      .thread:last-child
+        margin-bottom (grid*10)
+  #left_chrome
+    display none
+  #main_content
+    .forum
+      position relative
+      clear both
+      min-height 650px
+      p
+        margin 0
+      .container
+        z-index 6
+      .header.stuck::before
+        opacity 1!important
+      .header
+        width 95%
+        overflow visible
+        text-align center
+        .description
+          text-rendering optimizelegibility
+          text-transform capitalize
+          overflow hidden
+          text-overflow ellipsis
+          width 45%
+          left 19%
+          position relative
+          z-index 2
+      .scroll-to
+        position absolute
+        right 0
+        bottom -30px
+      .post:hover
+        position relative
+        z-index 4
+        transition all .1s ease-out 1.3s
+      .post-edit
+        margin-bottom (grid*4)
+        margin-left (grid/2)
+        .sceditor-container
+          margin-bottom (grid*2)
+          border-top-left-radius 0
+          right 0
+          .sceditor-toolbar
+            background-color #fafafa
+            border-bottom 1px solid #eee
+          iframe
+            width 99%!important
+        .title
+          display block
+          width 75%
+          margin-bottom 0
+          border-bottom-left-radius 0
+          border-bottom-right-radius 0
+        .body
+          width 90%
+          display block
+          margin grid 0
+          min-height 40px
+      .post
+        float left
+        .breadcrumb
+          span, em
+            display none
+        .profile
+          width 50px
+          height 50px
+        img
+          max-width 100%
+        position relative
+        clear both
+        margin-right (grid*4)
+        margin-top (grid/2)
+        margin-bottom grid
+        .title
+          margin 0 0 (grid/2) 0
+          font-size 1.5em
+        .title, .user, .date
+          text-transform capitalize
+        .body
+          margin 2px 0 grid 0
+        .actions
+          opacity 0
+          letter-spacing -10px
+          margin-top (grid+2)
+          line-height 15px
+          font-size .9em
+          color #444
+          a
+            margin-right grid
+          .edit
+            display none
+        .comment
+          position relative
+          width 250px
+          .body
+            height 65px
+            margin-bottom grid
+          .submit
+            position absolute
+            z-index 5
+            top grid
+            right grid
+      .page-loaded:last-child, #listview div[data-infinity-pageid]
+        padding-bottom (grid*4) !important
+      .post:hover
+        .actions
+          opacity 1
+          letter-spacing 0
+          transition opacity .3s, letter-spacing .09s
+      .children
+        margin-left (grid/2)
+        .children
+          margin-left (grid*3)
+          .user, .date
+            display inline-block
+          .date
+            margin-left grid
+//}}}
+html.forum, html.profile, html.homepage
+    #paginator, #sort
+      position relative
+      box-sizing border-box
+      padding (grid) (grid) (grid*7) (grid*2)
+      text-align center
+      overflow-y scroll
+      height 109px
+      margin 0
+      list-style none
+      li
+        font-size .8em
+        padding 0 0 1px 0
+        margin 0 0 5px 0
+    .indicator
+      top 21px
+      position absolute
+      left 0
+      width 140px
+      height 1px
+
+// General
+//{{{ Scrolled <body>
+body.searching header
+  .menu
+    .row
+      top -1px
+      line-height 29px!important
+      font-size 16px!important
+body.scrolled
+  .logo
+    a
+      top -(grid - 2)
+      font-size .68em
+  header
+    height header-scrolled-height
+    .container
+      .menu
+        > .row:hover
+          .submenu
+            top 34px
+        .row
+          top 1px
+          line-height header-scrolled-height + 1
+          font-size 16px
+      .search
+        top 0!important
+        right 0!important
+        .query
+          font-size 1em
+          width 340px!important
+          height 15px
+  #left_content
+    top (header-scrolled-height+5)
+    padding-top (grid * 1.5)
+    transition padding-top .2s ease-out, top .2s ease-out
+    .handle
+      top (header-scrolled-height - (grid*1.5))
+      transition top .2s ease-out
+  #main_content
+    #breadcrumb
+      text-align center
+      z-index 12
+      top (header-scrolled-height+3)
+      border-bottom-left-radius 5px
+      border-bottom-right-radius 5px
+      padding (grid/2+2) (grid*2) 2px (grid*2)
+      font-size .9em
+      transition top .35s ease-out
+  footer
+    opacity 1
+    font-size .85em
+    bottom -(grid)
+    line-height (grid*2)
+//}}}
+//{{{ Collapsed left nav
+body.collapsed
+  .logo a
+    left 53px
+    transition left .2s ease-out
+  #left_content
+    width (grid/2)!important
+    transition width .1s
+    .handle
+      transform rotate(180deg)
+      right -15px!important
+      text-indent -7px
+      border-width 0!important
+    .create a
+      display none!important
+  #main_content
+    .resizable
+      padding-left (grid*5)!important
+      transition padding-left .2s ease-out
+//}}}
+//{{{ Expanded header (advanced searching)
+body.searching
+  header
+    menu
+      > .row:hover
+        .submenu
+          top (header-scrolled-height+3)!important
+body.searching
+  .stuck
+    display none!important
+  header
+    height 80px!important
+    transition background-color .25s ease-out, height .2s ease-out
+    .container
+      .search::before
+        content ''
+        border-top 8px solid transparent
+        border-bottom 8px solid transparent
+        position absolute
+        top 25px
+        left 0
+      .search
+        top -7px!important
+        right auto!important
+        #query.query
+          position relative
+          z-index 9
+          font-size 31px
+          padding 5px 20px
+          letter-spacing 3px
+          font-weight 100
+          height 51px
+          width 500px!important
+      .advanced
+        right 100px
+        top 5px
+        transition right .2s ease-out
+        .check, label
+          cursor pointer
+    .close
+      cursor pointer
+      position absolute
+      right 12px
+      top grid
+      display block
+//}}}
+// vim:fdm=marker
