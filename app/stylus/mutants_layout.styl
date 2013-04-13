@@ -8,10 +8,12 @@ html.homepage
     display none
   #main_content
     padding-top header-height
+    .forum
+      padding-left (grid*2)
     #left_chrome
-      left -300px
+      right -300px
       z-index 7
-      top 80px
+      bottom (grid*8)
       width 175px
       position fixed
       .sorter::before
@@ -46,8 +48,8 @@ html.homepage
   body.scrolled
     #main_content
       #left_chrome
-        left -2px
-        transition left .4s ease-out
+        right -2px
+        transition right .4s ease-out
 //}}}
 //{{{ - profile
 html.profile

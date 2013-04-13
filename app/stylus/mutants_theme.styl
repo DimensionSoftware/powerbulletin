@@ -3,6 +3,12 @@
 
 // Mutant-specific states
 html.homepage
+  #main_content
+    .header
+      text-align center
+    .header, .container
+      width 90%
+      margin 0 auto
   #left_chrome
     .sorter::before
       border-left 15px solid #ddd
@@ -11,12 +17,12 @@ html.homepage
     .sorter:hover
       background-image linear-gradient(bottom, #fcfcfc 0%, #fff 23%, #cfcfcf 85%, #cfcfcf 100%)
     .sorter
-      border-bottom-right-radius 5px
-      border-top-right-radius 5px
+      border-bottom-left-radius 5px
+      border-top-left-radius 5px
       background-image linear-gradient(bottom, #fff 0%, #fff 23%, #ccc 85%, #ccc 100%)
       border 1px solid #ccc
       border-bottom 2px solid #bbb
-      border-right-width 1px
+      border-left-width 1px
       padding 2px
       a
         display block
