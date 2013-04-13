@@ -192,25 +192,16 @@ flip-background = (w, cur, direction='down') ->
     (w, u, next) ->
       next!
 
-@search =
-  static:
-    (window, next) ->
-      next!
-  on-load:
-    (window, next) ->
-      next!
-  on-initial:
-    (window, next) ->
-      # set initial state
-      next!
-  on-mutate:
-    (window, next) ->
-      next!
-
 @admin =
   static:
     (window, next) ->
       window.render-mutant \main_content \admin
+      next!
+
+@search =
+  static:
+    (window, next) ->
+      window.render-mutant \main_content \search
       next!
 
 # vim:fdm=indent
