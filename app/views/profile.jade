@@ -4,14 +4,14 @@
 .container
   h1 Profile
 
-  .profile
-    .profile-photo
+  .profile(data-user-id="#{profile.id}")
+    .avatar
       if profile.photo.match(/^http/)
         img(src="#{profile.photo}")
       else
         img(src="#{cache_url}/#{profile.photo}")
     h2.name= profile.name
 
-    h3.since User since #{profile.created_human}
+    h3.since Joined #{profile.created_human}
 
-    h3.count #{profile.post_count} posts
+    h3.count #{profile.post_count} #{profile.post_count == 1 ? "post" : "posts"}

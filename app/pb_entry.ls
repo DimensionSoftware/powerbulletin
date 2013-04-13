@@ -66,9 +66,9 @@ set-timeout (-> # sort control
   }), 100ms
 
 # main menu
-$d.on \click 'html.homepage header .menu a.title' ->
-  awesome-scroll-to $(this).data \scroll-to; false
-$d.on \click 'html.forum header .menu a.title' window.mutate
+#$d.on \click 'html.homepage header .menu a.title' ->
+#  awesome-scroll-to $(this).data \scroll-to; false
+$d.on \click 'html header .menu a.title' window.mutate
 
 # header expansion
 $d.on \click 'header' (e) ->
