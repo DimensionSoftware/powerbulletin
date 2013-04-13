@@ -1,0 +1,58 @@
+.choose(style="display:none;")
+  form(method="post", action="/auth/choose-username")
+    label(for="username")
+      h2 Choose a User Name
+        i !
+    fieldset
+      input(id="username", name="username", type="text", placeholder="Your User Name")
+      input(type="submit", value="Save")
+      a.msg.onclick-show-login
+        h3 &lt; Back
+.forgot(style="display:none;")
+  form(method="post", action="/auth/forgot")
+    label(for="email")
+      h2 Tell Us Your Email Address
+        i !
+    fieldset
+      input(id="email", name="email", type="text", placeholder="Email Address")
+      input(type="submit", value="Send Reset")
+      a.msg.onclick-show-login
+        h3 &lt; Back
+.validate(style="display:none;")
+  h2 Check your inbox for activation
+    i !
+    a.msg.onclick-close
+      h3 &lt; Close
+.register(style="display:none;")
+  form(method="post", action="/auth/register")
+    label(for="username")
+      h2 Welcome
+        i !
+    fieldset
+      input(id="username", name="username", type="text", placeholder="Username")
+      input(name="password", type="password", placeholder="Password")
+      input(name="email", class="register-email", type="text", placeholder="Your Email Address")
+      input(type="submit", value="Register")
+      a.msg.onclick-show-login
+        h3 &lt; Back
+.login
+  form(method="post", action="/auth/login")
+    label(for="username")
+      h2= site.name
+    fieldset
+      a.msg.onclick-show-forgot
+        h3 Forgot?  
+      input(id="username", name="username", type="text", placeholder="Username")
+      input(name="password", type="password", placeholder="Password")
+      input(type="submit", value="Login")
+      a.msg.onclick-show-register
+        h3 Register
+          i !
+  .social
+    h3 Or Log In With
+    a(href="/auth/facebook") 
+      img(src="#{cache2_url}/images/facebook_32.png")
+    a(href="/auth/google") 
+      img(src="#{cache3_url}/images/google_32.png")
+    a(href="/auth/twitter") 
+      img(src="#{cache4_url}/images/twitter_32.png")
