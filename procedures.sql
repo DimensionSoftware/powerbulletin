@@ -523,4 +523,26 @@ CREATE FUNCTION sub_posts_count(parent_id JSON) RETURNS JSON AS $$
   return count
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+DROP FUNCTION IF EXISTS idx_posts(lim JSON);
+CREATE FUNCTION idx_posts(lim JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT id, title, body, user_id
+  FROM posts
+  WHERE parent_id IS NULL
+    AND index_dirty='t'
+  ORDER BY updated
+  LIMIT $1
+  '''
+  return plv8.execute sql, [lim]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- acknowledge / flag the post as indexed so we don't try to index it again
+DROP FUNCTION IF EXISTS idx_ack_post(post_id JSON);
+CREATE FUNCTION idx_ack_post(post_id JSON) RETURNS JSON AS $$
+  sql = '''
+  UPDATE posts SET index_dirty='f' WHERE id=$1
+  '''
+  plv8.execute sql, [post_id]
+  return true
+$$ LANGUAGE plls IMMUTABLE STRICT;
 -- vim:fdm=marker

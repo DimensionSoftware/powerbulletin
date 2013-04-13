@@ -1,0 +1,8 @@
+#!/bin/bash
+killall pb-indexer
+sleep 2
+killall -9 pb-indexer
+
+set -e
+mkdir -p logs
+lsc app/indexer-main.ls &>> logs/indexer.log &

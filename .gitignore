@@ -12,3 +12,5 @@
 /public/powerbulletin.js
 /app/views/templates.js
 /config/local.json
+/elasticsearch-logs/
+/elasticsearch-data/

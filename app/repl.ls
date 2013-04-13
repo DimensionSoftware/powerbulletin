@@ -14,6 +14,9 @@ global.pbh = require './pb_helpers'
 global <<< require \prelude-ls
 
 global.db = -> pg.procs
+global.el = require './elastic'
+global.elc = -> el.client
 
 pg.init!
+el.init!
 set-timeout (-> v.init!), 1000
