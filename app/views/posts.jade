@@ -7,9 +7,10 @@ if typeof(post) !== 'undefined'
       h3.title= post.title
       .breadcrumb
         mixin breadcrumb(post)
-      .profile.photo
-        img(src="#{cache_url}/#{post.user_photo}")
-      a.user.mutant(href="/user/#{post.user_name}")= post.user_name
+      a.user.mutant(href="/user/#{post.user_name}")
+        .profile.photo
+          img(src="#{cache_url}/#{post.user_photo}")
+        span=post.user_name
       .date(data-time=post.created_iso)= post.created_human
       .edit-container
       if post.html

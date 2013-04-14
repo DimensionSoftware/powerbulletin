@@ -1,8 +1,11 @@
 include mixins
 
 .resizable.forum
-  h1 Posts By User
-
-  each p, i in postsByUser
-    // might use a different template
-    mixin post(p, i)
+  if postsByUser.length
+    h3 Posts By #{postsByUser[0].user_name}
+    each p, i in postsByUser
+      // XXX might use a different template
+      mixin post(p, i)
+  else
+    h3 Check back soon for my first post
+      i !
