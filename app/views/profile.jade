@@ -13,8 +13,7 @@
           img(src="#{cache_url}/#{profile.photo}")
       else
         img(src="#{cache_url}/images/profile.jpg")
-    h2.name= profile.name
 
-    h3.since Joined #{profile.created_human}
-
-    h3.count #{profile.post_count} #{profile.post_count == 1 ? "post" : "posts"}
+  ul
+    li.since Joined #{profile.created_human}
+    li.count #{profile.human_post_count} #{profile.post_count == 1 ? "post" : "posts"}

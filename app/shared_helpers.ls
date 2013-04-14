@@ -5,6 +5,9 @@ require! {
 # XXX keep these functions pure as they're exported in the app & eventually (TODO) on the client via browserify
 
 #{{{ String functions
+@add-commas = (s) -> # 1234 -> 1,234
+  (s |> reverse) .split /(\d{3})/ .filter (.length) .join \, |> reverse
+
 @title-case = (s) ->
   s?.replace /[\w]\S*/g, (word) ->
     if word==word.to-upper-case! # oh n0ez--a potential caps-locker

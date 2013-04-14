@@ -16,6 +16,7 @@ announce = sioa.create-client!
 is-editing = /\/(edit|new)\/?([\d+]*)$/
 
 global <<< require './helpers'
+global <<< require './shared_helpers'
 
 @hello = (req, res, next) ->
   console.log req.headers
@@ -269,7 +270,8 @@ auth-finisher = (req, res, next) ->
   err, fdoc <- async.auto tasks
   if err then return next err
 
-  console.log fdoc.profile
+  with fdoc.profile # transform
+    ..human_post_count = add-commas(..post_count.to-string!)
 
   res.locals fdoc
   res.mutant \profile
