@@ -1,6 +1,5 @@
 global.async = require \async
 global.pg = require './postgres'
-global.h  = require './helpers'
 global.cl = console.log
 global.cw = console.warn
 global.v = require './varnish'
@@ -12,6 +11,8 @@ global.sh = require './shared_helpers'
 global.pbh = require './pb_helpers'
 
 global <<< require \prelude-ls
+global <<< require './helpers'
+global <<< require './shared_helpers'
 
 global.db = -> pg.procs
 global.el = require './elastic'
