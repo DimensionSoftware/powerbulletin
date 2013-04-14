@@ -32,7 +32,6 @@ layout-on-load = (w) ->
     max-width: 450px
     resize: (e, ui) ->
       $l.toggle-class \wide ($l.width! > 300px)         # resize left nav
-      $ \footer .css 'left' ui.size.width               # " footer
       $r.css 'padding-left' (ui.size.width+left-offset) # " resizable
       window.save-ui!)
   if $r.length
