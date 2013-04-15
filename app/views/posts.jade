@@ -23,7 +23,7 @@ if typeof(post) !== 'undefined'
     if post.posts.length
       div(data-page=page)
         each sp in post.posts
-          mixin post(sp, 0)
+          mixin _post(sp, 0)
     else if post.morePosts
       a(href='#') Load more posts ...
 else //- placeholder
