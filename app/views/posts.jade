@@ -1,4 +1,6 @@
-include mixins
+include _post
+include _post_actions
+include _breadcrumb
 
 //- posts tree
 if typeof(post) !== 'undefined'
@@ -6,7 +8,7 @@ if typeof(post) !== 'undefined'
     .post(id="post_#{post.id}", data-user-id=post.user_id, data-post-id=post.id)
       h3.title= post.title
       .breadcrumb
-        mixin breadcrumb(post)
+        mixin _breadcrumb(post)
       a.user.mutant(href="/user/#{post.user_name}")
         .profile.photo
           img(src="#{cache_url}/#{post.user_photo}")
@@ -16,7 +18,7 @@ if typeof(post) !== 'undefined'
       if post.html
         .post.body!= post.html
       .reply
-      mixin actions(post)
+      mixin _post_actions(post)
     .children
     if post.posts.length
       div(data-page=page)
@@ -29,7 +31,7 @@ else //- placeholder
 
 if typeof(post) !== 'undefined'
   #breadcrumb.breadcrumb
-    mixin breadcrumb(post)
+    mixin _breadcrumb(post)
 
 if pages.length > 1
   #paginator

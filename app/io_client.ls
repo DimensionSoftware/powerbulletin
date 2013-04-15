@@ -35,7 +35,7 @@ socket.on \post-create (post, cb) ->
     # & render new post
     sel = "\#post_#{post.parent_id} + .children"
     render-and-append(
-      window, $(sel), \_post, post:post, (e) ->
+      window, $(sel), \post, post:post, (e) ->
         $ e .effect(\highlight 1000ms \easeOutExpo)
         if post.user_id is user.id # & scroll-to
           mutants.forum.on-personalize window, user, (->) # enable edit, etc...

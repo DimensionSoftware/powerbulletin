@@ -1,0 +1,7 @@
+mixin _post_actions(p)
+  .actions
+    a.onclick-append-reply-ui Reply
+    a.edit.mutant.no-surf(href="#{p.uri.replace(/\/\d+$/, '')}/edit/#{p.id}") Edit
+    a.mutant(href=p.uri) Permalink
+    if (typeof(user) !== 'undefined' && user) && user.rights.super
+      a.onclick-censor-post Censor

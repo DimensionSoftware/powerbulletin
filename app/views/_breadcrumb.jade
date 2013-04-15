@@ -1,0 +1,11 @@
+mixin _breadcrumb(p)
+  path  = ''
+  parts = p.uri.split('/')
+  parts = parts.splice(1, parts.length-2)
+  each part in parts
+    if part != 't'
+      a.mutant(href="/#{path}#{part}")= part.replace('-', ' ')
+      span /
+    - path = path + part + '/'
+  em= p.title
+

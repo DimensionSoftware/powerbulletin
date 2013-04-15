@@ -1,5 +1,24 @@
-include mixins
+include _post_actions
 
-mixin post(post, 0)
-
-//- vim:fdm=marker
+mixin post(p, i)
+  .post(id="post_#{p.id}", class=(i % 2) ? 'odd' : 'even', data-user-id=p.user_id, data-post-id=p.id)
+    if p.title
+      h4.title= p.title
+    a.user.mutant(href="/user/#{p.user_name}")= 
+      .profile.photo
+        if p.user_photo && p.user_photo.match(/^http/)
+          img(src="#{p.user_photo}")
+        else
+          img(src="#{cache_url}/#{p.user_photo}")
+      span= p.user_name
+    .date(data-time=p.created_iso)= p.created_human
+    if p.html
+      p.body!= p.html
+    .reply
+    mixin _post_actions(p)
+  .children
+    if p.posts && p.posts.length
+      each pp, ii in p.posts
+        mixin post(pp, ii)
+    else if p.morePosts
+      a(href='#') Load more posts ...

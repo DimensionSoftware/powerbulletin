@@ -1,4 +1,8 @@
-include mixins
+include _thread
+
+mixin subforum(f, sf, i)
+  li.subforum
+    a.mutant.title(href=sf.uri)= sf.title
 
 mixin forum(f, i)
   h3.title Forums
@@ -8,16 +12,12 @@ mixin forum(f, i)
       each sf,ii in f.forums
         mixin subforum(f, sf, ii)
 
-mixin subforum(f, sf, i)
-  li.subforum
-    a.mutant.title(href=sf.uri)= sf.title
-
 #handle.handle(title='Toggle') &lt;
 .create
   a.mutant.no-surf.require-login.button(href="#{forum.uri}/new") Create Thread
 
 ul.threads
   each t,ii in topThreads
-    mixin thread(t)
+    mixin _thread(t)
 
 //- vim:fdm=marker
