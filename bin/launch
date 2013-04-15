@@ -1,0 +1,6 @@
+#!/bin/sh
+bin/launch-elasticsearch && \
+bin/launch-haproxy && \
+bin/launch-indexer && \
+bin/launch-redis && \
+bin/launch-varnish 
