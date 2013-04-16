@@ -51,19 +51,6 @@ $d.on \click '#handle' ->
 
 # waypoints
 $w.resize (__.debounce (-> $.waypoints \refresh; align-breadcrumb!), 800ms)
-set-timeout (-> # sort control
-  $ '#sort li' .waypoint {
-    context: \ul
-    offset : 30px
-    handler: (direction) ->
-      e = $ this # figure active element
-      if direction is \up
-        e := e.prev!
-      e := $ this unless e.length
-
-      $ '#sort li.active' .remove-class \active
-      e .add-class \active # set!
-  }), 100ms
 
 # main menu
 #$d.on \click 'html.homepage header .menu a.title' ->
