@@ -1,0 +1,11 @@
+.orderer
+  .indicator
+  orders = [['popular', 'Popular'], ['recent', 'Most Recent'], ['active', 'Most Active'], ['controversial', 'Controversial'], ['nearest', 'Nearby']]
+  ul#order
+    for o in orders
+      if o[0] == active
+        li(data-value=o[0]).active= o[1]
+      else
+        li(data-value=o[0])= o[1]
+  .scroll-to-top
+
