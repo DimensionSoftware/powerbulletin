@@ -44,8 +44,6 @@ require! shelljs
 {code, output} = shelljs.exec('git rev-parse HEAD')
 global.CHANGESET = output.trim!
 
-global.cl                 = console.log
-global.cw                 = console.warn
 global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
 
 proc = process
