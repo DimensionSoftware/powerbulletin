@@ -58,6 +58,11 @@ flip-background = (w, cur, direction='down') ->
       window.render-mutant \main_content \homepage
       layout-static window, \homepage, @active-forum-id
       next!
+  on-initial:
+    (window, next) ->
+      active = window.location.search.match(/order=(\w+)/)?1 || \recent
+      window.jade.render $(\.extra:first)[0], \order_control, active: active
+      next!
   on-load:
     (window, next) ->
       # reflow masonry content
@@ -93,7 +98,25 @@ flip-background = (w, cur, direction='down') ->
             # TODO if direction is \up stick last forum
 
             flip-background window, cur, direction
-        }), 100
+        }
+
+        reorder = __.debounce(( -> History.push-state {}, '', it), 100ms)
+
+        $ '#order li' .waypoint {
+          context: \ul
+          offset : 30px
+          handler: (direction) ->
+            e = $ this # figure active element
+            if direction is \up
+              e = e.prev!
+            e = $ this unless e.length
+
+            $ '#order li.active' .remove-class \active
+            e .add-class \active # set!
+            order = e.data 'value'
+            path = "/?order=#order"
+            reorder path
+        }), 100ms
 
       #window.awesome-scroll-to "forum_#{}"
       #}}}
@@ -104,6 +127,7 @@ flip-background = (w, cur, direction='down') ->
         window.$ '.forum .container' .masonry(\destroy)
         window.$ '.forum .header' .waypoint(\destroy)
         window.$ '.forum' .waypoint(\destroy)
+        window.$ '#order li' .waypoint(\destroy)
       catch
         # do nothing
       next!
