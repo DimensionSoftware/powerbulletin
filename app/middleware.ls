@@ -9,8 +9,8 @@ require! {
   if err then return next err
 
   if site
-    #console.log {site}
-    res.locals.site = site
+    {id, name, domain} = site
+    res.locals.site = {id, name, domain}
     for i in ['', 2, 3, 4, 5]
       res.locals["cache#{i}_url"] = cvars["cache#{i}_url"]
     next!
