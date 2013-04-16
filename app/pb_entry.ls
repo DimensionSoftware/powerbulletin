@@ -5,10 +5,23 @@ global <<< require './pb_helpers'
 global <<< require('prelude-ls/prelude-browser-min').prelude
 
 # XXX client-side entry
-
 # shortcuts
 $w = $ window
 $d = $ document
+
+# custom ui events
+# window.ui is the object which will receive events and have events triggered on it
+window.ui = {}
+$ui = $ window.ui
+
+# map keyup events to search (would be prettier with bacon ; )
+$d.on \keyup, '#query', __.debounce((->
+  $ui.trigger \search, {query: $(@).val!}
+), 250)
+
+# handle 'search' events
+$ui.on \search, (evt, opts) ->
+  console.log opts
 
 left-offset = 50px
 
