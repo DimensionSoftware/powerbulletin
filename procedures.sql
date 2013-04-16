@@ -101,8 +101,8 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
       #       its a question of url length
 
       sql = '''
-      INSERT INTO posts (id, thread_id, user_id, forum_id, parent_id, title, slug, body, html)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      INSERT INTO posts (id, thread_id, user_id, forum_id, parent_id, title, slug, body, html, ip)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       '''
 
       params =
@@ -115,6 +115,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
         * slug
         * post.body || ""
         * post.html || ""
+        * post.ip
 
       plv8.execute(sql, params)
 
