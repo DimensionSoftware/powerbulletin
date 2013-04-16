@@ -7,16 +7,22 @@ layout-static = (w, mutator, forum-id=0) ->
   forum-class = if forum-id then " forum-#{forum-id}" else ''
   w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
   w.marshal \mutator, mutator                        # js
+
   # handle active forum background
-  w.$ '.bg-set' .remove!
-  w.$ '.bg' .each -> w.$ this .add-class \bg-set .remove!prepend-to w.$ 'body' # position behind
+  if mutator is \homepage and w.last-mutator is not \homepage
+    w.$ '.bg-set' .remove!
+    w.$ '.bg' .each -> w.$ this .add-class \bg-set .remove!prepend-to w.$ 'body'
+
   # handle active main menu
-  w.$ 'header .menu' .find '.active' .remove-class \active # remove prev
-  w.$ 'menu .row' # add current
-    .has ".forum-#{forum-id}"
-    .find '.title'
-    .add-class \active
-  w.$ "menu .submenu .forum-#{forum-id}" .parent().add-class \active
+  if mutator is not \homepage or not w.last-mutator
+    w.$ 'header .menu' .find '.active' .remove-class \active # remove prev
+    w.$ 'menu .row' # add current
+      .has ".forum-#{forum-id}"
+      .find '.title'
+      .add-class \active
+    w.$ "menu .submenu .forum-#{forum-id}" .parent!add-class \active
+
+  w.last-mutator = mutator # save last
 
 layout-on-load = (w) ->
   $ = window.$
@@ -101,7 +107,7 @@ flip-background = (w, cur, direction='down') ->
         }
 
         reorder = __.debounce(( -> History.push-state {}, '', it), 100ms)
-
+        window.current-order = false
         $ '#order li' .waypoint {
           context: \ul
           offset : 30px
@@ -115,7 +121,7 @@ flip-background = (w, cur, direction='down') ->
             e .add-class \active # set!
             order = e.data 'value'
             path = "/?order=#order"
-            reorder path
+            if window.current-order then reorder path else window.current-order=order
         }), 100ms
 
       #window.awesome-scroll-to "forum_#{}"
