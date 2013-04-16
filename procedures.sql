@@ -130,6 +130,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
         uri := u.uri-for-post(nextval)
         plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [uri, nextval]
 
+
     else
       errors.push "forum_id invalid: #{post.forum_id}"
 

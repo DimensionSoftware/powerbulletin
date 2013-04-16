@@ -34,7 +34,7 @@ require! {
     or req.headers['remote-addr']
     or req.headers['client-ip']
     or req.headers['x-forwarded-for']
-    or 'localhost'
+    or '127.0.0.1'
   next!
 
 @geo = (req, res, next) ->
