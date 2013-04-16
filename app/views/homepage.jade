@@ -1,5 +1,3 @@
-//-extend layout
-
 mixin forum(f, i)
   img.bg(id="forum_bg_#{f.id}", class='initial', src="#{cache_url}/images/bg_#{f.id}.jpg")
   .forum(id="forum_#{f.id}", class="#{f.classes || ''} #{i%2 ? 'odd' : 'even'}")
@@ -32,30 +30,11 @@ mixin subpost(sp, i)
       span.username - #{sp.user_name}
       span.date= sp.date
 
-mixin left-chrome
-  #left_chrome
-    //-{{{ data-fid is how we pass in the forum id of the post, this way
-    //- we can put a hotlink wherever without having to write new
-    //- javascript (other than calculating the fid)
-    //- TODO move this into posts :hover tools }}}
-    .sorter
-      .indicator
-      ul#sort
-        li(data-value='popular').active Popular
-        li(data-value='recent') Most Recent
-        li(data-value='active') Most Active
-        li(data-value='controversal') Controversal
-        li(data-value='nearest') Nearby
-      .scroll-to-top
-
 //- main
 //- ---------
-mixin left-chrome
 if forums
   each f,i in forums
     mixin forum(f, i)
 else
   p Create a forum first
     i !
-
-//- vim:fdm=marker
