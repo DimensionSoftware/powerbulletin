@@ -1,6 +1,6 @@
 #!/bin/sh
-bin/launch-elasticsearch && \
-bin/launch-haproxy && \
+sudo bin/launch-elasticsearch && \
+sudo bin/launch-haproxy && \
 bin/launch-indexer && \
 bin/launch-redis && \
-bin/launch-varnish 
+sudo bin/launch-varnish 
