@@ -436,10 +436,10 @@ CREATE FUNCTION menu(site_id JSON) RETURNS JSON AS $$
   return u.menu site_id
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS homepage_forums(forum_id JSON);
-CREATE FUNCTION homepage_forums(forum_id JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS homepage_forums(forum_id JSON, sort JSON);
+CREATE FUNCTION homepage_forums(forum_id JSON, sort JSON) RETURNS JSON AS $$
   require! u
-  return u.homepage-forums forum_id 
+  return u.homepage-forums forum_id, sort
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- XXX: this should really be called 'forum' since it represents one forum (and nested forums)

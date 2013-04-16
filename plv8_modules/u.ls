@@ -159,9 +159,9 @@ export menu = (site-id) ->
   top-menu-fun = top-forums(null, 'id,title,slug,uri,description,media_url')
   [decorate-menu(f, top-menu-fun) for f in top-menu-fun(site-id)]
 
-export homepage-forums = (site-id) ->
+export homepage-forums = (site-id, sort=\recent) ->
   # XXX: forums should always list in the same order, get rid of top-forums, and list in static order
-  forums-tree site-id, top-posts(\recent, 10), top-forums!
+  forums-tree site-id, top-posts(sort, 10), top-forums!
 
 # this is really for a single forum even though its called 'forums'
 export forums = (forum-id, sort) ->

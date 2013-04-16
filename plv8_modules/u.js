@@ -198,8 +198,9 @@
     }
     return results$;
   };
-  out$.homepageForums = homepageForums = function(siteId){
-    return forumsTree(siteId, topPosts('recent', 10), topForums());
+  out$.homepageForums = homepageForums = function(siteId, sort){
+    sort == null && (sort = 'recent');
+    return forumsTree(siteId, topPosts(sort, 10), topForums());
   };
   out$.forums = forums = function(forumId, sort){
     var ft;
