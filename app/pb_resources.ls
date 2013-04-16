@@ -26,6 +26,7 @@ announce = sioa.create-client!
     post = req.body
     post.user_id = req.user.id
     post.html = h.html post.body
+    post.ip = res.locals.remote-ip
     err, ap-res <- db.add-post post
     if err then return next err
 

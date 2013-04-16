@@ -124,6 +124,7 @@ CREATE TABLE posts (
   uri         TEXT,
   body        TEXT NOT NULL,
   html        TEXT NOT NULL,
+  ip          INET,
   loc         POINT,
   views       BIGINT NOT NULL DEFAULT 0,
   index_dirty BOOLEAN NOT NULL DEFAULT 't',
