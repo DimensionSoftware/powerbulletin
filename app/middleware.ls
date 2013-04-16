@@ -4,6 +4,11 @@ require! {
   pg: './postgres'
 }
 
+@cvars = (req, res, next) ->
+  # copy over any wanted cvars into locals land
+  res.locals.env = process.env.NODE_ENV || 'development'
+  next!
+
 @multi-domain = (req, res, next) ->
   err, site <- db.site-by-domain req.host
   if err then return next err

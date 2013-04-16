@@ -16,12 +16,15 @@ $ui = $ window.ui
 
 # map keyup events to search (would be prettier with bacon ; )
 $d.on \keyup, '#query', __.debounce((->
-  $ui.trigger \search, {query: $(@).val!}
+  $ui.trigger \search, {q: $(@).val!}
+  return true
 ), 250)
 
 # handle 'search' events
-$ui.on \search, (evt, opts) ->
-  console.log opts
+$ui.on \search, (evt, searchopts) ->
+  uri = "/search?#{$.param searchopts}"
+  History.pushState {searchopts}, '', uri
+  console.log searchopts
 
 left-offset = 50px
 

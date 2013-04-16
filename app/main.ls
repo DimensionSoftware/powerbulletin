@@ -163,6 +163,7 @@ else
   app.use express-validator
 
   for a in [app] # apply app defaults
+    a.use mw.cvars
     a.use mw.multi-domain
     a.use mw.ip-lookup
     a.use mw.rate-limit

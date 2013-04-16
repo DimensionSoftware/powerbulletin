@@ -433,7 +433,8 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   elquery =
     index: \pb
     type: \post
-    query: req.query.q
+
+  elquery.query = req.query.q if req.query.q
 
   err, menu <- db.menu res.locals.site.id
   if err then return next err
@@ -442,6 +443,8 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   err, elres <- elc.search elquery
   if err then return next(err)
   res.locals {elres}
+
+  res.locals.searchopts = {q: req.query.q}
 
   res.mutant \search
 # vim:fdm=indent

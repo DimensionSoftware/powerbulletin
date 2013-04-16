@@ -232,6 +232,11 @@ flip-background = (w, cur, direction='down') ->
     (window, next) ->
       window.render-mutant \main_content \search
       layout-static window, \search, @active-forum-id
+
+      unless History? #XXX: hack to only perform on serverside
+        # represent state of filters in ui
+        window.$('#query').val @searchopts.q
+
       next!
 
 # vim:fdm=indent
