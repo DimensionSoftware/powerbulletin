@@ -41,7 +41,7 @@ global <<< require \prelude-ls
 
 require! shelljs
 
-{code, output} = shelljs.exec('git rev-parse HEAD')
+{code, output} = shelljs.exec('git rev-parse HEAD', silent: true)
 global.CHANGESET = output.trim!
 
 global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
