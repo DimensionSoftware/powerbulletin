@@ -146,9 +146,11 @@ auth-finisher = (req, res, next) ->
 
 @homepage = (req, res, next) ->
   #TODO: refactor with async.auto
+  order = req.query.order or \recent
   err, menu <- db.menu res.locals.site.id
   if err then return next err
-  err, forums <- db.homepage-forums res.locals.site.id
+  console.log [res.locals.site.id, order]
+  err, forums <- db.homepage-forums res.locals.site.id, order
   if err then return next err
   doc = {menu, forums}
 
