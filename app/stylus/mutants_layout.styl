@@ -10,37 +10,38 @@ html.homepage
     padding-top header-height
     .forum
       padding-left (grid*2)
-    #left_chrome
-      right -300px
-      z-index 7
-      bottom (grid*8)
-      width 175px
-      position fixed
-      .sorter::before
-        content ''
-        width 1px
-        height 1px
+  .extra
+    right 0
+    z-index 7
+    bottom (grid*8)
+    width 175px
+    height 100px
+    position fixed
+    .orderer::before
+      content ''
+      width 1px
+      height 1px
+      position absolute
+      left 0
+      top 11px
+      z-index 3
+      border-top-color transparent
+      border-right-color transparent
+      border-bottom-color transparent
+    .orderer
+      position relative
+      height 95px
+      overflow hidden
+      cursor pointer
+      .scroll-to-top:hover
+        border-bottom 10px solid #777
+      .scroll-to-top
         position absolute
-        left 0
-        top 11px
-        z-index 3
-        border-top-color transparent
-        border-right-color transparent
-        border-bottom-color transparent
-      .sorter
-        position relative
-        height 95px
-        overflow hidden
-        cursor pointer
-        .scroll-to-top:hover
-          border-bottom 10px solid #777
-        .scroll-to-top
-          position absolute
-          right 1px
-          bottom 0
-          border-left 8px solid transparent
-          border-right 8px solid transparent
-          border-bottom 10px solid #555
+        right 1px
+        bottom 0
+        border-left 8px solid transparent
+        border-right 8px solid transparent
+        border-bottom 10px solid #555
   body.searching
     #main_content
       padding-top header-searching-height
@@ -237,7 +238,7 @@ html.forum, html.profile, html.search
             margin-left grid
 //}}}
 
-#paginator, #sort
+#paginator, #order
   position relative
   box-sizing border-box
   padding (grid) (grid) (grid*7) (grid*2)
