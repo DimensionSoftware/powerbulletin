@@ -40,28 +40,8 @@ window.load-ui = -> # restore ui state from cookie
   if collapsed is '1' then $ \body .add-class(\collapsed)
   set-timeout align-breadcrumb, 500ms
 
-# handle
-$d.on \click '#handle' ->
-  $l = $ '#left_content'
-  $ \body .toggle-class \collapsed
-  $ '#main_content .resizable'
-    .css('padding-left', ($l.width! + left-offset))
-  save-ui!
-
 # waypoints
 $w.resize (__.debounce (-> $.waypoints \refresh; align-breadcrumb!), 800ms)
-
-# main menu
-#$d.on \click 'html.homepage header .menu a.title' ->
-#  awesome-scroll-to $(this).data \scroll-to; false
-$d.on \click 'html header .menu a.title' window.mutate
-
-# header expansion
-$d.on \click 'header' (e) ->
-  $ \body .remove-class \searching if e.target.class-name.index-of(\toggler) > -1 # guard
-  $ '#query' .focus!
-  save-ui!
-$d.on \keypress '#query' -> $ \body .add-class \searching; save-ui!
 
 # show reply ui
 append-reply-ui = ->
@@ -97,7 +77,7 @@ censor = ->
 ##
 if window.location.hash is \#validate then after-login! # email activation
 load-ui!
-$ '#query' .focus!
+$ \#query .focus!
 
 # Delegated Events
 #{{{ - search delegated events
@@ -160,6 +140,26 @@ $d.on \keyup '.fancybox-inner input' ->
   if it.which is 27 # enter key
     $.fancybox.close!
     return false
+#}}}
+#{{{ - header (main menu)
+#$d.on \click 'html.homepage header .menu a.title' ->
+#  awesome-scroll-to $(this).data \scroll-to; false
+$d.on \click 'html header .menu a.title' window.mutate
+
+# header expansion
+$d.on \click 'header' (e) ->
+  $ \body .remove-class \searching if e.target.class-name.index-of(\toggler) > -1 # guard
+  $ '#query' .focus!
+  save-ui!
+$d.on \keypress '#query' -> $ \body .add-class \searching; save-ui!
+#}}}
+#{{{ - left_nav handle
+$d.on \click '#handle' ->
+  $l = $ '#left_content'
+  $ \body .toggle-class \collapsed
+  $ '#main_content .resizable'
+    .css('padding-left', ($l.width! + left-offset))
+  save-ui!
 #}}}
 
 # XXX slated for removal with states
