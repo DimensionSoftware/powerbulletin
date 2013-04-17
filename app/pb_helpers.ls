@@ -13,9 +13,9 @@ require! {
   $b = w.$ '<div>' # buffer
   $b.hide!
   $t[fn] $b
-  jade.render $b.0, tmpl, params
+  w.jade.render $b.0, tmpl, params
   $b.show!add-class \fadein
-  cb $b
+  set-timeout (-> cb $b), 100ms # XXX race condition
 @render-and-append  = @render-and \append
 @render-and-prepend = @render-and \prepend
 
@@ -28,8 +28,9 @@ require! {
 
 @remove-editing-url = ->
   meta = furl.parse window.location.pathname
-  if meta.type is \edit
-    History.push-state {no-surf:true} '' meta.thread-uri
+  switch meta.type
+  | \edit       => History.push-state {no-surf:true} '' meta.thread-uri
+  | \new-thread => History.back!
 
 @scroll-to-edit = (cb) ->
   cb = -> noop=1 unless cb
@@ -43,12 +44,11 @@ require! {
 
 # handle in-line editing
 @edit-post = (id, data={}) ->
-  console.log \edit-post
   focus  = (e) -> set-timeout (-> e.find 'input[type="text"]' .focus!), 100
   render = (sel, locals) ~>
-    console.log sel
     e = $ sel
-    @render-and-append window, sel, \post_edit, post:locals, ->
+    @render-and-append window, sel, \post_edit, post:locals, (e) ->
+      e.find \.sceditor-container .prepend(e.find \.title)
       focus e
 
   if id is true # render new
