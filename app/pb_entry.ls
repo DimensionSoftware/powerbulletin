@@ -18,8 +18,9 @@ $ui = $ window.ui
 $d.on \keyup, '#query', __.debounce((->
   # action keys are keys that actually trigger the search
   # includes printable chars and backspace
-  printable =  32 <= it.which <= 127
+  printable = 32 <= it.which <= 127
   is-backspace = it.which is 8
+  is-arrow = 37 <= it.which <= 40
   console.log {it.which}
 
   if printable or is-backspace
