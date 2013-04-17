@@ -23,7 +23,7 @@ $d.on \keyup, '#query', __.debounce((->
   is-arrow = 37 <= it.which <= 40
   console.log {it.which}
 
-  if printable or is-backspace
+  if (printable or is-backspace) and !is-arrow
     $ui.trigger \search, {q: $(@).val!}
 
   return true
