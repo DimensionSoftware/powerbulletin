@@ -137,6 +137,42 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
   return {success: !errors.length, errors, id: nextval, uri}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+-- Add tags to system
+-- @param   Array  tags    an array of strings
+-- @returns Array          an array of tag objects
+DROP FUNCTION IF EXISTS add_tags(tags JSON);
+CREATE FUNCTION add_tags(tags JSON) RETURNS JSON AS $$
+  add-tag = (tag) ->
+    sql = '''
+    INSERT INTO tags (name) SELECT $1::varchar WHERE NOT EXISTS (SELECT name FROM tags WHERE name = $1) RETURNING *
+    '''
+    res = plv8.execute sql, [tag]
+    if res.length == 0
+      res2 = plv8.execute 'SELECT * FROM tags WHERE name = $1', [tag]
+      return res2[0]
+    else
+      return res[0]
+  return [ add-tag t for t in tags ]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- Associate tags to a post
+-- @param   Number post_id
+-- @param   Array  tags    an array of tag objects
+-- @returns Array          an array of tag objects?
+DROP FUNCTION IF EXISTS add_tags_to_post(post_id JSON, tags JSON);
+CREATE FUNCTION add_tags_to_post(post_id JSON, tags JSON) RETURNS JSON AS $$
+  require! \prelude
+  if not tags or tags.length == 0 then return null
+  unique-tags = prelude.unique tags
+  add-tags    = plv8.find_function('add_tags')
+  added-tags  = add-tags unique-tags
+  sql         = 'INSERT INTO tags_posts (tag_id, post_id) VALUES ' + (["($#{parse-int(i)+2}, $1)" for v,i in added-tags]).join(', ')
+  params      = [post_id, ...(prelude.map (.id), added-tags)]
+  res         = plv8.execute sql, params
+  plv8.elog WARNING, "add-tags-to-post -> #{JSON.stringify(res)}"
+  return added-tags
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 DROP FUNCTION IF EXISTS archive_post(post_id JSON);
 CREATE FUNCTION archive_post(post_id JSON) RETURNS JSON AS $$
   require! u
