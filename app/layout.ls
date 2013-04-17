@@ -33,7 +33,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url    = History.get-page-url!replace /\/$/, ''
   params = History.get-state!data
   unless params?.no-surf # DOM update handled outside mutant
-    $.get url, _surf:1, (r) ->
+    $.get url, _surf:mutator, (r) ->
       $d.attr \title, r.locals.title if r.locals?.title # set title
       on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
       on-unload window, -> # cleanup & run next mutant
