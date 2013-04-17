@@ -1,39 +1,13 @@
 window.__  = require \lodash
-window.ioc = require './io_client'
+window.ioc = require \./io_client
 
-global <<< require './pb_helpers'
-global <<< require('prelude-ls/prelude-browser-min').prelude
+global <<< require \./pb_helpers
+global <<< require(\prelude-ls/prelude-browser-min).prelude
 
 # XXX client-side entry
 # shortcuts
 $w = $ window
 $d = $ document
-
-# custom ui events
-# window.ui is the object which will receive events and have events triggered on it
-window.ui = {}
-$ui = $ window.ui
-
-# map keyup events to search (would be prettier with bacon ; )
-$d.on \keyup, '#query', __.debounce((->
-  # action keys are keys that actually trigger the search
-  # includes printable chars and backspace
-  printable = 32 <= it.which <= 127
-  is-backspace = it.which is 8
-  is-arrow = 37 <= it.which <= 40
-  console.log {it.which}
-
-  if (printable or is-backspace) and !is-arrow
-    $ui.trigger \search, {q: $(@).val!}
-
-  return true
-), 250)
-
-# handle 'search' events
-$ui.on \search, (evt, searchopts) ->
-  uri = "/search?#{$.param searchopts}"
-  History.pushState {searchopts}, '', uri
-  console.log searchopts
 
 left-offset = 50px
 
@@ -125,8 +99,24 @@ if window.location.hash is \#validate then after-login! # email activation
 load-ui!
 $ '#query' .focus!
 
-#{{{ Delegated Events
-# generic form-handling ui
+# Delegated Events
+#{{{ - search delegated events
+# window.ui is the object which will receive events and have events triggered on it
+window.ui = {}
+$ui = $ window.ui
+
+# keys that actually trigger the search
+$d.on \keyup, \#query, __.debounce((->
+  key = it.key-code || it.which
+  # ignore special keys & delete when search is empty
+  unless key in [16 17 18 27 37 38 39 40 91 93] or (key is 8 and !it.target.value.length)
+    $ui.trigger \search, {q: $(@).val!}
+  true), 250ms)
+$ui.on \search, (evt, searchopts) ->
+  uri = "/search?#{$.param searchopts}"
+  History.pushState {searchopts}, '', uri
+#}}}
+#{{{ - generic form-handling ui
 $d.on \click '.create .no-surf' require-login(->
   $ '#main_content .forum' .html '' # clear canvas
   edit-post is-editing(window.location.pathname), forum_id:window.active-forum-id)
@@ -148,8 +138,8 @@ $d.on \click '.onclick-submit input[type="submit"]' require-login(
 
 $d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
 $d.on \click '.onclick-censor-post' require-login(censor)
-
-# login delegated events
+#}}}
+#{{{ - login delegated events
 window.switch-and-focus = (remove, add, focus-on) ->
   $e = $ '.fancybox-wrap'
   $e.remove-class("#remove shake slide").add-class(add)
@@ -172,16 +162,16 @@ $d.on \keyup '.fancybox-inner input' ->
     return false
 #}}}
 
+# XXX slated for removal with states
 window.has-mutated-forum = window.active-forum-id
 
+# {{{ Mocha testing harness
 if mocha? and window.location.search.match /test=1/
   cleanup-output = ->
     $('body > *:not(#mocha)').remove!
-
-    # mocha style (JUST IN TIME!)
-    mocha-css-el =
+    mocha-css-el = # mocha style (JUST IN TIME!)
       $("<link rel=\"stylesheet\" type=\"text/css\" href=\"#{window.cache_url}/local/mocha.css\">")
-    $('head').append(mocha-css-el)
+    $ \head .append(mocha-css-el)
 
   mocha.setup \bdd
 
@@ -189,7 +179,7 @@ if mocha? and window.location.search.match /test=1/
   $.get-script "#{window.cache_url}/tests/test1.js", ->
     run = ->
       mocha.run cleanup-output
-    set-timeout run, 2000 # gotta give time for tests to load
-
+    set-timeout run, 2000ms # gotta give time for tests to load
+#}}}
 
 # vim:fdm=marker
