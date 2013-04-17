@@ -107,7 +107,7 @@ module.exports = function(grunt) {
     exec('bin/psql pb < procedures.sql', {silent: true});
   });
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {
-    fs.writeFileSync('app/views/templates.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/order_control.jade app/views/nav.jade app/views/posts.jade app/views/post_edit.jade app/views/post_new.jade app/views/profile.jade app/views/posts_by_user.jade app/views/post.jade app/views/admin.jade app/views/search.jade app/views/_*.jade', {silent:true}).output));
+    fs.writeFileSync('app/views/templates.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/order_control.jade app/views/nav.jade app/views/posts.jade app/views/post_edit.jade app/views/post_new.jade app/views/profile.jade app/views/posts_by_user.jade app/views/post.jade app/views/admin.jade app/views/search.jade app/views/hits.jade app/views/_*.jade', {silent:true}).output));
   });
 
   grunt.registerTask('browserify', 'generate browser bundle', function() {

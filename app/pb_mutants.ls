@@ -230,6 +230,7 @@ flip-background = (w, cur, direction='down') ->
 @search =
   static:
     (window, next) ->
+      window.render-mutant \left_content \hits
       window.render-mutant \main_content \search
       layout-static window, \search, @active-forum-id
 
