@@ -365,17 +365,3 @@ bootstrap.mlockall: true
 #monitor.jvm.gc.ConcurrentMarkSweep.warn: 10s
 #monitor.jvm.gc.ConcurrentMarkSweep.info: 5s
 #monitor.jvm.gc.ConcurrentMarkSweep.debug: 2s
-
-index.analysis:
-  analyzer:
-    default_index:
-      tokenizer: standard
-      filter: [lowercase, pb_ngram]
-    default_search:
-      tokenizer: standard
-      filter: [lowercase]
-  filter:
-    pb_ngram:
-      type: NGram
-      min_gram: 2
-      max_gram: 15
