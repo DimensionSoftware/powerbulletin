@@ -127,6 +127,7 @@ html.forum, html.profile, html.search
       position relative
       clear both
       min-height 650px
+      margin-bottom (grid*6)
       p
         margin 0
       .container
@@ -155,8 +156,9 @@ html.forum, html.profile, html.search
         z-index 4
         transition all .1s ease-out 1.3s
       .post-edit
-        margin-bottom (grid*4)
-        margin-left (grid/2)
+        margin-bottom (grid*2)
+        margin-left (grid)
+        margin-top (grid*2)
         .sceditor-container
           margin-bottom (grid*2)
           border-top-left-radius 0
@@ -178,36 +180,37 @@ html.forum, html.profile, html.search
           margin grid 0
           min-height 40px
       .post
-        float left
+        position relative
+        clear both
+        margin-right (grid*4)
+        padding-top (grid*2)
         .breadcrumb
           span, em
             display none
         .profile
           width 50px
-          height 50px
+          height 40px
         img
           max-width 100%
-        position relative
-        clear both
-        margin-right (grid*4)
-        margin-top (grid/2)
-        margin-bottom grid
         .title
-          margin 0 0 (grid/2) 0
+          margin 0 0 (grid) 0
           font-size 1.5em
-        .title, .user, .date
+        .title, .user
           text-transform capitalize
         .body
-          margin 2px 0 grid 0
+          margin (grid/2) 0 grid 0
+          clear both
         .actions
           opacity 0
           letter-spacing -10px
           margin-top (grid+2)
+          margin-bottom (grid+2)
           line-height 15px
           font-size .9em
           color #444
           a
             margin-right grid
+            display inline
           .edit
             display none
         .comment

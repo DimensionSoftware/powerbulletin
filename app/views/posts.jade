@@ -16,7 +16,7 @@ if typeof(post) !== 'undefined'
       .date(data-time=post.created_iso)= post.created_human
       .edit-container
       if post.html
-        .post.body!= post.html
+        .body!= post.html
       .reply
       mixin _post_actions(post)
     .children

@@ -191,40 +191,6 @@ header
     a, em
       color #555
 
-  .forum.light
-    .header
-      color #777
-    .header::before
-      position absolute
-      opacity 0
-
-  .forum:first-child
-    .header::before
-      top 50px
-  .forum
-    background-color rgba(255,255,255,.94)
-    .header
-      font-weight 100
-      font-size 2.1em
-      line-height 2em
-    .post
-      .profile
-        background-color #fafafa
-        border 1px solid #eee
-      .actions a
-        color highlight-color2
-      .post-edit
-        .sceditor-container
-          border-top-left-radius 0
-          .sceditor-toolbar
-            background-color #fafafa
-            border-bottom 1px solid #eee
-        .title
-          border-bottom-left-radius 0
-          border-bottom-right-radius 0
-    .user
-      font-weight bold
-
 #paginator
   border 1px solid black
   background-color rgba(100, 100, 100, 0.901961)
@@ -238,12 +204,11 @@ header
 ///}}}
 //{{{ Footer
 footer::before
-  border-top 1px solid #bbb
-  box-shadow 4px 0 6px 1px #ddd
+  border-top 1px solid #ccc
+  box-shadow 0 0 15px 2px #fff
   top 0
   left 0
   right 0
-  height 1px
   content ''
   position absolute
 footer

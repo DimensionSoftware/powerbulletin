@@ -1,7 +1,8 @@
 
 // Structure applied to ...
 
-// Mutant-specific states
+// Mutant-specific States
+//{{{ - homepage
 html.homepage
   #main_content
     .header
@@ -9,6 +10,36 @@ html.homepage
     .header, .container
       width 90%
       margin 0 auto
+    .forum.light
+      .header
+        color #777
+      .header::before
+        position absolute
+        opacity 0
+    .forum:first-child
+      .header::before
+        top 50px
+    .forum
+      //background-color rgba(255,255,255,.94)
+      .header
+        font-weight 100
+        font-size 2.1em
+        line-height 2em
+      .post
+        .profile
+          background-color #fafafa
+          border 1px solid #eee
+        .post-edit
+          .sceditor-container
+            border-top-left-radius 0
+            .sceditor-toolbar
+              background-color #fafafa
+              border-bottom 1px solid #eee
+          .title
+            border-bottom-left-radius 0
+            border-bottom-right-radius 0
+      .user
+        font-weight bold
   .extra
     .orderer::before
       border-left 15px solid #ddd
@@ -41,30 +72,34 @@ html.homepage
           font-size .95em
           animation-name tiny-grow
           animation-duration .25s
-
+//}}}
+//{{{ - forum & profile
 html.forum, html.profile
-  .thread
-    border-bottom 1px solid transparent
-    border-top 1px solid transparent
-  .thread.active
-    border-bottom 1px solid #aaa
-    border-top 1px solid #aaa
-    background-color rgba(50, 50, 50, .2)
-    transition background-color .1s ease-out
-    .title
-      color #fff
-      text-shadow 0 0 2px #000
-  .forum, .threads
-    border-bottom 1px solid #eee
-    a
-      text-decoration none
-      color #eee
-      display block
+  #main_content
+    .thread
       border-bottom 1px solid transparent
-    a:hover
-      color #fff
-      transition color .3s ease-out
-      animation-name none
+      border-top 1px solid transparent
+    .thread.active
+      border-bottom 1px solid #aaa
+      border-top 1px solid #aaa
+      background-color rgba(50, 50, 50, .2)
+      transition background-color .1s ease-out
+      .title
+        color #fff
+        text-shadow 0 0 2px #000
+    .forum, .threads
+      .post
+        border-bottom 1px solid rgba(200,200,200,.5)
+        .actions a
+          color highlight-color2
+  #left_content
+    .threads
+      .thread
+        a
+          color #eee
+          text-decoration none
+
+//}}}
 
 html.profile
   h1
