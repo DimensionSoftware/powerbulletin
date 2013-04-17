@@ -1,7 +1,6 @@
 .hits
   each hit in elres.hits
     div
+      h2.title #{hit._source.title}
       if env != 'production'
-        strong #{hit._source.title} (score: #{hit._score})
-      else
-        strong #{hit._source.title}
+        div score: #{hit._score}

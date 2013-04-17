@@ -240,4 +240,9 @@ flip-background = (w, cur, direction='down') ->
 
       next!
 
+  on-load:
+    (window, next) ->
+      layout-on-load window
+      next!
+
 # vim:fdm=indent
