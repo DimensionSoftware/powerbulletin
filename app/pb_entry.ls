@@ -16,7 +16,15 @@ $ui = $ window.ui
 
 # map keyup events to search (would be prettier with bacon ; )
 $d.on \keyup, '#query', __.debounce((->
-  $ui.trigger \search, {q: $(@).val!}
+  # action keys are keys that actually trigger the search
+  # includes printable chars and backspace
+  printable =  32 <= it.which <= 127
+  is-backspace = it.which is 8
+  console.log {it.which}
+
+  if printable or is-backspace
+    $ui.trigger \search, {q: $(@).val!}
+
   return true
 ), 250)
 
