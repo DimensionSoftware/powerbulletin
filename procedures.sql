@@ -130,6 +130,10 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
         uri := u.uri-for-post(nextval)
         plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [uri, nextval]
 
+      # associate tags to post
+      if post.tags
+        add-tags-to-post = plv8.find_function('add_tags_to_post')
+        add-tags-to-post nextval, post.tags
 
     else
       errors.push "forum_id invalid: #{post.forum_id}"
