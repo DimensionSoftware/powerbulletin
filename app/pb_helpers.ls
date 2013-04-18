@@ -81,4 +81,19 @@ require! {
   m = $ '.menu'
   b.css \left ((m.width! - b.width!)/2 + m.offset!left)
 
+@flip-background = (w, cur, direction=\down) ->
+  clear-timeout w.bg-anim if w.bg-anim
+  last = w.$ \.bg.active
+  next = w.$ \#forum_bg_ + cur.data \id
+  next.css \display \block
+  unless last.length
+    next.add-class \active
+  else
+    w.bg-anim := set-timeout (->
+      last.css \top if direction is \down then -300 else 300 # stage animation
+      last.remove-class \active
+      next.add-class \active # ... and switch!
+      w.bg-anim = 0
+    ), 100
+
 # vim:fdm=indent
