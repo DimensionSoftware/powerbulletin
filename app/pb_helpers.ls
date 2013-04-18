@@ -44,12 +44,19 @@ require! {
 
 # handle in-line editing
 @edit-post = (id, data={}) ->
-  focus  = (e) -> set-timeout (-> e.find 'input[type="text"]' .focus!), 100
+  focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 100
   render = (sel, locals) ~>
-    e = $ sel
-    @render-and-append window, sel, \post_edit, post:locals, (e) ->
-      e.find \.sceditor-container .prepend(e.find \.title)
-      focus e
+    $e = $ sel
+    @render-and-append window, sel, \post_edit, post:locals, ($e) ->
+      # init sceditor
+      $e.find \textarea.body .sceditor(
+        plugins:        \bbcode
+        style:          "#{window.cache_url}/local/jquery.sceditor.default.min.css"
+        toolbar:        'bold,italic,underline|image,link,youtube|emoticon|source'
+        width:          \85%
+        emoticons-root: "#{window.cache_url}/")
+      $e.find \.sceditor-container .prepend($e.find \.title) # place title inside
+      focus $e
 
   if id is true # render new
     scroll-to-top!
@@ -58,23 +65,14 @@ require! {
     render \.forum, data
   else # fetch existing & render
     scroll-to-edit!
-    console.log data
     sel = "\#post_#{id}"
     e   = $ sel
-    unless e.find(\.container:first:visible).length # guard
+    unless e.find(\.post-edit:first:visible).length # guard
       $.get "/resources/posts/#{id}" (p) ->
         render sel, p
         e .add-class \editing
     else
       focus e
-
-  # init sceditor
-  $ \textarea.body .sceditor(
-    plugins:        \bbcode
-    style:          "#{window.cache_url}/local/jquery.sceditor.default.min.css"
-    toolbar:        'bold,italic,underline|image,link,youtube|emoticon|source'
-    width:          \85%
-    emoticons-root: "#{window.cache_url}/")
 
 @align-breadcrumb = ->
   b = $ '#breadcrumb'
