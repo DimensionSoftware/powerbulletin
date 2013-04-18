@@ -22,7 +22,8 @@ CREATE FUNCTION post(id JSON) RETURNS JSON AS $$
   SELECT p.*,
   a.name AS user_name ,
   u.photo AS user_photo,
-  (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count
+  (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count,
+  ARRAY(SELECT tags.name FROM tags JOIN tags_posts ON tags.id = tags_posts.tag_id WHERE tags_posts.post_id = p.id) AS tags
   FROM posts p
   JOIN users u ON p.user_id = u.id
   JOIN aliases a ON u.id = a.user_id
