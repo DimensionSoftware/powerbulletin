@@ -8,11 +8,6 @@ layout-static = (w, mutator) ->
   w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
   w.marshal \mutator, mutator                        # js
 
-  # handle active forum background
-  if mutator is \homepage and w.last-mutator is not \homepage
-    w.$ '.bg-set' .remove!
-    w.$ '.bg' .each -> w.$ this .add-class \bg-set .remove!prepend-to w.$ 'body'
-
   # handle active main menu
   if mutator is not \homepage or not w.last-mutator
     w.$ 'header .menu' .find '.active' .remove-class \active # remove prev
@@ -46,6 +41,10 @@ layout-on-load = (w) ->
     (window, next) ->
       layout-static window, \homepage
       window.render-mutant \main_content \homepage
+
+      # handle active forum background
+      window.$ '.bg-set' .remove!
+      window.$ '.bg' .each -> window.$ this .add-class \bg-set .remove!prepend-to window.$ 'body'
       next!
   on-initial:
     (window, next) ->
@@ -115,8 +114,9 @@ layout-on-load = (w) ->
       try
         window.$ '.forum .container' .masonry(\destroy)
         window.$ '.forum .header' .waypoint(\destroy)
-        window.$ '.forum' .waypoint(\destroy)
+        window.$ \.forum .waypoint(\destroy)
         window.$ '#order li' .waypoint(\destroy)
+        window.$ \.bg .remove!
       catch
         # do nothing
       next!
