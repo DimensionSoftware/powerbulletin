@@ -142,7 +142,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- Add tags to system
--- @param   Array  tags    an array of strings
+-- @param   Array  tags    an array of tags as strings
 -- @returns Array          an array of tag objects
 DROP FUNCTION IF EXISTS add_tags(tags JSON);
 CREATE FUNCTION add_tags(tags JSON) RETURNS JSON AS $$
@@ -161,8 +161,8 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- Associate tags to a post
 -- @param   Number post_id
--- @param   Array  tags    an array of tag objects
--- @returns Array          an array of tag objects?
+-- @param   Array  tags    an array of tags as strings
+-- @returns Array          an array of tag objects
 DROP FUNCTION IF EXISTS add_tags_to_post(post_id JSON, tags JSON);
 CREATE FUNCTION add_tags_to_post(post_id JSON, tags JSON) RETURNS JSON AS $$
   require! \prelude
@@ -173,7 +173,7 @@ CREATE FUNCTION add_tags_to_post(post_id JSON, tags JSON) RETURNS JSON AS $$
   sql         = 'INSERT INTO tags_posts (tag_id, post_id) VALUES ' + (["($#{parse-int(i)+2}, $1)" for v,i in added-tags]).join(', ')
   params      = [post_id, ...(prelude.map (.id), added-tags)]
   res         = plv8.execute sql, params
-  plv8.elog WARNING, "add-tags-to-post -> #{JSON.stringify(res)}"
+  plv8.elog WARNING, "add-tags-to-post -> #{JSON.stringify({res, params})}"
   return added-tags
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
