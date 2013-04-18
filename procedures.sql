@@ -22,7 +22,8 @@ CREATE FUNCTION post(id JSON) RETURNS JSON AS $$
   SELECT p.*,
   a.name AS user_name ,
   u.photo AS user_photo,
-  (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count
+  (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count,
+  ARRAY(SELECT tags.name FROM tags JOIN tags_posts ON tags.id = tags_posts.tag_id WHERE tags_posts.post_id = p.id) AS tags
   FROM posts p
   JOIN users u ON p.user_id = u.id
   JOIN aliases a ON u.id = a.user_id
@@ -130,6 +131,10 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
         uri := u.uri-for-post(nextval)
         plv8.execute 'UPDATE posts SET uri=$1 WHERE id=$2', [uri, nextval]
 
+      # associate tags to post
+      if post.tags
+        add-tags-to-post = plv8.find_function('add_tags_to_post')
+        add-tags-to-post nextval, post.tags
 
     else
       errors.push "forum_id invalid: #{post.forum_id}"
@@ -138,7 +143,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- Add tags to system
--- @param   Array  tags    an array of strings
+-- @param   Array  tags    an array of tags as strings
 -- @returns Array          an array of tag objects
 DROP FUNCTION IF EXISTS add_tags(tags JSON);
 CREATE FUNCTION add_tags(tags JSON) RETURNS JSON AS $$
@@ -157,8 +162,8 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- Associate tags to a post
 -- @param   Number post_id
--- @param   Array  tags    an array of tag objects
--- @returns Array          an array of tag objects?
+-- @param   Array  tags    an array of tags as strings
+-- @returns Array          an array of tag objects
 DROP FUNCTION IF EXISTS add_tags_to_post(post_id JSON, tags JSON);
 CREATE FUNCTION add_tags_to_post(post_id JSON, tags JSON) RETURNS JSON AS $$
   require! \prelude
@@ -169,7 +174,7 @@ CREATE FUNCTION add_tags_to_post(post_id JSON, tags JSON) RETURNS JSON AS $$
   sql         = 'INSERT INTO tags_posts (tag_id, post_id) VALUES ' + (["($#{parse-int(i)+2}, $1)" for v,i in added-tags]).join(', ')
   params      = [post_id, ...(prelude.map (.id), added-tags)]
   res         = plv8.execute sql, params
-  plv8.elog WARNING, "add-tags-to-post -> #{JSON.stringify(res)}"
+  plv8.elog WARNING, "add-tags-to-post -> #{JSON.stringify({res, params})}"
   return added-tags
 $$ LANGUAGE plls IMMUTABLE STRICT;
 

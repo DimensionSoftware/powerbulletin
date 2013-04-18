@@ -22,11 +22,12 @@ announce = sioa.create-client!
   new     : null
   create  : (req, res, next) ->
     return next(404) unless req.user
-    db = pg.procs
-    post = req.body
+    db           = pg.procs
+    post         = req.body
     post.user_id = req.user.id
-    post.html = h.html post.body
-    post.ip = res.locals.remote-ip
+    post.html    = h.html post.body
+    post.ip      = res.locals.remote-ip
+    post.tags    = h.hash-tags post.body
     err, ap-res <- db.add-post post
     if err then return next err
 
