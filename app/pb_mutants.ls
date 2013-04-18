@@ -44,18 +44,18 @@ layout-on-load = (w) ->
 
       # handle active forum background
       window.$ '.bg-set' .remove!
-      window.$ '.bg' .each -> window.$ this .add-class \bg-set .remove!prepend-to window.$ 'body'
+      window.$ '.bg' .each -> window.$ this .add-class \bg-set .remove!prepend-to window.$ \body
       next!
   on-initial:
     (window, next) ->
       active = window.location.search.match(/order=(\w+)/)?1 || \recent
-      window.jade.render $(\.extra:first)[0], \order_control, active: active
+      window.jade.render $(\.extra:first).0, \order_control, active: active
       next!
   on-load:
     (window, next) ->
       # reflow masonry content
       window.$ '.forum .container' .masonry(
-        item-selector: '.post'
+        item-selector: \.post
         is-animated:   true
         is-fit-width:  true
         is-resizable:  true)
@@ -66,17 +66,17 @@ layout-on-load = (w) ->
         #$ '.forum .header' .waypoint \sticky { offset: -70 }
 
         # forum switches
-        $ '.forum' .waypoint {
-          offset  : '25%',
+        $ \.forum .waypoint {
+          offset  : \25%,
           handler : (direction) ->
             e   = $ this
             eid = e.attr \id
 
             # handle menu active
             id = if direction is \down then eid else
-              $ "\##{eid}" .prev-all '.forum:first' .attr \id
+              $ "\##{eid}" .prev-all \.forum:first .attr \id
             return unless id # guard
-            $ 'header .menu' .find '.active' .remove-class \active # remove prev
+            $ 'header .menu' .find \.active .remove-class \active # remove prev
             cur = $ 'header .menu'
               .find ".#{id.replace /_/ \-}"
               .add-class \active # ...and activate!
@@ -101,7 +101,7 @@ layout-on-load = (w) ->
 
             $ '#order li.active' .remove-class \active
             e .add-class \active # set!
-            order = e.data 'value'
+            order = e.data \value
             path = "/?order=#order"
             if window.current-order then reorder path else window.current-order=order
         }), 100ms
@@ -144,7 +144,7 @@ layout-on-load = (w) ->
       layout-on-load window
 
       $l = $ \#left_content
-      $l.find '.active' .remove-class \active  # set active post
+      $l.find \.active .remove-class \active  # set active post
       $l.find ".thread[data-id='#{active-post-id}']" .add-class \active
 
       # editing handler

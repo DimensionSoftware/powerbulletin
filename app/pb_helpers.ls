@@ -64,10 +64,10 @@ require! {
     data.method = \post
     render \.forum, data
   else # fetch existing & render
-    scroll-to-edit!
     sel = "\#post_#{id}"
     e   = $ sel
-    unless e.find(\.post-edit:first:visible).length # guard
+    unless e.find("\#post_edit_#{id}:visible").length # guard
+      scroll-to-edit!
       $.get "/resources/posts/#{id}" (p) ->
         render sel, p
         e .add-class \editing

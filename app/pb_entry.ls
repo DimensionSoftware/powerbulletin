@@ -28,7 +28,7 @@ window.save-ui = -> # serealize ui state to cookie
     path: '/'
 window.load-ui = -> # restore ui state from cookie
   s  = ($.cookie \s)
-  $l = $ '#left_content'
+  $l = $ \#left_content
   if s
     [searching, collapsed, w] = s.split sep
     w = parseInt w
@@ -36,8 +36,8 @@ window.load-ui = -> # restore ui state from cookie
       $l.toggle-class \wide ($l.width! > 300px))    # ..left nav
     set-timeout (-> # ... & snap
       $ '#main_content .resizable' .transition({padding-left:w + left-offset}, 450ms, \snap)), 200ms
-  if searching is '1' then $ \body .add-class(\searching)
-  if collapsed is '1' then $ \body .add-class(\collapsed)
+  if searching is \1 then $ \body .add-class(\searching)
+  if collapsed is \1 then $ \body .add-class(\collapsed)
   set-timeout align-breadcrumb, 500ms
 
 # waypoints
@@ -46,23 +46,23 @@ $w.resize (__.debounce (-> $.waypoints \refresh; align-breadcrumb!), 800ms)
 # show reply ui
 append-reply-ui = ->
   # find post div
-  $p = $ this .parents('.post:first')
+  $p = $ this .parents(\.post:first)
 
   # append dom for reply ui
-  unless $p.find('.post-edit:visible').length
-    render-and-append window,  $p.find('.reply:first'), \post_edit, (post:
+  unless $p.find('.reply .post-edit:visible').length
+    render-and-append window,  $p.find(\.reply:first), \post_edit, (post:
       method:     \post
       forum_id:   active-forum-id
-      parent_id:  $p.data 'post-id'
+      parent_id:  $p.data \post-id
       is_comment: true), ->
         $p.find('textarea[name="body"]').focus!
   else
-    $p.find('.cancel').click!
+    $p.find('.reply .cancel').click!
 
 censor = ->
   # find post div
-  $p = $(this).parents('.post:first')
-  post-id = $p.data('post-id')
+  $p = $(this).parents(\.post:first)
+  post-id = $p.data(\post-id)
 
   $.post "/resources/posts/#{post-id}/censor", (r) ->
     if r.success

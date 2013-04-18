@@ -1,8 +1,8 @@
 
 mixin post-edit(p)
   action = p.id && '/'+p.id || ''
-  .post-edit.onclick-submit(class=p.is_comment ? 'comment' : '')
-    form#post_edit_form(action="/resources/posts#{action}", method="#{p.method || 'put'}")
+  .post-edit.onclick-submit(id="post_edit_#{p.id}", class=p.is_comment ? 'comment' : '')
+    form(action="/resources/posts#{action}", method="#{p.method || 'put'}")
       if !p.is_comment
         input.title(name='title', type='text', placeholder='Title', value=p.title)
       textarea.body(name='body')= p.body
