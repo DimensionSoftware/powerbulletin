@@ -1,5 +1,5 @@
 require! {
-  furl: './forum_urls'
+  furl: \./forum_urls
 }
 
 # XXX shared by pb_mutants & pb_entry
@@ -10,7 +10,7 @@ require! {
 # double-buffered replace of view with target
 @render-and = (fn, w, target, tmpl, params, cb) -->
   $t = w.$ target  # target
-  $b = w.$ '<div>' # buffer
+  $b = w.$ \<div>  # buffer
   $b.hide!
   $t[fn] $b
   w.jade.render $b.0, tmpl, params
@@ -19,6 +19,8 @@ require! {
 @render-and-append  = @render-and \append
 @render-and-prepend = @render-and \prepend
 
+@is-forum-homepage = (path) ->
+  furl.parse path .type is \forum
 @is-editing = (path) ->
   meta = furl.parse path
   switch meta.type

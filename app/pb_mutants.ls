@@ -1,4 +1,4 @@
-global <<< require './pb_helpers'
+global <<< require \./pb_helpers
 
 # Common
 layout-static = (w, mutator) ->
@@ -9,15 +9,16 @@ layout-static = (w, mutator) ->
   w.marshal \mutator, mutator                        # js
 
   # handle active main menu
-  if mutator is not \homepage or not w.last-mutator
-    w.$ 'header .menu' .find '.active' .remove-class \active # remove prev
-    w.$ 'menu .row' # add current
-      .has ".forum-#{w.active-forum-id}"
-      .find '.title'
-      .add-class \active
-    w.$ "menu .submenu .forum-#{w.active-forum-id}" .parent!add-class \active
+  #if mutator is not \homepage or not w.last-mutator
+  console.log \menu + w.active-forum-id
+  w.$ 'header .menu' .find \.active .remove-class \active # remove prev
+  w.$ 'menu .row' # add current
+    .has ".forum-#{w.active-forum-id}"
+    .find '.title'
+    .add-class \active
+  w.$ "menu .submenu .forum-#{w.active-forum-id}" .parent!add-class \active
 
-layout-on-load = (w) ->
+layout-on-load-resizable = (w) ->
   $ = window.$
   left-offset = 50px
 
@@ -30,11 +31,11 @@ layout-on-load = (w) ->
     min-width: 200px
     max-width: 450px
     resize: (e, ui) ->
-      $l.toggle-class \wide ($l.width! > 300px)         # resize left nav
-      $r.css 'padding-left' (ui.size.width+left-offset) # " resizable
+      $l.toggle-class \wide ($l.width! > 300px)        # resize left nav
+      $r.css \padding-left (ui.size.width+left-offset) # " resizable
       window.save-ui!)
   if $r.length
-    $r.css 'padding-left' ($l.width!+left-offset) # snap
+    $r.css \padding-left ($l.width!+left-offset) # snap
 
 @homepage =
   static:
@@ -43,8 +44,8 @@ layout-on-load = (w) ->
       window.render-mutant \main_content \homepage
 
       # handle active forum background
-      window.$ '.bg-set' .remove!
-      window.$ '.bg' .each -> window.$ this .add-class \bg-set .remove!prepend-to window.$ \body
+      window.$ \.bg-set .remove!
+      window.$ \.bg .each -> window.$ this .add-class \bg-set .remove!prepend-to window.$ \body
       next!
   on-initial:
     (window, next) ->
@@ -125,13 +126,19 @@ layout-on-load = (w) ->
   static:
     (window, next) ->
       layout-static window, \forum
-      window.render-mutant \main_content (if is-editing window.location.pathname then \post_new else \posts)
+      window.render-mutant \main_content if is-editing @furl.path
+        \post_new
+      else if is-forum-homepage @furl.path
+        \homepage
+      else
+        \posts
       window.render-mutant \left_content \nav unless window.last-mutator is \forum
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
       window.marshal \prevPages @prev-pages
+      window.$ \.bg .remove!
       next!
   on-load:
     (window, next) ->
@@ -141,7 +148,7 @@ layout-on-load = (w) ->
 
       align-breadcrumb!
 
-      layout-on-load window
+      layout-on-load-resizable window
 
       $l = $ \#left_content
       $l.find \.active .remove-class \active  # set active post
@@ -187,7 +194,7 @@ layout-on-load = (w) ->
       next!
   on-load:
     (window, next) ->
-      layout-on-load window
+      layout-on-load-resizable window
       next!
   on-mutate:
     (window, next) ->
@@ -217,7 +224,7 @@ layout-on-load = (w) ->
 
   on-load:
     (window, next) ->
-      layout-on-load window
+      layout-on-load-resizable window
       next!
 
 # vim:fdm=indent

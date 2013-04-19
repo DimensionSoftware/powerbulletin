@@ -76,7 +76,7 @@ global <<< require './shared_helpers'
 
 auth-finisher = (req, res, next) ->
   user = req.user
-  first-visit = user.created_human.match /just now/
+  first-visit = user.created_human.match /just now/i
   if first-visit
     res.send """
     <script type="text/javascript">
@@ -173,6 +173,7 @@ auth-finisher = (req, res, next) ->
 
   meta = furl.parse req.path
   console.log meta.type, meta.path
+  res.locals.furl = meta
 
   # guards
   if meta.incomplete

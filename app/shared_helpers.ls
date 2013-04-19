@@ -75,27 +75,27 @@ seconds-to-human-readable = (secs) ->
   timestring
 
 @elapsed-to-human-readable = (secs-ago) ->
-  suffix = 'ago'
-  if secs-ago < 30 then 'just now!'
-  else if secs-ago < 60 then "a moment #{suffix}"
-  else if secs-ago < 120 then "a minute #{suffix}"
-  else if secs-ago < 86400 # within the day
+  suffix = \ago
+  if secs-ago < 30s then 'Just now!'
+  else if secs-ago < 60s then "A moment #{suffix}"
+  else if secs-ago < 120s then "A minute #{suffix}"
+  else if secs-ago < 86400s # within the day
      seconds-to-human-readable(secs-ago)+' '+suffix
-  else if secs-ago < 172800 # within 2 days
+  else if secs-ago < 172800s # within 2 days
     \Yesterday
-  else if secs-ago < 604800 # within the week, use specific day
+  else if secs-ago < 604800s # within the week, use specific day
     d = new Date!
-    d.set-time d.get-time!-(secs-ago*1000)
+    d.set-time d.get-time!-(secs-ago*1000s)
     @pretty-day-name d.get-day!
-  else if secs-ago < 2628000 # within a month
-    weeks = Math.floor secs-ago / 604800
-    if weeks == 1 then "a week #{suffix}" else "#{weeks} weeks #{suffix}"
-  else if secs-ago < 31446925 # within a year
-    months = Math.floor secs-ago / 2628000
-    if months == 1 then "a month #{suffix}" else "#{months} months #{suffix}"
+  else if secs-ago < 2628000s # within a month
+    weeks = Math.floor secs-ago / 604800s
+    if weeks == 1 then "A week #{suffix}" else "#{weeks} weeks #{suffix}"
+  else if secs-ago < 31446925s # within a year
+    months = Math.floor secs-ago / 2628000s
+    if months == 1 then "A month #{suffix}" else "#{months} months #{suffix}"
   else
-    years = Math.floor secs-ago / 31446925
-    if years == 1 then "a year #{suffix}" else "#{years} years #{suffix}"
+    years = Math.floor secs-ago / 31446925s
+    if years == 1 then "A year #{suffix}" else "#{years} years #{suffix}"
 
 # ported from http://erlycoder.com/49/javascript-hash-functions-to-convert-string-into-integer-hash-
 @djb2-hash = (str) ->

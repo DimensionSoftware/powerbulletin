@@ -100,9 +100,9 @@ $ui.on \search, (evt, searchopts) ->
 $d.on \click '.create .no-surf' require-login(->
   $ '#main_content .forum' .html '' # clear canvas
   edit-post is-editing(window.location.pathname), forum_id:window.active-forum-id)
-$d.on \click '.edit.no-surf' require-login(-> edit-post is-editing(window.location.pathname))
+$d.on \click \.edit.no-surf require-login(-> edit-post is-editing(window.location.pathname))
 $d.on \click '.onclick-submit .cancel' ->
-  f = $ this .closest '.post-edit'  # form
+  f = $ this .closest \.post-edit  # form
   f.hide 350ms \easeOutExpo
   remove-editing-url!
 $d.on \click '.onclick-submit input[type="submit"]' require-login(
@@ -110,29 +110,29 @@ $d.on \click '.onclick-submit input[type="submit"]' require-login(
     f = $ this .closest(\.post-edit) # form
     p = f .closest(\.editing)        # post being edited
     # render updated post
-    p.find '.title' .html(data.0?title)
-    p.find '.body'  .html(data.0?body)
+    p.find \.title .html(data.0?title)
+    p.find \.body  .html(data.0?body)
     f.remove-class \fadein .hide(300s) # & hide
     remove-editing-url!
     false))
 
-$d.on \click '.onclick-append-reply-ui' require-login(append-reply-ui)
-$d.on \click '.onclick-censor-post' require-login(censor)
+$d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
+$d.on \click \.onclick-censor-post require-login(censor)
 #}}}
 #{{{ - login delegated events
 window.switch-and-focus = (remove, add, focus-on) ->
-  $e = $ '.fancybox-wrap'
+  $e = $ \.fancybox-wrap
   $e.remove-class("#remove shake slide").add-class(add)
   setTimeout (-> $e.add-class \slide; $ focus-on .focus! ), 10ms
-$d.on \click '.onclick-close' ->
+$d.on \click \.onclick-close ->
   $.fancybox.close!
-$d.on \click '.onclick-show-login' ->
+$d.on \click \.onclick-show-login ->
   switch-and-focus 'on-forgot on-register' \on-login '#auth input[name=username]'
-$d.on \click '.onclick-show-forgot' ->
+$d.on \click \.onclick-show-forgot ->
   switch-and-focus \on-error \on-forgot '#auth input[name=email]'
-$d.on \click '.onclick-show-choose' ->
+$d.on \click \.onclick-show-choose ->
   switch-and-focus \on-login \on-choose '#auth input[name=username]'
-$d.on \click '.onclick-show-register' ->
+$d.on \click \.onclick-show-register ->
   switch-and-focus \on-login \on-register '#auth input[name=username]'
 
 # catch esc key events on input boxes for login box

@@ -1,15 +1,15 @@
 require! {
   \mutant
   \cssmin
-  mmw: 'mutant/middleware'
-  pg: './postgres'
-  mw: './middleware'
+  mmw: \mutant/middleware
+  pg:  \./postgres
+  mw:  \./middleware
 
-  mutants:  './pb_mutants'
-  handlers: './pb_handlers'
-  resources:'./pb_resources'
+  mutants:   \./pb_mutants
+  handlers:  \./pb_handlers
+  resources: \./pb_resources
 }
-global <<< require './helpers' # pull helpers (common) into global (play nice :)
+global <<< require \./helpers # pull helpers (common) into global (play nice :)
 
 #{{{ API Resources
 app.resource 'resources/posts', resources.posts
