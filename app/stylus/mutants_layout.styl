@@ -156,8 +156,8 @@ html.forum, html.profile, html.search
         transition all .1s ease-out 1.3s
       .post-edit
         margin-bottom (grid*2)
-        margin-left (grid)
-        margin-top (grid*2)
+        margin-left grid
+        margin-top (grid/2)
         .sceditor-container
           overflow hidden
           margin-bottom (grid*2)
@@ -178,7 +178,7 @@ html.forum, html.profile, html.search
           display block
           margin grid 0
           min-height 40px
-      .post:first-child
+      .post.head
         padding-top (grid/2)
       .post
         position relative
@@ -232,13 +232,16 @@ html.forum, html.profile, html.search
           letter-spacing 0
           transition opacity .3s, letter-spacing .09s
       .children
-        margin-left (grid/2)
         .children
           margin-left (grid*3)
           .user, .date
-            display inline-block
+            display inline
+            font-size .87em
           .date
-            margin-left grid
+            margin-left (grid/2)
+          .profile
+            width 40px
+            height 32px
 //}}}
 
 #paginator, #order

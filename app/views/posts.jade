@@ -5,7 +5,7 @@ include _breadcrumb
 //- posts tree
 if typeof(post) !== 'undefined'
   .forum.resizable
-    .post(id="post_#{post.id}", data-user-id=post.user_id, data-post-id=post.id)
+    .post.head(id="post_#{post.id}", data-user-id=post.user_id, data-post-id=post.id)
       h3.title= post.title
       .breadcrumb
         mixin _breadcrumb(post)
@@ -20,12 +20,12 @@ if typeof(post) !== 'undefined'
       .reply
       mixin _post_actions(post)
     .children
-    if post.posts.length
-      div(data-page=page)
-        each sp in post.posts
-          mixin _post(sp, 0)
-    else if post.morePosts
-      a(href='#') Load more posts ...
+      if post.posts.length
+        div(data-page=page)
+          each sp in post.posts
+            mixin _post(sp, 0)
+      else if post.morePosts
+        a(href='#') Load more posts ...
 else //- placeholder
   .forum.resizable
 
