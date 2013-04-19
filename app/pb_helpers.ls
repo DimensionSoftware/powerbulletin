@@ -74,10 +74,16 @@ require! {
     else
       focus e
 
+@respond-resize = ->
+  w = $ window
+  if w.width! <= 800 then $ \body .add-class \collapsed
+
 @align-breadcrumb = ->
-  b = $ '#breadcrumb'
-  m = $ '.menu'
-  b.css \left ((m.width! - b.width!)/2 + m.offset!left)
+  b = $ \#breadcrumb
+  m = $ \#main_content
+  l = $ \#left_content
+  pos = (m.width!-b.width!)/2
+  b.transition {left:(if pos < l.width! then l.width! else pos)}, 300ms \easeOutExpo
 
 @flip-background = (w, cur, direction=\down) ->
   clear-timeout w.bg-anim if w.bg-anim

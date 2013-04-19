@@ -41,7 +41,7 @@ window.load-ui = -> # restore ui state from cookie
   set-timeout align-breadcrumb, 500ms
 
 # waypoints
-$w.resize (__.debounce (-> $.waypoints \refresh; align-breadcrumb!), 800ms)
+$w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-breadcrumb!), 800ms)
 
 # show reply ui
 append-reply-ui = ->

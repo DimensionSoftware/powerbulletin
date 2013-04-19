@@ -204,15 +204,20 @@ header
 //{{{ Footer
 footer::before
   border-top 1px solid #ccc
-  box-shadow 0 0 15px 2px #fff
+  box-shadow 0 -2px 9px 0 #555
   top 0
   left 0
   right 0
   content ''
   position absolute
+footer:hover::before
+  border-top 1px solid #bbb
+  box-shadow 0 -2px 11px 0 #333
+  transition box-shadow .1s ease-out
+footer:hover
+  color #666
 footer
   opacity 0
-  color #ddd
   background-color #f7f7f7
   text-align center
   color #777
@@ -227,7 +232,7 @@ footer
 body.scrolled
   header::after
     border-bottom 1px solid #aaa
-    box-shadow 0 2px 8px 2px #ccc
+    box-shadow 0 2px 6px 0px #ccc
     bottom -3px
     left 0
     right 0
