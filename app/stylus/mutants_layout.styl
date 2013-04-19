@@ -186,6 +186,7 @@ html.forum, html.profile, html.search
         margin-right (grid*4)
         padding-top (grid*2)
         .breadcrumb
+          margin-bottom (grid*2)
           span, em
             display none
         .profile
@@ -194,7 +195,7 @@ html.forum, html.profile, html.search
         img
           max-width 100%
         .title
-          margin 0 0 (grid) 0
+          margin 0 0 (grid/2) 0
           font-size 1.5em
         .title, .user
           text-transform capitalize
@@ -234,6 +235,8 @@ html.forum, html.profile, html.search
       .children
         .children
           margin-left (grid*3)
+          .body
+            padding-top (grid/2)
           .user, .date
             display inline
             font-size .87em
