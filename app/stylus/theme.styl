@@ -48,8 +48,6 @@ header
           background-image linear-gradient(bottom, #fff 43px, #ffe0c0)
           color #000
         .title.active
-          //animation-name grow
-          //animation-duration .25s
           position relative!important
           z-index 50!important
           color #333
@@ -83,22 +81,17 @@ header
           border-bottom-left-radius 10px
           background-color #fff
           color #333
-          .row:last-child
-            border-bottom 1px solid transparent
-            border-bottom-right-radius 8px
-            border-bottom-left-radius 8px
-          .row:last-child:hover
-            border-bottom 1px solid highlight-color2
           .row.active, .row:hover
             background-image linear-gradient(bottom, #fff 10px, #fed)
-            border-bottom 1px solid #ddd
-            border-left 1px solid highlight-color2
-            border-right 1px solid highlight-color2
+            border-bottom 1px solid highlight-color2
+            border-left 1px solid #ddd
+            border-right 1px solid #ccc
             a
               color #000
               animation-name none
           .row
             line-height (grid*4)
+            border-right 1px solid transparent
             border-left 1px solid transparent
             border-bottom 1px solid #f0f0f0
             a
@@ -142,9 +135,9 @@ header
 //}}}
 //{{{ Left side
 #left_content:hover::after
-  border-right 1px solid #333
+  border-right 1px solid #555
   width 1px
-  background-color #999
+  background-color #fff
 #left_content::after
   position absolute
   right 0
@@ -153,7 +146,7 @@ header
   bottom 0
   border-right 1px solid #666
 #left_content
-  background-color rgba(100,100,100,0.7)
+  background-color rgba(100,100,100,0.3)
   .handle:hover
     background-color #777
     color #fff
@@ -168,7 +161,6 @@ header
     letter-spacing -1px
     font-size 1.1em
     margin (grid / 2) 0
-    text-shadow 0 -1px 0 #222
 //}}}
 //{{{ Main Content
 #main_content
@@ -203,7 +195,7 @@ header
 ///}}}
 //{{{ Footer
 footer::before
-  border-top 1px solid #ccc
+  border-top 1px solid #aaa
   box-shadow 0 -2px 9px 0 #555
   top 0
   left 0

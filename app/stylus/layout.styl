@@ -70,15 +70,25 @@ header
         z-index 7
         .submenu
           opacity 1
-          top 53px
-          min-width 250px
+          //top 53px
+          top 34px
+          min-width 850px
           transition top .25s ease-out .3s, opacity .3s ease-out .4s
           .row:hover
             text-indent 19px
             transition text-indent .1s ease-out
+      .row:nth-last-child(3)
+        .submenu
+          margin-left -100px
+      .row:nth-last-child(2)
+        .submenu
+          margin-left -250px
+      .row:last-child
+        .submenu
+          margin-left -400px
       .row
         cursor pointer
-        display inline-block
+        display inline
         line-height header-height
         font-size 16px
         .title
@@ -93,12 +103,12 @@ header
           position absolute
           padding 0
           margin 0
-          .row:first-child
-            padding-top (grid/2)
-          .row:last-child
-            padding-bottom (grid/2)
           .row
-            display block
+            width 250px
+            height 40px
+            display inline-block
+            text-align center
+            float left
             font-size 14px
             text-indent (grid * 2)
             a
@@ -209,7 +219,7 @@ body.scrolled
       .menu
         > .row:hover
           .submenu
-            top 34px
+            top 25px
         .row
           top 1px
           line-height header-scrolled-height + 1
