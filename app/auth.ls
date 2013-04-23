@@ -22,13 +22,13 @@ export passport-for-site = {}
 # site-aware passport middleware wrappers
 export mw =
   initialize: (req, res, next) ~>
-    domain   = res.locals.site?.domain
+    domain   = res.locals.site?domain
     if passport = @passport-for-site[domain]
       passport.mw-initialize(req, res, next)
     else
       next(404)
   session: (req, res, next) ~>
-    domain   = res.locals.site?.domain
+    domain   = res.locals.site?domain
     if passport = @passport-for-site[domain]
       passport.mw-session(req, res, next)
     else
@@ -41,7 +41,7 @@ export hash = (s) ->
 #
 export valid-password = (user, password) ->
   return false if not user or not password
-  bcrypt.compare-sync password, user?.auths?.local?.password
+  bcrypt.compare-sync password, user?auths?local?password
 
 export verify-string = ->
   buffer = crypto.random-bytes(32)
@@ -140,8 +140,8 @@ pg.init ~>
       done(null, user)
 
     facebook-options =
-      client-ID     : site.config?.facebook-client-id     or \x
-      client-secret : site.config?.facebook-client-secret or \x
+      client-ID     : site.config?facebook-client-id     or \x
+      client-secret : site.config?facebook-client-secret or \x
       callback-URL  : "http://#{domain}/auth/facebook/return"
     pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
       console.warn 'facebook profile', profile
@@ -161,8 +161,8 @@ pg.init ~>
       done(err, user)
 
     twitter-options =
-      consumer-key    : site.config?.twitter-consumer-key    or \x
-      consumer-secret : site.config?.twitter-consumer-secret or \x
+      consumer-key    : site.config?twitter-consumer-key    or \x
+      consumer-secret : site.config?twitter-consumer-secret or \x
       callback-URL    : "http://#{domain}/auth/twitter/return"
     pass.use new passport-twitter.Strategy twitter-options, (access-token, refresh-token, profile, done) ->
       console.warn 'twitter profile', profile
@@ -182,8 +182,8 @@ pg.init ~>
       done(err, user)
 
     google-options =
-      client-ID     : site.config?.google-consumer-key    or \x
-      client-secret : site.config?.google-consumer-secret or \x
+      client-ID     : site.config?google-consumer-key    or \x
+      client-secret : site.config?google-consumer-secret or \x
       callback-URL  : "https://#{domain}/auth/google/return"
     pass.use new passport-google-oauth.OAuth2Strategy google-options, (access-token, refresh-token, profile, done) ->
       console.warn 'google profile', profile

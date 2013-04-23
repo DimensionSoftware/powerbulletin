@@ -74,8 +74,8 @@ require! {
 
   # finally, default
   def = res.locals.geo or {}
-  unless def?.latitude  then def.latitude  = 0
-  unless def?.longitude then def.longitude = 0
+  unless def?latitude  then def.latitude  = 0
+  unless def?longitude then def.longitude = 0
   res.locals.geo = def
   next!
 
