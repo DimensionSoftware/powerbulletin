@@ -8,9 +8,10 @@ unless File.file? '/etc/APT_GET_INITIAL_UPDATE_COMPLETED'
   end
 end
 
-user 'powerbulletin' do
-  system true
+user 'pb' do
   shell '/bin/false'
+  home '/pb'
+  supports :manage_home => true
 end
 
 # other stuff...
