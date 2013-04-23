@@ -18,25 +18,6 @@ layout-static = (w, mutator) ->
     .add-class \active
   w.$ "menu .submenu .forum-#{w.active-forum-id}" .parent!add-class \active
 
-layout-on-load-resizable = (w) ->
-  $ = window.$
-  left-offset = 50px
-
-  # handle main content
-  $r = $ '#main_content .resizable'
-
-  # handle left
-  $l = $ \#left_content
-  $l.resizable(
-    min-width: 200px
-    max-width: 450px
-    resize: (e, ui) ->
-      $l.toggle-class \wide ($l.width! > 300px)        # resize left nav
-      $r.css \padding-left (ui.size.width+left-offset) # " resizable
-      window.save-ui!)
-  if $r.length
-    $r.css \padding-left ($l.width!+left-offset) # snap
-
 @homepage =
   static:
     (window, next) ->
@@ -150,13 +131,10 @@ layout-on-load-resizable = (w) ->
   on-load:
     (window, next) ->
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
-      window.surf-data = window.active-forum-id
       flip-background window, cur
       $ = window.$
 
       align-breadcrumb!
-
-      layout-on-load-resizable window
 
       $l = $ \#left_content
       $l.find \.active .remove-class \active  # set active post
@@ -203,10 +181,6 @@ layout-on-load-resizable = (w) ->
       window.render-mutant \left_content \profile
       window.render-mutant \main_content \posts_by_user
       next!
-  on-load:
-    (window, next) ->
-      layout-on-load-resizable window
-      next!
   on-mutate:
     (window, next) ->
       scroll-to-top!
@@ -231,11 +205,6 @@ layout-on-load-resizable = (w) ->
         # represent state of filters in ui
         window.$(\#query).val @searchopts.q
 
-      next!
-
-  on-load:
-    (window, next) ->
-      layout-on-load-resizable window
       next!
 
 # vim:fdm=indent
