@@ -4,26 +4,15 @@
   .logo
     font-size 1.1em!important
     margin-top 4px!important
-  header
-    height 30px
-    .menu
-      .row
-        line-height 30px!important
-    .search
-      float right!important
-      position relative!important
-      top 0!important
-      right 0!important
-      .query
-        height 9px
+  body.collapsed
+    grid(100%,475px)
+    #main_content
+      .forum
+        padding-left (grid*4)!important
   body
     grid(100%,475px)
     #left_chrome
       display none!important
-    #main_content
-      margin 0 auto 0 grid!important
-      .forum
-        padding-left 0!important
   
 @media screen and (max-width: 500px)
   header
@@ -36,11 +25,12 @@
       padding 25px 15px!important
       .forum
         margin-bottom grid!important
-        padding-left 0!important
   body.scrolled
+    #main_content
+      #breadcrumb
+        top 0
     .container
       margin-left 0!important
-      padding 25px 15px!important
     #left_chrome
       display none!important
 

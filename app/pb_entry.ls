@@ -147,18 +147,18 @@ $d.on \keyup '.fancybox-inner input' ->
 $d.on \click 'html header .menu a.title' window.mutate
 
 # header expansion
-$d.on \click 'header' (e) ->
+$d.on \click \header (e) ->
   $ \body .remove-class \searching if e.target.class-name.index-of(\toggler) > -1 # guard
   $ '#query' .focus!
   save-ui!
-$d.on \keypress '#query' -> $ \body .add-class \searching; save-ui!
+$d.on \keypress \#query -> $ \body .add-class \searching; save-ui!
 #}}}
 #{{{ - left_nav handle
-$d.on \click '#handle' ->
-  $l = $ '#left_content'
+$d.on \click \#handle ->
+  $l = $ \#left_content
   $ \body .toggle-class \collapsed
   $ '#main_content .resizable'
-    .css('padding-left', ($l.width! + left-offset))
+    .css(\padding-left, ($l.width! + left-offset))
   save-ui!
 #}}}
 
