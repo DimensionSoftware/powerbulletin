@@ -485,12 +485,36 @@ CREATE FUNCTION homepage_forums(forum_id JSON, sort JSON) RETURNS JSON AS $$
   return u.homepage-forums forum_id, sort
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
--- XXX: this should really be called 'forum' since it represents one forum (and nested forums)
--- but until the template is updated to not be plural i'll leave it
-DROP FUNCTION IF EXISTS forums(forum_id JSON);
-CREATE FUNCTION forums(forum_id JSON) RETURNS JSON AS $$
+DROP FUNCTION IF EXISTS forum_summary(forum_id JSON, thread_limit JSON, post_limit JSON);
+CREATE FUNCTION forum_summary(forum_id JSON, thread_limit JSON, post_limit JSON) RETURNS JSON AS $$
   require! u
-  return u.forums forum_id, \popular
+  tpf = u.top-posts(\recent, thread_limit)
+  latest-threads = tpf(forum_id)
+
+  forumf = plv8.find_function(\forum)
+  forum = forumf(forum_id)
+
+  # This query can be moved into its own proc and generalized so that it can
+  # provide a flat view of a thread.
+  sql = """
+  SELECT
+    p.*,
+    a.name user_name,
+    u.photo user_photo
+  FROM posts p
+  JOIN aliases a ON a.user_id = p.user_id
+  JOIN users u ON u.id = a.user_id
+  JOIN forums f ON f.id = p.forum_id
+  JOIN sites s ON s.id = f.site_id
+  LEFT JOIN moderations m ON m.post_id = p.id
+  WHERE a.site_id = s.id
+    AND p.thread_id = $1
+    AND p.parent_id IS NOT NULL
+  ORDER BY p.created DESC
+  LIMIT $2
+  """
+  forum.posts = [ (t.posts = plv8.execute(sql, [t.id, post_limit])) and t for t in latest-threads ]
+  return [forum]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 DROP FUNCTION IF EXISTS top_threads(forum_id JSON, s JSON);
