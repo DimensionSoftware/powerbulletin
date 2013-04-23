@@ -1,53 +1,34 @@
 global <<< require \./pb_helpers
 
 # Common
-layout-static = (w, mutator) ->
-  w.last-mutator = w.mutator # save last
+layout-static = (w, mutator, active-forum-id=0) ->
+  # save last
+  w.last-mutator         = w.mutator
+  w.last-active-forum-id = w.active-forum-id
   # indicate current
   forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
   w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
   w.marshal \mutator, mutator                        # js
 
   # handle active main menu
-  #if mutator is not \homepage or not w.last-mutator
-  console.log \menu + w.active-forum-id
+  fid = active-forum-id or w.active-forum-id
   w.$ 'header .menu' .find \.active .remove-class \active # remove prev
   w.$ 'menu .row' # add current
-    .has ".forum-#{w.active-forum-id}"
-    .find '.title'
+    .has ".forum-#fid"
+    .find \.title
     .add-class \active
-  w.$ "menu .submenu .forum-#{w.active-forum-id}" .parent!add-class \active
-
-layout-on-load-resizable = (w) ->
-  $ = window.$
-  left-offset = 50px
-
-  # handle main content
-  $r = $ '#main_content .resizable'
-  $p = $ \#paginator
-
-  # handle left
-  $l = $ \#left_content
-  $l.resizable(
-    min-width: 200px
-    max-width: 450px
-    resize: (e, ui) ->
-      $l.toggle-class \wide ($l.width! > 300px)         # resize left nav
-      $r.css 'padding-left' (ui.size.width+left-offset) # " resizable
-      $p.css \left (ui.size.width)
-      window.save-ui!)
-  if $r.length
-    $r.css \padding-left ($l.width!+left-offset) # snap
+  w.$ "menu .submenu .forum-#fid" .parent!add-class \active
 
 @homepage =
   static:
     (window, next) ->
-      layout-static window, \homepage
       window.render-mutant \main_content \homepage
 
       # handle active forum background
       window.$ \.bg-set .remove!
       window.$ \.bg .each -> window.$ this .add-class \bg-set .remove!prepend-to window.$ \body
+
+      layout-static window, \homepage
       next!
   on-initial:
     (window, next) ->
@@ -127,20 +108,27 @@ layout-on-load-resizable = (w) ->
 @forum =
   static:
     (window, next) ->
-      layout-static window, \forum
+      # render main content
       window.render-mutant \main_content if is-editing @furl.path
         \post_new
       else if is-forum-homepage @furl.path
         \homepage
       else
         \posts
-      window.render-mutant \left_content \nav unless window.last-mutator is \forum
+
+      # render left content
+      if window.last-mutator != \forum or window.last-active-forum-id+'' != @surf-data
+        window.render-mutant \left_content \nav # refresh on forum & mutant change
+
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
       window.marshal \prevPages @prev-pages
-      window.$ \.bg .remove!
+
+      window.$ \.bg .remove! # XXX kill background (for now)
+
+      layout-static window, \forum, @active-forum-id
       next!
   on-load:
     (window, next) ->
@@ -149,8 +137,6 @@ layout-on-load-resizable = (w) ->
       $ = window.$
 
       align-breadcrumb!
-
-      layout-on-load-resizable window
 
       $l = $ \#left_content
       $l.find \.active .remove-class \active  # set active post
@@ -161,8 +147,11 @@ layout-on-load-resizable = (w) ->
       if id then edit-post id, forum_id:window.active-forum-id
 
       # add impression
-      post-id = $('#main_content .post:first').data('post-id')
+      post-id = $('#main_content .post:first').data(\post-id)
       $.post "/resources/posts/#{post-id}/impression" if post-id
+
+      # default surf-data (no refresh of left nav)
+      window.surf-data = window.active-forum-id
 
       render-sp = (sub-post) ->
         window.jade.templates._sub_post({window.cache_url, sub-post})
@@ -190,13 +179,9 @@ layout-on-load-resizable = (w) ->
 @profile =
   static:
     (window, next) ->
-      layout-static window, \profile
       window.render-mutant \left_content \profile
       window.render-mutant \main_content \posts_by_user
-      next!
-  on-load:
-    (window, next) ->
-      layout-on-load-resizable window
+      layout-static window, \profile
       next!
   on-mutate:
     (window, next) ->
@@ -214,7 +199,6 @@ layout-on-load-resizable = (w) ->
 @search =
   static:
     (window, next) ->
-      layout-static window, \search
       window.render-mutant \left_content \hits
       window.render-mutant \main_content \search
 
@@ -222,11 +206,7 @@ layout-on-load-resizable = (w) ->
         # represent state of filters in ui
         window.$(\#query).val @searchopts.q
 
-      next!
-
-  on-load:
-    (window, next) ->
-      layout-on-load-resizable window
+      layout-static window, \search
       next!
 
 # vim:fdm=indent

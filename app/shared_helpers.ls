@@ -9,7 +9,7 @@ require! {
   (s |> reverse) .split /(\d{3})/ .filter (.length) .join \, |> reverse
 
 @title-case = (s) ->
-  s?.replace /[\w]\S*/g, (word) ->
+  s?replace /[\w]\S*/g, (word) ->
     if word==word.to-upper-case! # oh n0ez--a potential caps-locker
       if word.index-of('.')>-1 or word.index-of('-')>-1 or word.length<6 # it's an abbreviation, after all
         return word
@@ -18,7 +18,7 @@ require! {
     word
 
 @ellipse = (s, len, suffix='...') ->
-  if s?.length > len
+  if s?length > len
     s = s.substr(0 len) # chop
     s = s.substr(0 s.last-index-of(' '))+suffix if s.last-index-of(' ') > 0 # trunc
   s

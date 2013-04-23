@@ -38,9 +38,9 @@ in-site = (socket, site) ~>
     socket.in(s).emit \enter-site, u # not braoadcast
 
 user-from-session = (s, cb) ->
-  unless s?.passport?.user
+  unless s?passport?user
     return cb 'invalid session', null
-  [name, site_id] = s?.passport?.user?.split ':'
+  [name, site_id] = s?passport?user?split \:
   #console.warn "deserialize", name, site_id
   (err, user) <- db.usr {name, site_id}
   cb err, user

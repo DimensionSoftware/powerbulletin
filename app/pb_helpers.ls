@@ -78,7 +78,7 @@ require! {
 
 @respond-resize = ->
   w = $ window
-  if w.width! <= 800 then $ \body .add-class \collapsed
+  if w.width! <= 800px then $ \body .add-class \collapsed
 
 @align-breadcrumb = ->
   b = $ \#breadcrumb
