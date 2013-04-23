@@ -1,6 +1,6 @@
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
-window.helpers = require './shared_helpers'
-window.mutants = require './pb_mutants'
+window.helpers = require \./shared_helpers
+window.mutants = require \./pb_mutants
 
 # shortcuts
 $w = $ window
@@ -15,26 +15,29 @@ threshold = 10px # snap
 #### main   ###############>======-- -   -
 ##
 #{{{ Bootstrap Mutant Common
-window.mutant  = require '../lib/mutant/mutant'
+window.mutant  = require \../lib/mutant/mutant
 window.mutate  = (event) ->
   $e = $ this
   return if $e.has-class \require-login and !user # guard
   href = $e .attr \href
   return false unless href # guard
-  return true if href?.match /#/
+  return true if href?match /#/
   params = {}
-  params.no-surf = true if $e.has-class \no-surf
+
+  # surfing
+  params.no-surf   = true if $e.has-class \no-surf             # no need to fetch surf data
+  params.surf-data = $e.data \surf or window.surf-data or void # favor element data on click
   History.push-state params, '', href
   false
 
-$d.on \click 'a.mutant' window.mutate # hijack urls
+$d.on \click \a.mutant window.mutate # hijack urls
 
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url    = History.get-page-url!replace /\/$/, ''
   params = History.get-state!data
-  unless params?.no-surf # DOM update handled outside mutant
-    $.get url, _surf:mutator, (r) ->
-      $d.attr \title, r.locals.title if r.locals?.title # set title
+  unless params?no-surf # DOM update handled outside mutant
+    $.get url, {_surf:mutator, _surf-data:params.surf-data}, (r) ->
+      $d.attr \title, r.locals.title if r.locals?title # set title
       on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
       on-unload window, -> # cleanup & run next mutant
         window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}
@@ -51,13 +54,13 @@ window.scroll-to-top = (cb=->) ->
   cb!
 
 window.awesome-scroll-to = (e, duration, cb=->) ->
-  e     := $ e
+  e      = $ e
   ms     = duration or 500ms
   offset = 200px
 
   return unless e.length # guard
   if is-ie or is-opera
-    e[0].scroll-into-view!
+    e.0.scroll-into-view!
     cb!
   else # animate
     dst-scroll = Math.round(e.position!top) - offset

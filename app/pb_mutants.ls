@@ -9,12 +9,10 @@ layout-static = (w, mutator) ->
   w.marshal \mutator, mutator                        # js
 
   # handle active main menu
-  #if mutator is not \homepage or not w.last-mutator
-  console.log \menu + w.active-forum-id
   w.$ 'header .menu' .find \.active .remove-class \active # remove prev
   w.$ 'menu .row' # add current
     .has ".forum-#{w.active-forum-id}"
-    .find '.title'
+    .find \.title
     .add-class \active
   w.$ "menu .submenu .forum-#{w.active-forum-id}" .parent!add-class \active
 
@@ -126,13 +124,19 @@ layout-on-load-resizable = (w) ->
   static:
     (window, next) ->
       layout-static window, \forum
+
+      # render main content
       window.render-mutant \main_content if is-editing @furl.path
         \post_new
       else if is-forum-homepage @furl.path
         \homepage
       else
         \posts
-      window.render-mutant \left_content \nav unless window.last-mutator is \forum
+
+      # render left content
+      if window.last-mutator is not \forum or @active-forum-id is not @surf-data
+        window.render-mutant \left_content \nav # refresh on forum & mutant change
+
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
       window.marshal \page @page
@@ -159,7 +163,7 @@ layout-on-load-resizable = (w) ->
       if id then edit-post id, forum_id:window.active-forum-id
 
       # add impression
-      post-id = $('#main_content .post:first').data('post-id')
+      post-id = $('#main_content .post:first').data(\post-id)
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
       render-sp = (sub-post) ->

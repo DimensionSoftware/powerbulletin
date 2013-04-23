@@ -10,6 +10,7 @@ unpick = (obj, keys) -> # strip unnecessary values from mutate phase
 export mutant-layout = (jade-layout, mutants) ->
   fn = (req, res, next) ->
     if req.query._surf then req.surfing = true
+    res.locals.surf-data = req.query._surf-data
     res.locals.q = req.param(\q) or '' # layout query string
 
     res.mutant = (template-nm, opts={}) ->
