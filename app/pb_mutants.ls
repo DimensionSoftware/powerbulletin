@@ -24,6 +24,7 @@ layout-on-load-resizable = (w) ->
 
   # handle main content
   $r = $ '#main_content .resizable'
+  $p = $ \#paginator
 
   # handle left
   $l = $ \#left_content
@@ -31,8 +32,9 @@ layout-on-load-resizable = (w) ->
     min-width: 200px
     max-width: 450px
     resize: (e, ui) ->
-      $l.toggle-class \wide ($l.width! > 300px)        # resize left nav
-      $r.css \padding-left (ui.size.width+left-offset) # " resizable
+      $l.toggle-class \wide ($l.width! > 300px)         # resize left nav
+      $r.css 'padding-left' (ui.size.width+left-offset) # " resizable
+      $p.css \left (ui.size.width)
       window.save-ui!)
   if $r.length
     $r.css \padding-left ($l.width!+left-offset) # snap
