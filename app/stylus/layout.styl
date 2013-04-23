@@ -175,8 +175,14 @@ header
   padding-top (grid*8)
   z-index 5
   #breadcrumb
-    top -100px
     position fixed
+    top -100px
+    text-align center
+    z-index 12
+    border-bottom-left-radius 3px
+    border-bottom-right-radius 3px
+    padding (grid/2+2) (grid*2.5) 3px (grid*2.5)
+    font-size .9em
   .breadcrumb
     margin-bottom (grid/2)
     text-transform capitalize
@@ -240,13 +246,7 @@ body.scrolled
       transition top .2s ease-out
   #main_content
     #breadcrumb
-      text-align center
-      z-index 12
       top (header-scrolled-height+3)
-      border-bottom-left-radius 3px
-      border-bottom-right-radius 3px
-      padding (grid/2+2) (grid*2.5) 3px (grid*2.5)
-      font-size .9em
       transition top .3s ease-out
   footer
     opacity 1

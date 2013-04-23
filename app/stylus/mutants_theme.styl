@@ -29,6 +29,7 @@ html.homepage
         .profile
           background-color #fafafa
           border 1px solid #eee
+          font-weight bold
         .post-edit
           .sceditor-container
             border-top-left-radius 0
@@ -81,16 +82,22 @@ html.homepage
 html.forum, html.profile
   #main_content
     .forum, .threads
+      .children + .post:nth-last-child(2)
+          border-bottom 1px solid transparent
       .post:hover
-        border-bottom 1px solid rgba(200,200,200,.8)
-      .post
         border-bottom 1px solid rgba(200,200,200,.5)
-        .actions a
-          color highlight-color2
+      .post
+        border-bottom 1px solid rgba(200,200,200,.2)
+      .children
+        .children
+          .body, .date, .user span
+            color #555
+      .actions a
+        color highlight-color2
   #left_content
     .threads
       .thread
-        border-bottom 1px solid transparent
+        border-bottom 1px solid rgba(100,100,100,.1)
         border-top 1px solid transparent
         .title
           text-shadow none
@@ -99,6 +106,8 @@ html.forum, html.profile
           color #555
           text-decoration none
       .thread:hover
+        border-bottom 1px solid rgba(100,100,100,.3)
+        transition border-bottom .5s ease-out
         a
           color #333
       .thread.active:hover
