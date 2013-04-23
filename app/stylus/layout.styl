@@ -248,6 +248,9 @@ body.scrolled
     #breadcrumb
       top (header-scrolled-height+3)
       transition top .3s ease-out
+  #paginator
+    top (header-scrolled-height+4)
+    bottom (footer-height-grid)
   footer
     opacity 1
     font-size .85em
@@ -323,6 +326,8 @@ body.searching
   #main_content
     padding-top (header-height+header-searching-height)!important
     transition padding-top .2s ease-out
+  #paginator
+    top (header-searching-height+4)
 body.searching.scrolled
   #main_content
     #breadcrumb
@@ -403,11 +408,15 @@ body.searching.scrolled
 
 #paginator
   position fixed
-  width 100px
-  height 200px
-  bottom 100px
-  right 0
+  overflow hidden
+  width 12px
+  height auto
+  top header-height
+  bottom 0
+  left 0
   z-index 9
+  padding-top header-height*2
+  padding-bottom footer-height
 
   a.page
     display block
@@ -416,6 +425,10 @@ body.searching.scrolled
 
   a.page:hover, a.active
     text-decoration none
+
+#paginator:hover
+  transition width .1s .3s ease-out
+  width 18px
 
 //}}}
 //{{{ Background layer

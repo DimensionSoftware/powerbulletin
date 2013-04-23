@@ -35,7 +35,7 @@ sub-forums = (id, fields='*') ->
   """
   plv8.execute sql, [id]
 
-top-posts = (sort, limit, fields='p.*') ->
+export top-posts = (sort, limit, fields='p.*') ->
   sort-expr =
     switch sort
     | \recent   => 'p.created DESC, id ASC'
@@ -51,9 +51,11 @@ top-posts = (sort, limit, fields='p.*') ->
   FROM aliases a
   JOIN posts p ON a.user_id=p.user_id
   JOIN users u ON u.id=a.user_id
+  JOIN forums f ON f.id = p.forum_id
+  JOIN sites s ON s.id=f.site_id
   LEFT JOIN posts p2 ON p2.thread_id=p.id
   LEFT JOIN moderations m ON m.post_id=p.id
-  WHERE a.site_id=1
+  WHERE a.site_id=s.id
     AND p.parent_id IS NULL
     AND p.forum_id=$1
     AND m.post_id IS NULL
