@@ -91,11 +91,11 @@ if cluster.is-master
   console.log "[1;30;30m @ #{new Date()}[0;m"
   proc.title = 'pb-supervisor'
   app.configure \production, -> # write pidfile
-    fs.write-file-sync "#{cvars.tmp}/powerbulletin.pid", proc.pid
-    id = \powerbulletin
+    fs.write-file-sync "#{cvars.tmp}/pb.pid", proc.pid
+    id = \pb
     try # ...and drop privileges
       proc.setuid id
-      proc.setgid id
+      #proc.setgid id
     catch e
       console.log "Unable to setuid/setgid #{id}: #{e}"
 
