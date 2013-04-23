@@ -1,6 +1,6 @@
 { "workers":1
 , "base_js_urls":
-  [ "//swarm.pb.com/js/inject.js"
+  [ "http://swarm.powerbulletin.com/js/inject.js"
   ]
 , "cache_url": "//muscache.pb.com"
 , "cache2_url": "//muscache2.pb.com"
