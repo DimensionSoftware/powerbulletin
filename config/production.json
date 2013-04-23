@@ -1,9 +1,11 @@
-{
-  "host": "powerbulletin.com",
-  "workers": 4,
-
-  "base_js_urls":
+{ "workers": 2
+, "base_js_urls":
   [ "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
   , "//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"
   ]
+, "cache_url"  : "//muscache-stage.powerbulletin.com"
+, "cache2_url" : "//muscache-stage2.powerbulletin.com"
+, "cache3_url" : "//muscache-stage3.powerbulletin.com"
+, "cache4_url" : "//muscache-stage4.powerbulletin.com"
+, "cache5_url" : "//muscache-stage5.powerbulletin.com"
 }

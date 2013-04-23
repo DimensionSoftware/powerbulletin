@@ -1,23 +1,21 @@
+DROP SCHEMA IF EXISTS procs CASCADE;
+CREATE SCHEMA procs;
 
 -- {{{ Docs
-DROP FUNCTION IF EXISTS doc(site_id JSON, type JSON, key JSON);
-CREATE FUNCTION doc(site_id JSON, type JSON, key JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.doc(site_id JSON, type JSON, key JSON) RETURNS JSON AS $$
   return require(\u).doc site_id, type, key
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS put_doc(site_id JSON, type JSON, key JSON, val JSON);
-CREATE FUNCTION put_doc(site_id JSON, type JSON, key JSON, val JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.put_doc(site_id JSON, type JSON, key JSON, val JSON) RETURNS JSON AS $$
   return require(\u).put-doc site_id, type, key, val
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 -- Posts {{{
-DROP FUNCTION IF EXISTS owns_post(post_id JSON, user_id JSON);
-CREATE FUNCTION owns_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.owns_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
   return plv8.execute('SELECT id FROM posts WHERE id=$1 AND user_id=$2', [post_id, user_id])
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS post(id JSON);
-CREATE FUNCTION post(id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.post(id JSON) RETURNS JSON AS $$
   sql = '''
   SELECT p.*,
   a.name AS user_name ,
@@ -32,8 +30,7 @@ CREATE FUNCTION post(id JSON) RETURNS JSON AS $$
   return plv8.execute(sql, [id])?0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS posts_by_user(usr JSON);
-CREATE FUNCTION posts_by_user(usr JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.posts_by_user(usr JSON) RETURNS JSON AS $$
   sql = '''
   SELECT
   p.*,
@@ -51,13 +48,12 @@ CREATE FUNCTION posts_by_user(usr JSON) RETURNS JSON AS $$
   return plv8.execute(sql, [usr.site_id, usr.name])
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS edit_post(usr JSON, post JSON);
-CREATE FUNCTION edit_post(usr JSON, post JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.edit_post(usr JSON, post JSON) RETURNS JSON AS $$
   require! <[u validations]>
   errors = validations.post(post)
 
   # check ownership & access
-  fn = plv8.find_function('owns_post')
+  fn = plv8.find_function('procs.owns_post')
   r = fn(post.id, usr.id)
   errors.push "Higher access required" unless r.length
   unless errors.length
@@ -74,8 +70,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param String body
 --   @param String html
 -- @returns Object
-DROP FUNCTION IF EXISTS add_post(post JSON);
-CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.add_post(post JSON) RETURNS JSON AS $$
   var uri
   require! <[u validations]>
   errors = validations.post(post)
@@ -133,7 +128,7 @@ CREATE FUNCTION add_post(post JSON) RETURNS JSON AS $$
 
       # associate tags to post
       if post.tags
-        add-tags-to-post = plv8.find_function('add_tags_to_post')
+        add-tags-to-post = plv8.find_function('procs.add_tags_to_post')
         add-tags-to-post nextval, post.tags
 
     else
@@ -145,8 +140,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- Add tags to system
 -- @param   Array  tags    an array of tags as strings
 -- @returns Array          an array of tag objects
-DROP FUNCTION IF EXISTS add_tags(tags JSON);
-CREATE FUNCTION add_tags(tags JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.add_tags(tags JSON) RETURNS JSON AS $$
   add-tag = (tag) ->
     sql = '''
     INSERT INTO tags (name) SELECT $1::varchar WHERE NOT EXISTS (SELECT name FROM tags WHERE name = $1) RETURNING *
@@ -164,12 +158,11 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- @param   Number post_id
 -- @param   Array  tags    an array of tags as strings
 -- @returns Array          an array of tag objects
-DROP FUNCTION IF EXISTS add_tags_to_post(post_id JSON, tags JSON);
-CREATE FUNCTION add_tags_to_post(post_id JSON, tags JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.add_tags_to_post(post_id JSON, tags JSON) RETURNS JSON AS $$
   require! \prelude
   if not tags or tags.length == 0 then return null
   unique-tags = prelude.unique tags
-  add-tags    = plv8.find_function('add_tags')
+  add-tags    = plv8.find_function('procs.add_tags')
   added-tags  = add-tags unique-tags
   sql         = 'INSERT INTO tags_posts (tag_id, post_id) VALUES ' + (["($#{parse-int(i)+2}, $1)" for v,i in added-tags]).join(', ')
   params      = [post_id, ...(prelude.map (.id), added-tags)]
@@ -178,8 +171,7 @@ CREATE FUNCTION add_tags_to_post(post_id JSON, tags JSON) RETURNS JSON AS $$
   return added-tags
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS archive_post(post_id JSON);
-CREATE FUNCTION archive_post(post_id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.archive_post(post_id JSON) RETURNS JSON AS $$
   require! u
   [{forum_id}] = plv8.execute "SELECT forum_id FROM posts WHERE id=$1", [post_id]
   [{site_id}] = plv8.execute 'SELECT site_id FROM forums WHERE forum_id=$1', [forum_id]
@@ -187,15 +179,13 @@ CREATE FUNCTION archive_post(post_id JSON) RETURNS JSON AS $$
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS sub_posts_tree(site_id JSON, post_id JSON, lim JSON, oft JSON);
-CREATE FUNCTION sub_posts_tree(site_id JSON, post_id JSON, lim JSON, oft JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.sub_posts_tree(site_id JSON, post_id JSON, lim JSON, oft JSON) RETURNS JSON AS $$
   require! u
   return u.sub-posts-tree site_id, post_id, lim, oft
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 
-DROP FUNCTION IF EXISTS find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON);
-CREATE FUNCTION find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON) RETURNS JSON AS $$
   thing = plv8.execute(sel, sel_params)
   return thing[0] if thing.length > 0
   plv8.execute(ins, ins_params)
@@ -213,8 +203,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param Number site_id      aliases.site_id
 --   @param String name         aliases.name
 --   @param String verify       aliases.verify
-DROP FUNCTION IF EXISTS find_or_create_user(usr JSON);
-CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.find_or_create_user(usr JSON) RETURNS JSON AS $$
   sel = '''
   SELECT u.id, u.created, a.site_id, a.name, auths.type, auths.profile
   FROM users u
@@ -247,7 +236,7 @@ CREATE FUNCTION find_or_create_user(usr JSON) RETURNS JSON AS $$
     * usr.name
     * usr.verify
 
-  find-or-create = plv8.find_function('find_or_create')
+  find-or-create = plv8.find_function('procs.find_or_create')
   return find-or-create(sel, sel-params, ins, ins-params)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -262,8 +251,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param Number site_id      aliases.site_id
 --   @param String name         aliases.name
 --   @param String verify       aliases.verify
-DROP FUNCTION IF EXISTS register_local_user(usr JSON);
-CREATE FUNCTION register_local_user(usr JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.register_local_user(usr JSON) RETURNS JSON AS $$
   ins = '''
   WITH u AS (
       INSERT INTO users (email) VALUES ($1)
@@ -287,8 +275,7 @@ CREATE FUNCTION register_local_user(usr JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- XXX - need site_id
-DROP FUNCTION IF EXISTS unique_name(usr JSON);
-CREATE FUNCTION unique_name(usr JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.unique_name(usr JSON) RETURNS JSON AS $$
   sql = '''
   SELECT name FROM aliases WHERE name=$1 AND site_id=$2
   '''
@@ -298,8 +285,7 @@ CREATE FUNCTION unique_name(usr JSON) RETURNS JSON AS $$
   return JSON.stringify n # XXX why stringify??!
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS name_exists(usr JSON);
-CREATE FUNCTION name_exists(usr JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.name_exists(usr JSON) RETURNS JSON AS $$
   sql = '''
   SELECT user_id, name FROM aliases WHERE name = $1 and site_id = $2
   '''
@@ -311,8 +297,7 @@ CREATE FUNCTION name_exists(usr JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- change alias
-DROP FUNCTION IF EXISTS change_alias(usr JSON);
-CREATE FUNCTION change_alias(usr JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.change_alias(usr JSON) RETURNS JSON AS $$
   sql = '''
   UPDATE aliases SET name = $1 WHERE user_id = $2 AND site_id = $3
     RETURNING *
@@ -321,8 +306,7 @@ CREATE FUNCTION change_alias(usr JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- find an alias by site_id and verify string
-DROP FUNCTION IF EXISTS alias_by_verify(site_id JSON, verify JSON);
-CREATE FUNCTION alias_by_verify(site_id JSON, verify JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.alias_by_verify(site_id JSON, verify JSON) RETURNS JSON AS $$
   sql = '''
   SELECT * FROM aliases WHERE site_id = $1 AND verify = $2
   '''
@@ -330,8 +314,7 @@ CREATE FUNCTION alias_by_verify(site_id JSON, verify JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 --
-DROP FUNCTION IF EXISTS verify_user(site_id JSON, verify JSON);
-CREATE FUNCTION verify_user(site_id JSON, verify JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.verify_user(site_id JSON, verify JSON) RETURNS JSON AS $$
   sql = '''
   UPDATE aliases SET verified = true WHERE site_id = $1 AND verify = $2 RETURNING *
   '''
@@ -342,8 +325,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param String  name       user name
 --   @param Integer site_id    site id
 -- @returns Object user        user with all auth objects
-DROP FUNCTION IF EXISTS usr(usr JSON);
-CREATE FUNCTION usr(usr JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
   sql = """
   SELECT
     u.id, u.photo, u.email,
@@ -378,8 +360,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 -- {{{ Sites & Domains
 -- @param String domain
-DROP FUNCTION IF EXISTS site_by_domain(domain JSON);
-CREATE FUNCTION site_by_domain(domain JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.site_by_domain(domain JSON) RETURNS JSON AS $$
   sql = """
   SELECT s.*, d.name AS domain
   FROM sites s JOIN domains d ON s.id = d.site_id
@@ -390,8 +371,7 @@ CREATE FUNCTION site_by_domain(domain JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- @param Integer id
-DROP FUNCTION IF EXISTS site_by_id(id JSON);
-CREATE FUNCTION site_by_id(id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.site_by_id(id JSON) RETURNS JSON AS $$
   sql = """
   SELECT s.*, d.name AS domain
   FROM sites s JOIN domains d ON s.id = d.site_id
@@ -401,8 +381,7 @@ CREATE FUNCTION site_by_id(id JSON) RETURNS JSON AS $$
   return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS update_site(site JSON);
-CREATE FUNCTION update_site(site JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.update_site(site JSON) RETURNS JSON AS $$
   sql = """
   UPDATE sites SET name = $1, config = $2, user_id = $3 WHERE id = $4
     RETURNING *
@@ -411,8 +390,7 @@ CREATE FUNCTION update_site(site JSON) RETURNS JSON AS $$
   return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS domains();
-CREATE FUNCTION domains() RETURNS JSON AS $$
+CREATE FUNCTION procs.domains() RETURNS JSON AS $$
   sql = """
   SELECT name FROM domains
   """
@@ -422,8 +400,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- }}}
 
 -- XXX sort is used but will need to be reworked for geospatial
-DROP FUNCTION IF EXISTS forum_doc(site_id JSON, sort JSON, uri JSON);
-CREATE FUNCTION forum_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.forum_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
   require! u
   res = plv8.execute('SELECT id FROM forums WHERE site_id=$1 AND uri=$2', [site_id, uri])
   if forum-id = res[0]?.id
@@ -434,8 +411,7 @@ CREATE FUNCTION forum_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS add_thread_impression(thread_id JSON);
-CREATE FUNCTION add_thread_impression(thread_id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.add_thread_impression(thread_id JSON) RETURNS JSON AS $$
   if not thread_id or thread_id is \undefined
     return false
   sql = '''
@@ -445,8 +421,7 @@ CREATE FUNCTION add_thread_impression(thread_id JSON) RETURNS JSON AS $$
   return res[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS build_all_uris(site_id JSON);
-CREATE FUNCTION build_all_uris(site_id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.build_all_uris(site_id JSON) RETURNS JSON AS $$
   require! u
   forums = plv8.execute 'SELECT id FROM forums WHERE site_id=$1', [site_id]
   posts = plv8.execute 'SELECT p.id FROM posts p JOIN forums f ON f.id=forum_id WHERE f.site_id=$1', [site_id]
@@ -462,8 +437,7 @@ CREATE FUNCTION build_all_uris(site_id JSON) RETURNS JSON AS $$
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS ban_patterns_for_forum(forum_id JSON);
-CREATE FUNCTION ban_patterns_for_forum(forum_id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.ban_patterns_for_forum(forum_id JSON) RETURNS JSON AS $$
   if f = plv8.execute('SELECT parent_id, uri FROM forums WHERE id=$1', [forum_id])[0]
     bans = []
     bans.push '^/$' unless f.parent_id # sub-forums need not ban the homepage.. maybe??
@@ -473,34 +447,53 @@ CREATE FUNCTION ban_patterns_for_forum(forum_id JSON) RETURNS JSON AS $$
     return []
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS menu(site_id JSON);
-CREATE FUNCTION menu(site_id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.menu(site_id JSON) RETURNS JSON AS $$
   require! u
   return u.menu site_id
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS homepage_forums(forum_id JSON, sort JSON);
-CREATE FUNCTION homepage_forums(forum_id JSON, sort JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.homepage_forums(forum_id JSON, sort JSON) RETURNS JSON AS $$
   require! u
   return u.homepage-forums forum_id, sort
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
--- XXX: this should really be called 'forum' since it represents one forum (and nested forums)
--- but until the template is updated to not be plural i'll leave it
-DROP FUNCTION IF EXISTS forums(forum_id JSON);
-CREATE FUNCTION forums(forum_id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, post_limit JSON) RETURNS JSON AS $$
   require! u
-  return u.forums forum_id, \popular
+  tpf = u.top-posts(\recent, thread_limit)
+  latest-threads = tpf(forum_id)
+
+  forumf = plv8.find_function('procs.forum')
+  forum = forumf(forum_id)
+
+  # This query can be moved into its own proc and generalized so that it can
+  # provide a flat view of a thread.
+  sql = """
+  SELECT
+    p.*,
+    a.name user_name,
+    u.photo user_photo
+  FROM posts p
+  JOIN aliases a ON a.user_id = p.user_id
+  JOIN users u ON u.id = a.user_id
+  JOIN forums f ON f.id = p.forum_id
+  JOIN sites s ON s.id = f.site_id
+  LEFT JOIN moderations m ON m.post_id = p.id
+  WHERE a.site_id = s.id
+    AND p.thread_id = $1
+    AND p.parent_id IS NOT NULL
+  ORDER BY p.created DESC
+  LIMIT $2
+  """
+  forum.posts = [ (t.posts = plv8.execute(sql, [t.id, post_limit])) and t for t in latest-threads ]
+  return [forum]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS top_threads(forum_id JSON, s JSON);
-CREATE FUNCTION top_threads(forum_id JSON, s JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.top_threads(forum_id JSON, s JSON) RETURNS JSON AS $$
   require! u
   return u.top-threads forum_id, s
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS uri_to_forum_id(site_id JSON, uri JSON);
-CREATE FUNCTION uri_to_forum_id(site_id JSON, uri JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.uri_to_forum_id(site_id JSON, uri JSON) RETURNS JSON AS $$
   require! u
   try
     [{id}] = plv8.execute 'SELECT id FROM forums WHERE site_id=$1 AND uri=$2', [site_id, uri]
@@ -509,13 +502,11 @@ CREATE FUNCTION uri_to_forum_id(site_id JSON, uri JSON) RETURNS JSON AS $$
     return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS forum(id JSON);
-CREATE FUNCTION forum(id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.forum(id JSON) RETURNS JSON AS $$
   return plv8.execute('SELECT * FROM forums WHERE id=$1', [id])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS uri_to_post(site_id JSON, uri JSON);
-CREATE FUNCTION uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
   require! u
   try
     sql = '''
@@ -536,8 +527,7 @@ CREATE FUNCTION uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- c is for 'command'
-DROP FUNCTION IF EXISTS censor(c JSON);
-CREATE FUNCTION censor(c JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.censor(c JSON) RETURNS JSON AS $$
   require! {u, validations}
 
   sql = '''
@@ -553,8 +543,7 @@ CREATE FUNCTION censor(c JSON) RETURNS JSON AS $$
   return {success: !errors.length, errors}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS sub_posts_count(parent_id JSON);
-CREATE FUNCTION sub_posts_count(parent_id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.sub_posts_count(parent_id JSON) RETURNS JSON AS $$
   sql = '''
   SELECT COUNT(*)
   FROM posts p
@@ -566,8 +555,7 @@ CREATE FUNCTION sub_posts_count(parent_id JSON) RETURNS JSON AS $$
   return count
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-DROP FUNCTION IF EXISTS idx_posts(lim JSON);
-CREATE FUNCTION idx_posts(lim JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.idx_posts(lim JSON) RETURNS JSON AS $$
   sql = '''
   SELECT id, title, body, user_id
   FROM posts
@@ -580,8 +568,7 @@ CREATE FUNCTION idx_posts(lim JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- acknowledge / flag the post as indexed so we don't try to index it again
-DROP FUNCTION IF EXISTS idx_ack_post(post_id JSON);
-CREATE FUNCTION idx_ack_post(post_id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.idx_ack_post(post_id JSON) RETURNS JSON AS $$
   sql = '''
   UPDATE posts SET index_dirty='f' WHERE id=$1
   '''

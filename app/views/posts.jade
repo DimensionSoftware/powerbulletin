@@ -35,7 +35,11 @@ if typeof(post) !== 'undefined'
 
 if pages.length > 1
   #paginator
-    each pg in pages
-      a.mutant.page(class=(pg == page ? 'active' : ''), href=(pg == 1 ? post.uri : post.uri + '/page/' + pg))= pg
+    .current= page
+    // each pg in pages
+    //   a.mutant.page(class=(pg == page ? 'active' : ''), href=(pg == 1 ? post.uri : post.uri + '/page/' + pg))= pg
+else
+  #paginator
+    .current
 
 //- vim:fdm=marker

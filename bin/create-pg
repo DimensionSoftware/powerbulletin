@@ -11,6 +11,6 @@ bin/load-fixtures
 
 # populate absolute uris from slugs and tree layout
 for i in 1 2 3 4; do
-  bin/psql pb -c "SELECT build_all_uris('$i')"
+  bin/psql pb -c "SELECT procs.build_all_uris('$i')"
   done
 

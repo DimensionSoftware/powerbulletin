@@ -245,7 +245,7 @@ auth-finisher = (req, res, next) ->
     tasks =
       menu        : db.menu res.locals.site.id, _
       forum       : db.forum forum-id, _
-      forums      : db.forums forum-id, _
+      forums      : db.forum-summary forum-id, 10, 5, _
       top-threads : db.top-threads forum-id, \recent, _
 
     err, fdoc <- async.auto tasks

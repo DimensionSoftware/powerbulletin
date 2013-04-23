@@ -35,6 +35,7 @@ window.load-ui = -> # restore ui state from cookie
     $l.transition({width:w}, 500ms, \easeOutExpo -> # restore
       $l.toggle-class \wide ($l.width! > 300px))    # ..left nav
     set-timeout (-> # ... & snap
+      $ \#paginator .transition({left:w}, 450ms, \snap)
       $ '#main_content .resizable' .transition({padding-left:w + left-offset}, 450ms, \snap)), 200ms
   if searching is \1 then $ \body .add-class(\searching)
   if collapsed is \1 then $ \body .add-class(\collapsed)

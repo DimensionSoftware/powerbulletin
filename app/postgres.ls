@@ -20,7 +20,7 @@ init-proc = (proname) ->
     pdollars = if pargs.length then [1 to pargs.length] else []
     pdollars = ["$#{i}" for i in pdollars].join(',')
 
-    err, res <~ @query "SELECT #{proname}(#{pdollars})", pargs
+    err, res <~ @query "SELECT procs.#{proname}(#{pdollars})", pargs
     if err then return cb(err)
 
     json = res[0][proname]
@@ -31,7 +31,7 @@ init-procs = (cb = (->)) ->
   SELECT proname
   FROM pg_catalog.pg_namespace n
   JOIN pg_catalog.pg_proc p ON pronamespace = n.oid
-  WHERE nspname = 'public'
+  WHERE nspname = 'procs'
     AND prorettype='json'::regtype
   '''
   err, res <~ @query sql, []

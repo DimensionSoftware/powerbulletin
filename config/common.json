@@ -1,8 +1,5 @@
-{
-  "secret": "aEouPASNtha.o354333_-#$%Yeeu@#^^.eu$%^eoee",
-  "maxmind": "GeoIPCity.dat",
-  "cache_domain": "pb.com",
-  "cache_prefix": "muscache",
-  "port": "3000",
-  "tmp": "/tmp"
+{ "secret": "aEouPASNtha.o354333_-#$%Yeeu@#^^.eu$%^eoee"
+, "maxmind": "GeoIPCity.dat"
+, "port": "3000"
+, "tmp": "/tmp"
 }

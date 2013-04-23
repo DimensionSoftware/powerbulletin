@@ -2,9 +2,7 @@ global <<< require \./pb_helpers
 
 # Common
 layout-static = (w, mutator, active-forum-id=0) ->
-  # save last
-  w.last-mutator         = w.mutator
-  w.last-active-forum-id = w.active-forum-id
+  # XXX to be run last in mutant static
   # indicate current
   forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
   w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
@@ -117,7 +115,7 @@ layout-static = (w, mutator, active-forum-id=0) ->
         \posts
 
       # render left content
-      if window.last-mutator != \forum or window.last-active-forum-id+'' != @surf-data
+      if window.mutator != \forum or window.active-forum-id+'' != @surf-data
         window.render-mutant \left_content \nav # refresh on forum & mutant change
 
       window.marshal \activeForumId @active-forum-id
@@ -139,7 +137,7 @@ layout-static = (w, mutator, active-forum-id=0) ->
       align-breadcrumb!
 
       $l = $ \#left_content
-      $l.find \.active .remove-class \active  # set active post
+      $l.find \.active .remove-class \active # set active post
       $l.find ".thread[data-id='#{active-post-id}']" .add-class \active
 
       # editing handler
