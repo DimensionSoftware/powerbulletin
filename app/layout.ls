@@ -42,7 +42,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
       on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
       on-unload window, -> # cleanup & run next mutant
         window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}, ->
-         on-load-resizable! 
+         on-load-resizable!
   return false
 #}}}
 #{{{ Resizing behaviors
@@ -97,7 +97,7 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
 # indicate to stylus that view scrolled
 has-scrolled = ->
   st = $w.scrollTop!
-  $ \body .toggle-class 'scrolled' (st > threshold)
+  $ \body .toggle-class \scrolled (st > threshold)
 set-timeout (->
   $w.on \scroll -> has-scrolled!
   has-scrolled!), 1300ms # initially yield
@@ -108,7 +108,7 @@ $d.on \click '.scroll-to' ->
   false
 
 # attach scroll-to-top's
-$d.on \mousedown '.scroll-to-top' ->
+$d.on \mousedown \.scroll-to-top ->
   $ this .attr \title 'Scroll to Top!'
   window.scroll-to-top!
   false
