@@ -4,8 +4,8 @@
   , "//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"
   ]
 , "cache_url"  : "//muscache-stage.powerbulletin.com"
-, "cache2_url" : "//muscache-stage2.powerbulletin.com"
-, "cache3_url" : "//muscache-stage3.powerbulletin.com"
-, "cache4_url" : "//muscache-stage4.powerbulletin.com"
-, "cache5_url" : "//muscache-stage5.powerbulletin.com"
+, "cache2_url" : "//muscache2-stage.powerbulletin.com"
+, "cache3_url" : "//muscache3-stage.powerbulletin.com"
+, "cache4_url" : "//muscache4-stage.powerbulletin.com"
+, "cache5_url" : "//muscache5-stage.powerbulletin.com"
 }
