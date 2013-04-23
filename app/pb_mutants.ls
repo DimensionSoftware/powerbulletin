@@ -2,7 +2,9 @@ global <<< require \./pb_helpers
 
 # Common
 layout-static = (w, mutator) ->
-  w.last-mutator = w.mutator # save last
+  # save last
+  w.last-mutator         = w.mutator
+  w.last-active-forum-id = w.active-forum-id
   # indicate current
   forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
   w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
@@ -134,7 +136,7 @@ layout-on-load-resizable = (w) ->
         \posts
 
       # render left content
-      if window.last-mutator is not \forum or @active-forum-id is not @surf-data
+      if window.last-mutator != \forum or window.last-active-forum-id+'' != @surf-data
         window.render-mutant \left_content \nav # refresh on forum & mutant change
 
       window.marshal \activeForumId @active-forum-id
@@ -142,11 +144,13 @@ layout-on-load-resizable = (w) ->
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
       window.marshal \prevPages @prev-pages
-      window.$ \.bg .remove!
+
+      window.$ \.bg .remove! # XXX kill background (for now)
       next!
   on-load:
     (window, next) ->
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
+      window.surf-data = window.active-forum-id
       flip-background window, cur
       $ = window.$
 
@@ -165,6 +169,9 @@ layout-on-load-resizable = (w) ->
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
       $.post "/resources/posts/#{post-id}/impression" if post-id
+
+      # default surf-data (no refresh of left nav)
+      window.surf-data = window.active-forum-id
 
       render-sp = (sub-post) ->
         window.jade.templates._sub_post({window.cache_url, sub-post})
