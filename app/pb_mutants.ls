@@ -1,7 +1,7 @@
 global <<< require \./pb_helpers
 
 # Common
-layout-static = (w, mutator) ->
+layout-static = (w, mutator, active-forum-id=0) ->
   # save last
   w.last-mutator         = w.mutator
   w.last-active-forum-id = w.active-forum-id
@@ -11,22 +11,24 @@ layout-static = (w, mutator) ->
   w.marshal \mutator, mutator                        # js
 
   # handle active main menu
+  fid = active-forum-id or w.active-forum-id
   w.$ 'header .menu' .find \.active .remove-class \active # remove prev
   w.$ 'menu .row' # add current
-    .has ".forum-#{w.active-forum-id}"
+    .has ".forum-#fid"
     .find \.title
     .add-class \active
-  w.$ "menu .submenu .forum-#{w.active-forum-id}" .parent!add-class \active
+  w.$ "menu .submenu .forum-#fid" .parent!add-class \active
 
 @homepage =
   static:
     (window, next) ->
-      layout-static window, \homepage
       window.render-mutant \main_content \homepage
 
       # handle active forum background
       window.$ \.bg-set .remove!
       window.$ \.bg .each -> window.$ this .add-class \bg-set .remove!prepend-to window.$ \body
+
+      layout-static window, \homepage
       next!
   on-initial:
     (window, next) ->
@@ -106,8 +108,6 @@ layout-static = (w, mutator) ->
 @forum =
   static:
     (window, next) ->
-      layout-static window, \forum
-
       # render main content
       window.render-mutant \main_content if is-editing @furl.path
         \post_new
@@ -127,6 +127,8 @@ layout-static = (w, mutator) ->
       window.marshal \prevPages @prev-pages
 
       window.$ \.bg .remove! # XXX kill background (for now)
+
+      layout-static window, \forum, @active-forum-id
       next!
   on-load:
     (window, next) ->
@@ -177,9 +179,9 @@ layout-static = (w, mutator) ->
 @profile =
   static:
     (window, next) ->
-      layout-static window, \profile
       window.render-mutant \left_content \profile
       window.render-mutant \main_content \posts_by_user
+      layout-static window, \profile
       next!
   on-mutate:
     (window, next) ->
@@ -197,7 +199,6 @@ layout-static = (w, mutator) ->
 @search =
   static:
     (window, next) ->
-      layout-static window, \search
       window.render-mutant \left_content \hits
       window.render-mutant \main_content \search
 
@@ -205,6 +206,7 @@ layout-static = (w, mutator) ->
         # represent state of filters in ui
         window.$(\#query).val @searchopts.q
 
+      layout-static window, \search
       next!
 
 # vim:fdm=indent
