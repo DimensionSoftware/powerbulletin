@@ -108,7 +108,7 @@ layout-static = (w, mutator, active-forum-id=0) ->
   static:
     (window, next) ->
       # render main content
-      window.render-mutant \main_content if is-editing @furl.path
+      window.render-mutant \main_content if is-editing(@furl.path) is true
         \post_new
       else if is-forum-homepage @furl.path
         \homepage
@@ -151,10 +151,6 @@ layout-static = (w, mutator, active-forum-id=0) ->
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
-
-      render-sp = (sub-post) ->
-        window.jade.templates._sub_post({window.cache_url, sub-post})
-
       next!
   on-mutate:
     (window, next) ->
