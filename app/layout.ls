@@ -6,6 +6,14 @@ window.mutants = require \./pb_mutants
 $w = $ window
 $d = $ document
 
+spin = (loading = true) ->
+  $b ||= $('body')
+  if loading
+    $b.add-class \waiting
+  else
+    $b.remove-class \waiting
+
+
 is-ie     = false or \msTransform in document.documentElement.style
 is-moz    = false or \MozBoxSizing in document.documentElement.style
 is-opera  = !!(window.opera and window.opera.version)
@@ -37,12 +45,15 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   params = History.get-state!data
 
   unless params?no-surf # DOM update handled outside mutant
+    spin(true)
     $.get url, {_surf:mutator, _surf-data:params.surf-data}, (r) ->
       $d.attr \title, r.locals.title if r.locals?title # set title
       on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
       on-unload window, -> # cleanup & run next mutant
         window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}, ->
-         on-load-resizable!
+          on-load-resizable!
+          spin(false)
+
   return false
 #}}}
 #{{{ Resizing behaviors
@@ -77,7 +88,7 @@ window.scroll-to-top = (cb=->) ->
 window.awesome-scroll-to = (e, duration, cb=->) ->
   e      = $ e
   ms     = duration or 500ms
-  offset = 200px
+  offset = 10px
 
   return unless e.length # guard
   if is-ie or is-opera

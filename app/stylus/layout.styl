@@ -24,6 +24,9 @@ body
   .scroll-to, .scroll-to-top
     cursor pointer
 
+body.waiting, body.waiting a
+  cursor wait !important
+
 //{{{ Header
 .logo
   margin 0
@@ -354,14 +357,14 @@ body.searching.scrolled
   #auth
     .register
       display block!important
-    .choose, .login, .forgot
+    .choose, .login, .forgot, .reset
       display none!important
 .fancybox-wrap.on-choose
   #auth
     h3
     .choose
       display block!important
-    .login, .forgot
+    .login, .forgot, .reset
       display none!important
     .msg
       visibility hidden
@@ -369,7 +372,13 @@ body.searching.scrolled
   #auth
     .forgot
       display block!important
-    .login, .choose
+    .login, .choose, .reset
+      display none!important
+.fancybox-wrap.on-reset
+  #auth
+    .reset
+      display block!important
+    .login, .choose, .forgot
       display none!important
 .fancybox-wrap.on-error
   #auth
@@ -378,19 +387,19 @@ body.searching.scrolled
       opacity 1
       transition height .5s, opacity 1s
 #auth
-  .choose, .forgot, .register
+  .choose, .forgot, .register, .reset
     h3
       margin-top (grid+2)
       float right
     input[type='submit']
-      margin-top 3px
+      margin-top 4px
   .error
     display none
   h2
     margin 15px 0 20px 15px
     letter-spacing 1px
   h3
-    margin 0 0 10px 0
+    margin 0 5px 10px 0
   .social
     margin 20px auto
     width 313px
@@ -408,7 +417,7 @@ body.searching.scrolled
     width 300px
   input[type="submit"]
     height 42px
-    width 314px
+    width 315px
     margin-left 2px
     margin-top 13px
     display block
