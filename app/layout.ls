@@ -7,10 +7,11 @@ $w = $ window
 $d = $ document
 
 spin = (loading = true) ->
+  $b ||= $('body')
   if loading
-    document.body.style.cursor = \wait
+    $b.add-class \waiting
   else
-    document.body.style.cursor = \default
+    $b.remove-class \waiting
 
 
 is-ie     = false or \msTransform in document.documentElement.style
