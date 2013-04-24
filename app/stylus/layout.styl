@@ -70,12 +70,13 @@ header
         z-index 7
         .submenu
           opacity 1
-          //top 53px
           top 34px
+          max-height 450px
+          height auto
           min-width 850px
-          transition top .25s ease-out .3s, opacity .3s ease-out .4s
+          transition min-width .3s ease-out .3s, max-height .6s ease-out .3s, top .25s ease-out .3s
           .row:hover
-            text-indent 19px
+            text-indent 1px
             transition text-indent .1s ease-out
       .row:nth-last-child(3)
         .submenu
@@ -97,22 +98,26 @@ header
         .submenu
           z-index 65
           top -600px
-          max-height 450px
           overflow-y scroll
           opacity 0
           position absolute
           padding 0
           margin 0
-          .row
-            width 250px
-            height 40px
-            display inline-block
-            text-align center
-            float left
-            font-size 14px
-            text-indent (grid * 2)
-            a
-              display block
+          max-height 50px
+          min-width 600px
+          menu
+            margin-top grid
+            .row
+              width 250px
+              height 40px
+              display inline-block
+              text-align center
+              float left
+              font-size 14px
+              text-indent 4px
+              line-height 42px
+              a
+                display block
     .search
       top 13px
       right 12px

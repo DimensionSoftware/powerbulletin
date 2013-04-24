@@ -41,6 +41,7 @@ layout-static = (w, mutator, active-forum-id=0) ->
         is-animated:   true
         is-fit-width:  true
         is-resizable:  true)
+
       #{{{ Waypoints
       set-timeout (->
         # TODO use breadcrumb for sticky forum headers
