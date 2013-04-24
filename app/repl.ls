@@ -17,6 +17,9 @@ global.db  = -> pg.procs
 global.el  = require \./elastic
 global.elc = -> el.client
 
+global.sioa     = require 'socket.io-announce'
+global.announce = sioa.create-client!
+
 pg.init!
 el.init!
 set-timeout (-> v.init!), 1000ms
