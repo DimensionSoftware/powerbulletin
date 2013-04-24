@@ -157,7 +157,7 @@ else
       colors: true
     })
 
-  app.use connect.logger(immediate: true, format: \dev) if proc.env.NODE_ENV is \development
+  app.use connect.logger(immediate: true, format: \dev) if (app.env is \development or app.env is void)
   app.use express.body-parser!
   app.use express-validator
 
