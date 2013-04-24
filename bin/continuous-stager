@@ -3,7 +3,7 @@ for (( ; ; ))
 do
     git fetch -q
 
-    if git diff remotes/origin/HEAD | grep -qE '.+'
+    if git diff remotes/origin/prod | grep -qE '.+'
     then
         git pull
         echo ':: Killing PowerBulletin'
