@@ -15,8 +15,8 @@ require! {
 announce = sioa.create-client!
 is-editing = /\/(edit|new)\/?([\d+]*)$/
 
-global <<< require './helpers'
-global <<< require './shared_helpers'
+global <<< require \./helpers
+global <<< require \./shared_helpers
 
 @hello = (req, res, next) ->
   console.log req.headers
