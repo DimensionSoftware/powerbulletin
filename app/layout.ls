@@ -6,6 +6,13 @@ window.mutants = require \./pb_mutants
 $w = $ window
 $d = $ document
 
+spin = (loading = true) ->
+  if loading
+    document.body.style.cursor = \wait
+  else
+    document.body.style.cursor = \default
+
+
 is-ie     = false or \msTransform in document.documentElement.style
 is-moz    = false or \MozBoxSizing in document.documentElement.style
 is-opera  = !!(window.opera and window.opera.version)
@@ -37,12 +44,15 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   params = History.get-state!data
 
   unless params?no-surf # DOM update handled outside mutant
+    spin(true)
     $.get url, {_surf:mutator, _surf-data:params.surf-data}, (r) ->
       $d.attr \title, r.locals.title if r.locals?title # set title
       on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
       on-unload window, -> # cleanup & run next mutant
         window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}, ->
-         on-load-resizable!
+          on-load-resizable!
+          spin(false)
+
   return false
 #}}}
 #{{{ Resizing behaviors
