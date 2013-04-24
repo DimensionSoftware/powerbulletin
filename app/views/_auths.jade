@@ -1,3 +1,13 @@
+.reset(style="display:none;")
+  form(method="post", action="/auth/reset-password")
+    label(for="password")
+      h2 Choose a new Password
+        i !
+    fieldset
+      input(id="password", name="password", type="text", placeholder="Your Password")
+      input(type="submit", value="Save")
+      a.msg.onclick-show-login
+        h3 &lt; Back
 .choose(style="display:none;")
   form(method="post", action="/auth/choose-username")
     label(for="username")
