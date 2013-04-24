@@ -6,12 +6,25 @@ window.mutants = require \./pb_mutants
 $w = $ window
 $d = $ document
 
-spin = (loading = true) ->
+var show-timeout-id
+var hide-timeout-id
+window.spin = (loading = true) ->
+  clear-timeout show-timeout-id
+  clear-timeout hide-timeout-id
+
   $b ||= $('body')
-  if loading
+  show = ->
     $b.add-class \waiting
-  else
+  hide = ->
     $b.remove-class \waiting
+
+  if loading
+    time-until-show = 800ms
+    time-until-hide = 5000ms
+    show-timeout-id := set-timeout show, time-until-show
+    hide-timeout-id := set-timeout hide, time-until-hide
+  else
+    hide!
 
 
 is-ie     = false or \msTransform in document.documentElement.style
