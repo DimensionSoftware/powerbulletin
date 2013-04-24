@@ -48,11 +48,12 @@ html
           each f,i in menu
             li.row
               a.title(data-surf=f.id, data-scroll-to="#forum_#{f.id}", class="forum-#{f.id}", href="/#{f.slug}")= f.title
-              menu.submenu
-                if f.forums
-                  each sf,i in f.forums
-                    li.row
-                      a.mutant(class="forum-#{sf.id}", href=sf.uri)= sf.title
+              .submenu
+                menu
+                  if f.forums
+                    each sf,i in f.forums
+                      li.row
+                        a.mutant(class="forum-#{sf.id}", href=sf.uri)= sf.title
         .search
           input#query.query(type='text', placeholder='Search', autocomplete='off')
         .advanced

@@ -49,7 +49,7 @@ header
           color #000
         .title.active
           position relative!important
-          z-index 50!important
+          z-index 75!important
           color #333
           background-color #f3f3f3
           background-image linear-gradient(bottom, #fff 43px, #ffe0c0)
@@ -73,19 +73,22 @@ header
           background-color #eee
           background-image linear-gradient(bottom, #fff 45px, #fed)
         .submenu
-          box-shadow 0 2px 6px 0 #777
-          border-right 1px solid #888
-          border-bottom 2px solid #888
+          box-shadow 0 1px 3px 0 #ccc
+          border-right 1px solid #aaa
+          border-bottom 1px solid #aaa
           border-top 1px solid #bbb
-          border-bottom-right-radius 10px
-          border-bottom-left-radius 10px
+          border-bottom-right-radius 5px
+          border-bottom-left-radius 5px
           background-color #fff
           color #333
           .row.active, .row:hover
             background-image linear-gradient(bottom, #fff 10px, #fed)
             border-bottom 1px solid highlight-color2
-            border-left 1px solid #ddd
-            border-right 1px solid #ccc
+            border-left 1px solid #eee
+            border-right 1px solid #ddd
+            border-radius 3px
+            font-size 15px
+            text-shadow 0 1px 0 #fff
             a
               color #000
               animation-name none
@@ -93,7 +96,7 @@ header
             line-height (grid*4)
             border-right 1px solid transparent
             border-left 1px solid transparent
-            border-bottom 1px solid #f0f0f0
+            border-bottom 1px solid #fafafa
             a
               color #444
               text-decoration none
