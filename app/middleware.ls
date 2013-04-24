@@ -114,7 +114,7 @@ html_509 = fs.read-file-sync('public/509.html').to-string!
   ttl = 3 * 60 * 1000
 
   # how many hits allowed within ttl
-  threshold = 300
+  threshold = 2500
 
   # algorithm:
   # 1. increment ip hit count
