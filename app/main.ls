@@ -16,6 +16,7 @@ require! {
   v: './varnish'
   io-server: './io_server'
   './elastic'
+  'express/node_modules/connect'
 }
 global <<< require \prelude-ls
 
@@ -156,6 +157,7 @@ else
       colors: true
     })
 
+  app.use connect.logger(immediate: true, format: \dev) if proc.env.NODE_ENV is \development
   app.use express.body-parser!
   app.use express-validator
 
