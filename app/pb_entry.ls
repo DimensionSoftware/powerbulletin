@@ -128,7 +128,7 @@ window.switch-and-focus = (remove, add, focus-on) ->
 $d.on \click \.onclick-close ->
   $.fancybox.close!
 $d.on \click \.onclick-show-login ->
-  switch-and-focus 'on-forgot on-register' \on-login '#auth input[name=username]'
+  switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=username]'
 $d.on \click \.onclick-show-forgot ->
   switch-and-focus \on-error \on-forgot '#auth input[name=email]'
 $d.on \click \.onclick-show-choose ->
