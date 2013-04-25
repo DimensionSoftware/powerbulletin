@@ -1,6 +1,7 @@
 #!/bin/sh
 sudo bin/launch-elasticsearch && \
 sudo bin/launch-haproxy && \
-bin/launch-indexer && \
+sudo bin/launch-varnish && \
 bin/launch-redis && \
-sudo bin/launch-varnish 
+bin/launch-indexer && \
+bin/launch-search-notifier

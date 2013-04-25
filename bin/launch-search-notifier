@@ -1,0 +1,8 @@
+#!/bin/bash
+killall pb-search
+sleep 2
+killall -9 pb-search
+
+set -e
+mkdir -p logs
+lsc app/search-notifier-main.ls &>> logs/search-notifier.log &

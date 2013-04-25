@@ -56,7 +56,7 @@ new-poller = (q) ->
 # socket and listen and receive events purely via redis but I don't
 # know how at the moment, announce can only emit events, not receive them
 export init = (unique-port = 9999, cb = (->)) ->
-  process.title = \pb-search-notifier
+  process.title = \pb-search
   pollers = {}
 
   err <~ elastic.init
