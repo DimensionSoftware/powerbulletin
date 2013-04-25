@@ -149,8 +149,6 @@ layout-static = (w, mutator, active-forum-id=0) ->
       post-id = $('#main_content .post:first').data(\post-id)
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
-      # default surf-data (no refresh of left nav)
-      window.surf-data = window.active-forum-id
       next!
   on-mutate:
     (window, next) ->
