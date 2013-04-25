@@ -28,11 +28,6 @@ layout-static = (w, mutator, active-forum-id=0) ->
 
       layout-static window, \homepage
       next!
-  on-initial:
-    (window, next) ->
-      active = window.location.search.match(/order=(\w+)/)?1 || \recent
-      window.jade.render $(\.extra:first).0, \order_control, active: active
-      next!
   on-load:
     (window, next) ->
       # reflow masonry content
@@ -41,6 +36,10 @@ layout-static = (w, mutator, active-forum-id=0) ->
         is-animated:   true
         is-fit-width:  true
         is-resizable:  true)
+
+      # fill-in extra
+      active = window.location.search.match(/order=(\w+)/)?1 or \recent
+      window.jade.render $(\.extra:first).0, \order_control, active: active
 
       #{{{ Waypoints
       set-timeout (->
@@ -100,6 +99,7 @@ layout-static = (w, mutator, active-forum-id=0) ->
         window.$ \.forum .waypoint(\destroy)
         window.$ '#order li' .waypoint(\destroy)
         window.$ \.bg .remove!
+        window.$ $(\.extra:first) .html ''
       catch
         # do nothing
       next!

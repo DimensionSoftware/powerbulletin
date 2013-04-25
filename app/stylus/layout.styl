@@ -77,7 +77,8 @@ header
           max-height 450px
           height auto
           min-width 850px
-          transition min-width .3s ease-out .3s, max-height .6s ease-out .3s, top .25s ease-out .3s
+          transition opacity .5s cubic-bezier(1.000, -0.010, 0.800, 1.530) .3s, min-width .3s cubic-bezier(1.000, -0.010, 0.800, 1.530) .5s, max-height .5s cubic-bezier(1.000, -0.010,
+          0.800, 1.530) .5s, top .45s ease-out .3s
           .row:hover
             text-indent 1px
             transition text-indent .1s ease-out
@@ -104,7 +105,7 @@ header
           overflow-y scroll
           opacity 0
           position absolute
-          padding 0
+          padding 0 0 grid 0
           margin 0
           max-height 50px
           min-width 600px
@@ -144,7 +145,7 @@ header
   z-index 8
   padding-top (grid*3)
   .photo
-    margin-top 8px
+    margin-top 6px
   .handle
     border-radius 20px
     line-height 28px
@@ -169,10 +170,10 @@ header
 .photo
   overflow hidden
   float left
-  padding 2px
+  //padding 2px
   margin-right grid
-  width 44px
-  height 35px
+  width 49px
+  height 39px
   float left
   img
     width 100%

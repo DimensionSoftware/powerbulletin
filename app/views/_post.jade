@@ -1,16 +1,11 @@
 include _post_actions
+include _post_profile
 
 mixin _post(p, i)
   .post(id="post_#{p.id}", class=(i % 2) ? 'odd' : 'even', data-user-id=p.user_id, data-post-id=p.id)
     if p.title
       h4.title= p.title
-    a.user.mutant(href="/user/#{p.user_name}")
-      .profile.photo
-        if p.user_photo && p.user_photo.match(/^http/)
-          img(src="#{p.user_photo}")
-        else
-          img(src="#{cache_url}/#{p.user_photo}")
-      span= p.user_name
+    mixin _post_profile(p)
     .date(data-time=p.created_iso)= p.created_human
     if p.html
       p.body!= p.html
