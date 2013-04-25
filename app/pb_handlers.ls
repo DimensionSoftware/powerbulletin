@@ -8,11 +8,11 @@ require! {
   __: \lodash
   pg: './postgres'
   auth: './auth'
-  sioa: 'socket.io-announce'
   furl: './forum_urls'
 }
 
-announce = sioa.create-client!
+announce = require('socket.io-announce').create-client!
+
 is-editing = /\/(edit|new)\/?([\d+]*)$/
 
 global <<< require \./helpers
@@ -145,6 +145,7 @@ auth-finisher = (req, res, next) ->
     res.redirect redirect-url.replace(is-editing, '')
 
 @homepage = (req, res, next) ->
+  announce.emit \debug, {testing: 'from homepage handler in express'}
   #TODO: refactor with async.auto
   order = req.query.order or \recent
   err, menu <- db.menu res.locals.site.id
@@ -436,7 +437,13 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
     index: \pb
     type: \post
 
-  elquery.query = req.query.q if req.query.q
+  var q
+  if req.query.q
+    q = req.query.q.to-lower-case!
+    announce.emit \register-query q
+
+
+  elquery.query = q
 
   err, menu <- db.menu res.locals.site.id
   if err then return next err
