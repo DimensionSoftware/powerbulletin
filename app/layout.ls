@@ -9,20 +9,21 @@ $d = $ document
 var show-timeout-id
 var hide-timeout-id
 window.spin = (loading = true) ->
+  time-until-show = 500ms
+  time-until-hide = 6500ms
+
   clear-timeout show-timeout-id
   clear-timeout hide-timeout-id
 
   $b ||= $('body')
   show = ->
     $b.add-class \waiting
+    hide-timeout-id := set-timeout hide, time-until-hide
   hide = ->
     $b.remove-class \waiting
 
   if loading
-    time-until-show = 800ms
-    time-until-hide = 5000ms
     show-timeout-id := set-timeout show, time-until-show
-    hide-timeout-id := set-timeout hide, time-until-hide
   else
     hide!
 
