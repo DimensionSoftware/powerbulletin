@@ -33,13 +33,5 @@ if typeof(post) !== 'undefined'
   #breadcrumb.breadcrumb
     mixin _breadcrumb(post)
 
-if pages.length > 1
-  #paginator
-    .current= page
-    // each pg in pages
-    //   a.mutant.page(class=(pg == page ? 'active' : ''), href=(pg == 1 ? post.uri : post.uri + '/page/' + pg))= pg
-else
-  #paginator
-    .current
 
 //- vim:fdm=marker

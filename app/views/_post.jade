@@ -2,7 +2,7 @@ include _post_actions
 include _post_profile
 
 mixin _post(p, i)
-  .post(id="post_#{p.id}", class=(i % 2) ? 'odd' : 'even', data-user-id=p.user_id, data-post-id=p.id)
+  .post(id="post_#{p.id}", data-user-id=p.user_id, data-post-id=p.id)
     if p.title
       h4.title= p.title
     mixin _post_profile(p)

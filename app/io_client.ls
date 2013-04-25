@@ -17,19 +17,19 @@ socket.on \leave-site, (message, cb) ->
 
 socket.on \thread-impression (thread, cb) ->
   if thread.forum_id is active-forum-id
-    $("\#left_content ul.threads li[data-id=#{thread.id}] span.views").html("#{thread.views} <i>views</i>")
+    $("\#left_container ul.threads li[data-id=#{thread.id}] span.views").html("#{thread.views} <i>views</i>")
 
 socket.on \thread-create (thread, cb) ->
   if active-forum-id is thread?forum_id
-    <- render-and-prepend window,  $('#left_content .threads'), \thread, thread:thread
-    $ '#left_content .threads div.fadein li' .unwrap!
+    <- render-and-prepend window,  $('#left_container .threads'), \thread, thread:thread
+    $ '#left_container .threads div.fadein li' .unwrap!
 
 socket.on \post-create (post, cb) ->
   if post.thread_id is active-post-id
     return if $ "post_#{post.id}" .length # guard (exists)
 
     # update post count
-    pc = $ "\#left_content ul.threads li[data-id=#{post.thread_id}] span.post-count"
+    pc = $ "\#left_container ul.threads li[data-id=#{post.thread_id}] span.post-count"
     pc.html ("#{(parse-int pc.text!) + 1} <i>posts</i>")
 
     # & render new post
