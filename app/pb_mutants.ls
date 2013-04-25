@@ -159,7 +159,7 @@ layout-static = (w, mutator, active-forum-id=0) ->
         pager.init!
       else
         window.pager = new window.Pager('#paginator', pager-opts)
-      pager.set-page window.page
+      pager.set-page window.page if window.page
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
