@@ -20,8 +20,9 @@ include_recipe 'varnish'
 include_recipe 'haproxy'
 include_recipe 'postgres'
 include_recipe 'redis'
-include_recipe 'phantomjs'
-include_recipe 'selenium'
+#include_recipe 'phantomjs'
+#include_recipe 'selenium'
+include_recipe 'mon'
 include_recipe 'elasticsearch'
 
 # XXX this should perhaps go somewhere else, but for now, i like having this always
