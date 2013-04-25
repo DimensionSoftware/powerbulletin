@@ -69,7 +69,7 @@ module.exports = class
     @$el.find('.current')
       .text(n)
       .css(top: indicator-top(n, @indicator-height), height: @indicator-height)
-    History.push-state {surf-data: window.active-forum-id}, '', @url-for-page(n)
+    History.push-state {surf-data: @forum-id}, '', @url-for-page(n)
 
   # Reconfigure an existing pager with new options.  This is usually used when page mutations happen.
   # @param Object pager
