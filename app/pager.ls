@@ -35,7 +35,7 @@ indicator-top = (page, i-height) -> (page - 1) * i-height
 
 page-from-click-height = (click-height, i-height) -> Math.floor(click-height / i-height)
 
-module.exports = class
+module.exports = class Pager
   # Create a pager object
   # @param String id            (required) id of element containing pager
   # @param Object options
