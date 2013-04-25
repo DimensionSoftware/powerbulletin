@@ -1,5 +1,6 @@
-window.__  = require \lodash
-window.ioc = require \./io_client
+window.__    = require \lodash
+window.ioc   = require \./io_client
+window.Pager = require \./pager
 
 global <<< require \./pb_helpers
 global <<< require(\prelude-ls/prelude-browser-min).prelude
