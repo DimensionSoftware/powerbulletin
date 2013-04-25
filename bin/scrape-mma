@@ -114,6 +114,7 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
           emit \post-create, r.id
         cb(err, r)
 
+    t.posts.shift!
     async.map-series t.posts, create-post, cb
 
 delay-by = (ms, fn) --> # {{{1
