@@ -1,6 +1,9 @@
+include _post_profile
+
 mixin forum(f, i)
   img.bg(id="forum_bg_#{f.id}", class='initial', src="#{cache_url}/images/bg_#{f.id}.jpg")
-  .forum(id="forum_#{f.id}", class="#{f.classes || ''} #{i%2 ? 'odd' : 'even'} #{activeForumId != 'homepage' && 'resizable'}")
+  .forum(id="forum_#{f.id}",
+    class="#{f.classes || ''} #{i%2 ? 'odd' : 'even'} #{activeForumId != 'homepage' && 'resizable'}")
     a(name="forum_#{f.id}") //- hashtag anchor
     .header
       .description
@@ -23,12 +26,8 @@ mixin post(f, p, i)
 
 mixin subpost(sp, i)
  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even')
-    .photo
-      img(src="#{cache_url}/images/profile.jpg")
+    mixin _post_profile(sp)
     p.body!= sp.html
-    .signature
-      span.username - #{sp.user_name}
-      span.date= sp.date
 
 //- main
 //- ---------
