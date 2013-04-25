@@ -1,8 +1,10 @@
 #!/bin/bash
-killall pb-search
-sleep 2
-killall -9 pb-search
+kill -9 `cat /tmp/pb-search-mon.pid` &> /dev/null
+killall -9 pb-search &> /dev/null
 
 set -e
 mkdir -p logs
-lsc app/search-notifier-main.ls &>> logs/search-notifier.log &
+mon -d \
+    -l logs/search-notifier.log \
+    -m /tmp/pb-search-mon.pid \
+    "node_modules/.bin/lsc app/search-notifier-main.ls"

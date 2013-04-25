@@ -1,8 +1,10 @@
 #!/bin/bash
-killall pb-indexer
-sleep 2
-killall -9 pb-indexer
+kill -9 `cat /tmp/pb-indexer-mon.pid` &> /dev/null
+killall -9 pb-indexer &> /dev/null
 
 set -e
 mkdir -p logs
-lsc app/indexer-main.ls &>> logs/indexer.log &
+mon -d \
+    -l logs/indexer.log \
+    -m /tmp/pb-indexer-mon.pid \
+    "node_modules/.bin/lsc app/indexer-main.ls"
