@@ -117,7 +117,7 @@ layout-static = (w, mutator, active-forum-id=0) ->
 
       # render left content
       if window.mutator != \forum or window.active-forum-id+'' != @surf-data
-        window.render-mutant \left_content \nav # refresh on forum & mutant change
+        window.render-mutant \left_container \nav # refresh on forum & mutant change
 
       window.marshal \activeForumId @active-forum-id
       window.marshal \activePostId @active-post-id
@@ -137,7 +137,7 @@ layout-static = (w, mutator, active-forum-id=0) ->
 
       align-breadcrumb!
 
-      $l = $ \#left_content
+      $l = $ \#left_container
       $l.find \.active .remove-class \active # set active post
       $l.find ".thread[data-id='#{active-post-id}']" .add-class \active
 
@@ -149,6 +149,20 @@ layout-static = (w, mutator, active-forum-id=0) ->
       post-id = $('#main_content .post:first').data(\post-id)
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
+      # pager
+      pager-opts =
+        current  : window.page
+        last     : window.pages-count
+        forum-id : window.active-forum-id
+      if window.pager
+        pager <<< pager-opts
+        pager.init!
+      else
+        window.pager = new window.Pager('#paginator', pager-opts)
+      pager.set-page window.page
+
+      # default surf-data (no refresh of left nav)
+      window.surf-data = window.active-forum-id
       next!
   on-mutate:
     (window, next) ->
@@ -172,7 +186,7 @@ layout-static = (w, mutator, active-forum-id=0) ->
 @profile =
   static:
     (window, next) ->
-      window.render-mutant \left_content \profile
+      window.render-mutant \left_container \profile
       window.render-mutant \main_content \posts_by_user
       layout-static window, \profile
       next!
@@ -192,7 +206,7 @@ layout-static = (w, mutator, active-forum-id=0) ->
 @search =
   static:
     (window, next) ->
-      window.render-mutant \left_content \hits
+      window.render-mutant \left_container \hits
       window.render-mutant \main_content \search
 
       unless History? #XXX: hack to only perform on serverside
