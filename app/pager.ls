@@ -68,7 +68,7 @@ module.exports = class Pager
     @current = n
     @$el.find('.current')
       .text(n)
-      .css(top: indicator-top(n, @indicator-height), height: @indicator-height)
+      .css(top: indicator-top(n, @indicator-height), height: @indicator-height, line-height: @indicator-height - 8 + \px)
     History.push-state {surf-data: @forum-id}, '', @url-for-page(n)
 
   # Reconfigure an existing pager with new options.  This is usually used when page mutations happen.
