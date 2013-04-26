@@ -77,8 +77,7 @@ header
           max-height 450px
           height auto
           min-width 850px
-          transition opacity .5s cubic-bezier(1.000, -0.010, 0.800, 1.530) .3s, min-width .3s cubic-bezier(1.000, -0.010, 0.800, 1.530) .5s, max-height .5s cubic-bezier(1.000, -0.010,
-          0.800, 1.530) .5s, top .45s ease-out .3s
+          transition opacity .5s cubic-bezier(1.000, -0.010, 0.800, 1.530) .2s, min-width .2s cubic-bezier(1.000, -0.010, 0.800, 1.530) .5s, max-height .4s cubic-bezier(1, -0.01, 1, .08) .5s, top .45s ease-out .2s
           .row:hover
             text-indent 1px
             transition text-indent .1s ease-out
@@ -428,9 +427,10 @@ body.searching.scrolled
   padding-top header-height*2
   padding-bottom footer-height
   cursor pointer
-
   .current
+    cursor ns-resize
     position relative
+    text-align center
 
 #paginator:hover
   transition width .1s .3s ease-out, right .1s .3s ease-out

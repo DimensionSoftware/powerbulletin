@@ -164,6 +164,15 @@ layout-static = (w, mutator, active-forum-id=0) ->
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
       next!
+  on-initial:
+    (window, next) ->
+      set-timeout (-> # scroll active thread on left nav into view
+        threads = $ '#left_container .threads'
+        offset  = -125px
+        cur = threads.scroll-top!
+        dst = Math.round($ '#left_container .threads > .active' .position!?top)
+        if dst then threads.animate {scroll-top:cur+dst+offset}, 500ms, \easeOutExpo), 500ms
+
   on-mutate:
     (window, next) ->
       scroll-to-top!
