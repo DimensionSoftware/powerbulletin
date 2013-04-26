@@ -125,7 +125,7 @@ has-scrolled = ->
   $ \body .toggle-class \scrolled (st > threshold)
 set-timeout (->
   $w.on \scroll -> has-scrolled!
-  has-scrolled!), 1300ms # initially yield
+  has-scrolled!), 600ms # initially yield
 
 # attach scroll-to's
 $d.on \click '.scroll-to' ->
