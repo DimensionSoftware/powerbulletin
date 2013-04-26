@@ -264,12 +264,16 @@ auth-finisher = (req, res, next) ->
   db   = pg.procs
   site = res.locals.site
   name = req.params.name
+  page = req.params.page or 1
+  ppp  = 20 # posts-per-page
   usr  = { name: name, site_id: site.id }
 
   tasks =
     menu           : db.menu site.id, _
     profile        : db.usr usr, _
-    posts-by-user  : db.posts-by-user usr, _
+    posts-by-user  : db.posts-by-user usr, page, ppp, _
+    pages-count    : db.posts-by-user-pages-count usr, ppp, _
+    page           : (cb) -> cb null, page
 
   err, fdoc <- async.auto tasks
   if err then return next err

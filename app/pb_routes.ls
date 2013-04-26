@@ -117,6 +117,12 @@ app.get '/user/:name',
   mmw.mutant-layout(\layout, mutants),
   handlers.profile
 
+app.get '/user/:name/page/:page',
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.profile
+
 app.get '/:forum/most-active',
   mw.add-js(common-js),
   mw.add-css(common-css),

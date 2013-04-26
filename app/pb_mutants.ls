@@ -17,6 +17,19 @@ layout-static = (w, mutator, active-forum-id=0) ->
     .add-class \active
   w.$ "menu .submenu .forum-#fid" .parent!add-class \active
 
+# initialize pager
+pager-init = (w) ->
+  pager-opts =
+    current  : w.page
+    last     : w.pages-count
+    forum-id : w.active-forum-id
+  if w.pager
+    w.pager <<< pager-opts
+    w.pager.init!
+  else
+    w.pager = new w.Pager('#paginator', pager-opts)
+  w.pager.set-page w.page if w.page
+
 @homepage =
   static:
     (window, next) ->
@@ -150,16 +163,7 @@ layout-static = (w, mutator, active-forum-id=0) ->
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
       # pager
-      pager-opts =
-        current  : window.page
-        last     : window.pages-count
-        forum-id : window.active-forum-id
-      if window.pager
-        pager <<< pager-opts
-        pager.init!
-      else
-        window.pager = new window.Pager('#paginator', pager-opts)
-      pager.set-page window.page if window.page
+      pager-init window
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
@@ -197,11 +201,22 @@ layout-static = (w, mutator, active-forum-id=0) ->
     (window, next) ->
       window.render-mutant \left_container \profile
       window.render-mutant \main_content \posts_by_user
+
+      window.marshal \page @page
+      window.marshal \pagesCount @pages-count
+
       layout-static window, \profile
       next!
+
+  on-load:
+    (window, next) ->
+      pager-init window
+      next!
+
   on-mutate:
     (window, next) ->
       scroll-to-top!
+
   on-unload:
     (window, next) ->
       next!
