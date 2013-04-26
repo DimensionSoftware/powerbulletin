@@ -34,13 +34,6 @@ init-ioc = (port) ->
 
   return ioc
 
-# abstract away the fact that we are doing some sillyness here
-# by having a process talk to itself over a tcpip port
-# XXX: please if there is a better way enlighten me
-init-sock = (unique-port) ->
-  init-io unique-port
-  init-ioc unique-port
-
 new-poller = (q) ->
   poller = {q}
 
@@ -63,9 +56,10 @@ export init = (unique-port = 9999, cb = (->)) ->
   if err then return cb err
   elc = elastic.client
 
-  sock = init-sock unique-port
+  @io = init-io(unique-port).sockets
+  @sock = init-ioc unique-port
 
-  sock.on 'register-query' (q) ->
+  @sock.on 'register-query' (q) ->
     if poller = pollers[q]
       # poller exists
       console.warn 'poller exists', JSON.stringify(poller)
@@ -73,6 +67,8 @@ export init = (unique-port = 9999, cb = (->)) ->
       # create new poller
       pollers[q] = new-poller q
       console.warn 'poller created', JSON.stringify(pollers[q])
+
+  @io.emit \debug, 'search-notifier-up'
 
   # TODO:
   # * need to start a setInterval loop which periodically will
