@@ -91,6 +91,7 @@ $d.on \keyup, \#query, __.debounce((->
   key = it.key-code || it.which
   # ignore special keys & delete when search is empty
   unless key in [16 17 18 27 37 38 39 40 91 93] or (key is 8 and !it.target.value.length)
+    console.log "#key triggered search"
     $ui.trigger \search, {q: $(@).val!}
   true), 250ms)
 $ui.on \search, (evt, searchopts) ->
