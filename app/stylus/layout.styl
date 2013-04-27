@@ -348,6 +348,11 @@ body.searching.scrolled
     display none!important
 .fancybox-wrap.on-register
   #auth
+    input[name="username"], input[name="password"]
+      background #fff
+    input[name="email"]
+      border-top-left-radius 0
+      border-top-right-radius 0
     .register
       display block!important
     .choose, .login, .forgot, .reset
@@ -389,7 +394,8 @@ body.searching.scrolled
   .error
     display none
   h2
-    margin 15px 0 20px 15px
+    text-align center
+    margin 10px 0 20px 0
     letter-spacing 1px
   h3
     margin 0 5px 10px 0
@@ -401,8 +407,10 @@ body.searching.scrolled
   fieldset
     padding 20px 102px
   input[name="email"]
-    width 286px
-    padding 15px
+    width 297px
+    padding 10px
+    margin -6px 0 10px 0
+    position relative
   input[name="username"]
     width 300px
     display block
@@ -417,7 +425,6 @@ body.searching.scrolled
 
 #paginator
   position absolute
-  overflow hidden
   width 12px
   height auto
   top 0
@@ -428,9 +435,11 @@ body.searching.scrolled
   padding-bottom footer-height
   cursor pointer
   .current
+    min-height 23px
     cursor ns-resize
     position relative
     text-align center
+    margin 0 -1px
 
 #paginator:hover
   transition width .1s .3s ease-out, right .1s .3s ease-out
