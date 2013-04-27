@@ -59,11 +59,15 @@ cache-app        = express!
 
 apps = [app, redir-to-domain, cache-app]
 
+server = null
+
 graceful-shutdown = ->
-  console.warn 'Graceful shutdown called and no handler!'
-  for a in apps
-    a
-    #a.close!
+  console.warn 'Graceful shutdown started'
+  set-timeout (-> console.warn("Forcing shutdown"); process.exit!), 5000
+  server.close (err) ->
+    console.warn 'Graceful shutdown finished'
+    console.warn err if err
+    process.exit!
 
 html_50x = fs.read-file-sync('public/50x.html').to-string!
 html_404 = fs.read-file-sync('public/404.html').to-string!
@@ -227,7 +231,7 @@ else
   sock.use(app)
 
   # need this for socket.io
-  server = http.create-server sock
+  server := http.create-server sock
   io-server.init server
 
   server.listen proc.env['NODE_PORT'] || cvars.port

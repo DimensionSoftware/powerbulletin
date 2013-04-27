@@ -30,7 +30,7 @@ CREATE FUNCTION procs.post(id JSON) RETURNS JSON AS $$
   return plv8.execute(sql, [id])?0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION procs.posts_by_user(usr JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON AS $$
   sql = '''
   SELECT
   p.*,
@@ -43,9 +43,27 @@ CREATE FUNCTION procs.posts_by_user(usr JSON) RETURNS JSON AS $$
   WHERE p.forum_id IN (SELECT id FROM forums WHERE site_id = $1)
   AND a.name = $2
   ORDER BY p.created DESC
-  LIMIT 20
+  LIMIT  $3
+  OFFSET $4
   '''
-  return plv8.execute(sql, [usr.site_id, usr.name])
+  offset = (page - 1) * ppp
+  return plv8.execute(sql, [usr.site_id, usr.name, ppp, offset])
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.posts_by_user_pages_count(usr JSON, ppp JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT
+  COUNT(p.id) as c
+  FROM posts p
+  JOIN users u ON p.user_id = u.id
+  JOIN aliases a ON u.id = a.user_id
+  WHERE p.forum_id IN (SELECT id FROM forums WHERE site_id = $1)
+  AND a.name = $2
+  '''
+  res   = plv8.execute(sql, [usr.site_id, usr.name])
+  c     = res[0]?c or 0
+  pages = Math.ceil(c / ppp)
+  return pages
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.edit_post(usr JSON, post JSON) RETURNS JSON AS $$
