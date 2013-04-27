@@ -31,6 +31,7 @@ CREATE FUNCTION procs.post(id JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON AS $$
+  require! \prelude
   sql = '''
   SELECT
   p.*,
@@ -47,7 +48,22 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
   OFFSET $4
   '''
   offset = (page - 1) * ppp
-  return plv8.execute(sql, [usr.site_id, usr.name, ppp, offset])
+  posts = plv8.execute(sql, [usr.site_id, usr.name, ppp, offset])
+
+  if posts.length
+    # fetch thread context
+    # TODO uniq ids
+    context-sql = 'SELECT id,title,uri FROM posts WHERE id IN ('+
+      (prelude.unique [p.thread_id for p,i in posts]).join(', ') + \)
+    ctx = plv8.execute(context-sql, [])
+
+    # hash for o(n) + o(1) * posts -> thread mapping
+    lookup = {[v.id, v] for k,v of ctx}
+    for p in posts
+      t = lookup[p.thread_id] # thread
+      [p.thread_uri, p.thread_title] = [t.uri, t.title]
+
+  return posts
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.posts_by_user_pages_count(usr JSON, ppp JSON) RETURNS JSON AS $$

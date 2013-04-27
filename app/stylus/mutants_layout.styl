@@ -202,7 +202,7 @@ html.forum, html.profile, html.search
         img
           max-width 100%
         .title
-          margin 0 0 (grid/2) 0
+          margin 0 0 1px -1px
           font-size 1.5em
         .user
           font-weight bold
@@ -219,8 +219,9 @@ html.forum, html.profile, html.search
           margin-top (grid+2)
           margin-bottom (grid+2)
           line-height 15px
-          font-size .9em
           a
+            font-size .9em
+            font-weight 200
             margin-right grid
             display inline
           .edit
@@ -241,7 +242,7 @@ html.forum, html.profile, html.search
       .post:hover
         .actions
           opacity 1
-          letter-spacing 0
+          letter-spacing 1px
           transition opacity .3s, letter-spacing .09s
       .children
         font-size .95em

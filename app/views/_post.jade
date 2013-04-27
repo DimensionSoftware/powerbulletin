@@ -2,8 +2,11 @@ include _post_actions
 include _post_profile
 
 mixin _post(p, i)
-  .post(id="post_#{p.id}", data-user-id=p.user_id, data-post-id=p.id)
-    if p.title
+  .post(id="post_#{p.id}", data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id)
+    if p.thread_uri
+      h4.title
+        a.mutant(href=p.thread_uri)= p.title
+    else
       h4.title= p.title
     mixin _post_profile(p)
     .date(data-time=p.created_iso)= p.created_human

@@ -5,4 +5,4 @@ mixin _post_profile(p)
         img(src="#{p.user_photo}")
       else
         img(src="#{cache_url}/#{p.user_photo}")
-    span= p.user_name
+    span.username= p.user_name
