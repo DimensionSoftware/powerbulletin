@@ -208,8 +208,8 @@ else
       explain = err-handler (res) -> res.send html_50x, 500
       explain err, req, res, next
 
-  # all domain-based catch-alls & redirects
-  max-age = if DISABLE_HTTP_CACHE then 0 else 7200 * 1000
+  # all domain-based catch-alls & redirects, # cache 1 year in production, (cache will get blown on deploy due to changeset tagging)
+  max-age = if DISABLE_HTTP_CACHE then 0 else (60 * 60 * 24 * 365) * 1000
   cache-app.use(express.static \public {max-age})
 
   redir-to-domain.all '*', (req, res) ->
