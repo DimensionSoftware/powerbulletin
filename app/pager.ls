@@ -33,7 +33,12 @@ indicator-height = (pages, height) -> Math.floor(height / pages)
 
 indicator-top = (page, i-height) -> (page - 1) * i-height
 
-page-from-click-height = (click-height, i-height) -> Math.floor(click-height / i-height)
+page-from-click-height = (click-height, i-height) ->
+  f = Math.ceil(click-height / i-height)
+  if f is 0
+    1
+  else
+    f
 
 module.exports = class Pager
   # Create a pager object
@@ -75,13 +80,24 @@ module.exports = class Pager
   # @param Object pager
   # @param Object options
   init: ->
-    @height = @$el.height! # ph -> pager height
+    @height = @$el.height!
+    #@height = @$el.height! - parseInt(@$el.css('padding-top')) - parseInt(@$el.css('padding-bottom'))
     @indicator-height = indicator-height(@last, @height)
     #@indicator-positions = scan (+ @indicator-height), 0, [1 to @last-1]
 
   #
   on-click-set-page: (ev) ~>
-    page = page-from-click-height(ev.offsetY, @indicator-height)
+    window.ev = ev
+    y = (ev, $el) ->
+      dy = ev.page-y - parseInt($el.css('padding-top')) - $el.offset!top
+      if dy < 0
+        0
+      else if dy > $el.height!
+        $el.height!
+      else
+        dy
+    dy = y(ev, @$el)
+    page = page-from-click-height(dy, @indicator-height)
     @set-page page
 
   #
