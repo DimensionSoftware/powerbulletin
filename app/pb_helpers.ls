@@ -76,6 +76,22 @@ require! {
     else
       focus e
 
+@submit-form = (event, fn) -> # form submission
+  $f = $ event.target .closest(\form) # get event's form
+
+  # update textarea body from sceditor
+  $e = $ \textarea.body
+  $e.html $e.data!sceditor?val! if $e.length and $e.data!sceditor
+
+  $.ajax {
+    url:      $f.attr(\action)
+    type:     $f.attr(\method)
+    data:     $f.serialize!
+    data-type: \json
+    success:  (data) ->
+      if fn then fn.call $f, data}
+  false
+
 @respond-resize = ->
   w = $ window
   if w.width! <= 800px then $ \body .add-class \collapsed

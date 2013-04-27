@@ -209,23 +209,6 @@ $ '.social a' .click ->
   window.open url, \popup, "width=980,height=650,scrollbars=no,toolbar=no,location=no,directories=no,status=no,menubar=no"
   false
 #}}}
-#{{{ Form submission
-window.submit-form = (event, fn) ->
-  $f = $ event.target .closest(\form) # get event's form
-
-  # update textarea body from sceditor
-  $e = $ \textarea.body
-  $e.html $e.data!sceditor?val! if $e.length and $e.data!sceditor
-
-  $.ajax {
-    url:      $f.attr(\action)
-    type:     $f.attr(\method)
-    data:     $f.serialize!
-    data-type: \json
-    success:  (data) ->
-      if fn then fn.call $f, data}
-  false
-#}}}
 #{{{ Keep human readable time up to date
 time-updater = ->
   now = new Date

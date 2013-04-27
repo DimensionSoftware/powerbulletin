@@ -36,7 +36,7 @@ socket.on \post-create (post, cb) ->
     sel = "\#post_#{post.parent_id} + .children"
     render-and-append(
       window, $(sel), \post, post:post, (e) ->
-        $ e .add-class(\highlight)
+        $ e .add-class \slide
         if post.user_id is user.id # & scroll-to
           mutants.forum.on-personalize window, user, (->) # enable edit, etc...
           set-timeout (-> awesome-scroll-to e), 100ms)
