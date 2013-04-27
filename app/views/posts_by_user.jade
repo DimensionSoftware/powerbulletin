@@ -7,7 +7,7 @@ include _post
     each p, i in postsByUser
       //-if last_thread_id != p.thread_id
       h3.heading
-        a(href=p.thread_uri) Reply to #{p.thread_title}
+        a.mutant(href=p.thread_uri) Reply to #{p.thread_title}
       mixin _post(p, i)
       //-last_thread_id = p.thread_id
   else
