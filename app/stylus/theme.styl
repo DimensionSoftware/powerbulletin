@@ -172,6 +172,28 @@ header
     letter-spacing -1px
     font-size 1.1em
     margin (grid / 2) 0
+  #paginator:hover
+    border-right 1px solid #444
+  #paginator
+    border-right 1px solid #777
+    background-color rgba(100,100,100,0.3)
+    .current:hover
+      color #fff
+      text-shadow 1px 1px 0 #000
+      border-left 1px solid #ddd
+      border-top 1px solid #eee
+      border-right 1px solid #000
+      border-bottom 1px solid #333
+    .current
+      background-color orange
+      color #eee
+      text-shadow 1px 1px 0 #333
+      border-top 1px solid #ddd
+      border-left 1px solid #ccc
+      border-bottom 1px solid #555
+      border-right 1px solid #222
+      font-weight bold
+
 //}}}
 //{{{ Main Content
 #main_content
@@ -192,19 +214,6 @@ header
     color #ddd
     a, em
       color #666
-
-#paginator
-  border-right 1px solid #777
-  background-color rgba(100,100,100,0.3)
-  .current
-    background-color orange
-    color #fff
-    text-shadow 1px 1px 0 #333
-    border-top 1px solid #ddd
-    border-left 1px solid #ccc
-    border-bottom 1px solid #555
-    border-right 1px solid #222
-    font-weight bold
 
   a.page
     color #eee

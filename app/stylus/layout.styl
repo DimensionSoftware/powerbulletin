@@ -159,6 +159,30 @@ header
     text-align center
     cursor pointer
     z-index 95
+  #paginator
+    position absolute
+    width 12px
+    height auto
+    top 0
+    bottom 0
+    right -12px
+    z-index 7
+    padding-top header-height*2
+    padding-bottom footer-height
+    cursor pointer
+    .current
+      min-height 23px
+      cursor ns-resize
+      position relative
+      text-align center
+      margin 0 -1px
+  #paginator:hover
+    transition width .08s .2s ease-out, right .08s .2s ease-out
+    width 18px
+    right -18px
+
+  .ui-resizable-e
+    cursor ew-resize
 //}}}
 //{{{ Main Content
 .col1
@@ -268,13 +292,13 @@ body.collapsed
     left 53px
     transition left .2s ease-out
   #left_content
-    width (grid/2)!important
+    width 0!important
     transition width .1s
     .handle
       transform rotate(180deg)
-      right -15px!important
-      text-indent -7px
-      border-width 0!important
+      right -29px!important
+      text-indent -3px
+      transition all .2s ease-out
     .create a
       display none!important
   #main_content
@@ -422,29 +446,6 @@ body.searching.scrolled
     margin-left 2px
     margin-top 13px
     display block
-
-#paginator
-  position absolute
-  width 12px
-  height auto
-  top 0
-  bottom 0
-  right -12px
-  z-index 7
-  padding-top header-height*2
-  padding-bottom footer-height
-  cursor pointer
-  .current
-    min-height 23px
-    cursor ns-resize
-    position relative
-    text-align center
-    margin 0 -1px
-
-#paginator:hover
-  transition width .1s .3s ease-out, right .1s .3s ease-out
-  width 18px
-  right -18px
 
 //}}}
 //{{{ Background layer
