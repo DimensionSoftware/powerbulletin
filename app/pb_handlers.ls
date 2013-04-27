@@ -234,8 +234,8 @@ auth-finisher = (req, res, next) ->
     else
       fdoc.prev-pages = []
 
-    fdoc.active-forum-id = fdoc.post.forum_id
-    fdoc.active-post-id  = post.id
+    fdoc.active-forum-id  = fdoc.post.forum_id
+    fdoc.active-thread-id = post.id
 
     finish fdoc
 

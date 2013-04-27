@@ -25,7 +25,11 @@ socket.on \thread-create (thread, cb) ->
     $ '#left_container .threads div.fadein li' .unwrap!
 
 socket.on \post-create (post, cb) ->
-  if post.thread_id is active-post-id
+  # only real-time posts for users':
+  # - currently active thread
+  # - own posts on profile pages
+  window.active-thread-id ||= -1
+  if post.thread_id is window.active-thread-id or (post.user_id is user.id and mutator is \profile)
     return if $ "post_#{post.id}" .length # guard (exists)
 
     # update post count
@@ -34,12 +38,15 @@ socket.on \post-create (post, cb) ->
 
     # & render new post
     sel = "\#post_#{post.parent_id} + .children"
+    animate-in = (e) -> $ e .add-class \post-animate-in
     render-and-append(
-      window, $(sel), \post, post:post, (e) ->
-        $ e .add-class \slide
+      window, $(sel), \post, post:post, (new-post) ->
         if post.user_id is user.id # & scroll-to
           mutants.forum.on-personalize window, user, (->) # enable edit, etc...
-          set-timeout (-> awesome-scroll-to e), 100ms)
+          set-timeout (-> animate-in new-post), 250ms
+          if mutator is \forum then awesome-scroll-to new-post, 300ms
+        else
+          animate-in new-post)
 
 socket.on \debug, (message, cb) ->
   console.log \debug, message

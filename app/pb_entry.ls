@@ -45,18 +45,19 @@ window.load-ui = -> # restore ui state from cookie
 $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-breadcrumb!), 800ms)
 
 # show reply ui
-append-reply-ui = ->
+append-reply-ui = (e) ->
   # find post div
   $p = $ this .parents(\.post:first)
 
   # append dom for reply ui
   unless $p.find('.reply .post-edit:visible').length
+    console.log $p.data \forum
     render-and-append window,  $p.find(\.reply:first), \post_edit, (post:
       method:     \post
-      forum_id:   active-forum-id
+      forum_id:   $p.data(\forum-id) or window.active-forum-id
       parent_id:  $p.data \post-id
       is_comment: true), ->
-        $p.find('textarea[name="body"]').focus!
+        if e.original-event then $p.find('textarea[name="body"]').focus! # user clicked
   else
     $p.find('.reply .cancel').click!
 
@@ -162,9 +163,6 @@ $d.on \click \#handle ->
     .css(\padding-left, ($l.width! + left-offset))
   save-ui!
 #}}}
-
-# XXX slated for removal with states
-window.has-mutated-forum = window.active-forum-id
 
 # {{{ Mocha testing harness
 if mocha? and window.location.search.match /test=1/

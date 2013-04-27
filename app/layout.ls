@@ -115,6 +115,10 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
       <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms
       <- $ 'html,body' .animate { scroll-top:dst-scroll+threshold }, 110ms
       <- $ 'html,body' .animate { scroll-top:dst-scroll }, 75ms
+#      new-cur-scroll = Math.round(e.position!top) - offset
+#      if dst-scroll isnt new-cur-scroll # try again
+#        set-timeout (-> $ 'html,body' .animate { scroll-top:dst-scroll }, 50ms), 100ms
+      cb!
     else
       cb!
   e

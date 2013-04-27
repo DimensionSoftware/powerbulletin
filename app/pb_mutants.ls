@@ -133,7 +133,7 @@ pager-init = (w) ->
         window.render-mutant \left_container \nav # refresh on forum & mutant change
 
       window.marshal \activeForumId @active-forum-id
-      window.marshal \activePostId @active-post-id
+      window.marshal \activeThreadId @active-thread-id
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
       window.marshal \prevPages @prev-pages
@@ -152,7 +152,7 @@ pager-init = (w) ->
 
       $l = $ \#left_container
       $l.find \.active .remove-class \active # set active post
-      $l.find ".thread[data-id='#{active-post-id}']" .add-class \active
+      $l.find ".thread[data-id='#{active-thread-id}']" .add-class \active
 
       # editing handler
       id = is-editing window.location.pathname
@@ -165,11 +165,15 @@ pager-init = (w) ->
       # pager
       pager-init window
 
+      # bring down first reply
+      if user then $ \.onclick-append-reply-ui:first .click!
+
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
       next!
   on-initial:
     (window, next) ->
+      # FIXME this is a race condition (on-static/on-load isn't finished when this runs)
       set-timeout (-> # scroll active thread on left nav into view
         threads = $ '#left_container .threads'
         offset  = -125px

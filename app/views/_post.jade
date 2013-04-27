@@ -2,7 +2,8 @@ include _post_actions
 include _post_profile
 
 mixin _post(p, i)
-  .post(id="post_#{p.id}", data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id)
+  .post(id="post_#{p.id}", data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id,
+  data-forum-id=p.forum_id)
     if p.thread_uri
       h4.title
         a.mutant(href=p.thread_uri)= p.title
