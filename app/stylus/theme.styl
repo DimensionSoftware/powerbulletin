@@ -13,7 +13,7 @@ footer-height = 25px
 @import './app/stylus/mutants_theme'
 
 body
-  font-family 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue'
+  font-family 'Source Sans Pro', 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue'
 
 a.mutant:hover
   animation-name tiny-grow
@@ -56,14 +56,12 @@ header
           background-color #f3f3f3
           background-image linear-gradient(bottom, #fff 43px, #ffe0c0)
           border-top 3px solid highlight-color2
-          box-shadow 0 0 1px 1px #ddd
       > .row
         .title:hover, .title.hover
           border-top 3px solid highlight-color2
           background-image linear-gradient(bottom, #fff 25px, #fed)
           color #000
           background-color #eee
-          box-shadow 0 0 1px 1px #ddd
           animation-name tiny-grow!important
           animation-duration .1s
           transition border-top .4s, background-color .3s, color .4s
@@ -135,15 +133,15 @@ header
         color #000
         font-style italic
         border-left none
+        letter-spacing 1px
         text-align right
-        padding-right 15px
         background transparent
+        font-weight 200
         border none
       .query
         font-size 1.15em
         border-bottom-width 3px
         border-left 0px
-        width 500px
         height 20px
 //}}}
 //{{{ Left side
@@ -305,25 +303,19 @@ body.scrolled
 //}}}
 //{{{ Expanded header (advanced searching)
 body.searching header
-  background-color rgba(255,255,255,0.85)!important
-  border-bottom 1px solid #fff
   .close:hover
     font-weight 500
-    color #555
+    background-color #666
   .close
-    font-weight 200
+    font-weight 600
     font-size 1.3em
     transform rotate(10deg)
-    padding 0
     height 9px
     width 8px
-    line-height 7px
-    border-radius 25px
-    color #777
-    text-indent -2px
-  .search
-    #query.query
-      text-align left
+    line-height 5px
+    color #fff
+    background-color #777
+    text-indent -1px
   .advanced
     font-weight 100
     font-size .9em
@@ -333,18 +325,6 @@ body.searching header
       margin 0 8px
     label
       margin-right 10px
-  .menu
-    .row
-      transition line-height .2s ease-out!important
-    > .row
-      a.title.active:hover
-        background-image linear-gradient(bottom, #fff 23px, #ffe0c0)
-      a.title.active
-        background-image linear-gradient(bottom, #fff 23px, #ffe0c0)
-      a.title:hover, a.title.hover
-        background-image linear-gradient(bottom, #fff 15px, #fed)
-      a.title
-        background-image linear-gradient(bottom, #fff 20px, #fed)
 //}}}
 
 //{{{ Login

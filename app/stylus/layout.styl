@@ -52,7 +52,7 @@ header
   top 0
   z-index 9
   .close
-    display none
+    opacity 0
   .container
     width 800px
     margin 0 auto
@@ -73,7 +73,7 @@ header
         z-index 7
         .submenu
           opacity 1
-          top 34px
+          top 35px
           max-height 450px
           height auto
           min-width 850px
@@ -127,6 +127,8 @@ header
       position absolute 
       .query
         width 300px
+        padding-right 45px
+        padding-top grid
         font-size 1.3em
     .advanced
       position absolute
@@ -250,12 +252,6 @@ footer
 //}}}
 
 //{{{ Scrolled <body>
-body.searching header
-  .menu
-    .row
-      top -1px
-      line-height 29px!important
-      font-size 16px!important
 body.scrolled
   .logo
     a
@@ -267,13 +263,13 @@ body.scrolled
       .menu
         > .row:hover
           .submenu
-            top 25px
+            top 26px
         .row
           top 1px
           line-height header-scrolled-height + 1
           font-size 16px
       .search
-        top 0!important
+        top -3px!important
         right 0!important
         .query
           font-size 1em
@@ -318,37 +314,15 @@ body.collapsed
 //{{{ Expanded header (advanced searching)
 body.searching
   header
-    menu
-      > .row:hover
-        .submenu
-          top (header-scrolled-height+3)!important
-body.searching
-  header
-    height header-searching-height!important
-    transition background-color .25s ease-out, height .2s ease-out
     .container
-      .search::before
-        content ''
-        border-top 8px solid transparent
-        border-bottom 8px solid transparent
-        position absolute
-        top 25px
-        left 0
       .search
-        top -7px!important
-        right auto!important
         #query.query
           position relative
           z-index 9
-          font-size 31px
-          padding 5px 20px
-          letter-spacing 3px
-          font-weight 100
-          height 51px
-          width 500px!important
+          font-size 1.35em
       .advanced
-        right 100px
-        top 5px
+        right 80px
+        top (header-height + 5)
         transition right .2s ease-out
         .check, label
           cursor pointer
@@ -356,27 +330,28 @@ body.searching
       cursor pointer
       position absolute
       right 12px
-      top grid
-      display block
-  #left_content
-    top (header-searching-height+4)!important
-    transition padding-top .2s ease-out
-  #main_content
-    padding-top (header-height+header-searching-height)!important
-    transition padding-top .2s ease-out
+      padding 5px
+      z-index 14
+      border-radius 25px
+      top 16px
+      opacity 1
+      transition opacity .2s ease-out
 body.searching.scrolled
-  #main_content
-    #breadcrumb
-      top (header-searching-height+3)
+  header
+    .close
+      top 7px
 //}}}
 
 //{{{ Login
 .fancybox-wrap.on-validate
-  .validate
-    display block!important
-    .msg
-      h3
-        margin-top (grid*2)!important
+  #auth
+    .validate
+      display block!important
+      h2
+        font-size 1.5em
+      .msg
+        h3
+          margin-top (grid*2)!important
   .register, .login
     display none!important
 .fancybox-wrap.on-register

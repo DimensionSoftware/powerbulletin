@@ -148,7 +148,7 @@ $d.on \keyup '.fancybox-inner input' ->
 #  awesome-scroll-to $(this).data \scroll-to; false
 $d.on \click 'html header .menu a.title' window.mutate
 
-# header expansion
+# search header
 $d.on \click \header (e) ->
   $ \body .remove-class \searching if e.target.class-name.index-of(\toggler) > -1 # guard
   $ '#query' .focus!
