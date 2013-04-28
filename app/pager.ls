@@ -20,13 +20,6 @@
     .current
     .last
 
-
-### PROBLEMS WITH MUTANT
-
-  - DOM is prone to getting blasted away on mutate.
-  - I need #paginator to stay in the DOM unmolested on mutate.
-
-
 */
 
 indicator-height = (pages, height) -> Math.floor(height / pages)
@@ -73,13 +66,14 @@ module.exports = class Pager
     @current = n
     @$el.find('.current')
       .text(n)
-      .css(top: indicator-top(n, @indicator-height), height: @indicator-height, line-height: @indicator-height - 5 + \px)
+      .css(top: indicator-top(n, @indicator-height), height: @indicator-height)
     History.push-state {surf-data: @forum-id}, '', @url-for-page(n)
 
   # Reconfigure an existing pager with new options.  This is usually used when page mutations happen.
   # @param Object pager
   # @param Object options
   init: ->
+    if @last > 1 then @$el.show! else @$el.hide! # only show if pages exist
     @height = @$el.height!
     #@height = @$el.height! - parseInt(@$el.css('padding-top')) - parseInt(@$el.css('padding-bottom'))
     @indicator-height = indicator-height(@last, @height)

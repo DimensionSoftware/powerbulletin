@@ -241,7 +241,15 @@ pager-init = (w) ->
         # represent state of filters in ui
         window.$(\#query).val @searchopts.q
 
+      # TODO fill these in & paginate
+      window.marshal \page @page
+      window.marshal \pagesCount @pages-count
+
       layout-static window, \search
+      next!
+  on-load:
+    (window, next) ->
+      pager-init window
       next!
 
 # vim:fdm=indent
