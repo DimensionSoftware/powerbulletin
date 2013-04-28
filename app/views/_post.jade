@@ -10,7 +10,7 @@ mixin _post(p, i)
     else
       h4.title= p.title
     mixin _post_profile(p)
-    .date(data-time=p.created_iso)= p.created_human
+    .date(data-time=p.created_iso)!= p.created_human
     if p.html
       p.body!= p.html
     .reply

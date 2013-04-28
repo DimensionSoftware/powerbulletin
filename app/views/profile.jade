@@ -15,5 +15,9 @@
         img(src="#{cache_url}/images/profile.jpg")
 
   ul
-    li.since Joined #{profile.created_human}
-    li.count #{profile.human_post_count} #{profile.post_count == 1 ? "post" : "posts"}
+    li.since
+      span Joined 
+      != profile.created_human
+    li.count
+      b!= profile.human_post_count 
+      span  #{profile.post_count == 1 ? "post" : "posts"}

@@ -13,7 +13,7 @@ if typeof(post) !== 'undefined'
         .profile.photo
           img(src="#{cache_url}/#{post.user_photo}")
         span=post.user_name
-      .date(data-time=post.created_iso)= post.created_human
+      .date(data-time=post.created_iso)!= post.created_human
       .edit-container
       if post.html
         .body!= post.html

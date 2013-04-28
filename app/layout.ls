@@ -221,7 +221,7 @@ time-updater = ->
     d = new Date $el.data(\time)
     elapsed = (now - d) / 1000s
     hr = window.helpers.elapsed-to-human-readable elapsed
-    $el.text hr
+    $el.html hr
 
 set-interval time-updater, 30000ms
 #}}}

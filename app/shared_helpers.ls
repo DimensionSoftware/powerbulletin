@@ -76,7 +76,7 @@ seconds-to-human-readable = (secs) ->
 
 @elapsed-to-human-readable = (secs-ago) ->
   suffix = \ago
-  if secs-ago < 30s then 'Just now!'
+  human  = if secs-ago < 30s then 'Just now!'
   else if secs-ago < 60s then "A moment #{suffix}"
   else if secs-ago < 120s then "A minute #{suffix}"
   else if secs-ago < 86400s # within the day
@@ -96,6 +96,7 @@ seconds-to-human-readable = (secs) ->
   else
     years = Math.floor secs-ago / 31446925s
     if years == 1 then "A year #{suffix}" else "#{years} years #{suffix}"
+  human.replace /(\d+)/g '<b>$1</b>' # bold numbers
 
 # ported from http://erlycoder.com/49/javascript-hash-functions-to-convert-string-into-integer-hash-
 @djb2-hash = (str) ->
