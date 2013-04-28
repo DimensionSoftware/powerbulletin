@@ -151,7 +151,7 @@ $d.on \click 'html header .menu a.title' window.mutate
 # search header
 $d.on \click \header (e) ->
   $ \body .remove-class \searching if e.target.class-name.index-of(\toggler) > -1 # guard
-  $ '#query' .focus!
+  $ '#query' .val('').focus!
   save-ui!
 $d.on \keypress \#query -> $ \body .add-class \searching; save-ui!
 #}}}
