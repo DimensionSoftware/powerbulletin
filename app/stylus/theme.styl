@@ -40,8 +40,8 @@ a.mutant:hover
 header
   //background-color rgba(255,255,255,0.1)
   background-color #fff
-  border-top 2px solid #000
-  border-bottom 1px solid rgba(180,180,180,0.9)
+  border-top 2px solid #aaa
+  border-bottom 1px solid rgba(180,180,180,0.4)
   color #555
   .container
     .menu
@@ -71,8 +71,9 @@ header
         .title
           //box-shadow 1px 0 0 #f3f3f3 inset, -1px 0 0 #ddd inset,0 1px 0 0 #ccc
           text-decoration none
-          border-top 3px solid #222
+          border-top 3px solid #aaa
           color #777
+          font-weight 500
           text-shadow 0 0 1px #fff
           background-color #eee
           background-image linear-gradient(bottom, #fff 45px, #fed)
@@ -155,44 +156,47 @@ header
   top 1px
   content ''
   bottom 0
-  background-color #ddd
+  background-color #f0f0f0
   width 1px
 #left_content
-  background-color rgba(100,100,100,0.3)
+  background-color rgba(100,100,100,0.1)
   .handle:hover
-    background-color #777
-    color #fff
-    border-color #eee
-    transition border-color .2s ease-out
+    background-color #f0f0f0
+    color #555
+    border-color #ccc
+    padding 3px
+    border-width 2px
+    box-shadow 0 0 3px 1px #fff
   .handle
     //box-shadow 0 0 1px 1px #999
-    background-color #888
+    transition all .2s ease-out
+    background-color #f6f6f6
     border 5px solid #fff
-    color #eee
+    color #888
   .title
     letter-spacing -1px
     font-size 1.1em
     margin (grid / 2) 0
   #paginator:hover
-    border-right 1px solid #444
+    border-right 1px solid #bbb
   #paginator
-    border-right 1px solid #777
-    background-color rgba(100,100,100,0.3)
+    border-right 1px solid #ddd
+    background-color rgba(100,100,100,0.1)
     .current:hover
       color #fff
-      text-shadow 1px 1px 0 #000
+      text-shadow 1px 1px 0 #555
       border-left 1px solid #ddd
       border-top 1px solid #eee
-      border-right 1px solid #000
-      border-bottom 1px solid #333
+      border-right 1px solid #555
+      border-bottom 1px solid #999
     .current
       background-color orange
-      color #eee
-      text-shadow 1px 1px 0 #333
+      color #fafafa
+      text-shadow 1px 1px 0 #777
       border-top 1px solid #ddd
-      border-left 1px solid #ccc
-      border-bottom 1px solid #555
-      border-right 1px solid #222
+      border-left 1px solid #ddd
+      border-bottom 1px solid #aaa
+      border-right 1px solid #777
       font-weight bold
 
 //}}}
@@ -225,16 +229,16 @@ header
 ///}}}
 //{{{ Footer
 footer::before
-  border-top 1px solid #aaa
-  box-shadow 0 -2px 9px 0 #555
+  border-top 1px solid #ccc
+  box-shadow 0 -2px 9px 0 #777
   top 0
   left 0
   right 0
   content ''
   position absolute
 footer:hover::before
-  border-top 1px solid #bbb
-  box-shadow 0 -2px 11px 0 #333
+  border-top 1px solid #ccc
+  box-shadow 0 -2px 11px 0 #444
   transition box-shadow .1s ease-out
 footer:hover
   color #666
@@ -253,8 +257,8 @@ footer
 //{{{ Scrolled <body>
 body.scrolled
   header::after
-    border-bottom 1px solid #aaa
-    box-shadow 0 2px 6px 0px #ccc
+    border-bottom 1px solid #ccc
+    box-shadow 0 2px 6px 0px #ddd
     bottom -3px
     left 0
     right 0
@@ -365,7 +369,10 @@ body.searching header
     font-size 15px
     color #777
   fieldset
-    border-color #eee
+    padding-top 40px
+    border-color #f0f0f0
+    border-radius 2px
+    background-color #fff
   input[name="password"]:focus
     border-top-left-radius 3px
     border-top-right-radius 3px
@@ -500,9 +507,12 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
 .fancybox-overlay
   //background none!important
   //background-color rgba(255,255,255,.9)!important
+  overflow none
   .fancybox-wrap
     .fancybox-skin
       box-shadow 0px 1px 12px 2px rgba(0, 0, 0, 0.3)!important
+    .fancybox-skin, .fancybox-inner
+      background-color #f9f9f9
 //}}}
 //{{{ jQuery UI
 .ui-widget-overlay
