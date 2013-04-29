@@ -77,7 +77,7 @@ header
           max-height 450px
           height auto
           min-width 850px
-          transition opacity .7s ease-out .2s, min-width .2s cubic-bezier(1.000, -0.010, 0.800, 1.530) .5s, max-height .3s cubic-bezier(1, -0.01, 1, .08) .5s, top .45s ease-out .2s
+          transition opacity .7s ease-out .1s, min-width .2s cubic-bezier(1.000, -0.010, 0.800, 1.530) .4s, max-height .3s cubic-bezier(1, -0.01, 1, .08) .4s, top .45s ease-out .1s
           .row:hover
             text-indent 1px
             transition text-indent .1s ease-out
@@ -185,6 +185,9 @@ header
       letter-spacing 20px
       padding-left 3px
       padding-top 2px
+      transition top .2s ease-out, height .3s ease-out
+    .current.ui-draggable-dragging
+      transition top 0
   #paginator:hover
     transition width .08s .2s ease-out, right .08s .2s ease-out
     width 18px

@@ -49,6 +49,21 @@ module.exports = class Pager
 
     # handlers
     @$el.click @on-click-set-page
+    @$el.find('.current').draggable({
+      axis        : \y
+      containment : \parent
+
+      drag: (ev, ui) ~>
+        page = page-from-click-height(ui.position.top + Math.floor(@indicator-height/2), @indicator-height)
+        @$el.find('.current').html(page)
+
+      stop: (ev, ui) ~>
+        page = page-from-click-height(ui.position.top + Math.floor(@indicator-height/2), @indicator-height)
+        # hack to get around jQuery UI bug that doesn't honor the containment
+        if page > @last
+          page = @last
+        @set-page page
+    })
     $(window).resize @on-resize-re-init
 
 
