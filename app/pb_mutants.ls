@@ -1,4 +1,5 @@
 global <<< require \./pb_helpers
+global.furl = require \./forum_urls
 
 # Common
 layout-static = (w, mutator, active-forum-id=0) ->

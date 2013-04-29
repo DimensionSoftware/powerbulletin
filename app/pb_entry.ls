@@ -1,6 +1,7 @@
 window.__    = require \lodash
 window.ioc   = require \./io_client
 window.Pager = require \./pager
+window.furl  = require \./forum_urls
 
 global <<< require \./pb_helpers
 global <<< require(\prelude-ls/prelude-browser-min).prelude
@@ -106,7 +107,8 @@ $d.on \click \.edit.no-surf require-login(-> edit-post is-editing(window.locatio
 $d.on \click '.onclick-submit .cancel' ->
   f = $ this .closest \.post-edit  # form
   f.hide 350ms \easeOutExpo
-  remove-editing-url!
+  meta = furl.parse window.location.pathname
+  remove-editing-url meta
 $d.on \click '.onclick-submit input[type="submit"]' require-login(
   (e) -> submit-form(e, (data) ->
     f = $ this .closest(\.post-edit) # form
@@ -115,7 +117,10 @@ $d.on \click '.onclick-submit input[type="submit"]' require-login(
     p.find \.title .html(data.0?title)
     p.find \.body  .html(data.0?body)
     f.remove-class \fadein .hide(300s) # & hide
-    remove-editing-url!
+    meta = furl.parse window.location.pathname
+    switch meta.type
+    | \new-thread => History.push-state {} '' data.uri
+    | \edit       => remove-editing-url meta
     false))
 
 $d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)

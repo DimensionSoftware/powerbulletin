@@ -1,7 +1,3 @@
-require! {
-  furl: \./forum_urls
-}
-
 # XXX shared by pb_mutants & pb_entry
 
 @set-online-user = (id) ->
@@ -28,11 +24,8 @@ require! {
   | \edit       => meta.id
   | otherwise   => false
 
-@remove-editing-url = ->
-  meta = furl.parse window.location.pathname
-  switch meta.type
-  | \edit       => History.push-state {no-surf:true} '' meta.thread-uri
-  | \new-thread => History.back!
+@remove-editing-url = (meta) ->
+  History.push-state {no-surf:true} '' meta.thread-uri
 
 @scroll-to-edit = (cb) ->
   cb = -> noop=1 unless cb
