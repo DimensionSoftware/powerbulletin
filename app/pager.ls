@@ -145,4 +145,5 @@ module.exports = class Pager
   #
   on-resize-re-init: (ev) ~>
     @init!
+    @set-page @current, false
 
