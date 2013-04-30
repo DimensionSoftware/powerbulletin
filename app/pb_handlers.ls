@@ -273,11 +273,11 @@ auth-finisher = (req, res, next) ->
     profile        : db.usr usr, _
     posts-by-user  : db.posts-by-user usr, page, ppp, _
     pages-count    : db.posts-by-user-pages-count usr, ppp, _
-    page           : (cb) -> cb null, page
 
   err, fdoc <- async.auto tasks
   if err then return next err
   fdoc.furl = thread-uri: "/user/#name"  # XXX - a hack to fix the pager that must go away
+  fdoc.page = parse-int page
 
   with fdoc.profile # transform
     ..human_post_count = add-commas(..post_count.to-string!)

@@ -21,9 +21,9 @@ layout-static = (w, next-mutant, active-forum-id=0) ->
 # initialize pager
 pager-init = (w) ->
   pager-opts =
-    current  : w.page
-    last     : w.pages-count
-    forum-id : w.active-forum-id
+    current  : parseInt w.page
+    last     : parseInt w.pages-count
+    forum-id : parseInt w.active-forum-id
   if w.pager
     w.pager <<< pager-opts
     w.pager.init!
