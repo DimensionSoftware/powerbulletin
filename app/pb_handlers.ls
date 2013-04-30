@@ -278,7 +278,6 @@ auth-finisher = (req, res, next) ->
   if err then return next err
   fdoc.furl = thread-uri: "/user/#name"  # XXX - a hack to fix the pager that must go away
   fdoc.page = parse-int page
-
   with fdoc.profile # transform
     ..human_post_count = add-commas(..post_count.to-string!)
 

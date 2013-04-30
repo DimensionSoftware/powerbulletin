@@ -9,6 +9,18 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 CREATE FUNCTION procs.put_doc(site_id JSON, type JSON, key JSON, val JSON) RETURNS JSON AS $$
   return require(\u).put-doc site_id, type, key, val
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+-- XXX sort is used but will need to be reworked for geospatial
+CREATE FUNCTION procs.forum_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
+  require! u
+  res = plv8.execute('SELECT id FROM forums WHERE site_id=$1 AND uri=$2', [site_id, uri])
+  if forum-id = res[0]?.id
+    doc = JSON.parse u.doc(site_id, "forum_#{sort}", forum-id)
+    doc.top-threads = JSON.parse u.doc(site_id, "threads_#{sort}", forum-id)
+    return doc
+  else
+    return null
+$$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 -- Posts {{{
 CREATE FUNCTION procs.owns_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
@@ -51,17 +63,22 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
   posts = plv8.execute(sql, [usr.site_id, usr.name, ppp, offset])
 
   if posts.length
-    # fetch thread context
-    # TODO uniq ids
-    context-sql = 'SELECT id,title,uri FROM posts WHERE id IN ('+
-      (prelude.unique [p.thread_id for p,i in posts]).join(', ') + \)
-    ctx = plv8.execute(context-sql, [])
+    # fetch thread & forum context
+    thread-sql = """
+      SELECT p.id,p.title,p.uri, a.user_id,a.name, f.uri furi,f.title ftitle
+      FROM posts p
+        LEFT JOIN aliases a ON a.user_id=p.user_id
+        LEFT JOIN posts f ON f.id=p.forum_id
+      WHERE p.id IN (#{(prelude.unique [p.thread_id for p,i in posts]).join(', ')})
+    """
+    ctx = plv8.execute(thread-sql, [])
 
     # hash for o(n) + o(1) * posts -> thread mapping
     lookup = {[v.id, v] for k,v of ctx}
     for p in posts
       t = lookup[p.thread_id] # thread
-      [p.thread_uri, p.thread_title] = [t.uri, t.title]
+      [p.thread_uri, p.thread_title, p.thread_username, p.forum_uri, p.forum_title] =
+        [t.uri, t.title, t.name, t.furi, t.ftitle]
 
   return posts
 $$ LANGUAGE plls IMMUTABLE STRICT;
@@ -432,19 +449,7 @@ CREATE FUNCTION procs.domains() RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- }}}
-
--- XXX sort is used but will need to be reworked for geospatial
-CREATE FUNCTION procs.forum_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
-  require! u
-  res = plv8.execute('SELECT id FROM forums WHERE site_id=$1 AND uri=$2', [site_id, uri])
-  if forum-id = res[0]?.id
-    doc = JSON.parse u.doc(site_id, "forum_#{sort}", forum-id)
-    doc.top-threads = JSON.parse u.doc(site_id, "threads_#{sort}", forum-id)
-    return doc
-  else
-    return null
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
+-- {{{ Forums & Threads
 CREATE FUNCTION procs.add_thread_impression(thread_id JSON) RETURNS JSON AS $$
   if not thread_id or thread_id is \undefined
     return false
@@ -609,4 +614,5 @@ CREATE FUNCTION procs.idx_ack_post(post_id JSON) RETURNS JSON AS $$
   plv8.execute sql, [post_id]
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
+--}}}
 -- vim:fdm=marker
