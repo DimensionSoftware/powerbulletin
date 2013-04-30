@@ -47,52 +47,6 @@ html.homepage
         right -2px
         transition right .4s ease-out
 //}}}
-//{{{ - profile
-html.profile
-  #left_content
-    .container
-      margin 0 (grid*2)
-      overflow hidden
-    .avatar img
-      width 100%
-      max-width 255px
-  h1, h2, h3
-    text-transform capitalize
-    margin-top 0
-    margin-left 0
-  #main_content
-    h3
-      margin-top grid
-    .heading
-      margin grid 0 0 0
-      padding 0
-      font-size .8em
-      font-weight 200
-      color #000
-    .forum
-      .post
-        padding-top 0!important
-        .profile
-          display none
-        .username
-          display none
-        .date
-          font-weight 100
-          font-size .9em
-          color #777
-          display inline-block
-          margin-right 10px
-          b
-            font-weight 200
-        .actions
-          position absolute
-          right 0
-          bottom 0
-          
-  ul
-    list-style none
-    margin grid 0 0 0
-//}}}
 //{{{ - forum, profile & search
 html.forum, html.profile, html.search
   body.scrolled
@@ -291,6 +245,64 @@ html.forum, html.profile, html.search
               margin-top (grid/2)
               width 38px
               height 30px
+//}}}
+//{{{ - profile
+html.profile
+  #left_content
+    .container
+      margin 0 (grid*2)
+      overflow hidden
+    .avatar img
+      width 100%
+      max-width 255px
+  h1, h2, h3
+    text-transform capitalize
+    margin-top 0
+    margin-left 0
+  #main_content
+    .forum
+      .heading
+        margin grid 0 0 0
+        padding 0
+        font-size 1em
+        color #000
+        text-transform none
+        a
+          text-decoration none
+        b
+          font-weight 400
+          margin 0 6px 0 3px
+          text-transform capitalize
+        .by, .forum
+          font-size .85em
+          font-weight 200
+      .post
+        padding-top 0
+        margin-left 8px
+        .title
+          font-size 1.3em
+        .body
+          margin-top 0
+        .profile
+          display none
+        .username
+          display none
+        .date
+          font-weight 100
+          font-size .95em
+          color #222
+          display inline-block
+          margin-right 10px
+          b
+            font-weight 200
+        .actions
+          position absolute
+          right 0
+          bottom 0
+          
+  ul
+    list-style none
+    margin grid 0 0 0
 //}}}
 
 #order

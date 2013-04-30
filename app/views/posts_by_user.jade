@@ -2,16 +2,18 @@ include _post
 
 .resizable.forum
   if postsByUser.length
-    //-h3 Posts By #{postsByUser[0].user_name}
-    //-last_thread_id = -1
+    last_thread_id = -1
     each p, i in postsByUser
-      //-if last_thread_id != p.thread_id
-      h3.heading
-        a.mutant(href=p.thread_uri) Reply to #{p.thread_title} 
-        a.mutant.by(href="/user/#{p.thread_username}") by #{p.thread_username} 
-        a.mutant.forum(href=p.forum_uri) in #{p.forum_title}
+      if last_thread_id != p.thread_id
+        h3.heading
+          a.mutant.title(href=p.thread_uri) 
+            b #{p.thread_title} 
+          a.mutant.by(href="/user/#{p.thread_username}") by 
+            b #{p.thread_username} 
+          a.mutant.forum(href=p.forum_uri) in 
+            b #{p.forum_title}
       mixin _post(p, i)
-      //-last_thread_id = p.thread_id
+      last_thread_id = p.thread_id
   else
     h3 Check back for my first post
       i !
