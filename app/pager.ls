@@ -102,23 +102,15 @@ module.exports = class Pager
 
   # Change to the next page
   next-page: ~>
-    if @current is 1
-      @$el.find \a.previous .show!
     if @current < @last
       @set-page parse-int(@current)+1
-      if @current is @last
-        @$el.find \a.next .hide!
     else
       return false
 
   # Change to the previous page
   previous-page: ~>
-    if @current is @last
-      @$el.find \a.next .show!
     if @current > 1
       @set-page @current-1
-      if @current is 1
-        @$el.find \a.previous .hide!
     else
       return false
 
@@ -126,6 +118,14 @@ module.exports = class Pager
   set-next-and-previous-links: ~>
     @$el.find \a.previous .attr \href @url-for-page(@current - 1 || 1)
     @$el.find \a.next     .attr \href @url-for-page(Math.min(@last, parse-int(@current) + 1))
+    switch @current
+    | 1         =>
+      @$el.find \a.page.previous .hide!
+      @$el.find \a.page.next     .show!
+    | @last     =>
+      @$el.find \a.page.previous .show!
+      @$el.find \a.page.next     .hide!
+    | otherwise => @$el.find \a.page          .show!
 
   #
   on-click-set-page: (ev) ~>
