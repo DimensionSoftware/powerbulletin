@@ -61,6 +61,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   unless params?no-surf # DOM update handled outside mutant
     spin(true)
     $.get url, {_surf:mutator, _surf-data:params?surf-data}, (r) ->
+      return if not r.mutant
       $d.attr \title, r.locals.title if r.locals?title # set title
       on-unload = window.mutants[window.mutator].on-unload or (w, next-mutant, cb) -> cb null
       on-unload window, r.mutant, -> # cleanup & run next mutant
