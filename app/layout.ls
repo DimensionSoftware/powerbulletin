@@ -62,8 +62,8 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
     spin(true)
     $.get url, {_surf:mutator, _surf-data:params?surf-data}, (r) ->
       $d.attr \title, r.locals.title if r.locals?title # set title
-      on-unload = window.mutants[window.mutator].on-unload or (w, cb) -> cb null
-      on-unload window, -> # cleanup & run next mutant
+      on-unload = window.mutants[window.mutator].on-unload or (w, next-mutant, cb) -> cb null
+      on-unload window, r.mutant, -> # cleanup & run next mutant
         window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}, ->
           on-load-resizable!
           spin(false)

@@ -2,12 +2,12 @@ global <<< require \./pb_helpers
 global.furl = require \./forum_urls
 
 # Common
-layout-static = (w, mutator, active-forum-id=0) ->
+layout-static = (w, next-mutant, active-forum-id=0) ->
   # XXX to be run last in mutant static
   # indicate current
   forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
-  w.$ \html .attr(\class "#{mutator}#{forum-class}") # stylus
-  w.marshal \mutator, mutator                        # js
+  w.$ \html .attr(\class "#{next-mutant}#{forum-class}") # stylus
+  w.marshal \mutator, next-mutant                        # js
 
   # handle active main menu
   fid = active-forum-id or w.active-forum-id
@@ -106,7 +106,7 @@ pager-init = (w) ->
       #}}}
       next!
   on-unload:
-    (window, next) ->
+    (window, next-mutant, next) ->
       try
         window.$ '.forum .container' .masonry(\destroy)
         window.$ '.forum .header' .waypoint(\destroy)
@@ -121,6 +121,8 @@ pager-init = (w) ->
 @forum =
   static:
     (window, next) ->
+      const prev-mutant = window.mutator
+
       # render main content
       window.render-mutant \main_content if is-editing(@furl.path) is true
         \post_new
@@ -130,7 +132,7 @@ pager-init = (w) ->
         \posts
 
       # render left content
-      if window.mutator != \forum or window.active-forum-id+'' != @surf-data
+      if prev-mutant != \forum or window.active-forum-id+'' != @surf-data
         window.render-mutant \left_container \nav # refresh on forum & mutant change
 
       window.marshal \activeForumId @active-forum-id
@@ -194,7 +196,7 @@ pager-init = (w) ->
         .css(\display \inline) # enable edit
     next!
   on-unload:
-    (window, next) ->
+    (window, next-mutant, next) ->
       try
         window.$ \#left_content .resizable(\destroy)
       catch
@@ -223,7 +225,7 @@ pager-init = (w) ->
       scroll-to-top!
 
   on-unload:
-    (window, next) ->
+    (window, next-mutant, next) ->
       next!
 
 @admin =
@@ -252,5 +254,11 @@ pager-init = (w) ->
     (window, next) ->
       pager-init window
       next!
-
+  on-unload:
+    (window, next-mutant, next) ->
+      $ \#query .val(unless next-mutant is \search
+        '' # remove search query
+      else
+        History.get-state!data.searchopts.q) # restore
+      next!
 # vim:fdm=indent

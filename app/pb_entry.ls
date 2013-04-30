@@ -154,12 +154,9 @@ $d.on \keyup '.fancybox-inner input' ->
 $d.on \click 'html header .menu a.title' window.mutate
 
 # search header
-$d.on \click \header (e) ->
-  $ \body .remove-class \searching if e.target.class-name.index-of(\toggler) > -1 # guard
-  $ '#query' .val('').focus!
-  save-ui!
-$d.on \keypress \#query -> $ \body .add-class \searching; save-ui!
-#}}}
+$d.on \click 'header .close' (e) ->
+  $ \#query .focus!
+  History.back!
 #{{{ - left_nav handle
 $d.on \click \#handle ->
   $l = $ \#left_content
