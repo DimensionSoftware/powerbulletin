@@ -277,6 +277,7 @@ auth-finisher = (req, res, next) ->
 
   err, fdoc <- async.auto tasks
   if err then return next err
+  fdoc.furl = thread-uri: "/user/#name"  # XXX - a hack to fix the pager that must go away
 
   with fdoc.profile # transform
     ..human_post_count = add-commas(..post_count.to-string!)

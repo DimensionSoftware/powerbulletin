@@ -42,7 +42,7 @@ module.exports = class Pager
   # @returns Object             the new pager
   (@id, options) ->
     @last     = options.last
-    @current  = options.current or 1
+    @current  = parseInt(options.current) or 1
     @forum-id = options.forum-id
     @$el      = $(@id)
     @init!
@@ -105,7 +105,7 @@ module.exports = class Pager
     if @current is 1
       @$el.find \a.previous .show!
     if @current < @last
-      @set-page @current+1
+      @set-page parseInt(@current)+1
       if @current is @last
         @$el.find \a.next .hide!
     else
@@ -125,7 +125,7 @@ module.exports = class Pager
   # next and prev urls
   set-next-and-previous-links: ~>
     @$el.find \a.previous .attr \href @url-for-page(@current - 1 || 1)
-    @$el.find \a.next     .attr \href @url-for-page(Math.min(@last, @current + 1))
+    @$el.find \a.next     .attr \href @url-for-page(Math.min(@last, parseInt(@current) + 1))
 
   #
   on-click-set-page: (ev) ~>
