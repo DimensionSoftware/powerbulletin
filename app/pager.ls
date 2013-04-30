@@ -125,7 +125,7 @@ module.exports = class Pager
     | @last     =>
       @$el.find \a.page.previous .show!
       @$el.find \a.page.next     .hide!
-    | otherwise => @$el.find \a.page          .show!
+    | otherwise => @$el.find \a.page .show!
 
   #
   on-click-set-page: (ev) ~>
@@ -145,4 +145,5 @@ module.exports = class Pager
   #
   on-resize-re-init: (ev) ~>
     @init!
+    @set-page @current, false
 
