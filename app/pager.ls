@@ -42,7 +42,7 @@ module.exports = class Pager
   # @returns Object             the new pager
   (@id, options) ->
     @last     = options.last
-    @current  = parseInt(options.current) or 1
+    @current  = parse-int(options.current) or 1
     @forum-id = options.forum-id
     @$el      = $(@id)
     @init!
@@ -92,12 +92,12 @@ module.exports = class Pager
       "#base/page/#n"
 
   # Change the page to page n
-  set-page: (n) ~>
+  set-page: (n, use-history=true) ~>
     @current = n
     @$el.find('.current')
       .text(n)
       .css(top: indicator-top(n, @indicator-height), height: @indicator-height)
-    History.push-state {surf-data: @forum-id}, '', @url-for-page(n)
+    History.push-state {surf-data: @forum-id}, '', @url-for-page(n) unless use-history
     @set-next-and-previous-links!
 
   # Change to the next page
@@ -105,7 +105,7 @@ module.exports = class Pager
     if @current is 1
       @$el.find \a.previous .show!
     if @current < @last
-      @set-page parseInt(@current)+1
+      @set-page parse-int(@current)+1
       if @current is @last
         @$el.find \a.next .hide!
     else
@@ -125,13 +125,13 @@ module.exports = class Pager
   # next and prev urls
   set-next-and-previous-links: ~>
     @$el.find \a.previous .attr \href @url-for-page(@current - 1 || 1)
-    @$el.find \a.next     .attr \href @url-for-page(Math.min(@last, parseInt(@current) + 1))
+    @$el.find \a.next     .attr \href @url-for-page(Math.min(@last, parse-int(@current) + 1))
 
   #
   on-click-set-page: (ev) ~>
     window.ev = ev
     y = (ev, $el) ->
-      dy = ev.page-y - parseInt($el.css('padding-top')) - $el.offset!top
+      dy = ev.page-y - parse-int($el.css('padding-top')) - $el.offset!top
       if dy < 0
         0
       else if dy > $el.height!

@@ -29,7 +29,7 @@ pager-init = (w) ->
     w.pager.init!
   else
     w.pager = new w.Pager('#paginator', pager-opts)
-  w.pager.set-page w.page if w.page
+  w.pager.set-page(w.page, false) if w.page
 
 @homepage =
   static:
