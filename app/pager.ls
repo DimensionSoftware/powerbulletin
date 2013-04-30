@@ -66,12 +66,21 @@ module.exports = class Pager
     })
     @$el.find('a.previous').click (ev) ~>
       @previous-page!
-      false
+      ev.prevent-default!
+      return false
     @$el.find('a.next').click (ev) ~>
       @next-page!
-      false
+      ev.prevent-default!
+      return false
     $(window).resize @on-resize-re-init
 
+  # Reconfigure an existing pager with new options.  This is usually used when page mutations happen.
+  # @param Object pager
+  # @param Object options
+  init: ->
+    if @last > 1 then @$el.show! else @$el.hide! # only show if pages exist
+    @height = @$el.height!
+    @indicator-height = indicator-height(@last, @height)
 
   # thread uri for page n
   url-for-page: (n) ~>
@@ -89,6 +98,7 @@ module.exports = class Pager
       .text(n)
       .css(top: indicator-top(n, @indicator-height), height: @indicator-height)
     History.push-state {surf-data: @forum-id}, '', @url-for-page(n)
+    @set-next-and-previous-links!
 
   # Change to the next page
   next-page: ~>
@@ -112,15 +122,10 @@ module.exports = class Pager
     else
       return false
 
-  # Reconfigure an existing pager with new options.  This is usually used when page mutations happen.
-  # @param Object pager
-  # @param Object options
-  init: ->
-    if @last > 1 then @$el.show! else @$el.hide! # only show if pages exist
-    @height = @$el.height!
-    #@height = @$el.height! - parseInt(@$el.css('padding-top')) - parseInt(@$el.css('padding-bottom'))
-    @indicator-height = indicator-height(@last, @height)
-    #@indicator-positions = scan (+ @indicator-height), 0, [1 to @last-1]
+  # next and prev urls
+  set-next-and-previous-links: ~>
+    @$el.find \a.previous .attr \href @url-for-page(@current - 1 || 1)
+    @$el.find \a.next     .attr \href @url-for-page(Math.min(@last, @current + 1))
 
   #
   on-click-set-page: (ev) ~>
