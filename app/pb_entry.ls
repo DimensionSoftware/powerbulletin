@@ -17,7 +17,7 @@ left-offset = 50px
 # ui save state
 sep = \-
 window.save-ui = -> # serialize ui state to cookie
-  min-width = 300px
+  min-width = 200px
   w = $ \#left_content .width!
   s = $.cookie \s
   if s then [_, _, prev] = s.split sep
