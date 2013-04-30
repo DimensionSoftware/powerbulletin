@@ -70,7 +70,20 @@ html
     section#left_content
       #left_container
       #paginator(title='Go to this Page')
+        if page != 1
+          if page != 2
+            a.page.previous(title='Previous Page', href="#{furl.threadUri}/page/#{page - 1}") 
+          else
+            a.page.previous(title='Previous Page', href="#{furl.threadUri}") 
+        else
+          a.page.previous(title='Previous Page', href="#{furl.threadUri}", style="display:none;") 
+
         .current(title='Drag to Page through')
+
+        if page != pagesCount
+          a.page.next(title='Next Page', href="#{furl.threadUri}/page/#{page + 1}") 
+        else
+          a.page.next(title='Next Page', href="#{furl.threadUri}/page/#{pageCount}", style="display:none;") 
 
     section#main_content.container
 

@@ -186,6 +186,33 @@ header
       transition top .2s ease-out, height .3s ease-out
     .current.ui-draggable-dragging
       transition top 0
+    a.page
+      display block
+      position absolute
+      height footer-height + (grid * 2)
+      width 12px
+    a.page.previous
+      top 0
+    a.page.next
+      bottom 0
+    a.page.previous:before
+      position absolute
+      height 0
+      width 0
+      content ''
+      border-top 15px solid transparent
+      border-left 6px solid transparent
+      border-right 6px solid transparent
+      border-bottom 15px solid red
+    a.page.next:before
+      position absolute
+      height 0
+      width 0
+      content ''
+      border-top 15px solid red
+      border-left 6px solid transparent
+      border-right 6px solid transparent
+      border-bottom 15px solid transparent
   #paginator:hover
     transition width .08s .2s ease-out, right .08s .2s ease-out
     width 18px
@@ -193,6 +220,17 @@ header
     .current
       padding-left 5px
       transition padding-left .08s .2s ease-out
+    a.page
+      transition width .08s .2s ease-out, right .08s .2s ease-out
+      width 18px
+    a.page.previous:before
+      border-left 9px solid transparent
+      border-right 9px solid transparent
+      transition border-left .08s .2s ease-out, border-right .08s .2s ease-out
+    a.page.next:before
+      border-left 9px solid transparent
+      border-right 9px solid transparent
+      transition border-left .08s .2s ease-out, border-right .08s .2s ease-out
 
   .ui-resizable-e
     cursor ew-resize

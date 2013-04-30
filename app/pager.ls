@@ -64,6 +64,12 @@ module.exports = class Pager
           page = @last
         @set-page page
     })
+    @$el.find('a.previous').click (ev) ~>
+      @previous-page!
+      false
+    @$el.find('a.next').click (ev) ~>
+      @next-page!
+      false
     $(window).resize @on-resize-re-init
 
 
@@ -83,6 +89,28 @@ module.exports = class Pager
       .text(n)
       .css(top: indicator-top(n, @indicator-height), height: @indicator-height)
     History.push-state {surf-data: @forum-id}, '', @url-for-page(n)
+
+  # Change to the next page
+  next-page: ~>
+    if @current is 1
+      @$el.find \a.previous .show!
+    if @current < @last
+      @set-page @current+1
+      if @current is @last
+        @$el.find \a.next .hide!
+    else
+      return false
+
+  # Change to the previous page
+  previous-page: ~>
+    if @current is @last
+      @$el.find \a.next .show!
+    if @current > 1
+      @set-page @current-1
+      if @current is 1
+        @$el.find \a.previous .hide!
+    else
+      return false
 
   # Reconfigure an existing pager with new options.  This is usually used when page mutations happen.
   # @param Object pager
