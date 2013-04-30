@@ -3,5 +3,6 @@ sudo bin/launch-elasticsearch && \
 sudo bin/launch-haproxy && \
 sudo bin/launch-varnish && \
 bin/launch-redis && \
+sleep 2 && \
 bin/launch-indexer && \
 bin/launch-search-notifier

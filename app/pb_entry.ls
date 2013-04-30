@@ -98,6 +98,8 @@ $d.on \keyup, \#query, __.debounce((->
   true), 250ms)
 $ui.on \search, (evt, searchopts) ->
   uri = "/search?#{$.param searchopts}"
+  #XXX: searchopts should move into socket.io, instead of just q
+  socket.emit \search searchopts.q
   History.pushState {searchopts}, '', uri
 #}}}
 #{{{ - generic form-handling ui

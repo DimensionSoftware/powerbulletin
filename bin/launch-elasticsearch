@@ -1,8 +1,8 @@
 #!/bin/bash
 
-killall elasticsearch
+killall java
 sleep 2
-killall -9  elasticsearch
+killall -9 java
 
 set -e
 # for memory locking
