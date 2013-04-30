@@ -97,7 +97,7 @@ module.exports = class Pager
     @$el.find('.current')
       .text(n)
       .css(top: indicator-top(n, @indicator-height), height: @indicator-height)
-    History.push-state {surf-data: @forum-id}, '', @url-for-page(n) unless use-history
+    History.push-state {surf-data: @forum-id}, '', @url-for-page(n) if use-history
     @set-next-and-previous-links!
 
   # Change to the next page
