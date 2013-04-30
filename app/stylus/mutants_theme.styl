@@ -85,11 +85,11 @@ html.forum, html.profile
       .children + .post:nth-last-child(2)
           border-bottom 1px solid transparent
       .post:hover
-        border-bottom 1px solid rgba(200,200,200,.5)
+        border-bottom 1px solid rgba(200,200,200,.3)
         color #000
       .post
         color #444
-        border-bottom 1px solid rgba(200,200,200,.2)
+        border-bottom 1px solid rgba(200,200,200,.15)
       .children
         .children
           .body, .date, .user span
@@ -139,5 +139,10 @@ html.forum, html.profile
 html.profile
   h1
     color #222
+  #main_content
+    .forum
+      .heading
+        .title
+          color highlight-color2
 
 // vim:fdm=marker

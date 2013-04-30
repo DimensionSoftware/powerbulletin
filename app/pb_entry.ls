@@ -36,9 +36,10 @@ window.load-ui = -> # restore ui state from cookie
   if s # restore
     [collapsed, w] = s.split sep
     if collapsed is \1 then $ \body .add-class \collapsed
-    $l.transition({width:parse-int w}, 500ms, \easeOutExpo -> set-wide!)
+    w = parse-int w
+    $l.transition({width: w} 500ms \easeOutExpo -> set-wide!)
     set-timeout (-> # ... & snap
-      $ '#main_content .resizable' .transition({padding-left:w + left-offset}, 450ms, \snap)), 200ms
+      $ '#main_content .resizable' .transition({padding-left: w+left-offset} 450ms \snap)), 300ms
   else # default
     set-wide!
   set-timeout align-breadcrumb, 500ms
@@ -53,7 +54,6 @@ append-reply-ui = (e) ->
 
   # append dom for reply ui
   unless $p.find('.reply .post-edit:visible').length
-    console.log $p.data \forum
     render-and-append window,  $p.find(\.reply:first), \post_edit, (post:
       method:     \post
       forum_id:   $p.data(\forum-id) or window.active-forum-id
