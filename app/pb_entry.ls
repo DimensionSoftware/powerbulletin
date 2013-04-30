@@ -36,9 +36,9 @@ window.load-ui = -> # restore ui state from cookie
   if s # restore
     [collapsed, w] = s.split sep
     if collapsed is \1 then $ \body .add-class \collapsed
-    $l.transition({width:parse-int w}, 500ms, \easeOutExpo -> set-wide!)
-    set-timeout (-> # ... & snap
-      $ '#main_content .resizable' .transition({padding-left:w + left-offset}, 450ms, \snap)), 200ms
+    $l.transition({width:parse-int w}, 500ms, \easeOutExpo ->
+      $ '#main_content .resizable' .transition({padding-left:w + left-offset}, 450ms, \easeOutExpo)), 200ms
+      set-wide!)
   else # default
     set-wide!
   set-timeout align-breadcrumb, 500ms
