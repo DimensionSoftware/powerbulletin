@@ -16,30 +16,31 @@ left-offset = 50px
 #{{{ UI Interactions
 # ui save state
 sep = \-
-window.save-ui = -> # serealize ui state to cookie
-  min-width = 200px
-  w = $ '#left_content' .width!
-  s = ($.cookie \s)
+window.save-ui = -> # serialize ui state to cookie
+  min-width = 300px
+  w = $ \#left_content .width!
+  s = $.cookie \s
   if s then [_, _, prev] = s.split sep
   w = if w > min-width then w else prev or min-width # default
   vals =
-    if $ \body .has-class(\searching) then 1 else 0
     if $ \body .has-class(\collapsed) then 1 else 0
     w
   $.cookie \s, vals.join(sep),
     path: '/'
 window.load-ui = -> # restore ui state from cookie
-  s  = ($.cookie \s)
+  s  = $.cookie \s
   $l = $ \#left_content
-  if s
-    [searching, collapsed, w] = s.split sep
-    w = parseInt w
-    $l.transition({width:w}, 500ms, \easeOutExpo -> # restore
-      $l.toggle-class \wide ($l.width! > 300px))    # ..left nav
+
+  set-wide = -> $l.toggle-class \wide ($l.width! > 300px)
+
+  if s # restore
+    [collapsed, w] = s.split sep
+    if collapsed is \1 then $ \body .add-class \collapsed
+    $l.transition({width:parse-int w}, 500ms, \easeOutExpo -> set-wide!)
     set-timeout (-> # ... & snap
       $ '#main_content .resizable' .transition({padding-left:w + left-offset}, 450ms, \snap)), 200ms
-  if searching is \1 then $ \body .add-class(\searching)
-  if collapsed is \1 then $ \body .add-class(\collapsed)
+  else # default
+    set-wide!
   set-timeout align-breadcrumb, 500ms
 
 # waypoints
