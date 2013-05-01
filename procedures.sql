@@ -356,6 +356,15 @@ CREATE FUNCTION procs.change_alias(usr JSON) RETURNS JSON AS $$
   return plv8.execute(sql, [usr.name, usr.user_id, usr.site_id])
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+-- change avatar
+CREATE FUNCTION procs.change_avatar(usr JSON, path JSON) RETURNS JSON AS $$
+  sql = '''
+  UPDATE users SET photo = $1 WHERE id = $2
+    RETURNING *
+  '''
+  return plv8.execute(sql, [path, usr.id])
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 -- find an alias by site_id and verify string
 CREATE FUNCTION procs.alias_by_verify(site_id JSON, verify JSON) RETURNS JSON AS $$
   sql = '''
