@@ -6,28 +6,6 @@ window.mutants = require \./pb_mutants
 $w = $ window
 $d = $ document
 
-var show-timeout-id
-var hide-timeout-id
-window.spin = (loading = true) ->
-  time-until-show = 500ms
-  time-until-hide = 6500ms
-
-  clear-timeout show-timeout-id
-  clear-timeout hide-timeout-id
-
-  $b ||= $('body')
-  show = ->
-    $b.add-class \waiting
-    hide-timeout-id := set-timeout hide, time-until-hide
-  hide = ->
-    $b.remove-class \waiting
-
-  if loading
-    show-timeout-id := set-timeout show, time-until-show
-  else
-    hide!
-
-
 is-ie     = false or \msTransform in document.documentElement.style
 is-moz    = false or \MozBoxSizing in document.documentElement.style
 is-opera  = !!(window.opera and window.opera.version)
@@ -226,12 +204,37 @@ time-updater = ->
 
 set-interval time-updater, 30000ms
 #}}}
+#{{{ Loading cursor spinner
+var show-timeout-id
+var hide-timeout-id
+window.spin = (loading = true) ->
+  time-until-show = 500ms
+  time-until-hide = 6500ms
+
+  clear-timeout show-timeout-id
+  clear-timeout hide-timeout-id
+
+  $b ||= $('body')
+  show = ->
+    $b.add-class \waiting
+    hide-timeout-id := set-timeout hide, time-until-hide
+  hide = ->
+    $b.remove-class \waiting
+
+  if loading
+    show-timeout-id := set-timeout show, time-until-show
+  else
+    hide!
+#}}}
+
 
 # personalization ( based on parameters from user obj )
-window.user <- $.getJSON '/auth/user'
+window.user <- $.getJSON \/auth/user
 
-# run initial mutant
+# run initial mutant & personalize
 window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}
+window.mutants?[window.initial-mutant]?on-personalize window, window.user, (->)
+
 on-load-resizable!
 
 # vim:fdm=marker
