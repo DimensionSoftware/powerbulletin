@@ -5,6 +5,7 @@ require! {
   stylus
   cssmin
   fluidity
+  mkdirp
   __: \lodash
   pg: './postgres'
   auth: './auth'
@@ -283,6 +284,49 @@ auth-finisher = (req, res, next) ->
 
   res.locals fdoc
   res.mutant \profile
+
+@profile-avatar = (req, res, next) ->
+  user = req.user
+  if req.params.name != user.name
+    console.error \authorization
+    return res.json { success: false }, 403
+
+  db = pg.procs
+  avatar = req.files.avatar
+
+  ext = avatar.name.match(/\.(\w+)$/)?1 or ""
+  avatar-file = if ext then "avatar.#ext" else "avatar"
+
+  # mkdirp public/images/user/:user_id
+  url-dir-path = "/images/user/#{user.id}"
+  fs-dir-path  = "public#url-dir-path"
+  url-path     = "#url-dir-path/#{avatar-file}"
+  fs-path      = "#fs-dir-path/#{avatar-file}"
+  err <- mkdirp fs-dir-path
+  if err
+    console.error \mkdirp.rename, err
+    return res.json { success: false }, 403
+
+  # move image to public/images/user/:user_id/
+  move = (src, dst, cb) ->
+    _is = fs.create-read-stream src
+    _os = fs.create-write-stream dst
+    _is.on \end, (err) ->
+      err2 <- fs.unlink src
+      cb(err)
+    _is.pipe(_os)
+
+  err <- move avatar.path, fs-path
+  if err
+    console.error \move, err
+    return res.json { success: false }, 403
+
+  # update user avatar
+  err, success <- db.change-avatar user, url-path
+  if err
+    console.error \change-avatar, err
+    return res.json { success: false }, 403
+  res.json success: true, avatar: url-path
 
 @register = (req, res, next) ~>
   site     = res.locals.site
