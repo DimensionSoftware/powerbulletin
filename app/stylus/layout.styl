@@ -145,6 +145,16 @@ header
   padding-top (grid*3)
   .photo
     margin-top 6px
+  .handle::before
+    position absolute
+    content ''
+    border-bottom 8px solid transparent
+    border-top 8px solid transparent
+    border-left 10px solid transparent
+    height 0
+    width 0
+    top 8px
+    left -2px
   .handle
     border-radius 20px
     line-height 28px
@@ -152,8 +162,8 @@ header
     height 30px
     width 30px
     margin-top (grid/2)
-    top (header-height - (grid*2))
-    right -26px
+    top (header-height - 17)
+    right -25px
     cursor pointer
     position absolute
     text-align center
@@ -195,28 +205,30 @@ header
       top 0
     a.page.next
       bottom 0
-    a.page.previous:before
+    a.page.previous::before
       position absolute
       height 0
       width 0
       content ''
-      border-top 15px solid transparent
-      border-left 6px solid transparent
-      border-right 6px solid transparent
-      border-bottom 15px solid red
-    a.page.next:before
+      left 3px
+      top 0
+      border-top 10px solid transparent
+      border-left 4px solid transparent
+      border-right 4px solid transparent
+    a.page.next::before
       position absolute
       height 0
       width 0
+      left 3px
+      bottom 0
       content ''
-      border-top 15px solid red
-      border-left 6px solid transparent
-      border-right 6px solid transparent
-      border-bottom 15px solid transparent
+      border-left 4px solid transparent
+      border-right 4px solid transparent
+      border-bottom 10px solid transparent
   #paginator:hover
     transition width .08s .2s ease-out, right .08s .2s ease-out
-    width 18px
-    right -18px
+    width 15px
+    right -15px
     .current
       padding-left 5px
       transition padding-left .08s .2s ease-out
@@ -224,12 +236,12 @@ header
       transition width .08s .2s ease-out, right .08s .2s ease-out
       width 18px
     a.page.previous:before
-      border-left 9px solid transparent
-      border-right 9px solid transparent
+      border-left 5px solid transparent
+      border-right 5px solid transparent
       transition border-left .08s .2s ease-out, border-right .08s .2s ease-out
     a.page.next:before
-      border-left 9px solid transparent
-      border-right 9px solid transparent
+      border-left 5px solid transparent
+      border-right 5px solid transparent
       transition border-left .08s .2s ease-out, border-right .08s .2s ease-out
 
   .ui-resizable-e
@@ -319,8 +331,13 @@ body.scrolled
     padding-top (grid * 1.5)
     transition padding-top .2s ease-out, top .2s ease-out
     .handle
-      top (header-scrolled-height - (grid*1.5))
+      top (header-scrolled-height - 13)
       transition top .2s ease-out
+    #paginator
+      a.page.previous::before
+        top -5px
+      a.page.next::before
+        bottom 30px
   #main_content
     #breadcrumb
       top (header-scrolled-height+3)
@@ -339,10 +356,11 @@ body.collapsed
   #left_content
     width 0!important
     transition width .1s
-    .handle
+    .handle::before
       transform rotate(180deg)
-      right -29px!important
-      text-indent -3px
+      top 8px
+      left 14px
+      transition all .5s ease-out
     .create a
       display none!important
   #main_content

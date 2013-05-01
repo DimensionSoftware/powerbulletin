@@ -55,7 +55,6 @@ module.exports = class Pager
 
       drag: (ev, ui) ~>
         page = page-from-click-height(ui.position.top + Math.floor(@indicator-height/2), @indicator-height)
-        @$el.find('.current').html(page)
 
       stop: (ev, ui) ~>
         page = page-from-click-height(ui.position.top + Math.floor(@indicator-height/2), @indicator-height)
@@ -95,8 +94,8 @@ module.exports = class Pager
   set-page: (n, use-history=true) ~>
     @current = n
     @$el.find('.current')
-      .text(n)
       .css(top: indicator-top(n, @indicator-height), height: @indicator-height)
+      .attr(\title, "@ page #n")
     History.push-state {surf-data: @forum-id}, '', @url-for-page(n) if use-history
     @set-next-and-previous-links!
 
