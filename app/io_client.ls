@@ -16,11 +16,11 @@ socket.on \leave-site, (message, cb) ->
   $ "[data-user-id=#{message.id}] .profile.photo" .remove-class \online
 
 socket.on \thread-impression (thread, cb) ->
-  if thread.forum_id is active-forum-id
+  if thread.forum_id is window.active-forum-id
     $("\#left_container ul.threads li[data-id=#{thread.id}] span.views").html("#{thread.views} <i>views</i>")
 
 socket.on \thread-create (thread, cb) ->
-  if active-forum-id is thread?forum_id
+  if window.active-forum-id is thread?forum_id
     <- render-and-prepend window,  $('#left_container .threads'), \thread, thread:thread
     $ '#left_container .threads div.fadein li' .unwrap!
 
@@ -47,6 +47,9 @@ socket.on \post-create (post, cb) ->
           if mutator is \forum then awesome-scroll-to new-post, 300ms
         else
           animate-in new-post)
+
+socket.on \new-hit, (hit) ->
+  console.log \new-hit, hit
 
 socket.on \debug, (message, cb) ->
   console.log \debug, message

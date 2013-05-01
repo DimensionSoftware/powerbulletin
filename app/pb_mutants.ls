@@ -35,11 +35,9 @@ pager-init = (w) ->
   static:
     (window, next) ->
       window.render-mutant \main_content \homepage
-
       # handle active forum background
       window.$ \.bg-set .remove!
       window.$ \.bg .each -> window.$ this .add-class \bg-set .remove!prepend-to window.$ \body
-
       layout-static window, \homepage
       next!
   on-load:
@@ -183,7 +181,7 @@ pager-init = (w) ->
         cur = threads.scroll-top!
         dst = Math.round($ '#left_container .threads > .active' .position!?top)
         if dst then threads.animate {scroll-top:cur+dst+offset}, 500ms, \easeOutExpo), 500ms
-
+      next!
   on-mutate:
     (window, next) ->
       scroll-to-top!
@@ -208,22 +206,18 @@ pager-init = (w) ->
     (window, next) ->
       window.render-mutant \left_container \profile
       window.render-mutant \main_content \posts_by_user
-
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
-
       layout-static window, \profile
       next!
-
   on-load:
     (window, next) ->
       pager-init window
       next!
-
   on-mutate:
     (window, next) ->
       scroll-to-top!
-
+      next!
   on-unload:
     (window, next-mutant, next) ->
       next!

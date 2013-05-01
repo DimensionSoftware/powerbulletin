@@ -596,10 +596,9 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.idx_posts(lim JSON) RETURNS JSON AS $$
   sql = '''
-  SELECT id, title, body, user_id
+  SELECT id, title, body, user_id, created, updated
   FROM posts
-  WHERE parent_id IS NULL
-    AND index_dirty='t'
+  WHERE index_dirty='t'
   ORDER BY updated
   LIMIT $1
   '''
