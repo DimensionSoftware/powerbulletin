@@ -49,6 +49,9 @@ socket.on \post-create (post, cb) ->
           animate-in new-post)
 
 socket.on \new-hit, (hit) ->
+  window.new-hits ||= 0
+  window.new-hits++
+  $('#new_hits').text "#{window.new-hits} new search results!"
   console.log \new-hit, hit
 
 socket.on \debug, (message, cb) ->
