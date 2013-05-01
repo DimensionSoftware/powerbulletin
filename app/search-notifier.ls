@@ -38,13 +38,33 @@ init-ioc = (port) ->
 # * room (name of socket.io room to emit results to)
 # * q (querystring)
 # * site-id (site-id to query)
-new-poller = (io, poller) ->
-  work = ->
-    ch = io.sockets.in(poller.room)
-    console.log "work tick for room #{poller.room}"
-    ch.emit \debug, {test: "test emit from room: #{poller.room}"}
+new-poller = (io, elc, poller) ->
+  work-interval = 2000ms
+  now = new Date
+  cutoff = new Date(now - work-interval)
+  busy = false
 
-  interval-id = set-interval work, 2000
+  work = ->
+    if busy # just in case work-interval is exceeded
+      console.warn "! work-interval of #{work-interval}ms was exceeded for #{poller.room}"
+      console.warn "! (waiting till next interval...)"
+    else
+      busy := true
+
+      ch = io.sockets.in(poller.room)
+      console.log "work tick for room #{poller.room}"
+      now = new Date
+      # XXX: integrate actual searchopts into date range query
+      err, res <- elc.search {query: {range: {created: {from: cutoff.to-ISO-string!, to: now.to-ISO-string!, include_upper: false}}}}
+      if err then throw err
+      cutoff := now
+      # XXX: replace this emit with a ch.emit \new-post
+      for hit in res.hits
+        ch.emit \new-hit, hit
+
+      busy := false
+
+  interval-id = set-interval work, work-interval
 
   poller.stop = ->
     clear-interval interval-id
@@ -91,11 +111,12 @@ export init = (unique-port = 9999, cb = (->)) ->
       console.warn 'poller exists', JSON.stringify(poller)
     else
       # create new poller
-      poller = new-poller io, opts
+      poller = new-poller io, elc, opts
+
       pollers[opts.room] = poller
       console.warn 'poller created', JSON.stringify(poller)
 
-  io.emit \debug, 'search-notifier-up'
+  io.sockets.emit \debug, 'search-notifier-up'
 
   set-interval (-> debug-info(io, pollers)), 5000
   set-interval (-> stop-inactive-pollers(io, pollers)), 5000
