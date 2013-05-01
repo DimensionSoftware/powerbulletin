@@ -221,15 +221,17 @@ pager-init = (w) ->
   on-personalize: (w, u, next) ->
     if u # guard
       set-online-user u.id
-      $ \.avatar .html5-uploader({
-        name     : \avatar
-        post-url : "/user/#{u.name}/avatar"
+      path-parts = window.location.pathname.split '/'
+      if path-parts.2 is u.name
+        $ \.avatar .html5-uploader({
+          name     : \avatar
+          post-url : "/user/#{u.name}/avatar"
 
-        on-success: (x, y, json) ->
-          r = JSON.parse json
-          if typeof r is \object
-            $ '.avatar img' .attr \src, "#{w.cache_url}/#{r.avatar}"
-      })
+          on-success: (x, y, json) ->
+            r = JSON.parse json
+            if typeof r is \object
+              $ '.avatar img' .attr \src, "#{w.cache_url}/#{r.avatar}"
+        })
     next!
   on-unload:
     (window, next-mutant, next) ->
