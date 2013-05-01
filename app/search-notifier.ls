@@ -39,7 +39,10 @@ init-ioc = (port) ->
 # * q (querystring)
 # * site-id (site-id to query)
 new-poller = (io, elc, poller) ->
-  work-interval = 2000ms
+  # randomize work interval so we make better use of event architecture
+  # but only but a small amount
+  work-interval = 1200 + (Math.floor (Math.random! * 300)) # in ms
+
   now = new Date
   cutoff = new Date(now - work-interval)
   busy = false
@@ -124,7 +127,7 @@ export init = (unique-port = 9999, cb = (->)) ->
   io.sockets.emit \debug, 'search-notifier-up'
 
   set-interval (-> debug-info(io, pollers)), 5000
-  set-interval (-> stop-inactive-pollers(io, pollers)), 5000
+  set-interval (-> stop-inactive-pollers(io, pollers)), 10000
 
   # TODO:
   # * need to start a setInterval loop which periodically will
