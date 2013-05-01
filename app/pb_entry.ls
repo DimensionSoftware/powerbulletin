@@ -111,7 +111,9 @@ $d.on \click '.onclick-submit .cancel' ->
   f = $ this .closest \.post-edit  # form
   f.hide 350ms \easeOutExpo
   meta = furl.parse window.location.pathname
-  remove-editing-url meta
+  switch meta.type
+  | \new-thread => History.back!
+  | otherwise   => remove-editing-url meta
 $d.on \click '.onclick-submit input[type="submit"]' require-login(
   (e) -> submit-form(e, (data) ->
     f = $ this .closest(\.post-edit) # form
