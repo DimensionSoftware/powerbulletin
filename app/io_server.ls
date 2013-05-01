@@ -55,11 +55,11 @@ site-by-domain = (domain, cb) ->
   io = sio.listen server
   io.set 'log level', 1
 
-  redisPub    = redis.create-client!
-  redisSub    = redis.create-client!
-  redisClient = redis.create-client!
-  redisStore  = new RedisStore({ redis, redisPub, redisSub, redisClient })
-  io.set \store, redisStore
+  redis-pub    = redis.create-client!
+  redis-sub    = redis.create-client!
+  redis-client = redis.create-client!
+  redis-store  = new RedisStore({ redis, redis-pub, redis-sub, redis-client })
+  io.set \store, redis-store
 
   io.set \authorization, (handshake, accept) ->
     if handshake.headers.cookie

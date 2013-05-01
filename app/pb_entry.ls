@@ -92,7 +92,7 @@ $ui = $ window.ui
 # keys that actually trigger the search
 $d.on \keyup, \#query, __.debounce((->
   # ignore special keys & delete when search is empty
-  unless it.which in [13 16 17 18 20 27 32 37 38 39 40 91 93] or (it.which is 8 and !it.target.value.length)
+  unless it.which in [13 16 17 18 20 27 32 37 38 39 40 87 91 93] or (it.which is 8 and !it.target.value.length)
     console.log "#{it.which} triggered search"
     $ui.trigger \search, {q: $(@).val!}
   true), 250ms)

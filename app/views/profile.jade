@@ -5,14 +5,17 @@
   h2= profile.name
 
   .profile(data-user-id="#{profile.id}")
-    .avatar
-      if profile.photo
-        if profile.photo.match(/^http/)
-          img(src="#{profile.photo}")
+    form(action="/user/#{profile.name}/avatar", enctype="multipart/form-data", method="post")
+      .avatar
+        if profile.photo
+          if profile.photo.match(/^http/)
+            img(src="#{profile.photo}")
+          else
+            img(src="#{cache_url}/#{profile.photo}")
         else
-          img(src="#{cache_url}/#{profile.photo}")
-      else
-        img(src="#{cache_url}/images/profile.jpg")
+          img(src="#{cache_url}/images/profile.jpg")
+      input(type="file", name="avatar", style="display:none;")
+      //- input(type="submit")
 
   ul
     li.since
