@@ -51,7 +51,11 @@ socket.on \post-create (post, cb) ->
 socket.on \new-hit, (hit) ->
   window.new-hits ||= 0
   window.new-hits++
-  $('#new_hits').text "#{window.new-hits} new search results!"
+  realtime-html = """
+  <div>#{window.new-hits} new search results!</div>
+  last: <strong>#{hit._source.title || hit._source.body}</strong>
+  """
+  $('#new_hits').html realtime-html
   console.log \new-hit, hit
 
 socket.on \debug, (message, cb) ->

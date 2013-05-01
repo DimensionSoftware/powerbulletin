@@ -39,7 +39,7 @@ export run = ->
 
     async.each posts, ack, (err) ->
       if err then throw err
-      #console.warn "indexed posts: #{posts.map((.id)).join(',')}"
+      console.warn "indexed posts: #{posts.map((.id)).join(',')}"
       process.next-tick run # try again!
   else
     set-timeout run, 250 # wait a bit before trying again
