@@ -98,6 +98,8 @@ site-by-domain = (domain, cb) ->
       console.warn \disconnected
       if user and site
         leave-site socket, site, user
+      if search-room
+        socket.leave search-room
 
     socket.on \online-now, ->
       if site
