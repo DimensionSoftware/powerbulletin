@@ -81,11 +81,16 @@ debug-info = (io, pollers) ->
 
 stop-inactive-pollers = (io, pollers) ->
   rooms = io.sockets.manager.rooms
+  to-delete = []
   for pname, poller of pollers
     # stop poller unless there is a room for it
     unless rooms['/' + pname]
       poller.stop!
-      delete pollers[pname]
+      to-delete.push pname
+
+  # delete after to avoid weird condition where poller isn't cleaned up
+  for pname in to-delete
+    delete pollers[pname]
 
 # port must be unique on given host and should be protected!!!
 # XXX: its sort of a hack i would love to just not listen on a tcp
