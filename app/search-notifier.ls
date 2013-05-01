@@ -40,7 +40,7 @@ init-ioc = (port) ->
 # * site-id (site-id to query)
 new-poller = (io, poller) ->
   work = ->
-    ch = io.in(poller.room)
+    ch = io.sockets.in(poller.room)
     console.log "work tick for room #{poller.room}"
     ch.emit \debug, {test: "test emit from room: #{poller.room}"}
 
@@ -48,10 +48,24 @@ new-poller = (io, poller) ->
 
   poller.stop = ->
     clear-interval interval-id
-
-  console.warn \poller-created, poller
+    console.warn "|=| stopped poller: #{poller.room}"
 
   return poller
+
+debug-info = (io, pollers) ->
+  rooms = {[room, clients.length] for room, clients of io.sockets.manager.rooms}
+  console.log '--DEBUG: ROOMS'
+  console.log rooms
+  console.log '--DEBUG: POLLERS'
+  console.log Object.keys(pollers)
+
+stop-inactive-pollers = (io, pollers) ->
+  rooms = io.sockets.manager.rooms
+  for pname, poller of pollers
+    # stop poller unless there is a room for it
+    unless rooms['/' + pname]
+      poller.stop!
+      delete pollers[pname]
 
 # port must be unique on given host and should be protected!!!
 # XXX: its sort of a hack i would love to just not listen on a tcp
@@ -66,7 +80,7 @@ export init = (unique-port = 9999, cb = (->)) ->
   elc = elastic.client
 
   # start socket.io server on unique-port
-  io = init-io(unique-port).sockets
+  io = init-io(unique-port)
 
   # create io-client (to receive events)
   sock = init-ioc unique-port
@@ -77,12 +91,14 @@ export init = (unique-port = 9999, cb = (->)) ->
       console.warn 'poller exists', JSON.stringify(poller)
     else
       # create new poller
-      console.log 'yaba daba do!'
       poller = new-poller io, opts
       pollers[opts.room] = poller
       console.warn 'poller created', JSON.stringify(poller)
 
   io.emit \debug, 'search-notifier-up'
+
+  set-interval (-> debug-info(io, pollers)), 5000
+  set-interval (-> stop-inactive-pollers(io, pollers)), 5000
 
   # TODO:
   # * need to start a setInterval loop which periodically will
@@ -91,4 +107,3 @@ export init = (unique-port = 9999, cb = (->)) ->
   # * pollers need to do REAL work and push elastic results down the channel
 
   cb!
-
