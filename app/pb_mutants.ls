@@ -21,14 +21,14 @@ layout-static = (w, next-mutant, active-forum-id=0) ->
 # initialize pager
 pager-init = (w) ->
   pager-opts =
-    current  : parseInt w.page
-    last     : parseInt w.pages-count
-    forum-id : parseInt w.active-forum-id
+    current  : parse-int w.page
+    last     : parse-int w.pages-count
+    forum-id : parse-int w.active-forum-id
   if w.pager
     w.pager <<< pager-opts
     w.pager.init!
   else
-    w.pager = new w.Pager('#paginator', pager-opts)
+    w.pager = new w.Pager \#paginator pager-opts
   w.pager.set-page(w.page, false) if w.page
 
 @homepage =

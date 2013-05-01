@@ -12,7 +12,7 @@ mixin forum(f, i)
       each sf,ii in f.forums
         mixin subforum(f, sf, ii)
 
-#handle.handle(title='Toggle') &lt;
+#handle.handle(title='Toggle')
 .create
   a.mutant.no-surf.require-login.button(href="#{forum.uri}/new") Create Thread
 
