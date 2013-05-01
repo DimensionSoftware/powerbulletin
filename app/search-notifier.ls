@@ -34,13 +34,22 @@ init-ioc = (port) ->
 
   return ioc
 
-new-poller = (q) ->
-  poller = {q}
-
+# poller has these properties:
+# * room (name of socket.io room to emit results to)
+# * q (querystring)
+# * site-id (site-id to query)
+new-poller = (io, poller) ->
   work = ->
-    console.log 'poller doing work', JSON.stringify(poller)
+    ch = io.in(poller.room)
+    console.log "work tick for room #{poller.room}"
+    ch.emit \debug, {test: "test emit from room: #{poller.room}"}
 
-  poller.interval-id = set-interval work, 2000
+  interval-id = set-interval work, 2000
+
+  poller.stop = ->
+    clear-interval interval-id
+
+  console.warn \poller-created, poller
 
   return poller
 
@@ -56,19 +65,24 @@ export init = (unique-port = 9999, cb = (->)) ->
   if err then return cb err
   elc = elastic.client
 
-  @io = init-io(unique-port).sockets
-  @sock = init-ioc unique-port
+  # start socket.io server on unique-port
+  io = init-io(unique-port).sockets
 
-  @sock.on 'register-query' (q) ->
-    if poller = pollers[q]
+  # create io-client (to receive events)
+  sock = init-ioc unique-port
+
+  sock.on 'register-search' (opts) ~>
+    if poller = pollers[opts.room]
       # poller exists
       console.warn 'poller exists', JSON.stringify(poller)
     else
       # create new poller
-      pollers[q] = new-poller q
-      console.warn 'poller created', JSON.stringify(pollers[q])
+      console.log 'yaba daba do!'
+      poller = new-poller io, opts
+      pollers[opts.room] = poller
+      console.warn 'poller created', JSON.stringify(poller)
 
-  @io.emit \debug, 'search-notifier-up'
+  io.emit \debug, 'search-notifier-up'
 
   # TODO:
   # * need to start a setInterval loop which periodically will
