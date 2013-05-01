@@ -34,15 +34,38 @@ init-ioc = (port) ->
 
   return ioc
 
-new-poller = (q) ->
-  poller = {q}
-
+# poller has these properties:
+# * room (name of socket.io room to emit results to)
+# * q (querystring)
+# * site-id (site-id to query)
+new-poller = (io, poller) ->
   work = ->
-    console.log 'poller doing work', JSON.stringify(poller)
+    ch = io.sockets.in(poller.room)
+    console.log "work tick for room #{poller.room}"
+    ch.emit \debug, {test: "test emit from room: #{poller.room}"}
 
-  poller.interval-id = set-interval work, 2000
+  interval-id = set-interval work, 2000
+
+  poller.stop = ->
+    clear-interval interval-id
+    console.warn "|=| stopped poller: #{poller.room}"
 
   return poller
+
+debug-info = (io, pollers) ->
+  rooms = {[room, clients.length] for room, clients of io.sockets.manager.rooms}
+  console.log '--DEBUG: ROOMS'
+  console.log rooms
+  console.log '--DEBUG: POLLERS'
+  console.log Object.keys(pollers)
+
+stop-inactive-pollers = (io, pollers) ->
+  rooms = io.sockets.manager.rooms
+  for pname, poller of pollers
+    # stop poller unless there is a room for it
+    unless rooms['/' + pname]
+      poller.stop!
+      delete pollers[pname]
 
 # port must be unique on given host and should be protected!!!
 # XXX: its sort of a hack i would love to just not listen on a tcp
@@ -56,19 +79,26 @@ export init = (unique-port = 9999, cb = (->)) ->
   if err then return cb err
   elc = elastic.client
 
-  @io = init-io(unique-port).sockets
-  @sock = init-ioc unique-port
+  # start socket.io server on unique-port
+  io = init-io(unique-port)
 
-  @sock.on 'register-query' (q) ->
-    if poller = pollers[q]
+  # create io-client (to receive events)
+  sock = init-ioc unique-port
+
+  sock.on 'register-search' (opts) ~>
+    if poller = pollers[opts.room]
       # poller exists
       console.warn 'poller exists', JSON.stringify(poller)
     else
       # create new poller
-      pollers[q] = new-poller q
-      console.warn 'poller created', JSON.stringify(pollers[q])
+      poller = new-poller io, opts
+      pollers[opts.room] = poller
+      console.warn 'poller created', JSON.stringify(poller)
 
-  @io.emit \debug, 'search-notifier-up'
+  io.emit \debug, 'search-notifier-up'
+
+  set-interval (-> debug-info(io, pollers)), 5000
+  set-interval (-> stop-inactive-pollers(io, pollers)), 5000
 
   # TODO:
   # * need to start a setInterval loop which periodically will
@@ -77,4 +107,3 @@ export init = (unique-port = 9999, cb = (->)) ->
   # * pollers need to do REAL work and push elastic results down the channel
 
   cb!
-

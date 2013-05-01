@@ -79,6 +79,7 @@ site-by-domain = (domain, cb) ->
       return accept("no cookie", false)
 
   io.on \connection, (socket) ->
+    var search-room
 
     err, user <- user-from-session socket.handshake.session
     if err then console.warn err
@@ -97,6 +98,8 @@ site-by-domain = (domain, cb) ->
       console.warn \disconnected
       if user and site
         leave-site socket, site, user
+      if search-room
+        socket.leave search-room
 
     socket.on \online-now, ->
       if site
@@ -107,3 +110,16 @@ site-by-domain = (domain, cb) ->
       socket.emit \debug, socket.manager.rooms
       socket.in('1').emit \debug, 'hi again to 1'
 
+    # client will get subscribed to said query room
+    socket.on \search, (q) ->
+      if search-room
+        socket.emit \debug, "leaving room: #{search-room}"
+        socket.leave search-room
+        console.warn 'MADE IT!'
+
+      search-room := "#{site.id}/q/#{encode-URI-component(q.to-lower-case!)}"
+      socket.emit \debug, "joining room: #{search-room}"
+      socket.join search-room
+
+      # register search with the search notifier
+      io.sockets.emit \register-search, {q, site-id: site.id, room: search-room}
