@@ -1,4 +1,4 @@
-unless File.file? '/opt/elasticsearch/elasticsearch-0.20.6/bin/elasticsearch'
+unless File.file? '/opt/elasticsearch-0.20.6/bin/elasticsearch'
   package 'openjdk-7-jdk'
 
   bash "installing elasticsearch" do
