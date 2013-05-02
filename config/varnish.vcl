@@ -35,9 +35,9 @@ sub vcl_recv {
   }
   
   # XXX: depersonalize cdn urls
-  #      AND everything EXCEPT urls starting with /auth or /admin
+  #      AND everything EXCEPT urls starting with /auth or /admin or /resources
   if ( req.http.host ~ "(?i)^muscache\d?\.(pb|pbstage|powerbulletin)\.com$"
-    || req.url !~ "(?i)^/(auth|admin)") {
+    || req.url !~ "(?i)^/(auth|admin|resources)") {
     call depersonalize;
   }
 }
