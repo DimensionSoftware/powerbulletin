@@ -115,7 +115,11 @@ $d.on \click '.onclick-submit .cancel' ->
   | \new-thread => History.back!
   | otherwise   => remove-editing-url meta
 $d.on \click '.onclick-submit input[type="submit"]' require-login(
+  remove-editing-url meta
+
+submit = require-login(
   (e) -> submit-form(e, (data) ->
+    console.log \submit
     f = $ this .closest(\.post-edit) # form
     p = f .closest(\.editing)        # post being edited
     # render updated post
@@ -127,6 +131,8 @@ $d.on \click '.onclick-submit input[type="submit"]' require-login(
     | \new-thread => History.push-state {} '' data.uri
     | \edit       => remove-editing-url meta
     false))
+$d.on \keydown \.onenter-submit ~> if it.which is 13 then submit it
+$d.on \click '.onclick-submit input[type="submit"]' submit
 
 $d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post require-login(censor)
@@ -149,9 +155,9 @@ $d.on \click \.onclick-show-register ->
 
 # catch esc key events on input boxes for login box
 $d.on \keyup '.fancybox-inner input' ->
-  if it.which is 27 # enter key
+  if it.which is 27 # esc
     $.fancybox.close!
-    return false
+    false
 #}}}
 #{{{ - header (main menu)
 #$d.on \click 'html.homepage header .menu a.title' ->
