@@ -26,7 +26,8 @@ window.save-ui = -> # serialize ui state to cookie
     if $ \body .has-class(\collapsed) then 1 else 0
     w
   $.cookie \s, vals.join(sep),
-    path: '/'
+    path:   \/
+    secure: true
 window.load-ui = -> # restore ui state from cookie
   s  = $.cookie \s
   $l = $ \#left_content
