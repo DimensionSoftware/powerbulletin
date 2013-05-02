@@ -222,7 +222,10 @@ pager-init = (w) ->
     if u # guard
       set-online-user u.id
       path-parts = window.location.pathname.split '/'
+      jcrop = void
       if path-parts.2 is u.name
+        $ '.avatar img' .Jcrop aspect-ratio: 1.25, ->
+          jcrop := this
         $ \.avatar .html5-uploader({
           name     : \avatar
           post-url : "/user/#{u.name}/avatar"
@@ -230,7 +233,13 @@ pager-init = (w) ->
           on-success: (x, y, json) ->
             r = JSON.parse json
             if typeof r is \object
-              $ '.avatar img' .attr \src, "#{w.cache_url}/#{r.avatar}"
+              jcrop.destroy! if jcrop
+
+              $ '.avatar img'
+                .attr \src, "#{w.cache_url}/#{r.avatar}"
+                .attr \style, ''
+                .Jcrop aspect-ratio: 1.25, ->
+                  jcrop := this
         })
     next!
   on-unload:

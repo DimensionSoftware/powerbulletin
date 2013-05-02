@@ -139,6 +139,29 @@ html.forum, html.profile, html.search
         margin-bottom (grid*2)
         margin-left grid
         margin-top (grid/2)
+        .close
+          right -5px
+          top -5px
+          position absolute
+          z-index 10
+        .summary
+          margin-left grid
+          .profile.photo
+            border-radius 1px
+            height 39px
+            width 49px
+          .profile.photo::before
+            position absolute
+            z-index 99
+            content ''
+            bottom 0
+            left grid
+            height 0
+            width 0
+            border-top 20px solid red
+            border-bottom 20px solid red
+            border-left 20px solid transparent
+            border-right 20px solid transparent
         .sceditor-container, .sceditor-container div, div.sceditor-dropdown, div.sceditor-dropdown div
           z-index 1
           overflow hidden
@@ -197,9 +220,11 @@ html.forum, html.profile, html.search
           line-height 15px
           a
             font-size .9em
-            font-weight 200
+            font-weight 400
             margin-right grid
+            margin-left 5px
             display inline
+            padding 1px 5px
           .edit
             display none
         .comment
@@ -243,6 +268,7 @@ html.forum, html.profile, html.search
               margin-left (grid/2)
             .profile
               margin-top (grid/2)
+              border-radius 2px
               width 38px
               height 30px
 //}}}
@@ -255,6 +281,8 @@ html.profile
     .avatar img
       width 100%
       max-width 255px
+    ul
+      font-weight 300
   h1, h2, h3
     text-transform capitalize
     margin-top 0

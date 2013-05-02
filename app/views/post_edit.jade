@@ -1,18 +1,21 @@
 
-mixin post-edit(p)
+mixin post-edit(u, p)
   action = p.id && '/'+p.id || ''
-  .post-edit.onclick-submit(id="post_edit_#{p.id}", class=p.is_comment ? 'comment' : '')
+  id     = p.id || 0
+  .post-edit.onclick-submit(id="post_edit_#{id}", class=p.is_comment ? 'comment' : '')
     form(action="/resources/posts#{action}", method="#{p.method || 'put'}")
       if !p.is_comment
         input.title(name='title', type='text', placeholder='Title', value=p.title)
-      textarea.body(name='body')= p.body
-      input(type='hidden', name='id', value=p.id || 0)
+      textarea.body.onenter-submit(name='body', placeholder='Reply ...')= p.body
+      input(type='hidden', name='id', value=p.id)
       input(type='hidden', name='forum_id', value=p.forum_id)
       input(type='hidden', name='parent_id', value=p.parent_id)
       input(type='hidden', name='csrf', value=p.csrf)
+      .summary(data-user-id=u.id)
+        img.profile.photo(src="#{cache_url}/#{u.photo}")
       input.button(type='submit', value='Save')
-      input.button.cancel(type='button', value='Cancel')
+      .close.cancel X
     .preview
 
 if typeof(post) !== 'undefined'
-  mixin post-edit(post)
+  mixin post-edit(user, post)

@@ -39,10 +39,10 @@
 
 # handle in-line editing
 @edit-post = (id, data={}) ->
-  focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 100
+  focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 100ms
   render = (sel, locals) ~>
     $e = $ sel
-    @render-and-append window, sel, \post_edit, post:locals, ($e) ->
+    @render-and-append window, sel, \post_edit, {user:user, post:locals}, ($e) ->
       # init sceditor
       $e.find \textarea.body .sceditor(
         plugins:        \bbcode
