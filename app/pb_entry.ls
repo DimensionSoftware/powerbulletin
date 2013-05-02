@@ -114,14 +114,12 @@ $d.on \click '.onclick-submit .cancel' ->
   switch meta.type
   | \new-thread => History.back!
   | otherwise   => remove-editing-url meta
-$d.on \click '.onclick-submit input[type="submit"]' require-login(
-  remove-editing-url meta
+  false
 
 submit = require-login(
   (e) -> submit-form(e, (data) ->
-    console.log \submit
-    f = $ this .closest(\.post-edit) # form
-    p = f .closest(\.editing)        # post being edited
+    f = $ this .closest \.post-edit # form
+    p = f .closest \.editing        # post being edited
     # render updated post
     p.find \.title .html(data.0?title)
     p.find \.body  .html(data.0?body)
@@ -131,7 +129,8 @@ submit = require-login(
     | \new-thread => History.push-state {} '' data.uri
     | \edit       => remove-editing-url meta
     false))
-$d.on \keydown \.onenter-submit ~> if it.which is 13 then submit it
+# XXX will we need a submit button for touch devices anyway?
+#$d.on \keydown \.onenter-submit ~> if it.which is 13 and not it.shift-key then submit it
 $d.on \click '.onclick-submit input[type="submit"]' submit
 
 $d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
