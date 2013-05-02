@@ -126,13 +126,7 @@ export init = (unique-port = 9999, cb = (->)) ->
 
   io.sockets.emit \debug, 'search-notifier-up'
 
-  set-interval (-> debug-info(io, pollers)), 5000
-  set-interval (-> stop-inactive-pollers(io, pollers)), 10000
-
-  # TODO:
-  # * need to start a setInterval loop which periodically will
-  #   use clearInterval on any pollers which are no longer needed if
-  #   and only if the channel is empty (no subscribers)
-  # * pollers need to do REAL work and push elastic results down the channel
+  set-interval (-> debug-info(io, pollers)), 10000
+  set-interval (-> stop-inactive-pollers(io, pollers)), 15000
 
   cb!

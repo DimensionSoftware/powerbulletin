@@ -34,10 +34,8 @@ sub vcl_recv {
     error 302 "Found"; 
   }
   
-  # XXX: depersonalize cdn urls
-  #      AND everything EXCEPT urls starting with /auth or /admin
-  if ( req.http.host ~ "(?i)^muscache\d?\.(pb|pbstage|powerbulletin)\.com$"
-    && req.url !~ "(?i)^/(auth|admin)") {
+  # depersonalize everything EXCEPT urls starting with /auth or /resources
+  if (req.url !~ "(?i)^/(auth|resources|admin)") {
     call depersonalize;
   }
 }

@@ -1,7 +1,7 @@
 #!/bin/sh
-sudo bin/launch-elasticsearch && \
-sudo bin/launch-haproxy && \
-sudo bin/launch-varnish && \
+sudo NODE_ENV=$NODE_ENV bin/launch-elasticsearch && \
+sudo NODE_ENV=$NODE_ENV bin/launch-haproxy && \
+sudo NODE_ENV=$NODE_ENV bin/launch-varnish && \
 bin/launch-redis && \
 sleep 2 && \
 bin/launch-indexer && \
