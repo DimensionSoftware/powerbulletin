@@ -31,6 +31,7 @@ common-js = [ #{{{ Common JS
   "#{cvars.cache3_url}/fancybox/jquery.fancybox.pack.js",
   "#{cvars.cache3_url}/local/jquery.transit-0.9.9.min.js",
   "#{cvars.cache2_url}/local/jquery.html5uploader.js",
+  "#{cvars.cache2_url}/jcrop/js/jquery.Jcrop.min.js",
   "#{cvars.cache4_url}/socket.io/socket.io.js",
   "#{cvars.cache_url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
 #}}}
@@ -45,6 +46,7 @@ app.configure \development ->
 common-css = [ #{{{ Common CSS
   "#{cvars.cache2_url}/fancybox/jquery.fancybox.css",
   "#{cvars.cache3_url}/local/jquery.sceditor.default.min.css",
+  "#{cvars.cache4_url}/jcrop/css/jquery.Jcrop.min.css",
   '/dynamic/css/master.styl']
 #}}}
 
