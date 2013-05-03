@@ -6,7 +6,7 @@ include _post
     each p, i in postsByUser
       if last_thread_id != p.thread_id
         h3.heading
-          a.mutant.title(href=p.thread_uri) 
+          a.mutant.title.stylish(href=p.thread_uri) 
             b #{p.thread_title} 
           a.mutant.by(href="/user/#{p.thread_username}") by 
             b #{p.thread_username} 

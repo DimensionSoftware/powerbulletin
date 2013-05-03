@@ -2,7 +2,7 @@ include _thread
 
 mixin subforum(f, sf, i)
   li.subforum
-    a.mutant.title(href=sf.uri)= sf.title
+    a.mutant.title.stylish(href=sf.uri)= sf.title
 
 mixin forum(f, i)
   h3.title Forums

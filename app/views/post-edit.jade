@@ -11,9 +11,9 @@ mixin post-edit(u, p)
       input(type='hidden', name='forum_id', value=p.forum_id)
       input(type='hidden', name='parent_id', value=p.parent_id)
       input(type='hidden', name='csrf', value=p.csrf)
+      input.button(type='submit', value='Save')
       .summary(data-user-id=u.id)
         img.profile.photo(src="#{cacheUrl}/#{u.photo}")
-      input.button(type='submit', value='Save')
       .close.cancel X
     .preview
 

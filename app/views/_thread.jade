@@ -1,7 +1,8 @@
 mixin _thread(t)
   li.thread(data-id=t.id, data-user-id=t.user_id)
     a.mutant(data-surf=t.forum_id, href=t.uri)
-      h4.title= t.title
+      h4.stylish.title= t.title
+      .break
       span.created(data-time=t.created_iso)!= t.created_human
       .profile.photo
         img(src="#{cacheUrl}/#{t.user_photo}")
