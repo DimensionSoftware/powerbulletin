@@ -123,7 +123,11 @@ $d.on \mousedown \.scroll-to-top ->
 #}}}
 #{{{ Login & Authentication
 window.show-login-dialog = ->
-  $.fancybox.open '#auth'
+  $.fancybox.open \#auth,
+    close-effect: \elastic
+    close-speed:  200ms
+    close-easing: \easeOutExpo
+    open-easing:  \easeOutExpo
   setTimeout (-> $ '#auth input[name=username]' .focus! ), 100ms
 
 # register action

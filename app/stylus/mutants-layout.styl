@@ -74,7 +74,8 @@ html.forum, html.profile, html.search
           overflow hidden
           max-height 65px
           text-transform capitalize
-          margin grid 0 0 0
+          margin grid grid 0 -5px
+          padding 1px 5px
         .username
           font-size .7em
           em
@@ -242,10 +243,13 @@ html.forum, html.profile, html.search
       .post:hover
         .actions
           opacity 1
-          letter-spacing 1px
+          letter-spacing 0
           transition opacity .3s, letter-spacing .09s
       .children
-        font-size .95em
+        font-size .9em
+        .profile.photo
+          width 60px
+          height 45px
         .children
           margin-left (grid*3)
           .post
@@ -260,7 +264,7 @@ html.forum, html.profile, html.search
               font-size 1em
             .user, .date
               display inline
-              font-size .87em
+              font-size .92em
             .user
               font-weight bold
             .date
@@ -268,8 +272,8 @@ html.forum, html.profile, html.search
             .profile
               margin-top (grid/2)
               border-radius 2px
-              width 38px
-              height 30px
+              width 45px
+              height 37px
 //}}}
 //{{{ - profile
 html.profile
@@ -322,11 +326,6 @@ html.profile
           margin-right 10px
           b
             font-weight 200
-        .actions
-          position absolute
-          right 0
-          bottom 0
-          
   ul
     list-style none
     margin grid 0 0 0
