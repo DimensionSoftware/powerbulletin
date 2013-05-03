@@ -1,8 +1,8 @@
 require! {
-  pg: './postgres'
-  c: './cache'
-  h: './helpers'
-  sioa: 'socket.io-announce'
+  pg: \./postgres
+  c: \./cache
+  h: \./helpers
+  sioa: \socket.io-announce
 }
 
 announce = sioa.create-client!
@@ -26,7 +26,7 @@ announce = sioa.create-client!
     post         = req.body
     post.user_id = req.user.id
     post.html    = h.html post.body
-    post.ip      = res.locals.remote-ip
+    post.ip      = res.vars.remote-ip
     post.tags    = h.hash-tags post.body
     err, ap-res <- db.add-post post
     if err then return next err

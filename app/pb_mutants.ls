@@ -236,7 +236,7 @@ pager-init = (w) ->
               jcrop.destroy! if jcrop
 
               $ '.avatar img'
-                .attr \src, "#{w.cache_url}/#{r.avatar}"
+                .attr \src, "#{w.cache-url}/#{r.avatar}"
                 .attr \style, ''
                 .Jcrop aspect-ratio: 1.25, ->
                   jcrop := this

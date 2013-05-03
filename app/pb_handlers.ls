@@ -22,10 +22,10 @@ global <<< require \./shared_helpers
 @hello = (req, res, next) ->
   console.log req.headers
   console.log req.foo.bar
-  res.send "hello #{res.locals.remote-ip}!"
+  res.send "hello #{res.vars.remote-ip}!"
 
 @login = (req, res, next) ->
-  domain   = res.locals.site.domain
+  domain   = res.vars.site.domain
   passport = auth.passport-for-site[domain]
   if passport
     console.warn "domain", domain
@@ -58,7 +58,7 @@ global <<< require \./shared_helpers
   res.redirect req.header 'Referer'
 
 @login-facebook = (req, res, next) ->
-  domain   = res.locals.site.domain
+  domain   = res.vars.site.domain
   passport = auth.passport-for-site[domain]
   if passport
     passport.authenticate('facebook')(req, res, next)
@@ -67,7 +67,7 @@ global <<< require \./shared_helpers
     res.send "500", 500
 
 @login-facebook-return = (req, res, next) ->
-  domain   = res.locals.site.domain
+  domain   = res.vars.site.domain
   passport = auth.passport-for-site[domain]
   if passport
     passport.authenticate('facebook', { success-redirect: '/auth/facebook/finish', failure-redirect: '/auth/facebook/finish?fail=1' })(req, res, next)
@@ -98,7 +98,7 @@ auth-finisher = (req, res, next) ->
 @login-facebook-finish = auth-finisher
 
 @login-google = (req, res, next) ->
-  domain   = res.locals.site.domain
+  domain   = res.vars.site.domain
   passport = auth.passport-for-site[domain]
   scope    = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
 
@@ -109,7 +109,7 @@ auth-finisher = (req, res, next) ->
     res.send "500", 500
 
 @login-google-return = (req, res, next) ->
-  domain   = res.locals.site.domain
+  domain   = res.vars.site.domain
   passport = auth.passport-for-site[domain]
   if passport
     passport.authenticate('google', { success-redirect: '/auth/google/finish', failure-redirect: '/auth/google/finish?fail=1' })(req, res, next)
@@ -120,7 +120,7 @@ auth-finisher = (req, res, next) ->
 @login-google-finish = auth-finisher
 
 @login-twitter = (req, res, next) ->
-  domain   = res.locals.site.domain
+  domain   = res.vars.site.domain
   passport = auth.passport-for-site[domain]
   if passport
     passport.authenticate('twitter')(req, res, next)
@@ -129,7 +129,7 @@ auth-finisher = (req, res, next) ->
     res.send "500", 500
 
 @login-twitter-return = (req, res, next) ->
-  domain   = res.locals.site.domain
+  domain   = res.vars.site.domain
   passport = auth.passport-for-site[domain]
   if passport
     passport.authenticate('twitter', { success-redirect: '/auth/twitter/finish', failure-redirect: '/auth/twitter/finish?fail=1' })(req, res, next)
@@ -149,10 +149,10 @@ auth-finisher = (req, res, next) ->
   announce.emit \debug, {testing: 'from homepage handler in express'}
   #TODO: refactor with async.auto
   order = req.query.order or \recent
-  err, menu <- db.menu res.locals.site.id
+  err, menu <- db.menu res.vars.site.id
   if err then return next err
-  console.log [res.locals.site.id, order]
-  err, forums <- db.homepage-forums res.locals.site.id, order
+  console.log [res.vars.site.id, order]
+  err, forums <- db.homepage-forums res.vars.site.id, order
   if err then return next err
   doc = {menu, forums}
 
@@ -164,7 +164,7 @@ auth-finisher = (req, res, next) ->
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
-  caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.locals.site), 7200
+  caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.vars.site), 7200
   res.content-type \html
   res.mutant \homepage
 
@@ -190,7 +190,7 @@ auth-finisher = (req, res, next) ->
 
   #XXX: this is one of the pages which is not depersonalized
   res.locals.user = user
-  site = res.locals.site
+  site = res.vars.site
   delete site.config
 
   [forum_part, post_part] = req.params
@@ -236,11 +236,11 @@ auth-finisher = (req, res, next) ->
     finish fdoc
 
   else # forum
-    err, forum-id <- db.uri-to-forum-id res.locals.site.id, meta.forum-uri
+    err, forum-id <- db.uri-to-forum-id res.vars.site.id, meta.forum-uri
     if err then return next err
     if !forum-id then return next 404
     tasks =
-      menu        : db.menu res.locals.site.id, _
+      menu        : db.menu res.vars.site.id, _
       forum       : db.forum forum-id, _
       forums      : db.forum-summary forum-id, 10, 5, _
       top-threads : db.top-threads forum-id, \recent, _
@@ -257,7 +257,7 @@ auth-finisher = (req, res, next) ->
 # user profiles /user/:name
 @profile = (req, res, next) ->
   db   = pg.procs
-  site = res.locals.site
+  site = res.vars.site
   name = req.params.name
   page = req.params.page or 1
   ppp  = 20 # posts-per-page
@@ -282,7 +282,7 @@ auth-finisher = (req, res, next) ->
 @profile-avatar = (req, res, next) ->
   db   = pg.procs
   user = req.user
-  site = res.locals.site
+  site = res.vars.site
   err, usr <- db.usr { id: req.params.id, site_id: site.id }
   if err
     console.error \authentication
@@ -328,7 +328,7 @@ auth-finisher = (req, res, next) ->
   res.json success: true, avatar: url-path
 
 @register = (req, res, next) ~>
-  site     = res.locals.site
+  site     = res.vars.site
   domain   = site.domain
   passport = auth.passport-for-site[domain]
 
@@ -375,7 +375,7 @@ auth-finisher = (req, res, next) ->
 
 @verify = (req, res, next) ->
   v    = req.param \v
-  site = res.locals.site
+  site = res.vars.site
   err, r <- db.verify-user site.id, v
   if err then return next err
   if r
@@ -398,11 +398,11 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
         options =
           compress: true
         stylus(buffer.to-string!, options)
-          .define \cache_url  cvars.cache_url
-          .define \cache2_url cvars.cache2_url
-          .define \cache3_url cvars.cache3_url
-          .define \cache4_url cvars.cache4_url
-          .define \cache5_url cvars.cache5_url
+          .define \cache-url  cvars.cache-url
+          .define \cache2-url cvars.cache2-url
+          .define \cache3-url cvars.cache3-url
+          .define \cache4-url cvars.cache4-url
+          .define \cache5-url cvars.cache5-url
           .set \paths ['app/stylus']
           .use fluidity!
           .render cb
@@ -429,7 +429,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   db = pg.procs
   (err, r) <- db.add-thread-impression req.params.id
   if err then next err
-  site = res.locals.site
+  site = res.vars.site
   # TODO make add-thread-impression return forum_id
   # TODO make room name based on site.id and forum_id
   announce.in(site.id).emit \thread-impression r #{ id: req.params.id, views: r.views, forum_id: r.thread_id }
@@ -460,13 +460,13 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   limit = 5
   offset = (page - 1) * limit
 
-  err, sub-posts <- db.sub-posts-tree res.locals.site.id, post-id, limit, offset
+  err, sub-posts <- db.sub-posts-tree res.vars.site.id, post-id, limit, offset
   if err then return next err
 
   res.json sub-posts
 
 @admin = (req, res, next) ->
-  site = res.locals.site
+  site = res.vars.site
 
   tasks =
     menu           : db.menu site.id, _
@@ -479,7 +479,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   res.mutant \admin
 
 @search = (req, res, next) ->
-  site = res.locals.site
+  site = res.vars.site
   elquery =
     index: \pb
     type: \post
@@ -492,7 +492,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 
   elquery.query = q
 
-  err, menu <- db.menu res.locals.site.id
+  err, menu <- db.menu res.vars.site.id
   if err then return next err
   res.locals {menu}
 

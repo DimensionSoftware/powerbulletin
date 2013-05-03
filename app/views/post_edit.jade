@@ -12,7 +12,7 @@ mixin post-edit(u, p)
       input(type='hidden', name='parent_id', value=p.parent_id)
       input(type='hidden', name='csrf', value=p.csrf)
       .summary(data-user-id=u.id)
-        img.profile.photo(src="#{cache_url}/#{u.photo}")
+        img.profile.photo(src="#{cacheUrl}/#{u.photo}")
       input.button(type='submit', value='Save')
       .close.cancel X
     .preview

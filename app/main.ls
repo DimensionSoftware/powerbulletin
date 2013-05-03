@@ -11,12 +11,12 @@ require! {
   \express-validator
   stylus
   fluidity
-  './auth'
-  pg: './postgres'
-  v: './varnish'
-  io-server: './io_server'
-  './elastic'
-  'express/node_modules/connect'
+  \./auth
+  pg: \./postgres
+  v: \./varnish
+  io-server: \./io_server
+  \./elastic
+  \express/node_modules/connect
 }
 global <<< require \prelude-ls
 
@@ -166,6 +166,7 @@ else
   app.use express-validator
 
   for a in [app] # apply app defaults
+    a.use mw.vars
     a.use mw.cvars
     a.use mw.multi-domain
     a.use mw.ip-lookup
@@ -198,7 +199,7 @@ else
       graceful-shutdown!
 
   # routes
-  require! './pb_routes'
+  require! \./pb_routes
 
   # 404 handler, if not 404, punt
   app.use (err, req, res, next) ~>
@@ -225,7 +226,7 @@ else
   for i in ['', 2, 3, 4, 5]
     #XXX: this is a hack but hey we are always using protocol-less urls so should never break :)
     #  removing leading //
-    sock.use(express.vhost cvars["cache#{i}_url"].slice(2), cache-app)
+    sock.use(express.vhost cvars["cache#{i}Url"].slice(2), cache-app)
 
   # dynamic app can automatically check req.host
   sock.use(app)
