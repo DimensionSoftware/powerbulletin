@@ -1,9 +1,9 @@
 window.__    = require \lodash
-window.ioc   = require \./io_client
+window.ioc   = require \./io-client
 window.Pager = require \./pager
-window.furl  = require \./forum_urls
+window.furl  = require \./forum-urls
 
-global <<< require \./pb_helpers
+global <<< require \./pb-helpers
 global <<< require(\prelude-ls/prelude-browser-min).prelude
 
 # XXX client-side entry

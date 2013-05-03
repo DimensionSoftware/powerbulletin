@@ -6,18 +6,18 @@ require! {
   cssmin
   fluidity
   mkdirp
-  __: \lodash
-  pg: './postgres'
-  auth: './auth'
-  furl: './forum_urls'
+  __:   \lodash
+  pg:   \./postgres
+  auth: \./auth
+  furl: \./forum-urls
 }
 
-announce = require('socket.io-announce').create-client!
+announce = require(\socket.io-announce).create-client!
 
 is-editing = /\/(edit|new)\/?([\d+]*)$/
 
 global <<< require \./helpers
-global <<< require \./shared_helpers
+global <<< require \./shared-helpers
 
 @hello = (req, res, next) ->
   console.log req.headers

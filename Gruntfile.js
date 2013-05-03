@@ -107,11 +107,11 @@ module.exports = function(grunt) {
     exec('bin/psql pb < procedures.sql', {silent: true});
   });
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {
-    fs.writeFileSync('app/views/templates.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/order_control.jade app/views/thread.jade app/views/nav.jade app/views/posts.jade app/views/post_edit.jade app/views/post_new.jade app/views/profile.jade app/views/posts_by_user.jade app/views/post.jade app/views/admin.jade app/views/admin_nav.jade app/views/search.jade app/views/hits.jade app/views/_*.jade', {silent:true}).output));
+    fs.writeFileSync('app/views/templates.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/order-control.jade app/views/thread.jade app/views/nav.jade app/views/posts.jade app/views/post-edit.jade app/views/post-new.jade app/views/profile.jade app/views/posts-by-user.jade app/views/post.jade app/views/admin.jade app/views/admin-nav.jade app/views/search.jade app/views/hits.jade app/views/_*.jade', {silent:true}).output));
   });
 
   grunt.registerTask('browserify', 'generate browser bundle', function() {
-    exec('node_modules/.bin/browserify --ignore jsdom --plugin livescript-browserify -o public/powerbulletin.js app/layout.ls app/pb_entry.ls');
+    exec('node_modules/.bin/browserify --ignore jsdom --plugin livescript-browserify -o public/powerbulletin.js app/layout.ls app/pb-entry.ls');
   });
 
   // Default task(s).

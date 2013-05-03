@@ -12,11 +12,11 @@ require! {
   stylus
   fluidity
   \./auth
-  pg: \./postgres
-  v: \./varnish
-  io-server: \./io_server
+  \./io-server
   \./elastic
   \express/node_modules/connect
+  pg: \./postgres
+  v: \./varnish
 }
 global <<< require \prelude-ls
 
@@ -199,7 +199,7 @@ else
       graceful-shutdown!
 
   # routes
-  require! \./pb_routes
+  require! \./pb-routes
 
   # 404 handler, if not 404, punt
   app.use (err, req, res, next) ~>

@@ -1,5 +1,5 @@
 include _post
-include _post_actions
+include _post-actions
 include _breadcrumb
 
 //- posts tree
@@ -18,7 +18,7 @@ if typeof(post) !== 'undefined'
       if post.html
         .body!= post.html
       .reply
-      mixin _post_actions(post)
+      mixin _post-actions(post)
     .children
       if post.posts.length
         div(data-page=page)

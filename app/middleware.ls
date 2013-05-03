@@ -11,7 +11,7 @@ require! {
 
 @cvars = (req, res, next) ->
   # copy over any wanted cvars into vars land
-  res.vars.env = process.env.NODE_ENV or \development
+  res.locals.env = process.env.NODE_ENV or \development
   next!
 
 @multi-domain = (req, res, next) ->
