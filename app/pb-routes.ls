@@ -5,9 +5,9 @@ require! {
   pg:  \./postgres
   mw:  \./middleware
 
-  mutants:   \./pb_mutants
-  handlers:  \./pb_handlers
-  resources: \./pb_resources
+  mutants:   \./pb-mutants
+  handlers:  \./pb-handlers
+  resources: \./pb-resources
 }
 global <<< require \./helpers # pull helpers (common) into global (play nice :)
 
@@ -16,37 +16,38 @@ app.resource 'resources/posts', resources.posts
 app.get  '/resources/posts/:id/sub-posts',  handlers.sub-posts
 app.post '/resources/posts/:id/impression', handlers.add-impression
 app.post '/resources/posts/:id/censor',     handlers.censor
+app.post '/resources/users/:id/avatar',     handlers.profile-avatar
 #}}}
 
 # XXX Common is for all environments
 common-js = [ #{{{ Common JS
-  "#{cvars.cache5_url}/local/jquery-1.9.1.min.js",
-  "#{cvars.cache5_url}/local/jquery-ui.min.js",
-  "#{cvars.cache3_url}/local/jquery.masonry.min.js",
-  "#{cvars.cache2_url}/local/jquery.cookie-1.3.1.min.js",
-  "#{cvars.cache4_url}/local/jquery.sceditor.bbcode.min.js",
-  "#{cvars.cache_url}/local/waypoints.min.js",
-  "#{cvars.cache5_url}/local/history.min.js",
-  "#{cvars.cache5_url}/local/history.adapter.native.min.js",
-  "#{cvars.cache3_url}/fancybox/jquery.fancybox.pack.js",
-  "#{cvars.cache3_url}/local/jquery.transit-0.9.9.min.js",
-  "#{cvars.cache2_url}/local/jquery.html5uploader.js",
-  "#{cvars.cache2_url}/jcrop/js/jquery.Jcrop.min.js",
-  "#{cvars.cache4_url}/socket.io/socket.io.js",
-  "#{cvars.cache_url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
+  "#{cvars.cache5-url}/local/jquery-1.9.1.min.js",
+  "#{cvars.cache5-url}/local/jquery-ui.min.js",
+  "#{cvars.cache3-url}/local/jquery.masonry.min.js",
+  "#{cvars.cache2-url}/local/jquery.cookie-1.3.1.min.js",
+  "#{cvars.cache4-url}/local/jquery.sceditor.bbcode.min.js",
+  "#{cvars.cache-url}/local/waypoints.min.js",
+  "#{cvars.cache5-url}/local/history.min.js",
+  "#{cvars.cache5-url}/local/history.adapter.native.min.js",
+  "#{cvars.cache3-url}/fancybox/jquery.fancybox.pack.js",
+  "#{cvars.cache3-url}/local/jquery.transit-0.9.9.min.js",
+  "#{cvars.cache2-url}/local/jquery.html5uploader.js",
+  "#{cvars.cache2-url}/jcrop/js/jquery.Jcrop.min.js",
+  "#{cvars.cache4-url}/socket.io/socket.io.js",
+  "#{cvars.cache-url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
 #}}}
 
 # inject testing code in dev only
 app.configure \development ->
   entry = common-js.pop!
-  common-js.push "#{cvars.cache5_url}/local/mocha.js"
-  common-js.push "#{cvars.cache5_url}/local/chai.js"
+  common-js.push "#{cvars.cache5-url}/local/mocha.js"
+  common-js.push "#{cvars.cache5-url}/local/chai.js"
   common-js.push entry
 
 common-css = [ #{{{ Common CSS
-  "#{cvars.cache2_url}/fancybox/jquery.fancybox.css",
-  "#{cvars.cache3_url}/local/jquery.sceditor.default.min.css",
-  "#{cvars.cache4_url}/jcrop/css/jquery.Jcrop.min.css",
+  "#{cvars.cache2-url}/fancybox/jquery.fancybox.css",
+  "#{cvars.cache3-url}/local/jquery.sceditor.default.min.css",
+  "#{cvars.cache4-url}/jcrop/css/jquery.Jcrop.min.css",
   '/dynamic/css/master.styl']
 #}}}
 
@@ -56,16 +57,25 @@ app.get '/search',
   mmw.mutant-layout(\layout, mutants),
   handlers.search
 
+#{{{ Admin
 app.get '/admin',
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   handlers.admin
 
+app.get '/admin',
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.admin
+#}}}
 #{{{ Local auth
 app.post '/auth/login'           handlers.login
 app.post '/auth/register'        handlers.register
 app.post '/auth/choose-username' handlers.choose-username
+app.get  '/auth/user'            handlers.user
+app.get  '/auth/verify/:v'       handlers.verify
 
 app.get  '/auth/facebook'        handlers.login-facebook
 app.get  '/auth/facebook/return' handlers.login-facebook-return
@@ -81,18 +91,6 @@ app.get  '/auth/twitter/finish'  handlers.login-twitter-finish
 
 app.get  '/auth/logout'   handlers.logout
 #}}}
-# UI SKETCH UP:
-#
-# Connect to a social network:
-# Facebook, Twitter
-# OR
-# Register @ <Forum Name>.com
-# # post endpoint
-# app.post '/auth/register', handlers.register
-# todo html for use in fancybox or modal dialog at get route
-
-# json response with user info
-app.get '/auth/user', handlers.user
 
 app.get '/',
   mw.geo,
@@ -109,8 +107,6 @@ app.get '/favicon.ico', (req, res, next) ->
   # replace with real favicon
   next 404, \404
 
-app.get '/verify/:v', handlers.verify
-
 app.get '/u/:name', (req, res, next) ->
   res.redirect "/user/#{req.params.name}/", 301
 
@@ -119,9 +115,6 @@ app.get '/user/:name',
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   handlers.profile
-
-app.post '/user/:name/avatar',
-  handlers.profile-avatar
 
 app.get '/user/:name/page/:page',
   mw.add-js(common-js),
@@ -150,14 +143,9 @@ app.all new RegExp('/(.+)'),
   handlers.forum
 
 #{{{ Development Debug
-if process.env.NODE_ENV != 'production'
-  app.get '/debug/docs/:type/:key', (req, res, next) ->
-    err, d <- db.doc res.locals.site.id, req.params.type, req.params.key
-    if err then return next(err)
-    res.json d
-
+if process.env.NODE_ENV != \production
   app.get '/debug/sub-posts-tree/:post_id', (req, res, next) ->
-    site = res.locals.site
+    site = res.vars.site
     err, d <- db.sub-posts-tree site.id, req.params.post_id, 25, 0
     if err then return next(err)
     res.json d

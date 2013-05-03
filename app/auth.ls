@@ -22,13 +22,13 @@ export passport-for-site = {}
 # site-aware passport middleware wrappers
 export mw =
   initialize: (req, res, next) ~>
-    domain   = res.locals.site?domain
+    domain   = res.vars.site?domain
     if passport = @passport-for-site[domain]
       passport.mw-initialize(req, res, next)
     else
       next(404)
   session: (req, res, next) ~>
-    domain   = res.locals.site?domain
+    domain   = res.vars.site?domain
     if passport = @passport-for-site[domain]
       passport.mw-session(req, res, next)
     else
@@ -73,7 +73,7 @@ Welcome to {{site-name}}, {{user-name}}.
 
 To verify your account, please visit:
 
-  https://{{site-domain}}/verify/{{user-verify}}
+  https://{{site-domain}}/auth/verify/{{user-verify}}
 
 """
 

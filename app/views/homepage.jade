@@ -1,7 +1,7 @@
-include _post_profile
+include _post-profile
 
 mixin forum(f, i)
-  img.bg(id="forum_bg_#{f.id}", class='initial', src="#{cache_url}/images/bg_#{f.id}.jpg")
+  img.bg(id="forum_bg_#{f.id}", class='initial', src="#{cacheUrl}/images/bg_#{f.id}.jpg")
   .forum(id="forum_#{f.id}", class="#{f.classes || ''} #{activeForumId != 'homepage' && 'resizable'}")
     a(name="forum_#{f.id}") //- hashtag anchor
     .header
@@ -25,7 +25,7 @@ mixin post(f, p, i)
 
 mixin subpost(sp, i)
  .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even')
-    mixin _post_profile(sp)
+    mixin _post-profile(sp)
     p.body!= sp.html
 
 //- main

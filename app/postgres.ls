@@ -1,5 +1,5 @@
 require! pg
-require! h: './shared_helpers'
+require! h: \./shared-helpers
 
 conn-str = "tcp://postgres@localhost/pb"
 

@@ -1,9 +1,9 @@
 window.__    = require \lodash
-window.ioc   = require \./io_client
+window.ioc   = require \./io-client
 window.Pager = require \./pager
-window.furl  = require \./forum_urls
+window.furl  = require \./forum-urls
 
-global <<< require \./pb_helpers
+global <<< require \./pb-helpers
 global <<< require(\prelude-ls/prelude-browser-min).prelude
 
 # XXX client-side entry
@@ -26,7 +26,8 @@ window.save-ui = -> # serialize ui state to cookie
     if $ \body .has-class(\collapsed) then 1 else 0
     w
   $.cookie \s, vals.join(sep),
-    path: '/'
+    path:   \/
+    secure: true
 window.load-ui = -> # restore ui state from cookie
   s  = $.cookie \s
   $l = $ \#left_content
@@ -54,7 +55,7 @@ append-reply-ui = (e) ->
 
   # append dom for reply ui
   unless $p.find('.reply .post-edit:visible').length
-    render-and-append window,  $p.find(\.reply:first), \post_edit, (post:
+    render-and-append window,  $p.find(\.reply:first), \post-edit, (post:
       method:     \post
       forum_id:   $p.data(\forum-id) or window.active-forum-id
       parent_id:  $p.data \post-id
@@ -86,8 +87,7 @@ $ \#query .focus!
 # Delegated Events
 #{{{ - search delegated events
 # window.ui is the object which will receive events and have events triggered on it
-window.ui = {}
-$ui = $ window.ui
+window.$ui = $ {}
 
 # keys that actually trigger the search
 $d.on \keyup, \#query, __.debounce((->
@@ -100,7 +100,7 @@ $ui.on \search, (evt, searchopts) ->
   uri = "/search?#{$.param searchopts}"
   #XXX: searchopts should move into socket.io, instead of just q
   socket.emit \search searchopts.q
-  History.pushState {searchopts}, '', uri
+  History.push-state {searchopts}, '', uri
 #}}}
 #{{{ - generic form-handling ui
 $d.on \click '.create .no-surf' require-login(->
@@ -181,13 +181,13 @@ if mocha? and window.location.search.match /test=1/
   cleanup-output = ->
     $('body > *:not(#mocha)').remove!
     mocha-css-el = # mocha style (JUST IN TIME!)
-      $("<link rel=\"stylesheet\" type=\"text/css\" href=\"#{window.cache_url}/local/mocha.css\">")
+      $("<link rel=\"stylesheet\" type=\"text/css\" href=\"#{window.cache-url}/local/mocha.css\">")
     $ \head .append(mocha-css-el)
 
   mocha.setup \bdd
 
   # actual tests
-  $.get-script "#{window.cache_url}/tests/test1.js", ->
+  $.get-script "#{window.cache-url}/tests/test1.js", ->
     run = ->
       mocha.run cleanup-output
     set-timeout run, 2000ms # gotta give time for tests to load

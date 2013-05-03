@@ -1,27 +1,13 @@
 DROP SCHEMA IF EXISTS procs CASCADE;
 CREATE SCHEMA procs;
 
--- {{{ Docs
-CREATE FUNCTION procs.doc(site_id JSON, type JSON, key JSON) RETURNS JSON AS $$
-  return require(\u).doc site_id, type, key
+CREATE FUNCTION procs.find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON) RETURNS JSON AS $$
+  thing = plv8.execute(sel, sel_params)
+  return thing[0] if thing.length > 0
+  plv8.execute(ins, ins_params)
+  return plv8.execute(sel, sel_params)[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION procs.put_doc(site_id JSON, type JSON, key JSON, val JSON) RETURNS JSON AS $$
-  return require(\u).put-doc site_id, type, key, val
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
--- XXX sort is used but will need to be reworked for geospatial
-CREATE FUNCTION procs.forum_doc(site_id JSON, sort JSON, uri JSON) RETURNS JSON AS $$
-  require! u
-  res = plv8.execute('SELECT id FROM forums WHERE site_id=$1 AND uri=$2', [site_id, uri])
-  if forum-id = res[0]?.id
-    doc = JSON.parse u.doc(site_id, "forum_#{sort}", forum-id)
-    doc.top-threads = JSON.parse u.doc(site_id, "threads_#{sort}", forum-id)
-    return doc
-  else
-    return null
-$$ LANGUAGE plls IMMUTABLE STRICT;
---}}}
 -- Posts {{{
 CREATE FUNCTION procs.owns_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
   return plv8.execute('SELECT id FROM posts WHERE id=$1 AND user_id=$2', [post_id, user_id])
@@ -235,14 +221,6 @@ CREATE FUNCTION procs.sub_posts_tree(site_id JSON, post_id JSON, lim JSON, oft J
   return u.sub-posts-tree site_id, post_id, lim, oft
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
-
-CREATE FUNCTION procs.find_or_create(sel JSON, sel_params JSON, ins JSON, ins_params JSON) RETURNS JSON AS $$
-  thing = plv8.execute(sel, sel_params)
-  return thing[0] if thing.length > 0
-  plv8.execute(ins, ins_params)
-  return plv8.execute(sel, sel_params)[0]
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
 -- Users & Aliases {{{
 
 -- Find a user by auths.type and auths.id
@@ -386,6 +364,12 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param Integer site_id    site id
 -- @returns Object user        user with all auth objects
 CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
+  [identifier-clause, params] =
+    if usr.id
+      ["u.id = $1", [usr.id, usr.site_id]]
+    else
+      ["a.name = $1", [usr.name, usr.site_id]]
+
   sql = """
   SELECT
     u.id, u.photo, u.email,
@@ -395,10 +379,10 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
   FROM users u
   JOIN aliases a ON a.user_id = u.id
   LEFT JOIN auths ON auths.user_id = u.id
-  WHERE a.name = $1
+  WHERE #identifier-clause
   AND a.site_id = $2
   """
-  auths = plv8.execute(sql, [ usr.name, usr.site_id ])
+  auths = plv8.execute(sql, params)
   if auths.length == 0
     return null
   make-user = (memo, auth) ->

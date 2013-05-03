@@ -1,19 +1,17 @@
 
-#handle.handle(title='Toggle')
-
 .container
   h2= profile.name
 
   .profile(data-user-id="#{profile.id}")
-    form(action="/user/#{profile.name}/avatar", enctype="multipart/form-data", method="post")
+    form(action="/resources/users/#{profile.id}/avatar", enctype="multipart/form-data", method="post")
       .avatar
         if profile.photo
           if profile.photo.match(/^http/)
             img(src="#{profile.photo}")
           else
-            img(src="#{cache_url}/#{profile.photo}")
+            img(src="#{cacheUrl}/#{profile.photo}")
         else
-          img(src="#{cache_url}/images/profile.jpg")
+          img(src="#{cacheUrl}/images/profile.jpg")
       input(type="file", name="avatar", style="display:none;")
       //- input(type="submit")
 

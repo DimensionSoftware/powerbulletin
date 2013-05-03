@@ -1,6 +1,6 @@
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
-window.helpers = require \./shared_helpers
-window.mutants = require \./pb_mutants
+window.helpers = require \./shared-helpers
+window.mutants = require \./pb-mutants
 
 # shortcuts
 $w = $ window
@@ -123,7 +123,11 @@ $d.on \mousedown \.scroll-to-top ->
 #}}}
 #{{{ Login & Authentication
 window.show-login-dialog = ->
-  $.fancybox.open '#auth'
+  $.fancybox.open \#auth,
+    close-effect: \elastic
+    close-speed:  200ms
+    close-easing: \easeOutExpo
+    open-easing:  \easeOutExpo
   setTimeout (-> $ '#auth input[name=username]' .focus! ), 100ms
 
 # register action
@@ -227,10 +231,11 @@ window.spin = (loading = true) ->
     hide!
 #}}}
 
+on-load-resizable!
+
 # run initial mutant & personalize ( based on parameters from user obj )
 window.user <- $.getJSON \/auth/user
-<- window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}
-window.mutants?[window.initial-mutant]?on-personalize window, window.user
-on-load-resizable!
+window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}, ->
+  window.mutants?[window.initial-mutant]?on-personalize window, window.user
 
 # vim:fdm=marker

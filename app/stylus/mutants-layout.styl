@@ -52,14 +52,16 @@ html.forum, html.profile, html.search
   body.scrolled
     #left_content
       bottom 0
-  #left_container
-    height 100%
+  body.paginator
+    #left_content
+      .create
+        margin (grid/2) (grid*2.5) (grid/2) (grid*2)
   #left_content
     display block
     .photo, .created, .username
       display none
     .create
-      margin (grid/2) (grid*2.5) (grid/2) (grid*2)
+      margin (grid/2) (grid*3.5) (grid/2) (grid*2)
       a
         text-decoration none
         animation-name none
@@ -76,7 +78,8 @@ html.forum, html.profile, html.search
           overflow hidden
           max-height 65px
           text-transform capitalize
-          margin grid 0 0 0
+          margin grid grid 0 -5px
+          padding 1px 5px
         .username
           font-size .7em
           em
@@ -218,11 +221,12 @@ html.forum, html.profile, html.search
           margin-top (grid+2)
           margin-bottom (grid+2)
           line-height 15px
+          margin-left -6px
           a
             font-size .9em
             font-weight 400
-            margin-right grid
-            margin-left 5px
+            margin-right 2px
+            margin-left 2px
             display inline
             padding 1px 5px
           .edit
@@ -243,10 +247,13 @@ html.forum, html.profile, html.search
       .post:hover
         .actions
           opacity 1
-          letter-spacing 1px
+          letter-spacing 0
           transition opacity .3s, letter-spacing .09s
       .children
-        font-size .95em
+        font-size .9em
+        .profile.photo
+          width 60px
+          height 45px
         .children
           margin-left (grid*3)
           .post
@@ -261,7 +268,7 @@ html.forum, html.profile, html.search
               font-size 1em
             .user, .date
               display inline
-              font-size .87em
+              font-size .92em
             .user
               font-weight bold
             .date
@@ -269,8 +276,8 @@ html.forum, html.profile, html.search
             .profile
               margin-top (grid/2)
               border-radius 2px
-              width 38px
-              height 30px
+              width 45px
+              height 37px
 //}}}
 //{{{ - profile
 html.profile
@@ -323,15 +330,30 @@ html.profile
           margin-right 10px
           b
             font-weight 200
-        .actions
-          position absolute
-          right 0
-          bottom 0
-          
   ul
     list-style none
     margin grid 0 0 0
 //}}}
+//{{{ - search
+html.search
+  #left_content
+    .hits
+      h2.title
+        font-size 1em
+        text-overflow ellipsis
+        max-height 20px
+        overflow hidden
+//}}}
+//{{{ html.admin
+html.admin
+  #left_container
+    menu
+      list-style none
+//}}}
+
+#left_container
+  height 100%
+  overflow hidden
 
 #order
   position relative
@@ -353,14 +375,5 @@ html.profile
   left 0
   width 140px
   height 1px
-
-html.search
-  #left_content
-    .hits
-      h2.title
-        font-size 1em
-        text-overflow ellipsis
-        max-height 20px
-        overflow hidden
 
 // vim:fdm=marker

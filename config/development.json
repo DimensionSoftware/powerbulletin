@@ -1,10 +1,10 @@
-{ "workers":1
-, "base_js_urls":
+{ "workers": 1
+, "baseJsUrls":
   [ "http://swarm.powerbulletin.com/js/inject.js"
   ]
-, "cache_url": "//muscache.pb.com"
-, "cache2_url": "//muscache2.pb.com"
-, "cache3_url": "//muscache3.pb.com"
-, "cache4_url": "//muscache4.pb.com"
-, "cache5_url": "//muscache5.pb.com"
+, "cacheUrl":  "//muscache.pb.com"
+, "cache2Url": "//muscache2.pb.com"
+, "cache3Url": "//muscache3.pb.com"
+, "cache4Url": "//muscache4.pb.com"
+, "cache5Url": "//muscache5.pb.com"
 }

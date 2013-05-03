@@ -1,5 +1,5 @@
-global <<< require \./pb_helpers
-global.furl = require \./forum_urls
+global <<< require \./pb-helpers
+global.furl = require \./forum-urls
 
 # Common
 layout-static = (w, next-mutant, active-forum-id=0) ->
@@ -51,7 +51,7 @@ pager-init = (w) ->
 
       # fill-in extra
       active = window.location.search.match(/order=(\w+)/)?1 or \recent
-      window.jade.render $(\.extra:first).0, \order_control, active: active
+      window.jade.render $(\.extra:first).0, \order-control, active: active
 
       #{{{ Waypoints
       set-timeout (->
@@ -123,7 +123,7 @@ pager-init = (w) ->
 
       # render main content
       window.render-mutant \main_content if is-editing(@furl.path) is true
-        \post_new
+        \post-new
       else if is-forum-homepage @furl.path
         \homepage
       else
@@ -196,7 +196,7 @@ pager-init = (w) ->
   on-unload:
     (window, next-mutant, next) ->
       try
-        window.$ \#left_content .resizable(\destroy)
+        window.$ \#left_container .resizable(\destroy)
       catch
         # do nothing
       next!
@@ -205,7 +205,7 @@ pager-init = (w) ->
   static:
     (window, next) ->
       window.render-mutant \left_container \profile
-      window.render-mutant \main_content \posts_by_user
+      window.render-mutant \main_content \posts-by-user
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
       layout-static window, \profile
@@ -228,7 +228,7 @@ pager-init = (w) ->
           jcrop := this
         $ \.avatar .html5-uploader({
           name     : \avatar
-          post-url : "/user/#{u.name}/avatar"
+          post-url : "/resources/users/#{u.id}/avatar"
 
           on-success: (x, y, json) ->
             r = JSON.parse json
@@ -236,7 +236,7 @@ pager-init = (w) ->
               jcrop.destroy! if jcrop
 
               $ '.avatar img'
-                .attr \src, "#{w.cache_url}/#{r.avatar}"
+                .attr \src, "#{w.cache-url}/#{r.avatar}"
                 .attr \style, ''
                 .Jcrop aspect-ratio: 1.25, ->
                   jcrop := this
@@ -249,7 +249,9 @@ pager-init = (w) ->
 @admin =
   static:
     (window, next) ->
+      window.render-mutant \left_container \admin-nav
       window.render-mutant \main_content \admin
+      layout-static window, \admin
       next!
 
 @search =
