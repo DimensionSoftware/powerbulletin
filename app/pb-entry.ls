@@ -87,8 +87,7 @@ $ \#query .focus!
 # Delegated Events
 #{{{ - search delegated events
 # window.ui is the object which will receive events and have events triggered on it
-window.ui = {}
-$ui = $ window.ui
+window.$ui = $ {}
 
 # keys that actually trigger the search
 $d.on \keyup, \#query, __.debounce((->
@@ -101,7 +100,7 @@ $ui.on \search, (evt, searchopts) ->
   uri = "/search?#{$.param searchopts}"
   #XXX: searchopts should move into socket.io, instead of just q
   socket.emit \search searchopts.q
-  History.pushState {searchopts}, '', uri
+  History.push-state {searchopts}, '', uri
 #}}}
 #{{{ - generic form-handling ui
 $d.on \click '.create .no-surf' require-login(->

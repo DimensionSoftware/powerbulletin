@@ -179,7 +179,7 @@ auth-finisher = (req, res, next) ->
 
   # guards
   if meta.incomplete
-    console.error meta
+    #console.error meta
     return next 404
   if meta.type in <[new-thread edit]>
     return next 404 unless user # editing!  so, must be logged in
