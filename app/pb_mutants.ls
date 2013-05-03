@@ -228,7 +228,7 @@ pager-init = (w) ->
           jcrop := this
         $ \.avatar .html5-uploader({
           name     : \avatar
-          post-url : "/user/#{u.name}/avatar"
+          post-url : "/resources/users/#{u.id}/avatar"
 
           on-success: (x, y, json) ->
             r = JSON.parse json

@@ -229,11 +229,6 @@ auth-finisher = (req, res, next) ->
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.post.posts = delete fdoc.sub-posts-tree
     fdoc.pages-count = Math.ceil(delete fdoc.sub-posts-count / limit)
-    fdoc.pages = [1 to fdoc.pages-count]
-    if page > 1
-      fdoc.prev-pages = [1 til page]
-    else
-      fdoc.prev-pages = []
 
     fdoc.active-forum-id  = fdoc.post.forum_id
     fdoc.active-thread-id = post.id
@@ -256,7 +251,6 @@ auth-finisher = (req, res, next) ->
 
     fdoc <<< {forum-id}
     fdoc.active-forum-id = fdoc.forum-id
-    fdoc.pages = [1] # XXX - @matt - what's the right value to put here?
 
     finish fdoc
 
@@ -286,12 +280,17 @@ auth-finisher = (req, res, next) ->
   res.mutant \profile
 
 @profile-avatar = (req, res, next) ->
+  db   = pg.procs
   user = req.user
-  if req.params.name != user.name
+  site = res.locals.site
+  err, usr <- db.usr { id: req.params.id, site_id: site.id }
+  if err
+    console.error \authentication
+    return res.json { success: false }, 403
+  if usr.name != user.name
     console.error \authorization
     return res.json { success: false }, 403
 
-  db = pg.procs
   avatar = req.files.avatar
 
   ext = avatar.name.match(/\.(\w+)$/)?1 or ""
