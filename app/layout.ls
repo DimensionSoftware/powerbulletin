@@ -227,10 +227,11 @@ window.spin = (loading = true) ->
     hide!
 #}}}
 
+on-load-resizable!
+
 # run initial mutant & personalize ( based on parameters from user obj )
 window.user <- $.getJSON \/auth/user
-<- window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}
-window.mutants?[window.initial-mutant]?on-personalize window, window.user
-on-load-resizable!
+window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}, ->
+  window.mutants?[window.initial-mutant]?on-personalize window, window.user
 
 # vim:fdm=marker
