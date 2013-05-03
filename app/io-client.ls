@@ -21,8 +21,7 @@ socket.on \thread-impression (thread, cb) ->
 
 socket.on \thread-create (thread, cb) ->
   if window.active-forum-id is thread?forum_id
-    <- render-and-prepend window,  $('#left_container .threads'), \thread, thread:thread
-    $ '#left_container .threads div.fadein li' .unwrap!
+    $ui.trigger \thread-create, thread
 
 socket.on \post-create (post, cb) ->
   # only real-time posts for users':

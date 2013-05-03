@@ -85,7 +85,7 @@ load-ui!
 $ \#query .focus!
 
 # Delegated Events
-#{{{ - search delegated events
+#{{{ - search and ui delegated events
 # window.ui is the object which will receive events and have events triggered on it
 window.$ui = $ {}
 
@@ -96,11 +96,20 @@ $d.on \keyup, \#query, __.debounce((->
     console.log "#{it.which} triggered search"
     $ui.trigger \search, {q: $(@).val!}
   true), 250ms)
-$ui.on \search, (evt, searchopts) ->
+$ui.on \search, (e, searchopts) ->
   uri = "/search?#{$.param searchopts}"
   #XXX: searchopts should move into socket.io, instead of just q
   socket.emit \search searchopts.q
   History.push-state {searchopts}, '', uri
+
+$ui.on \thread-create, (e, thread) ->
+  console.info 'thread-create', thread
+  <- render-and-prepend window,  $('#left_container .threads'), \thread, thread:thread
+  $ '#left_container .threads div.fadein li' .unwrap!
+
+$ui.on \nav-top-posts, (e, threads) ->
+  console.info \stub, threads
+
 #}}}
 #{{{ - generic form-handling ui
 $d.on \click '.create .no-surf' require-login(->
