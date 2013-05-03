@@ -73,7 +73,7 @@ Welcome to {{site-name}}, {{user-name}}.
 
 To verify your account, please visit:
 
-  https://{{site-domain}}/verify/{{user-verify}}
+  https://{{site-domain}}/auth/verify/{{user-verify}}
 
 """
 

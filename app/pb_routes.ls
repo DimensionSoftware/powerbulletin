@@ -56,16 +56,25 @@ app.get '/search',
   mmw.mutant-layout(\layout, mutants),
   handlers.search
 
+#{{{ Admin
 app.get '/admin',
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   handlers.admin
 
+app.get '/admin',
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.admin
+#}}}
 #{{{ Local auth
 app.post '/auth/login'           handlers.login
 app.post '/auth/register'        handlers.register
 app.post '/auth/choose-username' handlers.choose-username
+app.get  '/auth/user'            handlers.user
+app.get  '/auth/verify/:v'       handlers.verify
 
 app.get  '/auth/facebook'        handlers.login-facebook
 app.get  '/auth/facebook/return' handlers.login-facebook-return
@@ -81,18 +90,6 @@ app.get  '/auth/twitter/finish'  handlers.login-twitter-finish
 
 app.get  '/auth/logout'   handlers.logout
 #}}}
-# UI SKETCH UP:
-#
-# Connect to a social network:
-# Facebook, Twitter
-# OR
-# Register @ <Forum Name>.com
-# # post endpoint
-# app.post '/auth/register', handlers.register
-# todo html for use in fancybox or modal dialog at get route
-
-# json response with user info
-app.get '/auth/user', handlers.user
 
 app.get '/',
   mw.geo,
@@ -108,8 +105,6 @@ app.get '/dynamic/css/:file' handlers.stylus # dynamic serving
 app.get '/favicon.ico', (req, res, next) ->
   # replace with real favicon
   next 404, \404
-
-app.get '/verify/:v', handlers.verify
 
 app.get '/u/:name', (req, res, next) ->
   res.redirect "/user/#{req.params.name}/", 301
