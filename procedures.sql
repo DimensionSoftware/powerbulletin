@@ -386,6 +386,12 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param Integer site_id    site id
 -- @returns Object user        user with all auth objects
 CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
+  [identifier-clause, params] =
+    if usr.id
+      ["u.id = $1", [usr.id, usr.site_id]]
+    else
+      ["a.name = $1", [usr.name, usr.site_id]]
+
   sql = """
   SELECT
     u.id, u.photo, u.email,
@@ -395,10 +401,10 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
   FROM users u
   JOIN aliases a ON a.user_id = u.id
   LEFT JOIN auths ON auths.user_id = u.id
-  WHERE a.name = $1
+  WHERE #identifier-clause
   AND a.site_id = $2
   """
-  auths = plv8.execute(sql, [ usr.name, usr.site_id ])
+  auths = plv8.execute(sql, params)
   if auths.length == 0
     return null
   make-user = (memo, auth) ->
