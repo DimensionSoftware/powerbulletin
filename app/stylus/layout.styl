@@ -142,6 +142,17 @@ header
       right -800px
 //}}}
 //{{{ Left side
+body.paginator
+  #left_content
+    .handle
+      right -26px
+    #paginator
+      right -12px
+      width 12px
+      height auto
+      top 0
+      bottom 0
+      transition width .2s ease-out
 #left_content
   position fixed
   left 0
@@ -179,12 +190,8 @@ header
     z-index 95
   #paginator
     position absolute
-    width 12px
-    display none
-    height auto
-    top 0
-    bottom 0
-    right -12px
+    width 0
+    height 0
     z-index 7
     padding-top header-height*2
     padding-bottom footer-height
@@ -234,9 +241,9 @@ header
       border-right 4px solid transparent
       border-bottom 10px solid transparent
   #paginator:hover
-    transition width .08s .2s ease-out, right .08s .2s ease-out
-    width 15px
-    right -15px
+    transition width .08s .2s ease-out, right .08s .2s ease-out!important
+    width 15px!important
+    right -15px!important
     .current
       padding-left 5px
       transition padding-left .08s .2s ease-out

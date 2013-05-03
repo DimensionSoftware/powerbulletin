@@ -77,7 +77,7 @@ module.exports = class Pager
   # @param Object pager
   # @param Object options
   init: ->
-    if @last > 1 then @$el.show! else @$el.hide! # only show if pages exist
+    $ \body .toggle-class \paginator (@last > 1) # only show if multiple pages
     @height = @$el.height!
     @indicator-height = indicator-height(@last, @height)
 
