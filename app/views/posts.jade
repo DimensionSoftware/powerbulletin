@@ -5,20 +5,21 @@ include _breadcrumb
 //- posts tree
 if typeof(post) !== 'undefined'
   .forum.resizable
-    .post.head(id="post_#{post.id}", data-user-id=post.user_id, data-post-id=post.id)
-      h3.title= post.title
-      .breadcrumb
-        mixin _breadcrumb(post)
-      a.user.mutant(href="/user/#{post.user_name}")
-        .profile.photo
-          img(src="#{cacheUrl}/#{post.user_photo}")
-        span=post.user_name
-      .date(data-time=post.created_iso)!= post.created_human
-      .edit-container
-      if post.html
-        .body!= post.html
-      .reply
-      mixin _post-actions(post)
+    if page == 1
+      .post.head(id="post_#{post.id}", data-user-id=post.user_id, data-post-id=post.id)
+        h3.title= post.title
+        .breadcrumb
+          mixin _breadcrumb(post)
+        a.user.mutant(href="/user/#{post.user_name}")
+          .profile.photo
+            img(src="#{cacheUrl}/#{post.user_photo}")
+          span=post.user_name
+        .date(data-time=post.created_iso)!= post.created_human
+        .edit-container
+        if post.html
+          .body!= post.html
+        .reply
+        mixin _post-actions(post)
     .children
       if post.posts.length
         div(data-page=page)
