@@ -41,6 +41,8 @@ sub vcl_recv {
 }
 
 sub vcl_fetch {
+  set beresp.do_stream = false;
+  set beresp.do_gunzip = true;
   set beresp.do_gzip = true;
 }
 
@@ -82,4 +84,7 @@ sub vcl_pipe {
   if (req.http.upgrade ~ "(?i)websocket") {
     set bereq.http.upgrade = req.http.upgrade;
   }
+  # we want to process headers every request, no keep-alive!
+  # this fixes issue where gzip wasn't happening every request (and/or header branding)
+  set bereq.http.connection = "close";
 }

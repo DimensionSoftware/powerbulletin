@@ -21,6 +21,10 @@ set -e
   -p ban_lurker_sleep=2 \
   -p gzip_level=9 \
   -p gzip_memlevel=9 \
-  -p gzip_stack_buffer=131072 \
+  -p gzip_stack_buffer=262144 \
   -p gzip_window=15 \
-  -p thread_pools=1
+  -p sess_workspace=262144 \
+  -p thread_pools=1 \
+  -p thread_pool_add_delay=2 \
+  -p thread_pool_min=100 \
+  -p thread_pool_max=1000
