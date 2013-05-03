@@ -55,7 +55,7 @@ append-reply-ui = (e) ->
 
   # append dom for reply ui
   unless $p.find('.reply .post-edit:visible').length
-    render-and-append window,  $p.find(\.reply:first), \post_edit, (post:
+    render-and-append window,  $p.find(\.reply:first), \post-edit, (post:
       method:     \post
       forum_id:   $p.data(\forum-id) or window.active-forum-id
       parent_id:  $p.data \post-id
