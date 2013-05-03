@@ -10,6 +10,7 @@
 /selenium.out
 /public/powerbulletin.min.js
 /public/powerbulletin.js
+/public/images/user
 /app/views/templates.js
 /config/local.json
 /elasticsearch-logs/
