@@ -286,12 +286,17 @@ auth-finisher = (req, res, next) ->
   res.mutant \profile
 
 @profile-avatar = (req, res, next) ->
+  db   = pg.procs
   user = req.user
-  if req.params.name != user.name
+  site = res.locals.site
+  err, usr <- db.usr { id: req.params.id, site_id: site.id }
+  if err
+    console.error \authentication
+    return res.json { success: false }, 403
+  if usr.name != user.name
     console.error \authorization
     return res.json { success: false }, 403
 
-  db = pg.procs
   avatar = req.files.avatar
 
   ext = avatar.name.match(/\.(\w+)$/)?1 or ""

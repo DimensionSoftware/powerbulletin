@@ -5,7 +5,7 @@
   h2= profile.name
 
   .profile(data-user-id="#{profile.id}")
-    form(action="/user/#{profile.name}/avatar", enctype="multipart/form-data", method="post")
+    form(action="/resources/users/#{profile.id}/avatar", enctype="multipart/form-data", method="post")
       .avatar
         if profile.photo
           if profile.photo.match(/^http/)

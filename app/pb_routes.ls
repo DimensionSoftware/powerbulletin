@@ -16,6 +16,7 @@ app.resource 'resources/posts', resources.posts
 app.get  '/resources/posts/:id/sub-posts',  handlers.sub-posts
 app.post '/resources/posts/:id/impression', handlers.add-impression
 app.post '/resources/posts/:id/censor',     handlers.censor
+app.post '/resources/users/:id/avatar',     handlers.profile-avatar
 #}}}
 
 # XXX Common is for all environments
@@ -119,9 +120,6 @@ app.get '/user/:name',
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   handlers.profile
-
-app.post '/user/:name/avatar',
-  handlers.profile-avatar
 
 app.get '/user/:name/page/:page',
   mw.add-js(common-js),
