@@ -35,7 +35,7 @@ sub vcl_recv {
   }
   
   # depersonalize everything EXCEPT urls starting with /auth or /resources
-  if (req.url !~ "(?i)^/(auth|resources)") {
+  if (req.url !~ "(?i)^/(auth|resources|admin)") {
     call depersonalize;
   }
 }

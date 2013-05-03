@@ -175,7 +175,7 @@ else
     a.use auth.mw.initialize
     a.use auth.mw.session
     a.set 'view engine' \jade
-    a.set 'views' 'app/views'
+    a.set \views \app/views
     a.enable 'json callback'
     a.enable 'trust proxy' # parse x-forwarded-for in req.ip, etc...
 
