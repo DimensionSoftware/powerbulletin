@@ -1,6 +1,6 @@
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
-window.helpers = require \./shared_helpers
-window.mutants = require \./pb_mutants
+window.helpers = require \./shared-helpers
+window.mutants = require \./pb-mutants
 
 # shortcuts
 $w = $ window

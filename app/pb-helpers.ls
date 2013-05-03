@@ -1,4 +1,4 @@
-# XXX shared by pb_mutants & pb_entry
+# XXX shared by pb-mutants & pb-entry
 
 @set-online-user = (id) ->
   $ "[data-user-id=#{id}] .profile.photo" .add-class \online
@@ -42,7 +42,7 @@
   focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 100ms
   render = (sel, locals) ~>
     $e = $ sel
-    @render-and-append window, sel, \post_edit, {user:user, post:locals}, ($e) ->
+    @render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
       # init sceditor
       $e.find \textarea.body .sceditor(
         plugins:        \bbcode

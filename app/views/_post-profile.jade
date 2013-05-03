@@ -1,4 +1,4 @@
-mixin _post_profile(p)
+mixin _post-profile(p)
   a.user.mutant(href="/user/#{p.user_name}")
     .profile.photo
       if p.user_photo && p.user_photo.match(/^http/)
