@@ -52,8 +52,6 @@ html.forum, html.profile, html.search
   body.scrolled
     #left_content
       bottom 0
-  #left_container
-    height 100%
   #left_content
     display block
     .photo, .created, .username
@@ -218,11 +216,12 @@ html.forum, html.profile, html.search
           margin-top (grid+2)
           margin-bottom (grid+2)
           line-height 15px
+          margin-left -6px
           a
             font-size .9em
             font-weight 400
-            margin-right grid
-            margin-left 5px
+            margin-right 2px
+            margin-left 2px
             display inline
             padding 1px 5px
           .edit
@@ -332,6 +331,26 @@ html.profile
     list-style none
     margin grid 0 0 0
 //}}}
+//{{{ - search
+html.search
+  #left_content
+    .hits
+      h2.title
+        font-size 1em
+        text-overflow ellipsis
+        max-height 20px
+        overflow hidden
+//}}}
+//{{{ html.admin
+html.admin
+  #left_container
+    menu
+      list-style none
+//}}}
+
+#left_container
+  height 100%
+  overflow hidden
 
 #order
   position relative
@@ -353,14 +372,5 @@ html.profile
   left 0
   width 140px
   height 1px
-
-html.search
-  #left_content
-    .hits
-      h2.title
-        font-size 1em
-        text-overflow ellipsis
-        max-height 20px
-        overflow hidden
 
 // vim:fdm=marker

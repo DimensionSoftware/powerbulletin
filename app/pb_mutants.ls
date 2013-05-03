@@ -196,7 +196,7 @@ pager-init = (w) ->
   on-unload:
     (window, next-mutant, next) ->
       try
-        window.$ \#left_content .resizable(\destroy)
+        window.$ \#left_container .resizable(\destroy)
       catch
         # do nothing
       next!
@@ -249,7 +249,9 @@ pager-init = (w) ->
 @admin =
   static:
     (window, next) ->
+      window.render-mutant \left_container \admin_nav
       window.render-mutant \main_content \admin
+      layout-static window, \admin
       next!
 
 @search =
