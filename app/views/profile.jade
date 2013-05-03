@@ -11,9 +11,9 @@
           if profile.photo.match(/^http/)
             img(src="#{profile.photo}")
           else
-            img(src="#{cache_url}/#{profile.photo}")
+            img(src="#{cacheUrl}/#{profile.photo}")
         else
-          img(src="#{cache_url}/images/profile.jpg")
+          img(src="#{cacheUrl}/images/profile.jpg")
       input(type="file", name="avatar", style="display:none;")
       //- input(type="submit")
 

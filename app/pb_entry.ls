@@ -182,13 +182,13 @@ if mocha? and window.location.search.match /test=1/
   cleanup-output = ->
     $('body > *:not(#mocha)').remove!
     mocha-css-el = # mocha style (JUST IN TIME!)
-      $("<link rel=\"stylesheet\" type=\"text/css\" href=\"#{window.cache_url}/local/mocha.css\">")
+      $("<link rel=\"stylesheet\" type=\"text/css\" href=\"#{window.cache-url}/local/mocha.css\">")
     $ \head .append(mocha-css-el)
 
   mocha.setup \bdd
 
   # actual tests
-  $.get-script "#{window.cache_url}/tests/test1.js", ->
+  $.get-script "#{window.cache-url}/tests/test1.js", ->
     run = ->
       mocha.run cleanup-output
     set-timeout run, 2000ms # gotta give time for tests to load

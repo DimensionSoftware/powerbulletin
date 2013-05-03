@@ -21,33 +21,33 @@ app.post '/resources/users/:id/avatar',     handlers.profile-avatar
 
 # XXX Common is for all environments
 common-js = [ #{{{ Common JS
-  "#{cvars.cache5_url}/local/jquery-1.9.1.min.js",
-  "#{cvars.cache5_url}/local/jquery-ui.min.js",
-  "#{cvars.cache3_url}/local/jquery.masonry.min.js",
-  "#{cvars.cache2_url}/local/jquery.cookie-1.3.1.min.js",
-  "#{cvars.cache4_url}/local/jquery.sceditor.bbcode.min.js",
-  "#{cvars.cache_url}/local/waypoints.min.js",
-  "#{cvars.cache5_url}/local/history.min.js",
-  "#{cvars.cache5_url}/local/history.adapter.native.min.js",
-  "#{cvars.cache3_url}/fancybox/jquery.fancybox.pack.js",
-  "#{cvars.cache3_url}/local/jquery.transit-0.9.9.min.js",
-  "#{cvars.cache2_url}/local/jquery.html5uploader.js",
-  "#{cvars.cache2_url}/jcrop/js/jquery.Jcrop.min.js",
-  "#{cvars.cache4_url}/socket.io/socket.io.js",
-  "#{cvars.cache_url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
+  "#{cvars.cache5-url}/local/jquery-1.9.1.min.js",
+  "#{cvars.cache5-url}/local/jquery-ui.min.js",
+  "#{cvars.cache3-url}/local/jquery.masonry.min.js",
+  "#{cvars.cache2-url}/local/jquery.cookie-1.3.1.min.js",
+  "#{cvars.cache4-url}/local/jquery.sceditor.bbcode.min.js",
+  "#{cvars.cache-url}/local/waypoints.min.js",
+  "#{cvars.cache5-url}/local/history.min.js",
+  "#{cvars.cache5-url}/local/history.adapter.native.min.js",
+  "#{cvars.cache3-url}/fancybox/jquery.fancybox.pack.js",
+  "#{cvars.cache3-url}/local/jquery.transit-0.9.9.min.js",
+  "#{cvars.cache2-url}/local/jquery.html5uploader.js",
+  "#{cvars.cache2-url}/jcrop/js/jquery.Jcrop.min.js",
+  "#{cvars.cache4-url}/socket.io/socket.io.js",
+  "#{cvars.cache-url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
 #}}}
 
 # inject testing code in dev only
 app.configure \development ->
   entry = common-js.pop!
-  common-js.push "#{cvars.cache5_url}/local/mocha.js"
-  common-js.push "#{cvars.cache5_url}/local/chai.js"
+  common-js.push "#{cvars.cache5-url}/local/mocha.js"
+  common-js.push "#{cvars.cache5-url}/local/chai.js"
   common-js.push entry
 
 common-css = [ #{{{ Common CSS
-  "#{cvars.cache2_url}/fancybox/jquery.fancybox.css",
-  "#{cvars.cache3_url}/local/jquery.sceditor.default.min.css",
-  "#{cvars.cache4_url}/jcrop/css/jquery.Jcrop.min.css",
+  "#{cvars.cache2-url}/fancybox/jquery.fancybox.css",
+  "#{cvars.cache3-url}/local/jquery.sceditor.default.min.css",
+  "#{cvars.cache4-url}/jcrop/css/jquery.Jcrop.min.css",
   '/dynamic/css/master.styl']
 #}}}
 
@@ -143,14 +143,9 @@ app.all new RegExp('/(.+)'),
   handlers.forum
 
 #{{{ Development Debug
-if process.env.NODE_ENV != 'production'
-  app.get '/debug/docs/:type/:key', (req, res, next) ->
-    err, d <- db.doc res.locals.site.id, req.params.type, req.params.key
-    if err then return next(err)
-    res.json d
-
+if process.env.NODE_ENV != \production
   app.get '/debug/sub-posts-tree/:post_id', (req, res, next) ->
-    site = res.locals.site
+    site = res.vars.site
     err, d <- db.sub-posts-tree site.id, req.params.post_id, 25, 0
     if err then return next(err)
     res.json d

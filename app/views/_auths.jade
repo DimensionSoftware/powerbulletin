@@ -48,7 +48,7 @@
 .login
   form(method="post", action="/auth/login")
     label(for="username")
-      h2= site.name
+      h2= siteName
     fieldset
       a.msg.onclick-show-forgot
         h3 Forgot?  
@@ -61,8 +61,8 @@
   .social
     h3 Or Log In With
     a(href="/auth/facebook", title="Facebook!") 
-      img(src="#{cache2_url}/images/facebook_32.png")
+      img(src="#{cache2Url}/images/facebook_32.png")
     a(href="/auth/google", title="Google+") 
-      img(src="#{cache3_url}/images/google_32.png")
+      img(src="#{cache3Url}/images/google_32.png")
     a(href="/auth/twitter", title="Twitter!") 
-      img(src="#{cache4_url}/images/twitter_32.png")
+      img(src="#{cache4Url}/images/twitter_32.png")

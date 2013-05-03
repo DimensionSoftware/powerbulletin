@@ -11,7 +11,7 @@ if typeof(post) !== 'undefined'
         mixin _breadcrumb(post)
       a.user.mutant(href="/user/#{post.user_name}")
         .profile.photo
-          img(src="#{cache_url}/#{post.user_photo}")
+          img(src="#{cacheUrl}/#{post.user_photo}")
         span=post.user_name
       .date(data-time=post.created_iso)!= post.created_human
       .edit-container
