@@ -229,11 +229,6 @@ auth-finisher = (req, res, next) ->
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.post.posts = delete fdoc.sub-posts-tree
     fdoc.pages-count = Math.ceil(delete fdoc.sub-posts-count / limit)
-    fdoc.pages = [1 to fdoc.pages-count]
-    if page > 1
-      fdoc.prev-pages = [1 til page]
-    else
-      fdoc.prev-pages = []
 
     fdoc.active-forum-id  = fdoc.post.forum_id
     fdoc.active-thread-id = post.id
@@ -256,7 +251,6 @@ auth-finisher = (req, res, next) ->
 
     fdoc <<< {forum-id}
     fdoc.active-forum-id = fdoc.forum-id
-    fdoc.pages = [1] # XXX - @matt - what's the right value to put here?
 
     finish fdoc
 
