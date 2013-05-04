@@ -127,7 +127,8 @@ window.show-login-dialog = ->
     close-effect: \elastic
     close-speed:  200ms
     close-easing: \easeOutExpo
-    open-easing:  \easeOutExpo
+    open-effect: \fade
+    open-speed: 300ms
   setTimeout (-> $ '#auth input[name=username]' .focus! ), 100ms
 
 # register action

@@ -364,10 +364,15 @@ html.search header
     .msg.onclick-show-register
       opacity 1
       height 30px
+      h3:hover
+        color #000
       h3
+        position relative
         float right
         margin-top grid
         text-shadow none
+      h3::before
+        display none
     .msg
       overflow hidden
       display block
@@ -375,10 +380,29 @@ html.search header
       opacity 0
       h3
         text-shadow 0 0 1px highlight-color2
+  h3:hover
+    color #666
   h3
     font-weight 200
+    position relative
     font-size 15px
     color #777
+  .social h3::before
+    display none
+  h3:hover::before
+    border-right 9px solid #ccc
+    left -19px
+    transition left .1s ease-out
+  h3::before
+    display block
+    position absolute
+    border-right 9px solid #ddd
+    border-left 5px solid transparent
+    border-top 5px solid transparent
+    border-bottom 5px solid transparent
+    content ''
+    left -17px
+    top 6px
   fieldset
     padding-top 40px
     border-color #f0f0f0
@@ -429,6 +453,7 @@ input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:h
 input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #000
   position relative
+  letter-spacing 1px
   z-index 10
   background-color #fffcfc
   border 1px solid highlight-color2
@@ -508,7 +533,7 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   animation-duration .4s
 .slide
   animation-name slide
-  animation-duration .15s
+  animation-duration .1s
 .post-animate-in
   animation-name post-animate-in
   animation-duration .8s

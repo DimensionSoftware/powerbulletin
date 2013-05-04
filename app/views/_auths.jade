@@ -7,7 +7,7 @@
       input(id="password", name="password", type="text", placeholder="Password")
       input(type="submit", value="Save")
       a.msg.onclick-show-login
-        h3 &lt; Back
+        h3 Back
 .choose(style="display:none;")
   form(method="post", action="/auth/choose-username")
     label(for="username")
@@ -17,7 +17,7 @@
       input(id="username", name="username", type="text", placeholder="Username")
       input(type="submit", value="Save")
       a.msg.onclick-show-login
-        h3 &lt; Back
+        h3 Back
 .forgot(style="display:none;")
   form(method="post", action="/auth/forgot")
     label(for="email")
@@ -27,7 +27,7 @@
       input(id="email", name="email", type="text", placeholder="Email")
       input(type="submit", value="Send Reset")
       a.msg.onclick-show-login
-        h3 &lt; Back
+        h3 Back
 .validate(style="display:none;")
   h2 Check your inbox for activation
     i !
@@ -44,7 +44,7 @@
       input(name="email", class="register-email", type="text", placeholder="Email")
       input(type="submit", value="Sign In")
       a.msg.onclick-show-login
-        h3 &lt; Back
+        h3 Back
 .login
   form(method="post", action="/auth/login")
     label(for="username")
