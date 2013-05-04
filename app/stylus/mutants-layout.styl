@@ -63,6 +63,8 @@ html.forum, html.profile, html.search
     .create
       margin (grid/2) (grid*3.5) (grid/2) (grid*2)
       a
+        text-overflow ellipsis
+        overflow hidden
         text-decoration none
         animation-name none
         padding 8px 10px
@@ -185,7 +187,7 @@ html.forum, html.profile, html.search
           left 0
           height 0
           width 0
-          border-top 10px solid #eee
+          border-top 10px solid #bbb
           border-bottom 20px solid transparent
           border-left 20px solid transparent
           border-right 20px solid transparent

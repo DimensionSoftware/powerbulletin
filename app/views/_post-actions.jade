@@ -4,4 +4,4 @@ mixin _post_actions(p)
     a.stylish.edit.mutant.no-surf(href="#{p.uri.replace(/\/\d+$/, '')}/edit/#{p.id}") Edit
     a.stylish.mutant(href=p.uri) Permalink
     if (typeof(user) !== 'undefined' && user) && user.rights.super
-      a.onclick-censor-post Censor
+      a.stylish.onclick-censor-post Censor

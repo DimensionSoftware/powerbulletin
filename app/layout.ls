@@ -160,8 +160,10 @@ window.after-login = ->
 
 # logout
 window.logout = ->
-  r <- $.get '/auth/logout'
+  r <- $.get \/auth/logout
   window.location.reload!
+  false
+$d.on \click \.onclick-logout -> window.logout!; false
 
 # register
 window.register = ->
