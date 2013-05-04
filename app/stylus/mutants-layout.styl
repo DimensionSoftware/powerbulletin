@@ -287,6 +287,8 @@ html.forum, html.profile, html.search
             .actions
               margin-top (grid/2)
               margin-bottom (grid/2)
+            textarea.body
+              padding-top (grid/2)
             .body
               clear none
               margin-top -(grid/2)
@@ -382,6 +384,27 @@ html.admin
   #left_container
     menu
       list-style none
+  #main_content
+    form
+      width 200px
+      fieldset
+        padding 0 (grid*2)
+        background-color #fff
+        border 0
+        color #222
+        margin grid (grid*2) (grid*3) 0
+        padding-top grid
+        text-indent -(grid*2)
+        legend
+          font-weight 100
+          font-size 1.4em
+        label
+          font-weight 600
+          color #777
+        input
+          display block
+          min-width 400px
+          margin-bottom grid
 //}}}
 
 #left_container

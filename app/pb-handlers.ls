@@ -21,7 +21,6 @@ global <<< require \./shared-helpers
 
 @hello = (req, res, next) ->
   console.log req.headers
-  console.log req.foo.bar
   res.send "hello #{res.vars.remote-ip}!"
 
 @login = (req, res, next) ->
@@ -467,15 +466,13 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 
 @admin = (req, res, next) ->
   site = res.vars.site
-
+  res.locals.action = req.param \action
   tasks =
-    menu           : db.menu site.id, _
-
+    menu: db.menu site.id, _
+    auth: db.site-by-id site.id, _
   err, fdoc <- async.auto tasks
   if err then return next err
-
   res.locals fdoc
-
   res.mutant \admin
 
 @search = (req, res, next) ->

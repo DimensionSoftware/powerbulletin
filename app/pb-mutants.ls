@@ -247,10 +247,15 @@ pager-init = (w) ->
       next!
 
 @admin =
+  on-load:
+    (window, next) ->
+      $ 'form input:first' .focus!select!
   static:
     (window, next) ->
       window.render-mutant \left_container \admin-nav
-      window.render-mutant \main_content \admin
+      window.render-mutant \main_content switch @action
+        | \authorization => \admin-authorization
+        | otherwise      => \admin
       layout-static window, \admin
       next!
 

@@ -58,13 +58,7 @@ app.get '/search',
   handlers.search
 
 #{{{ Admin
-app.get '/admin',
-  mw.add-js(common-js),
-  mw.add-css(common-css),
-  mmw.mutant-layout(\layout, mutants),
-  handlers.admin
-
-app.get '/admin',
+app.get \/admin/:action?,
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
