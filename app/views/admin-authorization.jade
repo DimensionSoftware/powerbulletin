@@ -1,22 +1,25 @@
 .resizable
   form(action="/resources/admin/authorization", method="put")
     fieldset
+      img(src="#{cache2Url}/images/facebook_32.png")
       legend Facebook
       label(for="facebook_client_id") ID
-      input(id="facebook_client_id", name='facebookClientId', placeholder='Facebook API ID ...', value=auth.config.facebookClientId)
+      input.first(id="facebook_client_id", type='text', name='facebookClientId', placeholder='Facebook API ID ...', value=auth.config.facebookClientId)
       label(for="facebook_client_secret") Secret
-      input(id="facebook_client_secret", name='facebookClientSecret', placeholder='Facebook secret ...', value=auth.config.facebookClientId)
+      input(id="facebook_client_secret", type='text', name='facebookClientSecret', placeholder='Facebook secret ...', value=auth.config.facebookClientId)
     fieldset
+      img(src="#{cache4Url}/images/twitter_32.png")
       legend Twitter
       label(for="twitter_key") Key
-      input(id="twitter_key", name='twitterConsumerKey', placeholder='Twitter API key ...', value=auth.config.twitterConsumerKey)
+      input.first(id="twitter_key", type='text', name='twitterConsumerKey', placeholder='Twitter API key ...', value=auth.config.twitterConsumerKey)
       label(for="twitter_secret") Secret
-      input(id="twitter_secret", name='twitterConsumerSecret', placeholder='Twitter API secret ...', value=auth.config.twitterConsumerSecret)
+      input(id="twitter_secret", type='text', name='twitterConsumerSecret', placeholder='Twitter API secret ...', value=auth.config.twitterConsumerSecret)
     fieldset
+      img(src="#{cache3Url}/images/google_32.png")
       legend Google+
       label(for="google_key") Key
-      input(id="google_key", name='google-key', placeholder='Google+ API key ...', value=auth.config.googleConsumerKey)
+      input.first(id="google_key", type='text', name='google-key', placeholder='Google+ API key ...', value=auth.config.googleConsumerKey)
       label(for="google_secret") Secret
-      input(id="google_secret", name='googleConsumerSecret', placeholder='Google+ API secret ...', value=auth.config.googleConsumerSecret)
+      input(id="google_secret", type='text', name='googleConsumerSecret', placeholder='Google+ API secret ...', value=auth.config.googleConsumerSecret)
       //-input(type='hidden', name='csrf', value=csrf)
-      input.button(type='submit', value='Save')
+    input.button(type='submit', value='Save')

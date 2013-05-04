@@ -465,6 +465,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   res.json sub-posts
 
 @admin = (req, res, next) ->
+  if not req?user?rights?super then return next 404 # guard
   site = res.vars.site
   res.locals.action = req.param \action
   tasks =

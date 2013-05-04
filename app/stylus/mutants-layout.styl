@@ -381,32 +381,57 @@ html.search
         max-height 20px
         overflow hidden
 //}}}
-//{{{ html.admin
+//{{{ - admin
 html.admin
   #left_container
     menu
       list-style none
+      padding 12px
+      margin 0
+      li
+        margin-bottom (grid+3)
   #main_content
     form
-      width 200px
+      margin-top (grid*2)
+      max-width 1300px
+      position relative
       fieldset
-        padding 0 (grid*2)
-        background-color #fff
+        padding grid (grid*3) grid (grid*8.5)
         border 0
-        color #222
-        margin grid (grid*2) (grid*3) 0
-        padding-top grid
-        text-indent -(grid*2)
+        margin (grid*3.5) (grid*2) (grid*3) 0
+        display inline-block
+        position relative
         legend
           font-weight 100
           font-size 1.4em
+          position absolute
+          top -35px
+          left (grid*4)
+        img
+          position absolute
+          top -(grid*4)
+          left 0
         label
-          font-weight 600
-          color #777
+          font-weight 300
+          position absolute
+          left 20px
+          margin-top 8px
+        input.first
+          background #fff
+          border-bottom-right-radius 0
+          border-bottom-left-radius 0
+        input:last-child
+          border-top-right-radius 0
+          border-top-left-radius 0
         input
           display block
           min-width 400px
-          margin-bottom grid
+          margin-bottom -1px
+      .button
+        display block
+        width 200px
+        height 40px
+        margin-left (grid/2)
 //}}}
 
 #left_container

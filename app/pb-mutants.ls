@@ -2,7 +2,7 @@ global <<< require \./pb-helpers
 global.furl = require \./forum-urls
 
 # Common
-layout-static = (w, next-mutant, active-forum-id=0) ->
+layout-static = (w, next-mutant, active-forum-id=-1) ->
   # XXX to be run last in mutant static
   # indicate current
   forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
@@ -250,6 +250,8 @@ pager-init = (w) ->
   on-load:
     (window, next) ->
       $ 'form input:first' .focus!select!
+      window.pages-count = 0
+      pager-init window
   static:
     (window, next) ->
       window.render-mutant \left_container \admin-nav

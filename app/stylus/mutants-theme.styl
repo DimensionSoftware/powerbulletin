@@ -1,5 +1,5 @@
 
-// Structure applied to ...
+// Theme details (colors) applied to ...
 
 // Mutant-specific States
 //{{{ - homepage
@@ -142,7 +142,7 @@ html.forum, html.profile
         .created
           opacity 1
 //}}}
-
+//{{{ - profile
 html.profile
   h1
     color #222
@@ -151,6 +151,41 @@ html.profile
       .heading
         .title
           color highlight-color2
+//}}}
+//{{{ - admin
+html.admin
+  #left_container
+    li
+      a
+        padding 2px 8px
+        font-size 1.4em
+        text-decoration none
+
+  #main_content
+    position absolute
+    bottom 0
+    background-color #fbfbfb
+    form
+      fieldset:hover
+        border 1px solid #f3f3f3
+        border-radius 2px
+        legend
+          color #000
+          text-shadow 0 0 1px highlight-color2
+          transition all .1s ease-out
+        label
+          color #444
+        img
+          opacity 1
+      fieldset
+        background-color #fff
+        border 1px solid #fafafa
+        color #222
+        label
+          color #777
+        img
+          opacity .9
+//}}}
 
 // hover fx for links
 .stylish:hover
