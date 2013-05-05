@@ -7,18 +7,39 @@ require! {
 
 announce = sioa.create-client!
 
+@site =
+  update: (req, res, next) ->
+    if not req?user?rights?super then return next 404 # guard
+    # save site
+    console.log req.params.facebook-client-id
+    site =
+      name:    ''
+      id:      req.user.site_id
+      user_id: req.user.id
+      config: {
+        facebook-client-id:      req.params.facebook-client-id
+        facebook-client-secret:  req.params.facebook-client-secret
+        twitter-consumer-key:    req.params.twitter-consumer-key
+        twitter-consumer-secret: req.params.twitter-consumer-secret
+        google-consumer-key:     req.params.google-consumer-key
+        google-consumer-secret:  req.params.google-consumer-secret}
+
+    console.log site
+    err, r <- db.update-site site
+    if err then return next err
+    res.json r
 @users =
   create : (req, res) ->
+    if not req?user?rights?super then return next 404 # guard
     user = req.params.user
     # munge data
     (err, user) <- db.find-or-create user
     res.json user
-
 @posts =
   index   : (req, res) ->
     res.locals.fid = req.query.fid
     res.locals.pid = req.query.pid
-    res.render \add-post
+    res.render \post-new
   new     : null
   create  : (req, res, next) ->
     return next(404) unless req.user
@@ -76,3 +97,5 @@ announce = sioa.create-client!
       res.json {success: true}
     else
       next 404
+
+# vim:fdm=indent

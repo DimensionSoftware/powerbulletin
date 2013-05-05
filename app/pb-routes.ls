@@ -12,11 +12,12 @@ require! {
 global <<< require \./helpers # pull helpers (common) into global (play nice :)
 
 #{{{ API Resources
-app.resource 'resources/posts', resources.posts
-app.get  '/resources/posts/:id/sub-posts',  handlers.sub-posts
-app.post '/resources/posts/:id/impression', handlers.add-impression
-app.post '/resources/posts/:id/censor',     handlers.censor
-app.post '/resources/users/:id/avatar',     handlers.profile-avatar
+app.resource \resources/site resources.site
+app.resource \resources/posts resources.posts
+app.get  \/resources/posts/:id/sub-posts  handlers.sub-posts
+app.post \/resources/posts/:id/impression handlers.add-impression
+app.post \/resources/posts/:id/censor     handlers.censor
+app.post \/resources/users/:id/avatar     handlers.profile-avatar
 #}}}
 
 # XXX Common is for all environments
@@ -36,14 +37,6 @@ common-js = [ #{{{ Common JS
   "#{cvars.cache4-url}/socket.io/socket.io.js",
   "#{cvars.cache-url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
 #}}}
-
-# inject testing code in dev only
-app.configure \development ->
-  entry = common-js.pop!
-  common-js.push "#{cvars.cache5-url}/local/mocha.js"
-  common-js.push "#{cvars.cache5-url}/local/chai.js"
-  common-js.push entry
-
 common-css = [ #{{{ Common CSS
   "#{cvars.cache2-url}/fancybox/jquery.fancybox.css",
   "#{cvars.cache3-url}/local/jquery.sceditor.default.min.css",
@@ -51,11 +44,12 @@ common-css = [ #{{{ Common CSS
   '/dynamic/css/master.styl']
 #}}}
 
-app.get '/search',
-  mw.add-js(common-js),
-  mw.add-css(common-css),
-  mmw.mutant-layout(\layout, mutants),
-  handlers.search
+# inject testing code in dev only
+app.configure \development ->
+  entry = common-js.pop!
+  common-js.push "#{cvars.cache5-url}/local/mocha.js"
+  common-js.push "#{cvars.cache5-url}/local/chai.js"
+  common-js.push entry
 
 #{{{ Admin
 app.get \/admin/:action?,
@@ -85,22 +79,7 @@ app.get  '/auth/twitter/finish'  handlers.login-twitter-finish
 
 app.get  '/auth/logout'   handlers.logout
 #}}}
-
-app.get '/',
-  mw.geo,
-  mw.add-js(common-js),
-  mw.add-css(common-css),
-  mmw.mutant-layout(\layout, mutants),
-  handlers.homepage
-
-app.get '/hello', handlers.hello
-
-app.get '/dynamic/css/:file' handlers.stylus # dynamic serving
-
-app.get '/favicon.ico', (req, res, next) ->
-  # replace with real favicon
-  next 404, \404
-
+#{{{ Users
 app.get '/u/:name', (req, res, next) ->
   res.redirect "/user/#{req.params.name}/", 301
 
@@ -115,6 +94,28 @@ app.get '/user/:name/page/:page',
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   handlers.profile
+#}}}
+
+app.get '/',
+  mw.geo,
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.homepage
+
+app.get \/search,
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.search
+
+app.get '/hello', handlers.hello
+
+app.get '/dynamic/css/:file' handlers.stylus # dynamic serving
+
+app.get '/favicon.ico', (req, res, next) ->
+  # replace with real favicon
+  next 404, \404
 
 app.get '/:forum/most-active',
   mw.add-js(common-js),
