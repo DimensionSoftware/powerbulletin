@@ -87,9 +87,16 @@ html.forum, html.profile
       .post:hover
         border-bottom 1px solid rgba(200,200,200,.3)
         color #111
+        .post-edit:hover
+          .summary::before
+            border-top 8px solid highlight-color2
+            transition border-top .2s ease-out .1s
       .post
         color #333
         border-bottom 1px solid rgba(200,200,200,.15)
+        .post-edit
+          .summary::before
+            border-top 8px solid #ccc
       .children
         .children
           .body, .date, .user span

@@ -64,9 +64,9 @@ html.forum, html.profile, html.search
       margin (grid/2) (grid*3.5) (grid/2) (grid*2)
       a
         text-overflow ellipsis
-        overflow hidden
         text-decoration none
         animation-name none
+        font-size 1em
         padding 8px 10px
         display block
     .threads
@@ -150,23 +150,24 @@ html.forum, html.profile, html.search
       .post-edit:hover
         .close
           opacity 1
-          transition opacity .1s ease-out
+          transition opacity .2s ease-out .1s
+      .reply .post-edit form
+          width 350px
       .post-edit
         position relative
         margin-bottom (grid*2)
-        margin-left grid
         margin-top (grid/2)
         form
-          width 350px
           position relative
           text-align right
         .button
           position absolute
-          bottom 7px
-          right -15px
+          left 70px
+          bottom -41px
           z-index 15
           padding 2px 5px
           font-size .9em
+          height 25px
         .close
           opacity 0
           right -25px
@@ -175,6 +176,7 @@ html.forum, html.profile, html.search
           z-index 10
         .summary
           .profile.photo
+            margin-left grid
             border-radius 1px
             height 39px
             width 49px
@@ -183,18 +185,18 @@ html.forum, html.profile, html.search
           position absolute
           z-index 1
           content ''
-          bottom -30px
-          left 0
+          bottom -23px
+          left 2px
           height 0
           width 0
-          border-top 10px solid #bbb
-          border-bottom 20px solid transparent
-          border-left 20px solid transparent
-          border-right 20px solid transparent
+          border-bottom 15px solid transparent
+          border-left 15px solid transparent
+          border-right 15px solid transparent
         .sceditor-container, .sceditor-container div, div.sceditor-dropdown, div.sceditor-dropdown div
           z-index 1
           overflow hidden
           margin-bottom (grid*2)
+          margin-bottom grid
           border-top-left-radius 0
           right 0
           iframe
@@ -359,12 +361,16 @@ html.profile
           display none
         .username
           display none
+        .post-edit .button
+          right -14px
+          bottom 7px
+          left auto
         .date
           font-weight 100
           font-size .95em
           color #222
           display inline-block
-          margin-right 10px
+          margin-right grid
           b
             font-weight 200
   ul
