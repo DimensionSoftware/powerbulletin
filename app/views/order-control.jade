@@ -1,6 +1,7 @@
 .orderer
   .indicator
-  orders = [['popular', 'Popular'], ['recent', 'Most Recent'], ['active', 'Most Active'], ['controversial', 'Controversial'], ['nearest', 'Nearby']]
+    // TODO -- , ['nearest', 'Nearby']]
+    orders = [['popular', 'Popular'], ['recent', 'Most Recent'], ['active', 'Most Active']]
   ul#order
     for o in orders
       if o[0] == active

@@ -145,15 +145,13 @@ auth-finisher = (req, res, next) ->
     res.redirect redirect-url.replace(is-editing, '')
 
 @homepage = (req, res, next) ->
-  announce.emit \debug, {testing: 'from homepage handler in express'}
-  #TODO: refactor with async.auto
-  order = req.query.order or \recent
-  err, menu <- db.menu res.vars.site.id
-  if err then return next err
-  console.log [res.vars.site.id, order]
-  err, forums <- db.homepage-forums res.vars.site.id, order
-  if err then return next err
-  doc = {menu, forums}
+  order = req.query.order
+  unless order in [\popular \recent \active] then order = \recent # guard
+
+  tasks =
+    menu:   db.menu res.vars.site.id, _
+    forums: db.homepage-forums res.vars.site.id, order, _
+  err, doc <- async.auto tasks
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
   # for O(1) retrieval (assuming hashed index map)
@@ -161,6 +159,7 @@ auth-finisher = (req, res, next) ->
   res.locals doc
 
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
+  announce.emit \debug, {testing: 'from homepage handler in express'}
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
   caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.vars.site), 7200
