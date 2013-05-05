@@ -54,9 +54,9 @@ announce = sioa.create-client!
       return next 404
   edit    : null
   update  : (req, res, next) ->
-    return next(404) unless req.user # is_owner user, post_id  or is_authorized_as \admin (rights)
-    # TODO rights needs to be moved from users to aliases
-    # TODO secure csrf, etc...
+    if not req?user?rights?super then return next 404 # guard
+    # TODO is_owner req?user
+    # TODO secure & csrf
     # save post
     req.body.user_id = req.user.id
     req.body.html = h.html req.body.body
@@ -65,7 +65,8 @@ announce = sioa.create-client!
     c.invalidate-forum r.forum_id, console.warn
     res.json r
   destroy : (req, res, next) ->
-    return next(404) unless req.user
+    if not req?user?rights?super then return next 404 # guard
+    # TODO currently only super users can censor.  how about post owners?
     db = pg.procs
 
     if post-id = parse-int(req.params.post)
