@@ -485,6 +485,7 @@ CREATE FUNCTION procs.menu(site_id JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.homepage_forums(forum_id JSON, sort JSON) RETURNS JSON AS $$
+  unless sort in [\popular \recent] then sort = \recent # guard
   require! u
   return u.homepage-forums forum_id, sort
 $$ LANGUAGE plls IMMUTABLE STRICT;

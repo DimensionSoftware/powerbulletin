@@ -146,7 +146,6 @@ auth-finisher = (req, res, next) ->
 
 @homepage = (req, res, next) ->
   order = req.query.order
-  unless order in [\popular \recent \active] then order = \recent # guard
 
   tasks =
     menu:   db.menu res.vars.site.id, _
