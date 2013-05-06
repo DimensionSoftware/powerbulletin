@@ -52,6 +52,7 @@ CREATE TABLE domains (
   id      BIGSERIAL NOT NULL,
   site_id BIGINT NOT NULL references sites(id),
   name    VARCHAR(256) NOT NULL,
+  config  JSON NOT NULL DEFAULT '{}',
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
   UNIQUE (name),
