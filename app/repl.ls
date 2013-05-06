@@ -7,6 +7,7 @@ global.fsm   = require \./fsm
 global.furl  = require \./forum-urls
 global.pg    = require \./postgres
 global.v     = require \./varnish
+global.t     = require \./tasks
 
 global <<< require \prelude-ls
 global <<< require \./helpers

@@ -10,6 +10,7 @@ require! {
   pg:   \./postgres
   auth: \./auth
   furl: \./forum-urls
+  t: \./tasks
 }
 
 announce = require(\socket.io-announce).create-client!
@@ -216,6 +217,11 @@ auth-finisher = (req, res, next) ->
       sub-posts-count : db.sub-posts-count post.id, _
       top-threads     : db.top-threads post.forum_id, \recent, _
       forum           : db.forum post.forum_id, _
+
+    if req.surfing
+      this-mutant = t.for-mutant.thread
+      last-mutant = t.for-mutant[req.param._surf]
+      diff = t.required-tasks [this-mutant, {}] [last-mutant, {}]
 
     err, fdoc <- async.auto tasks
     if err   then return next err

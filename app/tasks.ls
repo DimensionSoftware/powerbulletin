@@ -19,8 +19,8 @@ export for-mutant =
     "posts-by-user :user-id :page"  : void # db.posts-by-user usr, page, ppp, _
     "pages-count :user-id"          : void # db.posts-by-user-pages-count usr, ppp, _
 
-export required-tasks = ([src,src-params], [dst,dst-params]) ->
-  keys difference(expand-keys(src, src-params), expand-keys(dst, dst-params)) |> map (-> it.replace(/ .*$/, ''))
+export required-tasks = ([src,src-vars], [dst,dst-vars]) ->
+  keys difference(expand-keys(src, src-vars), expand-keys(dst, dst-vars)) |> map (-> it.replace(/ .*$/, ''))
 
 export difference = (a, b) ->
   { [k, v] for k, v of a when not b.has-own-property k  }
@@ -34,3 +34,5 @@ export expand-string = (s, vars) ->
 export cc = (s) ->
   [first, ...rest] = s.split '-'
   first.replace(/^:/, '') + (rest |> map (-> it.char-at(0).to-upper-case! + it.slice(1)) |> join '')
+
+export vars = (mutant, path, req) ->
