@@ -139,7 +139,7 @@ submit = require-login(
     | \edit       => remove-editing-url meta
     false))
 $d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then submit it
-$d.on \click 'html.profile .onclick-submit, html.forum .onclick-submit' submit
+$d.on \click 'html.profile .onclick-submit input[type="submit"], html.forum .onclick-submit input[type="submit"]' submit
 
 $d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post require-login(censor)
@@ -200,5 +200,7 @@ if mocha? and window.location.search.match /test=1/
       mocha.run cleanup-output
     set-timeout run, 2000ms # gotta give time for tests to load
 #}}}
+#}}}
+$d.on \click 'html.admin .onclick-submit input[type="submit"]' require-login(submit-form)
 
 # vim:fdm=marker
