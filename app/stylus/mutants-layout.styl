@@ -47,6 +47,13 @@ html.homepage
         right -2px
         transition right .4s ease-out
 //}}}
+//{{{ - homepage & forum
+html.homepage, html.forum
+  .homepage
+    .subpost
+      .username
+        display none
+//}}}
 //{{{ - forum, profile & search
 html.forum, html.profile, html.search
   body.scrolled
@@ -56,9 +63,15 @@ html.forum, html.profile, html.search
     #left_content
       .create
         margin (grid/2) (grid*2.5) (grid/2) (grid*2)
+  #left_content.wide
+    #left_container
+      .threads
+        .created
+          display block
+          opacity 1
   #left_content
     display block
-    .photo, .created, .username
+    .photo, .username
       display none
     .create
       margin (grid/2) (grid*3.5) (grid/2) (grid*2)
@@ -265,6 +278,7 @@ html.forum, html.profile, html.search
         .comment
           position relative
           width 250px
+          padding-bottom 40px
           .body
             margin-bottom grid
           .submit
