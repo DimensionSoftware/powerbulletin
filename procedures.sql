@@ -434,6 +434,23 @@ CREATE FUNCTION procs.update_site(site JSON) RETURNS JSON AS $$
   return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+CREATE FUNCTION procs.domain_by_id(id JSON) RETURNS JSON AS $$
+  sql = """
+  SELECT * FROM domains WHERE id = $1
+  """
+  d = plv8.execute sql, [id]
+  return d[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.domain_update(domain JSON) RETURNS JSON AS $$
+  sql = """
+  UPDATE domains SET name = $1, config = $2, site_id = $3 WHERE id = $4
+    RETURNING *
+  """
+  d = plv8.execute sql, [domain.name, domain.config, domain.site_id, domain.id]
+  return d[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 CREATE FUNCTION procs.domains() RETURNS JSON AS $$
   sql = """
   SELECT name FROM domains
