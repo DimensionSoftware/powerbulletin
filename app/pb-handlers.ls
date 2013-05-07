@@ -149,7 +149,7 @@ auth-finisher = (req, res, next) ->
 @homepage = (req, res, next) ->
   tasks =
     menu:   db.menu res.vars.site.id, _
-    forums: db.homepage-forums res.vars.site.id, req.query.order, _
+    forums: db.homepage-forums res.vars.site.id, (req.query?order or \recent), _
   err, doc <- async.auto tasks
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
