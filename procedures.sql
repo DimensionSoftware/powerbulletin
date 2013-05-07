@@ -93,9 +93,12 @@ CREATE FUNCTION procs.edit_post(usr JSON, post JSON) RETURNS JSON AS $$
   fn = plv8.find_function('procs.owns_post')
   r = fn(post.id, usr.id)
   errors.push "Higher access required" unless r.length
-  unless errors.length
-    return plv8.execute('UPDATE posts SET title=$1,body=$2,html=$3 WHERE id=$4 RETURNING id,title,body,forum_id', [post.title, post.body, post.html, post.id])
-  return {success: !errors.length, errors}
+  res = {success: !errors.length, errors}
+  if res.success 
+    sqlres = plv8.execute('UPDATE posts SET title=$1,body=$2,html=$3 WHERE id=$4 RETURNING id,title,body,forum_id', [post.title, post.body, post.html, post.id])
+
+    res <<< sqlres
+  return res
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- THIS IS ONLY FOR TOPLEVEL POSTS
@@ -505,6 +508,26 @@ CREATE FUNCTION procs.ban_patterns_for_forum(forum_id JSON) RETURNS JSON AS $$
     return bans
   else
     return []
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.bans_for_post(post_id JSON) RETURNS JSON AS $$
+  parse-thread-uri = (uri) ->
+    frags = uri.split '/t/'
+    frags[0] + '/t/' + frags[1].split('/')[0]
+
+  sql = '''
+  SELECT d.name AS host, p.uri
+  FROM domains d
+  JOIN forums f ON d.site_id=f.site_id
+  JOIN posts p ON f.id=p.forum_id
+  WHERE p.id=$1
+  '''
+  bans = plv8.execute(sql, [post_id])
+
+  for b in bans
+    b.url = "^#{parse-thread-uri(delete b.uri)}"
+
+  return bans
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.menu(site_id JSON) RETURNS JSON AS $$

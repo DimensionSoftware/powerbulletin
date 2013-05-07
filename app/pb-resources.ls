@@ -53,8 +53,9 @@ announce = sioa.create-client!
     err, ap-res <- db.add-post post
     if err then return next err
 
-    if ap-res.success # if success then blow cache
-      c.invalidate-forum post.forum_id, console.warn
+    #if ap-res.success # if success then blow cache
+      # XXX TODO: need to invalidate toplevel forum when a thread is created
+      #c.invalidate-forum post.forum_id, console.warn
 
     post.id = ap-res.id
     unless post.parent_id
@@ -82,9 +83,14 @@ announce = sioa.create-client!
     # save post
     req.body.user_id = req.user.id
     req.body.html = h.html req.body.body
-    err, r <- db.edit-post(req.user, req.body)
+    post = req.body
+    err, r <- db.edit-post(req.user, post)
     if err then return next err
-    c.invalidate-forum r.forum_id, console.warn
+
+    if r.success
+      # blow cache !
+      c.invalidate-post post.id, console.warn
+
     res.json r
   destroy : (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard

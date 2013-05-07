@@ -27,6 +27,7 @@ export init = (cb = (->)) ->
   maybe-run-command = ->
     if cmd = cmd-q.shift!
       sock.write(cmd + "\n")
+      console.log "[varnish command] #{cmd}"
 
   cmd-loop = ->
     #XXX:
@@ -63,7 +64,17 @@ export init = (cb = (->)) ->
 # this gets overwritten after init is called
 export command = -> throw new Error 'You must initialize varnish (call init!)'
 
-# XXX: todo need to target only specific domain relative to site_id
-# ban a pattern, defaults to '.'
-export ban-url = (pattern = '.', cb) ->
-  @command "ban.url #{pattern}", cb
+# ban all
+export ban-all = (cb = (->)) ->
+  expr = "ban.url ."
+  @command expr, cb
+
+# ban single domain
+export ban-domain = (domain, cb = (->)) ->
+  expr = "ban req.http.host ~ #{domain}"
+  @command expr, cb
+
+# ban host/url pair
+export ban = (b, cb = (->)) ->
+  expr = "ban req.http.host ~ #{b.host} && req.url ~ #{b.url}"
+  @command expr, cb

@@ -196,6 +196,7 @@ auth-finisher = (req, res, next) ->
     adoc.uri = req.path
     res.locals adoc
     caching-strategies.etag res, sha1(JSON.stringify(adoc)), 7200
+    res.header \x-varnish-ttl, "24h"
     res.mutant \forum
 
   if post_part # post
