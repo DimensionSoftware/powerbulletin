@@ -26,7 +26,7 @@ is-admin   = /\/admin.+/
   res.send "hello #{res.vars.remote-ip}!"
 
 @login = (req, res, next) ->
-  domain   = res.vars.site.domain
+  domain   = res.vars.site.current_domain
   passport = auth.passport-for-site[domain]
   if passport
     console.warn "domain", domain
@@ -59,7 +59,7 @@ is-admin   = /\/admin.+/
   res.redirect req.header 'Referer'
 
 @login-facebook = (req, res, next) ->
-  domain   = res.vars.site.domain
+  domain   = res.vars.site.current_domain
   passport = auth.passport-for-site[domain]
   if passport
     passport.authenticate('facebook')(req, res, next)
@@ -68,7 +68,7 @@ is-admin   = /\/admin.+/
     res.send "500", 500
 
 @login-facebook-return = (req, res, next) ->
-  domain   = res.vars.site.domain
+  domain   = res.vars.site.current_domain
   passport = auth.passport-for-site[domain]
   if passport
     passport.authenticate('facebook', { success-redirect: '/auth/facebook/finish', failure-redirect: '/auth/facebook/finish?fail=1' })(req, res, next)
@@ -99,7 +99,7 @@ auth-finisher = (req, res, next) ->
 @login-facebook-finish = auth-finisher
 
 @login-google = (req, res, next) ->
-  domain   = res.vars.site.domain
+  domain   = res.vars.site.current_domain
   passport = auth.passport-for-site[domain]
   scope    = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
 
@@ -110,7 +110,7 @@ auth-finisher = (req, res, next) ->
     res.send "500", 500
 
 @login-google-return = (req, res, next) ->
-  domain   = res.vars.site.domain
+  domain   = res.vars.site.current_domain
   passport = auth.passport-for-site[domain]
   if passport
     passport.authenticate('google', { success-redirect: '/auth/google/finish', failure-redirect: '/auth/google/finish?fail=1' })(req, res, next)
@@ -121,7 +121,7 @@ auth-finisher = (req, res, next) ->
 @login-google-finish = auth-finisher
 
 @login-twitter = (req, res, next) ->
-  domain   = res.vars.site.domain
+  domain   = res.vars.site.current_domain
   passport = auth.passport-for-site[domain]
   if passport
     passport.authenticate('twitter')(req, res, next)
@@ -130,7 +130,7 @@ auth-finisher = (req, res, next) ->
     res.send "500", 500
 
 @login-twitter-return = (req, res, next) ->
-  domain   = res.vars.site.domain
+  domain   = res.vars.site.current_domain
   passport = auth.passport-for-site[domain]
   if passport
     passport.authenticate('twitter', { success-redirect: '/auth/twitter/finish', failure-redirect: '/auth/twitter/finish?fail=1' })(req, res, next)
@@ -331,7 +331,7 @@ auth-finisher = (req, res, next) ->
 
 @register = (req, res, next) ~>
   site     = res.vars.site
-  domain   = site.domain
+  domain   = site.current_domain
   passport = auth.passport-for-site[domain]
 
   # TODO more validation

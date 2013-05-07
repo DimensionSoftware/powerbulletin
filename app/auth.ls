@@ -22,13 +22,13 @@ export passport-for-site = {}
 # site-aware passport middleware wrappers
 export mw =
   initialize: (req, res, next) ~>
-    domain   = res.vars.site?domain
+    domain   = res.vars.site?current_domain
     if passport = @passport-for-site[domain]
       passport.mw-initialize(req, res, next)
     else
       next(404)
   session: (req, res, next) ~>
-    domain   = res.vars.site?domain
+    domain   = res.vars.site?current_domain
     if passport = @passport-for-site[domain]
       passport.mw-session(req, res, next)
     else
@@ -91,7 +91,7 @@ export send-registration-email = (user, site, cb) ->
   vars =
     # I have to quote the keys so that the template-vars with dashes will get replaced.
     "site-name"   : site.name
-    "site-domain" : site.domain
+    "site-domain" : site.current_domain
     "user-name"   : user.name
     "user-verify" : user.verify
   email =

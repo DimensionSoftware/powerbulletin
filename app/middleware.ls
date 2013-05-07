@@ -19,8 +19,9 @@ require! {
   if err then return next err
 
   if site
-    {id, name, domain} = site
-    res.vars.site = {id, name, domain}
+    {id, name, current_domain} = site
+    res.vars.site = {id, name, current_domain}
+    res.locals.site-id   = id
     res.locals.site-name = name
     for i in ['', 2, 3, 4, 5]
       res.locals["cache#{i}Url"] = cvars["cache#{i}Url"]
