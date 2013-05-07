@@ -64,6 +64,8 @@ else
       if user
         err <- onPersonalize.call params, window, user
         if err then return cb(err)
+        if cb then cb!
+
     else
       # render static jade template, followed by dynamic mutator template
       window.render-mutant = (target, tmpl) ->
@@ -81,7 +83,7 @@ else
       if user
         err <- onPersonalize.call params, window, user
         if err then return cb(err)
-
+        if cb then cb!
 
   else if html
     # playskool pretend server-side window
