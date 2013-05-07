@@ -16,6 +16,10 @@ sub depersonalize {
   unset req.http.pragma;
 }
 
+sub depersonalize_response {
+  unset resp.http.set-cookie;
+}
+
 sub vcl_recv {
   # REDIRECT: force ssl
   if (req.http.X-Forwarded-Proto !~ "(?i)https") {
@@ -35,7 +39,7 @@ sub vcl_recv {
   }
   
   # depersonalize everything EXCEPT urls starting with /auth or /resources
-  if (req.url !~ "(?i)^/(auth|resources|admin)") {
+  if (req.url !~ "(?i)^/(auth|resources|admin|socket.io)") {
     call depersonalize;
   }
 }
@@ -51,6 +55,10 @@ sub vcl_deliver {
   unset resp.http.x-varnish;
   unset resp.http.x-powered-by;
   set resp.http.Server ="powerbulletin";
+
+  if (req.url !~ "(?i)^/(auth)") {
+    call depersonalize_response;
+  }
 
   # security headers
   set resp.http.X-Content-Type-Options = "nosniff";
