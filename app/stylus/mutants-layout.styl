@@ -351,16 +351,18 @@ html.profile
         a
           text-decoration none
         b
-          font-weight 400
+          font-weight 300
           text-transform capitalize
         .title
-          margin 0 6px 0 -1px
+          margin 0 1px 0 -1px
           padding 1px 5px
           font-size 1.12em
         .by, .forum
           margin-right 3px
-          font-size .85em
+          font-size .8em
           font-weight 200
+          b
+            font-size 1.1em
       .reply
         .summary
           .profile
@@ -372,7 +374,8 @@ html.profile
         b
           margin-left 1px
         .title
-          font-size 1.3em
+          font-size 1.4em
+          letter-spacing -1px
         .body
           margin-top 0
         .profile
@@ -384,7 +387,8 @@ html.profile
           bottom 7px
           left auto
         .date
-          font-weight 100
+          font-weight 200
+          font-style italic
           font-size .95em
           color #222
           display inline-block
@@ -408,6 +412,9 @@ html.search
 //{{{ - admin
 html.admin
   #left_container
+    h2
+      margin-top 0
+      font-size 1em
     menu
       list-style none
       padding 12px
@@ -415,22 +422,8 @@ html.admin
       li
         margin-bottom (grid+3)
   #main_content
-    form
-      margin-top (grid*2)
-      max-width 1300px
-      position relative
-      fieldset
-        padding grid (grid*3) grid (grid*8.5)
-        border 0
-        margin (grid*3.5) (grid*2) (grid*3) 0
-        display inline-block
-        position relative
-        legend
-          font-weight 100
-          font-size 1.4em
-          position absolute
-          top -35px
-          left (grid*4)
+    .authorization
+      form
         img
           position absolute
           top -(grid*4)
@@ -451,11 +444,39 @@ html.admin
           display block
           min-width 400px
           margin-bottom -1px
+    form
+      margin-top (grid*2)
+      max-width 1300px
+      position relative
+      .posts-per-page
+        width 40px
+        margin-left (grid*2)
+      .domain
+        display block
+        font-size 1.2em
+        select
+          margin-left grid
+        label
+          position relative
+          display inline
+          left 0
+      fieldset
+        padding grid (grid*3) grid (grid*8.5)
+        border 0
+        margin (grid*3.5) (grid*2) (grid*3) 0
+        display inline-block
+        position relative
+        legend
+          font-weight 100
+          font-size 1.4em
+          position absolute
+          top -35px
+          left (grid*4)
       .button
         display block
-        width 200px
+        width 420px
         height 40px
-        margin-left (grid/2)
+        margin-left 85px
 //}}}
 
 #left_container

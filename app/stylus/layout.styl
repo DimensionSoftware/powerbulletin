@@ -66,11 +66,32 @@ header
   .container
     width 800px
     margin 0 auto
+    .tools:hover::before
+      border-top 8px solid #aaa
+    .tools::before
+      border 8px solid transparent
+      border-top 7px solid #ccc
+      content ''
+      position absolute
+      top -12px
+      right grid
+      z-index 13
+      height 20px
+    .tools:hover
+      li
+        height 23px
+        opacity 1
+        transition height .1s ease-out, opacity .3s ease-out
     .tools
       list-style none
       position absolute
       right grid
-      top (grid*4)
+      padding-top (grid*2)
+      padding-right (grid*1.5)
+      li
+        height 0
+        opacity 0
+        overflow hidden
 
     .menu
       padding 0
@@ -343,6 +364,10 @@ body.scrolled
           top 1px
           line-height header-scrolled-height + 1
           font-size 16px
+      .tools
+        padding-top 2px
+      .tools::before
+        top -23px
       .search
         top -3px!important
         right 0!important

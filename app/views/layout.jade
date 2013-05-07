@@ -56,12 +56,12 @@ html
                       li.row
                         a.mutant(class="forum-#{sf.id}", href=sf.uri)= sf.title
         menu.tools
+          li.onclick-login
+            a(href='/auth/login') Login
           li.admin-only
             a.mutant(href='/admin') Admin
           li
             a.mutant.onclick-profile(href='/users') Profile
-          li.onclick-login
-            a(href='/auth/login') Login
           li.onclick-logout
             a(href='/auth/logout') Logout
         .search

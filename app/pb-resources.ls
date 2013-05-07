@@ -10,8 +10,9 @@ announce = sioa.create-client!
 @site =
   update: (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
+    return # FIXME needs to remove keys from blank input & merge current config before saving 
     # save site
-    console.log req.params.facebook-client-id
+    console.log req.params
     site =
       name:    ''
       id:      req.user.site_id
