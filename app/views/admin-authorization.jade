@@ -1,5 +1,9 @@
-.resizable
-  form(action="/resources/site", method="put")
+.resizable.authorization
+  form.onclick-submit(action="/resources/site/#{siteId}", method="put")
+    .domain
+      label(for='domain') Select a Domain
+      select(id='domain', name='domain')
+    br
     fieldset
       img(src="#{cache2Url}/images/facebook_32.png")
       legend Facebook

@@ -1,4 +1,13 @@
 .resizable
-  h2 Welcome
-    i !
-  h3  #{siteName} Admin
+  form
+    fieldset
+      label(for='posts_per_page') Posts per Page
+      input(id='posts_per_page', class='posts-per-page', type='text', value='')
+
+  form
+    fieldset
+      label(for='css') CSS &amp; Stylus Management
+
+  form
+    fieldset
+      label(for='meta') Meta Keywords

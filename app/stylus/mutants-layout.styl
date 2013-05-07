@@ -408,6 +408,9 @@ html.search
 //{{{ - admin
 html.admin
   #left_container
+    h2
+      margin-top 0
+      font-size 1em
     menu
       list-style none
       padding 12px
@@ -415,22 +418,8 @@ html.admin
       li
         margin-bottom (grid+3)
   #main_content
-    form
-      margin-top (grid*2)
-      max-width 1300px
-      position relative
-      fieldset
-        padding grid (grid*3) grid (grid*8.5)
-        border 0
-        margin (grid*3.5) (grid*2) (grid*3) 0
-        display inline-block
-        position relative
-        legend
-          font-weight 100
-          font-size 1.4em
-          position absolute
-          top -35px
-          left (grid*4)
+    .authorization
+      form
         img
           position absolute
           top -(grid*4)
@@ -451,11 +440,39 @@ html.admin
           display block
           min-width 400px
           margin-bottom -1px
+    form
+      margin-top (grid*2)
+      max-width 1300px
+      position relative
+      .posts-per-page
+        width 40px
+        margin-left (grid*2)
+      .domain
+        display block
+        font-size 1.2em
+        select
+          margin-left grid
+        label
+          position relative
+          display inline
+          left 0
+      fieldset
+        padding grid (grid*3) grid (grid*8.5)
+        border 0
+        margin (grid*3.5) (grid*2) (grid*3) 0
+        display inline-block
+        position relative
+        legend
+          font-weight 100
+          font-size 1.4em
+          position absolute
+          top -35px
+          left (grid*4)
       .button
         display block
-        width 200px
+        width 420px
         height 40px
-        margin-left (grid/2)
+        margin-left 85px
 //}}}
 
 #left_container
