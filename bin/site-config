@@ -11,17 +11,17 @@ global <<< require \prelude-ls
 <- pg.init!
 
 defaults =
-  site  : 1
+  id  : 1
 
 program
   .usage '[OPTION]... [<KEY> <VALUE>]...'
-  .option  '-s, --site <id>',            "site id  (default: #{defaults.site})",                                         parse-int, defaults.site
+  .option  '-i, --id <id>',            "site id  (default: #{defaults.id})",                                         parse-int, defaults.id
   .option  '-n, --name <string>',        "site name"
   .option  '-x, --delete <key>',         "config key to delete"
   .parse process.argv
 
 main = ->
-  (err, site) <- pg.procs.site-by-id program.site
+  (err, site) <- pg.procs.site-by-id program.id
   if err then throw err
   pair = (memo, v) ->
     if memo[*-1] and memo[*-1].length < 2
