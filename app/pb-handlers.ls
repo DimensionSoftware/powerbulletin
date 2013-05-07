@@ -142,16 +142,14 @@ auth-finisher = (req, res, next) ->
 
 @logout = (req, res, next) ->
   if req.user # guard
-    redirect-url = req.param('redirect-url') || '/'
+    redirect-url = req.param(\redirect-url) or req.header(\Referer) or '/'
     req.logout!
-    res.redirect redirect-url.replace(is-editing, '')
+    res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '')
 
 @homepage = (req, res, next) ->
-  order = req.query.order
-
   tasks =
     menu:   db.menu res.vars.site.id, _
-    forums: db.homepage-forums res.vars.site.id, order, _
+    forums: db.homepage-forums res.vars.site.id, req.query.order, _
   err, doc <- async.auto tasks
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
