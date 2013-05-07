@@ -138,9 +138,8 @@ submit = require-login(
     | \new-thread => History.push-state {} '' data.uri
     | \edit       => remove-editing-url meta
     false))
-# XXX will we need a submit button for touch devices anyway?
-#$d.on \keydown \.onenter-submit ~> if it.which is 13 and not it.shift-key then submit it
-$d.on \click '.onclick-submit input[type="submit"]' submit
+$d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then submit it
+$d.on \click 'html.profile .onclick-submit, html.forum .onclick-submit' submit
 
 $d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post require-login(censor)
