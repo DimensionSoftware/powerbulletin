@@ -63,7 +63,7 @@ with-posts = (max, t, cb) --> # {{{1
         $ = window.$
         _posts = []
         $('.PostList .PostContent').each (i, p) ->
-          html = $(p).html!replace(/<img src="\/images\/phone\/\w+.png" alt="Phone Post" border="0" style="vertical-align: middle;" \/>/, '')
+          html = $(p).html!replace(/<img src=".*?(droid|apple).png.*?">/, '')
           post =
             parent-id : thread-id
             forum-id  : forum-id
