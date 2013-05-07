@@ -2,7 +2,7 @@ require! {
   __: \lodash
 }
 
-# XXX keep these functions pure as they're exported in the app & eventually (TODO) on the client via browserify
+# XXX keep these functions pure as they're exported to the client & server
 
 #{{{ String functions
 @add-commas = (s) -> # 1234 -> 1,234
