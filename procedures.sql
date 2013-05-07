@@ -406,22 +406,26 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- @param String domain
 CREATE FUNCTION procs.site_by_domain(domain JSON) RETURNS JSON AS $$
   sql = """
-  SELECT s.*, d.name AS domain
+  SELECT s.*, d.name AS current_domain
   FROM sites s JOIN domains d ON s.id = d.site_id
   WHERE d.name = $1
   """
   s = plv8.execute(sql, [ domain ])
+  if s[0]
+    domains_by_site_id = plv8.find_function 'procs.domains_by_site_id'
+    s[0].domains = domains_by_site_id(s[0].id)
   return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- @param Integer id
 CREATE FUNCTION procs.site_by_id(id JSON) RETURNS JSON AS $$
   sql = """
-  SELECT s.*, d.name AS domain
-  FROM sites s JOIN domains d ON s.id = d.site_id
-  WHERE s.id = $1
+  SELECT * FROM sites WHERE id = $1
   """
   s = plv8.execute(sql, [ id ])
+  if s[0]
+    domains_by_site_id = plv8.find_function 'procs.domains_by_site_id'
+    s[0].domains = domains_by_site_id(s[0].id)
   return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -449,6 +453,13 @@ CREATE FUNCTION procs.domain_update(domain JSON) RETURNS JSON AS $$
   """
   d = plv8.execute sql, [domain.name, domain.config, domain.site_id, domain.id]
   return d[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.domains_by_site_id(id JSON) RETURNS JSON AS $$
+  sql = """
+  SELECT * FROM domains WHERE site_id = $1 ORDER BY name
+  """
+  return plv8.execute sql, [id]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.domains() RETURNS JSON AS $$
