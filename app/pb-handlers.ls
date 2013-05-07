@@ -15,10 +15,11 @@ require! {
 
 announce = require(\socket.io-announce).create-client!
 
-is-editing = /\/(edit|new)\/?([\d+]*)$/
-
 global <<< require \./helpers
 global <<< require \./shared-helpers
+
+is-editing = /\/(edit|new)\/?([\d+]*)$/
+is-admin   = /\/admin.+/
 
 @hello = (req, res, next) ->
   console.log req.headers
@@ -147,7 +148,6 @@ auth-finisher = (req, res, next) ->
 
 @homepage = (req, res, next) ->
   order = req.query.order
-  unless order in [\popular \recent \active] then order = \recent # guard
 
   tasks =
     menu:   db.menu res.vars.site.id, _
