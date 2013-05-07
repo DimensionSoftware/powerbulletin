@@ -94,6 +94,10 @@ html
             a.page.next(title='Next Page', href="#{furl.threadUri}/page/#{page + 1}") 
           else
             a.page.next(title='Next Page', href="#{furl.threadUri}/page/#{pagesCount}", style="display:none;") 
+        else
+          a.page.previous(title='Previous Page', href="/", style="display:none;") 
+          .current(title='Drag to Page through')
+          a.page.next(title='Next Page', href="/", style="display:none;") 
       #handle.handle(title='Toggle')
 
     section#main_content.container
