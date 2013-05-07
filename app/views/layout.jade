@@ -59,9 +59,11 @@ html
           li.admin-only
             a.mutant(href='/admin') Admin
           li
-            a.mutant.onclick-profile(href='') Profile
-          li
-            a.onclick-logout(href='') Logout
+            a.mutant.onclick-profile(href='/users') Profile
+          li.onclick-login
+            a(href='/auth/login') Login
+          li.onclick-logout
+            a(href='/auth/logout') Logout
         .search
           input#query.query(type='text', placeholder='Search', autocomplete='off')
         .advanced

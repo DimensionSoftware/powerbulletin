@@ -37,20 +37,34 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   params = History.get-state!data
 
   unless params?no-surf # DOM update handled outside mutant
-    spin(true)
+    spin true
     $.get url, {_surf:mutator, _surf-data:params?surf-data}, (r) ->
       return if not r.mutant
       $d.attr \title, r.locals.title if r.locals?title # set title
       on-unload = window.mutants[window.mutator].on-unload or (w, next-mutant, cb) -> cb null
       on-unload window, r.mutant, -> # cleanup & run next mutant
         window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}, ->
-          on-load-resizable!
-          spin(false)
+          onload-resizable!
+          spin false
 
   return false
 #}}}
+#{{{ Personalizing behaviors
+window.onload-personalize = ->
+  if window.user # logged in, so ...
+    $ \.onclick-profile .each -> this.href = "/user/#{window.user.name}"
+    $ \.onclick-login   .hide!
+    $ \.onclick-logout  .show!
+    $ \.onclick-profile .show!
+    unless user?rights?super then $ \.admin-only .hide! else $ \.admin-only .show!
+  else
+    $ \.onclick-login   .show!
+    $ \.onclick-logout  .hide!
+    $ \.onclick-profile .hide!
+    $ \.admin-only      .hide!
+#}}}
 #{{{ Resizing behaviors
-window.on-load-resizable = ->
+window.onload-resizable = ->
   left-offset = 50px
 
   # handle main content
@@ -130,6 +144,7 @@ window.show-login-dialog = ->
     open-effect: \fade
     open-speed: 300ms
   setTimeout (-> $ '#auth input[name=username]' .focus! ), 100ms
+$d.on \click \.onclick-login -> window.show-login-dialog!; false
 
 # register action
 # login action
@@ -153,16 +168,16 @@ window.login = ->
 
 # get the user after a successful login
 window.after-login = ->
-  window.user <- $.getJSON '/auth/user'
-  if user then window.mutants?[window.mutator]?on-personalize window, user, ->
-    socket?disconnect!
-    socket?socket?connect!
+  window.user <- $.getJSON \/auth/user
+  onload-personalize!
+  if user and window.mutants?[window.mutator]?on-personalize
+    window.mutants?[window.mutator]?on-personalize window, user, ->
+      socket?disconnect!
+      socket?socket?connect!
 
 # logout
 window.logout = ->
-  r <- $.get \/auth/logout
-  window.location.reload!
-  false
+  window.location = \/auth/logout; false # for intelligent redirect
 $d.on \click \.onclick-logout -> window.logout!; false
 
 # register
@@ -191,7 +206,7 @@ window.require-login = (fn) ->
     else
       show-login-dialog!
       false
-$d.on \click '.require-login' require-login(-> this.click)
+$d.on \click \.require-login require-login(-> this.click)
 
 # 3rd-party auth
 $ '.social a' .click ->
@@ -234,11 +249,12 @@ window.spin = (loading = true) ->
     hide!
 #}}}
 
-on-load-resizable!
+onload-resizable!
 
 # run initial mutant & personalize ( based on parameters from user obj )
 window.user <- $.getJSON \/auth/user
+onload-personalize!
 window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}, ->
-  window.mutants?[window.initial-mutant]?on-personalize window, window.user
+  window.mutants?[window.initial-mutant]?on-personalize window, window.user, (->)
 
 # vim:fdm=marker

@@ -14,10 +14,11 @@ require! {
 
 announce = require(\socket.io-announce).create-client!
 
-is-editing = /\/(edit|new)\/?([\d+]*)$/
-
 global <<< require \./helpers
 global <<< require \./shared-helpers
+
+is-editing = /\/(edit|new)\/?([\d+]*)$/
+is-admin   = /\/admin.+/
 
 @hello = (req, res, next) ->
   console.log req.headers
