@@ -36,7 +36,8 @@ window.load-ui = -> # restore ui state from cookie
 
   if s # restore
     [collapsed, w] = s.split sep
-    if collapsed is \1 then $ \body .add-class \collapsed
+    if collapsed is \1 and not $ \html .has-class \admin
+      $ \body .add-class \collapsed # only collapse on non-admin mutants
     w = parse-int w
     $l.transition({width: w} 500ms \easeOutExpo -> set-wide!)
     set-timeout (-> # ... & snap

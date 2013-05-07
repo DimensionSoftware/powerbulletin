@@ -247,11 +247,21 @@ pager-init = (w) ->
       next!
 
 @admin =
+  on-unload:
+    (window, next-mutant, next) ->
+      if window.admin-expanded then $ \body .add-class \collapsed # restore
+      next!
   on-load:
     (window, next) ->
+      # expand left nav or not?
+      $b = $ \body
+      window.admin-expanded = $b .has-class \collapsed
+      if window.admin-expanded then $b .remove-class \collapsed
       $ 'form input:first' .focus!select!
+      # no pager (for now)
       window.pages-count = 0
       pager-init window
+      next!
   static:
     (window, next) ->
       window.render-mutant \left_container \admin-nav
