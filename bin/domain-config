@@ -1,0 +1,48 @@
+#!./node_modules/.bin/lsc
+
+require! {
+  \fs
+  \async
+  program: \commander
+  pg: '../app/postgres'
+}
+global <<< require \prelude-ls
+
+<- pg.init!
+
+defaults =
+  domain  : 1
+
+
+program
+  .usage '[OPTION]... [<KEY> <VALUE>]...'
+  .option  '-i, --id <id>',              "domain id    (default: #{defaults.domain})",      parse-int, defaults.domain
+  .option  '-s, --site <id>',            "site id",                                         parse-int
+  .option  '-n, --name <string>',        "domain name"
+  .option  '-x, --delete <key>',         "config key to delete"
+  .parse process.argv
+
+main = ->
+  (err, domain) <- pg.procs.domain-by-id program.id
+  if err then throw err
+  pair = (memo, v) ->
+    if memo[*-1] and memo[*-1].length < 2
+      memo[*-1].push v
+    else
+      memo.push [v]
+    memo
+  kv = fold(pair, [], program.args)
+  kv.for-each ([key,value]) -> domain.config[key] = value
+  if program.delete
+    delete domain.config[program.delete]
+  if program.name
+    domain.name = program.name
+  (err, r) <- pg.procs.domain-update domain
+  if err then throw err
+  console.log domain
+  process.exit 0
+
+main!
+
+# vim:ft=ls
+
