@@ -9,7 +9,7 @@ for f in fixtures/{users,sites,domains,aliases,auths,forums,posts,moderations}.c
 done
 
 for site_id in 1 2 3 4 ; do
-  bin/site-config -i $site_id postPerPage 20
+  bin/site-config -i $site_id postsPerPage 20
 done
 
 bin/domain-config  -i 1 facebookClientId    454403507966007                              facebookClientSecret   b604975dfb351fe458b1cc0891eb8a87 \
