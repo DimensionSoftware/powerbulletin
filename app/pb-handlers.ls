@@ -206,7 +206,7 @@ auth-finisher = (req, res, next) ->
     page = meta.page || 1
     if page < 1 then return next 404
 
-    limit = 5
+    limit = site.config?posts-per-page || 20
     offset = (page - 1) * 5
 
     tasks =
