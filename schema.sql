@@ -129,6 +129,8 @@ CREATE TABLE posts (
   loc         POINT,
   views       BIGINT NOT NULL DEFAULT 0,
   index_dirty BOOLEAN NOT NULL DEFAULT 't',
+  is_locked   BOOLEAN NOT NULL DEFAULT 'f',
+  is_sticky   BOOLEAN NOT NULL DEFAULT 'f',
   created     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated     TIMESTAMP,
   CONSTRAINT potential_loop_prevention CHECK (parent_id <= id),

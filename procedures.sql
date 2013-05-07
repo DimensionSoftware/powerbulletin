@@ -269,7 +269,11 @@ CREATE FUNCTION procs.find_or_create_user(usr JSON) RETURNS JSON AS $$
     * usr.verify
 
   find-or-create = plv8.find_function('procs.find_or_create')
-  return find-or-create(sel, sel-params, ins, ins-params)
+  _u = find-or-create(sel, sel-params, ins, ins-params)
+  if _u
+    change-avatar = plv8.find_function('procs.change_avatar')
+    change-avatar _u, '/images/profile.jpg'
+  return _u
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- register_local_user(usr)
@@ -303,7 +307,11 @@ CREATE FUNCTION procs.register_local_user(usr JSON) RETURNS JSON AS $$
     * usr.site_id
     * usr.name
     * usr.verify
-  return plv8.execute ins, ins-params
+  _u = plv8.execute ins, ins-params
+  if _u
+    change-avatar = plv8.find_function('procs.change_avatar')
+    change-avatar _u, '/images/profile.jpg'
+  return _u
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- XXX - need site_id
