@@ -27,7 +27,8 @@ is-admin   = /\/admin.*/
 
 @login = (req, res, next) ->
   domain   = res.vars.site.current_domain
-  passport = auth.passport-for-site[domain]
+  err, passport <- auth.passport-for-domain domain
+  if err then return next(err)
   if passport
     console.warn "domain", domain
 
