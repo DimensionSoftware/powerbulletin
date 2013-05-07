@@ -14,7 +14,7 @@ mixin forum(f, i)
         .up(class='scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
 
 mixin post(f, p, i)
-  .post(id="post_#{p.id}", class=(i % 2) ? 'odd' : 'even', class="col#{Math.ceil(Math.random()*2)}")
+  .post(id="post_#{p.id}", class="col#{Math.ceil(Math.random()*2)}")
     a.mutant(href=p.uri)
       h5.title!= p.title
         span.date #{p.date}
@@ -24,15 +24,15 @@ mixin post(f, p, i)
         mixin subpost(sp, i)
 
 mixin subpost(sp, i)
- .subpost(id="subpost_#{sp.id}", class=(i % 2) ? 'odd' : 'even')
+ .subpost(id="subpost_#{sp.id}")
     mixin _post-profile(sp)
-    p.body!= sp.html
 
 //- main
 //- ---------
 if forums
-  each f,i in forums
-    mixin forum(f, i)
+  .homepage
+    each f,i in forums
+      mixin forum(f, i)
 else
   p Create a forum first
     i !

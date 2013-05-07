@@ -19,7 +19,7 @@ global <<< require \./helpers
 global <<< require \./shared-helpers
 
 is-editing = /\/(edit|new)\/?([\d+]*)$/
-is-admin   = /\/admin.+/
+is-admin   = /\/admin.*/
 
 @hello = (req, res, next) ->
   console.log req.headers
