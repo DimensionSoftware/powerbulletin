@@ -26,7 +26,7 @@ announce = sioa.create-client!
         google-consumer-secret:  req.params.google-consumer-secret}
 
     console.log site
-    err, r <- db.update-site site
+    err, r <- db.site-update site
     if err then return next err
     res.json r
 @users =
