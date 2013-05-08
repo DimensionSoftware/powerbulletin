@@ -83,13 +83,16 @@ html.forum, html.profile, html.search
         padding 8px 10px
         display block
     .threads
-      overflow-y scroll
+      //overflow-y scroll
       height 100%
       margin 0
       padding-top grid
       .thread
         position relative
         padding 1px (grid*1.5) grid ((grid*2)+3)
+        .mutant
+          display block
+          animation-name none
         .title
           overflow hidden
           max-height 65px
