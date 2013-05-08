@@ -90,6 +90,19 @@ window.onload-resizable = ->
     $r.css \padding-left ($l.width!+left-offset) # snap
 #}}}
 #{{{ Scrolling behaviors
+window.scrollable = ->
+  $d.on \mousewheel \.scrollable (ev, delta) -> #__.debounce ((ev, delta) ->
+    ev.stop-propagation!
+    ev.prevent-default!
+    velocity = Math.abs delta
+    e = $ this
+    #e.scroll-top += (if delta < 0 then 1px else -1px) * 30px
+    scroll-to = e.position!top + (if delta < 0 then 1px else -1px) * 30px
+    console.log scroll-to
+    tween.call this, this, \top, Math.round(scroll-to), 0.3, \mcsEaseOut
+#    offset = e.offset!top
+#    e .transition({y:-(offset) + (delta*10)})
+    #, 100ms)
 window.scroll-to-top = (cb=->) ->
   return if ($ window).scroll-top! is 0 # guard
   $e = $ 'html,body'
@@ -98,7 +111,6 @@ window.scroll-to-top = (cb=->) ->
     <- $e .animate { scroll-top:threshold }, 110ms
     <- $e .animate { scroll-top:0 }, 75ms
   cb!
-
 window.awesome-scroll-to = (e, duration, cb=->) ->
   e      = $ e
   ms     = duration or 500ms
@@ -262,6 +274,8 @@ onload-resizable!
 window.user <- $.getJSON \/auth/user
 onload-personalize!
 window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}, ->
-  window.mutants?[window.initial-mutant]?on-personalize window, window.user, (->)
+  mutant = window.mutants?[window.initial-mutant]
+  if mutant.on-personalize
+    mutant.on-personalize window, window.user, (->)
 
 # vim:fdm=marker
