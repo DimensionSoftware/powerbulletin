@@ -168,7 +168,8 @@ auth-finisher = (req, res, next) ->
   announce.emit \debug, {testing: 'from homepage handler in express'}
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
-  caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.vars.site), 7200
+  # cache homepage for 60s
+  caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.vars.site), 60
   res.content-type \html
   res.mutant \homepage
 
