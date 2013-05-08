@@ -169,21 +169,31 @@ export parse = (path) ->
   | \initial               => { incomplete: true }
   | \forum                 => { forum-uri: "/#{parts.join '/'}" }
   | \new-thread            => { forum-uri: "/#{parts[0 til parts.length - 1].join '/'}" }
-  | \thread                => { thread-uri: "/#{parts.join '/'}" }
+  | \thread                => { forum-uri: forum-uri path, thread-uri: "/#{parts.join '/'}" }
   | \thread-page           =>
     [ uri-parts, [page, n] ] = split-at parts.length - 2, parts
-    { thread-uri: "/#{uri-parts.join '/'}", page: parseInt n }
+    { forum-uri: forum-uri path, thread-uri: "/#{uri-parts.join '/'}", page: parseInt n }
   | \thread-permalink      =>
-    { thread-uri: "/#{parts.join '/'}", slug: parts[*-1] }
+    { forum-uri: forum-uri path, thread-uri: "/#{parts.join '/'}", slug: parts[*-1] }
   | \thread-permalink-page =>
     [ uri-parts, [page, n] ] = split-at parts.length - 2, parts
-    { thread-uri: "/#{uri-parts.join '/'}", page: parseInt n }
+    { forum-uri: forum-uri path, thread-uri: "/#{uri-parts.join '/'}", page: parseInt n }
   | \edit                  =>
     [ uri-parts, [edit, id] ] = split-at parts.length - 2, parts
-    { thread-uri: "/#{uri-parts.join '/'}", id: parseInt id }
+    { forum-uri: forum-uri path, thread-uri: "/#{uri-parts.join '/'}", id: parseInt id }
   | otherwise              => { incomplete: true }
   { type, parts, path: "/#{parts.join '/'}" } <<< meta
 
+# given a path, extract the forum-uri from it
+# @param String path
+# @returns String forum-uri part of path
+export forum-uri = (path) ->
+  parts  = path.split '/' |> reject (-> it is '')
+  inputs = map type-of-part, parts
+  t = (state, input) ->
+    fsm.new-state machine, state, [input]
+  forum-states = scan t, \initial, inputs |> take-while (-> it is \initial or it is \forum)
+  '/' + (parts |> take (forum-states.length - 1) |> join '/')
 
 /*
 Try these in the REPL.
