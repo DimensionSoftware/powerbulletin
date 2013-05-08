@@ -204,13 +204,9 @@ auth-finisher = (req, res, next) ->
     adoc.uri = req.path
     res.locals adoc
 
-    if meta.type is \forum
-      # time based caching for forum page
-      caching-strategies.etag res, sha1(JSON.stringify(adoc)), 60
-    else
-      # indefinite / manual invalidation caching for threads and sub-post pages
-      caching-strategies.nocache res
-      res.header \x-varnish-ttl, "24h"
+    # indefinite / manual invalidation caching for forums threads and sub-post pages
+    caching-strategies.nocache res
+    res.header \x-varnish-ttl, "24h"
 
     res.mutant \forum
 
