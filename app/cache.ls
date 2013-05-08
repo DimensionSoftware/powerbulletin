@@ -4,8 +4,12 @@ require! {
   v  : './varnish'
 }
 
-export invalidate-forum = (forum-id, cb = (->)) ->
-  db = pg.procs
-  err, bans <- db.ban-patterns-for-forum forum-id
+# TODO XXX: blow homepage and forum page accordingly, not just thread and below
+export invalidate-post = (post-id, cb = (->)) ->
+  db = pg.procs # XXX: race condition.. ordering of when pg is initialized
+  err, bans <- db.bans-for-post post-id
   if err then return cb(err)
-  async.map-series bans, (-> v.ban-url(...arguments)), cb
+  async.map-series bans, (-> v.ban(...arguments) ), (err) ->
+    if err then return cb err
+    console.log "[cache] invalidated post: #{post-id}"
+    cb!

@@ -134,6 +134,7 @@ else
 
   err <- v.init
   if err then throw err
+  v.ban-all! # start cache clean on startup
 
   err <- elastic.init
   if err then throw err

@@ -17,7 +17,7 @@ sub depersonalize {
 }
 
 sub depersonalize_response {
-  unset resp.http.set-cookie;
+  unset beresp.http.set-cookie;
 }
 
 sub vcl_recv {
@@ -48,6 +48,19 @@ sub vcl_fetch {
   set beresp.do_stream = false;
   set beresp.do_gunzip = true;
   set beresp.do_gzip = true;
+
+  if (req.url !~ "(?i)^/(auth)") {
+    call depersonalize_response;
+  }
+
+  # webapp has specified a varnish-specific ttl to override max-age
+  if (beresp.http.x-varnish-ttl)
+  {
+    set beresp.ttl = std.duration(beresp.http.x-varnish-ttl, 0s);
+    # remove internal header
+
+    #unset beresp.http.x-varnish-ttl;
+  }
 }
 
 sub vcl_deliver {
@@ -55,10 +68,6 @@ sub vcl_deliver {
   unset resp.http.x-varnish;
   unset resp.http.x-powered-by;
   set resp.http.Server ="powerbulletin";
-
-  if (req.url !~ "(?i)^/(auth)") {
-    call depersonalize_response;
-  }
 
   # security headers
   set resp.http.X-Content-Type-Options = "nosniff";
@@ -85,7 +94,7 @@ sub vcl_error {
     synthetic std.fileread("public/50x.html");
     return (deliver); 
   }
-} 
+}
 
 sub vcl_pipe {
   # WEBSOCKET support enabled, (have to get to pipe first, though)
