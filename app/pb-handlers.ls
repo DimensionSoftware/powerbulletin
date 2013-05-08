@@ -205,9 +205,8 @@ auth-finisher = (req, res, next) ->
     res.locals adoc
 
     # indefinite / manual invalidation caching for forums threads and sub-post pages
-    caching-strategies.nocache res
-    res.header \x-varnish-ttl, "24h"
-
+    caching-strategies.etag res, sha1(JSON.stringify(adoc)), 0s
+    res.header \x-varnish-ttl \24h
     res.mutant \forum
 
   if post_part # post
@@ -484,8 +483,9 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   site = res.vars.site
   res.locals.action = req.param \action
   tasks =
-    menu: db.menu site.id, _
-    auth: db.site-by-id site.id, _
+    domains: db.domains-by-site-id site.id, _
+    menu:    db.menu site.id, _
+    site:    db.site-by-id site.id, _
   err, fdoc <- async.auto tasks
   if err then return next err
   res.locals fdoc
