@@ -27,6 +27,7 @@ common-js = [ #{{{ Common JS
   "#{cvars.cache3-url}/local/jquery.masonry.min.js",
   "#{cvars.cache2-url}/local/jquery.cookie-1.3.1.min.js",
   "#{cvars.cache4-url}/local/jquery.sceditor.bbcode.min.js",
+  "#{cvars.cache3-url}/local/jquery.mousewheel.min.js",
   "#{cvars.cache-url}/local/waypoints.min.js",
   "#{cvars.cache5-url}/local/history.min.js",
   "#{cvars.cache5-url}/local/history.adapter.native.min.js",
