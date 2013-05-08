@@ -511,6 +511,10 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
 
   err, elres <- elc.search elquery
   if err then return next(err)
+
+  for h in elres.hits
+    h._source.posts = [] # stub object for non-existent sub-posts in search view
+
   res.locals {elres}
 
   res.locals.searchopts = {q: req.query.q}

@@ -1,10 +1,14 @@
+include _post
+
 .search.resizable
   #new_hits
   each hit in elres.hits
-    div
-      if env != 'production'
-        strong #{hit._source.title} (score: #{hit._score})
-      else
-        strong #{hit._source.title}
-    p= hit._source.body
-    div= JSON.stringify(hit)
+    - console.log(hit._source)
+    mixin _post(hit._source, 0)
+    //- div
+    //-   if env != 'production'
+    //-     strong #{hit._source.title} (score: #{hit._score})
+    //-   else
+    //-     strong #{hit._source.title}
+    //- p= hit._source.body
+    //- div= JSON.stringify(hit)

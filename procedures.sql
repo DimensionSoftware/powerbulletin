@@ -645,9 +645,14 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.idx_posts(lim JSON) RETURNS JSON AS $$
   sql = '''
-  SELECT id, title, body, user_id, created, updated
-  FROM posts
-  WHERE index_dirty='t'
+  SELECT p.id, p.thread_id, p.forum_id, p.user_id, p.title, p.body, p.created,
+         p.updated, p.uri, p.html, t.uri thread_uri, a.name user_name,
+         u.photo user_photo
+  FROM posts p
+  JOIN posts t ON p.thread_id=t.id
+  JOIN users u ON p.user_id=u.id
+  JOIN aliases a ON a.user_id=p.user_id
+  WHERE p.index_dirty='t'
   ORDER BY updated
   LIMIT $1
   '''
