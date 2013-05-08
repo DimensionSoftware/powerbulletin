@@ -440,7 +440,7 @@ CREATE FUNCTION procs.site_by_id(id JSON) RETURNS JSON AS $$
   return s[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION procs.update_site(site JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.site_update(site JSON) RETURNS JSON AS $$
   sql = """
   UPDATE sites SET name = $1, config = $2, user_id = $3 WHERE id = $4
     RETURNING *
