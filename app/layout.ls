@@ -226,9 +226,19 @@ time-updater = ->
   now = new Date
   $('[data-time]').each ->
     $el = $(this)
+
     d = new Date $el.data(\time)
+
     elapsed = (now - d) / 1000s
     hr = window.helpers.elapsed-to-human-readable elapsed
+
+    # debug crap XXX: to figure out what is going on with time
+    # TODO: remove me
+    lh = $el.data(\last-human)
+    if lh isnt hr
+      console.log "human-readable time changed", {elapsed, lh, hr}
+    $el.data(\last-human, hr)
+
     $el.html hr
 
 set-interval time-updater, 30000ms
