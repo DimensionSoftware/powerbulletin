@@ -35,7 +35,7 @@ main = ->
     delete site.config[program.delete]
   if program.name
     site.name = program.name
-  (err, r) <- pg.procs.update-site site
+  (err, r) <- pg.procs.site-update site
   if err then throw err
   console.log site
   process.exit 0
