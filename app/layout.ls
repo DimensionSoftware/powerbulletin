@@ -6,9 +6,16 @@ window.mutants = require \./pb-mutants
 $w = $ window
 $d = $ document
 
-is-ie     = false or \msTransform in document.documentElement.style
-is-moz    = false or \MozBoxSizing in document.documentElement.style
-is-opera  = !!(window.opera and window.opera.version)
+is-ie        = false or \msTransform in document.documentElement.style
+is-moz       = false or \MozBoxSizing in document.documentElement.style
+is-opera     = !!(window.opera and window.opera.version)
+is-touchable = do ->
+  try
+    document.create-event \TouchEvent
+    true
+  catch
+    false
+
 threshold = 10px # snap
 
 #.

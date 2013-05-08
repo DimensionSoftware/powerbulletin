@@ -61,7 +61,7 @@ seconds-to-human-readable = (secs) ->
 
   if minutes
     if hours
-      timestring += ' and '
+      timestring += ', '
 
     if minutes > 1
       timestring += minutes + ' minutes'
