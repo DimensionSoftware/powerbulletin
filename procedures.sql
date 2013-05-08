@@ -519,12 +519,8 @@ CREATE FUNCTION procs.ban_patterns_for_forum(forum_id JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.bans_for_post(post_id JSON) RETURNS JSON AS $$
-  parse-thread-uri = (uri) ->
-    frags = uri.split '/t/'
-    frags[0] + '/t/' + frags[1].split('/')[0]
-
   sql = '''
-  SELECT d.name AS host, p.uri
+  SELECT d.name AS host, f.uri AS url
   FROM domains d
   JOIN forums f ON d.site_id=f.site_id
   JOIN posts p ON f.id=p.forum_id
@@ -533,7 +529,7 @@ CREATE FUNCTION procs.bans_for_post(post_id JSON) RETURNS JSON AS $$
   bans = plv8.execute(sql, [post_id])
 
   for b in bans
-    b.url = "^#{parse-thread-uri(delete b.uri)}"
+    b.url = '^' + b.url
 
   return bans
 $$ LANGUAGE plls IMMUTABLE STRICT;

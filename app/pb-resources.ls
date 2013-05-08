@@ -55,9 +55,7 @@ announce = sioa.create-client!
 
     if ap-res.success # if success then blow cache
       post.id = ap-res.id
-
-      if post.parent_id # only sub-posts need to invalidate the thread
-        c.invalidate-post post.id
+      c.invalidate-post post.id # blow cache!
 
     unless post.parent_id
       err, new-post <- db.post post.id
