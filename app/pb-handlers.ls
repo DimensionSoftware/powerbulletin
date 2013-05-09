@@ -343,7 +343,7 @@ auth-finisher = (req, res, next) ->
 @register = (req, res, next) ~>
   site     = res.vars.site
   domain   = site.current_domain
-  passport = auth.passport-for-site[domain]
+  passport = auth.passport-for-domain[domain]
 
   # TODO more validation
   req.assert('username').not-empty!is-alphanumeric!  # .len(min, max) .regex(/pattern/)
