@@ -112,39 +112,7 @@ $ui.on \nav-top-posts, (e, threads) ->
   console.info \stub, threads
 
 #}}}
-#{{{ - generic form-handling ui
-$d.on \click '.create .no-surf' require-login(->
-  $ '#main_content .forum' .html '' # clear canvas
-  edit-post is-editing(window.location.pathname), forum_id:window.active-forum-id)
-$d.on \click \.edit.no-surf require-login(-> edit-post is-editing(window.location.pathname))
-$d.on \click '.onclick-submit .cancel' ->
-  f = $ this .closest \.post-edit  # form
-  f.hide 350ms \easeOutExpo
-  meta = furl.parse window.location.pathname
-  switch meta.type
-  | \new-thread => History.back!
-  | otherwise   => remove-editing-url meta
-  false
 
-submit = require-login(
-  (e) -> submit-form(e, (data) ->
-    f = $ this .closest \.post-edit # form
-    p = f .closest \.editing        # post being edited
-    # render updated post
-    p.find \.title .html(data.0?title)
-    p.find \.body  .html(data.0?body)
-    f.remove-class \fadein .hide(300s) # & hide
-    meta = furl.parse window.location.pathname
-    switch meta.type
-    | \new-thread => History.push-state {} '' data.uri
-    | \edit       => remove-editing-url meta
-    false))
-$d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then submit it
-$d.on \click 'html.profile .onclick-submit input[type="submit"], html.forum .onclick-submit input[type="submit"]' submit
-
-$d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
-$d.on \click \.onclick-censor-post require-login(censor)
-#}}}
 #{{{ - login delegated events
 window.switch-and-focus = (remove, add, focus-on) ->
   $e = $ \.fancybox-wrap
@@ -202,6 +170,7 @@ if mocha? and window.location.search.match /test=1/
     set-timeout run, 2000ms # gotta give time for tests to load
 #}}}
 #}}}
+#{{{ - admin
 $d.on \click  'html.admin .onclick-submit input[type="submit"]' require-login(submit-form)
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
@@ -214,5 +183,6 @@ $d.on \change 'html.admin .domain' -> # set keys
     \googleConsumerKey
     \googleConsumerSecret
       $ "[name='#k']" .val domain.config[k]
-
+#}}}
+#
 # vim:fdm=marker

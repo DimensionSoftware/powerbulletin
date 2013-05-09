@@ -251,8 +251,8 @@ pager-init = (w) ->
     (window, next) ->
       window.render-mutant \left_container \admin-nav
       window.render-mutant \main_content switch @action
-        | \authorization => \admin-authorization
-        | otherwise      => \admin-general
+      | \authorization => \admin-authorization
+      | otherwise      => \admin-general
       layout-static window, \admin
       window.marshal \site @site
       next!
@@ -267,6 +267,7 @@ pager-init = (w) ->
       window.admin-expanded = $b .has-class \collapsed
       if window.admin-expanded then $b .remove-class \collapsed
       $ 'form input:first' .focus!select!
+      $ \.domain .trigger \change # fill-in authorization
       # no pager (for now)
       window.pages-count = 0
       pager-init window

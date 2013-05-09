@@ -19,33 +19,25 @@ announce = sioa.create-client!
     # save site
     switch req.body.action
     | \general =>
-      config = { [k, v] for k, v of req.body when k in [\postsPerPage \metaKeywords] } # guard
-      console.log config
-      site.config <<< config
-      console.log site
+      # extract specific keys
+      site.config <<< { [k, v] for k, v of req.body when k in [\postsPerPage \metaKeywords] }
       err, r <- db.site-update site
       if err then return next err
       res.json success:true
+
     | \authorization =>
+      # TODO guard -- does user own domain?
       # figure domain
-      site =
-        name:    ''
-        id:      req.user.site_id
-        user_id: req.user.id
-        config: {
-          facebook-client-id:      req.body.facebook-client-id
-          facebook-client-secret:  req.body.facebook-client-secret
-          twitter-consumer-key:    req.body.twitter-consumer-key
-          twitter-consumer-secret: req.body.twitter-consumer-secret
-          google-consumer-key:     req.body.google-consumer-key
-          google-consumer-secret:  req.body.google-consumer-secret}
+      err, domain <- db.domain-by-id req.body.domain
+      if err then return next err
 
-      console.log site
+      # extract specific keys
+      domain.config <<< { [k, v] for k, v of req.body when k in [\facebookClientId \facebookClientSecret \twitterConsumerKey \twitterConsumerValue \googleConsumerKey \googleConsumerSecret]}
+      console.log domain
+      err, r <- db.domain-update domain
+      if err then return next err
+      res.json success:true
 
-    return
-    err, r <- db.site-update site
-    if err then return next err
-    res.json r
 @users =
   create : (req, res) ->
     if not req?user?rights?super then return next 404 # guard
