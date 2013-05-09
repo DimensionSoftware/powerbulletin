@@ -152,10 +152,30 @@ auth-finisher = (req, res, next) ->
     req.logout!
     res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '')
 
+delete-unnecessary-surf-data = (res) ->
+  locals = res.locals
+  unnecessary =
+    * \siteName
+    * \cacheUrl
+    * \cache2Url
+    * \cache3Url
+    * \cache4Url
+    * \cache5Url
+    * \jsUrls
+    * \cssUrls
+  for i in unnecessary
+    delete locals[i]
+  locals
+
 @homepage = (req, res, next) ->
   tasks =
     menu:   db.menu res.vars.site.id, _
     forums: db.homepage-forums res.vars.site.id, (req.query?order or \recent), _
+  if req.surfing
+    delete tasks.menu
+    delete-unnecessary-surf-data res
+    # TODO - db.homepage-forums needs to remove unnecessary fields from its posts
+
   err, doc <- async.auto tasks
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
@@ -275,6 +295,10 @@ auth-finisher = (req, res, next) ->
     profile        : db.usr usr, _
     posts-by-user  : db.posts-by-user usr, page, ppp, _
     pages-count    : db.posts-by-user-pages-count usr, ppp, _
+
+  if req.surfing
+    delete tasks.menu
+    delete-unnecessary-surf-data res
 
   err, fdoc <- async.auto tasks
   if err then return next err
@@ -480,6 +504,11 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   tasks =
     menu: db.menu site.id, _
     site: db.site-by-id site.id, _
+
+  if req.surfing
+    delete tasks.menu
+    delete-unnecessary-surf-data res
+
   err, fdoc <- async.auto tasks
   if err then return next err
 
