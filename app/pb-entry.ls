@@ -175,13 +175,13 @@ $d.on \click  'html.admin .onclick-submit input[type="submit"]' require-login(su
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
   domain = find (.id is id) site.domains
-  for k in
+  for k in [
     \facebookClientId
     \facebookClientSecret
     \twitterConsumerKey
     \twitterConsumerValue
     \googleConsumerKey
-    \googleConsumerSecret
+    \googleConsumerSecret]
       $ "[name='#k']" .val domain.config[k]
 #}}}
 #
