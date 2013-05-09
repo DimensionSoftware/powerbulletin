@@ -421,12 +421,15 @@ html.admin
     menu
       list-style none
       padding 12px
-      margin 0
+      margin 0 0 0 3px
       li
         margin-bottom (grid+3)
   #main_content
     .authorization
       form
+        fieldset
+          padding grid (grid*3) grid (grid*8.5)
+          margin (grid*3.5) (grid*2) (grid*3) 0
         img
           position absolute
           top -(grid*4)
@@ -451,30 +454,47 @@ html.admin
       margin-top (grid*2)
       max-width 1300px
       position relative
+      select
+        margin 10px 0
       .posts-per-page
         width 40px
-        margin-left (grid*2)
       .domain
         display block
         font-size 1.2em
         select
-          margin-left grid
+          margin 0 0 0 10px
         label
           position relative
           display inline
           left 0
+      label
+        width 140px
+        font-weight 300
+        font-size 1.2em
+        display inline-block
+        vertical-align top
+        margin-top grid
+      .break
+        margin-top grid
       fieldset
-        padding grid (grid*3) grid (grid*8.5)
+        padding grid (grid*3) grid (grid*4)
         border 0
-        margin (grid*3.5) (grid*2) (grid*3) 0
+        margin -(grid*2) (grid*2) (grid*3) 0
         display inline-block
         position relative
+        select
+          padding 5px
         legend
+          margin -20px
+          padding 20px
           font-weight 100
           font-size 1.4em
           position absolute
           top -35px
           left (grid*4)
+        textarea
+          width 305px
+          height 100px
       .button
         display block
         width 420px
