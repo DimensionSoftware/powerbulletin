@@ -174,7 +174,7 @@ if mocha? and window.location.search.match /test=1/
 $d.on \click  'html.admin .onclick-submit input[type="submit"]' require-login(submit-form)
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
-  domain = find (.id is id) site.domains
+  domain = find (.id is id), site.domains
   for k in [
     \facebookClientId
     \facebookClientSecret
