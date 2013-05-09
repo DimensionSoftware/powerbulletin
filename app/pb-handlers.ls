@@ -482,14 +482,24 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
   if not req?user?rights?super then return next 404 # guard
   site = res.vars.site
   res.locals.action = req.param \action
+
   tasks =
-    domains: db.domains-by-site-id site.id, _
-    menu:    db.menu site.id, _
-    site:    db.site-by-id site.id, _
+    menu: db.menu site.id, _
+    site: db.site-by-id site.id, _
   err, fdoc <- async.auto tasks
   if err then return next err
+
+  # default
+  fdoc.themes =
+    * id:1 name:'PowerBulletin Minimal'
+    * id:0 name:\None
+  defaults =
+    posts-per-page: 30
+    meta-keywords: "#{site.name}, PowerBulletin"
+  fdoc.site.config = defaults <<< fdoc.site.config
   res.locals fdoc
-  res.mutant \admin
+
+  res.mutant \admin # out!
 
 @search = (req, res, next) ->
   site = res.vars.site

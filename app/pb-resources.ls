@@ -7,25 +7,42 @@ require! {
 
 announce = sioa.create-client!
 
-@site =
+@sites =
   update: (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
-    return # FIXME needs to remove keys from blank input & merge current config before saving 
-    # save site
-    console.log req.params
-    site =
-      name:    ''
-      id:      req.user.site_id
-      user_id: req.user.id
-      config: {
-        facebook-client-id:      req.params.facebook-client-id
-        facebook-client-secret:  req.params.facebook-client-secret
-        twitter-consumer-key:    req.params.twitter-consumer-key
-        twitter-consumer-secret: req.params.twitter-consumer-secret
-        google-consumer-key:     req.params.google-consumer-key
-        google-consumer-secret:  req.params.google-consumer-secret}
 
-    console.log site
+    # get site
+    site = res.vars.site
+    err, site <- db.site-by-id site.id
+    if err then return next err
+
+    # save site
+    switch req.body.action
+    | \general =>
+      config = { [k, v] for k, v of req.body when k in [\postsPerPage \metaKeywords] } # guard
+      console.log config
+      site.config <<< config
+      console.log site
+      err, r <- db.site-update site
+      if err then return next err
+      res.json success:true
+    | \authorization =>
+      # figure domain
+      site =
+        name:    ''
+        id:      req.user.site_id
+        user_id: req.user.id
+        config: {
+          facebook-client-id:      req.body.facebook-client-id
+          facebook-client-secret:  req.body.facebook-client-secret
+          twitter-consumer-key:    req.body.twitter-consumer-key
+          twitter-consumer-secret: req.body.twitter-consumer-secret
+          google-consumer-key:     req.body.google-consumer-key
+          google-consumer-secret:  req.body.google-consumer-secret}
+
+      console.log site
+
+    return
     err, r <- db.site-update site
     if err then return next err
     res.json r

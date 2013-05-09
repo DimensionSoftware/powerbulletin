@@ -202,6 +202,17 @@ if mocha? and window.location.search.match /test=1/
     set-timeout run, 2000ms # gotta give time for tests to load
 #}}}
 #}}}
-$d.on \click 'html.admin .onclick-submit input[type="submit"]' require-login(submit-form)
+$d.on \click  'html.admin .onclick-submit input[type="submit"]' require-login(submit-form)
+$d.on \change 'html.admin .domain' -> # set keys
+  id = parse-int($ '.domain option:selected' .val!)
+  domain = find (.id is id) site.domains
+  for k in
+    \facebookClientId
+    \facebookClientSecret
+    \twitterConsumerKey
+    \twitterConsumerValue
+    \googleConsumerKey
+    \googleConsumerSecret
+      $ "[name='#k']" .val domain.config[k]
 
 # vim:fdm=marker
