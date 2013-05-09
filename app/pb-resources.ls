@@ -32,7 +32,13 @@ announce = sioa.create-client!
       if err then return next err
 
       # extract specific keys
-      domain.config <<< { [k, v] for k, v of req.body when k in [\facebookClientId \facebookClientSecret \twitterConsumerKey \twitterConsumerValue \googleConsumerKey \googleConsumerSecret]}
+      domain.config <<< { [k, v] for k, v of req.body when k in [
+        \facebookClientId
+        \facebookClientSecret
+        \twitterConsumerKey
+        \twitterConsumerSecret
+        \googleConsumerKey
+        \googleConsumerSecret]}
       console.log domain
       err, r <- db.domain-update domain
       if err then return next err

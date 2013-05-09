@@ -179,7 +179,7 @@ $d.on \change 'html.admin .domain' -> # set keys
     \facebookClientId
     \facebookClientSecret
     \twitterConsumerKey
-    \twitterConsumerValue
+    \twitterConsumerSecret
     \googleConsumerKey
     \googleConsumerSecret]
       $ "[name='#k']" .val domain.config[k]
