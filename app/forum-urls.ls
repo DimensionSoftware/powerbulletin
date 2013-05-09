@@ -169,18 +169,18 @@ export parse = (path) ->
   | \initial               => { incomplete: true }
   | \forum                 => { forum-uri: "/#{parts.join '/'}" }
   | \new-thread            => { forum-uri: "/#{parts[0 til parts.length - 1].join '/'}" }
-  | \thread                => { forum-uri: forum-uri path, thread-uri: "/#{parts.join '/'}" }
+  | \thread                => { forum-uri: forum-uri(path), thread-uri: "/#{parts.join '/'}" }
   | \thread-page           =>
     [ uri-parts, [page, n] ] = split-at parts.length - 2, parts
-    { forum-uri: forum-uri path, thread-uri: "/#{uri-parts.join '/'}", page: parseInt n }
+    { forum-uri: forum-uri(path), thread-uri: "/#{uri-parts.join '/'}", page: parseInt n }
   | \thread-permalink      =>
-    { forum-uri: forum-uri path, thread-uri: "/#{parts.join '/'}", slug: parts[*-1] }
+    { forum-uri: forum-uri(path), thread-uri: "/#{parts.join '/'}", slug: parts[*-1] }
   | \thread-permalink-page =>
     [ uri-parts, [page, n] ] = split-at parts.length - 2, parts
-    { forum-uri: forum-uri path, thread-uri: "/#{uri-parts.join '/'}", page: parseInt n }
+    { forum-uri: forum-uri(path), thread-uri: "/#{uri-parts.join '/'}", page: parseInt n }
   | \edit                  =>
     [ uri-parts, [edit, id] ] = split-at parts.length - 2, parts
-    { forum-uri: forum-uri path, thread-uri: "/#{uri-parts.join '/'}", id: parseInt id }
+    { forum-uri: forum-uri(path), thread-uri: "/#{uri-parts.join '/'}", id: parseInt id }
   | otherwise              => { incomplete: true }
   { type, parts, path: "/#{parts.join '/'}" } <<< meta
 
