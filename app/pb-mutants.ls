@@ -247,6 +247,15 @@ pager-init = (w) ->
       next!
 
 @admin =
+  static:
+    (window, next) ->
+      window.render-mutant \left_container \admin-nav
+      window.render-mutant \main_content switch @action
+        | \authorization => \admin-authorization
+        | otherwise      => \admin-general
+      layout-static window, \admin
+      window.marshal \site @site
+      next!
   on-unload:
     (window, next-mutant, next) ->
       if window.admin-expanded then $ \body .add-class \collapsed # restore
@@ -261,14 +270,6 @@ pager-init = (w) ->
       # no pager (for now)
       window.pages-count = 0
       pager-init window
-      next!
-  static:
-    (window, next) ->
-      window.render-mutant \left_container \admin-nav
-      window.render-mutant \main_content switch @action
-        | \authorization => \admin-authorization
-        | otherwise      => \admin
-      layout-static window, \admin
       next!
 
 @search =

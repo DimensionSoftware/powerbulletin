@@ -12,7 +12,7 @@ require! {
 global <<< require \./helpers # pull helpers (common) into global (play nice :)
 
 #{{{ API Resources
-app.resource \resources/site resources.site
+app.resource \resources/sites resources.sites
 app.resource \resources/posts resources.posts
 app.get  \/resources/posts/:id/sub-posts  handlers.sub-posts
 app.post \/resources/posts/:id/impression handlers.add-impression

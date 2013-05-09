@@ -107,7 +107,7 @@ module.exports = function(grunt) {
     exec('bin/psql pb < procedures.sql', {silent: true});
   });
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {
-    fs.writeFileSync('app/views/templates.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/order-control.jade app/views/thread.jade app/views/nav.jade app/views/posts.jade app/views/post-edit.jade app/views/post-new.jade app/views/profile.jade app/views/posts-by-user.jade app/views/post.jade app/views/admin.jade app/views/admin-authorization.jade app/views/admin-nav.jade app/views/search.jade app/views/hits.jade app/views/_*.jade', {silent:true}).output));
+    fs.writeFileSync('app/views/templates.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/order-control.jade app/views/thread.jade app/views/nav.jade app/views/posts.jade app/views/post-edit.jade app/views/post-new.jade app/views/profile.jade app/views/posts-by-user.jade app/views/post.jade app/views/admin-general.jade app/views/admin-authorization.jade app/views/admin-nav.jade app/views/search.jade app/views/hits.jade app/views/_*.jade', {silent:true}).output));
   });
 
   grunt.registerTask('browserify', 'generate browser bundle', function() {
