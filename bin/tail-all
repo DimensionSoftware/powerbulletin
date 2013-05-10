@@ -1,0 +1,4 @@
+#!/bin/sh -e
+tail -f \
+  /var/log/postgresql/postgresql-9.2-main.log \
+  logs/*
