@@ -39,7 +39,11 @@ sub vcl_recv {
   }
   
   # depersonalize everything EXCEPT urls starting with /auth or /resources
-  if (req.url !~ "(?i)^/(auth|resources|admin|socket.io)") {
+  # also depersonalize ending in /new /edit because they 404 when user is not allowed to do so
+  if (  req.url !~ "(?i)^/(auth|resources|admin|socket.io)"
+     || req.url !~ "(?i)/(new|edit)$"
+     )
+  {
     call depersonalize;
   }
 }
@@ -49,6 +53,17 @@ sub vcl_fetch {
   set beresp.do_gunzip = true;
   set beresp.do_gzip = true;
 
+  # don't cache 404's or redirects
+  if (  beresp.status == 404
+     || beresp.status == 301
+     || beresp.status == 302
+     || beresp.status == 303
+     )
+  {
+    set beresp.ttl = 0s;
+  }
+
+  # remove set-cookie on all buth /auth (/auth is the only thing that sets cookies)
   if (req.url !~ "(?i)^/(auth)") {
     call depersonalize_response;
   }
@@ -85,10 +100,11 @@ sub vcl_error {
 
     return (deliver); 
   }
-  else if (obj.status == 500
-           || obj.status == 502
-           || obj.status == 503
-           || obj.status == 504)
+  else if (  obj.status == 500
+          || obj.status == 502
+          || obj.status == 503
+          || obj.status == 504
+          )
   {
     synthetic std.fileread("public/50x.html");
     return (deliver); 
