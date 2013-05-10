@@ -41,7 +41,7 @@ sub vcl_recv {
   # depersonalize everything EXCEPT urls starting with /auth or /resources
   # also depersonalize ending in /new /edit because they 404 when user is not allowed to do so
   if (  req.url !~ "(?i)^/(auth|resources|admin|socket\.io)"
-     || req.url !~ "(?i)/(new|edit)$"
+     && req.url !~ "(?i)/(new|edit)$"
      )
   {
     call depersonalize;
