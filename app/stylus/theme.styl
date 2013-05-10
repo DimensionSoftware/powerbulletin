@@ -370,7 +370,9 @@ html.search header
       opacity 1
       height 30px
       h3:hover
-        color #000
+        color #222
+        text-shadow 0 0 1px highlight-color2
+        transition all .1s ease-out
       h3
         position relative
         float right
@@ -387,7 +389,7 @@ html.search header
         text-shadow 0 0 1px highlight-color2
   .msg.onclick-show-login
     h3:hover
-      color #000
+      color #444
   h3
     font-weight 200
     position relative
@@ -396,9 +398,9 @@ html.search header
   .social h3::before
     display none
   h3:hover::before
-    border-right 9px solid #aaa
-    left -19px
-    transition left .1s ease-out
+    border-right 10px solid #aaa
+    left -20px
+    transition all .2s ease-out
   h3::before
     display block
     position absolute
@@ -408,7 +410,7 @@ html.search header
     border-bottom 5px solid transparent
     content ''
     left -17px
-    top 6px
+    top 7px
   fieldset
     padding-top 40px
     border-color #f0f0f0
@@ -436,6 +438,8 @@ html.search header
     border-left 2px solid #f42
 ///}}}
 //{{{ Input Controls
+select
+  height 40px
 input[type="password"], select, textarea, input[type="text"]
   //box-shadow 0 0 9px #cba inset, 0 0 0 #888
   border-radius 3px
@@ -479,10 +483,10 @@ textarea:focus
   background -webkit-gradient(linear, left top, left bottom, from(#ffce29), to(#f38437))
   //text-indent -2px
   background-color #ffca27
-  border-color #555
+  border-color #777
   border-top 1px solid #fff467
   border-left 1px solid #fff467
-  border-bottom 1px solid #444
+  border-bottom 1px solid #555
   box-shadow 0 0 5px #bbb,0 1px 5px 0 #c35407
   text-shadow 0px 1px 0 black,1px 1px 0 black
   transition box-shadow .1s
@@ -525,9 +529,10 @@ textarea:focus
   background -webkit-gradient(linear, left top, left bottom, from(#FFC447), to(#F38437))
   background-color #F38437
   box-shadow 0px 0px 3px #C35407
-  border 1px solid #555
+  border 1px solid #666
   border-top 1px solid #ffe457
   border-left 1px solid #ffe457
+  border-bottom-color #444
   color #fff
   font-size 1.1em
   font-weight 600
@@ -564,4 +569,14 @@ textarea:focus
   background-color #fff!important
 //}}}
 
+tooltip-border-color = rgba(100, 100, 100, .7)
+.tooltip
+  color #fff
+  background-color tooltip-border-color
+  border 2px solid tooltip-border-color
+  border-radius 2px
+  opacity 0
+  box-shadow 0 1px 5px tooltip-border-color
+.tooltip::after
+  border-top 10px solid tooltip-border-color
 // vim:fdm=marker

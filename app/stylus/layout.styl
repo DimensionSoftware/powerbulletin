@@ -74,7 +74,7 @@ header
       content ''
       position absolute
       top -12px
-      right grid
+      right (grid*1.5)
       z-index 13
       height 20px
     .tools:hover
@@ -85,9 +85,9 @@ header
     .tools
       list-style none
       position absolute
-      right grid
+      right 0
       padding-top (grid*2)
-      padding-right (grid*1.5)
+      padding-right (grid*2)
       li
         height 0
         opacity 0
@@ -562,4 +562,35 @@ img.bg.active
   //display block
 //}}}
 
+.tooltip-container:hover .tooltip
+  opacity .9
+  transform scale(1) rotate(0)
+.tooltip::before, .tooltip::after
+  content ''
+  position absolute
+  bottom -13px
+  left 50%
+  margin-left -9px
+  width 0
+  height 0
+  border-left 10px solid transparent
+  border-right 10px solid transparent
+  border-top 10px solid rgba(0,0,0,0.1)
+.tooltip::after
+  bottom -12px
+  margin-left -10px
+.tooltip
+  transition all .15s ease-in-out
+  transform scale(0) rotate(20deg)
+  display block
+  position absolute
+  padding 3px 10px
+  left 50%
+  bottom 25px
+  margin-left -100px
+  font-size 1.2em
+  cursor help
+.tooltip.right
+  right -100px
+  width 100px
 // vim:fdm=marker
