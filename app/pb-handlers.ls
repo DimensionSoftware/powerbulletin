@@ -155,14 +155,13 @@ auth-finisher = (req, res, next) ->
 delete-unnecessary-surf-data = (res) ->
   locals = res.locals
   unnecessary =
-    * \siteName
-    * \cacheUrl
-    * \cache2Url
-    * \cache3Url
-    * \cache4Url
-    * \cache5Url
-    * \jsUrls
-    * \cssUrls
+     \siteName
+     \cache2Url # keeping cacheUrl
+     \cache3Url
+     \cache4Url
+     \cache5Url
+     \jsUrls
+     \cssUrls
   for i in unnecessary
     delete locals[i]
   locals

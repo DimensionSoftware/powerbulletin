@@ -7,7 +7,7 @@
           option(value=d.id)= d.name
     br
     fieldset
-      img(src="#{cache2Url}/images/facebook_32.png")
+      img(src="#{cacheUrl}/images/facebook_32.png")
       legend Facebook
       label(for="facebook_client_id") ID
       input.first(id="facebook_client_id", type='text', name='facebookClientId', placeholder='Facebook API ID ...',
@@ -16,7 +16,7 @@
       input(id="facebook_client_secret", type='text', name='facebookClientSecret', placeholder='Facebook secret ...',
       value=site.config.facebookClientId)
     fieldset
-      img(src="#{cache4Url}/images/twitter_32.png")
+      img(src="#{cacheUrl}/images/twitter_32.png")
       legend Twitter
       label(for="twitter_key") Key
       input.first(id="twitter_key", type='text', name='twitterConsumerKey', placeholder='Twitter API key ...',
@@ -25,7 +25,7 @@
       input(id="twitter_secret", type='text', name='twitterConsumerSecret', placeholder='Twitter API secret ...',
       value=site.config.twitterConsumerSecret)
     fieldset
-      img(src="#{cache3Url}/images/google_32.png")
+      img(src="#{cacheUrl}/images/google_32.png")
       legend Google+
       label(for="google_key") Key
       input.first(id="google_key", type='text', name='googleConsumerKey', placeholder='Google+ API key ...', value=site.config.googleConsumerKey)
