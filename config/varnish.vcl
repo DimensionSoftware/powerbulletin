@@ -58,8 +58,7 @@ sub vcl_fetch {
   {
     set beresp.ttl = std.duration(beresp.http.x-varnish-ttl, 0s);
     # remove internal header
-
-    #unset beresp.http.x-varnish-ttl;
+    unset beresp.http.x-varnish-ttl;
   }
 }
 
