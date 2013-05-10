@@ -15,12 +15,22 @@ export init = (cb = (->)) ->
   if err then return cb err
   global.elc = elastic.client
 
+  console.log "[pb-indexer] initialized!"
   cb!
 
+first-run = true
 # meant to be run as its own dedicated process
 # it loops over records in the database
 export run = ->
-  err, posts <- db.idx-posts 2
+  console.log "[pb-indexer] running!" if first-run
+  first-run := false
+
+  # in the future adjust this batch-size differently in production,
+  # increase as database server scales up and indexing volume increases
+  # in dev we probably want the process to be a little less intense
+  const batch-size = 4
+
+  err, posts <- db.idx-posts batch-size
   if err then throw err
 
   common =
@@ -42,4 +52,4 @@ export run = ->
       console.warn "indexed posts: #{posts.map((.id)).join(',')}"
       process.next-tick run # try again!
   else
-    set-timeout run, 250 # wait a bit before trying again
+    set-timeout run, 500 # wait a bit before trying again
