@@ -127,7 +127,7 @@ $d.on \click '.onclick-submit .cancel' ->
   false
 
 submit = require-login(
-  (e) -> submit-form(e, (data) ->
+  (evt) -> submit-form(evt, (data) ->
     f = $ this .closest \.post-edit # form
     p = f .closest \.editing        # post being edited
     # render updated post
@@ -203,7 +203,19 @@ if mocha? and window.location.search.match /test=1/
 #}}}
 #}}}
 #{{{ - admin
-$d.on \click  'html.admin .onclick-submit input[type="submit"]' require-login(submit-form)
+$d.on \click  'html.admin .onclick-submit input[type="submit"]' require-login(
+  (evt) -> submit-form(evt, (data) ->
+    f = $ this # form
+    inputs =
+     hover: f.find \.tooltip
+     saved: f.find 'input, textarea'
+    for k, v of inputs
+      for e in v # indicated saved
+        $ e .add-class k
+    set-timeout (-> # ... and clear
+      for k, v of inputs
+        for e in v
+          $ e .remove-class k), 3000ms))
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
   domain = find (.id is id), site.domains

@@ -43,7 +43,6 @@ announce = sioa.create-client!
         \twitterConsumerSecret
         \googleConsumerKey
         \googleConsumerSecret]}
-      console.log domain
       err, r <- db.domain-update domain
       if err then return next err
       res.json success:true

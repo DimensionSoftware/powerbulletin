@@ -32,6 +32,10 @@ a.mutant:hover
   box-shadow 0 0 3px 1px rgb(50,150,255)
   transition box-shadow .3s ease-out
 
+.saved
+  box-shadow 0 0 5px rgba(50, 150, 50, .8), 0 1px 1px rgba(40, 140, 40, .9)
+  transition box-shadow .3s ease-in-out
+
 .close:hover
   background-color #666
   color #fff
@@ -569,14 +573,17 @@ textarea:focus
   background-color #fff!important
 //}}}
 
-tooltip-border-color = rgba(100, 100, 100, .7)
+tooltip-border-color = rgba(100, 100, 100, 1)
+tooltip-background-color = rgba(100, 100, 100, .85)
 .tooltip
   color #fff
-  background-color tooltip-border-color
+  background-color tooltip-background-color
   border 2px solid tooltip-border-color
   border-radius 2px
   opacity 0
   box-shadow 0 1px 5px tooltip-border-color
 .tooltip::after
   border-top 10px solid tooltip-border-color
+.tooltip.right::after
+  border-right 10px solid tooltip-border-color
 // vim:fdm=marker
