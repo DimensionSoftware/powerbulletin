@@ -93,10 +93,14 @@ announce = sioa.create-client!
       res.json post
     else
       return next 404
-  edit    : null
+  edit    : (roq, res, next) ->
+    # owns post
   update  : (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
-    # TODO is_owner req?user
+    # is_owner req?user
+    err, owns-post <- db.owns-post req.body.id, req.user?id
+    if err then return next err
+    return next 404 unless owns-post.length
     # TODO secure & csrf
     # save post
     req.body.user_id = req.user.id
