@@ -26,10 +26,14 @@ announce = sioa.create-client!
       res.json success:true
 
     | \authorization =>
-      # TODO guard -- does user own domain?
-      # figure domain
+      # find domain
       err, domain <- db.domain-by-id req.body.domain
       if err then return next err
+
+      # does site own domain?
+      err, domains <- db.domains-by-site-id domain.site_id
+      if err then return next err
+      unless find (.site_id is domain.site_id) domains then return next 404
 
       # extract specific keys
       domain.config <<< { [k, v] for k, v of req.body when k in [
