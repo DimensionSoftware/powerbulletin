@@ -562,9 +562,9 @@ img.bg.active
   //display block
 //}}}
 
-.tooltip-container:hover .tooltip
+.tooltip-container:hover .tooltip, .tooltip.hover
   opacity .9
-  transform scale(1) rotate(0)
+  transform scale(1) rotate(0) translateY(0)
 .tooltip::before, .tooltip::after
   content ''
   position absolute
@@ -581,16 +581,25 @@ img.bg.active
   margin-left -10px
 .tooltip
   transition all .15s ease-in-out
-  transform scale(0) rotate(20deg)
+  transform scale(0) rotate(20deg) translateY(80px)
   display block
   position absolute
-  padding 3px 10px
+  padding 5px 13px
   left 50%
   bottom 25px
   margin-left -100px
+  font-style italic
+  font-weight 400
+  letter-spacing 1px
   font-size 1.2em
   cursor help
+.tooltip.right::before, .tooltip.right::after
+  border-right 10px solid rgba(0,0,0,0.1)
+  border 10px solid transparent
+  left -10px
+  top 8px
 .tooltip.right
+  bottom (grid/2)
   right -100px
   width 100px
 // vim:fdm=marker

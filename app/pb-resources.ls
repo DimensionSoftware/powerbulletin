@@ -26,10 +26,14 @@ announce = sioa.create-client!
       res.json success:true
 
     | \authorization =>
-      # TODO guard -- does user own domain?
-      # figure domain
+      # find domain
       err, domain <- db.domain-by-id req.body.domain
       if err then return next err
+
+      # does site own domain?
+      err, domains <- db.domains-by-site-id domain.site_id
+      if err then return next err
+      unless find (.site_id is domain.site_id) domains then return next 404
 
       # extract specific keys
       domain.config <<< { [k, v] for k, v of req.body when k in [
@@ -39,7 +43,6 @@ announce = sioa.create-client!
         \twitterConsumerSecret
         \googleConsumerKey
         \googleConsumerSecret]}
-      console.log domain
       err, r <- db.domain-update domain
       if err then return next err
       res.json success:true
@@ -89,10 +92,14 @@ announce = sioa.create-client!
       res.json post
     else
       return next 404
-  edit    : null
+  edit    : (roq, res, next) ->
+    # owns post
   update  : (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
-    # TODO is_owner req?user
+    # is_owner req?user
+    err, owns-post <- db.owns-post req.body.id, req.user?id
+    if err then return next err
+    return next 404 unless owns-post.length
     # TODO secure & csrf
     # save post
     req.body.user_id = req.user.id
