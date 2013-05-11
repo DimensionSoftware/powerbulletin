@@ -8,6 +8,7 @@ global.furl  = require \./forum-urls
 global.pg    = require \./postgres
 global.v     = require \./varnish
 global.t     = require \./tasks
+global.s     = require \./search
 
 global <<< require \prelude-ls
 global <<< require \./helpers
