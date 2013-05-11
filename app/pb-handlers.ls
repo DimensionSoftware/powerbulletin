@@ -152,6 +152,9 @@ auth-finisher = (req, res, next) ->
     req.logout!
     res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '')
 
+# remove unnecessary data from res.locals when surfing
+# @param Object res   response object
+# @returns Object     modified locals
 delete-unnecessary-surf-data = (res) ->
   locals = res.locals
   unnecessary =
@@ -165,6 +168,15 @@ delete-unnecessary-surf-data = (res) ->
   for i in unnecessary
     delete locals[i]
   locals
+
+# remove tasks that don't have to be run when surfing
+# @param Object tasks         hashmap of tasks to be given to async.auto
+# @param String keep-string   comma-separated list of tasks to be kept
+# @returns Object             a new, smaller set of tasks
+delete-unnecessary-surf-tasks = (tasks, keep-string) ->
+  always-keep = <[ subPostsCount ]>
+  keep = always-keep ++ keep-string.split ','
+  t = { [k, v] for k, v of tasks when k in keep }
 
 @homepage = (req, res, next) ->
   tasks =
@@ -241,6 +253,9 @@ delete-unnecessary-surf-data = (res) ->
       top-threads     : db.top-threads post.forum_id, \recent, _
       forum           : db.forum post.forum_id, _
 
+    if req.surfing and req.query._surf-tasks
+      tasks = delete-unnecessary-surf-tasks tasks, req.query._surf-tasks
+
     err, fdoc <- async.auto tasks
     if err   then return next err
     if !fdoc then return next 404
@@ -266,6 +281,9 @@ delete-unnecessary-surf-data = (res) ->
       forum       : db.forum forum-id, _
       forums      : db.forum-summary forum-id, 10, 5, _
       top-threads : db.top-threads forum-id, \recent, _
+
+    if req.surfing and req.query._surf-tasks
+      tasks = delete-unnecessary-surf-tasks tasks, req.query._surf-tasks
 
     err, fdoc <- async.auto tasks
     if err then return next err

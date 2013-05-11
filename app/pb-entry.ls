@@ -2,6 +2,7 @@ window.__    = require \lodash
 window.ioc   = require \./io-client
 window.Pager = require \./pager
 window.furl  = require \./forum-urls
+window.tasks = require \./tasks
 
 global <<< require \./pb-helpers
 global <<< require(\prelude-ls/prelude-browser-min).prelude

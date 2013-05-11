@@ -1,5 +1,4 @@
 require! {
-  url
   furl: './forum-urls'
 }
 
@@ -42,24 +41,16 @@ export cc = (s) ->
 # @returns Object
 #   @param Array keep
 #   @param Array remove
-export recommendation = (mutant, req) ->
-  _surf = req.query._surf
+#export recommendation = (mutant, req) ->
+export recommendation = (path, last-path) ->
+  meta      = furl.parse path
+  last-meta = furl.parse last-path
 
-  if mutant is \forum or mutant is \thread
-    uri       = url.parse req.header \Referrer    # XXX does this inhibit caching?
-    meta      = furl.parse req.path
-    last-meta = furl.parse uri.path
+  simplify = (t) ->
+    if t.match /^thread/ then \thread else t
 
-  last-mutant =
-    if _surf is \forum
-      if meta.type is \forum
-        \forum
-      else if meta.type.match /^thread/
-        \thread
-      else
-        \none
-    else
-      _surf
+  mutant      = simplify meta.type
+  last-mutant = simplify last-meta.type
 
   default-recommendation = { remove: <[menu]> }
   #console.warn "---------------------------------------------------------------"
@@ -77,7 +68,7 @@ export recommendation = (mutant, req) ->
       last-meta-vars.offset  = 0
     src = for-mutant[mutant]
     dst = for-mutant[last-mutant]
-    console.warn [mutant, meta-vars], [last-mutant, last-meta-vars]
+    console.warn [mutant, meta-vars, meta], [last-mutant, last-meta-vars, last-meta]
     keep = required-tasks [src,meta-vars], [dst,last-meta-vars]
     { keep }
   | \thread =>
@@ -85,7 +76,7 @@ export recommendation = (mutant, req) ->
       forum-id : 1
       post-id  : 1
       limit    : 10
-      offset   : 0
+      offset   : ((meta.page || 1) - 1) * 10
     last-meta-vars =
       forum-id : if meta.forum-uri is last-meta.forum-uri then 1 else 2
     if last-mutant is \thread
@@ -94,7 +85,7 @@ export recommendation = (mutant, req) ->
       last-meta-vars.offset = ((last-meta.page || 1) - 1) * 10
     src = for-mutant[mutant]
     dst = for-mutant[last-mutant]
-    console.warn [mutant, meta-vars], [last-mutant, last-meta-vars]
+    #console.warn [mutant, meta-vars, meta], [last-mutant, last-meta-vars, last-meta]
     keep = required-tasks [src,meta-vars], [dst,last-meta-vars]
     { keep }
   | otherwise => default-recommendation

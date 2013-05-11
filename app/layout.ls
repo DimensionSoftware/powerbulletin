@@ -2,6 +2,14 @@
 window.helpers = require \./shared-helpers
 window.mutants = require \./pb-mutants
 
+window.hints =
+  last:
+    pathname: null
+    mutator: null
+  current:
+    pathname: window.location.pathname
+    mutator: window.mutator
+
 # shortcuts
 $w = $ window
 $d = $ document
@@ -43,15 +51,31 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url    = History.get-page-url!replace /\/$/, ''
   params = History.get-state!data
 
+  window.hints.last    <<< window.hints.current
+  window.hints.current <<< { pathname: window.location.pathname, mutator: null }
+
+  # if the previous and next mutations are between forum...
+  #   generte recommendations
+  if window.hints.last.mutator is \forum and not window.location.pathname.match /^\/(auth|admin|resources)/
+    rc = window.tasks.recommendation window.location.pathname, window.hints.last.pathname
+
   unless params?no-surf # DOM update handled outside mutant
     spin true
-    $.get url, {_surf:mutator, _surf-data:params?surf-data}, (r) ->
+
+    surf-params =
+      _surf      : mutator
+      _surf-data : params?surf-data
+    if rc?keep?length
+      surf-params._surf-tasks = rc.keep.sort!map( (-> tasks.cc it) ).join ','
+
+    $.get url, surf-params, (r) ->
       return if not r.mutant
       $d.attr \title, r.locals.title if r.locals?title # set title
       on-unload = window.mutants[window.mutator].on-unload or (w, next-mutant, cb) -> cb null
       on-unload window, r.mutant, -> # cleanup & run next mutant
         window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}, ->
           onload-resizable!
+          window.hints.current.mutator = window.mutator
           spin false
 
   return false
@@ -247,8 +271,8 @@ time-updater = ->
     # debug crap XXX: to figure out what is going on with time
     # TODO: remove me
     lh = $el.data(\last-human)
-    if lh isnt hr
-      console.log "human-readable time changed", {elapsed, lh, hr}
+    #if lh isnt hr
+      #console.log "human-readable time changed", {elapsed, lh, hr}
     $el.data(\last-human, hr)
 
     $el.html hr
