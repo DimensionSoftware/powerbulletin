@@ -270,6 +270,16 @@ body.paginator
       border-left 4px solid transparent
       border-right 4px solid transparent
       border-bottom 10px solid transparent
+    .tooltip
+      margin-left 20px
+      height 4px
+      border-radius 0px
+      border-top-right-radius 6px
+      border-bottom-right-radius 6px
+      box-shadow none
+      font-size 12px
+      line-height 2px
+      font-weight bold
   #paginator:hover
     transition width .08s .2s ease-out, right .08s .2s ease-out!important
     width 15px!important
@@ -581,7 +591,7 @@ img.bg.active
   margin-left -10px
 .tooltip
   transition all .15s ease-in-out
-  transform scale(0) rotate(20deg) translateY(80px)
+  transform scale(0) rotate(30deg) translateY(120px)
   display block
   position absolute
   padding 5px 13px
@@ -595,11 +605,11 @@ img.bg.active
   cursor help
 .tooltip.right::before, .tooltip.right::after
   border-right 10px solid rgba(0,0,0,0.1)
-  border 10px solid transparent
-  left -10px
-  top 8px
+  border 9px solid transparent
+  left -11px
+  top -2px
 .tooltip.right
-  bottom (grid/2)
+  top 35%
   right -100px
-  width 100px
+  width 65px
 // vim:fdm=marker

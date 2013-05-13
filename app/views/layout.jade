@@ -77,6 +77,7 @@ html
           label(for='option_3') Favorites Only
 
     section#left_content
+      #handle.handle(title='Toggle')
       #left_container
       #paginator(title='Go to this Page')
         if typeof page == 'number'
@@ -89,6 +90,7 @@ html
             a.page.previous(title='Previous Page', href="#{furl.threadUri}", style="display:none;") 
 
           .current(title='Drag to Page through')
+            .tooltip.right
 
           if page != pagesCount
             a.page.next(title='Next Page', href="#{furl.threadUri}/page/#{page + 1}") 
@@ -98,7 +100,6 @@ html
           a.page.previous(title='Previous Page', href="/", style="display:none;") 
           .current(title='Drag to Page through')
           a.page.next(title='Next Page', href="/", style="display:none;") 
-      #handle.handle(title='Toggle')
 
     section#main_content.container
 

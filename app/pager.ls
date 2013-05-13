@@ -45,6 +45,7 @@ module.exports = class Pager
     @current  = parse-int(options.current) or 1
     @forum-id = options.forum-id
     @$el      = $(@id)
+    @timer    = void
     @init!
 
     # handlers
@@ -93,11 +94,15 @@ module.exports = class Pager
   # Change the page to page n
   set-page: (n, use-history=true) ~>
     @current = n
-    @$el.find('.current')
+    @$el.find \.current
       .css(top: indicator-top(n, @indicator-height), height: @indicator-height)
-      .attr(\title, "@ page #n")
     History.push-state {surf-data: @forum-id}, '', @url-for-page(n) if use-history
     @set-next-and-previous-links!
+    # tooltip
+    t = @$el.find \.tooltip
+    t.html "page #n" .add-class \hover # show
+    if @timer then clear-timeout @timer
+    @timer = set-timeout (~> @timer=void; t.remove-class \hover), 4000ms # disappear
 
   # Change to the next page
   next-page: ~>
