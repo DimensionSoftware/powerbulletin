@@ -19,8 +19,8 @@ require! {
   if err then return next err
 
   if site
-    {id, name, current_domain} = site
-    res.vars.site = {id, name, current_domain}
+    {id, name, current_domain, config} = site
+    res.vars.site = {id, name, current_domain, config}
     res.locals.site-id   = id
     res.locals.site-name = name
     for i in ['', 2, 3, 4, 5]

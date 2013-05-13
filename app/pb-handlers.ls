@@ -222,7 +222,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   #XXX: this is one of the pages which is not depersonalized
   res.locals.user = user
   site = res.vars.site
-  delete site.config
 
   [forum_part, post_part] = req.params
 
