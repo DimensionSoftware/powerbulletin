@@ -253,8 +253,12 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       top-threads     : db.top-threads post.forum_id, \recent, _
       forum           : db.forum post.forum_id, _
 
-    if req.surfing and req.query._surf-tasks
-      tasks = delete-unnecessary-surf-tasks tasks, req.query._surf-tasks
+    if req.surfing
+      delete-unnecessary-surf-data res
+      if req.query._surf-tasks
+        tasks = delete-unnecessary-surf-tasks tasks, req.query._surf-tasks
+      else
+        delete tasks.menu
 
     err, fdoc <- async.auto tasks
     if err   then return next err
@@ -282,8 +286,12 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       forums      : db.forum-summary forum-id, 10, 5, _
       top-threads : db.top-threads forum-id, \recent, _
 
-    if req.surfing and req.query._surf-tasks
-      tasks = delete-unnecessary-surf-tasks tasks, req.query._surf-tasks
+    if req.surfing
+      delete-unnecessary-surf-data res
+      if req.query._surf-tasks
+        tasks = delete-unnecessary-surf-tasks tasks, req.query._surf-tasks
+      else
+        delete tasks.menu
 
     err, fdoc <- async.auto tasks
     if err then return next err

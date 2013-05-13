@@ -68,7 +68,7 @@ export recommendation = (path, last-path) ->
       last-meta-vars.offset  = 0
     src = for-mutant[mutant]
     dst = for-mutant[last-mutant]
-    console.warn [mutant, meta-vars, meta], [last-mutant, last-meta-vars, last-meta]
+    #console.warn [mutant, meta-vars, meta], [last-mutant, last-meta-vars, last-meta]
     keep = required-tasks [src,meta-vars], [dst,last-meta-vars]
     { keep }
   | \thread =>
