@@ -1,4 +1,4 @@
-.resizable.authorization
+.resizable.domains
   form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
     .domain
       label(for='domain') Select a Domain
@@ -36,4 +36,4 @@
     input.button(type='submit', value='Save')
     .tooltip Saved
       i !
-    input(type='hidden', name='action', value='authorization')
+    input(type='hidden', name='action', value='domains')

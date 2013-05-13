@@ -251,8 +251,8 @@ pager-init = (w) ->
     (window, next) ->
       window.render-mutant \left_container \admin-nav
       window.render-mutant \main_content switch @action
-      | \authorization => \admin-authorization
-      | otherwise      => \admin-general
+      | \domains  => \admin-domains
+      | otherwise => \admin-general
       layout-static window, \admin
       window.marshal \site @site
       next!

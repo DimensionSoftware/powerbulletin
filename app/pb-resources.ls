@@ -25,7 +25,7 @@ announce = sioa.create-client!
       if err then return next err
       res.json success:true
 
-    | \authorization =>
+    | \domains =>
       # find domain
       err, domain <- db.domain-by-id req.body.domain
       if err then return next err
@@ -45,6 +45,7 @@ announce = sioa.create-client!
         \googleConsumerSecret]}
       err, r <- db.domain-update domain
       if err then return next err
+
       res.json success:true
 
 @users =
