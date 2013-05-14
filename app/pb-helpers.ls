@@ -1,5 +1,13 @@
 # XXX shared by pb-mutants & pb-entry
 
+timers = {}
+
+@show-tooltip = ($tooltip, msg, duration=3000ms) ->
+  timer = timers[msg]
+  if timer then clear-timeout timer
+  $tooltip.html msg .add-class \hover # show
+  timers[msg] = set-timeout (-> timers[msg]=void; $tooltip.remove-class \hover), duration # remove
+
 @set-online-user = (id) ->
   $ "[data-user-id=#{id}] .profile.photo" .add-class \online
 
