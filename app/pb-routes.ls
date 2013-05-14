@@ -35,6 +35,7 @@ common-js = [ #{{{ Common JS
   "#{cvars.cache3-url}/local/jquery.transit-0.9.9.min.js",
   "#{cvars.cache2-url}/local/jquery.html5uploader.js",
   "#{cvars.cache2-url}/jcrop/js/jquery.Jcrop.min.js",
+  "#{cvars.cache2-url}/local/reactive.js",
   "#{cvars.cache4-url}/socket.io/socket.io.js",
   "#{cvars.cache-url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
 #}}}

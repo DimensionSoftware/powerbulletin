@@ -6,7 +6,9 @@ else
   }
 
   dom-window = (html, cb) ->
-    scripts = ['../../public/local/jquery-1.9.1.min.js']
+    scripts =
+      * '../../public/local/jquery-1.9.1.min.js'
+      * '../../node_modules/reactivejs/src/reactive.js'
 
     jsdom_opts = {html, scripts}
 
