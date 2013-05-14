@@ -182,3 +182,36 @@ CREATE TABLE tags_posts (
   PRIMARY KEY (tag_id, post_id)
 ); 
 CREATE TRIGGER tags_posts_timestamp BEFORE UPDATE ON tags_posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
+-- private messages
+CREATE TABLE messages (
+  id        BIGSERIAL NOT NULL,
+  user_id   BIGINT NOT NULL references users(id),
+  thread_id BIGINT,
+  body      TEXT NOT NULL,
+  created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated   TIMESTAMP,
+  PRIMARY   KEY (id)
+);
+CREATE TRIGGER messages_timestamp BEFORE UPDATE ON messages FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
+-- tags associated with messages
+CREATE TABLE tags_messages (
+  tag_id     BIGINT NOT NULL REFERENCES tags(id),
+  message_id BIGINT NOT NULL REFERENCES messages(id),
+  created    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated    TIMESTAMP,
+  PRIMARY    KEY (tag_id, message_id)
+); 
+CREATE TRIGGER tags_messages_timestamp BEFORE UPDATE ON tags_messages FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
+-- users associated with messages
+CREATE TABLE users_messages (
+  user_id    BIGINT NOT NULL REFERENCES users(id),
+  message_id BIGINT NOT NULL REFERENCES messages(id),
+  created    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated    TIMESTAMP,
+  PRIMARY    KEY (user_id, message_id)
+); 
+CREATE TRIGGER users_messages_timestamp BEFORE UPDATE ON users_messages FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
