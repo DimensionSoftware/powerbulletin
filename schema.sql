@@ -183,15 +183,24 @@ CREATE TABLE tags_posts (
 ); 
 CREATE TRIGGER tags_posts_timestamp BEFORE UPDATE ON tags_posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
--- private messages
-CREATE TABLE messages (
+-- a collection of related messages (like gmail threads)
+CREATE TABLE conversations (
   id        BIGSERIAL NOT NULL,
-  user_id   BIGINT NOT NULL references users(id),
-  thread_id BIGINT,
-  body      TEXT NOT NULL,
   created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated   TIMESTAMP,
   PRIMARY   KEY (id)
+);
+CREATE TRIGGER conversations_timestamp BEFORE UPDATE ON conversations FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
+-- private messages
+CREATE TABLE messages (
+  id              BIGSERIAL NOT NULL,
+  user_id         BIGINT NOT NULL references users(id),
+  conversation_id BIGINT,
+  body            TEXT NOT NULL,
+  created         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated         TIMESTAMP,
+  PRIMARY         KEY (id)
 );
 CREATE TRIGGER messages_timestamp BEFORE UPDATE ON messages FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
@@ -206,12 +215,12 @@ CREATE TABLE tags_messages (
 CREATE TRIGGER tags_messages_timestamp BEFORE UPDATE ON tags_messages FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 -- users associated with messages
-CREATE TABLE users_messages (
-  user_id    BIGINT NOT NULL REFERENCES users(id),
-  message_id BIGINT NOT NULL REFERENCES messages(id),
-  created    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated    TIMESTAMP,
-  PRIMARY    KEY (user_id, message_id)
+CREATE TABLE users_conversations (
+  user_id         BIGINT NOT NULL REFERENCES users(id),
+  conversation_id BIGINT NOT NULL REFERENCES conversations(id),
+  created         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated         TIMESTAMP,
+  PRIMARY         KEY (user_id, conversation_id)
 ); 
-CREATE TRIGGER users_messages_timestamp BEFORE UPDATE ON users_messages FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+CREATE TRIGGER users_conversations_timestamp BEFORE UPDATE ON users_conversations FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
