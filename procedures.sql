@@ -288,6 +288,14 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param String name         aliases.name
 --   @param String verify       aliases.verify
 CREATE FUNCTION procs.register_local_user(usr JSON) RETURNS JSON AS $$
+  # guard user.email & alias.name
+  errors = []
+  if ((plv8.execute 'SELECT id FROM users WHERE email=$1::varchar', [usr.email]).length)
+    errors.push msg:'Email in-use'
+  if ((plv8.execute 'SELECT user_id FROM aliases WHERE name=$1::varchar', [usr.name]).length)
+    errors.push msg:'User name in-use'
+  if errors.length then return {success:false, errors}
+
   ins = '''
   WITH u AS (
       INSERT INTO users (email) VALUES ($1)
