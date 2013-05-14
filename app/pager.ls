@@ -45,7 +45,6 @@ module.exports = class Pager
     @current  = parse-int(options.current) or 1
     @forum-id = options.forum-id
     @$el      = $(@id)
-    @timer    = void
     @init!
 
     # handlers
@@ -100,9 +99,7 @@ module.exports = class Pager
     @set-next-and-previous-links!
     # tooltip
     t = @$el.find \.tooltip
-    t.html "page #n" .add-class \hover # show
-    if @timer then clear-timeout @timer
-    @timer = set-timeout (~> @timer=void; t.remove-class \hover), 4000ms # disappear
+    show-tooltip t, "Page #n", 4000ms
 
   # Change to the next page
   next-page: ~>

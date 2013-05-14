@@ -468,6 +468,9 @@ html.search body.scrolled
       .msg
         h3
           margin-top (grid*2)!important
+          text-transform uppercase
+          letter-spacing 0
+          font-weight bold
   .register, .login
     display none!important
 .fancybox-wrap.on-register
@@ -512,6 +515,16 @@ html.search body.scrolled
       opacity 1
       transition height .5s, opacity 1s
 #auth
+  .register, .login
+    .tooltip
+      width 160px
+      bottom auto
+      margin-top -42px
+      font-size 1em
+      z-index 99
+  .login .tooltip
+    width 100px
+    margin-left -60px
   .choose, .forgot, .register, .reset
     h3
       margin-top (grid+2)
@@ -602,7 +615,8 @@ img.bg.active
   font-weight 400
   letter-spacing 1px
   font-size 1.2em
-  cursor help
+  text-align center
+  cursor pointer
 .tooltip.right::before, .tooltip.right::after
   border-right 10px solid rgba(0,0,0,0.1)
   border 9px solid transparent

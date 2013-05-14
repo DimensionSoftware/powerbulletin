@@ -32,13 +32,14 @@
   h2 Check your inbox for activation
     i !
     a.msg.onclick-close
-      h3 &lt; Close
+      h3 Close
 .register(style="display:none;")
   form(method="post", action="/auth/register")
     label(for="username")
       h2 Welcome
         i !
     fieldset
+      .tooltip
       input(id="username", name="username", type="text", placeholder="Username")
       input(name="password", type="password", placeholder="Password")
       input(name="email", class="register-email", type="text", placeholder="Email")
@@ -52,6 +53,7 @@
     fieldset
       a.msg.onclick-show-forgot
         h3 Forgot?  
+      .tooltip
       input(id="username", name="username", type="text", placeholder="Username")
       input(name="password", type="password", placeholder="Password")
       input(type="submit", value="Login")

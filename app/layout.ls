@@ -206,6 +206,7 @@ window.login = ->
       $fancybox = $form.parents('.fancybox-wrap:first')
       $fancybox.add-class \on-error
       $fancybox.remove-class \shake
+      show-tooltip $form.find(\.tooltip), 'Try again!' # display error
       set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100ms
   false
 
@@ -226,15 +227,17 @@ $d.on \click \.onclick-logout -> window.logout!; false
 # register
 window.register = ->
   $form = $(this)
-  $form.find("input").remove-class \validation-error
+  $form.find(\input).remove-class \validation-error
   $.post $form.attr(\action), $form.serialize!, (r) ->
     if r.success
       $form.find("input:text,input:password").remove-class(\validation-error).val ''
       switch-and-focus \on-register \on-validate ''
     else
       r.errors?for-each (e) ->
-        $form.find("input[name=#{e.param}]").add-class \validation-error .focus!
-      $fancybox = $form.parents('.fancybox-wrap:first') .remove-class \shake
+        $e = $form.find("input[name=#{e.param}]")
+        $e.add-class \validation-error .focus!    # focus control
+        show-tooltip $form.find(\.tooltip), e.msg # display error
+      $fancybox = $form.parents(\.fancybox-wrap:first) .remove-class \shake
       set-timeout (-> $fancybox.add-class(\shake)), 100ms
   return false
 

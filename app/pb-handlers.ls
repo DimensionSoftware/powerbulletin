@@ -222,7 +222,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   #XXX: this is one of the pages which is not depersonalized
   res.locals.user = user
   site = res.vars.site
-  delete site.config
 
   [forum_part, post_part] = req.params
 
@@ -390,7 +389,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   req.assert('email').is-email!
 
   if errors = req.validation-errors!
-    console.warn 'you fucked up', errors
     res.json {errors}
   else
     username = req.body.username
