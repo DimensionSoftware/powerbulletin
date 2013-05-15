@@ -154,6 +154,7 @@ pager-init = (w) ->
       $l = $ \#left_container
       $l.find \.active .remove-class \active # set active post
       $l.find ".thread[data-id='#{active-thread-id}']" .add-class \active
+      $l.find \.scrollable .nice-scroll {\.threads, cursorwidth:2, cursorcolor:\#aaa, hidecursordelay:800}
 
       # editing handler
       id = is-editing window.location.pathname

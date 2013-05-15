@@ -114,19 +114,6 @@ window.onload-resizable = ->
     $r.css \padding-left ($l.width!+left-offset) # snap
 #}}}
 #{{{ Scrolling behaviors
-window.scrollable = ->
-  $d.on \mousewheel \.scrollable (ev, delta) -> #__.debounce ((ev, delta) ->
-    ev.stop-propagation!
-    ev.prevent-default!
-    velocity = Math.abs delta
-    e = $ this
-    #e.scroll-top += (if delta < 0 then 1px else -1px) * 30px
-    scroll-to = e.position!top + (if delta < 0 then 1px else -1px) * 30px
-    console.log scroll-to
-    tween.call this, this, \top, Math.round(scroll-to), 0.3, \mcsEaseOut
-#    offset = e.offset!top
-#    e .transition({y:-(offset) + (delta*10)})
-    #, 100ms)
 window.scroll-to-top = (cb=->) ->
   return if ($ window).scroll-top! is 0 # guard
   $e = $ 'html,body'
