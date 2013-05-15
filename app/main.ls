@@ -1,4 +1,9 @@
 
+# this file is compiled to js so this is so we can load .ls files
+# it is compiled to js to work around a bug in cluster where child processes
+# receive incorrect arguments (in particular with --prof when passed with lsc's -n flag)
+require \LiveScript
+
 # dependencies
 require! {
   os
@@ -54,10 +59,7 @@ proc.on 'uncaughtException', (e) -> throw e
 # XXX instead of rallying the troops, encapsulate for quicker & more resilient teardown/startup:
 #   - new System(config, db, express-apps...) # worker
 app = global.app = express!
-redir-to-domain  = express!
 cache-app        = express!
-
-apps = [app, redir-to-domain, cache-app]
 
 server = null
 
@@ -213,13 +215,6 @@ else
   # all domain-based catch-alls & redirects, # cache 1 year in production, (cache will get blown on deploy due to changeset tagging)
   max-age = if DISABLE_HTTP_CACHE then 0 else (60 * 60 * 24 * 365) * 1000
   cache-app.use(express.static \public {max-age})
-
-  redir-to-domain.all '*', (req, res) ->
-    protocol = req.headers['x-forwarded-proto'] or 'http'
-    host     = req.host.replace /(m|www)\./ ''
-    uri      = req.url
-    url      = "https://#{host}#{uri}"
-    res.redirect url, 301
 
   sock = express!
 
