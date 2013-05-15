@@ -9,5 +9,7 @@ else
   export NODE_WORKERS=${NODE_WORKERS:=1}
   # XXX: may want to limit --prof to child process, but don't know api
   # should be good enough for now
-  node --prof app/main.js
+  if [ -n "$NODE_PROFILE" ]; then
+    args='--prof'; fi
+  node $args app/main.js
 fi
