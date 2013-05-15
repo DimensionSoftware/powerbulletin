@@ -50,6 +50,10 @@ html.homepage
 //{{{ - homepage & forum
 html.homepage, html.forum
   .homepage
+    .post
+      max-height 200px
+      overflow hidden
+      margin-bottom (grid*2)
     .subpost
       .username
         display none
@@ -84,8 +88,10 @@ html.forum, html.profile, html.search
         font-size 1em
         padding 8px 10px
         display block
+    .scrollable
+      overflow hidden
     .threads
-      overflow-y scroll
+      //overflow-y scroll
       height 100%
       margin 0
       padding-top grid
@@ -143,21 +149,6 @@ html.forum, html.profile, html.search
         margin 0
       .container
         z-index 6
-      .header.stuck::before
-        opacity 1!important
-      .header
-        width 95%
-        overflow visible
-        text-align center
-        .description
-          text-rendering optimizelegibility
-          text-transform capitalize
-          overflow hidden
-          text-overflow ellipsis
-          width 45%
-          left 19%
-          position relative
-          z-index 2
       .scroll-to
         position absolute
         right 0

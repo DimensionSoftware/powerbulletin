@@ -112,7 +112,7 @@ header
         z-index 7
         .submenu
           opacity 1
-          top 35px
+          top 36px
           max-height 450px
           height auto
           min-width 850px
@@ -374,9 +374,9 @@ body.scrolled
           line-height header-scrolled-height + 1
           font-size 16px
       .tools
-        padding-top 2px
+        padding-top 25px
       .tools::before
-        top -23px
+        top -3px
       .search
         top -3px!important
         right 0!important
@@ -586,7 +586,7 @@ img.bg.active
 
 .tooltip-container:hover .tooltip, .tooltip.hover
   opacity .9
-  transform scale(1) rotate(0) translateY(0)
+  transform scale(1) rotate(0) translate(0, 0)
 .tooltip::before, .tooltip::after
   content ''
   position absolute
@@ -602,8 +602,8 @@ img.bg.active
   bottom -12px
   margin-left -10px
 .tooltip
-  transition all .15s ease-in-out
-  transform scale(0) rotate(30deg) translateY(120px)
+  transition all .2s ease-in-out
+  transform scale(0) rotate(40deg) translate(100px, 180px)
   display block
   position absolute
   padding 5px 13px
