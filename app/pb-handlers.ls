@@ -398,10 +398,9 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     err, r <~ db.name-exists name: username, site_id: site.id
     user-id = 0
     if err
-      return res.json success: false, errors: err
+      return res.json success: false, errors:[msg:'Account in-use']
     else if r
-      console.warn 'username already exists', r
-      res.json success: false, errors: []
+      res.json success: false, errors:[msg:'User name in-use']
     else
       err, vstring <~ auth.unique-verify-string-for-site site.id
       if err then return next err
@@ -414,14 +413,12 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
         verify  : vstring
 
       err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
-      if err
-        return res.json success: false, errors: err
-      else
-        # on successful registration, automagically @login, too
-        auth.send-registration-email u, site, (err, r) ->
-          console.warn 'registration email', err, r
-        #@login(req, res, next)
-        res.json { success: true, errors: [] }
+      if err then return next err
+      if !r?success then return res.json r # validation issues
+      auth.send-registration-email u, site, (err, r) ->
+        console.warn 'registration email', err, r
+      #@login(req, res, next) # on successful registration, automagically @login, too
+      res.json success: true, errors: []
 
 @verify = (req, res, next) ->
   v    = req.param \v

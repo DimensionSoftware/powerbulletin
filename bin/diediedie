@@ -1,2 +1,4 @@
 #!/bin/sh -e
-killall -9 mon pb-worker pb-supervisor powerbulletin pb-indexer pb-search
+killall -9 mon
+sleep 1
+killall -9 pb-worker pb-supervisor powerbulletin pb-indexer pb-search
