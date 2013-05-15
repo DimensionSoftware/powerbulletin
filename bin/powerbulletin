@@ -7,5 +7,7 @@ if [ "$NODE_ENV" = 'production' ] ; then
   node_modules/LiveScript/bin/livescript -d app/main.ls 2>> error_log
 else
   export NODE_WORKERS=${NODE_WORKERS:=1}
-  node_modules/LiveScript/bin/livescript -d app/main.ls
+  # XXX: may want to limit --prof to child process, but don't know api
+  # should be good enough for now
+  node_modules/LiveScript/bin/livescript -n --prof -d app/main.ls
 fi
