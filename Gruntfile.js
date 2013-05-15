@@ -27,13 +27,6 @@ module.exports = function(grunt) {
       }
     },
 
-    livescript: {
-      compile: {
-        files: {
-        }
-      }
-    },
-
     launch: {
       options: {
         pid: false
@@ -44,6 +37,14 @@ module.exports = function(grunt) {
       procs: {
         files: ['plv8_modules/*.ls', 'procedures.sql'],
         tasks: ['procs', 'launch'],
+        options: {
+          interrupt: true,
+          debounceDelay: 100
+        }
+      },
+      livescript: {
+        files: ['app/main.ls'],
+        tasks: ['livescript'],
         options: {
           interrupt: true,
           debounceDelay: 100
@@ -72,7 +73,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-livescript');
   grunt.loadNpmTasks('grunt-browserify');
 
   // daemonize a command
@@ -100,6 +100,10 @@ module.exports = function(grunt) {
     var file   = config.tmp+'/pb.pid';
     exec('killall -9 pb-supervisor pb-worker powerbulletin', {silent:true});
     daemon('./bin/powerbulletin', file);
+  });
+
+  grunt.registerTask('livescript', 'compile ls -> js', function() {
+    exec('node_modules/.bin/lsc -c app/main.ls');
   });
 
   grunt.registerTask('procs', 'Compile stored procedures to JS', function() {

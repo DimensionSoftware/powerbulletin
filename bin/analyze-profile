@@ -1,3 +1,3 @@
 #!/bin/sh -e
 # analyzes v8.log
-node_modules/.bin/node-tick-processor
+node_modules/.bin/node-tick-processor v8-%p.log

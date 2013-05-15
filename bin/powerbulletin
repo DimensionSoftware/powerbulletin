@@ -4,10 +4,10 @@
 # ---------
 if [ "$NODE_ENV" = 'production' ] ; then
   grunt procs jade browserify uglify
-  node_modules/LiveScript/bin/livescript -d app/main.ls 2>> error_log
+  node app/main.js 2>> error_log
 else
   export NODE_WORKERS=${NODE_WORKERS:=1}
   # XXX: may want to limit --prof to child process, but don't know api
   # should be good enough for now
-  node_modules/LiveScript/bin/livescript -n --prof -d app/main.ls
+  node --prof app/main.js
 fi
