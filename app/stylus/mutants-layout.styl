@@ -65,6 +65,8 @@ html.forum, html.profile, html.search
         margin (grid/2) (grid*2.5) (grid/2) (grid*2)
   #left_content.wide
     #left_container
+      .create
+        font-size 1.1em
       .threads
         .created
           display block
@@ -404,6 +406,11 @@ html.profile
 //}}}
 //{{{ - search
 html.search
+  header
+    .search
+      #query.query, #query.query:focus, #query.query:hover
+        box-shadow 0 1px 3px rgba(0,0,0,0.25) inset
+        border-radius 20px
   #left_content
     .hits
       h2.title

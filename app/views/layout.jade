@@ -43,7 +43,6 @@ html
       h1.logo
         a.mutant(href='/') Power
           strong Bulletin
-      .close.toggler(title='Close!') x
       .container
         menu.menu
           each f,i in menu
@@ -66,15 +65,7 @@ html
             a(href='/auth/logout') Logout
         .search
           input#query.query(type='text', placeholder='Search', autocomplete='off')
-        .advanced
-          input#option_1.check(type='checkbox')
-          label(for='option_1') Photos Only
-          br
-          input#option_2.check(type='checkbox')
-          label(for='option_2') Videos Only
-          br
-          input#option_3.check(type='checkbox')
-          label(for='option_3') Favorites Only
+          .close.toggler(title='Close!') x
 
     section#left_content
       #handle.handle(title='Toggle')
