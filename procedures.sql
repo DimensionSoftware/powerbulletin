@@ -288,6 +288,14 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param String name         aliases.name
 --   @param String verify       aliases.verify
 CREATE FUNCTION procs.register_local_user(usr JSON) RETURNS JSON AS $$
+  # guard user.email & alias.name
+  errors = []
+  if ((plv8.execute 'SELECT id FROM users WHERE email=$1::varchar', [usr.email]).length)
+    errors.push msg:'Email in-use'
+  if ((plv8.execute 'SELECT user_id FROM aliases WHERE name=$1::varchar', [usr.name]).length)
+    errors.push msg:'User name in-use'
+  if errors.length then return {success:false, errors}
+
   ins = '''
   WITH u AS (
       INSERT INTO users (email) VALUES ($1)
@@ -666,6 +674,73 @@ CREATE FUNCTION procs.idx_ack_post(post_id JSON) RETURNS JSON AS $$
   '''
   plv8.execute sql, [post_id]
   return true
+$$ LANGUAGE plls IMMUTABLE STRICT;
+--}}}
+-- {{{ Private Conversations 
+
+-- #''' getting around quoting bug
+
+CREATE FUNCTION procs.conversation_create(users JSON, message JSON) RETURNS JSON AS $$
+  sql = 'INSERT INTO conversations DEFAULT VALUES RETURNING *'
+  [c] = plv8.execute sql, []
+  if not c
+    return null
+  add-participants = plv8.find_function \procs.conversation_add_participants
+  add-message      = plv8.find_function \procs.conversation_add_message
+  c.participants   = add-participants c.id, users
+  c.messages       = [ add-message c.id, message ]
+  return c
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.conversation_add_participants(cid JSON, users JSON) RETURNS JSON AS $$
+  sql = 'INSERT INTO users_conversations (user_id, conversation_id) VALUES ($1, $2)'
+  results = [ plv8.execute sql, [u.id, cid] for u in users ]
+  # TODO - I really want to only return the users I was able to successfully add.
+  return users
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.conversation_add_message(cid JSON, message JSON) RETURNS JSON AS $$
+  sql = 'INSERT INTO messages (user_id, conversation_id, body) VALUES ($1, $2, $3) RETURNING *'
+  [c] = plv8.execute sql, [message.user_id, cid, message.body]
+  if not c
+    return null
+  else
+    # TODO - add tags
+  return c
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.conversation_by_cid(cid JSON, page JSON) RETURNS JSON AS $$
+  sql = 'SELECT * FROM conversations WHERE id = $1'
+  [c] = plv8.execute sql, [cid]
+  if not c
+    return null
+  else
+    messages-by-cid = plv8.find_function \procs.messages_by_cid
+    messages = messages-by-cid cid, page
+    c.messages = messages
+  return c
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.conversations_by_user(u JSON, page JSON) RETURNS JSON AS $$
+  # TODO - pagination
+  sql = '''
+  SELECT c.*
+  FROM conversations c
+  LEFT JOIN users_conversations uc ON uc.conversation_id = c.id
+  LEFT JOIN users u ON u.id = uc.user_id
+  WHERE u.id = $1
+  ORDER BY id DESC
+  '''
+  conversations = plv8.execute sql, [u.id]
+  # TODO order by date of last message in conversation instead of id
+  return conversations
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.messages_by_cid(cid JSON, page JSON) RETURNS JSON AS $$
+  # TODO - pagination
+  sql = 'SELECT * FROM messages WHERE conversation_id = $1 ORDER BY id'
+  messages = plv8.execute sql, [cid]
+  return messages
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 -- vim:fdm=marker
