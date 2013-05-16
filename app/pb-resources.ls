@@ -3,6 +3,7 @@ require! {
   c: \./cache
   h: \./helpers
   sioa: \socket.io-announce
+  \stylus
 }
 
 announce = sioa.create-client!

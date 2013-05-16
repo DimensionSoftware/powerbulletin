@@ -431,11 +431,11 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   else
     res.redirect '/#invalid'
 
-cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
+cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 @stylus = (req, res, next) ->
   r = req.route.params
   files = r.file.split ','
-  if not files?.length then next 404; return
+  if not files?length then return next 404
 
   render-css = (file-name, cb) ->
     if file-name in cvars.acceptable-stylus-files # concat files
@@ -450,7 +450,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync 'app/stylus/'
           .define \cache3-url cvars.cache3-url
           .define \cache4-url cvars.cache4-url
           .define \cache5-url cvars.cache5-url
-          .set \paths ['app/stylus']
+          .set \paths [\app/stylus]
           .use fluidity!
           .render cb
     else
