@@ -39,7 +39,7 @@ export mutant-layout = (jade-layout, mutants) ->
           if err then return next err
           mutant.run mutants[template-nm], locals:locals, html: base-html, (err, html) ->
             if err then return next err
-            res.content-type 'text/html'
+            res.content-type 'text/html; charset=utf-8'
             res.send html
     next!
 
