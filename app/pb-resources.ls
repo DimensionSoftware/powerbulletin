@@ -48,7 +48,6 @@ announce = sioa.create-client!
       if err then return next err
 
       res.json success:true
-
 @users =
   create : (req, res) ->
     if not req?user?rights?super then return next 404 # guard

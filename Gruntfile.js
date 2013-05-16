@@ -115,7 +115,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('browserify', 'generate browser bundle', function() {
-    exec('node_modules/.bin/browserify --ignore jsdom --plugin livescript-browserify -o public/powerbulletin.js app/layout.ls app/pb-entry.ls');
+    exec('node_modules/.bin/browserify --ignore cheerio --ignore jade --ignore jsdom --plugin livescript-browserify -o public/powerbulletin.js app/layout.ls app/pb-entry.ls');
   });
 
   // Default task(s).
