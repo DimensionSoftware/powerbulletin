@@ -13,10 +13,8 @@ require! {
   express
   http
   \express-resource
-  \express-validator
   stylus
   fluidity
-  \./auth
   \./io-server
   \./elastic
   \express/node_modules/connect
@@ -165,8 +163,6 @@ else
     })
 
   app.use connect.logger(immediate: false, format: \dev) if (app.env is \development or app.env is void)
-  app.use express.body-parser!
-  app.use express-validator
 
   for a in [app] # apply app defaults
     a.use mw.vars
@@ -174,10 +170,6 @@ else
     a.use mw.multi-domain
     a.use mw.ip-lookup
     a.use mw.rate-limit
-    a.use express.cookie-parser!
-    a.use express.cookie-session {secret:cvars.secret}
-    a.use auth.mw.initialize
-    a.use auth.mw.session
     a.set 'view engine' \jade
     a.set \views \app/views
     a.enable 'json callback'
