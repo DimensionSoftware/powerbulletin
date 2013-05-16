@@ -6,6 +6,7 @@ require! {
   cssmin
   fluidity
   mkdirp
+  querystring
   __:   \lodash
   pg:   \./postgres
   auth: \./auth
@@ -208,7 +209,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   user = req.user
   uri  = req.path
 
-  meta = furl.parse req.path
+  meta = furl.parse querystring.unescape(req.path)
   console.warn meta.type, meta.path
   res.locals.furl = meta
 
