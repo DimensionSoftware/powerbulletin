@@ -1,6 +1,9 @@
 require! {
-  \mutant
-  \cssmin
+  cssmin
+  express
+  mutant
+  \./auth
+  \express-validator
   mmw: \mutant/middleware
   pg:  \./postgres
   mw:  \./middleware
@@ -11,13 +14,22 @@ require! {
 }
 global <<< require \./helpers # pull helpers (common) into global (play nice :)
 
+# middleware we will use only on personalized routes to save cpu cycles!
+personal-mw =
+  * express-validator
+  * express.body-parser!
+  * express.cookie-parser!
+  * express.cookie-session {secret:cvars.secret}
+  * auth.mw.initialize
+  * auth.mw.session
+
 #{{{ API Resources
-app.resource \resources/sites resources.sites
-app.resource \resources/posts resources.posts
-app.get  \/resources/posts/:id/sub-posts  handlers.sub-posts
-app.post \/resources/posts/:id/impression handlers.add-impression
-app.post \/resources/posts/:id/censor     handlers.censor
-app.post \/resources/users/:id/avatar     handlers.profile-avatar
+app.resource \resources/sites,             personal-mw, resources.sites
+app.resource \resources/posts,             personal-mw, resources.posts
+app.get  \/resources/posts/:id/sub-posts,  personal-mw, handlers.sub-posts
+app.post \/resources/posts/:id/impression, personal-mw, handlers.add-impression
+app.post \/resources/posts/:id/censor,     personal-mw, handlers.censor
+app.post \/resources/users/:id/avatar,     personal-mw, handlers.profile-avatar
 #}}}
 
 # XXX Common is for all environments
@@ -55,31 +67,34 @@ app.configure \development ->
 
 #{{{ Admin
 app.get \/admin/:action?,
-  mw.add-js(common-js),
-  mw.add-css(common-css),
-  mmw.mutant-layout(\layout, mutants),
+  personal-mw.concat(
+    , mw.add-js(common-js)
+    , mw.add-css(common-css)
+    , mmw.mutant-layout(\layout, mutants)
+  ),
   handlers.admin
 #}}}
 #{{{ Local auth
-app.post '/auth/login'           handlers.login
-app.post '/auth/register'        handlers.register
-app.post '/auth/choose-username' handlers.choose-username
-app.get  '/auth/user'            handlers.user
-app.get  '/auth/verify/:v'       handlers.verify
+#
+app.post '/auth/login',           personal-mw, handlers.login
+app.post '/auth/register',        personal-mw, handlers.register
+app.post '/auth/choose-username', personal-mw, handlers.choose-username
+app.get  '/auth/user',            personal-mw, handlers.user
+app.get  '/auth/verify/:v',       personal-mw, handlers.verify
 
-app.get  '/auth/facebook'        handlers.login-facebook
-app.get  '/auth/facebook/return' handlers.login-facebook-return
-app.get  '/auth/facebook/finish' handlers.login-facebook-finish
+app.get  '/auth/facebook',        personal-mw, handlers.login-facebook
+app.get  '/auth/facebook/return', personal-mw, handlers.login-facebook-return
+app.get  '/auth/facebook/finish', personal-mw, handlers.login-facebook-finish
 
-app.get  '/auth/google'          handlers.login-google
-app.get  '/auth/google/return'   handlers.login-google-return
-app.get  '/auth/google/finish'   handlers.login-google-finish
+app.get  '/auth/google',          personal-mw, handlers.login-google
+app.get  '/auth/google/return',   personal-mw, handlers.login-google-return
+app.get  '/auth/google/finish',   personal-mw, handlers.login-google-finish
 
-app.get  '/auth/twitter'         handlers.login-twitter
-app.get  '/auth/twitter/return'  handlers.login-twitter-return
-app.get  '/auth/twitter/finish'  handlers.login-twitter-finish
+app.get  '/auth/twitter',         personal-mw, handlers.login-twitter
+app.get  '/auth/twitter/return',  personal-mw, handlers.login-twitter-return
+app.get  '/auth/twitter/finish',  personal-mw, handlers.login-twitter-finish
 
-app.get  '/auth/logout'   handlers.logout
+app.get  '/auth/logout',          personal-mw, handlers.logout
 #}}}
 #{{{ Users
 app.get '/u/:name', (req, res, next) ->
