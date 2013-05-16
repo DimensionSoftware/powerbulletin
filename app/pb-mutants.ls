@@ -12,10 +12,9 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
   # handle active main menu
   fid = active-forum-id or w.active-forum-id
   w.$ 'header .menu' .find \.active .remove-class \active # remove prev
-  w.$ 'menu .row' # add current
-    .has ".forum-#fid"
-    .find \.title
-    .add-class \active
+  row = w.$ 'menu .row' # add current
+    .has-class ".forum-#fid"
+  if row then row.find \.title .add-class \active
   w.$ "menu .submenu .forum-#fid" .parent!add-class \active
 
 # initialize pager
@@ -139,7 +138,7 @@ pager-init = (w) ->
       window.marshal \pagesCount @pages-count
       window.marshal \prevPages @prev-pages
 
-      window.$ \.bg .remove! # XXX kill background (for now)
+      #window.$ \.bg .remove! # XXX kill background (for now)
 
       layout-static window, \forum, @active-forum-id
       next!

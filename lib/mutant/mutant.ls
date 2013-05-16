@@ -3,12 +3,15 @@ if window?
 else
   require! {
     jsdom
+    cheerio
   }
+
+  use-jsdom = false
 
   dom-window = (html, cb) ->
     scripts =
-      * '../../public/local/jquery-1.9.1.min.js'
-      * '../../node_modules/reactivejs/src/reactive.js'
+      \../../public/local/jquery-1.9.1.min.js
+      \../../node_modules/reactivejs/src/reactive.js
 
     jsdom_opts = {html, scripts}
 
@@ -55,7 +58,10 @@ else
   onMutate       = template.onMutate      || ((w, cb) -> cb(null))
   onPersonalize  = template.onPersonalize || ((w, u, cb) -> cb(null))
 
-  require '../../app/views/templates.js' # pre-built clientjade templates
+  require \../../app/views/templates.js # pre-built clientjade templates
+
+  render-mutant = (id, tmpl) ->
+    $ "\##id" .html jade.templates[tmpl](params)
 
   if window?
     if initial_run
@@ -89,30 +95,35 @@ else
 
   else if html
     # playskool pretend server-side window
-    dom-window html, (err, window) ->
-      if err then return cb err
+    var-statements = []
+    marshal = (key, val) ->
+      var-statements.push "window['#{key}']=#{JSON.stringify(val)}"
 
-      window.render-mutant = (target, tmpl) ->
-        jade.render window.document.get-element-by-id(target), tmpl, params
-
-      var-statements = []
-      window.marshal = (key, val) ->
-        var-statements.push "window['#{key}']=#{JSON.stringify(val)}"
-
+    run-static = (window) ->
       template.static.call params, window, (err) ->
         if err then return cb err
-
-        # mutating / loading of jquery already accomplished, don't pollute html page load
-        window.$('script.jsdom').remove!
-
-        # append marshalled vars
-        s = window.document.createElement \script
-        window.$ s .attr('type', 'text/javascript')
-        window.$ s .text var-statements.join(';')
-        window.document.body.appendChild s
-
+        if use-jsdom # don't pollute html page load
+          window.$('script.jsdom').remove!
+          # append marshalled vars
+          s = window.document.createElement \script
+          window.$ s .attr('type', 'text/javascript')
+          window.$ s .text var-statements.join(';')
+          window.document.body.appendChild s
+        else
+          $ \body .append "<script type=\"text/javascript\">#{var-statements.join \;}</script>"
         # finally return html
-        cb null "<!doctype html>#{window.document.outerHTML}"
+        cb null if use-jsdom then "<!doctype html>#{window.document.outerHTML}" else $.html!
+
+    if use-jsdom # jslowdom
+      dom-window html, (err, jsdom-window) ->
+        if err then return cb err
+        jsdom-window.marshal = marshal
+        jsdom-window.render-mutant = (target, tmpl) ->
+          jade.render jsdom-window.document.get-element-by-id(target), tmpl, params
+        run-static jsdom-window
+    else
+      $ = cheerio.load html
+      run-static {marshal:marshal, render-mutant:render-mutant, $:$}
   else
     throw new Error("need html for serverside")
 
