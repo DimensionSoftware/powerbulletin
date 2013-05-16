@@ -39,7 +39,7 @@ in-site = (socket, site) ~>
 
 user-from-session = (s, cb) ->
   unless s?passport?user
-    return cb 'invalid session', null
+    return cb null, {id:0, name:\Anonymous, guest:true}
   [name, site_id] = s?passport?user?split \:
   #console.warn "deserialize", name, site_id
   (err, user) <- db.usr {name, site_id}
