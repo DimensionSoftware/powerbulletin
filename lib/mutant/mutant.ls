@@ -2,7 +2,7 @@ if window?
   true
 else
   require! {
-    jsdom
+    #jsdom
     cheerio
   }
 
