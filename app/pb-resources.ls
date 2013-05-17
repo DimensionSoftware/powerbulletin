@@ -8,6 +8,12 @@ require! {
 
 announce = sioa.create-client!
 
+save-stylus = (domain, stylus) ->
+  # TODO mkdirp
+  # TODO fs.write public/domain/#domain-name/site.css
+  console.log domain, stylus
+  false
+
 @sites =
   update: (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
@@ -37,16 +43,25 @@ announce = sioa.create-client!
       unless find (.site_id is domain.site_id) domains then return next 404
 
       # extract specific keys
-      domain.config <<< { [k, v] for k, v of req.body when k in [
+      auths = [
         \facebookClientId
         \facebookClientSecret
         \twitterConsumerKey
         \twitterConsumerSecret
         \googleConsumerKey
-        \googleConsumerSecret]}
-      err, r <- db.domain-update domain
-      if err then return next err
+        \googleConsumerSecret]
+      domain.config <<< { [k, v] for k, v of req.body when k in auths}
 
+      # generate domain-specific css
+      const suffix = \Secret
+      domain.config.stylus = auths
+        |> filter (-> it.index-of(suffix) isnt -1 and req.body[it])                # only auths with values
+        |> map (-> ".has-#{take-while (-> it in [\a to \z]), it} {display:block}") # make css selectors
+        |> join ''
+
+      err, r <- db.domain-update domain # save!
+      if err then return next err
+      save-stylus domain.name, domain.config.stylus
       res.json success:true
 @users =
   create : (req, res) ->
