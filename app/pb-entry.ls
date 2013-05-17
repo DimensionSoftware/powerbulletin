@@ -119,7 +119,7 @@ $d.on \keyup, \#query, __.debounce (->
 
     console.log "#{it.which} triggered a #{submit-type} search"
     $ui.trigger \search, {submit-type, q}
-), 300)
+), 300ms
 
 $ui.on \search, (e, searchopts) ->
   #XXX: searchopts should move into socket.io, instead of just q
@@ -217,6 +217,7 @@ $d.on \click 'header .close' (e) ->
 $d.on \click \#handle ->
   $l = $ \#left_content
   $ \body .toggle-class \collapsed
+  console.log($l.width! + left-offset)
   $ '#main_content .resizable'
     .css(\padding-left, ($l.width! + left-offset))
   save-ui!
