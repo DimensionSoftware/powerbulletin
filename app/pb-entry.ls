@@ -130,7 +130,7 @@ $ui.on \search, (e, searchopts) ->
 
   uri = "/search?#{$.param searchopts}"
 
-  window.last-statechange-was-user = false
+  window.last-statechange-was-user = false # flag that this was programmer, not user
   if should-replace
     History.replace-state {}, '', uri
   else
@@ -168,7 +168,7 @@ submit = require-login(
     p.find \.body  .html(data.0?body)
     f.remove-class \fadein .hide(300s) # & hide
     meta = furl.parse window.location.pathname
-    window.last-statechange-was-user = false
+    window.last-statechange-was-user = false # flag that this was programmer, not user
     switch meta.type
     | \new-thread => History.push-state {} '' data.uri
     | \edit       => remove-editing-url meta

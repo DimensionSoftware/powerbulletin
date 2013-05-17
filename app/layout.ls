@@ -42,15 +42,18 @@ window.mutate  = (event) ->
   # surfing
   params.no-surf   = true if $e.has-class \no-surf             # no need to fetch surf data
   params.surf-data = $e.data \surf or window.surf-data or void # favor element data on click
-  window.last-statechange-was-user = false
+  window.last-statechange-was-user = false # flag that this was programmer, not user
   History.push-state params, '', href
   false
 
 $d.on \click \a.mutant window.mutate # hijack urls
 
-window.last-statechange-was-user = true
+window.last-statechange-was-user = true # default state
 last-req-id = 0
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
+  statechange-was-user = window.last-statechange-was-user
+  window.last-statechange-was-user = true # reset default state
+
   url    = History.get-page-url!replace /\/$/, ''
   params = History.get-state!data
 
@@ -86,15 +89,13 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
         # because the homepage takes a lot longer to download and hence updated the dom after the forum
         # mutant had already done its thing
         if req-id is last-req-id # only if a new request has not been kicked off, can we run the mutant
-          window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}, ->
+          locals = {statechange-was-user} <<< r.locals
+          window.mutant.run window.mutants[r.mutant], {locals, window.user}, ->
             onload-resizable!
             window.hints.current.mutator = window.mutator
             spin false
         else
           console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
-
-          # XXX: sorta hacky but no builtin facility exists
-          window.last-statechange-was-user = true # reset state of this hack =D
 #}}}
 #{{{ Personalizing behaviors
 window.onload-personalize = ->

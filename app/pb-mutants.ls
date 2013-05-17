@@ -283,14 +283,10 @@ pager-init = (w) ->
       if History?
         # only perform on client-side
 
-        #XXX: this hack doesn't work! i want querystring updates ONLY when the
-        #     user clicks the forward or back button!
-        #     needs more troubleshooting...
-        #if window?.last-statechange-was-user
-        #  console.log 'overriding querystring'
-        #  # only perform when back/forward button is pressed
-        #  window.$(\#query).val @searchopts.q
-        1 # do nothing
+        if @statechange-was-user
+          console.log 'overriding querystring due to forward/back button event'
+          # only perform when back/forward button is pressed
+          window.$(\#query).val @searchopts.q
       else
         # only perform on server-side
 
