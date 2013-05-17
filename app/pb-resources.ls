@@ -3,16 +3,20 @@ require! {
   c: \./cache
   h: \./helpers
   sioa: \socket.io-announce
+  \fs
   \stylus
+  \mkdirp
 }
 
 announce = sioa.create-client!
 
 save-stylus = (domain, stylus) ->
-  # TODO mkdirp
-  # TODO fs.write public/domain/#domain-name/site.css
-  console.log domain, stylus
-  false
+  base = "public/domains/#domain"
+  err <- mkdirp base
+  if err then console.error \mkdirp.rename, err; return # guard
+  err <- fs.write-file "#base/site.css" stylus
+  if err then console.error \fs.write-file, err; return # "
+  true
 
 @sites =
   update: (req, res, next) ->
@@ -56,9 +60,9 @@ save-stylus = (domain, stylus) ->
       const suffix = \Secret
       domain.config.stylus = auths
         |> filter (-> it.index-of(suffix) isnt -1 and req.body[it])                # only auths with values
-        |> map (-> ".has-#{take-while (-> it in [\a to \z]), it} {display:block}") # make css selectors
+        |> map (-> ".has-#{take-while (-> it in [\a to \z]), it}{display:inline}") # make css selectors
         |> join ''
-
+      if domain.config.stylus.length then domain.config.stylus += '.has-auth{display:block}'
       err, r <- db.domain-update domain # save!
       if err then return next err
       save-stylus domain.name, domain.config.stylus
