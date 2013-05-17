@@ -42,11 +42,13 @@ window.mutate  = (event) ->
   # surfing
   params.no-surf   = true if $e.has-class \no-surf             # no need to fetch surf data
   params.surf-data = $e.data \surf or window.surf-data or void # favor element data on click
+  window.last-statechange-was-user = false
   History.push-state params, '', href
   false
 
 $d.on \click \a.mutant window.mutate # hijack urls
 
+window.last-statechange-was-user = true
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url    = History.get-page-url!replace /\/$/, ''
   params = History.get-state!data
@@ -78,7 +80,8 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
           window.hints.current.mutator = window.mutator
           spin false
 
-  return false
+          # XXX: sorta hacky but no builtin facility exists
+          window.last-statechange-was-user = true # reset state of this hack =D
 #}}}
 #{{{ Personalizing behaviors
 window.onload-personalize = ->

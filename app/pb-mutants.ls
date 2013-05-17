@@ -284,7 +284,20 @@ pager-init = (w) ->
       window.render-mutant \left_container \hits
       window.render-mutant \main_content \search
 
-      unless History? #XXX: hack to only perform on serverside
+      if History?
+        # only perform on client-side
+
+        #XXX: this hack doesn't work! i want querystring updates ONLY when the
+        #     user clicks the forward or back button!
+        #     needs more troubleshooting...
+        #if window?.last-statechange-was-user
+        #  console.log 'overriding querystring'
+        #  # only perform when back/forward button is pressed
+        #  window.$(\#query).val @searchopts.q
+        1 # do nothing
+      else
+        # only perform on server-side
+
         # represent state of filters in ui
         window.$(\#query).val @searchopts.q
 
@@ -300,9 +313,5 @@ pager-init = (w) ->
       next!
   on-unload:
     (window, next-mutant, next) ->
-      $ \#query .val(unless next-mutant is \search
-        '' # remove search query
-      else
-        History.get-state!data.searchopts.q) # restore
       next!
 # vim:fdm=indent

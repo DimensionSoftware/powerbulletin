@@ -91,18 +91,53 @@ $ \#query .focus!
 # window.ui is the object which will receive events and have events triggered on it
 window.$ui = $ {}
 
-# keys that actually trigger the search
-$d.on \keyup, \#query, __.debounce((->
-  # ignore special keys & delete when search is empty
-  unless it.which in [13 16 17 18 20 27 32 37 38 39 40 87 91 93 188] or (it.which is 8 and !it.target.value.length)
-    console.log "#{it.which} triggered search"
-    $ui.trigger \search, {q: $(@).val!}
-  true), 250ms)
+$d.on \keyup, \#query, __.debounce (->
+  # keys that aren't allowed to trigger the search
+  # use hashmap so its O(1)
+  const blacklist = {
+    9:1   # tab
+    16:1  # shift
+    17:1  # ctrl
+    18:1  # alt
+    27:1  # escape
+    32:1  # space
+    37:1  # arrow (left)
+    38:1  # arrow (up)
+    39:1  # arrow (right)
+    40:1  # arrow (down)
+    224:1 # mac command key
+  }
+
+  q = $(@).val!
+  is-del = it.which is 8
+  # ignore special keys & delete, also ignore empty querystring
+  if q.length and (is-del or !blacklist[it.which])
+    if it.which is 13 # enter key
+      submit-type = \hard
+    else
+      submit-type = \soft
+
+    console.log "#{it.which} triggered a #{submit-type} search"
+    $ui.trigger \search, {submit-type, q}
+), 300)
+
 $ui.on \search, (e, searchopts) ->
-  uri = "/search?#{$.param searchopts}"
   #XXX: searchopts should move into socket.io, instead of just q
   socket.emit \search searchopts.q
-  History.push-state {searchopts}, '', uri
+
+  should-replace = searchopts.submit-type is \soft
+  should-update-q = searchopts.submit-type is \hard
+
+  # cleanup so it doesn't end up in url, only used to figure out push vs replace
+  delete searchopts.submit-type
+
+  uri = "/search?#{$.param searchopts}"
+
+  window.last-statechange-was-user = false
+  if should-replace
+    History.replace-state {}, '', uri
+  else
+    History.push-state {}, '', uri
 
 $ui.on \thread-create, (e, thread) ->
   console.info 'thread-create', thread
@@ -136,6 +171,7 @@ submit = require-login(
     p.find \.body  .html(data.0?body)
     f.remove-class \fadein .hide(300s) # & hide
     meta = furl.parse window.location.pathname
+    window.last-statechange-was-user = false
     switch meta.type
     | \new-thread => History.push-state {} '' data.uri
     | \edit       => remove-editing-url meta
