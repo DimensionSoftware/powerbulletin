@@ -127,6 +127,7 @@ CREATE TABLE posts (
   uri         TEXT,
   body        TEXT NOT NULL,
   html        TEXT NOT NULL,
+  media_url   VARCHAR(1024),
   ip          VARCHAR(16),
   loc         POINT,
   views       BIGINT NOT NULL DEFAULT 0,
