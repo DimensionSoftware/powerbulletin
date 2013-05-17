@@ -49,6 +49,7 @@ window.mutate  = (event) ->
 $d.on \click \a.mutant window.mutate # hijack urls
 
 window.last-statechange-was-user = true
+last-req-id = 0
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   url    = History.get-page-url!replace /\/$/, ''
   params = History.get-state!data
@@ -70,15 +71,27 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
     if rc?keep?length
       surf-params._surf-tasks = rc.keep.sort!map( (-> tasks.cc it) ).join ','
 
+    req-id = ++last-req-id
     $.get url, surf-params, (r) ->
       return if not r.mutant
       $d.attr \title, r.locals.title if r.locals?title # set title
       on-unload = window.mutants[window.mutator].on-unload or (w, next-mutant, cb) -> cb null
       on-unload window, r.mutant, -> # cleanup & run next mutant
-        window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}, ->
-          onload-resizable!
-          window.hints.current.mutator = window.mutator
-          spin false
+        # this branch will prevent queue pileups if someone hits the back/forward button very quickly
+        # yeah we already requested the data but lets not needlessly update the dom when the user has
+        # already specified they want to go to yet another url
+        #
+        # this fixes a bug where a slow loading page like the homepage for instance would update the dom
+        # even after a new url had been specified with html history.. i.e. a forum page showed the homepage
+        # because the homepage takes a lot longer to download and hence updated the dom after the forum
+        # mutant had already done its thing
+        if req-id is last-req-id # only if a new request has not been kicked off, can we run the mutant
+          window.mutant.run window.mutants[r.mutant], {locals:r.locals, window.user}, ->
+            onload-resizable!
+            window.hints.current.mutator = window.mutator
+            spin false
+        else
+          console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
 
           # XXX: sorta hacky but no builtin facility exists
           window.last-statechange-was-user = true # reset state of this hack =D
