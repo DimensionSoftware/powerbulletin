@@ -155,10 +155,6 @@ pager-init = (w) ->
       $l = $ \#left_container
       $l.find \.active .remove-class \active # set active post
       $l.find ".thread[data-id='#{active-thread-id}']" .add-class \active
-      # TODO modify nice scroll's rail to .html inside .scrollable
-      #         - would be nice to ease-expo-out on scroll
-      #         - fix scrollable region to include another few hundred px on bottom
-      $l.find \.scrollable .nice-scroll {\.threads, railoffset:true, railpadding:{bottom:550}, bouncescroll:true, mousescrollstep:2, cursorwidth:2, cursorcolor:\#aaa, hidecursordelay:800}
 
       # editing handler
       id = is-editing window.location.pathname

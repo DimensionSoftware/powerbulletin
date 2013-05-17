@@ -39,13 +39,12 @@ window.load-ui = -> # restore ui state from cookie
     [collapsed, w] = s.split sep
     if collapsed is \1 and not $ \html .has-class \admin
       $ \body .add-class \collapsed # only collapse on non-admin mutants
+      $l.find \.scrollable .get-nice-scroll!resize!
     w = parse-int w
     $l.transition({width: w} 500ms \easeOutExpo -> set-wide!)
     set-timeout (-> # ... & snap
       $ '#main_content .resizable' .transition({padding-left: w+left-offset} 450ms \snap)), 300ms
-  else # default
-    set-wide!
-  set-timeout align-breadcrumb, 500ms
+  set-timeout (-> set-wide!; align-breadcrumb!), 500ms
 
 # waypoints
 $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-breadcrumb!), 800ms)
