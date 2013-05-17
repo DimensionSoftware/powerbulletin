@@ -13,7 +13,7 @@
     title = title.toLowerCase();
     title = title.replace(unicodeNonLetters, '');
     title = title.replace(/\s+/g, '-');
-    title = title.slice(0, 30);
+    title = title.slice(0, 60);
     if (id) {
       title = title.concat("-" + id);
     }

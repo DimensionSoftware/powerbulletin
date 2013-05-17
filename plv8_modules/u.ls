@@ -12,7 +12,7 @@ export title2slug = (title, id) ->
   title = title.to-lower-case!
   title = title.replace unicode-non-letters, ''
   title = title.replace /\s+/g, '-'
-  title = title.slice 0, 30
+  title = title.slice 0, 60
   if id
     title = title.concat "-#{id}"
   title
