@@ -4,12 +4,17 @@
 // Mutant-specific States
 //{{{ - homepage
 html.homepage
-  #left_content
+  .nicescroll-rails
     display none
+  #left_content
+    transform translateX(-700px)
+    opacity 0
+    transition all .6s ease-out
   #main_content
     padding-top header-height
     .forum
       padding-left (grid*2)
+      transition padding-left .4s ease-out
   .extra
     right 0
     z-index 7
@@ -76,7 +81,8 @@ html.forum, html.profile, html.search
           display block
           opacity 1
   #left_content
-    display block
+    transform translateX(0)
+    opacity 1
     .photo, .username
       display none
     .create

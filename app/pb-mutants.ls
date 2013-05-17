@@ -265,8 +265,8 @@ pager-init = (w) ->
     (window, next) ->
       # expand left nav or not?
       $b = $ \body
-      window.admin-expanded = $b .has-class \collapsed
-      if window.admin-expanded then $b .remove-class \collapsed
+      if window.admin-expanded = $b.has-class \collapsed
+        $b.remove-class \collapsed
       $ 'form input:first' .focus!select!
       $ \.domain .trigger \change # fill-in authorization
       # no pager (for now)
