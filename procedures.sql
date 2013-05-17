@@ -386,8 +386,10 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
   [identifier-clause, params] =
     if usr.id
       ["u.id = $1", [usr.id, usr.site_id]]
-    else
+    else if usr.name
       ["a.name = $1", [usr.name, usr.site_id]]
+    else if usr.email
+      ["u.email = $1", [usr.email, usr.site_id]]
 
   sql = """
   SELECT
