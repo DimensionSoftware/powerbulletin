@@ -96,7 +96,6 @@ $d.on \keyup, \#query, __.debounce (->
   # use hashmap so its O(1)
   const blacklist = {
     9:1   # tab
-    16:1  # shift
     17:1  # ctrl
     18:1  # alt
     27:1  # escape
