@@ -118,14 +118,13 @@ $d.on \keyup, \#query, __.debounce (->
 
     console.log "#{it.which} triggered a #{submit-type} search"
     $ui.trigger \search, {submit-type, q}
-), 300ms
+), 500ms
 
 $ui.on \search, (e, searchopts) ->
   #XXX: searchopts should move into socket.io, instead of just q
   socket.emit \search searchopts.q
 
   should-replace = searchopts.submit-type is \soft
-  should-update-q = searchopts.submit-type is \hard
 
   # cleanup so it doesn't end up in url, only used to figure out push vs replace
   delete searchopts.submit-type
