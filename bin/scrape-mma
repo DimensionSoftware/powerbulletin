@@ -63,7 +63,9 @@ with-posts = (max, t, cb) --> # {{{1
         $ = window.$
         _posts = []
         $('.PostList .PostContent').each (i, p) ->
-          html = $(p).html!replace(/<img src=".*?(droid|apple).png".*?>/g, '')
+          $p = $ p
+          $p.find("img[src$='apple.png'],img[src$='droid.png']").remove!
+          html = $p.html!
           post =
             parent-id : thread-id
             forum-id  : forum-id
