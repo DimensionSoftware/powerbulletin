@@ -65,12 +65,14 @@ with-posts = (max, t, cb) --> # {{{1
         $('.PostList .PostContent').each (i, p) ->
           $p = $ p
           $p.find("img[src$='apple.png'],img[src$='droid.png']").remove!
+          first-image = $p.find \img:first .attr \src
           html = $p.html!
           post =
             parent-id : thread-id
             forum-id  : forum-id
             user-id   : 3
             title     : ""
+            media-url : first-image or ''
             body      : html
             html      : html
           _posts.push post

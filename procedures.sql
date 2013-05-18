@@ -137,8 +137,8 @@ CREATE FUNCTION procs.add_post(post JSON) RETURNS JSON AS $$
       #       its a question of url length
 
       sql = '''
-      INSERT INTO posts (id, thread_id, user_id, forum_id, parent_id, title, slug, body, html, ip)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      INSERT INTO posts (id, thread_id, user_id, forum_id, parent_id, title, slug, body, html, media_url, ip)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       '''
 
       params =
@@ -149,10 +149,12 @@ CREATE FUNCTION procs.add_post(post JSON) RETURNS JSON AS $$
         * parent-id
         * post.title
         * slug
-        * post.body || ""
-        * post.html || ""
+        * post.body or ''
+        * post.html or ''
+        * post.media_url or null
         * post.ip
 
+      if post.media-url then plv8.elog WARNING, JSON.stringify(post)
       plv8.execute(sql, params)
 
       # the post must be inserted before uri-for-post will work, thats why uri is a NULLABLE column
