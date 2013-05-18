@@ -278,6 +278,9 @@ join-search = (sock) ->
   # should pass full searchopts eventually
   sock.emit \search window.searchopts.q
 
+end-search = ->
+  socket.emit \search-end
+
 @search =
   static:
     (window, next) ->
@@ -322,5 +325,6 @@ join-search = (sock) ->
       next!
   on-unload:
     (window, next-mutant, next) ->
+      end-search!
       next!
 # vim:fdm=indent

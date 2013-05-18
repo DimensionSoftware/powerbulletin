@@ -110,12 +110,19 @@ site-by-domain = (domain, cb) ->
       socket.emit \debug, socket.manager.rooms
       socket.in('1').emit \debug, 'hi again to 1'
 
+    # client no longer needs realtime query updates (navigated away from search page)
+    socket.on \search-end, ->
+      if search-room
+        socket.emit \debug, "leaving room: #{search-room}"
+        socket.leave search-room
+        search-room := null
+
     # client will get subscribed to said query room
     socket.on \search, (q) ->
       if search-room
         socket.emit \debug, "leaving room: #{search-room}"
         socket.leave search-room
-        console.warn 'MADE IT!'
+        search-room := null
 
       search-room := "#{site.id}/q/#{encode-URI-component(q.to-lower-case!)}"
       socket.emit \debug, "joining room: #{search-room}"
