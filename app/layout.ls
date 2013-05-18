@@ -184,7 +184,7 @@ set-timeout (->
   has-scrolled!), 600ms # initially yield
 
 # attach scroll-to's
-$d.on \click '.scroll-to' ->
+$d.on \click '.onclick-scroll-to' ->
   awesome-scroll-to $(this).data \scroll-to
   false
 

@@ -8,7 +8,7 @@ mixin forum(f, i)
       if f.posts
         each t,ii in f.posts
           mixin post(f, t, ii)
-        .up(class='scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
+        .up(class='onclick-scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
 
 mixin post(f, p, i)
   .post(id="post_#{p.id}", class="col#{Math.ceil(Math.random()*2)}")
