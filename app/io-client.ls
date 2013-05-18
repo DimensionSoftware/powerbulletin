@@ -1,9 +1,11 @@
 window.socket = io.connect!
+window.r-socket = $R.state!
 
 # https://github.com/LearnBoost/socket.io/wiki/Exposed-events
 # socket.on \event-name, (message, cb) ->
 
 socket.on \connect, ->
+  r-socket socket # set reactive state
   console.log \connected
 
 socket.on \disconnect, ->

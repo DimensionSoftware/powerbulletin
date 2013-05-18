@@ -120,9 +120,6 @@ $d.on \keyup, \#query, __.debounce (->
 ), 500ms
 
 $ui.on \search, (e, searchopts) ->
-  #XXX: searchopts should move into socket.io, instead of just q
-  socket.emit \search searchopts.q
-
   should-replace = searchopts.submit-type is \soft
 
   # cleanup so it doesn't end up in url, only used to figure out push vs replace

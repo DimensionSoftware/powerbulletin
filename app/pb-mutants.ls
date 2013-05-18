@@ -274,6 +274,10 @@ pager-init = (w) ->
       pager-init window
       next!
 
+join-search = (sock) ->
+  # should pass full searchopts eventually
+  sock.emit \search window.searchopts.q
+
 @search =
   static:
     (window, next) ->
@@ -296,8 +300,21 @@ pager-init = (w) ->
       # TODO fill these in & paginate
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
+      window.marshal \searchopts @searchopts
 
       layout-static window, \search
+      next!
+  on-initial:
+    (window, next) ->
+      # work around race condition! thx reactive ; )
+      # chrome had different timing than FF
+      # i.e. on-load was happening way before socket was
+      # ready in chrome
+      $R(join-search).bind-to window.r-socket
+      next!
+  on-mutate:
+    (window, next) ->
+      join-search(window.socket)
       next!
   on-load:
     (window, next) ->
