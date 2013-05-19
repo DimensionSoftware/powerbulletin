@@ -39,6 +39,7 @@ body.waiting, body.waiting a
 
 .nicescroll-rails
   position fixed!important
+  display none
 
 //{{{ Header
 .logo
@@ -95,7 +96,7 @@ header
       li
         height 0
         opacity 0
-        margin-left -55px
+        margin-left -60px
         overflow hidden
 
     .menu
@@ -167,6 +168,7 @@ header
       top 13px
       right 12px
       position absolute 
+      z-index 8
       .query
         width 300px
         padding-right 45px
@@ -176,6 +178,8 @@ header
 //{{{ Left side
 body.paginator
   #left_content
+    .nicescroll-rails
+      display block
     .handle
       right -26px
     #paginator

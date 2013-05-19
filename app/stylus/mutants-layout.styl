@@ -7,9 +7,9 @@ html.homepage
   .nicescroll-rails
     display none
   #left_content
-    transform translateX(-700px)
+    transform translateX(-600px)
     opacity 0
-    transition all .6s ease-out
+    transition all .2s cubic-bezier(1,.01,.69,1)
   #main_content
     padding-top header-height
     .forum
@@ -83,6 +83,7 @@ html.forum, html.profile, html.search
   #left_content
     transform translateX(0)
     opacity 1
+    transition opacity .3s cubic-bezier(1,.01,.69,1)
     .photo, .username
       display none
     .create
