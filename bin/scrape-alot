@@ -1,0 +1,6 @@
+#!/bin/sh -e
+bin/scrape-mma -d 500 -m 10 -f 1 # ug
+bin/scrape-mma -d 500 -m 10 -f 2 # og
+bin/scrape-mma -d 500 -m 10 -f 1006 # photography
+bin/scrape-mma -d 500 -m 10 -f 179 # girl
+bin/scrape-mma -d 500 -m 10 -f 196 # conspiracy
