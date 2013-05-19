@@ -1,5 +1,6 @@
 .hits
   each hit in elres.hits
+    - hit._source.title = hit._source.title || hit._source.thread_title + ' (comment)'
     div
       h2.title #{hit._source.title}
       if env != 'production'

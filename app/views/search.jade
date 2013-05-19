@@ -3,7 +3,7 @@ include _post
 .search.resizable
   #new_hits
   each hit in elres.hits
-    - console.log(hit._source)
+    - hit._source.title = hit._source.title || hit._source.thread_title + ' (comment)'
     mixin _post(hit._source, 0)
     //- div
     //-   if env != 'production'
