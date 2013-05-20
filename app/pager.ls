@@ -148,3 +148,7 @@ module.exports = class Pager
     @init!
     @set-page @current, false
 
+
+Pager.indicator-height       = indicator-height
+Pager.indicator-top          = indicator-top
+Pager.page-from-click-height = page-from-click-height
