@@ -65,11 +65,13 @@ export top-posts = (sort, limit, fields='p.*') ->
   ORDER BY #{sort-expr}
   LIMIT $2
   """
-  (...args) -> plv8.execute sql, args.concat([limit])
+  f = (...args) -> plv8.execute sql, args.concat([limit])
+  f.fields = fields
+  f
 
-sub-posts = (site-id, post-id, limit, offset) ->
-  sql = '''
-  SELECT p.*, a.name user_name, u.photo user_photo
+sub-posts = (site-id, post-id, fields, limit, offset) ->
+  sql = """
+  SELECT #fields, a.name user_name, u.photo user_photo
   FROM posts p
   JOIN aliases a ON a.user_id=p.user_id
   JOIN users u ON u.id=a.user_id
@@ -77,32 +79,35 @@ sub-posts = (site-id, post-id, limit, offset) ->
   WHERE a.site_id=$1
     AND p.parent_id=$2
     AND m.post_id IS NULL
-  ORDER BY created ASC, id ASC
+  ORDER BY p.created ASC, p.id ASC
   LIMIT $3 OFFSET $4
-  '''
+  """
   plv8.execute sql, [site-id, post-id, limit, offset]
 
 # recurses to build entire comment tree
-export sub-posts-tree = sub-posts-tree = (site-id, parent-id, limit, offset, depth=3) ->
-  sp = sub-posts(site-id, parent-id, limit, offset)
+export sub-posts-tree = sub-posts-tree = (site-id, parent-id, fields, limit, offset, depth=3) ->
+  sp = sub-posts(site-id, parent-id, fields, limit, offset)
   if depth <= 0
     # more-posts flag will be used to put 'load more' links,
     # vs not showing the 'load more' links when there are no children yet
     # we only show 'load more' links when we hit an empty child list
     # and if and only if more-posts flag is true
-    [merge(p, {posts: [], more-posts: !!sub-posts(site-id, p.id, limit, 0).length}) for p in sp]
+    [merge(p, {posts: [], more-posts: !!sub-posts(site-id, p.id, fields, limit, 0).length}) for p in sp]
   else
-    [merge(p, {posts: sub-posts-tree(site-id, p.id, limit, 0, depth - 1)}) for p in sp]
+    [merge(p, {posts: sub-posts-tree(site-id, p.id, fields, limit, 0, depth - 1)}) for p in sp]
 
 # gets entire list of top posts and inlines all sub-posts to them
-posts-tree = (site-id, forum-id, top-posts) ->
-  [merge(p, {posts: sub-posts-tree(site-id, p.id, 10, 0)}) for p in top-posts]
+posts-tree = (site-id, forum-id, top-posts, fields) ->
+  [merge(p, {posts: sub-posts-tree(site-id, p.id, fields, 10, 0)}) for p in top-posts]
 
 decorate-menu = (f) ->
   merge f, {forums: [decorate-menu(sf) for sf in sub-forums(f.id, 'id,title,slug,uri,description,media_url')]}
 
 decorate-forum = (f, top-posts-fun) ->
-  merge f, {posts: posts-tree(f.site_id, f.id, top-posts-fun(f.id)), forums: [decorate-forum(sf, top-posts-fun) for sf in sub-forums(f.id)]}
+  # XXX - we needed to pass fields all the way down to sub-posts()
+  # XXX - this was deemed the least awkward way.
+  fields = top-posts-fun.fields
+  merge f, {posts: posts-tree(f.site_id, f.id, top-posts-fun(f.id), fields), forums: [decorate-forum(sf, top-posts-fun) for sf in sub-forums(f.id)]}
 
 export doc = ->
   if res = plv8.execute('SELECT json FROM docs WHERE site_id=$1 AND type=$2 AND key=$3', arguments)[0]
