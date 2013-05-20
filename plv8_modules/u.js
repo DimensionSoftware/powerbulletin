@@ -201,7 +201,7 @@
   };
   out$.homepageForums = homepageForums = function(siteId, sort){
     sort == null && (sort = 'recent');
-    return forumsTree(siteId, topPosts(sort, 10), topForums());
+    return forumsTree(siteId, topPosts(sort, 10, 'p.id,p.thread_id,p.parent_id,p.title,p.uri,p.media_url,p.user_id'), topForums());
   };
   out$.forums = forums = function(forumId, sort){
     var ft;

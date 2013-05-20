@@ -192,7 +192,19 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
   # for O(1) retrieval (assuming hashed index map)
-  doc?.active-forum-id = \homepage
+
+  # unique users at thread level
+  doc.forums |> each ->
+    uniq = {}
+    it.posts = it.posts |> filter ->
+      id = it?user_id
+      r=uniq[id]
+      return unless r
+        uniq[id]=true
+      else
+        false
+
+  doc?active-forum-id = \homepage
   res.locals doc
 
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
@@ -200,7 +212,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
   # cache homepage for 60s
-  caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.vars.site), 60
+  caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.vars.site), 60s
   res.content-type \html
   res.mutant \homepage
 
