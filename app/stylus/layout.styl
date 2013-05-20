@@ -39,7 +39,6 @@ body.waiting, body.waiting a
 
 .nicescroll-rails
   position fixed!important
-  display none
 
 //{{{ Header
 .logo
@@ -178,8 +177,6 @@ header
 //{{{ Left side
 body.paginator
   #left_content
-    .nicescroll-rails
-      display block
     .handle
       right -26px
     #paginator
@@ -189,6 +186,7 @@ body.paginator
       top 0
       bottom 0
       transition width .2s ease-out
+
 #left_content
   position fixed
   left 0
