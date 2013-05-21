@@ -260,7 +260,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
     tasks =
       menu            : db.menu site.id, _
-      sub-posts-tree  : db.sub-posts-tree site.id, post.id, limit, offset, _
+      sub-posts-tree  : db.sub-posts-tree site.id, post.id, 'p.*', limit, offset, _
       sub-posts-count : db.sub-posts-count post.id, _
       top-threads     : db.top-threads post.forum_id, \recent, _
       forum           : db.forum post.forum_id, _
@@ -520,7 +520,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   limit = 5
   offset = (page - 1) * limit
 
-  err, sub-posts <- db.sub-posts-tree res.vars.site.id, post-id, limit, offset
+  err, sub-posts <- db.sub-posts-tree res.vars.site.id, post-id, 'p.*', limit, offset
   if err then return next err
 
   res.json sub-posts

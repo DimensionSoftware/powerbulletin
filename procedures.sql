@@ -221,9 +221,9 @@ CREATE FUNCTION procs.archive_post(post_id JSON) RETURNS JSON AS $$
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION procs.sub_posts_tree(site_id JSON, post_id JSON, lim JSON, oft JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.sub_posts_tree(site_id JSON, post_id JSON, fields JSON, lim JSON, oft JSON) RETURNS JSON AS $$
   require! u
-  return u.sub-posts-tree site_id, post_id, lim, oft
+  return u.sub-posts-tree site_id, post_id, fields, lim, oft
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 -- Users & Aliases {{{
