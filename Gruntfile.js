@@ -119,6 +119,6 @@ module.exports = function(grunt) {
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['procs', 'jade', 'browserify', 'uglify', 'launch', 'watch']);
+  grunt.registerTask('default', ['procs', 'jade', 'livescript', 'browserify', 'uglify', 'launch', 'watch']);
 
 };
