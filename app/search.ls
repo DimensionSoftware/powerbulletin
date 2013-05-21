@@ -24,7 +24,6 @@ parseopts = ({
   q = void
   stream = void
 } = {}) ->
-
   query = {}
   filter = {}
 
