@@ -20,6 +20,7 @@ require! {
   \express/node_modules/connect
   pg: \./postgres
   v: \./varnish
+  m: \./pb-models
 }
 global <<< require \prelude-ls
 
@@ -131,6 +132,7 @@ else
   err <- pg.init
   if err then throw err
   global.db = pg.procs
+  pg.procs <<< { [k,v] for k,v of m when k not in <[orm client driver]> }
 
   err <- v.init
   if err then throw err

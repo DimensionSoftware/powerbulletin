@@ -1,7 +1,7 @@
 require! pg
 require! h: \./shared-helpers
 
-conn-str = "tcp://postgres@localhost/pb"
+export conn-str = "tcp://postgres@localhost/pb"
 
 # underscore foo_bar_car to camelcase fooBarCar
 under2camel = (s) ->
