@@ -23,12 +23,12 @@ global.m   = require \./pb-models
 global.sioa     = require \socket.io-announce
 global.announce = sioa.create-client!
 
+set-timeout (-> v.init!), 1000ms
+set-timeout (-> pg.procs <<< { [k,v] for k,v of global.m when k not in <[orm client driver]> }), 1000ms
+
 err <- pg.init
 if err then throw err
 err <- m.init
 if err then throw err
 err <- el.init
 if err then throw err
-
-set-timeout (-> v.init!), 1000ms
-set-timeout (-> pg.procs <<< { [k,v] for k,v of global.m when k not in <[orm client driver]> }), 1000ms
