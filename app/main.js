@@ -1,5 +1,5 @@
 (function(){
-  var os, fs, async, cluster, express, http, expressResource, expressValidator, stylus, fluidity, auth, ioServer, elastic, connect, pg, v, shelljs, ref$, code, output, proc, app, redirToDomain, cacheApp, apps, server, gracefulShutdown, html_50x, html_404, e, mw, numWorkers, workers, reapWorkers, i$, i, child;
+  var os, fs, async, cluster, express, http, expressResource, stylus, fluidity, ioServer, elastic, connect, pg, v, m, shelljs, ref$, code, output, proc, app, cacheApp, server, gracefulShutdown, html_50x, html_404, e, mw, numWorkers, workers, reapWorkers, i$, i, child;
   require('LiveScript');
   os = require('os');
   fs = require('fs');
@@ -8,15 +8,14 @@
   express = require('express');
   http = require('http');
   expressResource = require('express-resource');
-  expressValidator = require('express-validator');
   stylus = require('stylus');
   fluidity = require('fluidity');
-  auth = require('./auth');
   ioServer = require('./io-server');
   elastic = require('./elastic');
   connect = require('express/node_modules/connect');
   pg = require('./postgres');
   v = require('./varnish');
+  m = require('./pb-models');
   import$(global, require('prelude-ls'));
   shelljs = require('shelljs');
   ref$ = shelljs.exec('git rev-parse HEAD', {
@@ -29,9 +28,7 @@
     throw e;
   });
   app = global.app = express();
-  redirToDomain = express();
   cacheApp = express();
-  apps = [app, redirToDomain, cacheApp];
   server = null;
   gracefulShutdown = function(){
     console.warn('Graceful shutdown started');
@@ -112,110 +109,111 @@
         throw err;
       }
       global.db = pg.procs;
-      return v.init(function(err){
+      return m.init(function(err){
+        var k, v;
         if (err) {
           throw err;
         }
-        v.banAll();
-        return elastic.init(function(err){
-          var i$, ref$, len$, a, errHandler, pbRoutes, maxAge, sock, i, this$ = this;
+        import$(pg.procs, (function(){
+          var ref$, results$ = {};
+          for (k in ref$ = m) {
+            v = ref$[k];
+if (k != 'orm' && k != 'client' && k != 'driver') {
+              results$[k] = v;
+            }
+          }
+          return results$;
+        }()));
+        console.warn("----", keys(db));
+        return v.init(function(err){
           if (err) {
             throw err;
           }
-          global.elc = elastic.client;
-          if (proc.env.NODE_ENV === 'production') {
-            proc.on('uncaughtException', function(err){
-              var timestamp;
-              timestamp = new Date;
-              console.warn('timestamp', timestamp);
-              console.warn(err.message);
-              console.warn('uncaught exception in worker, shutting down');
-              return gracefulShutdown();
-            });
-            proc.on('SIGTERM', function(){
-              console.warn('SIGTERM received by worker, shutting down');
-              return gracefulShutdown();
-            });
-            require('console-trace')({
-              always: true,
-              colors: false
-            });
-          } else {
-            require('console-trace')({
-              always: true,
-              colors: true
-            });
-          }
-          if (app.env === 'development' || app.env === void 8) {
-            app.use(connect.logger({
-              immediate: false,
-              format: 'dev'
-            }));
-          }
-          app.use(express.bodyParser());
-          app.use(expressValidator);
-          for (i$ = 0, len$ = (ref$ = [app]).length; i$ < len$; ++i$) {
-            a = ref$[i$];
-            a.use(mw.vars);
-            a.use(mw.cvars);
-            a.use(mw.multiDomain);
-            a.use(mw.ipLookup);
-            a.use(mw.rateLimit);
-            a.use(express.cookieParser());
-            a.use(express.cookieSession({
-              secret: cvars.secret
-            }));
-            a.use(auth.mw.initialize);
-            a.use(auth.mw.session);
-            a.set('view engine', 'jade');
-            a.set('views', 'app/views');
-            a.enable('json callback');
-            a.enable('trust proxy');
-          }
-          errHandler = function(responder){
-            return function(err, req, res, next){
-              var timestamp, ref$;
-              timestamp = new Date;
-              console.error("\ntimestamp    : " + timestamp + "\nclient_ip    : " + req.headers['x-real-client-ip'] + "\nuser_agent   : " + req.headers['user-agent'] + "\nhttp_method  : " + req.method + "\nurl          : " + (req.headers.host + req.url) + "\nuser         : " + ((ref$ = req.user) != null ? ref$.name : void 8) + "\n\n" + err.stack);
-              responder(res);
-              return gracefulShutdown();
-            };
-          };
-          pbRoutes = require('./pb-routes');
-          app.use(function(err, req, res, next){
-            var explain;
-            if (err === 404) {
-              return res.send(html_404, 404);
-            } else {
-              explain = errHandler(function(res){
-                return res.send(html_50x, 500);
-              });
-              return explain(err, req, res, next);
+          v.banAll();
+          return elastic.init(function(err){
+            var i$, ref$, len$, a, errHandler, pbRoutes, maxAge, sock, i, this$ = this;
+            if (err) {
+              throw err;
             }
+            global.elc = elastic.client;
+            if (proc.env.NODE_ENV === 'production') {
+              proc.on('uncaughtException', function(err){
+                var timestamp;
+                timestamp = new Date;
+                console.warn('timestamp', timestamp);
+                console.warn(err.message);
+                console.warn('uncaught exception in worker, shutting down');
+                return gracefulShutdown();
+              });
+              proc.on('SIGTERM', function(){
+                console.warn('SIGTERM received by worker, shutting down');
+                return gracefulShutdown();
+              });
+              require('console-trace')({
+                always: true,
+                colors: false
+              });
+            } else {
+              require('console-trace')({
+                always: true,
+                colors: true
+              });
+            }
+            if (app.env === 'development' || app.env === void 8) {
+              app.use(connect.logger({
+                immediate: false,
+                format: 'dev'
+              }));
+            }
+            for (i$ = 0, len$ = (ref$ = [app]).length; i$ < len$; ++i$) {
+              a = ref$[i$];
+              a.use(mw.vars);
+              a.use(mw.cvars);
+              a.use(mw.multiDomain);
+              a.use(mw.ipLookup);
+              a.use(mw.rateLimit);
+              a.set('view engine', 'jade');
+              a.set('views', 'app/views');
+              a.enable('json callback');
+              a.enable('trust proxy');
+            }
+            errHandler = function(responder){
+              return function(err, req, res, next){
+                var timestamp, ref$;
+                timestamp = new Date;
+                console.error("\ntimestamp    : " + timestamp + "\nclient_ip    : " + req.headers['x-real-client-ip'] + "\nuser_agent   : " + req.headers['user-agent'] + "\nhttp_method  : " + req.method + "\nurl          : " + (req.headers.host + req.url) + "\nuser         : " + ((ref$ = req.user) != null ? ref$.name : void 8) + "\n\n" + err.stack);
+                responder(res);
+                return gracefulShutdown();
+              };
+            };
+            pbRoutes = require('./pb-routes');
+            app.use(function(err, req, res, next){
+              var explain;
+              if (err === 404) {
+                return res.send(html_404, 404);
+              } else {
+                explain = errHandler(function(res){
+                  return res.send(html_50x, 500);
+                });
+                return explain(err, req, res, next);
+              }
+            });
+            maxAge = DISABLE_HTTP_CACHE
+              ? 0
+              : (60 * 60 * 24 * 365) * 1000;
+            cacheApp.use(express['static']('public', {
+              maxAge: maxAge
+            }));
+            sock = express();
+            for (i$ = 0, len$ = (ref$ = ['', 2, 3, 4, 5]).length; i$ < len$; ++i$) {
+              i = ref$[i$];
+              sock.use(express.vhost(cvars["cache" + i + "Url"].slice(2), cacheApp));
+            }
+            sock.use(app);
+            server = http.createServer(sock);
+            ioServer.init(server);
+            return server.listen(proc.env['NODE_PORT'] || cvars.port);
           });
-          maxAge = DISABLE_HTTP_CACHE
-            ? 0
-            : (60 * 60 * 24 * 365) * 1000;
-          cacheApp.use(express['static']('public', {
-            maxAge: maxAge
-          }));
-          redirToDomain.all('*', function(req, res){
-            var protocol, host, uri, url;
-            protocol = req.headers['x-forwarded-proto'] || 'http';
-            host = req.host.replace(/(m|www)\./, '');
-            uri = req.url;
-            url = "https://" + host + uri;
-            return res.redirect(url, 301);
-          });
-          sock = express();
-          for (i$ = 0, len$ = (ref$ = ['', 2, 3, 4, 5]).length; i$ < len$; ++i$) {
-            i = ref$[i$];
-            sock.use(express.vhost(cvars["cache" + i + "Url"].slice(2), cacheApp));
-          }
-          sock.use(app);
-          server = http.createServer(sock);
-          ioServer.init(server);
-          return server.listen(proc.env['NODE_PORT'] || cvars.port);
         });
       });
     });
