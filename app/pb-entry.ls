@@ -5,7 +5,7 @@ window.furl  = require \./forum-urls
 window.tasks = require \./tasks
 
 global <<< require \./pb-helpers
-global <<< require(\prelude-ls/prelude-browser-min).prelude
+global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
 
 # XXX client-side entry
 # shortcuts
