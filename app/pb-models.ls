@@ -55,4 +55,6 @@ export init = (cb) ->
   @sites.make-site-css = (cb) ->
     cb null, false
 
+  cb null
+
 # vim:fdm=indent
