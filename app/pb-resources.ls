@@ -4,20 +4,10 @@ require! {
   c: \./cache
   h: \./helpers
   sioa: \socket.io-announce
-  \fs
-  \stylus
-  \mkdirp
+  #\stylus # pull in stylus when accepting user's own stylesheets
 }
 
 announce = sioa.create-client!
-
-save-stylus = (domain, stylus) ->
-  base = "public/domains/#domain"
-  err <- mkdirp base
-  if err then console.error \mkdirp.rename, err; return # guard
-  err <- fs.write-file "#base/site.css" stylus
-  if err then console.error \fs.write-file, err; return # "
-  true
 
 @sites =
   update: (req, res, next) ->
@@ -71,7 +61,7 @@ save-stylus = (domain, stylus) ->
       if domain.config.stylus.length then domain.config.stylus += '.has-auth{display:block}'
       err, r <- db.domain-update domain # save!
       if err then return next err
-      save-stylus domain.name, domain.config.stylus
+      db.sites.save-stylus domain.name, domain.config.stylus
       res.json success:true
 @users =
   create : (req, res) ->
