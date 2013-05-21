@@ -18,6 +18,7 @@ global <<< require \./pb-helpers
 global.db  = -> pg.procs
 global.el  = require \./elastic
 global.elc = -> el.client
+global.m   = require \./pb-models
 
 global.sioa     = require \socket.io-announce
 global.announce = sioa.create-client!
@@ -25,3 +26,4 @@ global.announce = sioa.create-client!
 pg.init!
 el.init!
 set-timeout (-> v.init!), 1000ms
+set-timeout (-> pg.procs <<< { [k,v] for k,v of global.m when k not in <[orm client driver]> }), 1000ms
