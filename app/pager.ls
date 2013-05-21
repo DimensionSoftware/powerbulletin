@@ -59,8 +59,6 @@ module.exports = class Pager
       stop: (ev, ui) ~>
         page = page-from-click-height(ui.position.top + Math.floor(@indicator-height/2), @indicator-height)
         # hack to get around jQuery UI bug that doesn't honor the containment
-        if page > @last
-          page = @last
         @set-page page
     })
     @$el.find('a.previous').click (ev) ~>
@@ -92,14 +90,14 @@ module.exports = class Pager
 
   # Change the page to page n
   set-page: (n, use-history=true) ~>
-    @current = n
+    @current = if n > @last then @last else n
     @$el.find \.current
-      .css(top: indicator-top(n, @indicator-height), height: @indicator-height)
-    History.push-state {surf-data: @forum-id}, '', @url-for-page(n) if use-history
+      .css(top: indicator-top(@current, @indicator-height), height: @indicator-height)
+    History.push-state {surf-data: @forum-id}, '', @url-for-page(@current) if use-history
     @set-next-and-previous-links!
     # tooltip
     t = @$el.find \.tooltip
-    show-tooltip t, "Page #n", 4000ms
+    show-tooltip t, "Page #{@current}", 4000ms
 
   # Change to the next page
   next-page: ~>
