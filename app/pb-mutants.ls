@@ -14,8 +14,10 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
   w.$ 'header .menu' .find \.active .remove-class \active # remove prev
   # add current
   w.$ "menu .row .forum-#fid" .add-class \active
-  p = w.$ "menu .submenu .forum-#fid" .parent!add-class \active
-  if p then w.$(last p.parents \li) .find \.title .add-class \active
+  p = w.$ "menu .submenu .forum-#fid"
+  if p.length # subform
+    p.parent!add-class \active
+    w.$(last p.parents \li) .find \.title .add-class \active # get parent, too
 
 # initialize pager
 pager-init = (w) ->
