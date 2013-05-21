@@ -12,10 +12,10 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
   # handle active main menu
   fid = active-forum-id or w.active-forum-id
   w.$ 'header .menu' .find \.active .remove-class \active # remove prev
-  row = w.$ 'menu .row' # add current
-    .has-class ".forum-#fid"
-  if row then row.find \.title .add-class \active
-  w.$ "menu .submenu .forum-#fid" .parent!add-class \active
+  # add current
+  w.$ "menu .row .forum-#fid" .add-class \active
+  p = w.$ "menu .submenu .forum-#fid" .parent!add-class \active
+  if p then w.$(last p.parents \li) .find \.title .add-class \active
 
 # initialize pager
 pager-init = (w) ->
