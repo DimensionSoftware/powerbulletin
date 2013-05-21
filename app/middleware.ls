@@ -62,8 +62,8 @@ require! {
     return next!
 
   # try cookie'd request
-  lat = req.cookies.lat
-  lng = req.cookies.lng
+  lat = req.cookies?lat
+  lng = req.cookies?lng
   if lng and lat # use!
     geo =
       longitude: lng
