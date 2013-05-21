@@ -29,14 +29,6 @@ body.waiting, body.waiting a
 .onclick-logout, .onclick-profile, .admin-only, .has-facebook, .has-google, .has-twitter, .has-auth
   display none
 
-.close
-  cursor pointer
-  line-height 9px
-  text-indent 1px
-  border-radius 10px
-  padding 5px
-  font-size .8em
-
 .nicescroll-rails
   position fixed!important
 
@@ -64,8 +56,15 @@ header
   height header-height
   top 0
   z-index 9
-  .close
+  .onclick-close
     opacity 0
+    cursor pointer
+    line-height 9px
+    text-indent 1px
+    border-radius 10px
+    padding 5px
+    font-size .8em
+
   .container
     width 800px
     margin 0 auto
@@ -450,7 +449,7 @@ html.search
         transition right .2s ease-out
         .check, label
           cursor pointer
-    .close
+    .onclick-close
       cursor pointer
       position absolute
       right 15px
@@ -460,7 +459,7 @@ html.search
       transition opacity .2s ease-out
 html.search body.scrolled
   header
-    .close
+    .onclick-close
       top 7px
 //}}}
 

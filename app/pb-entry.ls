@@ -181,7 +181,7 @@ window.switch-and-focus = (remove, add, focus-on) ->
   $e = $ \.fancybox-wrap
   $e.remove-class("#remove shake slide").add-class(add)
   set-timeout (-> $e.add-class \slide; $ focus-on .focus! ), 10ms
-$d.on \click \.onclick-close ->
+$d.on \click \.onclick-close-fancybox ->
   $.fancybox.close!
 $d.on \click \.onclick-show-login ->
   switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=username]'
@@ -204,8 +204,8 @@ $d.on \keyup '.fancybox-inner input' ->
 $d.on \click 'html header .menu a.title' window.mutate
 
 # search header
-$d.on \click 'header .close' (e) ->
-  $ \#query .focus!
+$d.on \click 'header .onclick-close' (e) ->
+  $ \#query .val('').focus!
   History.back!
 #{{{ - left_nav handle
 $d.on \click \#handle ->
