@@ -138,7 +138,7 @@ else
   if err then throw err
 
   # mixing additional keys into 'db' namespace
-  pg.procs <<< { [k,v] for k,v of m when k not in <[orm client driver]> }
+  do -> pg.procs <<< { [k,v] for k,v of m when k not in <[orm client driver]> }
 
   err <- v.init
   if err then throw err
