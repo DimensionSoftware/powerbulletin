@@ -590,6 +590,7 @@ img.bg.active
   //display block
 //}}}
 
+//{{{ Tooltip
 .tooltip-container:hover .tooltip, .tooltip.hover
   opacity .9
   transform scale(1) rotate(0) translate(0, 0)
@@ -631,4 +632,13 @@ img.bg.active
   top 35%
   right -100px
   width 65px
+//}}}
+//{{{ Masonry
+.masonry, .masonry .masonry-brick
+  transition-duration 0.7s
+.masonry
+  transition-property width, height
+.masonry .masonry-brick
+  transition-property left, right, top
+//}}}
 // vim:fdm=marker

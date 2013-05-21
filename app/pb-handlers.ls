@@ -193,16 +193,16 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
   # for O(1) retrieval (assuming hashed index map)
 
-  # unique users at thread level
+  # FIXME unique users at thread level
+  # - use flatten which requires newer prelude
   doc.forums |> each ->
     uniq = {}
     it.posts = it.posts |> filter ->
       id = it?user_id
       r=uniq[id]
-      return unless r
-        uniq[id]=true
-      else
-        false
+      unless r # add new
+        return uniq[id]=true
+      false
 
   doc?active-forum-id = \homepage
   res.locals doc
