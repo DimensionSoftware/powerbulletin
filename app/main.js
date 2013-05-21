@@ -110,21 +110,22 @@
       }
       global.db = pg.procs;
       return m.init(function(err){
-        var k, v;
         if (err) {
           throw err;
         }
-        import$(pg.procs, (function(){
-          var ref$, results$ = {};
-          for (k in ref$ = m) {
-            v = ref$[k];
+        (function(){
+          var k, v;
+          return import$(pg.procs, (function(){
+            var ref$, results$ = {};
+            for (k in ref$ = m) {
+              v = ref$[k];
 if (k != 'orm' && k != 'client' && k != 'driver') {
-              results$[k] = v;
+                results$[k] = v;
+              }
             }
-          }
-          return results$;
-        }()));
-        console.warn("----", keys(db));
+            return results$;
+          }()));
+        })();
         return v.init(function(err){
           if (err) {
             throw err;
