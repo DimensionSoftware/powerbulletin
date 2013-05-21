@@ -1,5 +1,6 @@
 require! {
   pg: \./postgres
+  v: \./varnish
   c: \./cache
   h: \./helpers
   sioa: \socket.io-announce
@@ -30,10 +31,15 @@ save-stylus = (domain, stylus) ->
     # save site
     switch req.body.action
     | \general =>
+      should-ban = site.config.posts-per-page isnt req.body.posts-per-page
       # extract specific keys
-      site.config <<< { [k, v] for k, v of req.body when k in [\postsPerPage \metaKeywords] }
+      site.config <<< { [k, val] for k, val of req.body when k in [\postsPerPage \metaKeywords] }
       err, r <- db.site-update site
       if err then return next err
+      if should-ban # ban all site's domains in varnish
+        err, domains <- db.domains-by-site-id site.id
+        if err then return next err
+        for d in domains then v.ban-domain d.name
       res.json success:true
 
     | \domains =>
