@@ -337,5 +337,6 @@ end-search = ->
   on-unload:
     (window, next-mutant, next) ->
       end-search!
+      delete window.searchopts # reset filter state so it doesn't come back to haunt us
       next!
 # vim:fdm=indent
