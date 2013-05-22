@@ -92,7 +92,7 @@ window.$ui = $ {}
 
 window.r-searchopts = $R.state window.searchopts
 
-$d.on \keyup, \#query, __.debounce (->
+do ->
   # keys that aren't allowed to trigger the search
   # use hashmap so its O(1)
   const blacklist = {
@@ -108,19 +108,20 @@ $d.on \keyup, \#query, __.debounce (->
     224:1 # mac command key
   }
 
-  q = $(@).val!
+  $d.on \keyup, \#query, __.debounce (->
+    q = $(@).val!
 
-  # ignore special keys
-  unless blacklist[it.which]
-    if it.which is 13 # enter key
-      submit-type = \hard
-    else
-      submit-type = \soft
+    # ignore special keys
+    unless blacklist[it.which]
+      if it.which is 13 # enter key
+        submit-type = \hard
+      else
+        submit-type = \soft
 
-    console.log "keyup:#{it.which} triggered a #{submit-type} search"
+      console.log "keyup:#{it.which} triggered a #{submit-type} search"
 
-    r-searchopts({} <<< window.searchopts <<< {q, submit-type})
-), 500ms
+      r-searchopts({} <<< window.searchopts <<< {q, submit-type})
+  ), 500ms
 
 $d.on \change, '#query_filters [name=forum_id]', ->
   submit-type = \soft
