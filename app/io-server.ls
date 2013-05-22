@@ -118,15 +118,19 @@ site-by-domain = (domain, cb) ->
         search-room := null
 
     # client will get subscribed to said query room
-    socket.on \search, (q) ->
+    socket.on \search, (searchopts) ->
       if search-room
         socket.emit \debug, "leaving room: #{search-room}"
         socket.leave search-room
         search-room := null
 
-      search-room := "#{site.id}/q/#{encode-URI-component(q.to-lower-case!)}"
+      # same thing as jquery's $.param
+      param = (obj) -> ["#{k}=#{v}" for k,v of obj].join('&')
+
+      search-room := "#{site.id}/search/#{encode-URI-component(param(searchopts))}"
+
       socket.emit \debug, "joining room: #{search-room}"
       socket.join search-room
 
       # register search with the search notifier
-      io.sockets.emit \register-search, {q, site-id: site.id, room: search-room}
+      io.sockets.emit \register-search, {searchopts, site-id: site.id, room: search-room}

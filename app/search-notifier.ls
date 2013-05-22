@@ -3,6 +3,7 @@ require! {
   elastic: './elastic'
   RedisStore: 'socket.io/lib/stores/redis'
   redis: 'socket.io/node_modules/redis'
+  s: \./search
   sio: 'socket.io'
   sioc: 'socket.io-client'
 }
@@ -36,7 +37,7 @@ init-ioc = (port) ->
 
 # poller has these properties:
 # * room (name of socket.io room to emit results to)
-# * q (querystring)
+# * searchopts (including q (querystring))
 # * site-id (site-id to query)
 new-poller = (io, elc, poller) ->
   # randomize work interval so we make better use of event architecture
@@ -57,8 +58,8 @@ new-poller = (io, elc, poller) ->
       ch = io.sockets.in(poller.room)
       console.log "work tick for room #{poller.room}"
       now = new Date
-      # XXX: integrate actual searchopts into date range query
-      err, res <- elc.search {query: {range: {created: {from: cutoff.to-ISO-string!, to: now.to-ISO-string!, include_upper: false}}}}
+      popts = ({} <<< poller.searchopts) <<< {stream: {cutoff, now}}
+      err, res <- s.search popts
       if err then throw err
       cutoff := now
       # XXX: replace this emit with a ch.emit \new-post

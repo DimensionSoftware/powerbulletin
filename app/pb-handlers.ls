@@ -11,6 +11,7 @@ require! {
   pg:   \./postgres
   auth: \./auth
   furl: \./forum-urls
+  s: \./search
 }
 
 announce = require(\socket.io-announce).create-client!
@@ -43,6 +44,41 @@ is-admin   = /\/admin.*/
   else
     console.warn "no passport for #{domain}"
     res.send "500", 500
+
+@forgot = (req, res, next) ->
+  db    = pg.procs
+  site  = res.vars.site
+  email = req.body.email
+
+  console.warn req.header \Referrer
+
+  if not email
+    res.json success: false, errors: [ 'Blank email' ]
+    return
+
+  err, user <- db.usr { email, site_id: site.id }
+  if err
+    res.json success: false, errors: [ err ]
+    return
+
+  console.log \user, user
+  if user
+    err, user-forgot <- auth.user-forgot-password user
+    if err
+      res.json success: false, errors: [ err ]
+      return
+    console.log \user-forgot, user-forgot
+
+    err <- auth.send-recovery-email user-forgot, site
+    if err
+      res.json success: false, errors: [ err ]
+    else
+      res.json success: true
+  else
+    res.json success: false, errors: [ 'User not found' ]
+
+@reset-password = (req, res, next) ->
+  res.json success: false
 
 # TODO - validate username
 @choose-username = (req, res, next) ->
@@ -273,6 +309,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
         delete tasks.menu
 
     err, fdoc <- async.auto tasks
+    console.warn err, keys(fdoc)
     if err   then return next err
     if !fdoc then return next 404
     if page > 1 and fdoc.sub-posts-tree.length < 1 then return next 404
@@ -415,7 +452,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     else if r
       res.json success: false, errors:[msg:'User name in-use']
     else
-      err, vstring <~ auth.unique-verify-string-for-site site.id
+      err, vstring <~ auth.unique-hash \verify, site.id
       if err then return next err
       u =
         type    : \local
@@ -555,23 +592,12 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 
 @search = (req, res, next) ->
   site = res.vars.site
-  elquery =
-    index: \pb
-    type: \post
-
-  var q
-  if req.query.q
-    q = req.query.q.to-lower-case!
-    announce.emit \register-query q
-
-
-  elquery.query = q
 
   err, menu <- db.menu res.vars.site.id
   if err then return next err
   res.locals {menu}
 
-  err, elres <- elc.search elquery
+  err, elres <- s.search req.query
   if err then return next(err)
 
   for h in elres.hits
@@ -579,7 +605,20 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 
   res.locals {elres}
 
-  res.locals.searchopts = {q: req.query.q}
+  cleanup-searchopts = (opts) ->
+    const key-blacklist =
+      * \_surf
+      * \_surfData
+      * \_surfTasks
+
+    opts = {} <<< opts
+
+    for key in key-blacklist
+      delete opts[key]
+
+    return opts
+
+  res.locals.searchopts = cleanup-searchopts req.query
 
   res.mutant \search
 # vim:fdm=indent
