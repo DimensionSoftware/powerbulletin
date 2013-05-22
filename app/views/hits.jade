@@ -6,16 +6,18 @@ mixin forumOptions(forums, prefix)
 .hits
   h3 Filter your Search
   #query_filters
-    label
-      select(name='forum_id')
-        option(value='') All Forums
-        mixin forumOptions(menu, '')
-      strong Forum
+    div
+      label
+        h4 Forum
+        select(name='forum_id')
+          option(value='') All Forums
+          mixin forumOptions(menu, '')
 
-    label
-      select(name='within')
-        option(value='') Any Time
-        option(value='day') Within Last Day
-        option(value='week') Within Last Week
-        option(value='month') Within Last Month
-      strong Time Period
+    div
+      label
+        h4 Time Period
+        select(name='within')
+          option(value='') Any Time
+          option(value='day') Within Last Day
+          option(value='week') Within Last Week
+          option(value='month') Within Last Month
