@@ -1,7 +1,10 @@
 .hits
-  each hit in elres.hits
-    - hit._source.title = hit._source.title || hit._source.thread_title + ' (comment)'
-    div
-      h2.title #{hit._source.title}
-      if env != 'production'
-        div score: #{hit._score}
+  #query_filters
+    label
+      select(name='forum_id')
+        option(value='') All Forums
+        option(value=1) Forum 1
+        option(value=2) Forum 2
+        option(value=3) Forum 3
+      strong
+        Forum

@@ -90,6 +90,8 @@ $ \#query .focus!
 # window.ui is the object which will receive events and have events triggered on it
 window.$ui = $ {}
 
+window.r-searchopts = $R.state window.searchopts
+
 $d.on \keyup, \#query, __.debounce (->
   # keys that aren't allowed to trigger the search
   # use hashmap so its O(1)
@@ -115,17 +117,31 @@ $d.on \keyup, \#query, __.debounce (->
     else
       submit-type = \soft
 
-    console.log "#{it.which} triggered a #{submit-type} search"
-    $ui.trigger \search, {submit-type, q}
+    console.log "keyup:#{it.which} triggered a #{submit-type} search"
+    r-searchopts({} <<< window.searchopts <<< {q, submit-type})
 ), 500ms
 
-$ui.on \search, (e, searchopts) ->
-  should-replace = searchopts.submit-type is \soft
+$d.on \change, '#query_filters [name=forum_id]', ->
+  submit-type = \soft
+  forum_id = $(@).val!
+
+  newopts = {} <<< window.searchopts <<< {forum_id, submit-type}
+
+  # blank forum_id means 'all forums'
+  # this is the implicit default so delete the key for cleanliness
+  delete newopts.forum_id unless forum_id
+
+  r-searchopts(newopts)
+
+$R((sopts) ->
+  console.log 'search request:', sopts
+
+  should-replace = sopts.submit-type is \soft
 
   # cleanup so it doesn't end up in url, only used to figure out push vs replace
-  delete searchopts.submit-type
+  delete sopts.submit-type
 
-  uri = "/search?#{$.param searchopts}"
+  uri = "/search?#{$.param sopts}"
 
   window.last-statechange-was-user = false # flag that this was programmer, not user
   if should-replace
@@ -133,7 +149,7 @@ $ui.on \search, (e, searchopts) ->
   else
     History.push-state {}, '', uri
 
-window.r-searchopts = $R.state! # reactive state used by search mutant
+).bind-to(r-searchopts)
 
 $ui.on \thread-create, (e, thread) ->
   console.info 'thread-create', thread

@@ -286,7 +286,10 @@ end-search = ->
 @search =
   static:
     (window, next) ->
+      # be smart about rendering the left container
+      # XXX/TODO: never reload filters once we are searching
       window.render-mutant \left_container \hits
+
       window.render-mutant \main_content \search
 
       if History?
@@ -306,6 +309,9 @@ end-search = ->
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
       window.marshal \searchopts @searchopts
+
+      # initial filter state
+      window.$('#query_filters [name=forum_id]').val @searchopts.forum_id
 
       layout-static window, \search
       next!
