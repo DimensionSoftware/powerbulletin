@@ -2,9 +2,17 @@ include _post
 
 .search.resizable
   #new_hits
-  each hit in elres.hits
-    - hit._source.title = hit._source.title || hit._source.thread_title + ' (comment)'
-    mixin _post(hit._source, 0)
+
+  div
+    strong#hit_count #{elres.total} Hits!
+
+  if elres.hits.length
+    each hit in elres.hits
+      - hit._source.title = hit._source.title || hit._source.thread_title + ' (comment)'
+      mixin _post(hit._source, 0)
+  else
+    div
+      strong Enter some less restrictive terms you silly goose!
     //- div
     //-   if env != 'production'
     //-     strong #{hit._source.title} (score: #{hit._score})

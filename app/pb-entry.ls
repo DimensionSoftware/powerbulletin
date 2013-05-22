@@ -109,16 +109,19 @@ $d.on \keyup, \#query, __.debounce (->
   }
 
   q = $(@).val!
-  is-del = it.which is 8
-  # ignore special keys & delete, also ignore empty querystring
-  if q.length and (is-del or !blacklist[it.which])
+  # ignore special keys
+  unless blacklist[it.which]
     if it.which is 13 # enter key
       submit-type = \hard
     else
       submit-type = \soft
 
     console.log "keyup:#{it.which} triggered a #{submit-type} search"
-    r-searchopts({} <<< window.searchopts <<< {q, submit-type})
+
+    newopts = {} <<< window.searchopts <<< {q, submit-type}
+    delete newopts.q unless q
+
+    r-searchopts(newopts)
 ), 500ms
 
 $d.on \change, '#query_filters [name=forum_id]', ->
@@ -126,9 +129,6 @@ $d.on \change, '#query_filters [name=forum_id]', ->
   forum_id = $(@).val!
 
   newopts = {} <<< window.searchopts <<< {forum_id, submit-type}
-
-  # blank forum_id means 'all forums'
-  # this is the implicit default so delete the key for cleanliness
   delete newopts.forum_id unless forum_id
 
   r-searchopts(newopts)
