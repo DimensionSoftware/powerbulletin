@@ -145,15 +145,22 @@ app.get '/:forum/most-active',
   mmw.mutant-layout(\layout, mutants),
   handlers.forum
 
-# forum + post
-app.all new RegExp('/(.+)/t/(.+)'),
-  mw.add-js(common-js),
-  mw.add-css(common-css),
-  mmw.mutant-layout(\layout, mutants),
-  handlers.forum
 
-# personal-mw so we can create new posts, but thats it!
-app.all new RegExp('/new$'),
+# XXX: TODO, FURL needs to take into account these cases so i can get rid of dependent
+# hacky regexps:
+# * /new/new
+# * /t/ is a forum?
+# * need to know about distinct state 'edit post'
+# * need to know about distinct state 'new post'
+#
+# if the above is satisfied, then i can stop capturing below ()
+# and stop using captured params in the handler itself
+# instead furl will provide all i need..
+# these regexps at that point will only serve to differentiate
+# between running the personalize mw or not
+
+# personal-mw so we can edit posts
+app.all new RegExp('^(.+)/t/([^/]+/edit/[^/]+)$'),
   personal-mw ++ [
     mw.add-js(common-js),
     mw.add-css(common-css),
@@ -161,8 +168,24 @@ app.all new RegExp('/new$'),
   mmw.mutant-layout(\layout, mutants),
   handlers.forum
 
-# bare forum (catch all)
-app.all new RegExp('/(.+)'),
+# forum + post depersonalized
+app.all new RegExp('^(.+)/t/(.+)$'),
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.forum
+
+# personal-mw so we can create new posts
+app.all new RegExp('^(.+)/new$'),
+  personal-mw ++ [
+    mw.add-js(common-js),
+    mw.add-css(common-css),
+  ],
+  mmw.mutant-layout(\layout, mutants),
+  handlers.forum
+
+# bare forum (catch all / depersonalized)
+app.all new RegExp('^(.+)$'),
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
