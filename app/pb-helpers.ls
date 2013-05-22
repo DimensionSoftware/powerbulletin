@@ -33,7 +33,7 @@ timers = {}
   | otherwise   => false
 
 @remove-editing-url = (meta) ->
-  History.push-state {no-surf:true} '' meta.thread-uri
+  History.replace-state {no-surf:true} '' meta.thread-uri
 
 @scroll-to-edit = (cb) ->
   cb = -> noop=1 unless cb

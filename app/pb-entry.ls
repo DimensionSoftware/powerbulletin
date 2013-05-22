@@ -196,7 +196,7 @@ submit = require-login(
     meta = furl.parse window.location.pathname
     window.last-statechange-was-user = false # flag that this was programmer, not user
     switch meta.type
-    | \new-thread => History.push-state {} '' data.uri
+    | \new-thread => History.replace-state {} '' data.uri
     | \edit       => remove-editing-url meta
     false))
 $d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then submit it
