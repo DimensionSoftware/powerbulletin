@@ -200,7 +200,13 @@ submit = require-login(
     | \edit       => remove-editing-url meta
     false))
 $d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then submit it
-$d.on \click 'html.profile .onclick-submit input[type="submit"], html.forum .onclick-submit input[type="submit"]' submit
+
+submit-selectors =
+  * "html.profile .onclick-submit input[type='submit']"
+  * "html.forum .onclick-submit input[type='submit']"
+  * "html.search .onclick-submit input[type='submit']"
+
+$d.on \click, submit-selectors.join(', '), submit
 
 $d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post require-login(censor)
