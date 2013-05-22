@@ -42,7 +42,7 @@ init-ioc = (port) ->
 new-poller = (io, elc, poller) ->
   # randomize work interval so we make better use of event architecture
   # but only but a small amount
-  work-interval = 1200 + (Math.floor (Math.random! * 300)) # in ms
+  work-interval = 5000 + (Math.floor (Math.random! * 500)) # in ms
 
   now = new Date
   cutoff = new Date(now - work-interval)
@@ -56,7 +56,7 @@ new-poller = (io, elc, poller) ->
       busy := true
 
       ch = io.sockets.in(poller.room)
-      console.log "work tick for room #{poller.room}"
+      #console.log "work tick for room #{poller.room}"
       now = new Date
       popts = ({} <<< poller.searchopts) <<< {stream: {cutoff, now}}
       err, res <- s.search popts
@@ -78,10 +78,10 @@ new-poller = (io, elc, poller) ->
 
 debug-info = (io, pollers) ->
   rooms = {[room, clients.length] for room, clients of io.sockets.manager.rooms}
-  console.log '--DEBUG: ROOMS'
-  console.log rooms
-  console.log '--DEBUG: POLLERS'
-  console.log Object.keys(pollers)
+  #console.log '--DEBUG: ROOMS'
+  #console.log rooms
+  #console.log '--DEBUG: POLLERS'
+  #console.log Object.keys(pollers)
 
 stop-inactive-pollers = (io, pollers) ->
   rooms = io.sockets.manager.rooms

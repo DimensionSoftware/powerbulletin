@@ -22,33 +22,42 @@ require! {
 # WARNING: does not do any protection against injection so this should happen in the controller
 parseopts = ({
   q = void
+  forum_id = void
   stream = void
 } = {}) ->
   query = {}
-  filter = {}
+  filters = []
 
   # modify query / filter here with series of conditions based on opts
   if q
     query.query_string =
       query: q
 
+  if forum_id
+    filters.push {
+      term: {forum_id}
+    }
+
   if stream
-    filter.range =
-      created:
-        from: stream.cutoff.to-ISO-string!
-        to: stream.now.to-ISO-string!
-        include_upper: false
+    filters.push {
+      range:
+        created:
+          from: stream.cutoff.to-ISO-string!
+          to: stream.now.to-ISO-string!
+          include_upper: false
+    }
 
   # cleanup so elastic doesn't freak if query / filter are empty
   rval = {}
   rval <<< {query} if Object.keys(query).length
-  rval <<< {filter} if Object.keys(filter).length
+  rval <<< {filter: {and: filters}} if filters.length
 
   rval
 
 # usage on repl:
 #   s.search q: \mma, console.log
 @search = (searchopts, cb) ->
-  console.log parsed: JSON.stringify(parseopts(searchopts))
   elc = el.client # XXX: argh..... lol
+
   elc.search parseopts(searchopts), cb
+
