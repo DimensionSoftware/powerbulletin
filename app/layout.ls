@@ -275,10 +275,9 @@ window.require-login = (fn) ->
 $d.on \click \.require-login require-login(-> this.click)
 
 # forgot password
-window.forgot = ->
+window.forgot-password = ->
   $form = $ this
   $.post $form.attr(\action), $form.serialize!, (r) ->
-    console.log r
     if r.success
       show-tooltip $form.find(\.tooltip), "Recovery link emailed!"
     else
@@ -286,7 +285,36 @@ window.forgot = ->
       shake-dialog $form, 100ms
   return false
 
-$d.on \submit '.forgot form' forgot
+$d.on \submit '.forgot form' forgot-password
+
+window.show-reset-password-dialog = ->
+  $form = $ '#auth .reset form'
+  show-login-dialog!
+  switch-and-focus '', \on-reset, '#auth .reset input:first'
+  hash = location.hash.split('=')[1]
+  $form.find('input[type=hidden]').val(hash)
+  $.post '/auth/forgot-user', { forgot: hash }, (r) ->
+    if r.success
+      $form .find 'h2:first' .html 'Choose a New Password'
+      $form .find('input').prop('disabled', false)
+    else
+      $form .find 'h2:first' .html "Couldn't find you. :("
+
+window.reset-password = ->
+  $form = $ this
+  password = $form.find('input[name=password]').val!
+  if password.match /^\s*$/
+    show-tooltip $form.find(\.tooltip), "Password may not be blank."
+    return false
+  $.post $form.attr(\action), $form.serialize!, (r) ->
+    if r.success
+      show-tooltip $form.find(\.tooltip), "Your password has been changed."
+      $form.find('input[name=password]').val('')
+    else
+      show-tooltip $form.find(\.tooltip), "Choose a better password."
+  return false
+
+$d.on \submit '.reset form' reset-password
 
 # 3rd-party auth
 $ '.social a' .click ->
@@ -344,9 +372,14 @@ onload-resizable!
 # run initial mutant & personalize ( based on parameters from user obj )
 window.user <- $.getJSON \/auth/user
 onload-personalize!
+
+if window.location.hash.match /^\#recover=/
+  show-reset-password-dialog!
+
 window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}, ->
   mutant = window.mutants?[window.initial-mutant]
   if mutant.on-personalize
     mutant.on-personalize window, window.user, (->)
+
 
 # vim:fdm=marker

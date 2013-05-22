@@ -84,6 +84,8 @@ app.post '/auth/choose-username', personal-mw, handlers.choose-username
 app.get  '/auth/user',            personal-mw, handlers.user
 app.get  '/auth/verify/:v',       personal-mw, handlers.verify
 app.post '/auth/forgot',          personal-mw, handlers.forgot
+app.post '/auth/forgot-user'      personal-mw, handlers.forgot-user
+app.post '/auth/reset-password'   personal-mw, handlers.reset-password
 
 app.get  '/auth/facebook',        personal-mw, handlers.login-facebook
 app.get  '/auth/facebook/return', personal-mw, handlers.login-facebook-return

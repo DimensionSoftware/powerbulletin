@@ -372,6 +372,14 @@ CREATE FUNCTION procs.alias_unique_hash(field JSON, site_id JSON, hash JSON) RET
   return plv8.execute(sql, [site_id, hash])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+-- find an alias by site_id and verify string
+CREATE FUNCTION procs.alias_blank(usr JSON) RETURNS JSON AS $$
+  sql = """
+  UPDATE aliases SET forgot = NULL WHERE user_id = $1 AND site_id = $2 RETURNING *
+  """
+  return plv8.execute(sql, [usr.id, usr.site_id])[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 --
 CREATE FUNCTION procs.verify_user(site_id JSON, verify JSON) RETURNS JSON AS $$
   sql = '''
@@ -392,6 +400,8 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
       ["a.name = $1", [usr.name, usr.site_id]]
     else if usr.email
       ["u.email = $1", [usr.email, usr.site_id]]
+    else if usr.forgot
+      ["a.forgot = $1", [usr.forgot, usr.site_id]]
 
   sql = """
   SELECT

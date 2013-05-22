@@ -77,8 +77,45 @@ is-admin   = /\/admin.*/
   else
     res.json success: false, errors: [ 'User not found' ]
 
+@forgot-user = (req, res, next) ->
+  site = res.vars.site
+  hash = req.body.forgot
+  err, user <- db.usr forgot: hash, site_id: site.id
+  if err
+    return res.json success: false, errors: [ err ]
+  if user
+    res.json success: true
+  else
+    res.json success: false, errors: [ "User not found" ]
+
 @reset-password = (req, res, next) ->
-  res.json success: false
+  site = res.vars.site
+  hash = req.body.forgot
+  password = req.body.password
+
+  err, user <- db.usr forgot: hash, site_id: site.id
+  if err
+    console.warn \usr, err
+    return res.json success: false, errors: [ err ]
+
+  if user
+    auths-local = user.auths.local
+    auths-local.password = auth.hash password
+    auths-json = JSON.stringify auths-local
+    err <- db.auths.update criteria: { type: \local, user_id: user.id }, data: { profile: auths-json }
+    if err
+      console.warn \auths-update, err
+      return res.json success: false, errors: [ err ]
+
+    err <- db.alias-blank user
+    if err
+      console.warn \alias-blank, err
+      return res.json success: false, errors: [ err ]
+
+    res.json success: true
+  else
+    console.warn \usr, "User not found"
+    res.json success: false, errors: [ "User not found" ]
 
 # TODO - validate username
 @choose-username = (req, res, next) ->

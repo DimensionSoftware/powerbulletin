@@ -1,10 +1,11 @@
 .reset(style="display:none;")
   form(method="post", action="/auth/reset-password")
     label(for="password")
-      h2 Choose a new Password
-        i !
+      h2 Authenticating...
     fieldset
-      input(id="password", name="password", type="text", placeholder="Password", disabled="disabled")
+      .tooltip
+      input(id="password", name="password", type="password", placeholder="Password", disabled="disabled")
+      input(type="hidden", name="forgot")
       input(type="submit", value="Save", disabled="disabled")
       a.msg.onclick-show-login
         h3 Back
