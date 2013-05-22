@@ -119,29 +119,20 @@ $d.on \keyup, \#query, __.debounce (->
 
     console.log "keyup:#{it.which} triggered a #{submit-type} search"
 
-    newopts = {} <<< window.searchopts <<< {q, submit-type}
-    delete newopts.q unless q
-
-    r-searchopts(newopts)
+    r-searchopts({} <<< window.searchopts <<< {q, submit-type})
 ), 500ms
 
 $d.on \change, '#query_filters [name=forum_id]', ->
   submit-type = \soft
   forum_id = $(@).val!
 
-  newopts = {} <<< window.searchopts <<< {forum_id, submit-type}
-  delete newopts.forum_id unless forum_id
-
-  r-searchopts(newopts)
+  r-searchopts({} <<< window.searchopts <<< {forum_id, submit-type})
 
 $d.on \change, '#query_filters [name=within]', ->
   submit-type = \soft
   within = $(@).val!
 
-  newopts = {} <<< window.searchopts <<< {within, submit-type}
-  delete newopts.within unless within
-
-  r-searchopts(newopts)
+  r-searchopts({} <<< window.searchopts <<< {within, submit-type})
 
 $R((sopts) ->
   should-search = sopts.submit-type is \hard or (window.hints.current?mutator is \search)
@@ -149,6 +140,9 @@ $R((sopts) ->
 
   # cleanup so it doesn't end up in url, only used to figure out push vs replace
   delete sopts.submit-type
+
+  # strip out '', null, undefined, and 0 from querystring to keep it prety
+  [k for k,v of sopts when not v].map -> delete sopts[it]
 
   if should-search
     console.log 'search request:', sopts
