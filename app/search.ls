@@ -1,6 +1,11 @@
 require! {
   el: \./elastic
 }
+
+const day-ms = 24h * 60m * 60s * 1000ms
+const week-ms = day-ms * 7
+const month-ms = day-ms * 30
+
 # randomize work interval so we make better use of event architecture
 # # but only but a small amount
 # work-interval = 1200 + (Math.floor (Math.random! * 300)) # in ms
@@ -23,6 +28,7 @@ require! {
 parseopts = ({
   q = void
   forum_id = void
+  within = void
   stream = void
 } = {}) ->
   query = {}
@@ -36,6 +42,20 @@ parseopts = ({
   if forum_id
     filters.push {
       term: {forum_id}
+    }
+
+  if within
+    now = new Date
+    duration-ms =
+      switch within
+      | \day   => day-ms
+      | \week  => week-ms
+      | \month => month-ms
+
+    filters.push {
+      range:
+        created:
+          from: (new Date(now - duration-ms)).to-ISO-string!
     }
 
   if stream
