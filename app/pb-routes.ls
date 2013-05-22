@@ -150,6 +150,15 @@ app.all new RegExp('/(.+)/t/(.+)'),
   mmw.mutant-layout(\layout, mutants),
   handlers.forum
 
+# personal-mw so we can create new posts, but thats it!
+app.all new RegExp('/new$'),
+  personal-mw ++ [
+    mw.add-js(common-js),
+    mw.add-css(common-css),
+  ],
+  mmw.mutant-layout(\layout, mutants),
+  handlers.forum
+
 # bare forum (catch all)
 app.all new RegExp('/(.+)'),
   mw.add-js(common-js),
