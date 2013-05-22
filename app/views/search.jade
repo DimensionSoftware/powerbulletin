@@ -8,8 +8,13 @@ include _post
 
   if elres.hits.length
     each hit in elres.hits
-      - hit._source.title = hit._source.title || hit._source.thread_title + ' (comment)'
-      mixin _post(hit._source, 0)
+      - hit._source.title = hit._source.thread_title
+      if hit._source.id == hit._source.thread_id
+        .thread-hit
+          mixin _post(hit._source, 0)
+      else
+        .comment-hit
+          mixin _post(hit._source, 0)
   else
     div
       strong Enter some less restrictive terms you silly goose!
