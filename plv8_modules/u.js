@@ -19,6 +19,25 @@
     }
     return title;
   };
+  out$.unique = unique = function(xs){
+    var result, i$, len$, x;
+    result = [];
+    for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+      x = xs[i$];
+      if (!in$(x, result)) {
+        result.push(x);
+      }
+    }
+    return result;
+  };
+  out$.map = map = curry$(function(f, xs){
+    var i$, len$, x, results$ = [];
+    for (i$ = 0, len$ = xs.length; i$ < len$; ++i$) {
+      x = xs[i$];
+      results$.push(f(x));
+    }
+    return results$;
+  });
   topForums = function(limit, fields){
     var sql;
     fields == null && (fields = '*');
@@ -222,5 +241,23 @@
     var own = {}.hasOwnProperty;
     for (var key in src) if (own.call(src, key)) obj[key] = src[key];
     return obj;
+  }
+  function in$(x, arr){
+    var i = -1, l = arr.length >>> 0;
+    while (++i < l) if (x === arr[i] && i in arr) return true;
+    return false;
+  }
+  function curry$(f, bound){
+    var context,
+    _curry = function(args) {
+      return f.length > 1 ? function(){
+        var params = args ? args.concat() : [];
+        context = bound ? context || this : this;
+        return params.push.apply(params, arguments) <
+            f.length && arguments.length ?
+          _curry.call(context, params) : f.apply(context, params);
+      } : f;
+    };
+    return _curry();
   }
 }).call(this);

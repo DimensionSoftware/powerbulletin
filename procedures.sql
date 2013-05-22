@@ -29,7 +29,7 @@ CREATE FUNCTION procs.post(id JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON AS $$
-  require! \prelude
+  require! u
   sql = '''
   SELECT
   p.*,
@@ -55,7 +55,7 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
       FROM posts p
         LEFT JOIN aliases a ON a.user_id=p.user_id
         LEFT JOIN posts f ON f.id=p.forum_id
-      WHERE p.id IN (#{(prelude.unique [p.thread_id for p,i in posts]).join(', ')})
+      WHERE p.id IN (#{(u.unique [p.thread_id for p,i in posts]).join(', ')})
     """
     ctx = plv8.execute(thread-sql, [])
 
@@ -201,13 +201,13 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- @param   Array  tags    an array of tags as strings
 -- @returns Array          an array of tag objects
 CREATE FUNCTION procs.add_tags_to_post(post_id JSON, tags JSON) RETURNS JSON AS $$
-  require! \prelude
+  require! u
   if not tags or tags.length == 0 then return null
-  unique-tags = prelude.unique tags
+  unique-tags = u.unique tags
   add-tags    = plv8.find_function('procs.add_tags')
   added-tags  = add-tags unique-tags
   sql         = 'INSERT INTO tags_posts (tag_id, post_id) VALUES ' + (["($#{parse-int(i)+2}, $1)" for v,i in added-tags]).join(', ')
-  params      = [post_id, ...(prelude.map (.id), added-tags)]
+  params      = [post_id, ...(u.map (.id), added-tags)]
   res         = plv8.execute sql, params
   plv8.elog WARNING, "add-tags-to-post -> #{JSON.stringify({res, params})}"
   return added-tags

@@ -6,7 +6,7 @@ require! {
 
 #{{{ String functions
 @add-commas = (s) -> # 1234 -> 1,234
-  (s |> reverse) .split /(\d{3})/ .filter (.length) .join \, |> reverse
+  (s |> Str.reverse) .split /(\d{3})/ .filter (.length) .join \, |> Str.reverse
 
 @title-case = (s) ->
   s?replace /[\w]\S*/g, (word) ->
