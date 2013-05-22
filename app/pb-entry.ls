@@ -147,7 +147,8 @@ $R((sopts) ->
 
   if should-search
     console.log 'search request:', sopts
-    uri = "/search?#{$.param sopts}"
+    qs = $.param sopts
+    uri = "/search#{if qs then \? else ''}#{qs}"
 
     window.last-statechange-was-user = false # flag that this was programmer, not user
     if should-replace

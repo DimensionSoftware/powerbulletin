@@ -287,7 +287,7 @@ end-search = ->
   static:
     (window, next) ->
       # only render left side on first time to search
-      unless window.hints?last?mutator is \search
+      unless window.hints?current?mutator is \search
         console.log 'rendering leftbar in search'
         window.render-mutant \left_container \hits
       else
