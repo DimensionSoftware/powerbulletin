@@ -133,6 +133,8 @@ $ui.on \search, (e, searchopts) ->
   else
     History.push-state {}, '', uri
 
+window.r-searchopts = $R.state! # reactive state used by search mutant
+
 $ui.on \thread-create, (e, thread) ->
   console.info 'thread-create', thread
   <- render-and-prepend window,  $('#left_container .threads'), \thread, thread:thread

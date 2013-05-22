@@ -11,6 +11,7 @@ require! {
   pg:   \./postgres
   auth: \./auth
   furl: \./forum-urls
+  s: \./search
 }
 
 announce = require(\socket.io-announce).create-client!
@@ -591,23 +592,12 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 
 @search = (req, res, next) ->
   site = res.vars.site
-  elquery =
-    index: \pb
-    type: \post
-
-  var q
-  if req.query.q
-    q = req.query.q.to-lower-case!
-    announce.emit \register-query q
-
-
-  elquery.query = q
 
   err, menu <- db.menu res.vars.site.id
   if err then return next err
   res.locals {menu}
 
-  err, elres <- elc.search elquery
+  err, elres <- s.search req.query
   if err then return next(err)
 
   for h in elres.hits
@@ -615,7 +605,20 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 
   res.locals {elres}
 
-  res.locals.searchopts = {q: req.query.q}
+  cleanup-searchopts = (opts) ->
+    const key-blacklist =
+      * \_surf
+      * \_surfData
+      * \_surfTasks
+
+    opts = {} <<< opts
+
+    for key in key-blacklist
+      delete opts[key]
+
+    return opts
+
+  res.locals.searchopts = cleanup-searchopts req.query
 
   res.mutant \search
 # vim:fdm=indent

@@ -277,8 +277,8 @@ pager-init = (w) ->
       next!
 
 join-search = (sock) ->
-  # should pass full searchopts eventually
-  sock.emit \search window.searchopts.q
+  console.log \search window.searchopts
+  sock.emit \search window.searchopts
 
 end-search = ->
   socket.emit \search-end
