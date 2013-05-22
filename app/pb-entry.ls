@@ -109,6 +109,7 @@ $d.on \keyup, \#query, __.debounce (->
   }
 
   q = $(@).val!
+
   # ignore special keys
   unless blacklist[it.which]
     if it.which is 13 # enter key
@@ -143,20 +144,21 @@ $d.on \change, '#query_filters [name=within]', ->
   r-searchopts(newopts)
 
 $R((sopts) ->
-  console.log 'search request:', sopts
-
+  should-search = sopts.submit-type is \hard or (window.hints.current?mutator is \search)
   should-replace = sopts.submit-type is \soft
 
   # cleanup so it doesn't end up in url, only used to figure out push vs replace
   delete sopts.submit-type
 
-  uri = "/search?#{$.param sopts}"
+  if should-search
+    console.log 'search request:', sopts
+    uri = "/search?#{$.param sopts}"
 
-  window.last-statechange-was-user = false # flag that this was programmer, not user
-  if should-replace
-    History.replace-state {}, '', uri
-  else
-    History.push-state {}, '', uri
+    window.last-statechange-was-user = false # flag that this was programmer, not user
+    if should-replace
+      History.replace-state {}, '', uri
+    else
+      History.push-state {}, '', uri
 
 ).bind-to(r-searchopts)
 
@@ -198,7 +200,13 @@ submit = require-login(
     | \edit       => remove-editing-url meta
     false))
 $d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then submit it
-$d.on \click 'html.profile .onclick-submit input[type="submit"], html.forum .onclick-submit input[type="submit"]' submit
+
+submit-selectors =
+  * "html.profile .onclick-submit input[type='submit']"
+  * "html.forum .onclick-submit input[type='submit']"
+  * "html.search .onclick-submit input[type='submit']"
+
+$d.on \click, submit-selectors.join(', '), submit
 
 $d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post require-login(censor)

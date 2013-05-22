@@ -49,9 +49,10 @@ module.exports = class Pager
 
     # handlers
     @$el.click @on-click-set-page
-    @$el.find('.current').draggable({
+    @$el.find(\.current).draggable({
       axis        : \y
       containment : \parent
+      grid        : [0, @indicator-height]
 
       drag: (ev, ui) ~>
         page = page-from-click-height(ui.position.top + Math.floor(@indicator-height/2), @indicator-height)
@@ -78,6 +79,8 @@ module.exports = class Pager
     $ \body .toggle-class \paginator (@last > 1) # only show if multiple pages
     @height = @$el.height!
     @indicator-height = indicator-height(@last, @height)
+    try
+      @$el.find \.current .draggable(\option, \grid, [0, @indicator-height])
 
   # thread uri for page n
   url-for-page: (n) ~>
