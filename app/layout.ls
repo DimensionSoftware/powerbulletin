@@ -290,7 +290,7 @@ $d.on \submit '.forgot form' forgot-password
 window.show-reset-password-dialog = ->
   $form = $ '#auth .reset form'
   show-login-dialog!
-  switch-and-focus '', \on-reset, '#auth .reset input:first'
+  set-timeout (-> switch-and-focus '', \on-reset, '#auth .reset input:first'), 500ms
   hash = location.hash.split('=')[1]
   $form.find('input[type=hidden]').val(hash)
   $.post '/auth/forgot-user', { forgot: hash }, (r) ->
@@ -308,8 +308,13 @@ window.reset-password = ->
     return false
   $.post $form.attr(\action), $form.serialize!, (r) ->
     if r.success
-      show-tooltip $form.find(\.tooltip), "Your password has been changed."
+      show-tooltip $form.find(\.tooltip), "Password changed!"
+      location.hash = ''
       $form.find('input[name=password]').val('')
+      set-timeout ( ->
+        switch-and-focus \on-reset, \on-login, '#auth .login input:first'
+        show-tooltip $('#auth .login form .tooltip'), "Now log in!"
+      ), 1500ms
     else
       show-tooltip $form.find(\.tooltip), "Choose a better password."
   return false

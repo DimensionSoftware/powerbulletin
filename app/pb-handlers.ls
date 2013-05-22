@@ -476,6 +476,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   req.assert('email').is-email!
 
   if errors = req.validation-errors!
+    console.warn errors
     res.json {errors}
   else
     username = req.body.username
