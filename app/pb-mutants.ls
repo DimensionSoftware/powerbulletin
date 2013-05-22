@@ -315,6 +315,7 @@ end-search = ->
 
       # initial filter state
       window.$('#query_filters [name=forum_id]').val @searchopts.forum_id
+      window.$('#query_filters [name=within]').val @searchopts.within
 
       layout-static window, \search
       next!

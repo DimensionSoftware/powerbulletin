@@ -133,6 +133,15 @@ $d.on \change, '#query_filters [name=forum_id]', ->
 
   r-searchopts(newopts)
 
+$d.on \change, '#query_filters [name=within]', ->
+  submit-type = \soft
+  within = $(@).val!
+
+  newopts = {} <<< window.searchopts <<< {within, submit-type}
+  delete newopts.within unless within
+
+  r-searchopts(newopts)
+
 $R((sopts) ->
   console.log 'search request:', sopts
 
