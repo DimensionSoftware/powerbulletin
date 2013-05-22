@@ -57,6 +57,7 @@ parseopts = ({
 # usage on repl:
 #   s.search q: \mma, console.log
 @search = (searchopts, cb) ->
+  console.log JSON.stringify(parseopts(searchopts))
   elc = el.client # XXX: argh..... lol
 
   elc.search parseopts(searchopts), cb

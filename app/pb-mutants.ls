@@ -286,9 +286,12 @@ end-search = ->
 @search =
   static:
     (window, next) ->
-      # be smart about rendering the left container
-      # XXX/TODO: never reload filters once we are searching
-      window.render-mutant \left_container \hits
+      # only render left side on first time to search
+      unless window.hints?last?mutator is \search
+        console.log 'rendering leftbar in search'
+        window.render-mutant \left_container \hits
+      else
+        console.log 'skipping leftbar render'
 
       window.render-mutant \main_content \search
 

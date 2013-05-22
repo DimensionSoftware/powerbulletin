@@ -59,6 +59,7 @@ new-poller = (io, elc, poller) ->
       #console.log "work tick for room #{poller.room}"
       now = new Date
       popts = ({} <<< poller.searchopts) <<< {stream: {cutoff, now}}
+      console.log JSON.stringify({popts})
       err, res <- s.search popts
       if err then throw err
       cutoff := now
