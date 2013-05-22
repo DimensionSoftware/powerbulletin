@@ -308,6 +308,7 @@ window.reset-password = ->
     return false
   $.post $form.attr(\action), $form.serialize!, (r) ->
     if r.success
+      $form.find('input').prop(\disabled, true)
       show-tooltip $form.find(\.tooltip), "Password changed!"
       location.hash = ''
       $form.find('input[name=password]').val('')
