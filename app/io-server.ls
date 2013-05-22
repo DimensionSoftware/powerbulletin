@@ -118,7 +118,7 @@ site-by-domain = (domain, cb) ->
         search-room := null
 
     # client will get subscribed to said query room
-    socket.on \search, (^^searchopts) ->
+    socket.on \search, (searchopts) ->
       if search-room
         socket.emit \debug, "leaving room: #{search-room}"
         socket.leave search-room

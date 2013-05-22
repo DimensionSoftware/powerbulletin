@@ -277,7 +277,7 @@ pager-init = (w) ->
       next!
 
 join-search = (sock) ->
-  console.log \search window.searchopts
+  console.log 'joining search notifier channel', window.searchopts
   sock.emit \search window.searchopts
 
 end-search = ->
