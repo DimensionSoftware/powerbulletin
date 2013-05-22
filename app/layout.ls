@@ -195,6 +195,10 @@ $d.on \mousedown \.onclick-scroll-top ->
   false
 #}}}
 #{{{ Login & Authentication
+window.shake-dialog = ($form, time) ->
+  $fancybox = $form.parents(\.fancybox-wrap:first) .remove-class \shake
+  set-timeout (-> $fancybox.add-class(\shake)), 100ms
+
 window.show-login-dialog = ->
   $.fancybox.open \#auth,
     close-effect: \elastic
@@ -249,12 +253,12 @@ window.register = ->
       $form.find("input:text,input:password").remove-class(\validation-error).val ''
       switch-and-focus \on-register \on-validate ''
     else
+      # NOTE:  Only the last tooltip is shown and only the last input is focused.
       r.errors?for-each (e) ->
         $e = $form.find("input[name=#{e.param}]")
         $e.add-class \validation-error .focus!    # focus control
         show-tooltip $form.find(\.tooltip), e.msg # display error
-      $fancybox = $form.parents(\.fancybox-wrap:first) .remove-class \shake
-      set-timeout (-> $fancybox.add-class(\shake)), 100ms
+      shake-dialog $form, 100ms
   return false
 
 $d.on \submit '.login form' login
@@ -269,6 +273,20 @@ window.require-login = (fn) ->
       show-login-dialog!
       false
 $d.on \click \.require-login require-login(-> this.click)
+
+# forgot password
+window.forgot = ->
+  $form = $ this
+  $.post $form.attr(\action), $form.serialize!, (r) ->
+    console.log r
+    if r.success
+      show-tooltip $form.find(\.tooltip), "Recovery link emailed!"
+    else
+      show-tooltip $form.find(\.tooltip), "Email not found."
+      shake-dialog $form, 100ms
+  return false
+
+$d.on \submit '.forgot form' forgot
 
 # 3rd-party auth
 $ '.social a' .click ->

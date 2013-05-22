@@ -77,6 +77,8 @@ announce = sioa.create-client!
     res.render \post-new
   new     : null
   create  : (req, res, next) ->
+    console.log "hi"
+    console.log req.user
     return next(404) unless req.user
     db           = pg.procs
     post         = req.body

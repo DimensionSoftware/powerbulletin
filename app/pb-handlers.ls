@@ -45,6 +45,41 @@ is-admin   = /\/admin.*/
     console.warn "no passport for #{domain}"
     res.send "500", 500
 
+@forgot = (req, res, next) ->
+  db    = pg.procs
+  site  = res.vars.site
+  email = req.body.email
+
+  console.warn req.header \Referrer
+
+  if not email
+    res.json success: false, errors: [ 'Blank email' ]
+    return
+
+  err, user <- db.usr { email, site_id: site.id }
+  if err
+    res.json success: false, errors: [ err ]
+    return
+
+  console.log \user, user
+  if user
+    err, user-forgot <- auth.user-forgot-password user
+    if err
+      res.json success: false, errors: [ err ]
+      return
+    console.log \user-forgot, user-forgot
+
+    err <- auth.send-recovery-email user-forgot, site
+    if err
+      res.json success: false, errors: [ err ]
+    else
+      res.json success: true
+  else
+    res.json success: false, errors: [ 'User not found' ]
+
+@reset-password = (req, res, next) ->
+  res.json success: false
+
 # TODO - validate username
 @choose-username = (req, res, next) ->
   if not req.user
@@ -274,6 +309,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
         delete tasks.menu
 
     err, fdoc <- async.auto tasks
+    console.warn err, keys(fdoc)
     if err   then return next err
     if !fdoc then return next 404
     if page > 1 and fdoc.sub-posts-tree.length < 1 then return next 404
@@ -416,7 +452,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     else if r
       res.json success: false, errors:[msg:'User name in-use']
     else
-      err, vstring <~ auth.unique-verify-string-for-site site.id
+      err, vstring <~ auth.unique-hash \verify, site.id
       if err then return next err
       u =
         type    : \local
