@@ -124,19 +124,40 @@ do ->
   ), 500ms
 
 $d.on \change, '#query_filters [name=forum_id]', ->
+  console.log it
   submit-type = \soft
   forum_id = $(@).val!
 
   r-searchopts({} <<< window.searchopts <<< {forum_id, submit-type})
 
+  return false
+
 $d.on \change, '#query_filters [name=within]', ->
+  console.log it
   submit-type = \soft
   within = $(@).val!
 
   r-searchopts({} <<< window.searchopts <<< {within, submit-type})
 
+  return false
+
 $R((sopts) ->
-  should-search = sopts.submit-type is \hard or (window.hints.current?mutator is \search)
+  #should-search = sopts.submit-type is \hard or window.hints.current?mutator is \search
+  #
+  # WARNING!!!
+  # XXX: this is a HACK
+  # WARNING!!!
+  #
+  # I am doing this because in my testing I cannot rely on current mutator always being set properly when your on the search mutant!
+  # I really DON'T want to but I am working around this weird shit so my filters will stop becoming unresponsive
+  # we need to fix window.hints.current
+  #
+  parser = document.create-element \a
+  parser.href = History.get-state!url
+  uri = parser.pathname
+
+  should-search = sopts.submit-type is \hard or uri is '/search'
+
   should-replace = sopts.submit-type is \soft
 
   # cleanup so it doesn't end up in url, only used to figure out push vs replace
