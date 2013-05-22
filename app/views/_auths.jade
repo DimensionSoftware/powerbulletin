@@ -4,8 +4,8 @@
       h2 Choose a new Password
         i !
     fieldset
-      input(id="password", name="password", type="text", placeholder="Password")
-      input(type="submit", value="Save")
+      input(id="password", name="password", type="text", placeholder="Password", disabled="disabled")
+      input(type="submit", value="Save", disabled="disabled")
       a.msg.onclick-show-login
         h3 Back
 .choose(style="display:none;")
@@ -24,6 +24,7 @@
       h2 Tell Us Your Email Address
         i !
     fieldset
+      .tooltip
       input(id="email", name="email", type="text", placeholder="Email")
       input(type="submit", value="Send Reset")
       a.msg.onclick-show-login

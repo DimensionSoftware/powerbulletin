@@ -53,14 +53,14 @@ export verify-string = ->
     String.from-char-code c3
   [ char v for v,i in buffer ].join ''
 
-export unique-verify-string-for-site = (site-id, cb) ->
+export unique-hash = (field, site-id, cb) ->
   # if all these fail, you've won the lottery
   # one should pass,
   # usually the first
   candidates = [ verify-string! for i from 1 to 10 ] # it's too bad this couldn't be an infinite lazy list
 
   unique = (v, cb) ->
-    (err, found-alias) <- pg.procs.alias-by-verify site-id, v
+    (err, found-alias) <- pg.procs.alias-unique-hash field, site-id, v
     if err then return cb err
     if found-alias
       cb false
@@ -70,7 +70,7 @@ export unique-verify-string-for-site = (site-id, cb) ->
   async.detect candidates, unique, (uv) ->
     cb null, uv
 
-export email-template-text = """
+export registration-email-template-text = """
 Welcome to {{site-name}}, {{user-name}}.
 
 To verify your account, please visit:
@@ -79,7 +79,19 @@ To verify your account, please visit:
 
 """
 
-export email-template-html = """
+export registration-email-template-html = """
+"""
+
+export recovery-email-template-text = """
+Hello,
+
+To recover your password for {{site-name}, please visit:
+
+  https://{{site-domain}}/\#recover={{user-forgot}}
+
+"""
+
+export recovery-email-template-html = """
 """
 
 #
@@ -100,8 +112,32 @@ export send-registration-email = (user, site, cb) ->
     from    : "noreply@powerbulletin.com"
     to      : user.email
     subject : "Welcome to #{site.name}"
-    text    : expand-handlebars email-template-text, vars
+    text    : expand-handlebars registration-email-template-text, vars
   smtp.send-mail email, cb
+
+export send-recovery-email = (user, site, cb) ->
+  smtp = nodemailer.create-transport 'SMTP'
+  vars =
+    # I have to quote the keys so that the template-vars with dashes will get replaced.
+    "site-name"   : site.name
+    "site-domain" : site.current_domain
+    "user-name"   : user.name
+    "user-forgot" : user.forgot
+  email =
+    from    : "noreply@powerbulletin.com"
+    to      : user.email
+    subject : "[#{site.name}] Password Recovery"
+    text    : expand-handlebars recovery-email-template-text, vars
+  smtp.send-mail email, cb
+
+export user-forgot-password = (user, cb) ->
+  err, hash <- unique-hash \forgot, user.site_id
+  if err then return cb err
+
+  user.forgot = hash
+  err <- db.aliases.update criteria: { user_id: user.id, site_id: user.site_id }, data: { forgot: hash }
+
+  cb null, user
 
 export create-passport = (domain, cb) ->
   (err, site) <~ db.site-by-domain domain

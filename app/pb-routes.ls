@@ -83,6 +83,7 @@ app.post '/auth/register',        personal-mw, handlers.register
 app.post '/auth/choose-username', personal-mw, handlers.choose-username
 app.get  '/auth/user',            personal-mw, handlers.user
 app.get  '/auth/verify/:v',       personal-mw, handlers.verify
+app.post '/auth/forgot',          personal-mw, handlers.forgot
 
 app.get  '/auth/facebook',        personal-mw, handlers.login-facebook
 app.get  '/auth/facebook/return', personal-mw, handlers.login-facebook-return

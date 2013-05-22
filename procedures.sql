@@ -365,11 +365,11 @@ CREATE FUNCTION procs.change_avatar(usr JSON, path JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- find an alias by site_id and verify string
-CREATE FUNCTION procs.alias_by_verify(site_id JSON, verify JSON) RETURNS JSON AS $$
-  sql = '''
-  SELECT * FROM aliases WHERE site_id = $1 AND verify = $2
-  '''
-  return plv8.execute(sql, [site_id, verify])[0]
+CREATE FUNCTION procs.alias_unique_hash(field JSON, site_id JSON, hash JSON) RETURNS JSON AS $$
+  sql = """
+  SELECT #field FROM aliases WHERE site_id = $1 AND #field = $2
+  """
+  return plv8.execute(sql, [site_id, hash])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 --
