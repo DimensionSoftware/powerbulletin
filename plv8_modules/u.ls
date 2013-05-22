@@ -17,6 +17,14 @@ export title2slug = (title, id) ->
     title = title.concat "-#{id}"
   title
 
+export unique = (xs) -> # from prelude.ls
+  result = []
+  for x in xs when x not in result
+    result.push x
+  result
+
+export map = (f, xs) -->
+  [f x for x in xs]
 ## END PURE FUNCTIONS ##
 
 top-forums = (limit, fields='*') ->

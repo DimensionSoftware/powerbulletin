@@ -32,6 +32,16 @@ body.waiting, body.waiting a
 .nicescroll-rails
   position fixed!important
 
+.close, .onclick-close
+  opacity 0
+  cursor pointer
+  line-height 9px
+  text-indent 1px
+  border-radius 10px
+  padding 5px
+  font-size .8em
+
+
 //{{{ Header
 .logo
   margin 0
@@ -56,15 +66,6 @@ header
   height header-height
   top 0
   z-index 9
-  .onclick-close
-    opacity 0
-    cursor pointer
-    line-height 9px
-    text-indent 1px
-    border-radius 10px
-    padding 5px
-    font-size .8em
-
   .container
     width 800px
     margin 0 auto
