@@ -68,7 +68,14 @@ parseopts = ({
     }
 
   # cleanup so elastic doesn't freak if query / filter are empty
-  rval = {}
+  rval =
+    highlight:
+      fields:
+        title: {}
+        body: {}
+      pre_tags: ['<span class="search-hit">']
+      post_tags: ['</span>']
+
   rval <<< {query} if Object.keys(query).length
   rval <<< {filter: {and: filters}} if filters.length
 

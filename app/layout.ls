@@ -90,6 +90,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
         # mutant had already done its thing
         if req-id is last-req-id # only if a new request has not been kicked off, can we run the mutant
           locals = {statechange-was-user} <<< r.locals
+
           window.mutant.run window.mutants[r.mutant], {locals, window.user}, ->
             onload-resizable!
             window.hints.current.mutator = window.mutator
