@@ -77,7 +77,21 @@ else
     else
       # render static jade template, followed by dynamic mutator template
       window.render-mutant = (target, tmpl) ->
-        jade.render window.document.get-element-by-id(target), tmpl, params
+        raf = window.request-animation-frame # only if available
+        info = "render-mutant(#{JSON.stringify(target)}, #{JSON.stringify(tmpl)})"
+        info += ' (using requestAnimationFrame)' if raf
+
+        work = ->
+          bef = new Date
+          jade.render window.document.get-element-by-id(target), tmpl, params
+          aft = new Date
+          dur = aft - bef
+          console.warn "took #{dur}ms : #{info}"
+
+        if raf
+          raf(work)
+        else
+          work!
 
       window.marshal = (key, val) ->
         window[key] = val
