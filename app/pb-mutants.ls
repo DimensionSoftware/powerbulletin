@@ -221,8 +221,6 @@ same-profile = (hints) ->
       if window.hints
         if not same-profile(window.hints)
           window.render-mutant \left_container \profile
-        else
-          console.debug "same profile"
       else
         window.render-mutant \left_container \profile
 
