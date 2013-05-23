@@ -204,10 +204,28 @@ pager-init = (w) ->
         # do nothing
       next!
 
+same-profile = (hints) ->
+  [l, c] = [hints.last, hints.current]
+  if l.mutator is null
+    return false
+  [ p1, p2 ] = [ l.pathname.split('/'), c.pathname.split('/') ]
+  if p1[1] is \user and p2[1] is \user
+    if p1[2] is p2[2]
+      return p1[2]
+  false
+
 @profile =
   static:
     (window, next) ->
-      window.render-mutant \left_container \profile
+      # conditionally render left_container
+      if window.hints
+        if not same-profile(window.hints)
+          window.render-mutant \left_container \profile
+        else
+          console.debug "same profile"
+      else
+        window.render-mutant \left_container \profile
+
       window.render-mutant \main_content \posts-by-user
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
