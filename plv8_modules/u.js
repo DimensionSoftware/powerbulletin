@@ -222,8 +222,21 @@
     return results$;
   };
   out$.homepageForums = homepageForums = function(siteId, sort){
+    var sortExpr, sql;
     sort == null && (sort = 'recent');
-    return forumsTree(siteId, topPosts(sort, 10, 'p.id,p.thread_id,p.parent_id,p.title,p.uri,p.media_url,p.user_id'), topForums());
+    sortExpr = (function(){
+      switch (sort) {
+      case 'recent':
+        return 'p.created DESC, id ASC';
+      case 'popular':
+        return '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC, p.created DESC';
+      default:
+        throw new Error("invalid sort for top-posts: " + sort);
+      }
+    }());
+    sql = "SELECT DISTINCT user_id, thread_id, media_url, uri, id, created,\n  (SELECT title FROM posts WHERE id=p.thread_id) AS title\nFROM posts p\nWHERE media_url IS NOT null AND char_length(media_url) < 128\nGROUP BY user_id, thread_id, media_url, id\nORDER BY " + sortExpr + "\nLIMIT 100";
+    plv8.elog(WARNING, sql);
+    return plv8.execute(sql, []);
   };
   out$.forums = forums = function(forumId, sort){
     var ft;

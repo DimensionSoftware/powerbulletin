@@ -177,9 +177,30 @@ export menu = (site-id) ->
   [decorate-menu(f, top-menu-fun) for f in top-menu-fun(site-id)]
 
 export homepage-forums = (site-id, sort=\recent) ->
-  forums-tree site-id,
-    top-posts(sort, 10, 'p.id,p.thread_id,p.parent_id,p.title,p.uri,p.media_url,p.user_id'),
-    top-forums! #(null, 'parent_id,site_id,title,uri,description,media_url')
+  #forums-tree site-id,
+  #  top-posts(sort, 10, 'p.id,p.thread_id,p.parent_id,p.title,p.uri,p.media_url,p.user_id'),
+  #  top-forums! #(null, 'parent_id,site_id,title,uri,description,media_url')
+
+  sort-expr =
+    switch sort
+    | \recent   => 'p.created DESC, id ASC'
+    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC, p.created DESC'
+    | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
+
+  sql = """
+  SELECT DISTINCT user_id, thread_id, media_url, uri, id, created,
+    (SELECT title FROM posts WHERE id=p.thread_id) AS title
+  FROM posts p
+  WHERE media_url IS NOT null AND char_length(media_url) < 128
+  GROUP BY user_id, thread_id, media_url, id
+  ORDER BY #{sort-expr}
+  LIMIT 100
+  """
+#    AND thread_id IN
+#      (SELECT thread_id FROM posts WHERE forum_id = 2 GROUP BY thread_id ORDER BY count(id))
+#
+  plv8.elog WARNING, sql
+  plv8.execute sql, []
 
 # this is really for a single forum even though its called 'forums'
 export forums = (forum-id, sort) ->

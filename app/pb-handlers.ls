@@ -259,28 +259,23 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   if req.surfing
     delete tasks.menu
     delete-unnecessary-surf-data res
-    # TODO - db.homepage-forums needs to remove unnecessary fields from its posts
 
   err, doc <- async.auto tasks
 
-  # all handlers should aspire to stuff as much non-personalized or non-time-sensitive info in a static doc
-  # for O(1) retrieval (assuming hashed index map)
-
-  # FIXME unique users at thread level
-  # - use flatten which requires newer prelude
-  doc.forums |> each ->
-    uniq = {}
-    it.posts = it.posts |> filter ->
-      id = it?user_id
-      r=uniq[id]
-      unless r # add new
-        return uniq[id]=true
-      false
+  # TODO fetch smart/fun combination of latest/best voted posts, posts & media
+  # unique users at thread level
+  # - better handled in sql
+  uniq = {}
+  doc.forums = doc.forums |> filter (f) ->
+    k = f.user_id + f.thread_id
+    r=uniq[k]
+    unless r # add!
+      return uniq[k]=true
+    false
 
   doc?active-forum-id = \homepage
   res.locals doc
 
-  # TODO fetch smart/fun combination of latest/best voted posts, posts & media
   announce.emit \debug, {testing: 'from homepage handler in express'}
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
