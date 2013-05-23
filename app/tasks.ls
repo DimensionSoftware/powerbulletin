@@ -21,9 +21,6 @@ export required-tasks = ([src,src-vars], [dst,dst-vars]) ->
 export difference = (a, b) ->
   { [k, v] for k, v of a when not b.has-own-property k  }
 
-export pick = (a, keepers) ->
-  { [k, v] for k, v of a when k in keepers }
-
 export expand-keys = (a, vars) ->
   { [expand-string(k, vars), v] for k, v of a }
 

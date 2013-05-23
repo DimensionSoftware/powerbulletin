@@ -133,7 +133,7 @@ pager-init = (w) ->
         \posts
 
       # render left content
-      if prev-mutant != \forum or window.active-forum-id+'' != @surf-data
+      if @top-threads
         window.render-mutant \left_container \nav # refresh on forum & mutant change
 
       window.marshal \activeForumId @active-forum-id
