@@ -116,7 +116,7 @@ html_509 = fs.read-file-sync('public/509.html').to-string!
   whitelist = []
   ip = res.vars.remote-ip
   # don't block whitelisted people!
-  if any whitelist, (.exec ip) then return next!
+  if any (.exec ip), whitelist then return next!
 
   # in ms, how long until their 'naughty status' will be nice again
   ttl = 3 * 60 * 1000

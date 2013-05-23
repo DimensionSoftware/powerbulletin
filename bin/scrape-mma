@@ -9,6 +9,7 @@ require! {
   pg: '../app/postgres'
   __: \lodash
   h: '../app/helpers'
+  varnish: '../app/varnish'
   sioa: 'socket.io-announce'
 }
 global <<< require \prelude-ls
@@ -159,6 +160,13 @@ if err then console.warn err
 err, r <- async.map-series threads-with-posts, (create-thread-for-site program.site)
 if err then console.warn(err)
 console.log "\n"
+
+err <- varnish.init
+if err then console.warn(err)
+
+err <- varnish.ban-all
+if err then console.warn(err)
+
 process.exit 0
 
 # vim:ft=ls fdm=marker
