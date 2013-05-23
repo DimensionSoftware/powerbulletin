@@ -308,7 +308,8 @@ CREATE FUNCTION procs.register_local_user(usr JSON) RETURNS JSON AS $$
         RETURNING *
     )
   INSERT INTO aliases (user_id, site_id, name, verify)
-    SELECT u.id, $4::bigint, $5::varchar, $6::varchar FROM u;
+    SELECT u.id, $4::bigint, $5::varchar, $6::varchar FROM u
+    RETURNING *
   '''
   ins-params =
     * usr.email
@@ -317,8 +318,9 @@ CREATE FUNCTION procs.register_local_user(usr JSON) RETURNS JSON AS $$
     * usr.site_id
     * usr.name
     * usr.verify
-  _u = plv8.execute ins, ins-params
+  [_u] = plv8.execute ins, ins-params
   if _u
+    _u.id = _u.user_id
     change-avatar = plv8.find_function('procs.change_avatar')
     change-avatar _u, '/images/profile.jpg'
   return _u
