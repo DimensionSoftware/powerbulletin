@@ -96,7 +96,7 @@ module.exports = class Pager
     @current = if n > @last then @last else n
     @$el.find \.current
       .css(top: indicator-top(@current, @indicator-height), height: @indicator-height)
-    History.push-state {surf-data: @forum-id}, '', @url-for-page(@current) if use-history
+    History.push-state {surf-data: window.surf-data}, '', @url-for-page(@current) if use-history
     @set-next-and-previous-links!
     # tooltip
     t = @$el.find \.tooltip
