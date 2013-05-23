@@ -50,6 +50,7 @@ common-js = [ #{{{ Common JS
   "#{cvars.cache2-url}/jcrop/js/jquery.Jcrop.min.js",
   "#{cvars.cache-url}/local/reactive.js",
   "#{cvars.cache3-url}/local/jquery.nicescroll.min.js",
+  "#{cvars.cache2-url}/local/raf.js",
   "#{cvars.cache4-url}/socket.io/socket.io.js",
   "#{cvars.cache-url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
 #}}}
