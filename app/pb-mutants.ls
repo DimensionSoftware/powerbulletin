@@ -331,7 +331,7 @@ end-search = ->
 
         # represent state of filters in ui
         $q = window.$(\#query)
-        q = $q.val!
+        q = @searchopts.q
 
         if History?
           # only perform on client-side
@@ -339,11 +339,11 @@ end-search = ->
           if @statechange-was-user
             console.log 'overriding querystring due to forward/back button event'
             # only perform when back/forward button is pressed
-            after.push -> $q.text(q)
+            after.push -> $q.val(q)
         else
           # only perform on server-side
 
-          after.push -> $q.text(q)
+          after.push -> $q.val(q)
 
         next!
     draw:
