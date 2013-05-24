@@ -89,7 +89,7 @@ announce = sioa.create-client!
 
     if ap-res.success # if success then blow cache
       post.id = ap-res.id
-      c.invalidate-post post.id, post.user_id # blow cache!
+      c.invalidate-post post.id, req.user.name # blow cache!
 
     unless post.parent_id
       err, new-post <- db.post post.id
@@ -126,7 +126,7 @@ announce = sioa.create-client!
 
     if r.success
       # blow cache !
-      c.invalidate-post post.id, req.user.id
+      c.invalidate-post post.id, req.user.name
 
     res.json r
   destroy : (req, res, next) ->
