@@ -53,10 +53,54 @@ else
 
   user = opts.user
 
-  onLoad         = template.onLoad        || ((w, cb) -> cb(null))
-  onInitial      = template.onInitial     || ((w, cb) -> cb(null))
-  onMutate       = template.onMutate      || ((w, cb) -> cb(null))
-  onPersonalize  = template.onPersonalize || ((w, u, cb) -> cb(null))
+  if template.static?prepare and template.static?draw
+    # static phase split into prepare and draw, the rest of the phases, being on the client, are programmer defined
+    # obviously on the server side the phases are meaningless, but on the client, they are very meaningful
+    # NEW way of doing things
+    prepare = template.static?prepare || ((w, cb) -> cb!)
+    raw-draw = template.static?draw || ((w, cb) -> cb!)
+  else
+    # temporary shim so all are not forced to take advantage immediately
+    # OLD way of doing things
+
+    # prepare is a noop as a shim for the 'old' way here
+    prepare = ((w, cb) -> cb!)
+
+    # draw is unlikely to happen in under 16ms, and hence will not take advantage of
+    # request-animation-frame because extra draws will still occur
+    # 
+    # if this is the case then refactor to take advantage of above branch by defining 'draw' and 'prepare'
+    # if you can get 'draw' to happen in under 16ms then great!
+    raw-draw = template.static || ((w, cb) -> cb!)
+
+  if raf = window?request-animation-frame
+    # wrap draw if window.request-animation-frame exists
+    draw = (w, cb) ->
+      params = @
+      console.log \draw-cb, arguments
+      raf ->
+        console.log \raf-cb, arguments
+        beg = new Date
+        raw-draw.call params, w, ->
+          console.log \raw-draw-cb, arguments
+          end = new Date
+          cb!
+          dur = end - beg
+          info = "request-animation-frame took #{dur}ms in mutant static draw phase"
+          if dur > 16ms
+            console.error info
+          else if dur > 10ms
+            console.warn info
+          else
+            console.log info
+  else
+    draw = raw-draw
+
+
+  on-load         = template.on-load         || ((w, cb) -> cb!)
+  on-initial      = template.on-initial      || ((w, cb) -> cb!)
+  on-mutate       = template.on-mutate       || ((w, cb) -> cb!)
+  on-personalize  = template.on-personalize  || ((w, u, cb) -> cb!)
 
   require \../../app/views/templates.js # pre-built clientjade templates
 
@@ -65,12 +109,12 @@ else
 
   if window?
     if initial_run
-      err <- onLoad.call params, window
+      err <- on-load.call params, window
       if err then return cb(err)
-      err <- onInitial.call params, window
+      err <- on-initial.call params, window
       if err then return cb(err)
       if user
-        onPersonalize.call params, window, user, cb
+        on-personalize.call params, window, user, cb
       else
         cb!
 
@@ -82,14 +126,16 @@ else
       window.marshal = (key, val) ->
         window[key] = val
 
-      err <- template.static.call params, window
+      err <- prepare.call params, window
       if err then return cb(err)
-      err <- onLoad.call params, window
+      err <- draw.call params, window
       if err then return cb(err)
-      err <- onMutate.call params, window
+      err <- on-load.call params, window
+      if err then return cb(err)
+      err <- on-mutate.call params, window
       if err then return cb(err)
       if user
-        onPersonalize.call params, window, user, cb
+        on-personalize.call params, window, user, cb
       else
         cb!
 
@@ -100,7 +146,10 @@ else
       var-statements.push "window['#{key}']=#{JSON.stringify(val)}"
 
     run-static = (window) ->
-      template.static.call params, window, (err) ->
+      err <- prepare.call params, window
+      if err then return cb err
+
+      draw.call params, window, (err) ->
         if err then return cb err
         if use-jsdom # don't pollute html page load
           window.$('script.jsdom').remove!

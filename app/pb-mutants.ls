@@ -208,7 +208,7 @@ same-profile = (hints) ->
   [l, c] = [hints.last, hints.current]
   if l.mutator is null
     return false
-  [ p1, p2 ] = [ l.pathname.split('/'), c.pathname.split('/') ]
+  [p1, p2] = [l.pathname.split('/'), c.pathname.split('/')]
   if p1[1] is \user and p2[1] is \user
     if p1[2] is p2[2]
       return p1[2]
