@@ -331,7 +331,7 @@ end-search = ->
 
         # represent state of filters in ui
         $q = window.$(\#query)
-        q = $q.val!
+        q = @searchopts.q
 
         if History?
           # only perform on client-side
@@ -339,21 +339,12 @@ end-search = ->
           if @statechange-was-user
             console.log 'overriding querystring due to forward/back button event'
             # only perform when back/forward button is pressed
-            after.push -> $q.text(q)
+            after.push -> $q.val(q)
         else
           # only perform on server-side
 
-          after.push -> $q.text(q)
+          after.push -> $q.val(q)
 
-        # initial filter state
-        do ~>
-          $filters =
-            forum_id: window.$('#query_filters [name=forum_id]')
-            within: window.$('#query_filters [name=within]')
-
-          after.push ~>
-            $filters.forum_id.val @searchopts.forum_id
-            $filters.within.val @searchopts.within
         next!
     draw:
       (window, next) ->
@@ -363,6 +354,10 @@ end-search = ->
         #XXX: might be able to turn this into a pattern...
         for f in after
           f! # memoized functions should close over pure data.. no cbs should be needed
+
+        # initial filter state
+        window.$('#query_filters [name=forum_id]').val @searchopts.forum_id
+        window.$('#query_filters [name=within]').val @searchopts.within
 
         layout-static window, \search
         next!
