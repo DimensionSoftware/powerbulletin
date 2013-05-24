@@ -326,7 +326,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     if page < 1 then return next 404
 
     limit = site.config?posts-per-page || 20
-    offset = (page - 1) * 5
+    offset = (page - 1) * limit
 
     tasks =
       menu            : db.menu site.id, _

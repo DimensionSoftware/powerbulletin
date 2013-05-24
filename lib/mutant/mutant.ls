@@ -99,8 +99,20 @@ else
 
   require \../../app/views/templates.js # pre-built clientjade templates
 
+  # like inner html, except super rice
+  # mutant has lots of entropy so we can avoid the teardown performance hit
+  # http://blog.stevenlevithan.com/archives/faster-than-innerhtml
+  !function replace-html $el, html
+    if window?
+      el = $el.0
+      new-el = el.clone-node false
+      new-el.inner-HTML = html
+      el.parent-node.replace-child new-el, el
+    else
+      $el.html html
+
   render-mutant = (id, tmpl) ->
-    $ "\##id" .html jade.templates[tmpl](params)
+    replace-html $("\##id"), jade.templates[tmpl](params)
 
   render = (t) -> jade.templates[t](params)
 

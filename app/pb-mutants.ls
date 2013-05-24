@@ -1,18 +1,6 @@
 global <<< require \./pb-helpers
 global.furl = require \./forum-urls
 
-# like inner html, except super rice
-# mutant has lots of entropy so we can avoid the teardown performance hit
-# http://blog.stevenlevithan.com/archives/faster-than-innerhtml
-!function rice-html $el, html
-  if window?
-    el = $el.0
-    new-el = el.clone-node false
-    new-el.inner-HTML = html
-    el.parent-node.replace-child new-el, el
-  else
-    $el.html html
-
 !function bench subject-name, subject-body
   bef = new Date
   subject-body!
@@ -337,7 +325,7 @@ end-search = ->
           html = window.render \search # get html rendered
           $t = window.$('#main_content')
           after.push ->
-            bench \main-content -> rice-html($t, html)
+            bench \main-content -> replace-html($t, html)
 
         # only render left side on first time to search
         unless window.hints?last?mutator is \search
@@ -345,7 +333,7 @@ end-search = ->
             html = window.render \hits # get html rendered
             $t = window.$('#left_container')
             after.push ->
-              bench \left-bar -> rice-html($t, html)
+              bench \left-bar -> replace-html($t, html)
 
         # represent state of filters in ui
         $q = window.$(\#query)
