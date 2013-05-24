@@ -273,7 +273,8 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       return uniq[k]=true
     false
 
-  doc?active-forum-id = \homepage
+  doc.active-forum-id = \homepage
+  doc.title = res.vars.site.name
   res.locals doc
 
   announce.emit \debug, {testing: 'from homepage handler in express'}
@@ -348,6 +349,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
     # attach sub-post to fdoc, among other things
     fdoc <<< {post, forum-id:post.forum_id, page}
+    fdoc.title = post.title
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.post.posts = delete fdoc.sub-posts-tree
     fdoc.pages-count = Math.ceil(delete fdoc.sub-posts-count / limit)
@@ -380,6 +382,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
     fdoc <<< {forum-id}
     fdoc.active-forum-id = fdoc.forum-id
+    fdoc.title = fdoc?forum?title
 
     finish fdoc
 
@@ -406,6 +409,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   if err then return next err
   fdoc.furl = thread-uri: "/user/#name"  # XXX - a hack to fix the pager that must go away
   fdoc.page = parse-int page
+  fdoc.title = name
   with fdoc.profile # transform
     ..human_post_count = add-commas(..post_count.to-string!)
 
@@ -620,6 +624,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     posts-per-page: 30
     meta-keywords: "#{site.name}, PowerBulletin"
   fdoc.site.config = defaults <<< fdoc.site.config
+  fdoc.title = \Admin
   res.locals fdoc
 
   res.mutant \admin # out!
@@ -629,7 +634,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 
   err, menu <- db.menu res.vars.site.id
   if err then return next err
-  res.locals {menu}
+  res.locals {menu, title: \Search}
 
   err, elres <- s.search req.query
   if err then return next(err)

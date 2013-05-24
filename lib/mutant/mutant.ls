@@ -77,22 +77,17 @@ else
     # wrap draw if window.request-animation-frame exists
     draw = (w, cb) ->
       params = @
-      console.log \draw-cb, arguments
       raf ->
-        console.log \raf-cb, arguments
         beg = new Date
         raw-draw.call params, w, ->
-          console.log \raw-draw-cb, arguments
           end = new Date
           cb!
-          dur = end - beg
-          info = "request-animation-frame took #{dur}ms in mutant static draw phase"
-          if dur > 16ms
-            console.error info
-          else if dur > 10ms
-            console.warn info
-          else
-            console.log info
+          # kick off logging async so it doesn't slow down raf callback
+          set-timeout(_, 1) ->
+            dur = end - beg
+            if dur > 16ms
+              info = "request-animation-frame took #{dur}ms in mutant static draw phase"
+              console.error info
   else
     draw = raw-draw
 
@@ -107,7 +102,11 @@ else
   render-mutant = (id, tmpl) ->
     $ "\##id" .html jade.templates[tmpl](params)
 
+  render = (t) -> jade.templates[t](params)
+
   if window?
+    window <<< {render}
+
     if initial_run
       err <- on-load.call params, window
       if err then return cb(err)
@@ -146,6 +145,7 @@ else
       var-statements.push "window['#{key}']=#{JSON.stringify(val)}"
 
     run-static = (window) ->
+      window <<< {render}
       err <- prepare.call params, window
       if err then return cb err
 
