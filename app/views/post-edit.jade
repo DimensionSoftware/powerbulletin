@@ -4,6 +4,7 @@ mixin post-edit(u, p)
   id     = p.id || 0
   .post-edit.onclick-submit(id="post_edit_#{id}", class=p.is_comment ? 'comment' : '')
     form(action="/resources/posts#{action}", method="#{p.method || 'put'}")
+      .tooltip
       if !p.is_comment
         input.title(name='title', type='text', placeholder='Title', value=p.title)
       textarea.body.onshiftenter-submit(name='body', placeholder='Reply ...')= p.body
