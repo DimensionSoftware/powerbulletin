@@ -79,6 +79,8 @@ timers = {}
 
 @submit-form = (event, fn) -> # form submission
   $f = $ event.target .closest(\form) # get event's form
+  $s = $ $f.find('[type=submit]:first')
+  $s.attr \disabled \disabled
 
   # update textarea body from sceditor
   $e = $ \textarea.body
@@ -90,7 +92,11 @@ timers = {}
     data:     $f.serialize!
     data-type: \json
     success:  (data) ->
-      if fn then fn.call $f, data}
+      if fn then fn.call $f, data
+    error: ->
+      $s.remove-attr \disabled
+      show-tooltip $($f.find \.tooltip), 'Try again!'
+  }
   false
 
 @respond-resize = ->
