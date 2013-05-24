@@ -12,4 +12,5 @@ export invalidate-post = (post-id, user-id, cb = (->)) ->
   async.map-series bans, (-> v.ban(...arguments) ), (err) ->
     if err then return cb err
     console.log "[cache] invalidated post: #{post-id}"
+    console.log "bans: #{JSON.stringify bans}"
     cb!
