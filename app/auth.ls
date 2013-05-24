@@ -184,7 +184,7 @@ export create-passport = (domain, cb) ->
     console.warn 'facebook profile', profile
     err, name <- db.unique-name name: profile.display-name, site_id: site.id
     if err then return cb err
-    err, vstring <- unique-verify-string-for-site site.id
+    err, vstring <- unique-hash \verify, site.id
     if err then return cb err
     u =
       type    : \facebook
@@ -205,7 +205,7 @@ export create-passport = (domain, cb) ->
     console.warn 'twitter profile', profile
     err, name <- db.unique-name name: profile.display-name, site_id: site.id
     if err then return cb err
-    err, vstring <- unique-verify-string-for-site site.id
+    err, vstring <- unique-hash \verify, site.id
     if err then return cb err
     u =
       type    : \twitter
@@ -226,7 +226,7 @@ export create-passport = (domain, cb) ->
     console.warn 'google profile', profile
     err, name <- db.unique-name name: profile.display-name, site_id: site.id
     if err then return cb err
-    err, vstring <- unique-verify-string-for-site site.id
+    err, vstring <- unique-hash \verify, site.id
     if err then return cb err
     # TODO - store profile.picture if available
     u =
