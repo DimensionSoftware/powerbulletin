@@ -6,7 +6,8 @@ require! {
 export init = (cb = (->)) ->
   @client = new elastical.Client '127.0.0.1'
   try
-    @configure cb
+    @configure!
+    cb!
   catch
     # initial configuration is probably already complete
     cb!
@@ -15,7 +16,7 @@ export init = (cb = (->)) ->
 # i.e. configure analyzers
 # assumes client is initialized
 export configure = (cb = (->)) ->
-  data =
+  settings =
     index:
       analysis:
         analyzer:
@@ -30,7 +31,11 @@ export configure = (cb = (->)) ->
             type: \nGram
             min_gram: 2
             max_gram: 15
+  mappings =
+    _default_:
+      properties:
+        forum_title:
+          type: \string
+          index: \not_analyzed
 
-  err, res <- superagent.post('http://127.0.0.1:9200/pb').send(data).end
-  if err then return cb err
-  cb!
+  superagent.post('http://127.0.0.1:9200/pb').send({settings, mappings}).end(cb)

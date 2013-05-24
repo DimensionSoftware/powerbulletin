@@ -1,0 +1,6 @@
+search {q:'green'}, (e,r,r2) -> cl r2.facets.forum.terms
+# =>
+# [ { term: 'GirlGround', count: 10 },
+#   { term: 'OtherGround Forum', count: 3 },
+#   { term: 'UnderGround Forum', count: 1 },
+#   { term: 'Conspiracy Ground', count: 1 } ]

@@ -33,6 +33,10 @@ parseopts = ({
 } = {}) ->
   query = {}
   filters = []
+  facets =
+    forum:
+      terms:
+        field: \forum_title
 
   # modify query / filter here with series of conditions based on opts
   if q
@@ -78,13 +82,13 @@ parseopts = ({
 
   rval <<< {query} if Object.keys(query).length
   rval <<< {filter: {and: filters}} if filters.length
+  rval <<< {facets}
 
   rval
 
 # usage on repl:
 #   s.search q: \mma, console.log
 @search = (searchopts, cb) ->
-  console.log JSON.stringify(parseopts(searchopts))
   elc = el.client # XXX: argh..... lol
 
   elc.search parseopts(searchopts), cb
