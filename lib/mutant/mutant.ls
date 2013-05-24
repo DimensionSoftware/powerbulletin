@@ -127,8 +127,13 @@ else
 
       err <- prepare.call params, window
       if err then return cb(err)
-      err <- draw.call params, window
+
+      has-draw = !!template.static?draw
+
+      # if the mutant has a draw phase specified, use raf, otherwise skip raf
+      err <- (if has-draw then draw else raw-draw).call params, window
       if err then return cb(err)
+
       err <- on-load.call params, window
       if err then return cb(err)
       err <- on-mutate.call params, window
