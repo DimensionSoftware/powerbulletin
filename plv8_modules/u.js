@@ -227,15 +227,14 @@
     sortExpr = (function(){
       switch (sort) {
       case 'recent':
-        return 'p.created DESC, id ASC';
+        return 'p.created DESC, p.id ASC';
       case 'popular':
         return '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC, p.created DESC';
       default:
         throw new Error("invalid sort for top-posts: " + sort);
       }
     }());
-    sql = "SELECT DISTINCT user_id, thread_id, media_url, uri, id, created,\n  (SELECT title FROM posts WHERE id=p.thread_id) AS title\nFROM posts p\nWHERE media_url IS NOT null AND char_length(media_url) < 128\nGROUP BY user_id, thread_id, media_url, id\nORDER BY " + sortExpr + "\nLIMIT 100";
-    plv8.elog(WARNING, sql);
+    sql = "SELECT MAX(a.name) AS user_name, MAX(u.photo) AS user_photo, p.user_id, p.thread_id, MAX(t.title) AS title, MAX(p.media_url) AS media_url, MAX(p.uri) AS uri, p.id\nFROM posts p\nJOIN posts t ON p.thread_id = t.id\nJOIN users u ON p.user_id = u.id\nJOIN aliases a ON p.user_id = a.user_id\nWHERE p.media_url IS NOT null AND char_length(p.media_url) < 128\nGROUP BY p.user_id, p.thread_id, p.created, p.id\nORDER BY " + sortExpr + "\nLIMIT 100";
     return plv8.execute(sql, []);
   };
   out$.forums = forums = function(forumId, sort){

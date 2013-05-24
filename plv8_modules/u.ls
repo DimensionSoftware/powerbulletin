@@ -183,23 +183,25 @@ export homepage-forums = (site-id, sort=\recent) ->
 
   sort-expr =
     switch sort
-    | \recent   => 'p.created DESC, id ASC'
+    | \recent   => 'p.created DESC, p.id ASC'
     | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC, p.created DESC'
     | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
 
   sql = """
-  SELECT DISTINCT user_id, thread_id, media_url, uri, id, created,
-    (SELECT title FROM posts WHERE id=p.thread_id) AS title
+  SELECT MAX(a.name) AS user_name, MAX(u.photo) AS user_photo, p.user_id, p.thread_id, MAX(t.title) AS title, MAX(p.media_url) AS media_url, MAX(p.uri) AS uri, p.id
   FROM posts p
-  WHERE media_url IS NOT null AND char_length(media_url) < 128
-  GROUP BY user_id, thread_id, media_url, id
+  JOIN posts t ON p.thread_id = t.id
+  JOIN users u ON p.user_id = u.id
+  JOIN aliases a ON p.user_id = a.user_id
+  WHERE p.media_url IS NOT null AND char_length(p.media_url) < 128
+  GROUP BY p.user_id, p.thread_id, p.created, p.id
   ORDER BY #{sort-expr}
   LIMIT 100
   """
 #    AND thread_id IN
 #      (SELECT thread_id FROM posts WHERE forum_id = 2 GROUP BY thread_id ORDER BY count(id))
 #
-  plv8.elog WARNING, sql
+  #plv8.elog WARNING, sql
   plv8.execute sql, []
 
 # this is really for a single forum even though its called 'forums'

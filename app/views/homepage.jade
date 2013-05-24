@@ -6,32 +6,33 @@ mixin media-post(f, i)
 mixin html-post(f, t, i)
   p.body!= f.html
 
-mixin forum(f, i)
-  img.bg(id="forum_bg_#{f.id}", class='initial', src="#{cacheUrl}/images/bg_#{f.id}.jpg")
-  .forum(id="forum_#{f.id}", class="#{f.classes || ''}#{activeForumId != ' homepage' && ' resizable' || ''}")
-    h2.title
-      a.mutant(href=f.uri)= f.title
-    a(name="forum_#{f.id}") //- hashtag anchor
-    .container
-      .post(id="post_#{f.id}", class="col#{Math.ceil(Math.random()*2)}")
-        a.mutant(href=f.uri)
-          h5.title!= f.title
-            span.date #{f.date}
-        //- post type
-        if f.media_url
-          mixin media-post(f, i)
-        else
-          mixin html-post(f, i)
-        //- subpost summary
-        mixin _post-profile(f, i)
-      //- .up(class='onclick-scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
+mixin post(f, i)
+    .post(id="post_#{f.id}", class="col#{Math.ceil(Math.random()*2)}")
+      a.mutant(href=f.uri)
+        h5.title!= f.title
+          span.date #{f.date}
+      //- post type
+      if f.media_url
+        mixin media-post(f, i)
+      else
+        mixin html-post(f, i)
+      //- subpost summary
+      mixin _post-profile(f, i)
+    //- .up(class='onclick-scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
 
 //- main
 //- ---------
+//-  img.bg(id="forum_bg_#{f.id}", class='initial', src="#{cacheUrl}/images/bg_#{f.id}.jpg")
+//-  if activeForumId != 'homepage'
+//-    .forum(id="forum_#{f.id}", class=f.classes)
+//-  h2.title
+//-    a.mutant(href=f.uri)= f.title
+//-  a(name="forum_#{f.id}") //- hashtag anchor
+//-  .container
 if forums
-  .homepage
+  .homepage(class=activeForumId!='homepage'?'resizable forum':'')
     each f,i in forums
-      mixin forum(f, i)
+      mixin post(f, i)
 else
   p Create a forum first
     i !

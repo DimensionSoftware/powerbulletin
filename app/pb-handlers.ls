@@ -276,6 +276,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   doc.active-forum-id = \homepage
   doc.title = res.vars.site.name
   res.locals doc
+  res.locals.active-forum-id = \homepage
 
   announce.emit \debug, {testing: 'from homepage handler in express'}
 
