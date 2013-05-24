@@ -635,7 +635,6 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 
   err, menu <- db.menu res.vars.site.id
   if err then return next err
-  res.locals {menu, title: \Search}
 
   err, elres <- s.search req.query
   if err then return next(err)
@@ -659,6 +658,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     return opts
 
   res.locals.searchopts = cleanup-searchopts req.query
+  res.locals {menu, title: "Search : #{res.locals.searchopts.q}"}
 
   res.mutant \search
 # vim:fdm=indent
