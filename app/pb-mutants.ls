@@ -1,6 +1,26 @@
 global <<< require \./pb-helpers
 global.furl = require \./forum-urls
 
+# like inner html, except super rice
+# mutant has lots of entropy so we can avoid the teardown performance hit
+# http://blog.stevenlevithan.com/archives/faster-than-innerhtml
+!function rice-html $el, html
+  if window?
+    el = $el.0
+    new-el = el.clone-node false
+    new-el.inner-HTML = html
+    el.parent-node.replace-child new-el, el
+  else
+    $el.html html
+
+!function bench subject-name, subject-body
+  bef = new Date
+  subject-body!
+  aft = new Date
+  set-timeout(_, 1) ->
+    dur = aft - bef
+    console.log "benchmarked '#{subject-name}': took #{dur}ms"
+
 # Common
 layout-static = (w, next-mutant, active-forum-id=-1) ->
   # XXX to be run last in mutant static
@@ -314,37 +334,51 @@ end-search = ->
         window.marshal \searchopts @searchopts
 
         do ->
-          search = window.render \search # get html rendered
+          html = window.render \search # get html rendered
           $t = window.$('#main_content')
-          after.push -> $t.html(search)
+          after.push ->
+            bench \main-content -> rice-html($t, html)
 
         # only render left side on first time to search
         unless window.hints?last?mutator is \search
-          console.log 'rendering leftbar in search'
-
           do ->
-            hits = window.render \hits # get html rendered
+            html = window.render \hits # get html rendered
             $t = window.$('#left_container')
-            after.push -> $t.html(hits)
-        else
-          console.log 'skipping leftbar render'
+            after.push ->
+              bench \left-bar -> rice-html($t, html)
 
         # represent state of filters in ui
         $q = window.$(\#query)
+        q-el = $q.0
         q = @searchopts.q
 
         if History?
           # only perform on client-side
 
           if @statechange-was-user
-            console.log 'overriding querystring due to forward/back button event'
+            set-timeout(->
+              console.log('overriding querystring due to forward/back button event')
+            , 1)
+
             # only perform when back/forward button is pressed
-            after.push -> $q.val(q)
+            after.push ->
+              bench \query-string-update ->
+                q-el.value = q
         else
           # only perform on server-side
 
-          after.push -> $q.val(q)
+          after.push ->
+            bench \query-string-update ->
+              $q.val q
 
+        if History?
+          # only perform on client-side
+          if document.active-element is q-el
+            $q.blur! # don't draw until we are blurred, this gave me back like 6ms!
+            after.push ->
+              bench \re-focus ->
+                set-timeout(_, 1) ->
+                  $q.focus! # re-focus
         next!
     draw:
       (window, next) ->
@@ -355,11 +389,17 @@ end-search = ->
         for f in after
           f! # memoized functions should close over pure data.. no cbs should be needed
 
-        # initial filter state
-        window.$('#query_filters [name=forum_id]').val @searchopts.forum_id
-        window.$('#query_filters [name=within]').val @searchopts.within
+        is-server = not History?
+        if is-server or @statechange-was-user
+          # only perform on server-side or when back/forward button is pressed
 
-        layout-static window, \search
+          # initial filter state
+          bench \filter-state ~>
+            window.$('#query_filters [name=forum_id]').val @searchopts.forum_id
+            window.$('#query_filters [name=within]').val @searchopts.within
+
+        bench \layout-static ->
+          layout-static window, \search
         next!
   on-initial:
     (window, next) ->

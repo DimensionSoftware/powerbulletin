@@ -85,7 +85,7 @@ else
           # kick off logging async so it doesn't slow down raf callback
           set-timeout(_, 1) ->
             dur = end - beg
-            if dur > 16ms
+            if true#dur > 16ms
               info = "request-animation-frame took #{dur}ms in mutant static draw phase"
               console.error info
   else
