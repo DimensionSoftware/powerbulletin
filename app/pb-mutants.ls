@@ -301,40 +301,71 @@ end-search = ->
 
 @search =
   static:
-    (window, next) ->
-      # only render left side on first time to search
-      unless window.hints?last?mutator is \search
-        console.log 'rendering leftbar in search'
-        window.render-mutant \left_container \hits
-      else
-        console.log 'skipping leftbar render'
+    prepare:
+      (window, next) ->
+        params = @
 
-      window.render-mutant \main_content \search
+        # fresh state
+        after = window.after-prepare = []
 
-      if History?
-        # only perform on client-side
+        # TODO fill these in & paginate
+        window.marshal \page @page
+        window.marshal \pagesCount @pages-count
+        window.marshal \searchopts @searchopts
 
-        if @statechange-was-user
-          console.log 'overriding querystring due to forward/back button event'
-          # only perform when back/forward button is pressed
-          window.$(\#query).val @searchopts.q
-      else
-        # only perform on server-side
+        do ->
+          search = window.render \search # get html rendered
+          $t = window.$('#main_content')
+          after.push -> $t.html(search)
+
+        # only render left side on first time to search
+        unless window.hints?last?mutator is \search
+          console.log 'rendering leftbar in search'
+
+          do ->
+            hits = window.render \hits # get html rendered
+            $t = window.$('#left_container')
+            after.push -> $t.html(hits)
+        else
+          console.log 'skipping leftbar render'
 
         # represent state of filters in ui
-        window.$(\#query).val @searchopts.q
+        $q = window.$(\#query)
+        q = $q.val!
 
-      # TODO fill these in & paginate
-      window.marshal \page @page
-      window.marshal \pagesCount @pages-count
-      window.marshal \searchopts @searchopts
+        if History?
+          # only perform on client-side
 
-      # initial filter state
-      window.$('#query_filters [name=forum_id]').val @searchopts.forum_id
-      window.$('#query_filters [name=within]').val @searchopts.within
+          if @statechange-was-user
+            console.log 'overriding querystring due to forward/back button event'
+            # only perform when back/forward button is pressed
+            after.push -> $q.text(q)
+        else
+          # only perform on server-side
 
-      layout-static window, \search
-      next!
+          after.push -> $q.text(q)
+
+        # initial filter state
+        do ~>
+          $filters =
+            forum_id: window.$('#query_filters [name=forum_id]')
+            within: window.$('#query_filters [name=within]')
+
+          after.push ~>
+            $filters.forum_id.val @searchopts.forum_id
+            $filters.within.val @searchopts.within
+        next!
+    draw:
+      (window, next) ->
+        # state prepared by prepare phase
+        after = window.after-prepare
+
+        #XXX: might be able to turn this into a pattern...
+        for f in after
+          f! # memoized functions should close over pure data.. no cbs should be needed
+
+        layout-static window, \search
+        next!
   on-initial:
     (window, next) ->
       # work around race condition! thx reactive ; )
