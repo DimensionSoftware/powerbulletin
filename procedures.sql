@@ -540,7 +540,7 @@ CREATE FUNCTION procs.ban_patterns_for_forum(forum_id JSON) RETURNS JSON AS $$
     return []
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION procs.bans_for_post(post_id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.bans_for_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
   sql = '''
   SELECT d.name AS host, f.uri AS url
   FROM domains d
@@ -552,8 +552,12 @@ CREATE FUNCTION procs.bans_for_post(post_id JSON) RETURNS JSON AS $$
 
   for b in bans
     b.url = '^' + b.url
+  
+  # ban associated profile, too
+  profiles = bans.map (b) ->
+    {host:b.host, url:"^/user/#user_id"}
 
-  return bans
+  return bans ++ profiles
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.menu(site_id JSON) RETURNS JSON AS $$

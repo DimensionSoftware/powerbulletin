@@ -77,8 +77,6 @@ announce = sioa.create-client!
     res.render \post-new
   new     : null
   create  : (req, res, next) ->
-    console.log "hi"
-    console.log req.user
     return next(404) unless req.user
     db           = pg.procs
     post         = req.body
@@ -91,7 +89,7 @@ announce = sioa.create-client!
 
     if ap-res.success # if success then blow cache
       post.id = ap-res.id
-      c.invalidate-post post.id # blow cache!
+      c.invalidate-post post.id, post.user_id # blow cache!
 
     unless post.parent_id
       err, new-post <- db.post post.id
@@ -128,7 +126,7 @@ announce = sioa.create-client!
 
     if r.success
       # blow cache !
-      c.invalidate-post post.id
+      c.invalidate-post post.id, req.user.id
 
     res.json r
   destroy : (req, res, next) ->
