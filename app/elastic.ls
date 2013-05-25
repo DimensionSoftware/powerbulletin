@@ -31,11 +31,11 @@ export configure = (cb = (->)) ->
             type: \nGram
             min_gram: 2
             max_gram: 15
-  mappings =
-    _default_:
-      properties:
-        forum_title:
-          type: \string
-          index: \not_analyzed
+  #mappings =
+  #  _default_:
+  #    properties:
+  #      forum_title:
+  #        type: \string
+  #        index: \not_analyzed
 
   superagent.post('http://127.0.0.1:9200/pb').send({settings, mappings}).end(cb)
