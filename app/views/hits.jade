@@ -7,7 +7,7 @@ mixin forumOptions(forums, prefix)
   h3 Filter your Search
   #facets
     .facet
-      .facet-title Forums
+      .facet-title Hits by Forum
       each forum in facets.forum
         a.mutant.facet-hit(href=forum.uri) #{forum.title} (#{forum.hitCount})
 

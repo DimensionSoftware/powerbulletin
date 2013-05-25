@@ -377,14 +377,10 @@ end-search = ->
         for f in after
           f! # memoized functions should close over pure data.. no cbs should be needed
 
-        is-server = not History?
-        if is-server or @statechange-was-user
-          # only perform on server-side or when back/forward button is pressed
-
-          # initial filter state
-          bench \filter-state ~>
-            window.$('#query_filters [name=forum_id]').val @searchopts.forum_id
-            window.$('#query_filters [name=within]').val @searchopts.within
+        # initial filter state
+        bench \filter-state ~>
+          window.$('#query_filters [name=forum_id]').val @searchopts.forum_id
+          window.$('#query_filters [name=within]').val @searchopts.within
 
         bench \layout-static ->
           layout-static window, \search
