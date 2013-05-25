@@ -45,10 +45,10 @@ pager-init = (w) ->
     (window, next) ->
       window.render-mutant \main_content \homepage
       # handle active forum background
-      window.$ \.bg-set .remove!
-      window.$ \.bg .each ->
-        e = window.$ this .add-class \bg-set .remove!
-        window.$ \body .prepend e
+#      window.$ \.bg-set .remove!
+#      window.$ \.bg .each ->
+#        e = window.$ this .add-class \bg-set .remove!
+#        window.$ \body .prepend e
       layout-static window, \homepage
       next!
   on-load:

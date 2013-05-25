@@ -255,7 +255,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 @homepage = (req, res, next) ->
   tasks =
     menu:   db.menu res.vars.site.id, _
-    forums: db.homepage-forums res.vars.site.id, (req.query?order or \recent), _
+    forums: (cb) ->
+      # TODO summarize all forums
+      #(err, forums) <- db.forums-for-site res.vars.site.id
+      db.forum-summary 1, 10threads, 5posts, (req.query?order or \recent), cb
   if req.surfing
     delete tasks.menu
     delete-unnecessary-surf-data res
@@ -265,18 +268,17 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
   # unique users at thread level
   # - better handled in sql
-  uniq = {}
-  doc.forums = doc.forums |> filter (f) ->
-    k = f.user_id + f.thread_id
-    r=uniq[k]
-    unless r # add!
-      return uniq[k]=true
-    false
+#  uniq = {}
+#  doc.forums = doc.forums |> filter (f) ->
+#    k = f.user_id + f.thread_id
+#    r=uniq[k]
+#    unless r # add!
+#      return uniq[k]=true
+#    false
 
   doc.active-forum-id = \homepage
   doc.title = res.vars.site.name
   res.locals doc
-  res.locals.active-forum-id = \homepage
 
   announce.emit \debug, {testing: 'from homepage handler in express'}
 
@@ -367,7 +369,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     tasks =
       menu        : db.menu res.vars.site.id, _
       forum       : db.forum forum-id, _
-      forums      : db.forum-summary forum-id, 10, 5, _
+      forums      : db.forum-summary forum-id, 10threads, 5posts, \recent, _
       top-threads : db.top-threads forum-id, \recent, _
 
     if req.surfing
