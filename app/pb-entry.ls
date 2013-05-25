@@ -1,6 +1,7 @@
 window.__    = require \lodash
 window.ioc   = require \./io-client
 window.Pager = require \./pager
+window.Chat  = require \./chat
 window.furl  = require \./forum-urls
 window.tasks = require \./tasks
 
