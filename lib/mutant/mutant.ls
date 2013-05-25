@@ -117,7 +117,7 @@ else
   render = (t) -> jade.templates[t](params)
 
   if window?
-    window <<< {render}
+    window <<< {render, replace-html}
 
     if initial_run
       err <- on-load.call params, window
@@ -162,7 +162,7 @@ else
       var-statements.push "window['#{key}']=#{JSON.stringify(val)}"
 
     run-static = (window) ->
-      window <<< {render}
+      window <<< {render, replace-html}
       err <- prepare.call params, window
       if err then return cb err
 

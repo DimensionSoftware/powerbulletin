@@ -325,7 +325,7 @@ end-search = ->
           html = window.render \search # get html rendered
           $t = window.$('#main_content')
           after.push ->
-            bench \main-content -> replace-html($t, html)
+            bench \main-content -> window.replace-html($t, html)
 
         # only render left side on first time to search
         unless window.hints?last?mutator is \search
@@ -333,7 +333,7 @@ end-search = ->
             html = window.render \hits # get html rendered
             $t = window.$('#left_container')
             after.push ->
-              bench \left-bar -> replace-html($t, html)
+              bench \left-bar -> window.replace-html($t, html)
 
         # represent state of filters in ui
         $q = window.$(\#query)
