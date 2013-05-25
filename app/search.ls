@@ -80,8 +80,8 @@ parseopts = ({
       pre_tags: ['<span class="search-hit">']
       post_tags: ['</span>']
 
-  rval <<< {query} if Object.keys(query).length
-  rval <<< {filter: {and: filters}} if filters.length
+  rval <<< {query: {filtered: {query}}} if Object.keys(query).length
+  rval.query.filtered <<< {filter: {and: filters}} if filters.length
   rval <<< {facets}
 
   rval

@@ -321,19 +321,29 @@ end-search = ->
         window.marshal \pagesCount @pages-count
         window.marshal \searchopts @searchopts
 
+        # only render left side on first time to search
+        # filters can be dom-touched, no need to re-insert innerhtml, as that is awkward
+        unless window.hints?last?mutator is \search
+          do ->
+            window.replace-html(window.$(\#left_container), '<div id="search_filters"></div><div id="search_facets"></div>')
+            filters-html = window.render \search-filters # get html rendered
+            $t = window.$('#search_filters')
+            after.push ->
+              bench \search-filters -> window.replace-html($t, filters-html)
+
+        # facets are updated on every single searchopts change
+        do ->
+          html = window.render \search-facets # get html rendered
+          $t = window.$('#search_facets')
+          after.push ->
+            bench \search-facets ->
+              window.replace-html $t, html
+
         do ->
           html = window.render \search # get html rendered
           $t = window.$('#main_content')
           after.push ->
-            bench \main-content -> window.replace-html($t, html)
-
-        # only render left side on first time to search
-        unless window.hints?last?mutator is \search
-          do ->
-            html = window.render \hits # get html rendered
-            $t = window.$('#left_container')
-            after.push ->
-              bench \left-bar -> window.replace-html($t, html)
+            bench \search-content -> window.replace-html($t, html)
 
         # represent state of filters in ui
         $q = window.$(\#query)
@@ -379,8 +389,8 @@ end-search = ->
 
         # initial filter state
         bench \filter-state ~>
-          window.$('#query_filters [name=forum_id]').val @searchopts.forum_id
-          window.$('#query_filters [name=within]').val @searchopts.within
+          window.$('#search_filters [name=forum_id]').val @searchopts.forum_id
+          window.$('#search_filters [name=within]').val @searchopts.within
 
         bench \layout-static ->
           layout-static window, \search

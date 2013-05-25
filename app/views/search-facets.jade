@@ -1,0 +1,11 @@
+#search_facets
+
+  //- XXX/refactor to CSS! don't kick my ass mrkeith plz
+  div(style='height:30px')
+
+  //- not sure how i feel about this but whats the fucking point of <= 1? lol
+  if facets.forum.length > 1
+    .facet
+      .facet-title Hits by Forum
+      each forum in facets.forum
+        a.mutant.facet-hit(href=forum.uri) #{forum.title} (#{forum.hitCount})
