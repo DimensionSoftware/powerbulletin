@@ -681,7 +681,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     elres
     facets
     menu
-    title: "Search : #{res.locals.searchopts.q}"
+    title: "Search#{if res.locals.searchopts.q then (' : ' + res.locals.searchopts.q) else ''}"
   }
 
   res.mutant \search

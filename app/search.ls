@@ -72,19 +72,24 @@ parseopts = ({
     }
 
   # cleanup so elastic doesn't freak if query / filter are empty
-  rval =
-    highlight:
-      fields:
-        title: {}
-        body: {}
-      pre_tags: ['<span class="search-hit">']
-      post_tags: ['</span>']
+  # XXX: this doesn't work yet, not sure why, needs some more hacking
+  #rval =
+  #  highlight:
+  #    fields:
+  #      title: {}
+  #      body: {}
+  #    pre_tags: ['<span class="search-hit">']
+  #    post_tags: ['</span>']
 
-  rval <<< {query: {filtered: {query}}} if Object.keys(query).length
-  rval.query.filtered <<< {filter: {and: filters}} if filters.length
-  rval <<< {facets}
+  filtered = {}
+  if Object.keys(query).length
+    filtered <<< {query}
+  else
+    filtered <<< {query: {match_all: {}}}
 
-  rval
+  filtered <<< {filter: {and: filters}} if filters.length
+
+  {query: {filtered}, facets}
 
 # usage on repl:
 #   s.search q: \mma, console.log
