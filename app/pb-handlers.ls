@@ -631,20 +631,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   res.mutant \admin # out!
 
 @search = (req, res, next) ->
-  site = res.vars.site
-
-  err, menu <- db.menu res.vars.site.id
-  if err then return next err
-
-  err, elres <- s.search req.query
-  if err then return next(err)
-
-  for h in elres.hits
-    h._source.posts = [] # stub object for non-existent sub-posts in search view
-
-  res.locals {elres}
-
-  cleanup-searchopts = (opts) ->
+  function cleanup-searchopts opts
     const key-blacklist =
       * \_surf
       * \_surfData
@@ -655,10 +642,42 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     for key in key-blacklist
       delete opts[key]
 
-    return opts
+    opts
+
+
+  site = res.vars.site
+
+  err, menu <- db.menu res.vars.site.id
+  if err then return next err
+
+  err, elres, elres2 <- s.search req.query
+  if err then return next(err)
 
   res.locals.searchopts = cleanup-searchopts req.query
-  res.locals {menu, title: "Search : #{res.locals.searchopts.q}"}
+
+  for h in elres.hits
+    h._source.posts = [] # stub object for non-existent sub-posts in search view
+
+  facets = elres2.facets
+  for t in facets.forum.terms
+    #newopts = {} <<< searchopts <<< {forum_id: t.}
+    newopts = res.locals.searchopts
+    #XXX: newopts needs to be populated with correct uri for this forum
+    # (i.e. a url with forum filtered is what the user clicks on)
+    # elastic doesn't provide a convenient way to return a secondary
+    # field from faceting.. so i think i may create a hashmap lookup table
+    # on the client which maps forum ids to proper names ; D
+    if qs = ["#{k}=#{encode-URI-component v}" for k,v of newopts].join \&
+      t.uri = "/search?#{qs}"
+    else
+      t.uri = '/search'
+
+  res.locals {
+    elres
+    facets
+    menu
+    title: "Search : #{res.locals.searchopts.q}"
+  }
 
   res.mutant \search
 # vim:fdm=indent
