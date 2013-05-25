@@ -72,9 +72,7 @@ module.exports = class Pager
       return false
     $(window).resize @on-resize-re-init
 
-  # Reconfigure an existing pager with new options.  This is usually used when page mutations happen.
-  # @param Object pager
-  # @param Object options
+  # Reconfigure an existing pager.  This is usually used when page mutations happen.
   init: ->
     $ \body .toggle-class \paginator (@last > 1) # only show if multiple pages
     @height = @$el.height!
