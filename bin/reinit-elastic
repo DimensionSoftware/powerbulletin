@@ -1,0 +1,9 @@
+#!/bin/bash -e
+sudo killall -9 java &> /dev/null
+sudo rm -rf /opt/elasticsearch/data/
+sleep 1
+sudo bin/launch-elasticsearch
+sleep 5
+bin/launch-indexer
+echo "UPDATE posts SET index_dirty='t'" | bin/psql pb
+tail -f logs/indexer.log
