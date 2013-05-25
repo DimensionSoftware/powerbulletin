@@ -226,6 +226,12 @@ CREATE FUNCTION procs.sub_posts_tree(site_id JSON, post_id JSON, fields JSON, li
   return u.sub-posts-tree site_id, post_id, fields, lim, oft
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
+
+CREATE FUNCTION procs.forum_dict(site_id JSON) RETURNS JSON AS $$
+  rows = plv8.execute "SELECT id, title FROM forums WHERE site_id=$1", [site_id]
+  return {[r.id, r.title] for r in rows}
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 -- Users & Aliases {{{
 
 -- Find a user by auths.type and auths.id

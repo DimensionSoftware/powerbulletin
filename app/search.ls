@@ -36,7 +36,7 @@ parseopts = ({
   facets =
     forum:
       terms:
-        field: \forum_title
+        field: \forum_id
 
   # modify query / filter here with series of conditions based on opts
   if q
