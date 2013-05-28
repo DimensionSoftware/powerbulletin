@@ -1,2 +1,2 @@
 #!/bin/sh -e
-mocha --compilers ls:LiveScript tests
+mocha -R spec --compilers ls:LiveScript test
