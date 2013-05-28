@@ -21,6 +21,7 @@ global <<< require \./shared-helpers
 
 is-editing = /\/(edit|new)\/?([\d+]*)$/
 is-admin   = /\/admin.*/
+is-auth    = /\/auth.*/
 
 @hello = (req, res, next) ->
   console.log req.headers
@@ -224,7 +225,9 @@ auth-finisher = (req, res, next) ->
   if req.user # guard
     redirect-url = req.param(\redirect-url) or req.header(\Referer) or '/'
     req.logout!
-    res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '')
+    res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '').replace(is-auth, '')
+  else
+    res.redirect '/'
 
 # remove unnecessary data from res.locals when surfing
 # @param Object res   response object

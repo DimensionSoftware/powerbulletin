@@ -42,7 +42,7 @@ socket.on \post-create (post, cb) ->
     animate-in = (e) -> $ e .add-class \post-animate-in
     render-and-append(
       window, $(sel), \post, post:post, (new-post) ->
-        if post.user_id is user.id # & scroll-to
+        if post.user_id is user?id # & scroll-to
           mutants.forum.on-personalize window, user, (->) # enable edit, etc...
           set-timeout (-> animate-in new-post), 250ms
           if mutator is \forum then awesome-scroll-to new-post, 300ms
