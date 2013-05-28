@@ -36,7 +36,7 @@ parseopts = ({
   facets =
     forum:
       terms:
-        field: \forum_title
+        field: \forum_id
 
   # modify query / filter here with series of conditions based on opts
   if q
@@ -72,19 +72,24 @@ parseopts = ({
     }
 
   # cleanup so elastic doesn't freak if query / filter are empty
-  rval =
-    highlight:
-      fields:
-        title: {}
-        body: {}
-      pre_tags: ['<span class="search-hit">']
-      post_tags: ['</span>']
+  # XXX: this doesn't work yet, not sure why, needs some more hacking
+  #rval =
+  #  highlight:
+  #    fields:
+  #      title: {}
+  #      body: {}
+  #    pre_tags: ['<span class="search-hit">']
+  #    post_tags: ['</span>']
 
-  rval <<< {query} if Object.keys(query).length
-  rval <<< {filter: {and: filters}} if filters.length
-  rval <<< {facets}
+  filtered = {}
+  if Object.keys(query).length
+    filtered <<< {query}
+  else
+    filtered <<< {query: {match_all: {}}}
 
-  rval
+  filtered <<< {filter: {and: filters}} if filters.length
+
+  {query: {filtered}, facets}
 
 # usage on repl:
 #   s.search q: \mma, console.log

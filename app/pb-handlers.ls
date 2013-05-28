@@ -255,7 +255,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 @homepage = (req, res, next) ->
   tasks =
     menu:   db.menu res.vars.site.id, _
-    forums: db.homepage-forums res.vars.site.id, (req.query?order or \recent), _
+    forums: (cb) ->
+      # TODO summarize all forums
+      #(err, forums) <- db.forums-for-site res.vars.site.id
+      db.forum-summary 1, 10threads, 5posts, (req.query?order or \recent), cb
   if req.surfing
     delete tasks.menu
     delete-unnecessary-surf-data res
@@ -265,18 +268,17 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
   # unique users at thread level
   # - better handled in sql
-  uniq = {}
-  doc.forums = doc.forums |> filter (f) ->
-    k = f.user_id + f.thread_id
-    r=uniq[k]
-    unless r # add!
-      return uniq[k]=true
-    false
+#  uniq = {}
+#  doc.forums = doc.forums |> filter (f) ->
+#    k = f.user_id + f.thread_id
+#    r=uniq[k]
+#    unless r # add!
+#      return uniq[k]=true
+#    false
 
   doc.active-forum-id = \homepage
   doc.title = res.vars.site.name
   res.locals doc
-  res.locals.active-forum-id = \homepage
 
   announce.emit \debug, {testing: 'from homepage handler in express'}
 
@@ -367,7 +369,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     tasks =
       menu        : db.menu res.vars.site.id, _
       forum       : db.forum forum-id, _
-      forums      : db.forum-summary forum-id, 10, 5, _
+      forums      : db.forum-summary forum-id, 10threads, 5posts, \recent, _
       top-threads : db.top-threads forum-id, \recent, _
 
     if req.surfing
@@ -653,30 +655,33 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   err, elres, elres2 <- s.search req.query
   if err then return next(err)
 
+  err, forum-dict <- db.forum-dict site.id
+  if err then return next(err)
+
   res.locals.searchopts = cleanup-searchopts req.query
 
   for h in elres.hits
     h._source.posts = [] # stub object for non-existent sub-posts in search view
 
-  facets = elres2.facets
-  for t in facets.forum.terms
-    #newopts = {} <<< searchopts <<< {forum_id: t.}
-    newopts = res.locals.searchopts
-    #XXX: newopts needs to be populated with correct uri for this forum
-    # (i.e. a url with forum filtered is what the user clicks on)
-    # elastic doesn't provide a convenient way to return a secondary
-    # field from faceting.. so i think i may create a hashmap lookup table
-    # on the client which maps forum ids to proper names ; D
+  facets = {forum: []}
+  for t in elres2.facets.forum.terms
+    forum_id = t.term
+    title = forum-dict[forum_id]
+    hit-count = t.count
+
+    newopts = {} <<< res.locals.searchopts <<< {forum_id}
     if qs = ["#{k}=#{encode-URI-component v}" for k,v of newopts].join \&
-      t.uri = "/search?#{qs}"
+      uri = "/search?#{qs}"
     else
-      t.uri = '/search'
+      uri = '/search'
+
+    facets.forum.push {forum_id, title, uri, hit-count}
 
   res.locals {
     elres
     facets
     menu
-    title: "Search : #{res.locals.searchopts.q}"
+    title: "Search#{if res.locals.searchopts.q then (' : ' + res.locals.searchopts.q) else ''}"
   }
 
   res.mutant \search

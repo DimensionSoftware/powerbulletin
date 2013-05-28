@@ -1,0 +1,22 @@
+mixin forumOptions(forums, prefix)
+  each f in forums
+    option(value=f.id)= prefix + f.title
+    mixin forumOptions(f.forums, '-')
+
+#search_filters
+  h3 Filter your Search
+  div
+    label
+      h4 Forum
+      select(name='forum_id')
+        option(value='') All Forums
+        mixin forumOptions(menu, '')
+
+  div
+    label
+      h4 Time Period
+      select(name='within')
+        option(value='') Any Time
+        option(value='day') Within Last Day
+        option(value='week') Within Last Week
+        option(value='month') Within Last Month

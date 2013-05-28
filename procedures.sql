@@ -226,6 +226,12 @@ CREATE FUNCTION procs.sub_posts_tree(site_id JSON, post_id JSON, fields JSON, li
   return u.sub-posts-tree site_id, post_id, fields, lim, oft
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
+
+CREATE FUNCTION procs.forum_dict(site_id JSON) RETURNS JSON AS $$
+  rows = plv8.execute "SELECT id, title FROM forums WHERE site_id=$1", [site_id]
+  return {[r.id, r.title] for r in rows}
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 -- Users & Aliases {{{
 
 -- Find a user by auths.type and auths.id
@@ -573,13 +579,30 @@ CREATE FUNCTION procs.homepage_forums(forum_id JSON, sort JSON) RETURNS JSON AS 
   return u.homepage-forums forum_id, sort
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, post_limit JSON) RETURNS JSON AS $$
+--  sql = """
+--  SELECT MAX(a.name) AS user_name, MAX(u.photo) AS user_photo, p.user_id, p.thread_id, MAX(t.title) AS title, MAX(p.media_url) AS media_url, MAX(p.uri) AS uri, p.id
+--  FROM posts p
+--  JOIN posts t ON p.thread_id = t.id
+--  JOIN users u ON p.user_id = u.id
+--  JOIN aliases a ON p.user_id = a.user_id
+--  WHERE p.media_url IS NOT null AND char_length(p.media_url) < 128
+--  GROUP BY p.user_id, p.thread_id, p.created, p.id
+--  ORDER BY #{sort-expr}
+--  LIMIT 100
+--  """
+CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, post_limit JSON, sort JSON) RETURNS JSON AS $$
   require! u
   tpf = u.top-posts(\recent, thread_limit)
   latest-threads = tpf(forum_id)
 
   forumf = plv8.find_function('procs.forum')
-  forum = forumf(forum_id)
+  forum  = forumf(forum_id)
+
+  sort-sql =
+    switch sort or \recent
+    | \recent   => 'p.created DESC, p.id ASC'
+    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC, p.created DESC'
+    | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
 
   # This query can be moved into its own proc and generalized so that it can
   # provide a flat view of a thread.

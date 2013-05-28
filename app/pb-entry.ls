@@ -124,7 +124,7 @@ do ->
       r-searchopts({} <<< window.searchopts <<< {q, submit-type})
   ), 500ms
 
-$d.on \change, '#query_filters [name=forum_id]', ->
+$d.on \change, '#search_filters [name=forum_id]', ->
   console.log it
   submit-type = \soft
   forum_id = $(@).val!
@@ -133,7 +133,7 @@ $d.on \change, '#query_filters [name=forum_id]', ->
 
   return false
 
-$d.on \change, '#query_filters [name=within]', ->
+$d.on \change, '#search_filters [name=within]', ->
   console.log it
   submit-type = \soft
   within = $(@).val!

@@ -2,22 +2,22 @@ include _post-profile
 
 mixin media-post(f, i)
   img(src=f.media_url)
-  p.body!= f.html
 mixin html-post(f, t, i)
   p.body!= f.html
 
-mixin post(f, i)
-    .post(id="post_#{f.id}", class="col#{Math.ceil(Math.random()*2)}")
-      a.mutant(href=f.uri)
-        h5.title!= f.title
-          span.date #{f.date}
+mixin posts(f, i)
+  each p,i in f.posts
+    .post(id="post_#{p.id}", class="col#{Math.ceil(Math.random()*2)}")
+      a.mutant(href=p.uri)
+        h5.title!= p.title
+          span.date #{p.date}
       //- post type
-      if f.media_url
-        mixin media-post(f, i)
+      if p.media_url
+        mixin media-post(p, i)
       else
-        mixin html-post(f, i)
+        mixin html-post(p, i)
       //- subpost summary
-      mixin _post-profile(f, i)
+      mixin _post-profile(p, i)
     //- .up(class='onclick-scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
 
 //- main
@@ -32,7 +32,7 @@ mixin post(f, i)
 if forums
   .homepage(class=activeForumId!='homepage'?'resizable forum':'')
     each f,i in forums
-      mixin post(f, i)
+      mixin posts(f, i)
 else
   p Create a forum first
     i !
