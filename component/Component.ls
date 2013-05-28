@@ -40,10 +40,11 @@ module.exports =
       # in the future look into an option to bypass this for manual dom manip
       # i.e. can be overridden by the programmer
       r-put = $R ~>
-        bench "#{@@display-name} (RENDER)" ~> @render!
+        # XXX: display-name is not correct.. it needs to be the name of the extended class
+        bench "#{@@display-name} (render)" ~> @render!
 
         put = ~>
-          bench "#{@@display-name} (PUT)" ~> @put!
+          bench "#{@@display-name} (put)" ~> @put!
 
         if raf = window?request-animation-frame
           raf put
@@ -99,5 +100,7 @@ module.exports =
       # pre-calculate and store s
       @html = $c.html!
     put: !-> # put in @$top (client only)
-      replace-html(@$top, @html or @render!)
+      #XXX: can't use this yet because it breaks @$top
+      #replace-html(@$top, @html or @render!)
 
+      @$top.html(@html or @render!)
