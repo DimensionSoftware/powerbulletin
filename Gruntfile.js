@@ -51,7 +51,7 @@ module.exports = function(grunt) {
         }
       },
       jade: {
-        files: ['app/views/*.jade'],
+        files: ['app/views/*.jade', 'component/*.jade'],
         tasks: ['jade', 'browserify', 'uglify', 'launch'],
         options: {
           interrupt: true,
@@ -111,7 +111,10 @@ module.exports = function(grunt) {
     exec('bin/psql pb < procedures.sql', {silent: true});
   });
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {
+    // XXX: should move this into bin/build-clientjade eventually
     fs.writeFileSync('app/views/templates.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/order-control.jade app/views/thread.jade app/views/nav.jade app/views/posts.jade app/views/post-edit.jade app/views/post-new.jade app/views/profile.jade app/views/posts-by-user.jade app/views/post.jade app/views/admin-*.jade app/views/search.jade app/views/search-filters.jade app/views/search-facets.jade app/views/_*.jade', {silent:true}).output));
+
+    exec('bin/build-clientjade');
   });
 
   grunt.registerTask('browserify', 'generate browser bundle', function() {

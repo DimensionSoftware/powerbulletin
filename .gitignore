@@ -15,3 +15,4 @@
 /config/local.json
 /elasticsearch-logs/
 /elasticsearch-data/
+/build/

@@ -1,0 +1,3 @@
+#!/bin/sh -e
+mkdir -p build
+node_modules/.bin/clientjade component | sed "1,/jade/s/jade/module.exports = jade/" > build/component-jade.js
