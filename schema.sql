@@ -69,6 +69,7 @@ CREATE TABLE aliases (
   verified BOOLEAN NOT NULL DEFAULT FALSE,
   forgot   VARCHAR(32),
   rights   JSON NOT NULL DEFAULT '{"super":0}',
+  config   JSON NOT NULL DEFAULT '{"super":0}',
   created  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated  TIMESTAMP,
   UNIQUE (site_id, name),
