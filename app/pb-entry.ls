@@ -10,6 +10,8 @@ window.tasks = require \./tasks.ls
 global <<< require \./pb-helpers.ls
 global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
 
+require! ch: \./client-helpers.ls
+
 # XXX client-side entry
 # shortcuts
 $w = $ window
@@ -193,10 +195,10 @@ $ui.on \nav-top-posts, (e, threads) ->
 
 #}}}
 # {{{ - generic form-handling ui
-$d.on \click '.create .no-surf' window.require-login(->
+$d.on \click '.create .no-surf' ch.require-login(->
   $ '#main_content .forum' .html '' # clear canvas
   edit-post is-editing(window.location.pathname), forum_id:window.active-forum-id)
-$d.on \click \.edit.no-surf window.require-login(-> edit-post is-editing(window.location.pathname))
+$d.on \click \.edit.no-surf ch.require-login(-> edit-post is-editing(window.location.pathname))
 $d.on \click '.onclick-submit .cancel' ->
   f = $ this .closest \.post-edit  # form
   f.hide 350ms \easeOutExpo
@@ -206,7 +208,7 @@ $d.on \click '.onclick-submit .cancel' ->
   | otherwise   => remove-editing-url meta
   false
 
-submit = window.require-login(
+submit = ch.require-login(
   (evt) -> submit-form(evt, (data) ->
     f = $ this .closest \.post-edit # form
     p = f .closest \.editing        # post being edited
@@ -229,8 +231,8 @@ submit-selectors =
 
 $d.on \click, submit-selectors.join(', '), submit
 
-$d.on \click \.onclick-append-reply-ui window.require-login(append-reply-ui)
-$d.on \click \.onclick-censor-post window.require-login(censor)
+$d.on \click \.onclick-append-reply-ui ch.require-login(append-reply-ui)
+$d.on \click \.onclick-censor-post ch.require-login(censor)
 #}}}
 #{{{ - login delegated events
 window.switch-and-focus = (remove, add, focus-on) ->
@@ -291,7 +293,7 @@ if mocha? and window.location.search.match /test=1/
 #}}}
 #}}}
 #{{{ - admin
-$d.on \click  'html.admin .onclick-submit input[type="submit"]' window.require-login(
+$d.on \click  'html.admin .onclick-submit input[type="submit"]' ch.require-login(
   (evt) -> submit-form(evt, (data) ->
     f = $ this # form
     inputs =

@@ -5,5 +5,6 @@ require! \./Component.ls
 module.exports =
   class Buy extends Component
     template: templates.Buy
-    attach: !-> #@$top.on
+    attach: !->
+      @$top.on \click \h1 -> alert(\fuck)
     detach: !-> #@$top.off!

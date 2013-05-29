@@ -4,6 +4,8 @@ window.mutants = require \./pb-mutants.ls
 
 mutant  = require \../lib/mutant/mutant.ls
 
+require! ch: \./client-helpers.ls
+
 window.hints =
   last:
     pathname: null
@@ -201,15 +203,7 @@ window.shake-dialog = ($form, time) ->
   $fancybox = $form.parents(\.fancybox-wrap:first) .remove-class \shake
   set-timeout (-> $fancybox.add-class(\shake)), 100ms
 
-window.show-login-dialog = ->
-  $.fancybox.open \#auth,
-    close-effect: \elastic
-    close-speed:  200ms
-    close-easing: \easeOutExpo
-    open-effect: \fade
-    open-speed: 300ms
-  setTimeout (-> $ '#auth input[name=username]' .focus! ), 100ms
-$d.on \click \.onclick-login -> window.show-login-dialog!; false
+$d.on \click \.onclick-login -> ch.show-login-dialog!; false
 
 # register action
 # login action
@@ -265,16 +259,7 @@ window.register = ->
 
 $d.on \submit '.login form' login
 $d.on \submit '.register form' register
-
-# require that window.user exists before calling fn
-window.require-login = (fn) ->
-  ->
-    if window.user
-      fn.apply this, arguments
-    else
-      show-login-dialog!
-      false
-$d.on \click \.require-login window.require-login(-> this.click)
+$d.on \click \.require-login ch.require-login(-> this.click)
 
 # forgot password
 window.forgot-password = ->
@@ -291,7 +276,7 @@ $d.on \submit '.forgot form' forgot-password
 
 window.show-reset-password-dialog = ->
   $form = $ '#auth .reset form'
-  show-login-dialog!
+  ch.show-login-dialog!
   set-timeout (-> switch-and-focus '', \on-reset, '#auth .reset input:first'), 500ms
   hash = location.hash.split('=')[1]
   $form.find('input[type=hidden]').val(hash)
