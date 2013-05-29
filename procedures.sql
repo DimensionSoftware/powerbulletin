@@ -594,6 +594,7 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
 
   # This query can be moved into its own proc and generalized so that it can
   # provide a flat view of a thread.
+  # XXX non-null media url sorted first/top in list
   sql = """
   SELECT
     p.*,
@@ -608,7 +609,7 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
   WHERE a.site_id = s.id
     AND p.forum_id = $1
     AND p.parent_id IS NULL
-  ORDER BY LENGTH(p.media_url) > 1, #sort-sql
+  ORDER BY (LENGTH(p.media_url) > 1) DESC, #sort-sql
   LIMIT $2
   """
   forum.posts = plv8.execute(sql, [forum_id, thread_limit])
