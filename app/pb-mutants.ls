@@ -203,6 +203,8 @@ pager-init = (w) ->
       set-online-user u.id
       $ ".post[data-user-id=#{u.id}] .edit"
         .css(\display \inline) # enable edit
+      $ ".post[data-user-id=#{u.id}] .censor"
+        .css(\display \inline) # enable censor
     next!
   on-unload:
     (window, next-mutant, next) ->

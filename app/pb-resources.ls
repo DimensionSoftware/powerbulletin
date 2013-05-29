@@ -133,13 +133,14 @@ announce = sioa.create-client!
 
     res.json r
   destroy : (req, res, next) ->
-    if not req?user?rights?super then return next 404 # guard
-    # TODO currently only super users can censor.  how about post owners?
     db = pg.procs
-
-    if post-id = parse-int(req.params.post)
+    if post-id = parse-int req.params.post
+      # guard is post owner or super
+      err, owns-post <- db.owns-post post-id, req.user?id
+      if err then return next err
+      return next 404 unless owns-post.length or !req?user?rights?super
       # we don't really destroy, we just archive
-      err <- db.archive-post(post-id)
+      err <- db.archive-post post-id
       if err then return next err
       res.json {success: true}
     else

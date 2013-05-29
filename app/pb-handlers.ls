@@ -7,11 +7,12 @@ require! {
   fluidity
   mkdirp
   querystring
+  s: \./search
+  c: \./cache
   __:   \lodash
   pg:   \./postgres
   auth: \./auth
   furl: \./forum-urls
-  s: \./search
 }
 
 announce = require(\socket.io-announce).create-client!
@@ -566,7 +567,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   res.json success: true
 
 @censor = (req, res, next) ->
-  return next(404) unless req.user
+  return next 404 unless req.user
   db = pg.procs
 
   # XXX: stub for reason, need to have ui to capture moderation reason
@@ -578,6 +579,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 
   (err, r) <- db.censor command
   if err then next err
+  c.invalidate-post req.params.id, req.user.name # blow cache!
   res.json r
 
 @sub-posts = (req, res, next) ->

@@ -3,5 +3,4 @@ mixin _post_actions(p)
     a.stylish.onclick-append-reply-ui Reply
     a.stylish.edit.mutant.no-surf(href="#{p.uri.replace(/\/\d+$/, '')}/edit/#{p.id}") Edit
     a.stylish.mutant(href=p.uri) Permalink
-    if (typeof(user) !== 'undefined' && user) && user.rights.super
-      a.stylish.onclick-censor-post Censor
+    a.stylish.censor.onclick-censor-post Censor
