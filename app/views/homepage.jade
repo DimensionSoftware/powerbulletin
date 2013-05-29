@@ -25,14 +25,15 @@ mixin posts(f, i)
 //-  img.bg(id="forum_bg_#{f.id}", class='initial', src="#{cacheUrl}/images/bg_#{f.id}.jpg")
 //-  if activeForumId != 'homepage'
 //-    .forum(id="forum_#{f.id}", class=f.classes)
-//-  h2.title
-//-    a.mutant(href=f.uri)= f.title
-//-  a(name="forum_#{f.id}") //- hashtag anchor
-//-  .container
 if forums
   .homepage(class=activeForumId!='homepage'?'resizable forum':'')
     each f,i in forums
-      mixin posts(f, i)
+      .forum(id="forum_#{f.id}", class=f.classes || '')
+        h2.title
+          a.mutant(href=f.uri)= f.title
+        a(name="forum_#{f.id}") //- hashtag anchor
+        .container
+          mixin posts(f, i)
 else
   p Create a forum first
     i !

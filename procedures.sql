@@ -154,7 +154,6 @@ CREATE FUNCTION procs.add_post(post JSON) RETURNS JSON AS $$
         * post.media_url or null
         * post.ip
 
-      if post.media-url then plv8.elog WARNING, JSON.stringify(post)
       plv8.execute(sql, params)
 
       # the post must be inserted before uri-for-post will work, thats why uri is a NULLABLE column
@@ -579,22 +578,7 @@ CREATE FUNCTION procs.homepage_forums(forum_id JSON, sort JSON) RETURNS JSON AS 
   return u.homepage-forums forum_id, sort
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
---  sql = """
---  SELECT MAX(a.name) AS user_name, MAX(u.photo) AS user_photo, p.user_id, p.thread_id, MAX(t.title) AS title, MAX(p.media_url) AS media_url, MAX(p.uri) AS uri, p.id
---  FROM posts p
---  JOIN posts t ON p.thread_id = t.id
---  JOIN users u ON p.user_id = u.id
---  JOIN aliases a ON p.user_id = a.user_id
---  WHERE p.media_url IS NOT null AND char_length(p.media_url) < 128
---  GROUP BY p.user_id, p.thread_id, p.created, p.id
---  ORDER BY #{sort-expr}
---  LIMIT 100
---  """
-CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, post_limit JSON, sort JSON) RETURNS JSON AS $$
-  require! u
-  tpf = u.top-posts(\recent, thread_limit)
-  latest-threads = tpf(forum_id)
-
+CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON) RETURNS JSON AS $$
   forumf = plv8.find_function('procs.forum')
   forum  = forumf(forum_id)
 
@@ -618,14 +602,26 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, post_limit
   JOIN sites s ON s.id = f.site_id
   LEFT JOIN moderations m ON m.post_id = p.id
   WHERE a.site_id = s.id
-    AND p.thread_id = $1
-    AND p.parent_id IS NOT NULL
-  ORDER BY p.created DESC
+    AND p.forum_id = $1
+    AND p.parent_id IS NULL
+  ORDER BY LENGTH(p.media_url) > 1, #sort-sql
   LIMIT $2
   """
-  forum.posts = [ (t.posts = plv8.execute(sql, [t.id, post_limit])) and t for t in latest-threads ]
+  forum.posts = plv8.execute(sql, [forum_id, thread_limit])
   return [forum]
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.site_summary(site_id JSON, thread_limit JSON, sort JSON) RETURNS JSON AS $$
+  sort-sql =
+    switch sort or \recent
+    | \recent   => 'created DESC, id ASC'
+    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE forum_id=id GROUP BY forum_id) DESC, created DESC'
+    | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
+  site-ids = plv8.execute "SELECT id FROM forums WHERE site_id=$1::bigint ORDER BY #sort-sql", [site_id]
+  fn = plv8.find_function \procs.forum_summary
+  return site-ids.map (-> fn(it.id, thread_limit, sort).0)
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 
 CREATE FUNCTION procs.top_threads(forum_id JSON, s JSON) RETURNS JSON AS $$
   require! u
