@@ -1,0 +1,25 @@
+#!/bin/sh -e
+
+JADE_FILES='
+app/views/homepage.jade
+app/views/order-control.jade
+app/views/thread.jade
+app/views/nav.jade
+app/views/posts.jade
+app/views/post-edit.jade
+app/views/post-new.jade
+app/views/profile.jade
+app/views/posts-by-user.jade
+app/views/post.jade
+app/views/admin-*.jade
+app/views/search.jade
+app/views/search-filters.jade
+app/views/search-facets.jade
+app/views/_*.jade
+'
+
+# apply globbing
+JADE_FILES=`echo $JADE_FILES`
+
+mkdir -p build
+bin/build-commonjs-clientjade build/client-jade.js $JADE_FILES

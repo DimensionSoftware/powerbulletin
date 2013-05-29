@@ -1,0 +1,22 @@
+#!/bin/bash -e
+
+# this wrapper function makes it so that clientjade can be required properly
+# in CommonJS
+
+# YES, I know using SED is a hack ; )
+
+# first argument is the outfile
+# second argument is the arguments to pass to clientjade
+OUTFILE=$1
+shift
+CLIENTJADE_ARGS=$@
+
+if [ "$NODE_ENV" = 'production' ]; then
+  # compress in production
+  echo "building jade compressed [production mode]"
+  node_modules/.bin/clientjade -c $CLIENTJADE_ARGS | sed "1,/jade/s/jade/module.exports = jade/" > $OUTFILE
+else
+  # don't compress in dev
+  echo "building jade with debugging [development mode]"
+  node_modules/.bin/clientjade $CLIENTJADE_ARGS | sed "1,/jade/s/jade/module.exports = jade/" > $OUTFILE
+fi

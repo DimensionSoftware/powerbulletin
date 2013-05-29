@@ -54,7 +54,7 @@ module.exports = function(grunt) {
         }
       },
       app: {
-        files: ['component/*.ls', 'app/*.ls', 'config/*', 'lib/**/*.ls', 'app/views/templates.js', 'build/component-templates.js'],
+        files: ['component/*.ls', 'app/*.ls', 'config/*', 'lib/**/*.ls', 'build/client-jade.js', 'build/component-jade.js'],
         tasks: ['browserify', 'launch'],
         options: {
           debounceDelay: 100
@@ -106,8 +106,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('clientJade', 'compile regular jade', function() {
-    // XXX: should move this into bin/build-clientjade eventually
-    fs.writeFileSync('app/views/templates.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/order-control.jade app/views/thread.jade app/views/nav.jade app/views/posts.jade app/views/post-edit.jade app/views/post-new.jade app/views/profile.jade app/views/posts-by-user.jade app/views/post.jade app/views/admin-*.jade app/views/search.jade app/views/search-filters.jade app/views/search-facets.jade app/views/_*.jade', {silent:true}).output));
+    exec('bin/build-client-jade');
   });
 
   grunt.registerTask('componentJade', 'compile component Jade', function() {

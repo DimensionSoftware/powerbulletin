@@ -97,7 +97,7 @@ else
   on-mutate       = template.on-mutate       || ((w, cb) -> cb!)
   on-personalize  = template.on-personalize  || ((w, u, cb) -> cb!)
 
-  require \../../app/views/templates.js # pre-built clientjade templates
+  require \../../build/client-jade.js # pre-built clientjade templates
 
   # like inner html, except super rice
   # mutant has lots of entropy so we can avoid the teardown performance hit
