@@ -1,5 +1,5 @@
 require! {
-  furl: './forum-urls'
+  furl: \./forum-urls.ls
 }
 
 export for-mutant =

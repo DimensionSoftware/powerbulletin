@@ -1,13 +1,13 @@
 require! \../component/Buy.ls
 
 window.__    = require \lodash
-window.ioc   = require \./io-client
-window.Pager = require \./pager
-window.Chat  = require \./chat
-window.furl  = require \./forum-urls
-window.tasks = require \./tasks
+window.ioc   = require \./io-client.ls
+window.Pager = require \./pager.ls
+window.Chat  = require \./chat.ls
+window.furl  = require \./forum-urls.ls
+window.tasks = require \./tasks.ls
 
-global <<< require \./pb-helpers
+global <<< require \./pb-helpers.ls
 global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
 
 # XXX client-side entry
@@ -192,10 +192,10 @@ $ui.on \nav-top-posts, (e, threads) ->
 
 #}}}
 # {{{ - generic form-handling ui
-$d.on \click '.create .no-surf' require-login(->
+$d.on \click '.create .no-surf' window.require-login(->
   $ '#main_content .forum' .html '' # clear canvas
   edit-post is-editing(window.location.pathname), forum_id:window.active-forum-id)
-$d.on \click \.edit.no-surf require-login(-> edit-post is-editing(window.location.pathname))
+$d.on \click \.edit.no-surf window.require-login(-> edit-post is-editing(window.location.pathname))
 $d.on \click '.onclick-submit .cancel' ->
   f = $ this .closest \.post-edit  # form
   f.hide 350ms \easeOutExpo
@@ -205,7 +205,7 @@ $d.on \click '.onclick-submit .cancel' ->
   | otherwise   => remove-editing-url meta
   false
 
-submit = require-login(
+submit = window.require-login(
   (evt) -> submit-form(evt, (data) ->
     f = $ this .closest \.post-edit # form
     p = f .closest \.editing        # post being edited
@@ -228,8 +228,8 @@ submit-selectors =
 
 $d.on \click, submit-selectors.join(', '), submit
 
-$d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
-$d.on \click \.onclick-censor-post require-login(censor)
+$d.on \click \.onclick-append-reply-ui window.require-login(append-reply-ui)
+$d.on \click \.onclick-censor-post window.require-login(censor)
 #}}}
 #{{{ - login delegated events
 window.switch-and-focus = (remove, add, focus-on) ->
@@ -290,7 +290,7 @@ if mocha? and window.location.search.match /test=1/
 #}}}
 #}}}
 #{{{ - admin
-$d.on \click  'html.admin .onclick-submit input[type="submit"]' require-login(
+$d.on \click  'html.admin .onclick-submit input[type="submit"]' window.require-login(
   (evt) -> submit-form(evt, (data) ->
     f = $ this # form
     inputs =

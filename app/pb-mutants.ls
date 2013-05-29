@@ -1,5 +1,5 @@
-global <<< require \./pb-helpers
-global.furl = require \./forum-urls
+global <<< require \./pb-helpers.ls
+global.furl = require \./forum-urls.ls
 
 !function bench subject-name, subject-body
   bef = new Date
@@ -40,7 +40,7 @@ pager-init = (w) ->
     w.pager = new w.Pager \#paginator pager-opts
   w.pager.set-page(w.page, false) if w.page
 
-@homepage =
+export homepage =
   static:
     (window, next) ->
       window.render-mutant \main_content \homepage
@@ -127,7 +127,7 @@ pager-init = (w) ->
         # do nothing
       next!
 
-@forum =
+export forum =
   static:
     (window, next) ->
       const prev-mutant = window.mutator
@@ -222,7 +222,7 @@ same-profile = (hints) ->
       return p1[2]
   false
 
-@profile =
+export profile =
   static:
     (window, next) ->
       # conditionally render left_container
@@ -273,7 +273,7 @@ same-profile = (hints) ->
     (window, next-mutant, next) ->
       next!
 
-@admin =
+export admin =
   static:
     (window, next) ->
       window.render-mutant \left_container \admin-nav
@@ -307,7 +307,7 @@ join-search = (sock) ->
 end-search = ->
   socket.emit \search-end
 
-@search =
+export search =
   static:
     prepare:
       (window, next) ->

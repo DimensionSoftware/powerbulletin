@@ -1,5 +1,5 @@
 require! {
-  fsm: './fsm'
+  fsm: \./fsm.ls
 }
 
 #

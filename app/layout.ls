@@ -1,6 +1,8 @@
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
-window.helpers = require \./shared-helpers
-window.mutants = require \./pb-mutants
+window.helpers = require \./shared-helpers.ls
+window.mutants = require \./pb-mutants.ls
+
+mutant  = require \../lib/mutant/mutant.ls
 
 window.hints =
   last:
@@ -30,8 +32,7 @@ threshold = 10px # snap
 #### main   ###############>======-- -   -
 ##
 #{{{ Bootstrap Mutant Common
-window.mutant  = require \../lib/mutant/mutant
-window.mutate  = (event) ->
+window.mutate = (event) ->
   $e = $ this
   return if $e.has-class \require-login and !user # guard
   href = $e .attr \href
@@ -78,7 +79,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
     $.get url, surf-params, (r) ->
       return if not r.mutant
       $d.attr \title, r.locals.title if r.locals?title # set title
-      on-unload = window.mutants[window.mutator].on-unload or (w, next-mutant, cb) -> cb null
+      on-unload = mutants[window.mutator].on-unload or (w, next-mutant, cb) -> cb null
       on-unload window, r.mutant, -> # cleanup & run next mutant
         # this branch will prevent queue pileups if someone hits the back/forward button very quickly
         # yeah we already requested the data but lets not needlessly update the dom when the user has
@@ -91,7 +92,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
         if req-id is last-req-id # only if a new request has not been kicked off, can we run the mutant
           locals = {statechange-was-user} <<< r.locals
 
-          window.mutant.run window.mutants[r.mutant], {locals, window.user}, ->
+          mutant.run mutants[r.mutant], {locals, window.user}, ->
             onload-resizable!
             window.hints.current.mutator = window.mutator
             spin false
@@ -235,8 +236,8 @@ window.login = ->
 window.after-login = ->
   window.user <- $.getJSON \/auth/user
   onload-personalize!
-  if user and window.mutants?[window.mutator]?on-personalize
-    window.mutants?[window.mutator]?on-personalize window, user, ->
+  if user and mutants?[window.mutator]?on-personalize
+    mutants?[window.mutator]?on-personalize window, user, ->
       socket?disconnect!
       socket?socket?connect!
 
@@ -273,7 +274,7 @@ window.require-login = (fn) ->
     else
       show-login-dialog!
       false
-$d.on \click \.require-login require-login(-> this.click)
+$d.on \click \.require-login window.require-login(-> this.click)
 
 # forgot password
 window.forgot-password = ->
@@ -383,10 +384,8 @@ onload-personalize!
 if window.location.hash.match /^\#recover=/
   show-reset-password-dialog!
 
-window.mutant.run window.mutants[window.initial-mutant], {initial: true, window.user}, ->
-  mutant = window.mutants?[window.initial-mutant]
+mutant.run mutants[window.initial-mutant], {initial: true, window.user}, ->
+  mutant = mutants?[window.initial-mutant]
   if mutant.on-personalize
     mutant.on-personalize window, window.user, (->)
-
-
 # vim:fdm=marker

@@ -1,0 +1,9 @@
+#!/bin/sh -e
+node_modules/.bin/browserify \
+  -t liveify \
+  --debug \
+  --ignore cheerio \
+  --ignore jade \
+  --ignore jsdom \
+  -o public/powerbulletin.js \
+  app/layout.ls app/pb-entry.ls
