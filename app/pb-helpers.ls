@@ -92,6 +92,7 @@ timers = {}
     data:     $f.serialize!
     data-type: \json
     success:  (data) ->
+      $s.remove-attr \disabled
       if fn then fn.call $f, data
     error: ->
       $s.remove-attr \disabled
