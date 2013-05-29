@@ -1,13 +1,13 @@
 require! \../component/Buy.ls
 
 window.__    = require \lodash
-window.ioc   = require \./io-client
+window.ioc   = require \./io-client.ls
 window.Chat  = require \../component/Chat.ls
-window.Pager = require \./pager
-window.furl  = require \./forum-urls
-window.tasks = require \./tasks
+window.Pager = require \./pager.ls
+window.furl  = require \./forum-urls.ls
+window.tasks = require \./tasks.ls
 
-global <<< require \./pb-helpers
+global <<< require \./pb-helpers.ls
 global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
 
 # XXX client-side entry
