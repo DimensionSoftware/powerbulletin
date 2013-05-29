@@ -1,0 +1,13 @@
+.resizable
+  form.onclick-submit(action="/resources/users", method="put")
+    fieldset
+      label(for='emails') Email Addresses
+      input(id='emails', class='emails', name='emails', type='text')
+      .break
+      label(for='message') Additional Message
+      textarea(id='message', name='message')
+
+    input.button(type='submit', value='Send')
+    .tooltip Invites Sent
+      i !
+    input(type='hidden', name='action', value='invites')

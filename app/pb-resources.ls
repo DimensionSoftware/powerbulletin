@@ -70,12 +70,11 @@ announce = sioa.create-client!
     # munge data
     (err, user) <- db.find-or-create user
     res.json user
-  show : (req, res, next) ->
+  update : (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
     switch req.body.action
     | \invites =>
       res.json success:true
-
 @posts =
   index   : (req, res) ->
     res.locals.fid = req.query.fid

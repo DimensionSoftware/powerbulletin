@@ -281,6 +281,7 @@ same-profile = (hints) ->
       window.render-mutant \left_container \admin-nav
       window.render-mutant \main_content switch @action
       | \domains  => \admin-domains
+      | \invites  => \admin-invites
       | otherwise => \admin-general
       layout-static window, \admin
       window.marshal \site @site
