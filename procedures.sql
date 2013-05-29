@@ -37,10 +37,12 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
   p.*,
   a.name AS user_name ,
   u.photo AS user_photo,
+  m.reason,
   (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count
   FROM posts p
   JOIN users u ON p.user_id = u.id
   JOIN aliases a ON u.id = a.user_id
+  LEFT JOIN moderations m ON p.id=m.post_id
   WHERE p.forum_id IN (SELECT id FROM forums WHERE site_id = $1)
   AND a.name = $2
   ORDER BY p.created DESC

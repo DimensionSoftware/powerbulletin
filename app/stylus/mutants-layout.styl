@@ -241,6 +241,11 @@ html.forum, html.profile, html.search
           min-height 40px
       .post.head
         padding-top (grid/2)
+      .post:first-child
+        padding-top grid
+      .post.censored
+        .onclick-censor-post, .permalink
+          display none!important
       .post
         position relative
         clear both

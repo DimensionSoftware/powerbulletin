@@ -76,8 +76,9 @@ censor = ->
 
   $.post "/resources/posts/#{post-id}/censor", (r) ->
     if r.success
-      $p.transition { opacity: 0, scale: 0.3 }, 300s, \in, ->
-        $p.hide!
+      $p.add-class \censored
+      #$p.transition { opacity: 0, scale: 0.3 }, 300s, \in, ->
+      #  $p.hide!
     else
       console.warn r.errors.join(', ')
 #}}}
