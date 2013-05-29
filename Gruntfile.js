@@ -44,7 +44,7 @@ module.exports = function(grunt) {
       },
       livescript: {
         files: ['app/main.ls'],
-        tasks: ['livescript'],
+        tasks: ['livescript', 'launch'],
         options: {
           interrupt: true,
           debounceDelay: 100
@@ -52,15 +52,15 @@ module.exports = function(grunt) {
       },
       jade: {
         files: ['app/views/*.jade', 'component/*.jade'],
-        tasks: ['jade', 'browserify', 'uglify', 'launch'],
+        tasks: ['jade'],
         options: {
-          interrupt: true,
+          interrupt: false,
           debounceDelay: 100
         }
       },
       app: {
-        files: ['app/*.ls', 'config/*', 'lib/**/*.ls'],
-        tasks: ['browserify', 'uglify', 'launch'],
+        files: ['component/*.ls', 'app/*.ls', 'config/*', 'lib/**/*.ls', 'app/views/templates.js', 'build/component-templates.js'],
+        tasks: ['browserify', 'launch'],
         options: {
           interrupt: true,
           debounceDelay: 100
@@ -95,10 +95,10 @@ module.exports = function(grunt) {
 
   var launch;
   grunt.registerTask('launch', 'Launch PowerBulletin!', launch = function() {
+    exec('killall -9 pb-supervisor pb-worker powerbulletin', {silent:true});
     // XXX surely there's a more automatic way to manage this?
     var config = require('./config/common');
     var file   = config.tmp+'/pb.pid';
-    exec('killall -9 pb-supervisor pb-worker powerbulletin', {silent:true});
     daemon('./bin/powerbulletin', file);
   });
 
@@ -110,6 +110,7 @@ module.exports = function(grunt) {
     exec('node_modules/.bin/lsc -c plv8_modules/*.ls');
     exec('bin/psql pb < procedures.sql', {silent: true});
   });
+
   grunt.registerTask('jade', 'Compile ClientJade/Mutant templates!', function() {
     // XXX: should move this into bin/build-clientjade eventually
     fs.writeFileSync('app/views/templates.js', (exec('node_modules/.bin/clientjade -c app/views/homepage.jade app/views/order-control.jade app/views/thread.jade app/views/nav.jade app/views/posts.jade app/views/post-edit.jade app/views/post-new.jade app/views/profile.jade app/views/posts-by-user.jade app/views/post.jade app/views/admin-*.jade app/views/search.jade app/views/search-filters.jade app/views/search-facets.jade app/views/_*.jade', {silent:true}).output));
@@ -122,6 +123,9 @@ module.exports = function(grunt) {
   });
 
   // Default task(s).
-  grunt.registerTask('default', ['procs', 'jade', 'livescript', 'browserify', 'uglify', 'launch', 'watch']);
+  grunt.registerTask('default', ['procs', 'jade', 'livescript', 'browserify']);
 
+  if(process.NODE_ENV == 'production') grunt.task.run('uglify');
+  grunt.task.run('launch');
+  if(process.NODE_ENV != 'production') grunt.task.run('watch');
 };
