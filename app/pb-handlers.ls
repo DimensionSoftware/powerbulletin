@@ -256,31 +256,20 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   t = { [k, v] for k, v of tasks when k in keep }
 
 @homepage = (req, res, next) ->
+  # TODO fetch smart/fun combination of latest/best voted posts, posts & media
+  site-id = res.vars.site.id
   tasks =
-    menu:   db.menu res.vars.site.id, _
-    forums: (cb) ->
-      # TODO summarize all forums
-      #(err, forums) <- db.forums-for-site res.vars.site.id
-      db.forum-summary 1, 10threads, 5posts, (req.query?order or \recent), cb
+    menu:   db.menu site-id, _
+    forums: db.site-summary site-id, 6threads, (req.query?order or \recent), _
+
   if req.surfing
     delete tasks.menu
     delete-unnecessary-surf-data res
 
   err, doc <- async.auto tasks
-
-  # TODO fetch smart/fun combination of latest/best voted posts, posts & media
-  # unique users at thread level
-  # - better handled in sql
-#  uniq = {}
-#  doc.forums = doc.forums |> filter (f) ->
-#    k = f.user_id + f.thread_id
-#    r=uniq[k]
-#    unless r # add!
-#      return uniq[k]=true
-#    false
-
+  doc.forums          = filter (.posts.length), doc.forums
+  doc.title           = res.vars.site.name
   doc.active-forum-id = \homepage
-  doc.title = res.vars.site.name
   res.locals doc
 
   announce.emit \debug, {testing: 'from homepage handler in express'}
@@ -372,7 +361,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     tasks =
       menu        : db.menu res.vars.site.id, _
       forum       : db.forum forum-id, _
-      forums      : db.forum-summary forum-id, 10threads, 5posts, \recent, _
+      forums      : db.forum-summary forum-id, 10threads, \recent, _
       top-threads : db.top-threads forum-id, \recent, _
 
     if req.surfing
@@ -607,7 +596,6 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   res.json sub-posts
 
 @admin = (req, res, next) ->
-  if not req?user?rights?super then return next 404 # guard
   site = res.vars.site
   res.locals.action = req.param \action
 

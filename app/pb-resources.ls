@@ -70,14 +70,19 @@ announce = sioa.create-client!
     # munge data
     (err, user) <- db.find-or-create user
     res.json user
+  show : (req, res, next) ->
+    if not req?user?rights?super then return next 404 # guard
+    switch req.body.action
+    | \invites =>
+      res.json success:true
+
 @posts =
   index   : (req, res) ->
     res.locals.fid = req.query.fid
     res.locals.pid = req.query.pid
     res.render \post-new
-  new     : null
   create  : (req, res, next) ->
-    return next(404) unless req.user
+    return next 404 unless req.user
     db           = pg.procs
     post         = req.body
     post.user_id = req.user.id
@@ -108,8 +113,6 @@ announce = sioa.create-client!
       res.json post
     else
       return next 404
-  edit    : (roq, res, next) ->
-    # owns post
   update  : (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
     # is_owner req?user
