@@ -24,6 +24,8 @@ is-editing = /\/(edit|new)\/?([\d+]*)$/
 is-admin   = /\/admin.*/
 is-auth    = /\/auth.*/
 
+posts-per-page = 30
+
 @hello = (req, res, next) ->
   console.log req.headers
   res.send "hello #{res.vars.remote-ip}!"
@@ -320,7 +322,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     page = meta.page || 1
     if page < 1 then return next 404
 
-    limit = site.config?posts-per-page || 20
+    limit = site.config?posts-per-page or posts-per-page
     offset = (page - 1) * limit
 
     tasks =
@@ -388,7 +390,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   site = res.vars.site
   name = req.params.name
   page = req.params.page or 1
-  ppp  = 20 # posts-per-page
+  ppp  = posts-per-page
   usr  = { name: name, site_id: site.id }
 
   tasks =
@@ -403,8 +405,8 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   err, fdoc <- async.auto tasks
   if err then return next err
-  fdoc.furl = thread-uri: "/user/#name"  # XXX - a hack to fix the pager that must go away
-  fdoc.page = parse-int page
+  fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
+  fdoc.page  = parse-int page
   fdoc.title = name
   with fdoc.profile # transform
     ..human_post_count = add-commas(..post_count.to-string!)
@@ -617,7 +619,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     * id:1 name:'PowerBulletin Minimal'
     * id:0 name:\None
   defaults =
-    posts-per-page: 30
+    posts-per-page: posts-per-page
     meta-keywords: "#{site.name}, PowerBulletin"
   fdoc.site.config = defaults <<< fdoc.site.config
   fdoc.title = \Admin
