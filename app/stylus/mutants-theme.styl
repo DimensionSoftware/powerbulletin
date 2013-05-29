@@ -75,6 +75,13 @@ html.forum, html.profile, html.search
           .summary::before
             border-top 8px solid highlight-color2
             transition border-top .2s ease-out .1s
+      .post.censored
+        .body, blockquote, p
+          text-decoration line-through
+          opacity .8
+          font-size .8em
+          color #888
+          transition all .1s ease-out
       .post
         color #333
         border-bottom 1px solid rgba(200,200,200,.15)

@@ -298,6 +298,15 @@ footer
     letter-spacing 3px
     margin 3px
     font-weight 100
+
+  .Chat
+    background-color #fff
+    border 1px solid #000
+
+    .header
+      h2
+        background-color #f7f7f7
+        border-bottom 1px solid #000
 //}}}
 
 //{{{ Scrolled <body>
@@ -467,7 +476,7 @@ textarea:focus, select:focus
 .button:hover::before
   background-color rgba(100,100,100,.2)
   border-radius 6px
-.button:hover, input[type="button"]:hover, input[type="submit"]:hover, button:hover
+.button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
   background -moz-linear-gradient(center top , #ffce29, #f38437) repeat scroll 0 0 #ffffff
   background -webkit-gradient(linear, left top, left bottom, from(#ffce29), to(#f38437))
   //text-indent -2px
@@ -488,9 +497,11 @@ textarea:focus, select:focus
   top -3px
 button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   color #eee
-  opacity .6
+  opacity .8
   transition opacity .3s
-.button:active, button:active, input[type='submit']:active,input[type='button']:active,button:focus, input[type="submit"]:focus, input[type="button"]:focus
+.button:enabled:active, button:enabled:active,
+  input[type='submit']:enabled:active,input[type='button']:enabled:active,button:enabled:focus,
+  input[type="submit"]:enabled:focus, input[type="button"]:enabled:focus
   //text-indent 2px
   border-top 1px solid #666
   margin-right (grid/2 - 1)

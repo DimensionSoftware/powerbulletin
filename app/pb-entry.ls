@@ -1,13 +1,13 @@
 require! \../component/Buy.ls
 
 window.__    = require \lodash
-window.ioc   = require \./io-client.ls
-window.Pager = require \./pager.ls
-window.Chat  = require \./chat.ls
-window.furl  = require \./forum-urls.ls
-window.tasks = require \./tasks.ls
+window.ioc   = require \./io-client
+window.Chat  = require \../component/Chat.ls
+window.Pager = require \./pager
+window.furl  = require \./forum-urls
+window.tasks = require \./tasks
 
-global <<< require \./pb-helpers.ls
+global <<< require \./pb-helpers
 global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
 
 # XXX client-side entry
@@ -75,8 +75,9 @@ censor = ->
 
   $.post "/resources/posts/#{post-id}/censor", (r) ->
     if r.success
-      $p.transition { opacity: 0, scale: 0.3 }, 300s, \in, ->
-        $p.hide!
+      $p.add-class \censored
+      #$p.transition { opacity: 0, scale: 0.3 }, 300s, \in, ->
+      #  $p.hide!
     else
       console.warn r.errors.join(', ')
 #}}}

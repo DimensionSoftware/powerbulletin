@@ -107,6 +107,9 @@ require! {
     res.locals.css-urls = res.locals.css-urls || [] ++ links
     next!
 
+@require-admin = (req, res, next) -> # guard
+  if not req?user?rights?super then next 404 else next!
+
 ip-hits  = {}
 html_509 = fs.read-file-sync('public/509.html').to-string!
 @rate-limit = (req, res, next) ->

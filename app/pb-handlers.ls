@@ -7,11 +7,12 @@ require! {
   fluidity
   mkdirp
   querystring
+  s: \./search
+  c: \./cache
   __:   \lodash
   pg:   \./postgres
   auth: \./auth
   furl: \./forum-urls
-  s: \./search
 }
 
 announce = require(\socket.io-announce).create-client!
@@ -22,6 +23,8 @@ global <<< require \./shared-helpers
 is-editing = /\/(edit|new)\/?([\d+]*)$/
 is-admin   = /\/admin.*/
 is-auth    = /\/auth.*/
+
+posts-per-page = 30
 
 @hello = (req, res, next) ->
   console.log req.headers
@@ -256,31 +259,20 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   t = { [k, v] for k, v of tasks when k in keep }
 
 @homepage = (req, res, next) ->
+  # TODO fetch smart/fun combination of latest/best voted posts, posts & media
+  site-id = res.vars.site.id
   tasks =
-    menu:   db.menu res.vars.site.id, _
-    forums: (cb) ->
-      # TODO summarize all forums
-      #(err, forums) <- db.forums-for-site res.vars.site.id
-      db.forum-summary 1, 10threads, 5posts, (req.query?order or \recent), cb
+    menu:   db.menu site-id, _
+    forums: db.site-summary site-id, 6threads, (req.query?order or \recent), _
+
   if req.surfing
     delete tasks.menu
     delete-unnecessary-surf-data res
 
   err, doc <- async.auto tasks
-
-  # TODO fetch smart/fun combination of latest/best voted posts, posts & media
-  # unique users at thread level
-  # - better handled in sql
-#  uniq = {}
-#  doc.forums = doc.forums |> filter (f) ->
-#    k = f.user_id + f.thread_id
-#    r=uniq[k]
-#    unless r # add!
-#      return uniq[k]=true
-#    false
-
+  doc.forums          = filter (.posts.length), doc.forums
+  doc.title           = res.vars.site.name
   doc.active-forum-id = \homepage
-  doc.title = res.vars.site.name
   res.locals doc
 
   announce.emit \debug, {testing: 'from homepage handler in express'}
@@ -330,7 +322,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     page = meta.page || 1
     if page < 1 then return next 404
 
-    limit = site.config?posts-per-page || 20
+    limit = site.config?posts-per-page or posts-per-page
     offset = (page - 1) * limit
 
     tasks =
@@ -372,7 +364,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     tasks =
       menu        : db.menu res.vars.site.id, _
       forum       : db.forum forum-id, _
-      forums      : db.forum-summary forum-id, 10threads, 5posts, \recent, _
+      forums      : db.forum-summary forum-id, 10threads, \recent, _
       top-threads : db.top-threads forum-id, \recent, _
 
     if req.surfing
@@ -398,7 +390,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   site = res.vars.site
   name = req.params.name
   page = req.params.page or 1
-  ppp  = 20 # posts-per-page
+  ppp  = posts-per-page
   usr  = { name: name, site_id: site.id }
 
   tasks =
@@ -413,8 +405,8 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   err, fdoc <- async.auto tasks
   if err then return next err
-  fdoc.furl = thread-uri: "/user/#name"  # XXX - a hack to fix the pager that must go away
-  fdoc.page = parse-int page
+  fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
+  fdoc.page  = parse-int page
   fdoc.title = name
   with fdoc.profile # transform
     ..human_post_count = add-commas(..post_count.to-string!)
@@ -577,7 +569,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   res.json success: true
 
 @censor = (req, res, next) ->
-  return next(404) unless req.user
+  return next 404 unless req.user
   db = pg.procs
 
   # XXX: stub for reason, need to have ui to capture moderation reason
@@ -589,6 +581,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 
   (err, r) <- db.censor command
   if err then next err
+  c.invalidate-post req.params.id, req.user.name # blow cache!
   res.json r
 
 @sub-posts = (req, res, next) ->
@@ -607,7 +600,6 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   res.json sub-posts
 
 @admin = (req, res, next) ->
-  if not req?user?rights?super then return next 404 # guard
   site = res.vars.site
   res.locals.action = req.param \action
 
@@ -627,7 +619,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     * id:1 name:'PowerBulletin Minimal'
     * id:0 name:\None
   defaults =
-    posts-per-page: 30
+    posts-per-page: posts-per-page
     meta-keywords: "#{site.name}, PowerBulletin"
   fdoc.site.config = defaults <<< fdoc.site.config
   fdoc.title = \Admin

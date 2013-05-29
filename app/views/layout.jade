@@ -104,10 +104,11 @@ html
     if cvars.env != 'production'
       #mocha
 
-    footer#chat_drawer
+    footer
       h6
         small &copy; #{siteName} &nbsp;
         b= new Date().getFullYear()
+      #chat_drawer
 
     //- css not required for initial page render -- performance mod.
     link(href="#{cache5Url}/local/jquery-ui.min.css", rel='stylesheet', type='text/css')

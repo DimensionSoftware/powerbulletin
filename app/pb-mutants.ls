@@ -27,6 +27,14 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     p.parent!add-class \active
     w.$(last p.parents \li) .find \.title .add-class \active # get parent, too
 
+layout-on-personalize = (w, u) ->
+  if u # guard
+    set-online-user u.id
+    $ ".post[data-user-id=#{u.id}] .edit, .post[data-user-id=#{u.id}] .censor"
+      .css \display \inline # enable censor
+    if u.rights?super # always enable for super admins
+      $ \.censor .css \display \inline
+
 # initialize pager
 pager-init = (w) ->
   pager-opts =
@@ -199,10 +207,7 @@ export forum =
       window.socket?emit \online-now
       next!
   on-personalize: (w, u, next) ->
-    if u # guard
-      set-online-user u.id
-      $ ".post[data-user-id=#{u.id}] .edit"
-        .css(\display \inline) # enable edit
+    layout-on-personalize w, u
     next!
   on-unload:
     (window, next-mutant, next) ->
@@ -247,7 +252,8 @@ export profile =
       next!
   on-personalize: (w, u, next) ->
     if u # guard
-      set-online-user u.id
+      layout-on-personalize w, u
+
       path-parts = window.location.pathname.split '/'
       jcrop = void
       if path-parts.2 is u.name
@@ -279,6 +285,7 @@ export admin =
       window.render-mutant \left_container \admin-nav
       window.render-mutant \main_content switch @action
       | \domains  => \admin-domains
+      | \invites  => \admin-invites
       | otherwise => \admin-general
       layout-static window, \admin
       window.marshal \site @site

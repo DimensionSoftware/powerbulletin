@@ -70,14 +70,18 @@ announce = sioa.create-client!
     # munge data
     (err, user) <- db.find-or-create user
     res.json user
+  update : (req, res, next) ->
+    if not req?user?rights?super then return next 404 # guard
+    switch req.body.action
+    | \invites =>
+      res.json success:true
 @posts =
   index   : (req, res) ->
     res.locals.fid = req.query.fid
     res.locals.pid = req.query.pid
     res.render \post-new
-  new     : null
   create  : (req, res, next) ->
-    return next(404) unless req.user
+    return next 404 unless req.user
     db           = pg.procs
     post         = req.body
     post.user_id = req.user.id
@@ -108,8 +112,6 @@ announce = sioa.create-client!
       res.json post
     else
       return next 404
-  edit    : (roq, res, next) ->
-    # owns post
   update  : (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
     # is_owner req?user
@@ -130,13 +132,14 @@ announce = sioa.create-client!
 
     res.json r
   destroy : (req, res, next) ->
-    if not req?user?rights?super then return next 404 # guard
-    # TODO currently only super users can censor.  how about post owners?
     db = pg.procs
-
-    if post-id = parse-int(req.params.post)
+    if post-id = parse-int req.params.post
+      # guard is post owner or super
+      err, owns-post <- db.owns-post post-id, req.user?id
+      if err then return next err
+      return next 404 unless owns-post.length or !req?user?rights?super
       # we don't really destroy, we just archive
-      err <- db.archive-post(post-id)
+      err <- db.archive-post post-id
       if err then return next err
       res.json {success: true}
     else

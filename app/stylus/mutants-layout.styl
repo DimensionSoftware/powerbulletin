@@ -13,6 +13,9 @@ html.homepage
   #main_content
     padding-top header-height
     .forum
+      .title
+        text-align center
+      clear both
       padding-left (grid*2)
       transition padding-left .4s ease-out
       .post
@@ -54,6 +57,8 @@ html.homepage
         right -2px
         transition right .4s ease-out
 //}}}
+html.forum .homepage .forum > .title
+  display none
 //{{{ - homepage & forum
 html.homepage, html.forum
   .homepage
@@ -238,6 +243,11 @@ html.forum, html.profile, html.search
           min-height 40px
       .post.head
         padding-top (grid/2)
+      .post:first-child
+        padding-top grid
+      .post.censored
+        .onclick-censor-post, .permalink
+          display none!important
       .post
         position relative
         clear both
@@ -279,7 +289,7 @@ html.forum, html.profile, html.search
             margin-left 2px
             display inline
             padding 1px 5px
-          .edit
+          .edit, .censor
             display none
         .comment
           position relative
