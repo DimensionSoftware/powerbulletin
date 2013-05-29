@@ -55,9 +55,9 @@ window.load-ui = -> # restore ui state from cookie
 $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-breadcrumb!), 800ms)
 
 # show reply ui
-append-reply-ui = (e) ->
+append-reply-ui = (ev) ->
   # find post div
-  $p = $ this .parents(\.post:first)
+  $p = $ ev.target .parents \.post:first
 
   # append dom for reply ui
   unless $p.find('.reply .post-edit:visible').length
@@ -66,22 +66,20 @@ append-reply-ui = (e) ->
       forum_id:   $p.data(\forum-id) or window.active-forum-id
       parent_id:  $p.data \post-id
       is_comment: true), ->
-        if e.original-event then $p.find('textarea[name="body"]').focus! # user clicked
+        if ev.original-event then $p.find('textarea[name="body"]').focus! # user clicked
   else
     $p.find('.reply .cancel').click!
 
-censor = ->
+censor = (ev) ->
   # find post div
-  $p = $(this).parents(\.post:first)
-  post-id = $p.data(\post-id)
+  $p = $ ev.target .parents \.post:first
+  post-id = $p.data \post-id
 
   $.post "/resources/posts/#{post-id}/censor", (r) ->
     if r.success
       $p.add-class \censored
       #$p.transition { opacity: 0, scale: 0.3 }, 300s, \in, ->
       #  $p.hide!
-    else
-      console.warn r.errors.join(', ')
 #}}}
 
 #.
@@ -199,8 +197,8 @@ $d.on \click '.create .no-surf' ch.require-login(->
   $ '#main_content .forum' .html '' # clear canvas
   edit-post is-editing(window.location.pathname), forum_id:window.active-forum-id)
 $d.on \click \.edit.no-surf ch.require-login(-> edit-post is-editing(window.location.pathname))
-$d.on \click '.onclick-submit .cancel' ->
-  f = $ this .closest \.post-edit  # form
+$d.on \click '.onclick-submit .cancel' (ev) ->
+  f = $ ev.target .closest \.post-edit  # form
   f.hide 350ms \easeOutExpo
   meta = furl.parse window.location.pathname
   switch meta.type
@@ -209,13 +207,13 @@ $d.on \click '.onclick-submit .cancel' ->
   false
 
 submit = ch.require-login(
-  (evt) -> submit-form(evt, (data) ->
-    f = $ this .closest \.post-edit # form
-    p = f .closest \.editing        # post being edited
+  (ev) -> submit-form(ev, (data) ->
+    f = $ ev.target .closest \.post-edit # form
+    p = f.closest \.editing # post being edited
     # render updated post
-    p.find \.title .html(data.0?title)
-    p.find \.body  .html(data.0?body)
-    f.remove-class \fadein .hide(300s) # & hide
+    p.find \.title .html data.0?title
+    p.find \.body  .html data.0?body
+    f.remove-class \fadein .hide 300s # & hide
     meta = furl.parse window.location.pathname
     window.last-statechange-was-user = false # flag that this was programmer, not user
     switch meta.type
@@ -294,8 +292,8 @@ if mocha? and window.location.search.match /test=1/
 #}}}
 #{{{ - admin
 $d.on \click  'html.admin .onclick-submit input[type="submit"]' ch.require-login(
-  (evt) -> submit-form(evt, (data) ->
-    f = $ this # form
+  (ev) -> submit-form(ev, (data) ->
+    f = $ ev.target # form
     inputs =
      hover: f.find \.tooltip
      saved: f.find 'input, textarea'
