@@ -678,9 +678,11 @@ CREATE FUNCTION procs.censor(c JSON) RETURNS JSON AS $$
   errors = validations.censor(c)
 
   if !errors.length
-    plv8.execute sql, [c.user_id, c.post_id, c.reason]
-
-  return {success: !errors.length, errors}
+    try
+      plv8.execute sql, [c.user_id, c.post_id, c.reason]
+    catch
+      return null
+  return {success:!errors.length, errors}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.sub_posts_count(parent_id JSON) RETURNS JSON AS $$
