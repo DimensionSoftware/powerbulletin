@@ -259,7 +259,7 @@ $d.on \keyup '.fancybox-inner input' ->
 #{{{ - header (main menu)
 #$d.on \click 'html.homepage header .menu a.title' ->
 #  awesome-scroll-to $(this).data \scroll-to; false
-$d.on \click 'html header .menu a.title' window.mutate
+$d.on \click 'html header .menu a.title' ch.mutate
 
 # search header
 $d.on \click 'header .onclick-close' (e) ->

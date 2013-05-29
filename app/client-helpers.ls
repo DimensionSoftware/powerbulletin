@@ -14,3 +14,18 @@ export require-login = (fn) ->
     else
        @show-login-dialog!
        false
+
+export mutate = (event) ->
+  $e = $ this
+  return if $e.has-class \require-login and !user # guard
+  href = $e .attr \href
+  return false unless href # guard
+  return true if href?match /#/
+  params = {}
+
+  # surfing
+  params.no-surf   = true if $e.has-class \no-surf             # no need to fetch surf data
+  params.surf-data = $e.data \surf or window.surf-data or void # favor element data on click
+  window.last-statechange-was-user = false # flag that this was programmer, not user
+  History.push-state params, '', href
+  false

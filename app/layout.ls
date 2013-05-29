@@ -34,22 +34,7 @@ threshold = 10px # snap
 #### main   ###############>======-- -   -
 ##
 #{{{ Bootstrap Mutant Common
-window.mutate = (event) ->
-  $e = $ this
-  return if $e.has-class \require-login and !user # guard
-  href = $e .attr \href
-  return false unless href # guard
-  return true if href?match /#/
-  params = {}
-
-  # surfing
-  params.no-surf   = true if $e.has-class \no-surf             # no need to fetch surf data
-  params.surf-data = $e.data \surf or window.surf-data or void # favor element data on click
-  window.last-statechange-was-user = false # flag that this was programmer, not user
-  History.push-state params, '', href
-  false
-
-$d.on \click \a.mutant window.mutate # hijack urls
+$d.on \click \a.mutant ch.mutate # hijack urls
 
 window.last-statechange-was-user = true # default state
 last-req-id = 0
