@@ -1,3 +1,5 @@
+require! \../component/Buy.ls
+
 window.__    = require \lodash
 window.ioc   = require \./io-client
 window.Pager = require \./pager
@@ -313,5 +315,16 @@ $d.on \change 'html.admin .domain' -> # set keys
     \googleConsumerSecret]
       $ "[name='#k']" .val domain.config[k]
 #}}}
+
+# BUY is in a shadow dom lol, its not attached anywhere
+window.buy-dom = $('<div/>')
+
+window.component =
+  buy: new Buy {} buy-dom
+
+window.do-buy = ->
+  component.buy.put!
+  $.fancybox(buy-dom)
+
 #
 # vim:fdm=marker
