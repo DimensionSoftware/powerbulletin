@@ -28,7 +28,7 @@ module.exports = function(grunt) {
         tasks: ['procs', 'launch'],
         options: {
           interrupt: true,
-          debounceDelay: 100
+          debounceDelay: 500
         }
       },
       livescript: {
@@ -36,28 +36,28 @@ module.exports = function(grunt) {
         tasks: ['livescript'],
         options: {
           interrupt: true,
-          debounceDelay: 100
+          debounceDelay: 500
         }
       },
       clientJade: {
         files: ['app/views/*.jade'],
         tasks: ['clientJade'],
         options: {
-          debounceDelay: 100
+          debounceDelay: 500
         }
       },
       componentJade: {
         files: ['component/*.jade'],
         tasks: ['componentJade'],
         options: {
-          debounceDelay: 100
+          debounceDelay: 500
         }
       },
       app: {
         files: ['component/*.ls', 'app/*.ls', 'config/*', 'lib/**/*.ls', 'build/client-jade.js', 'build/component-jade.js'],
         tasks: ['browserify', 'launch'],
         options: {
-          debounceDelay: 100
+          debounceDelay: 500
         }
       },
     }
