@@ -2,10 +2,11 @@ require! \../component/Buy.ls
 
 window.__    = require \lodash
 window.ioc   = require \./io-client
+window.Chat  = require \../component/Chat.ls
 window.Pager = require \./pager
-window.Chat  = require \./chat
 window.furl  = require \./forum-urls
 window.tasks = require \./tasks
+
 
 global <<< require \./pb-helpers
 global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
