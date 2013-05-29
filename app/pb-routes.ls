@@ -25,7 +25,7 @@ personal-mw =
   * auth.mw.session
 
 #{{{ API Resources
-app.all      '/resources/*',               ...personal-mw
+app.all      \/resources/*,                ...personal-mw
 app.resource \resources/sites,             resources.sites
 app.resource \resources/posts,             resources.posts
 app.get  \/resources/posts/:id/sub-posts,  handlers.sub-posts
@@ -71,6 +71,7 @@ app.configure \development ->
 #{{{ Admin
 app.get \/admin/:action?,
   personal-mw.concat(
+    , mw.require-admin
     , mw.add-js(common-js)
     , mw.add-css(common-css)
     , mmw.mutant-layout(\layout, mutants)
