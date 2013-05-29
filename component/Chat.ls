@@ -37,8 +37,11 @@ Chat.start = ([me,...others]:users) ->
   c.put!
   $cf = $('#chat_drawer .Chat')
   if $cf.length
+    console.debug \if, c.$top
     right = $cf.length * $cf.first!width!
-    $('#chat_drawer').prepend(c.$top.show!.find('.Chat').animate({ right }, duration, easing))
+    c.$top.show!.find('.Chat').animate({ right }, duration, easing)
+    $('#chat_drawer').prepend(c.$top)
   else
+    console.debug \else, c.$top
     $('#chat_drawer').prepend(c.$top.show(duration, easing))
   c
