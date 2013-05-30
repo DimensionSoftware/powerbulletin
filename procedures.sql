@@ -658,7 +658,7 @@ CREATE FUNCTION procs.uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
     JOIN aliases a ON a.user_id=u.id
     WHERE f.site_id=$1
       AND p.uri=$2
-      AND m.post_id IS NULL
+      --AND m.post_id IS NULL -- change to m.is_malicious (only malicious content & spam should be hidden from browsers & search engines)
     '''
     [post] = plv8.execute sql, [site_id, uri]
     return post
