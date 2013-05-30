@@ -71,15 +71,10 @@ append-reply-ui = (ev) ->
     $p.find('.reply .cancel').click!
 
 censor = (ev) ->
-  # find post div
-  $p = $ ev.target .parents \.post:first
+  $p = $ ev.target .parents \.post:first # find post div
   post-id = $p.data \post-id
-
-  $.post "/resources/posts/#{post-id}/censor", (r) ->
-    if r.success
-      $p.add-class \censored
-      #$p.transition { opacity: 0, scale: 0.3 }, 300s, \in, ->
-      #  $p.hide!
+  $.post "/resources/posts/#post-id/censor", (r) ->
+    if r?success then $p.add-class \censored
 #}}}
 
 #.
