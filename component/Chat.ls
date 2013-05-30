@@ -22,8 +22,17 @@ module.exports =
       {me,others} = @state!
       "#{me}/#{others.join '/'}"
 
-    add-message: (text) ~>
-      console.debug \add-message, text
+    message-node: (m) ~>
+      $msg = @$top.find('.body > .msg').clone!
+      $msg.find('.text').html m.text
+      $msg.find('.from-name').html m.from-name
+      $msg
+
+    add-message: (m) ~>
+      $msg = @message-node m
+      $messages = @$top.find('.messages').append $msg
+      $msg.show!
+      $messages[0].scrollTop = $messages[0].scrollHeight
 
     load-more-messages: (offset, limit=8) ~>
       console.debug \load-more-messages, offset, limit
@@ -44,10 +53,12 @@ Chat.start = ([me,...others]:users) ->
   c.put!
   $cs = $('#chat_drawer .Chat')
   if $cs.length
-    right = $cs.length * $cs.first!width!
-    c.$top.show!.find('.Chat').animate({ right }, @duration, @easing)
+    right = $cs.length * ($cs.first!width! + 8) + 8
+    c.$top.show!.find('.Chat').transition({ right }, @duration, @easing)
     $('#chat_drawer').prepend(c.$top)
   else
+    right = 8
+    c.$top.show!.find('.Chat').css({ right })
     $('#chat_drawer').prepend(c.$top.show(@duration, @easing))
   c
 
@@ -64,6 +75,6 @@ Chat.reorganize = ->
   width = $cs.first!width!
   n = $cs.length
   $cs.each (i,e) ->
-    right = (n - i - 1) * width
-    $(e).animate({ right }, @duration, @easing)
+    right = (n - i - 1) * (width + 8) + 8
+    $(e).transition({ right }, @duration, @easing)
 
