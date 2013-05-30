@@ -109,7 +109,7 @@ export send-registration-email = (user, site, cb) ->
     "user-name"   : user.name
     "user-verify" : user.verify
   email =
-    from    : "noreply@powerbulletin.com"
+    from    : "noreply@#{site.current_domain}"
     to      : user.email
     subject : "Welcome to #{site.name}"
     text    : expand-handlebars registration-email-template-text, vars
@@ -124,7 +124,7 @@ export send-recovery-email = (user, site, cb) ->
     "user-name"   : user.name
     "user-forgot" : user.forgot
   email =
-    from    : "noreply@powerbulletin.com"
+    from    : "noreply@#{site.current_domain}"
     to      : user.email
     subject : "[#{site.name}] Password Recovery"
     text    : expand-handlebars recovery-email-template-text, vars
