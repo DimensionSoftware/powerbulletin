@@ -4,6 +4,10 @@ require! \./Component.ls
 
 module.exports =
   class Chat extends Component
+    @duration  = 300ms
+    @easing    = \easeOutExpo
+    @chats     = {}
+
     template: templates.Chat
 
     attach: ~>
@@ -14,8 +18,21 @@ module.exports =
       @$top.find \.minimize .off!
       @$top.find \.close .off!
 
-    add-message: (text) ~>
-      console.debug \add-message, text
+    key: ~>
+      {me,others} = @state!
+      "#{me}/#{others.join '/'}"
+
+    message-node: (m) ~>
+      $msg = @$top.find('.body > .msg').clone!
+      $msg.find('.text').html m.text
+      $msg.find('.from-name').html m.from-name
+      $msg
+
+    add-message: (m) ~>
+      $msg = @message-node m
+      $messages = @$top.find('.messages').append $msg
+      $msg.show!
+      $messages[0].scrollTop = $messages[0].scrollHeight
 
     load-more-messages: (offset, limit=8) ~>
       console.debug \load-more-messages, offset, limit
@@ -25,34 +42,39 @@ module.exports =
       @$top.add-class \minimized, state
 
     close: ~>
-      @$top.remove!
-      Chat.reorganize!
-
-
-Chat <<< {
-  duration : 300ms
-  easing   : \easeOutExpo
-}
-
+      Chat.stop(@key!)
 
 Chat.start = ([me,...others]:users) ->
-  c = new Chat { me, others }, $('<div/>').hide!
+  key = users.join "/"
+  if c = @chats[key]
+    return c
+  c = @chats[key] = new Chat { me, others }, $('<div/>').hide!
   c.render!
   c.put!
   $cs = $('#chat_drawer .Chat')
   if $cs.length
-    right = $cs.length * $cs.first!width!
-    c.$top.show!.find('.Chat').animate({ right }, @duration, @easing)
+    right = $cs.length * ($cs.first!width! + 8) + 8
+    c.$top.show!.find('.Chat').transition({ right }, @duration, @easing)
     $('#chat_drawer').prepend(c.$top)
   else
+    right = 8
+    c.$top.show!.find('.Chat').css({ right })
     $('#chat_drawer').prepend(c.$top.show(@duration, @easing))
   c
+
+Chat.stop = (key) ->
+  c = @chats[key]
+  if not c then return
+  <~ c.$top.fade-out @duration
+  c.$top.remove!
+  @reorganize!
+  delete @chats[key]
 
 Chat.reorganize = ->
   $cs = $('#chat_drawer .Chat')
   width = $cs.first!width!
   n = $cs.length
   $cs.each (i,e) ->
-    right = (n - i - 1) * width
-    $(e).animate({ right }, @duration, @easing)
+    right = (n - i - 1) * (width + 8) + 8
+    $(e).transition({ right }, @duration, @easing)
 
