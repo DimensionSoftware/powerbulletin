@@ -2,7 +2,7 @@
 .container
   h2= profile.name
 
-  .profile(data-user-id="#{profile.id}")
+  .profile(data-user-id="#{profile.id}", data-user-name="#{profile.name}")
     form(action="/resources/users/#{profile.id}/avatar", enctype="multipart/form-data", method="post")
       .avatar
         if profile.photo
@@ -22,3 +22,5 @@
     li.count
       b!= profile.human_post_count 
       span  #{profile.post_count == 1 ? "post" : "posts"}
+    li.chat
+      button.onclick-chat(title="Chat") Private Message

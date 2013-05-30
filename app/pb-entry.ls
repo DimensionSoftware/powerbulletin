@@ -285,6 +285,12 @@ if mocha? and window.location.search.match /test=1/
     set-timeout run, 2000ms # gotta give time for tests to load
 #}}}
 #}}}
+#{{{ - chat
+$d.on \click  'button.onclick-chat' ch.require-login( (ev) ->
+  profile-name = $ 'div.profile:first' .data \user-name
+  Chat.start [user.name, profile-name]
+)
+#}}}
 #{{{ - admin
 $d.on \click  'html.admin .onclick-submit input[type="submit"]' ch.require-login(
   (ev) -> submit-form(ev, (data) ->

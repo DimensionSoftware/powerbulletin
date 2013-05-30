@@ -22,23 +22,37 @@ module.exports =
       r <- $.get '/resources/chats/messages', {}
 
     minimize: (state=true) ~>
-      console.debug \minimize
       @$top.add-class \minimized, state
 
     close: ~>
-      console.debug \close
-      @$top.remove()
+      @$top.remove!
+      Chat.reorganize!
+
+
+Chat <<< {
+  duration : 300ms
+  easing   : \easeOutExpo
+}
+
 
 Chat.start = ([me,...others]:users) ->
-  duration = 300ms
-  easing   = \easeOutExpo
   c = new Chat { me, others }, $('<div/>').hide!
   c.render!
   c.put!
-  $cf = $('#chat_drawer .Chat')
-  if $cf.length
-    right = $cf.length * $cf.first!width!
-    $('#chat_drawer').prepend(c.$top.show!.find('.Chat').animate({ right }, duration, easing))
+  $cs = $('#chat_drawer .Chat')
+  if $cs.length
+    right = $cs.length * $cs.first!width!
+    c.$top.show!.find('.Chat').animate({ right }, @duration, @easing)
+    $('#chat_drawer').prepend(c.$top)
   else
-    $('#chat_drawer').prepend(c.$top.show(duration, easing))
+    $('#chat_drawer').prepend(c.$top.show(@duration, @easing))
   c
+
+Chat.reorganize = ->
+  $cs = $('#chat_drawer .Chat')
+  width = $cs.first!width!
+  n = $cs.length
+  $cs.each (i,e) ->
+    right = (n - i - 1) * width
+    $(e).animate({ right }, @duration, @easing)
+
