@@ -1,10 +1,11 @@
 .resizable
-  form.onclick-submit(action="/resources/users", method="put")
+  form.onclick-submit(action="/resources/users", method="post")
     fieldset
       label(for='emails') Email Addresses
-      input(id='emails', class='emails', name='emails', type='text')
+      input(id='emails', class='emails clear', name='emails', type='text')
+      .note Separated by commas
       .break
-      label(for='message') Additional Message
+      label(for='message') Message
       textarea(id='message', name='message')
 
     input.button(type='submit', value='Send')

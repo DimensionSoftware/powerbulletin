@@ -65,16 +65,29 @@ announce = sioa.create-client!
       res.json success:true
 @users =
   create : (req, res) ->
-    if not req?user?rights?super then return next 404 # guard
-    user = req.params.user
-    # munge data
-    (err, user) <- db.find-or-create user
-    res.json user
-  update : (req, res, next) ->
+    user = req.user
+    site = req.vars.site
     if not req?user?rights?super then return next 404 # guard
     switch req.body.action
     | \invites =>
+      vars =
+        # I have to quote the keys so that the template-vars with dashes will get replaced.
+        "site-name"   : site.name
+        "site-domain" : site.current_domain
+        "user-name"   : user.name
+        "user-verify" : user.verify
+      email =
+        from    : "noreply@#{site.current_domain}"
+        to      : user.email
+        subject : "Welcome to #{site.name}"
+        text    : h.expand-handlebars registration-email-template-text, vars
+      h.send-mail email (->)
       res.json success:true
+    | otherwise =>
+      user = req.params.user
+      # munge data
+      (err, user) <- db.find-or-create user
+      res.json user
 @posts =
   index   : (req, res) ->
     res.locals.fid = req.query.fid
