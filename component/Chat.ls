@@ -4,6 +4,10 @@ require! \./Component.ls
 
 module.exports =
   class Chat extends Component
+    @duration  = 300ms
+    @easing    = \easeOutExpo
+    @chats     = {}
+
     template: templates.Chat
 
     attach: ~>
@@ -13,6 +17,10 @@ module.exports =
     detach: !->
       @$top.find \.minimize .off!
       @$top.find \.close .off!
+
+    key: ~>
+      {me,others} = @state!
+      "#{me}/#{others.join '/'}"
 
     add-message: (text) ~>
       console.debug \add-message, text
@@ -25,18 +33,13 @@ module.exports =
       @$top.add-class \minimized, state
 
     close: ~>
-      @$top.remove!
-      Chat.reorganize!
-
-
-Chat <<< {
-  duration : 300ms
-  easing   : \easeOutExpo
-}
-
+      Chat.stop(@key!)
 
 Chat.start = ([me,...others]:users) ->
-  c = new Chat { me, others }, $('<div/>').hide!
+  key = users.join "/"
+  if c = @chats[key]
+    return c
+  c = @chats[key] = new Chat { me, others }, $('<div/>').hide!
   c.render!
   c.put!
   $cs = $('#chat_drawer .Chat')
@@ -47,6 +50,14 @@ Chat.start = ([me,...others]:users) ->
   else
     $('#chat_drawer').prepend(c.$top.show(@duration, @easing))
   c
+
+Chat.stop = (key) ->
+  c = @chats[key]
+  if not c then return
+  <~ c.$top.fade-out @duration
+  c.$top.remove!
+  @reorganize!
+  delete @chats[key]
 
 Chat.reorganize = ->
   $cs = $('#chat_drawer .Chat')
