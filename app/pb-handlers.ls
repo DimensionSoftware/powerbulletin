@@ -581,7 +581,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 
   (err, r) <- db.censor command
   if err then next err
-  c.invalidate-post req.params.id, req.user.name # blow cache!
+  if r?success then c.invalidate-post req.params.id, req.user.name # blow cache!
   res.json r
 
 @sub-posts = (req, res, next) ->

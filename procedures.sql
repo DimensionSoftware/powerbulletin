@@ -594,6 +594,7 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
 
   # This query can be moved into its own proc and generalized so that it can
   # provide a flat view of a thread.
+  # XXX non-null media url sorted first/top in list
   sql = """
   SELECT
     p.*,
@@ -608,7 +609,7 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
   WHERE a.site_id = s.id
     AND p.forum_id = $1
     AND p.parent_id IS NULL
-  ORDER BY LENGTH(p.media_url) > 1, #sort-sql
+  ORDER BY (LENGTH(p.media_url) > 1) DESC, #sort-sql
   LIMIT $2
   """
   forum.posts = plv8.execute(sql, [forum_id, thread_limit])
@@ -657,7 +658,7 @@ CREATE FUNCTION procs.uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
     JOIN aliases a ON a.user_id=u.id
     WHERE f.site_id=$1
       AND p.uri=$2
-      AND m.post_id IS NULL
+      --AND m.post_id IS NULL -- change to m.is_malicious (only malicious content & spam should be hidden from browsers & search engines)
     '''
     [post] = plv8.execute sql, [site_id, uri]
     return post
@@ -677,9 +678,11 @@ CREATE FUNCTION procs.censor(c JSON) RETURNS JSON AS $$
   errors = validations.censor(c)
 
   if !errors.length
-    plv8.execute sql, [c.user_id, c.post_id, c.reason]
-
-  return {success: !errors.length, errors}
+    try
+      plv8.execute sql, [c.user_id, c.post_id, c.reason]
+    catch
+      return null
+  return {success:!errors.length, errors}
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.sub_posts_count(parent_id JSON) RETURNS JSON AS $$
