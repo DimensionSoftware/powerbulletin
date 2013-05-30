@@ -2,6 +2,7 @@
 require! {
   crypto
   bbcode
+  nodemailer
 }
 
 @caching-strategies =
@@ -71,5 +72,13 @@ process-cached-data = {}
   # TODO - escape html before sending to bbcode parser
   # TODO - add #hashtag and @attag support
   bbcode.parse body
+
+@expand-handlebars = (tmpl, vars) ->
+  tmpl.replace /{{([\w-]+)}}/g, (m, p) ->
+    vars?[p] || ""
+
+@send-mail = (email, cb) ->
+  smtp = nodemailer.create-transport \SMTP
+  smtp.send-mail email, cb
 
 # vim:fdm=marker
