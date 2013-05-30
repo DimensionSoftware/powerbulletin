@@ -16,49 +16,31 @@ module.exports = function(grunt) {
       }
     },
 
-    launch: {
-      options: {
-        pid: false
-      }
-    },
-
     watch: {
       procs: {
         files: ['plv8_modules/*.ls', 'procedures.sql'],
-        tasks: ['procs', 'launch'],
-        options: {
-          interrupt: true,
-          debounceDelay: 500
-        }
+        tasks: ['procs', 'browserify', 'launch'],
+        options: {debounceDelay: 250}
       },
       livescript: {
         files: ['app/main.ls'],
-        tasks: ['livescript'],
-        options: {
-          interrupt: true,
-          debounceDelay: 500
-        }
+        tasks: ['livescript', 'browserify', 'launch'],
+        options: {debounceDelay: 250}
       },
       clientJade: {
         files: ['app/views/*.jade'],
-        tasks: ['clientJade'],
-        options: {
-          debounceDelay: 500
-        }
+        tasks: ['clientJade', 'browserify', 'launch'],
+        options: {debounceDelay: 250}
       },
       componentJade: {
         files: ['component/*.jade'],
-        tasks: ['componentJade'],
-        options: {
-          debounceDelay: 500
-        }
+        tasks: ['componentJade', 'browserify', 'launch'],
+        options: {debounceDelay: 250}
       },
       app: {
-        files: ['component/*.ls', 'app/*.ls', 'config/*', 'lib/**/*.ls', 'build/client-jade.js', 'build/component-jade.js'],
+        files: ['component/*.ls', 'app/*.ls', 'config/*', 'lib/**/*.ls'],
         tasks: ['browserify', 'launch'],
-        options: {
-          debounceDelay: 500
-        }
+        options: {debounceDelay: 250}
       },
     }
   });
@@ -83,6 +65,8 @@ module.exports = function(grunt) {
     }
     var proc = cp.spawn(command, [], opts);
     fs.writeFileSync(pidFile, proc.pid)
+
+    if (process.env.NODE_ENV != 'production') grunt.task.run('watch');
   }
 
   var launch;
@@ -92,8 +76,6 @@ module.exports = function(grunt) {
     var config = require('./config/common');
     var file   = config.tmp+'/pb.pid';
     daemon('./bin/powerbulletin', file);
-
-    if (process.NODE_ENV != 'production') grunt.task.run('watch');
   });
 
   grunt.registerTask('livescript', 'compile ls -> js', function() {
