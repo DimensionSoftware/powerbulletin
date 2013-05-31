@@ -62,15 +62,19 @@ module.exports =
       unless window? then throw new Error "Component can only attach on client"
       unless @$top then throw new Error "Component can't attach without a specified top"
 
-      for child in @children
-        child.attach!
+      if @children
+        for child in @children
+          child.attach!
+
       @on-attach! if @on-attach
     detach: !->
       unless window? then throw new Error "Component can only detach on client"
       unless @$top then throw new Error "Component can't attach without a specified top"
 
-      for child in @children
-        child.detach!
+      if @children
+        for child in @children
+          child.detach!
+
       @on-detach! if @on-detach
     # programmer/sub-classer can override html
     # it just needs to maintain and consume @locals to produce a return
@@ -82,7 +86,7 @@ module.exports =
       template-out = @template @locals
 
       # skip dom phase unless there is a mutate action defined or children defined
-      if @mutate or @children?length
+      if @mutate or @children
         # Wrap output in top-level div before creating DOM
         # - allows us to find the topmost node in our template
         # - makes $c.html! return the correct html, including all markup
@@ -93,7 +97,7 @@ module.exports =
         @mutate $dom if @mutate
 
         # render children in their respective containers
-        if @children?length
+        if @children
           for child in @children
             if child.selector
               $dom.find(child.selector).html child.render!
