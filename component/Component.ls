@@ -58,8 +58,6 @@ module.exports =
       @attach! if window?
 
     template: (-> '')
-    mutate: !-> # override in sub-class as needed
-    children: [] # override in sub-class as needed
     attach: !->
       unless window? then throw new Error "Component can only attach on client"
       unless @$top then throw new Error "Component can't attach without a specified top"
@@ -83,24 +81,30 @@ module.exports =
       #   and returns an html markup string. I use compiled Jade =D
       template-out = @template @locals
 
-      # Wrap output in top-level div before creating DOM
-      # - allows us to find the topmost node in our template
-      # - makes $c.html! return the correct html, including all markup
-      $dom = $('<div class="render-wrapper">' + template-out + '</div>')
+      # skip dom phase unless there is a mutate action defined or children defined
+      if @mutate or @children?length
+        # Wrap output in top-level div before creating DOM
+        # - allows us to find the topmost node in our template
+        # - makes $c.html! return the correct html, including all markup
+        $dom = $('<div class="render-wrapper">' + template-out + '</div>')
 
-      # Mutation phase (in DOM)
-      #   DOM manipulation can be done here
-      @mutate $dom
+        # Mutation phase (in DOM)
+        #   DOM manipulation can be done here
+        @mutate $dom if @mutate
 
-      for child in @children
-        if child.selector
-          $dom.find(child.selector).html child.render!
-        else
-          throw new Error "child Components must specify a selector top (string)"
+        # render children in their respective containers
+        if @children?length
+          for child in @children
+            if child.selector
+              $dom.find(child.selector).html child.render!
+            else
+              throw new Error "child Components must specify a selector top (string)"
 
-      # finally store html markup
-      # pre-calculate and store s
-      $dom.html!
+        # finally store html markup
+        # pre-calculate and store s
+        $dom.html!
+      else
+        template-out
     render: ->
       @cached-html = @html!
     # use cached result or render 
