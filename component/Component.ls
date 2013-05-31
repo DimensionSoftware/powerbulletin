@@ -28,79 +28,62 @@ else
     # server side cheerio does the normal thing
     $el.html html
 
+
 module.exports =
   class Component
-    (state, @selector) ->
-      @merge-state state
+    (@locals = {}, top) ~>
+      if top
+        @$top = $ top
 
-      # bind passed in state to render by default
-      # this gives us 'reactive programming for free with jade'
-      # but its not optimal necessarily...
-      #
-      # in the future look into an option to bypass this for manual dom manip
-      # i.e. can be overridden by the programmer
-      r-put = $R ~>
-        # XXX: display-name is not correct.. it needs to be the name of the extended class
-        bench "#{@@display-name} (render)" ~> @render!
+        # unique class
+        unique-class =
+          'c-' + (Math.random! * (new Date)).to-string!replace '.' ''
+        console.log {unique-class}
 
-        put = ~>
-          bench "#{@@display-name} (put)" ~> @put!
+        @$top.add-class unique-class
+        @selector = '.' + unique-class
 
-        if raf = window?request-animation-frame
-          raf put
-        else
-          put!
-
-      for ,r-var of @r
-        r-put.bind-to r-var
-
-      @$top = $ @selector
-
-      # auto-attach on client only and only when @$top is defined
-      if window? and @$top
-        # attach delegated event handlers
-        # we do not put the output in @$top yet because
-        # we want to yield this functionality to something smarter
-        # which can use request-animation frame
-        @attach!
+      # auto-attach on client
+      @attach! if window?
 
     template: (-> '')
     mutate: !-> # override in sub-class as needed
     children: [] # override in sub-class as needed
     attach: !-> # override in sub-class as needed (client only)
     detach: !-> # override in sub-class as needed (client only)
-    merge-state: !(state) ->
-      @r ||= {}
-      for k,v of state
-        if existing-r = @r[k]
-          existing-r v # set rather than override hash key
-        else
-          @r[k] = $R.state v
-    state: -> {[k, v.get!] for k,v of @r}
-    render: ->
-      state = @state!
+    # programmer/sub-classer can override html
+    # it just needs to maintain and consume @locals to produce a return
+    # result of html
+    html: ->
       # Render js template
-      #   could be anything that takes locals as the first argument
-      #   and returns html markup. I use compiled Jade =D
-      template-out = @template state
+      #   could be any function that takes locals as the first argument
+      #   and returns an html markup string. I use compiled Jade =D
+      template-out = @template @locals
 
       # Wrap output in top-level div before creating DOM
       # - allows us to find the topmost node in our template
       # - makes $c.html! return the correct html, including all markup
-      $c = $('<div class="render-wrapper">' + template-out + '</div>')
+      $dom = $('<div class="render-wrapper">' + template-out + '</div>')
 
       # Mutation phase (in DOM)
       #   DOM manipulation can be done here
-      @mutate $c, state
+      @mutate $dom
 
       for child in @children
-        $c.find(child.selector).html child.render!
+        console.log 'child.$top.selector'
+        if child.$top
+          $dom.find(child.selector).html child.render!
+        else
+          throw new Error "child Components must specify a top"
 
       # finally store html markup
       # pre-calculate and store s
-      @html = $c.html!
-    put: !-> # put in @$top (client only)
-      #XXX: can't use this yet because it breaks @$top
-      #replace-html(@$top, @html or @render!)
-
-      @$top.html(@html or @render!)
+      $dom.html!
+    render: ->
+      @cached-html = @html!
+    # use cached result or render 
+    put: !-> # put in html in $(@selector), use cached-copy or render if necessary
+      if @$top
+        @$top.html(@cached-html or @render!)
+      else
+        throw new Error "Component cannot put since a top was not passed in"

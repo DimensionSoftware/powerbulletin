@@ -21,21 +21,25 @@ describe 'new Component' !->
     _it "should return void" !->
       assert.equal void, c.detach!
 
-  describe ".state!", !->
-    _it "should return {}" !->
-      assert.deep-equal {}, c.state!
+  describe ".locals", !->
+    _it "should be {}" !->
+      assert.deep-equal {}, c.locals
 
-  describe ".html", !->
+  describe ".html!", !->
+    _it "should return ''" !->
+      assert.equal '', c.html!
+
+  describe ".cached-html", !->
     _it "should be void" !->
-      assert.equal void, c.html
+      assert.equal void, c.cached-html
 
   describe ".render!", !->
     _it "should return ''" !->
       assert.equal '', c.render!
 
-  describe ".html should now be '' after rendering", !->
+  describe ".cached-html should now be '' after rendering", !->
     _it "should be ''" !->
-      assert.equal '', c.html
+      assert.equal '', c.cached-html
 
   describe ".put", !->
     _it "should throw Error" !->
