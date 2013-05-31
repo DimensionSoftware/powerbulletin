@@ -49,6 +49,7 @@ module.exports =
         unique-class =
           'c-' + (Math.random! * (new Date)).to-string!replace '.' ''
 
+        # for ease of detaching / removing delegated events at the document level
         @$top.add-class unique-class
 
         @unique-selector = '.' + unique-class
