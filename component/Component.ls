@@ -32,16 +32,26 @@ else
 module.exports =
   class Component
     (@locals = {}, top) ~>
-      if top
-        @$top = $ top
+      if typeof top is \string # css selector
+        @selector = top # usually from a child declaration
+        @$top = $ @selector #
+      else if typeof top is \object # jqueryish
+        @selector = top.selector
+        @$top = top # jqueryish
 
-        # unique class
+      # add unique selector class to top only on client, allows for attaching
+      # delegated events to document without breaking instance abstraction
+      #
+      # only on client...
+      # this way we keep it out of static html compositing (the ugly classes)
+      # since server doesn't ever need to attach...
+      if window?
         unique-class =
           'c-' + (Math.random! * (new Date)).to-string!replace '.' ''
-        console.log {unique-class}
 
         @$top.add-class unique-class
-        @selector = '.' + unique-class
+
+        @unique-selector = '.' + unique-class
 
       # auto-attach on client
       @attach! if window?
@@ -49,8 +59,20 @@ module.exports =
     template: (-> '')
     mutate: !-> # override in sub-class as needed
     children: [] # override in sub-class as needed
-    attach: !-> # override in sub-class as needed (client only)
-    detach: !-> # override in sub-class as needed (client only)
+    attach: !->
+      unless window? then throw new Error "Component can only attach on client"
+      unless @$top then throw new Error "Component can't attach without a specified top"
+
+      for child in @children
+        child.attach!
+      @on-attach! if @on-attach
+    detach: !->
+      unless window? then throw new Error "Component can only detach on client"
+      unless @$top then throw new Error "Component can't attach without a specified top"
+
+      for child in @children
+        child.detach!
+      @on-detach! if @on-detach
     # programmer/sub-classer can override html
     # it just needs to maintain and consume @locals to produce a return
     # result of html
@@ -70,11 +92,10 @@ module.exports =
       @mutate $dom
 
       for child in @children
-        console.log 'child.$top.selector'
-        if child.$top
+        if child.selector
           $dom.find(child.selector).html child.render!
         else
-          throw new Error "child Components must specify a top"
+          throw new Error "child Components must specify a selector top (string)"
 
       # finally store html markup
       # pre-calculate and store s

@@ -14,12 +14,12 @@ describe 'new Component' !->
       assert.equal '', c.template!
 
   describe ".attach!" !->
-    _it "should return void" !->
-      assert.equal void, c.attach!
+    _it "should throw Error" !->
+      assert.throws c.attach
 
   describe ".detach!", !->
-    _it "should return void" !->
-      assert.equal void, c.detach!
+    _it "should throw Error" !->
+      assert.throws c.detach
 
   describe ".locals", !->
     _it "should be {}" !->
