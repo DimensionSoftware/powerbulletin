@@ -11,8 +11,8 @@ require! {
   \passport-facebook
   \passport-twitter
   \passport-google-oauth
-
-  pg: './postgres'
+  h: \./helpers
+  pg: \./postgres
   passport.Passport
 }
 
@@ -95,11 +95,6 @@ export recovery-email-template-html = """
 """
 
 #
-export expand-handlebars = (tmpl, vars) ->
-  tmpl.replace /{{([\w-]+)}}/g, (m, p) ->
-    vars?[p] || ""
-
-#
 export send-registration-email = (user, site, cb) ->
   smtp = nodemailer.create-transport 'SMTP'
   vars =
@@ -109,10 +104,10 @@ export send-registration-email = (user, site, cb) ->
     "user-name"   : user.name
     "user-verify" : user.verify
   email =
-    from    : "noreply@powerbulletin.com"
+    from    : "noreply@#{site.current_domain}"
     to      : user.email
     subject : "Welcome to #{site.name}"
-    text    : expand-handlebars registration-email-template-text, vars
+    text    : h.expand-handlebars registration-email-template-text, vars
   smtp.send-mail email, cb
 
 export send-recovery-email = (user, site, cb) ->
@@ -124,10 +119,10 @@ export send-recovery-email = (user, site, cb) ->
     "user-name"   : user.name
     "user-forgot" : user.forgot
   email =
-    from    : "noreply@powerbulletin.com"
+    from    : "noreply@#{site.current_domain}"
     to      : user.email
     subject : "[#{site.name}] Password Recovery"
-    text    : expand-handlebars recovery-email-template-text, vars
+    text    : h.expand-handlebars recovery-email-template-text, vars
   smtp.send-mail email, cb
 
 export user-forgot-password = (user, cb) ->

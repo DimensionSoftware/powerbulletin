@@ -292,19 +292,23 @@ $d.on \click  'button.onclick-chat' ch.require-login( (ev) ->
 )
 #}}}
 #{{{ - admin
-$d.on \click  'html.admin .onclick-submit input[type="submit"]' ch.require-login(
-  (ev) -> submit-form(ev, (data) ->
-    f = $ ev.target # form
+$d.on \click  'html.admin .onclick-submit input[type="submit"]' (ev) ->
+  submit-form(ev, (data) ->
+    f = $ this # form
     inputs =
      hover: f.find \.tooltip
      saved: f.find 'input, textarea'
     for k, v of inputs
       for e in v # indicated saved
-        $ e .add-class k
-    set-timeout (-> # ... and clear
+        e = $ e
+        e.add-class k
+        if e.has-class \clear then e.val '' # clear value
+    set-timeout (-> # reset ui
       for k, v of inputs
         for e in v
-          $ e .remove-class k), 3000ms))
+          $ e .remove-class k), 3000ms
+    f.find \input:first .focus! # ... and focus!
+  )
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
   domain = find (.id is id), site.domains

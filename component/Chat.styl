@@ -2,6 +2,7 @@
   position fixed
   right 0
   bottom 0
+  width 220px
   height 300px
 
   .header
@@ -11,11 +12,24 @@
       padding 0
     .close
       position absolute
+      opacity 1
       top 0
       right 0
 
   .body
     height 244px
+
+    .messages
+      height 244px
+      overflow-x hidden
+      overflow-y auto
+
+      .msg
+        .from-name
+          float left
+          width 60px
+        .text
+          margin-left 64px
 
   .footer
     bottom 0

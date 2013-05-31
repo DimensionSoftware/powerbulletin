@@ -2,18 +2,18 @@
 -- intended to be used in an BEFORE UPDATE trigger
 -- http://stackoverflow.com/questions/2362871/postgresql-current-timestamp-on-update?rq=1
 -- http://stackoverflow.com/a/10246381
-CREATE OR REPLACE FUNCTION upd_timestamp() RETURNS TRIGGER 
+CREATE OR REPLACE FUNCTION upd_timestamp() RETURNS TRIGGER
 LANGUAGE plpgsql
 AS
 $$
 BEGIN
   --XXX: there is no equality operator for point so line below broken
-  --IF (NEW != OLD) THEN                    
+  --IF (NEW != OLD) THEN
   NEW.updated = CURRENT_TIMESTAMP;
   RETURN NEW;
   --  RETURN NEW;
-  --END IF;   
-  --RETURN OLD;          
+  --END IF;
+  --RETURN OLD;
 END;
 $$;
 
@@ -117,7 +117,7 @@ CREATE TRIGGER forums_timestamp BEFORE UPDATE ON forums FOR EACH ROW EXECUTE PRO
 -- post belongs to user
 -- post belongs to forum
 -- note: thread_id is the topmost parents' id
-CREATE TABLE posts ( 
+CREATE TABLE posts (
   id          BIGSERIAL NOT NULL,
   thread_id   BIGINT NOT NULL,
   parent_id   BIGINT,
@@ -184,7 +184,7 @@ CREATE TABLE tags_posts (
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
   PRIMARY KEY (tag_id, post_id)
-); 
+);
 CREATE TRIGGER tags_posts_timestamp BEFORE UPDATE ON tags_posts FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 -- a collection of related messages (like gmail threads)
@@ -215,7 +215,7 @@ CREATE TABLE tags_messages (
   created    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated    TIMESTAMP,
   PRIMARY    KEY (tag_id, message_id)
-); 
+);
 CREATE TRIGGER tags_messages_timestamp BEFORE UPDATE ON tags_messages FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
 -- users associated with messages
@@ -225,6 +225,19 @@ CREATE TABLE users_conversations (
   created         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated         TIMESTAMP,
   PRIMARY         KEY (user_id, conversation_id)
-); 
+);
 CREATE TRIGGER users_conversations_timestamp BEFORE UPDATE ON users_conversations FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
 
+-- pages: a lightweight cms
+CREATE TABLE pages (
+  id              BIGSERIAL NOT NULL,
+  site_id         BIGINT NOT NULL REFERENCES sites(id),
+  title           VARCHAR(128) NOT NULL DEFAULT '',
+  path            VARCHAR(256) NOT NULL,
+  config          JSON NOT NULL DEFAULT '{}',
+  created         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated         TIMESTAMP,
+  UNIQUE (site_id, path),
+  PRIMARY KEY (id)
+);
+CREATE TRIGGER pages_timestamp BEFORE UPDATE ON pages FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
