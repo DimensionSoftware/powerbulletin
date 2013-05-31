@@ -2,6 +2,7 @@ require! \./Component.ls
 
 module.exports =
   class HelloWorld extends Component
+    component-name: \HelloWorld
     template: ({name}={}) ->
       "<div class=\"HelloWorld\"><p>Hello, World</p>#{if name then ' <strong>' + name + '</strong>' else ''}</div>"
     mutate: !($c, state) ->

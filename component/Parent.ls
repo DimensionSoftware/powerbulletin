@@ -3,6 +3,7 @@ require! \./HelloWorld.ls
 
 module.exports =
   class Parent extends Component
+    component-name: \Parent
     template: -> "<div class=\"Parent\"></div>"
     children: [new HelloWorld {} \.Parent]
     on-attach: ->

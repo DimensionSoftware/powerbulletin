@@ -1,4 +1,3 @@
-require! \../component/Buy.ls
 
 window.__    = require \lodash
 window.ioc   = require \./io-client.ls
@@ -11,6 +10,9 @@ global <<< require \./pb-helpers.ls
 global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
 
 require! ch: \./client-helpers.ls
+
+# components
+require! \../component/Buy.ls
 
 # XXX client-side entry
 # shortcuts

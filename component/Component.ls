@@ -34,33 +34,31 @@ module.exports =
     (@locals = {}, top) ~>
       if typeof top is \string # css selector
         @selector = top # usually from a child declaration
-        @$top = $ @selector #
+        @$top = $ @selector
       else if typeof top is \object # jqueryish
         @selector = top.selector
         @$top = top # jqueryish
 
-      # add unique selector class to top only on client, allows for attaching
-      # delegated events to document without breaking instance abstraction
-      #
-      # only on client...
-      # this way we keep it out of static html compositing (the ugly classes)
-      # since server doesn't ever need to attach...
-      if window?
-        unique-class =
-          'c-' + (Math.random! * (new Date)).to-string!replace '.' ''
+      @unique-class =
+        'c-' + (Math.random! * (new Date)).to-string!replace '.' ''
 
-        # for ease of detaching / removing delegated events at the document level
-        @$top.add-class unique-class
+      @unique-selector = '.' + @unique-class
 
-        @unique-selector = '.' + unique-class
+      # following two items are repeating in attach
+      # but happen on initialization
 
-      # auto-attach on client
-      @attach! if window?
+      # for ease of detaching / removing delegated events at the document level
+      @$top.add-class @unique-class if @$top
 
+      # auto-attach on client if on-attach is specified
+      @on-attach! if window? and @on-attach
     template: (-> '')
     attach: !->
       unless window? then throw new Error "Component can only attach on client"
       unless @$top then throw new Error "Component can't attach without a specified top"
+
+      # for ease of detaching / removing delegated events at the document level
+      @$top.add-class @unique-class if @$top
 
       if @children
         for child in @children
@@ -100,7 +98,9 @@ module.exports =
         if @children
           for child in @children
             if child.selector
-              $dom.find(child.selector).html child.render!
+              $child-top = $dom.find(child.selector)
+              $child-top.add-class child.component-name
+              $child-top.html child.render!
             else
               throw new Error "child Components must specify a selector top (string)"
 
@@ -114,6 +114,8 @@ module.exports =
     # use cached result or render 
     put: !-> # put in html in $(@selector), use cached-copy or render if necessary
       if @$top
+        @$top.add-class @component-name
         @$top.html(@cached-html or @render!)
       else
         throw new Error "Component cannot put since a top was not passed in"
+    component-name: -> @@display-name

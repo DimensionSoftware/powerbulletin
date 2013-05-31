@@ -1,11 +1,10 @@
 require! \./Component.ls
+require! \./ParallaxButton.ls
 
 {templates} = require \../build/component-jade.js
 
 module.exports =
   class Buy extends Component
+    component-name: \Buy
     template: templates.Buy
-    on-attach: !->
-      $(document).on \click, @unique-selector, -> alert \buybuybuy
-    on-detach: !->
-      $(document).off \click, @unique-selector
+    children: [new ParallaxButton {title: 'Buy MOFO BUY!'} \#buy]
