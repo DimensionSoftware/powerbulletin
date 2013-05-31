@@ -6,6 +6,6 @@ module.exports =
   class Buy extends Component
     template: templates.Buy
     on-attach: !->
-      $ document .on \click @unique-selector alert -> \buybuybuy
-    on-detach: !-> #@$top.off!
-      $ document .off \click @unique-selector
+      $(document).on \click, @unique-selector, -> alert \buybuybuy
+    on-detach: !->
+      $(document).off \click, @unique-selector
