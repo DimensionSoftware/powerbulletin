@@ -324,15 +324,10 @@ $d.on \change 'html.admin .domain' -> # set keys
       $ "[name='#k']" .val domain.config[k]
 #}}}
 
-# BUY is in a shadow dom lol, its not attached anywhere
-window.buy-dom = $('<div/>')
-
-window.component =
-  buy: new Buy {} buy-dom
+# components
+window.component = {}
 
 window.do-buy = ->
-  component.buy.put!
-  $.fancybox(buy-dom)
-
-#
+  window.component.buy ||= new Buy
+  $.fancybox(window.component.buy.$)
 # vim:fdm=marker

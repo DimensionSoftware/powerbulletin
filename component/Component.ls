@@ -1,11 +1,7 @@
-require! {
-  $R: reactivejs
-}
-
 if window?
-  $ = window.$
+  dollarish = window.$
 else
-  require! $:cheerio
+  require! dollarish:cheerio
 
 !function bench subject-name, subject-body
   bef = new Date
@@ -28,94 +24,89 @@ else
     # server side cheerio does the normal thing
     $el.html html
 
-
 module.exports =
   class Component
-    (@locals = {}, top) ~>
-      if typeof top is \string # css selector
-        @selector = top # usually from a child declaration
-        @$top = $ @selector
-      else if typeof top is \object # jqueryish
-        @selector = top.selector
-        @$top = top # jqueryish
+    @@$ = dollarish # shortcut
+    component-name: \Component
+    # locals is the locals used to instantiate the Component
+    # locals is passed thru a template then mutate phase
+    #
+    # @$ represents a full featured jqueryish which is selected on the
+    # component instances' container
+    #
+    # @$ could be thought of as 'the container'
+    ({@locals = {}, attach = @is-client, render = true} = {}, @$) ~>
+      @$ ||= @@$ '<div/>'
 
-      @unique-class =
-        'c-' + (Math.random! * (new Date)).to-string!replace '.' ''
+      @$.add-class @component-name # add class-name to container
 
-      @unique-selector = '.' + @unique-class
+      @render! if render
 
-      # following two items are repeating in attach
-      # but happen on initialization
+      # attach last just in case attach phase needs dom of component available
+      @attach(false) if attach
 
-      # for ease of detaching / removing delegated events at the document level
-      @$top.add-class @unique-class if @$top
-
-      # auto-attach on client if on-attach is specified
-      @on-attach! if window? and @on-attach
+      @children = @children! if @children # instantiate children
+    is-client: !!window?
     template: (-> '')
-    attach: !->
-      unless window? then throw new Error "Component can only attach on client"
-      unless @$top then throw new Error "Component can't attach without a specified top"
+    attach: (do-children = true) ->
+      unless @is-client then throw new Error "Component can only attach on client"
 
-      # for ease of detaching / removing delegated events at the document level
-      @$top.add-class @unique-class if @$top
+      return @ if @is-attached # guard from attaching twice
 
-      if @children
+      if @children and do-children
         for child in @children
           child.attach!
 
       @on-attach! if @on-attach
-    detach: !->
-      unless window? then throw new Error "Component can only detach on client"
-      unless @$top then throw new Error "Component can't attach without a specified top"
+      @is-attached = true
+      return @ # chain chain chain! chain of fools...
+    detach: ->
+      unless @is-client then throw new Error "Component can only detach on client"
+
+      return @ unless @is-attached # guard from detaching twice
 
       if @children
         for child in @children
           child.detach!
 
       @on-detach! if @on-detach
-    # programmer/sub-classer can override html
-    # it just needs to maintain and consume @locals to produce a return
-    # result of html
-    html: ->
+      @is-attached = false
+      return @ # chain chain chain! chain of fools...
+    # programmer/sub-classer can override render
+    # it just needs to output html given @locals
+    render: ->
       # Render js template
       #   could be any function that takes locals as the first argument
       #   and returns an html markup string. I use compiled Jade =D
       template-out = @template @locals
 
       # skip dom phase unless there is a mutate action defined or children defined
-      if @mutate or @children
-        # Wrap output in top-level div before creating DOM
-        # - allows us to find the topmost node in our template
-        # - makes $c.html! return the correct html, including all markup
-        $dom = $('<div class="render-wrapper">' + template-out + '</div>')
+      html-out =
+        if @mutate or @children
+          # Wrap output in top-level div before creating DOM
+          # - allows us to find the topmost node in our template
+          # - makes $c.html! return the correct html, including all markup
+          $dom = @@$('<div class="render-wrapper">' + template-out + '</div>')
 
-        # Mutation phase (in DOM)
-        #   DOM manipulation can be done here
-        @mutate $dom if @mutate
+          # Mutation phase (in DOM)
+          #   DOM manipulation can be done here
+          @mutate $dom if @mutate
 
-        # render children in their respective containers
-        if @children
-          for child in @children
-            if child.selector
-              $child-top = $dom.find(child.selector)
-              $child-top.add-class child.component-name
-              $child-top.html child.render!
-            else
-              throw new Error "child Components must specify a selector top (string)"
+          # render children in their respective containers
+          if @children
+            for child in @children
+              if child.$.selector
+                $child-top = $dom.find(child.$.selector)
+                $child-top.html child.render!
+              else
+                throw new Error "child Components must specify a container"
 
-        # finally store html markup
-        # pre-calculate and store s
-        $dom.html!
-      else
-        template-out
-    render: ->
-      @cached-html = @html!
-    # use cached result or render 
-    put: !-> # put in html in $(@selector), use cached-copy or render if necessary
-      if @$top
-        @$top.add-class @component-name
-        @$top.html(@cached-html or @render!)
-      else
-        throw new Error "Component cannot put since a top was not passed in"
-    component-name: -> @@display-name
+          # finally store html markup
+          # pre-calculate and store s
+          $dom.html!
+        else
+          template-out
+
+      @$.html html-out # place into container
+      return @
+    html: -> @$.html!

@@ -5,10 +5,11 @@ module.exports =
     component-name: \HelloWorld
     template: ({name}={}) ->
       "<div class=\"HelloWorld\"><p>Hello, World</p>#{if name then ' <strong>' + name + '</strong>' else ''}</div>"
-    mutate: !($c, state) ->
-      $strong = $c.find \strong
+    mutate: !($dom) ->
+      $strong = $dom.find \strong
       $strong.text "#{$strong.text!}!" # add exclamation point in jquery (contrived I know)
     on-attach: ->
-      $(document).on \click @selector -> alert 'say my name say my name, you acting kinda shady aint callin me baby why the sudden change?'
-    on-detach: !->
-      $(document).off \click @selector
+      @$.on \click \p ->
+        alert 'say my name say my name, you acting kinda shady aint callin me baby why the sudden change?'
+    on-detach: ->
+      @$.off \click \p

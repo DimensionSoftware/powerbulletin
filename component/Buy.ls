@@ -7,4 +7,5 @@ module.exports =
   class Buy extends Component
     component-name: \Buy
     template: templates.Buy
-    children: [new ParallaxButton {title: 'Buy MOFO BUY!'} \#buy]
+    children: ->
+      * new ParallaxButton {locals:{title: 'Buy MOFO BUY!'}}, @$.find(\#buy)
