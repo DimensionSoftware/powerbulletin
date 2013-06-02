@@ -2,12 +2,15 @@ require! \./Component.ls
 
 module.exports =
   class ParallaxButton extends Component
+    ({@on-click = (->)}) ->
+      super ...
+
     component-name: \ParallaxButton
     template: ({title}) -> "<button>#{title}</button>"
     mutate: !->
     on-attach: !->
-      @$.on \click, \button, ->
-        alert 'say my name say my name, you acting kinda shady aint callin me baby why the sudden change?'
+      @$.on \click, \button, ~>
+        @on-click!
         return false
 
       @on-load-resize ||= ~>
