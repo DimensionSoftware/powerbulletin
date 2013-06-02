@@ -44,7 +44,8 @@ module.exports =
         @$top = @@$ '<div><div/></div>'
         @$ = @$top.find \div
 
-      @render! if render
+      # render just parent
+      @render(false) if render
 
       # attach last just in case attach phase needs dom of component available
       @attach(false) if attach
@@ -78,7 +79,7 @@ module.exports =
       return @ # chain chain chain! chain of fools...
     # programmer/sub-classer can override render
     # it just needs to output html given @locals
-    render: ->
+    render: (do-children = true) ->
       @$.add-class @component-name # add class-name to container
 
       # Render js template
@@ -98,21 +99,15 @@ module.exports =
           #   DOM manipulation can be done here
           @mutate $dom if @mutate
 
-          # render children in their respective containers
-          if @children
+          if @children and do-children
             for child in @children
-              if child.$.selector
-                $child-top = $dom.find(child.$.selector)
-                $child-top.html child.render!
-              else
-                throw new Error "child Components must specify a container"
+              child.render!
 
-          # finally store html markup
-          # pre-calculate and store s
           $dom.html!
         else
           template-out
 
       @$.html html-out # place into container
+
       return @
     html: -> (@$top or @$).html!
