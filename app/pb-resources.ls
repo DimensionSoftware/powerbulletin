@@ -4,6 +4,7 @@ require! {
   c: \./cache
   h: \./helpers
   sioa: \socket.io-announce
+  auth: \./auth
   #\stylus # pull in stylus when accepting user's own stylesheets
 }
 
@@ -64,10 +65,16 @@ announce = sioa.create-client!
       db.sites.save-stylus domain.name, domain.config.stylus
       res.json success:true
 @users =
-  create : (req, res) ->
+  create : (req, res, next) ->
     user = req.user
-    site = req.vars.site
-    if not req?user?rights?super then return next 404 # guard
+    site = res.vars.site
+    if not user?rights?super then return next 404 # guard
+
+    # TODO generate new users + verifies
+    # - for email in req.body.emails.split ','
+    #err, user-forgot <- auth.user-forgot-password user
+    #if err then return next err
+
     switch req.body.action
     | \invites =>
       vars =
@@ -76,12 +83,23 @@ announce = sioa.create-client!
         "site-domain" : site.current_domain
         "user-name"   : user.name
         "user-verify" : user.verify
+        "message"     : req.body.message
+
+      tmpl = """
+        {{message}}
+        
+        Follow this link and login:
+         https://{{site-domain}}/\#invite={{user-verify}}
+
+            - {{user-name}}
+      """
+
       email =
-        from    : "noreply@#{site.current_domain}"
+        from    : "#{user.name}@#{site.current_domain}"
         to      : user.email
-        subject : "Welcome to #{site.name}"
-        text    : h.expand-handlebars registration-email-template-text, vars
-      h.send-mail email (->)
+        subject : "Welcome to #{site.name}!"
+        text    : h.expand-handlebars tmpl, vars
+      h.send-mail email, (->)
       res.json success:true
     | otherwise =>
       user = req.params.user
