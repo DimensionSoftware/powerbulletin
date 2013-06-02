@@ -50,9 +50,6 @@ module.exports =
       # render just parent
       @render(false) if render
 
-      # attach last just in case attach phase needs dom of component available
-      @attach(false) if attach
-
       @children = @children! if @children # instantiate children
     is-client: !!window?
     template: (-> '')
@@ -85,6 +82,8 @@ module.exports =
     render: (do-children = true) ->
       @$.add-class @component-name # add class-name to container
 
+      @detach do-children if @is-client
+
       # Render js template
       #   could be any function that takes locals as the first argument
       #   and returns an html markup string. I use compiled Jade =D
@@ -110,6 +109,9 @@ module.exports =
 
       else
         @$.html template-out
+
+      # attach last just in case attach phase needs dom of component available
+      @attach do-children if @is-client
 
       return @
     html: -> (@$top or @$).html!

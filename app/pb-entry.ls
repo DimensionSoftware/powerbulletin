@@ -332,5 +332,5 @@ window.do-buy = ->
   $.fancybox(window.component.buy.$)
 
 window.do-test = ->
-  new Buy {} $('body')
+  new Buy {} 'body'
 # vim:fdm=marker
