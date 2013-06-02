@@ -8,4 +8,4 @@ module.exports =
     component-name: \Buy
     template: templates.Buy
     children: ->
-      * new ParallaxButton {locals:{title: 'Buy MOFO BUY!'}}, @$.find(\#buy)
+      * new ParallaxButton {locals:{title: 'CHECKOUT'}}, @$.find(\.Buy-checkout)

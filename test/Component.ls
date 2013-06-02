@@ -6,51 +6,36 @@ require! {
 
 _it = it
 
-describe 'new Component' !->
+describe 'new Component' ->
   c = new Component
 
-  describe ".template!" !->
-    _it "should return ''" !->
+  describe ".template!" ->
+    _it "should return ''" ->
       assert.equal '', c.template!
 
-  describe ".attach!" !->
-    _it "should throw Error" !->
+  describe ".attach!" ->
+    _it "should throw Error" ->
       assert.throws c.attach
 
-  describe ".detach!", !->
-    _it "should throw Error" !->
+  describe ".detach!", ->
+    _it "should throw Error" ->
       assert.throws c.detach
 
-  describe ".locals", !->
-    _it "should be {}" !->
+  describe ".locals", ->
+    _it "should be {}" ->
       assert.deep-equal {}, c.locals
 
-  describe ".html!", !->
-    _it "should return ''" !->
-      assert.equal '', c.html!
+  describe ".html!", ->
+    markup = '<div class="Component"></div>'
+    _it "should return '#{markup}'" !->
+      assert.equal markup, c.html!
 
-  describe ".cached-html", !->
-    _it "should be void" !->
-      assert.equal void, c.cached-html
+describe "new Component {} $dom" !->
+  $dom = $ '<div><div/></div>'
+  $container = $dom.find \div
+  c = new Component {render: true} $container
 
-  describe ".render!", !->
-    _it "should return ''" !->
-      assert.equal '', c.render!
-
-  describe ".cached-html should now be '' after rendering", !->
-    _it "should be ''" !->
-      assert.equal '', c.cached-html
-
-  describe ".put", !->
-    _it "should throw Error" !->
-      assert.throws c.put
-
-describe "new Component {} $content" !->
-  describe '.put' !->
-    $content = $ '<p>content which should be replaced</p>'
-    c = new Component {} $content
-    c.put!
-
-    _it "should populate $content.html! with ''" !->
-      assert.equal '', $content.html!
-
+  describe '$dom' !->
+    _it "should be rendered to" !->
+      markup = '<div class="Component"></div>'
+      assert.equal markup, $dom.html!

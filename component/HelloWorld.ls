@@ -4,7 +4,7 @@ module.exports =
   class HelloWorld extends Component
     component-name: \HelloWorld
     template: ({name}={}) ->
-      "<div class=\"HelloWorld\"><p>Hello, World</p>#{if name then ' <strong>' + name + '</strong>' else ''}</div>"
+      "<p>Hello, World</p>#{if name then ' <strong>' + name + '</strong>' else ''}"
     mutate: !($dom) ->
       $strong = $dom.find \strong
       $strong.text "#{$strong.text!}!" # add exclamation point in jquery (contrived I know)

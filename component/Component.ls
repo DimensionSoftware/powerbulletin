@@ -35,10 +35,14 @@ module.exports =
     # component instances' container
     #
     # @$ could be thought of as 'the container'
-    ({@locals = {}, attach = @is-client, render = true} = {}, @$) ~>
-      @$ ||= @@$ '<div/>'
-
-      @$.add-class @component-name # add class-name to container
+    ({@locals = {}, attach = @is-client, render = true} = {}, $container) ~>
+      if $container
+        @$ = $container
+      else
+        # create an extra div wrapping so we can render
+        # the wrapping div for the component (only when no container specified)
+        @$top = @@$ '<div><div/></div>'
+        @$ = @$top.find \div
 
       @render! if render
 
@@ -75,6 +79,8 @@ module.exports =
     # programmer/sub-classer can override render
     # it just needs to output html given @locals
     render: ->
+      @$.add-class @component-name # add class-name to container
+
       # Render js template
       #   could be any function that takes locals as the first argument
       #   and returns an html markup string. I use compiled Jade =D
@@ -109,4 +115,4 @@ module.exports =
 
       @$.html html-out # place into container
       return @
-    html: -> @$.html!
+    html: -> (@$top or @$).html!
