@@ -71,7 +71,7 @@ export unique-hash = (field, site-id, cb) ->
     cb null, uv
 
 export registration-email-template-text = """
-Welcome to {{site-name}}, {{user-name}}.
+Welcome to {{site-name}}, {{user-name}}!
 
 To verify your account, please visit:
 
@@ -96,7 +96,6 @@ export recovery-email-template-html = """
 
 #
 export send-registration-email = (user, site, cb) ->
-  smtp = nodemailer.create-transport 'SMTP'
   vars =
     # I have to quote the keys so that the template-vars with dashes will get replaced.
     "site-name"   : site.name
@@ -108,10 +107,9 @@ export send-registration-email = (user, site, cb) ->
     to      : user.email
     subject : "Welcome to #{site.name}"
     text    : h.expand-handlebars registration-email-template-text, vars
-  smtp.send-mail email, cb
+  h.send-mail email, cb
 
 export send-recovery-email = (user, site, cb) ->
-  smtp = nodemailer.create-transport 'SMTP'
   vars =
     # I have to quote the keys so that the template-vars with dashes will get replaced.
     "site-name"   : site.name
@@ -123,7 +121,7 @@ export send-recovery-email = (user, site, cb) ->
     to      : user.email
     subject : "[#{site.name}] Password Recovery"
     text    : h.expand-handlebars recovery-email-template-text, vars
-  smtp.send-mail email, cb
+  h.send-mail email, cb
 
 export user-forgot-password = (user, cb) ->
   err, hash <- unique-hash \forgot, user.site_id
