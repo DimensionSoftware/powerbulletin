@@ -1,7 +1,8 @@
-if window?
-  dollarish = window.$
-else
-  require! dollarish:cheerio
+dollarish =
+  if window?
+    window.$
+  else
+    require \cheerio
 
 !function bench subject-name, subject-body
   bef = new Date
