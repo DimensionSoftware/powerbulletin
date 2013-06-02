@@ -114,4 +114,5 @@ module.exports =
       @attach do-children if @is-client
 
       return @
-    html: -> (@$top or @$).html!
+    html: (wrapped = true) ->
+      ((wrapped and @$top) or @$).html!

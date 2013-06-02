@@ -28,7 +28,11 @@ describe 'new Component' ->
   describe ".html!", ->
     markup = '<div class="Component"></div>'
     _it "should return '#{markup}'" !->
-      assert.equal markup, c.html!
+      assert.equal c.html!, markup
+
+  describe ".html(false)", ->
+    _it "should return ''" !->
+      assert.equal c.html(false), ''
 
 describe "new Component {} $dom" !->
   $dom = $ '<div><div/></div>'
