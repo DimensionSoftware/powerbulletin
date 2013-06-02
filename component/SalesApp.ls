@@ -4,8 +4,8 @@ require! \./Sales.ls
 {templates} = require \../build/component-jade.js
 
 module.exports =
-  class SalesLayout extends Component
-    component-name: \SalesLayout
-    template: templates.SalesLayout
+  class SalesApp extends Component
+    component-name: \SalesApp
+    template: templates.SalesApp
     children: ->
       [new Sales {} \body @]
