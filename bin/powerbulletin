@@ -3,7 +3,7 @@
 # main
 # ---------
 if [ "$NODE_ENV" = 'production' ] ; then
-  grunt procs jade browserify uglify
+  grunt procs clientJade browserify uglify
   node app/main.js 2>> error_log
 else
   export NODE_WORKERS=${NODE_WORKERS:=1}
