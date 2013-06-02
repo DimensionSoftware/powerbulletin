@@ -13,3 +13,7 @@ describe 'new Parent' ->
 
     _it "should return '#{markup}'" ->
       assert.equal p.html!, markup
+
+    _it "should return '#{markup}' after calling render!" ->
+      p.render!
+      assert.equal p.html!, markup

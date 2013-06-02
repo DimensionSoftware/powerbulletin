@@ -35,9 +35,12 @@ module.exports =
     # component instances' container
     #
     # @$ could be thought of as 'the container'
-    ({@locals = {}, attach = @is-client, render = true} = {}, $container) ~>
-      if $container
-        @$ = $container
+    ({@locals = {}, attach = @is-client, render = true} = {}, @selector, @parent) ~>
+      if @selector
+        if @parent
+          @$ = @parent.$.find @selector
+        else
+          @$ = @@$ @selector
       else
         # create an extra div wrapping so we can render
         # the wrapping div for the component (only when no container specified)
@@ -88,26 +91,25 @@ module.exports =
       template-out = @template @locals
 
       # skip dom phase unless there is a mutate action defined or children defined
-      html-out =
-        if @mutate or @children
-          # Wrap output in top-level div before creating DOM
-          # - allows us to find the topmost node in our template
-          # - makes $c.html! return the correct html, including all markup
-          $dom = @@$('<div class="render-wrapper">' + template-out + '</div>')
+      if @mutate or @children
+        # Wrap output in top-level div before creating DOM
+        # - allows us to find the topmost node in our template
+        # - makes $c.html! return the correct html, including all markup
+        $dom = @@$('<div class="render-wrapper">' + template-out + '</div>')
 
-          # Mutation phase (in DOM)
-          #   DOM manipulation can be done here
-          @mutate $dom if @mutate
+        # Mutation phase (in DOM)
+        #   DOM manipulation can be done here
+        @mutate $dom if @mutate
 
-          if @children and do-children
-            for child in @children
-              child.render!
+        @$.html $dom.html!
 
-          $dom.html!
-        else
-          template-out
+        if @children and do-children
+          for child in @children
+            child.$ = @$.find child.selector
+            child.render!
 
-      @$.html html-out # place into container
+      else
+        @$.html template-out
 
       return @
     html: -> (@$top or @$).html!
