@@ -2,7 +2,6 @@
 # it is compiled to js to work around a bug in cluster where child processes
 # receive incorrect arguments (in particular with --prof when passed with lsc's -n flag)
 require \LiveScript
-
 require \./load-cvars
 
 # dependencies
@@ -59,6 +58,29 @@ require! shelljs
 global.CHANGESET = output.trim!
 
 global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
+
+require \./load-cvars
+
+# dependencies
+require! {
+  os
+  fs
+  async
+  cluster
+  express
+  http
+  \express-resource
+  stylus
+  fluidity
+  \./io-server
+  \./elastic
+  \express/node_modules/connect
+  pg: \./postgres
+  v: \./varnish
+  m: \./pb-models
+  \./sales-app
+}
+global <<< require \prelude-ls
 
 proc = process
 
@@ -219,7 +241,7 @@ else
     #  removing leading //
     sock.use(express.vhost cvars["cache#{i}Url"].slice(2), cache-app)
 
-  sock.use(express.vhost 'sales.powerbulletin.com', sales-app)
+  sock.use(express.vhost 'sales.pb.com', sales-app)
 
   # dynamic app can automatically check req.host
   sock.use(app)

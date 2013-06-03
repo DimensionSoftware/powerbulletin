@@ -1,6 +1,12 @@
 (function(){
-  var os, fs, async, cluster, express, http, expressResource, stylus, fluidity, ioServer, elastic, connect, pg, v, m, salesApp, shelljs, ref$, code, output, proc, app, cacheApp, server, gracefulShutdown, html_50x, html_404, mw, numWorkers, workers, reapWorkers, i$, i, child;
+  var shelljs, ref$, code, output, os, fs, async, cluster, express, http, expressResource, stylus, fluidity, ioServer, elastic, connect, pg, v, m, salesApp, proc, app, cacheApp, server, gracefulShutdown, html_50x, html_404, mw, numWorkers, workers, reapWorkers, i$, i, child;
   require('LiveScript');
+  shelljs = require('shelljs');
+  ref$ = shelljs.exec('git rev-parse HEAD', {
+    silent: true
+  }), code = ref$.code, output = ref$.output;
+  global.CHANGESET = output.trim();
+  global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' || process.env.TEST_HTTP_CACHE);
   require('./load-cvars');
   os = require('os');
   fs = require('fs');
@@ -19,12 +25,6 @@
   m = require('./pb-models');
   salesApp = require('./sales-app');
   import$(global, require('prelude-ls'));
-  shelljs = require('shelljs');
-  ref$ = shelljs.exec('git rev-parse HEAD', {
-    silent: true
-  }), code = ref$.code, output = ref$.output;
-  global.CHANGESET = output.trim();
-  global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' || process.env.TEST_HTTP_CACHE);
   proc = process;
   proc.on('uncaughtException', function(e){
     throw e;
@@ -199,7 +199,7 @@ if (k != 'orm' && k != 'client' && k != 'driver') {
               i = ref$[i$];
               sock.use(express.vhost(cvars["cache" + i + "Url"].slice(2), cacheApp));
             }
-            sock.use(express.vhost('sales.powerbulletin.com', salesApp));
+            sock.use(express.vhost('sales.pb.com', salesApp));
             sock.use(app);
             server = http.createServer(sock);
             ioServer.init(server);

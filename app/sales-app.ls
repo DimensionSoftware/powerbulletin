@@ -3,10 +3,13 @@ require! \../component/SalesLoader
 require! {
   csu: \./css-urls
   jsu: \./js-urls
+  \./pb-handlers
 }
 
 # would like to just call it app, but global 'app' is reserved
 s-app = express!
+
+s-app.get '/dynamic/css/:file' pb-handlers.stylus
 
 s-app.get '/' (req, res, next) ->
   scripts =
@@ -19,7 +22,9 @@ s-app.get '/' (req, res, next) ->
     * jsu.raf
     * jsu.powerbulletin-sales
 
-  stylesheets = [csu.jquery-fancybox]
+  stylesheets =
+    * csu.jquery-fancybox
+    * csu.master-sales
 
   locals = {scripts, stylesheets} <<< cvars
   sl = new SalesLoader {locals}
