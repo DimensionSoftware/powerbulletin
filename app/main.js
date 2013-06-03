@@ -1,6 +1,7 @@
 (function(){
-  var os, fs, async, cluster, express, http, expressResource, stylus, fluidity, ioServer, elastic, connect, pg, v, m, shelljs, ref$, code, output, proc, app, cacheApp, server, gracefulShutdown, html_50x, html_404, e, mw, numWorkers, workers, reapWorkers, i$, i, child;
+  var os, fs, async, cluster, express, http, expressResource, stylus, fluidity, ioServer, elastic, connect, pg, v, m, salesApp, shelljs, ref$, code, output, proc, app, cacheApp, server, gracefulShutdown, html_50x, html_404, mw, numWorkers, workers, reapWorkers, i$, i, child;
   require('LiveScript');
+  require('./load-cvars');
   os = require('os');
   fs = require('fs');
   async = require('async');
@@ -16,6 +17,7 @@
   pg = require('./postgres');
   v = require('./varnish');
   m = require('./pb-models');
+  salesApp = require('./sales-app');
   import$(global, require('prelude-ls'));
   shelljs = require('shelljs');
   ref$ = shelljs.exec('git rev-parse HEAD', {
@@ -46,21 +48,6 @@
   };
   html_50x = fs.readFileSync('public/50x.html').toString();
   html_404 = fs.readFileSync('public/404.html').toString();
-  try {
-    global.cvars = require('../config/common');
-    import$(global.cvars, require("../config/" + (proc.env.NODE_ENV || 'development')));
-    try {
-      import$(global.cvars, require('../config/local'));
-    } catch (e$) {
-      e = e$;
-    }
-    cvars.env = proc.env.NODE_ENV;
-    cvars.processStartDate = new Date();
-  } catch (e$) {
-    e = e$;
-    console.log("Inspect config.json: " + e);
-    return;
-  }
   mw = require('./middleware');
   numWorkers = proc.env.NODE_WORKERS || cvars.workers;
   if (cluster.isMaster) {
@@ -132,7 +119,7 @@ if (k != 'orm' && k != 'client' && k != 'driver') {
           }
           v.banAll();
           return elastic.init(function(err){
-            var i$, ref$, len$, a, errHandler, pbRoutes, maxAge, sock, i, this$ = this;
+            var i$, ref$, len$, a, errHandler, pbRoutes, errOrNotfound, maxAge, sock, i, this$ = this;
             if (err) {
               throw err;
             }
@@ -188,7 +175,7 @@ if (k != 'orm' && k != 'client' && k != 'driver') {
               };
             };
             pbRoutes = require('./pb-routes');
-            app.use(function(err, req, res, next){
+            errOrNotfound = function(err, req, res, next){
               var explain;
               if (err === 404) {
                 return res.send(html_404, 404);
@@ -198,7 +185,9 @@ if (k != 'orm' && k != 'client' && k != 'driver') {
                 });
                 return explain(err, req, res, next);
               }
-            });
+            };
+            app.use(errOrNotfound);
+            salesApp.use(errOrNotfound);
             maxAge = DISABLE_HTTP_CACHE
               ? 0
               : (60 * 60 * 24 * 365) * 1000;
@@ -210,6 +199,7 @@ if (k != 'orm' && k != 'client' && k != 'driver') {
               i = ref$[i$];
               sock.use(express.vhost(cvars["cache" + i + "Url"].slice(2), cacheApp));
             }
+            sock.use(express.vhost('sales.powerbulletin.com', salesApp));
             sock.use(app);
             server = http.createServer(sock);
             ioServer.init(server);

@@ -8,17 +8,17 @@ _it = it
 describe 'new HelloWorld' ->
   h = new HelloWorld
 
-  describe ".render!" ->
-    markup = '<p>Hello, World</p>'
+  describe ".html!" ->
+    markup = '<div class="HelloWorld"><p>Hello, World</p></div>'
 
     _it "should return '#{markup}'" ->
-      assert.equal h.render!, markup
+      assert.equal h.html!, markup
 
-describe "new HelloWorld {name:'Matt'}" ->
-  h = new HelloWorld {name: 'Matt'}
+describe "new HelloWorld {locals: {name:'Matt'}}" ->
+  h = new HelloWorld {locals: {name: 'Matt'}}
 
-  describe ".render!" ->
-    markup = '<p>Hello, World</p> <strong>Matt!</strong>'
+  describe ".html!" ->
+    markup = '<div class="HelloWorld"><p>Hello, World</p> <strong>Matt!</strong></div>'
 
     _it "should return '#{markup}'" ->
-      assert.equal h.render!, markup
+      assert.equal h.html!, markup

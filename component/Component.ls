@@ -1,11 +1,10 @@
-require! {
-  $R: reactivejs
-}
+require! $R:reactivejs
 
-if window?
-  $ = window.$
-else
-  require! $:cheerio
+dollarish =
+  if window?
+    window.$
+  else
+    require \cheerio
 
 !function bench subject-name, subject-body
   bef = new Date
@@ -30,77 +29,97 @@ else
 
 module.exports =
   class Component
-    (state, @selector) ->
-      @merge-state state
+    @@$ = dollarish # shortcut
+    component-name: \Component
 
-      # bind passed in state to render by default
-      # this gives us 'reactive programming for free with jade'
-      # but its not optimal necessarily...
-      #
-      # in the future look into an option to bypass this for manual dom manip
-      # i.e. can be overridden by the programmer
-      r-put = $R ~>
-        # XXX: display-name is not correct.. it needs to be the name of the extended class
-        bench "#{@@display-name} (render)" ~> @render!
-
-        put = ~>
-          bench "#{@@display-name} (put)" ~> @put!
-
-        if raf = window?request-animation-frame
-          raf put
+    # locals is the locals used to instantiate the Component
+    # locals is passed thru a template then mutate phase
+    #
+    # @$ represents a full featured jqueryish which is selected on the
+    # component instances' container
+    #
+    # @$ could be thought of as 'the container'
+    ({locals = {}, @auto-render = true} = {}, @selector, @parent) ->
+      @state =
+        {[k, (if v?_is-reactive then v else $R.state(v))] for k,v of locals}
+      if @selector
+        if @parent
+          @$ = @parent.$.find @selector
         else
-          put!
+          @$ = @@$ @selector
+      else
+        # create an extra div wrapping so we can render
+        # the wrapping div for the component (only when no container specified)
+        @$top = @@$ '<div><div/></div>'
+        @$ = @$top.find \div
 
-      for ,r-var of @r
-        r-put.bind-to r-var
-
-      @$top = $ @selector
-
-      # auto-attach on client only and only when @$top is defined
-      if window? and @$top
-        # attach delegated event handlers
-        # we do not put the output in @$top yet because
-        # we want to yield this functionality to something smarter
-        # which can use request-animation frame
-        @attach!
-
+      if @parent
+        @render(false) if @parent.auto-render
+      else
+        @render(false) if @auto-render
+    is-client: !!window?
     template: (-> '')
-    mutate: !-> # override in sub-class as needed
-    children: [] # override in sub-class as needed
-    attach: !-> # override in sub-class as needed (client only)
-    detach: !-> # override in sub-class as needed (client only)
-    merge-state: !(state) ->
-      @r ||= {}
-      for k,v of state
-        if existing-r = @r[k]
-          existing-r v # set rather than override hash key
-        else
-          @r[k] = $R.state v
-    state: -> {[k, v.get!] for k,v of @r}
+    attach: ->
+      unless @is-client then throw new Error "Component can only attach on client"
+
+      return @ if @is-attached # guard from attaching twice
+
+      if @children
+        for ,child of @children
+          child.attach!
+
+      @on-attach! if @on-attach
+      @is-attached = true
+      return @ # chain chain chain! chain of fools...
+    detach: ->
+      unless @is-client then throw new Error "Component can only detach on client"
+
+      return @ unless @is-attached # guard from detaching twice
+
+      if @children
+        for ,child of @children
+          child.detach!
+
+      @on-detach! if @on-detach
+      @is-attached = false
+      return @ # chain chain chain! chain of fools...
+    # programmer/sub-classer can override render
+    # it just needs to output html given @locals
     render: ->
-      state = @state!
+      @$.add-class @component-name # add class-name to container
+
+      locals = @locals!
+
       # Render js template
-      #   could be anything that takes locals as the first argument
-      #   and returns html markup. I use compiled Jade =D
-      template-out = @template state
+      #   could be any function that takes locals as the first argument
+      #   and returns an html markup string. I use compiled Jade =D
+      template-out = @template locals
 
-      # Wrap output in top-level div before creating DOM
-      # - allows us to find the topmost node in our template
-      # - makes $c.html! return the correct html, including all markup
-      $c = $('<div class="render-wrapper">' + template-out + '</div>')
+      # skip dom phase unless there is a mutate action defined or children defined
+      if @mutate or @children
+        # Wrap output in top-level div before creating DOM
+        # - allows us to find the topmost node in our template
+        # - makes $c.html! return the correct html, including all markup
+        $dom = @@$('<div class="render-wrapper">' + template-out + '</div>')
 
-      # Mutation phase (in DOM)
-      #   DOM manipulation can be done here
-      @mutate $c, state
+        # Mutation phase (in DOM)
+        #   DOM manipulation can be done here
+        @mutate $dom if @mutate
 
-      for child in @children
-        $c.find(child.selector).html child.render!
+        @$.html $dom.html!
 
-      # finally store html markup
-      # pre-calculate and store s
-      @html = $c.html!
-    put: !-> # put in @$top (client only)
-      #XXX: can't use this yet because it breaks @$top
-      #replace-html(@$top, @html or @render!)
+        if @children
+          for ,child of @children
+            child.$ = @$.find child.selector
+            child.render!
 
-      @$top.html(@html or @render!)
+      else
+        @$.html template-out
+
+      return @
+    locals: ->
+      {[k, s.val] for k,s of @state}
+    local: (k) ->
+      @state[k]?val
+    html: (wrapped = true) ->
+      ((wrapped and @$top) or @$).html!

@@ -4,6 +4,7 @@ require! \./Component.ls
 
 module.exports =
   class Chat extends Component
+    component-name: \Chat
     @duration  = 300ms
     @easing    = \easeOutExpo
     @chats     = {}

@@ -1,13 +1,16 @@
 #!/bin/sh -e
 
 STANDARD_ARGS='-t liveify --ignore cheerio --ignore jade --ignore jsdom -o public/powerbulletin.js app/layout.ls app/pb-entry.ls'
+SALES_STANDARD_ARGS='-t liveify --ignore cheerio --ignore jade --ignore jsdom -o public/powerbulletin-sales.js app/layout.ls app/pb-sales-entry.ls'
 
 if [ "$NODE_ENV" = 'production' ]; then
   # compress in production
-  echo "building js bundle without source maps [production mode]"
+  echo "building js bundles without source maps [production mode]"
   node_modules/.bin/browserify $STANDARD_ARGS
+  node_modules/.bin/browserify $SALES_STANDARD_ARGS
 else
   # don't compress in dev
-  echo "building js bundle with source maps [development mode]"
+  echo "building js bundles with source maps [development mode]"
   node_modules/.bin/browserify --debug $STANDARD_ARGS
+  node_modules/.bin/browserify --debug $SALES_STANDARD_ARGS
 fi

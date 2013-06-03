@@ -1,10 +1,14 @@
 require! \./Component.ls
+require! \./ParallaxButton.ls
 
 {templates} = require \../build/component-jade.js
 
 module.exports =
   class Buy extends Component
+    component-name: \Buy
     template: templates.Buy
-    attach: !->
-      @$top.on \click \h1 -> alert(\fuck)
-    detach: !-> #@$top.off!
+    ->
+      super ...
+      on-click = -> alert \booya_purchase
+      @children =
+        checkout-button: new ParallaxButton {on-click, locals:{title: 'CHECKOUT'}}, \.Buy-checkout, @

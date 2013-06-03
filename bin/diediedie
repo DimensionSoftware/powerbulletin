@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 killall -9 mon
 sleep 1
 killall -9 pb-worker pb-supervisor powerbulletin pb-indexer pb-search

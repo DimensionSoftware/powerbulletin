@@ -1,4 +1,3 @@
-require! \../component/Buy.ls
 
 window.__    = require \lodash
 window.ioc   = require \./io-client.ls
@@ -11,6 +10,9 @@ global <<< require \./pb-helpers.ls
 global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
 
 require! ch: \./client-helpers.ls
+
+# components
+require! \../component/Buy.ls
 
 # XXX client-side entry
 # shortcuts
@@ -322,15 +324,13 @@ $d.on \change 'html.admin .domain' -> # set keys
       $ "[name='#k']" .val domain.config[k]
 #}}}
 
-# BUY is in a shadow dom lol, its not attached anywhere
-window.buy-dom = $('<div/>')
-
-window.component =
-  buy: new Buy {} buy-dom
+# components
+window.component = {}
 
 window.do-buy = ->
-  component.buy.put!
-  $.fancybox(buy-dom)
+  window.component.buy ||= (new Buy).attach!
+  $.fancybox(window.component.buy.$)
 
-#
+window.do-test = ->
+  new Buy {} 'body'
 # vim:fdm=marker

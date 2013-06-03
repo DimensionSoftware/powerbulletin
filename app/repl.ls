@@ -1,3 +1,5 @@
+require \./load-cvars
+
 global.cl    = console.log
 global.cw    = console.warn
 global.async = require \async

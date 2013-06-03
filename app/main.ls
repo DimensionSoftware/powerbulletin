@@ -1,8 +1,9 @@
-
 # this file is compiled to js so this is so we can load .ls files
 # it is compiled to js to work around a bug in cluster where child processes
 # receive incorrect arguments (in particular with --prof when passed with lsc's -n flag)
 require \LiveScript
+
+require \./load-cvars
 
 # dependencies
 require! {
@@ -21,6 +22,7 @@ require! {
   pg: \./postgres
   v: \./varnish
   m: \./pb-models
+  \./sales-app
 }
 global <<< require \prelude-ls
 
@@ -72,21 +74,6 @@ graceful-shutdown = ->
 
 html_50x = fs.read-file-sync('public/50x.html').to-string!
 html_404 = fs.read-file-sync('public/404.html').to-string!
-
-try # load config.json
-  global.cvars = require '../config/common'
-  global.cvars <<< require "../config/#{proc.env.NODE_ENV or \development}"
-
-  try
-    global.cvars <<< require '../config/local' # local settings which aren't in version control
-  catch
-    # do nothing
-
-  cvars.env                = proc.env.NODE_ENV
-  cvars.process-start-date = new Date!
-catch e
-  console.log "Inspect config.json: #{e}"
-  return
 
 require! mw: './middleware'
 
@@ -205,12 +192,15 @@ else
   require! \./pb-routes
 
   # 404 handler, if not 404, punt
-  app.use (err, req, res, next) ~>
+  err-or-notfound = (err, req, res, next) ~>
     if err is 404
       res.send html_404, 404
     else
       explain = err-handler (res) -> res.send html_50x, 500
       explain err, req, res, next
+
+  app.use err-or-notfound
+  sales-app.use err-or-notfound
 
   # all domain-based catch-alls & redirects, # cache 1 year in production, (cache will get blown on deploy due to changeset tagging)
   max-age = if DISABLE_HTTP_CACHE then 0 else (60 * 60 * 24 * 365) * 1000
@@ -223,6 +213,8 @@ else
     #XXX: this is a hack but hey we are always using protocol-less urls so should never break :)
     #  removing leading //
     sock.use(express.vhost cvars["cache#{i}Url"].slice(2), cache-app)
+
+  sock.use(express.vhost 'sales.powerbulletin.com', sales-app)
 
   # dynamic app can automatically check req.host
   sock.use(app)
