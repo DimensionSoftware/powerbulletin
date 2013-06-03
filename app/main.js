@@ -1,6 +1,24 @@
 (function(){
-  var shelljs, ref$, code, output, os, fs, async, cluster, express, http, expressResource, stylus, fluidity, ioServer, elastic, connect, pg, v, m, salesApp, proc, app, cacheApp, server, gracefulShutdown, html_50x, html_404, mw, numWorkers, workers, reapWorkers, i$, i, child;
+  var os, fs, async, cluster, express, http, expressResource, stylus, fluidity, ioServer, elastic, connect, pg, v, m, salesApp, shelljs, ref$, code, output, proc, app, cacheApp, server, gracefulShutdown, html_50x, html_404, mw, numWorkers, workers, reapWorkers, i$, i, child;
   require('LiveScript');
+  require('./load-cvars');
+  os = require('os');
+  fs = require('fs');
+  async = require('async');
+  cluster = require('cluster');
+  express = require('express');
+  http = require('http');
+  expressResource = require('express-resource');
+  stylus = require('stylus');
+  fluidity = require('fluidity');
+  ioServer = require('./io-server');
+  elastic = require('./elastic');
+  connect = require('express/node_modules/connect');
+  pg = require('./postgres');
+  v = require('./varnish');
+  m = require('./pb-models');
+  salesApp = require('./sales-app');
+  import$(global, require('prelude-ls'));
   shelljs = require('shelljs');
   ref$ = shelljs.exec('git rev-parse HEAD', {
     silent: true
