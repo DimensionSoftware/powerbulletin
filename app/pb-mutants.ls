@@ -427,8 +427,8 @@ export search =
 export page =
   static:
     (window, next) ->
-      window.$(\#left_container).html ''
-      window.$(\#main_content).html @page.config.main_content
+      window.replace-html window.$(\#left_container), ''
+      window.replace-html window.$(\#main_content), @page.config.main_content
       layout-static window, \page
       next!
   on-load:
