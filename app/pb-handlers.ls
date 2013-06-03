@@ -686,6 +686,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   err, page <- db.pages.find-one criteria: { site_id: site.id, path: req.path }
   if err then return next err
   if page
+    page.config = JSON.parse page.config
     tasks =
       menu: db.menu site.id, _
     if req.surfing

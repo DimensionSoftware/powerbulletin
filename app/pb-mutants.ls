@@ -423,4 +423,21 @@ export search =
       end-search!
       delete window.searchopts # reset filter state so it doesn't come back to haunt us
       next!
+
+export page =
+  static:
+    (window, next) ->
+      window.$(\#left_container).html ''
+      window.$(\#main_content).html @page.config.main_content
+      layout-static window, \profile
+      next!
+  on-load:
+    (window, next) ->
+      pager-init window
+      next!
+  on-mutate:
+    (window, next) ->
+      scroll-to-top!
+      next!
+
 # vim:fdm=indent
