@@ -61,7 +61,7 @@ module.exports =
       return @ if @is-attached # guard from attaching twice
 
       if @children and do-children
-        for child in @children
+        for ,child of @children
           child.attach!
 
       @on-attach! if @on-attach
@@ -73,7 +73,7 @@ module.exports =
       return @ unless @is-attached # guard from detaching twice
 
       if @children
-        for child in @children
+        for ,child of @children
           child.detach!
 
       @on-detach! if @on-detach
@@ -112,7 +112,7 @@ module.exports =
         @$.html $dom.html!
 
         if @children and do-children
-          for child in @children
+          for ,child of @children
             child.$ = @$.find child.selector
             child.render!
 
