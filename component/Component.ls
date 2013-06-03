@@ -29,6 +29,7 @@ module.exports =
   class Component
     @@$ = dollarish # shortcut
     component-name: \Component
+
     # locals is the locals used to instantiate the Component
     # locals is passed thru a template then mutate phase
     #
@@ -85,10 +86,17 @@ module.exports =
 
       @detach do-children if @is-client
 
+      normalized-locals = {}
+      for k, v of @locals
+        if typeof v is \function and v.length is 0
+          normalized-locals[k] = v!
+        else
+          normalized-locals[k] = v
+
       # Render js template
       #   could be any function that takes locals as the first argument
       #   and returns an html markup string. I use compiled Jade =D
-      template-out = @template @locals
+      template-out = @template normalized-locals
 
       # skip dom phase unless there is a mutate action defined or children defined
       if @mutate or @children
@@ -99,7 +107,7 @@ module.exports =
 
         # Mutation phase (in DOM)
         #   DOM manipulation can be done here
-        @mutate $dom if @mutate
+        @mutate $dom, normalized-locals if @mutate
 
         @$.html $dom.html!
 
