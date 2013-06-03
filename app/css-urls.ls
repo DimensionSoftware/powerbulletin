@@ -3,5 +3,5 @@
 #
 # assumes cvars is present
 module.exports =
-  jquery-fancybox: "#{cvars.cache2-url}/fancybox/jquery.fancybox.css"
-
+  jquery-fancybox: "#{cvars.cache2-url}/fancybox/jquery.fancybox.css?#{CHANGESET}"
+  master-sales: "/dynamic/css/master-sales.styl?#{CHANGESET}"
