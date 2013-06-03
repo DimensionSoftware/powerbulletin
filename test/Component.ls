@@ -21,9 +21,9 @@ describe 'new Component' ->
     _it "should throw Error" ->
       assert.throws c.detach
 
-  describe ".locals", ->
+  describe ".locals!", ->
     _it "should be {}" ->
-      assert.deep-equal {}, c.locals
+      assert.deep-equal {}, c.locals!
 
   describe ".html!", ->
     markup = '<div class="Component"></div>'
