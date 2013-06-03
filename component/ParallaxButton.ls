@@ -1,13 +1,13 @@
+require! $R:reactivejs
 require! \./Component.ls
 
 module.exports =
   class ParallaxButton extends Component
+    component-name: \ParallaxButton
+    template: ({title}) -> "<button>#{title}</button>"
     ({@on-click = (->)}) ->
       super ...
 
-    component-name: \ParallaxButton
-    template: ({title}) -> "<button>#{title}</button>"
-    mutate: !->
     on-attach: !->
       @$.on \click, \button, ~>
         @on-click!

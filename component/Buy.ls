@@ -7,5 +7,8 @@ module.exports =
   class Buy extends Component
     component-name: \Buy
     template: templates.Buy
-    children: ->
-      [new ParallaxButton {on-click: (-> alert \booya_purchase), locals:{title: 'CHECKOUT'}}, \.Buy-checkout, @]
+    ->
+      super ...
+      on-click = -> alert \booya_purchase
+      @children =
+        checkout-button: new ParallaxButton {on-click, locals:{title: 'CHECKOUT'}}, \.Buy-checkout, @

@@ -328,7 +328,7 @@ $d.on \change 'html.admin .domain' -> # set keys
 window.component = {}
 
 window.do-buy = ->
-  window.component.buy ||= new Buy
+  window.component.buy ||= (new Buy).attach!
   $.fancybox(window.component.buy.$)
 
 window.do-test = ->

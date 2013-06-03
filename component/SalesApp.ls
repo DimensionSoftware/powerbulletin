@@ -7,5 +7,7 @@ module.exports =
   class SalesApp extends Component
     component-name: \SalesApp
     template: templates.SalesApp
-    children: ->
-      [new Sales {} \body @]
+    ->
+      super ...
+      @children =
+        sales: new Sales {} \body @
