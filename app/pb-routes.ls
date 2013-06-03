@@ -149,6 +149,13 @@ app.get '/:forum/most-active',
   handlers.forum
 
 
+# page handler tries to match paths before forum handler
+app.get '*',
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  handlers.page
+
 # XXX: TODO, FURL needs to take into account these cases so i can get rid of dependent
 # hacky regexps:
 # * /new/new
