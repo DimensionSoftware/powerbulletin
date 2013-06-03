@@ -88,10 +88,7 @@ module.exports =
 
       normalized-locals = {}
       for k, v of @locals
-        if typeof v is \function and v.length is 0
-          normalized-locals[k] = v!
-        else
-          normalized-locals[k] = v
+        normalized-locals[k] = @local k
 
       # Render js template
       #   could be any function that takes locals as the first argument
@@ -123,5 +120,11 @@ module.exports =
       @attach do-children if @is-client
 
       return @
+    local: (k) ->
+      v = @locals[k]
+      if typeof v is \function and v.length is 0
+        v!
+      else
+        v
     html: (wrapped = true) ->
       ((wrapped and @$top) or @$).html!
