@@ -429,7 +429,7 @@ export page =
     (window, next) ->
       window.$(\#left_container).html ''
       window.$(\#main_content).html @page.config.main_content
-      layout-static window, \profile
+      layout-static window, \page
       next!
   on-load:
     (window, next) ->
