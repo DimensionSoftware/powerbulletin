@@ -1,3 +1,5 @@
+require! $R:reactivejs
+
 dollarish =
   if window?
     window.$
@@ -37,7 +39,9 @@ module.exports =
     # component instances' container
     #
     # @$ could be thought of as 'the container'
-    ({@locals = {}, attach = @is-client, render = true} = {}, @selector, @parent) ~>
+    ({locals = {}, attach = @is-client, render = true} = {}, @selector, @parent) ~>
+      @state =
+        {[k, (if v?_is-reactive then v else $R.state(v))] for k,v of locals}
       if @selector
         if @parent
           @$ = @parent.$.find @selector
@@ -51,8 +55,6 @@ module.exports =
 
       # render just parent
       @render(false) if render
-
-      @children = @children! if @children # instantiate children
     is-client: !!window?
     template: (-> '')
     attach: (do-children = true) ->
@@ -86,14 +88,12 @@ module.exports =
 
       @detach do-children if @is-client
 
-      normalized-locals = {}
-      for k, v of @locals
-        normalized-locals[k] = @local k
+      locals = @locals!
 
       # Render js template
       #   could be any function that takes locals as the first argument
       #   and returns an html markup string. I use compiled Jade =D
-      template-out = @template normalized-locals
+      template-out = @template locals
 
       # skip dom phase unless there is a mutate action defined or children defined
       if @mutate or @children
@@ -104,7 +104,7 @@ module.exports =
 
         # Mutation phase (in DOM)
         #   DOM manipulation can be done here
-        @mutate $dom, normalized-locals if @mutate
+        @mutate $dom if @mutate
 
         @$.html $dom.html!
 
@@ -120,11 +120,9 @@ module.exports =
       @attach do-children if @is-client
 
       return @
+    locals: ->
+      {[k, s.val] for k,s of @state}
     local: (k) ->
-      v = @locals[k]
-      if typeof v is \function and v.length is 0
-        v!
-      else
-        v
+      @state[k]?val
     html: (wrapped = true) ->
       ((wrapped and @$top) or @$).html!
