@@ -680,4 +680,24 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   }
 
   res.mutant \search
+
+@page = (req, res, next) ->
+  site = res.vars.site
+  err, page <- db.pages.find-one criteria: { site_id: site.id, path: req.path }
+  if err then return next err
+  if page
+    tasks =
+      menu: db.menu site.id, _
+    if req.surfing
+      delete tasks.menu
+      delete-unnecessary-surf-data res
+    err, fdoc <- async.auto tasks
+    if err then return next err
+    fdoc ||= {}
+    fdoc.page = page
+    res.locals fdoc
+    res.mutant \page
+  else
+    next!
+
 # vim:fdm=indent
