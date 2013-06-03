@@ -6,4 +6,6 @@ html
     |<script type="text/javascript">
     |  head.js.apply(head, !{JSON.stringify(scripts)});
     |</script>
+    for stylesheet in stylesheets
+      link(rel='stylesheet', type='text/css', href=stylesheet)
   body

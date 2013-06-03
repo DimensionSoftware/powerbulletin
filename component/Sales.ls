@@ -12,4 +12,4 @@ module.exports =
       backup-buy = ->
         alert "sorry our developers are lazy and haven't implemented this yet"
       @children =
-        buy: new ParallaxButton {on-click: window?do-buy or backup-buy, locals:{title: 'BUY'}}, \.Sales-buy, @
+        buy: new ParallaxButton {on-click: (-> if window.do-buy then window.do-buy! else backup-buy!), locals:{title: 'BUY'}} \.Sales-buy @
