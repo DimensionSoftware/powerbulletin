@@ -26,6 +26,13 @@ require! {
 }
 global <<< require \prelude-ls
 
+# {{{ Refactor notes
+# instead of rallying the troops, encapsulate for quicker & more resilient teardown/startup:
+#   - new System(config, db, express-apps...) # worker
+#   - so far there'd be 2 systems: forum app & sales app
+#   - remove cluster and have each "worker" bind to different ports to improve speed by minimizing process copying
+#   - should be able to get our main.ls back, too, as cluster had exec arg issues
+# }}}
 # {{{ Caching strategy notes (pages expire quickly; assets forever)
 # not-so-well worded rant, just wanted to get thoughts down though...
 #
@@ -55,10 +62,8 @@ global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.en
 
 proc = process
 
-proc.on 'uncaughtException', (e) -> throw e
+proc.on \uncaughtException, (e) -> throw e
 
-# XXX instead of rallying the troops, encapsulate for quicker & more resilient teardown/startup:
-#   - new System(config, db, express-apps...) # worker
 app = global.app = express!
 cache-app        = express!
 
@@ -66,7 +71,7 @@ server = null
 
 graceful-shutdown = ->
   console.warn 'Graceful shutdown started'
-  set-timeout (-> console.warn("Forcing shutdown"); process.exit!), 5000
+  set-timeout (-> console.warn("Forcing shutdown"); process.exit!), 5000ms
   server.close (err) ->
     console.warn 'Graceful shutdown finished'
     console.warn err if err
