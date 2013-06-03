@@ -1,8 +1,9 @@
-
 # this file is compiled to js so this is so we can load .ls files
 # it is compiled to js to work around a bug in cluster where child processes
 # receive incorrect arguments (in particular with --prof when passed with lsc's -n flag)
 require \LiveScript
+
+require \./load-cvars
 
 # dependencies
 require! {
@@ -73,8 +74,6 @@ graceful-shutdown = ->
 
 html_50x = fs.read-file-sync('public/50x.html').to-string!
 html_404 = fs.read-file-sync('public/404.html').to-string!
-
-require \./load-cvars
 
 require! mw: './middleware'
 
