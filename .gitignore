@@ -10,6 +10,8 @@
 /selenium.out
 /public/powerbulletin.min.js
 /public/powerbulletin.js
+/public/powerbulletin-sales.min.js
+/public/powerbulletin-sales.js
 /public/images/user
 /app/views/templates.js
 /config/local.json

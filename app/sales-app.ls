@@ -8,8 +8,12 @@ s-app = express!
 s-app.get '/' (req, res, next) ->
   scripts =
     * jsu.jquery
+    * jsu.jquery-ui
     * jsu.jquery-history
+    * jsu.jquery-history-native
+    * jsu.jquery-nicescroll
     * jsu.raf
+    * jsu.powerbulletin-sales
 
   locals = {scripts} <<< cvars
   sl = new SalesLoader {locals}

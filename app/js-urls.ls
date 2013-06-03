@@ -10,6 +10,7 @@ module.exports =
   jquery-sceditor       : "#{cvars.cache4-url}/local/jquery.sceditor.bbcode.min.js"
   jquery-waypoints      : "#{cvars.cache-url}/local/waypoints.min.js"
   jquery-history        : "#{cvars.cache5-url}/local/history.min.js"
+  jquery-history-native : "#{cvars.cache5-url}/local/history.adapter.native.min.js"
   jquery-fancybox       : "#{cvars.cache4-url}/fancybox/jquery.fancybox.pack.js"
   jquery-transit        : "#{cvars.cache3-url}/local/jquery.transit-0.9.9.min.js"
   jquery-html5-uploader : "#{cvars.cache2-url}/local/jquery.html5uploader.js"
