@@ -39,7 +39,7 @@ module.exports =
     # component instances' container
     #
     # @$ could be thought of as 'the container'
-    ({locals = {}, @auto-render = true} = {}, @selector, @parent) ~>
+    ({locals = {}, @auto-render = true} = {}, @selector, @parent) ->
       @state =
         {[k, (if v?_is-reactive then v else $R.state(v))] for k,v of locals}
       if @selector

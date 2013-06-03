@@ -10,4 +10,4 @@ module.exports =
     ->
       super ...
       @children =
-        sales: new Sales {} \body @
+        sales: new Sales {} \.SalesApp-content @

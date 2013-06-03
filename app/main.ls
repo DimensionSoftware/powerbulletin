@@ -74,20 +74,7 @@ graceful-shutdown = ->
 html_50x = fs.read-file-sync('public/50x.html').to-string!
 html_404 = fs.read-file-sync('public/404.html').to-string!
 
-try # load config.json
-  global.cvars = require '../config/common'
-  global.cvars <<< require "../config/#{proc.env.NODE_ENV or \development}"
-
-  try
-    global.cvars <<< require '../config/local' # local settings which aren't in version control
-  catch
-    # do nothing
-
-  cvars.env                = proc.env.NODE_ENV
-  cvars.process-start-date = new Date!
-catch e
-  console.log "Inspect config.json: #{e}"
-  return
+require \./load-cvars
 
 require! mw: './middleware'
 
