@@ -14,6 +14,7 @@ s-app.get '/dynamic/css/:file' pb-handlers.stylus
 s-app.get '/' (req, res, next) ->
   scripts =
     * jsu.jquery
+    * jsu.jquery-cookie
     * jsu.jquery-fancybox
     * jsu.jquery-history
     * jsu.jquery-history-native
