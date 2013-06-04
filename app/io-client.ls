@@ -62,6 +62,6 @@ socket.on \new-hit, (hit) ->
 socket.on \debug, (message, cb) ->
   console.log \debug, message
 
-Chat.socket-init socket
+Chat.client-socket-init socket
 
 # vim:fdm=indent

@@ -5,6 +5,7 @@ require! {
   connect: 'express/node_modules/connect'
   RedisStore: 'socket.io/lib/stores/redis'
   redis: 'socket.io/node_modules/redis'
+  '../component/Chat'
 }
 
 # might need to put this somewhere more persistent
@@ -134,3 +135,9 @@ site-by-domain = (domain, cb) ->
 
       # register search with the search notifier
       io.sockets.emit \register-search, {searchopts, site-id: site.id, room: search-room}
+
+    #Chat.server-socket-init socket
+    socket.on \chat_message, (message, cb) ->
+      # create conversation if it doesn't already exist
+      # join the room for the channel if we haven't already joined
+      # broadcast message to channel

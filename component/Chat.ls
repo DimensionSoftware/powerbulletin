@@ -14,6 +14,7 @@ module.exports =
     attach: ~>
       @$.on(\click, \.minimize, @minimize)
       @$.on(\click, \.close, @close)
+      @$.on(\keydown, \textarea, @send-message)
 
     detach: !->
       @$.find \.minimize .off!
@@ -29,18 +30,26 @@ module.exports =
       $msg.find('.from-name').html m.from-name
       $msg
 
+    send-message: (ev) ~>
+      if ev.key-code is 13
+        m =
+          from-name: window.user.name
+          text: @$.find('textarea').val!
+        @add-message m
+
     add-message: (m) ~>
       $msg = @message-node m
       $messages = @$.find('.messages').append $msg
       $msg.show!
-      $messages[0].scrollTop = $messages[0].scrollHeight
+      $messages[0].scroll-top = $messages[0].scroll-height
+      @$.find \textarea .val ''
 
     load-more-messages: (offset, limit=8) ~>
       console.debug \load-more-messages, offset, limit
       r <- $.get '/resources/chats/messages', {}
 
-    minimize: (state=true) ~>
-      @$.add-class \minimized, state
+    minimize: (ev) ~>
+      @$.toggle-class \minimized
 
     close: ~>
       Chat.stop(@key!)
@@ -79,7 +88,10 @@ Chat.reorganize = ->
     right = (n - i - 1) * (width + 8) + 8
     $(e).transition({ right }, @duration, @easing)
 
-Chat.socket-init = (socket) ->
+Chat.client-socket-init = (socket) ->
   socket.on \chat_message, (msg, cb) ->
-    console.warn \hi, msg
+    # load appropriate chat instance
+    # create chat instance if it doesn't exist
+    # add message to that chat
+
 
