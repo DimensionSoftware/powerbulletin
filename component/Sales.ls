@@ -22,6 +22,9 @@ module.exports =
       do ~>
         on-click = ->
           console.log \create-community
+          window.do-buy!
+          # XXX/TODO:  this should take you to admin control panel as soon as
+          # community is created
         locals = {title: 'Create my community'}
         @children =
           buy: new ParallaxButton {on-click, locals} \.Sales-create @
