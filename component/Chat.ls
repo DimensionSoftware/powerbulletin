@@ -14,6 +14,7 @@ module.exports =
     attach: ~>
       @$.on(\click, \.minimize, @minimize)
       @$.on(\click, \.close, @close)
+      @$.on(\keydown, \textarea, @send-message)
 
     detach: !->
       @$.find \.minimize .off!
@@ -29,11 +30,19 @@ module.exports =
       $msg.find('.from-name').html m.from-name
       $msg
 
+    send-message: (ev) ~>
+      if ev.key-code is 13
+        m =
+          from-name: window.user.name
+          text: @$.find('textarea').val!
+        @add-message m
+
     add-message: (m) ~>
       $msg = @message-node m
       $messages = @$.find('.messages').append $msg
       $msg.show!
       $messages[0].scrollTop = $messages[0].scrollHeight
+      @$.find \textarea .val ''
 
     load-more-messages: (offset, limit=8) ~>
       console.debug \load-more-messages, offset, limit
