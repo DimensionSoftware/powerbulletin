@@ -135,27 +135,6 @@ date-fields =
   | otherwise => o
 #}}}
 
-@register-local-user = (site, username, password, email, cb=(->)) ->
-  err, r <~ db.name-exists name:username, site_id:site.id
-  if err
-    return cb 'Account in-use'
-  else if r
-    return cb 'User name in-use'
-  else
-    err, vstring <~ auth.unique-hash \verify, site.id
-    if err then return cb err
-    u =
-      type    : \local
-      profile : { password: auth.hash(password) }
-      site_id : site.id
-      name    : username
-      email   : email
-      verify  : vstring
-    err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
-    if err then return cb err
-    #@login(req, res, cb) # on successful registration, automagically @login, too
-    cb null, u
-
 # double-buffered replace of view with target
 @render-and = (fn, w, target, tmpl, params, cb) -->
   $t = w.$ target  # target
@@ -176,19 +155,6 @@ date-fields =
   | \new-thread => true
   | \edit       => meta.id
   | otherwise   => false
-
-@remove-editing-url = (meta) ->
-  History.replace-state {no-surf:true} '' meta.thread-uri
-
-@scroll-to-edit = (cb) ->
-  cb = -> noop=1 unless cb
-  id = is-editing window.location.pathname
-  if id then # scroll to id
-    awesome-scroll-to "\#post_#{id}" 600ms cb
-    true
-  else
-    scroll-to-top cb
-    false
 
 # handle in-line editing
 @edit-post = (id, data={}) ->
@@ -222,40 +188,6 @@ date-fields =
     else
       focus e
 
-@submit-form = (event, fn) -> # form submission
-  $f = $ event.target .closest(\form) # get event's form
-  $s = $ $f.find('[type=submit]:first')
-  $s.attr \disabled \disabled
-
-  # update textarea body from sceditor
-  $e = $ \textarea.body
-  $e.html $e.data!sceditor?val! if $e.length and $e.data!sceditor
-
-  $.ajax {
-    url:      $f.attr(\action)
-    type:     $f.attr(\method)
-    data:     $f.serialize!
-    data-type: \json
-    success:  (data) ->
-      $s.remove-attr \disabled
-      if fn then fn.call $f, data
-    error: ->
-      $s.remove-attr \disabled
-      show-tooltip $($f.find \.tooltip), 'Try again!'
-  }
-  false
-
-@respond-resize = ->
-  w = $ window
-  if w.width! <= 800px then $ \body .add-class \collapsed
-
-@align-breadcrumb = ->
-  b = $ \#breadcrumb
-  m = $ \#main_content
-  l = $ \#left_content
-  pos = (m.width!-b.width!)/2
-  b.transition {left:(if pos < l.width! then l.width! else pos)}, 300ms \easeOutExpo
-
 @flip-background = (w, cur, direction=\down) ->
   clear-timeout w.bg-anim if w.bg-anim
   last = w.$ \.bg.active
@@ -269,6 +201,6 @@ date-fields =
       last.remove-class \active
       next.add-class \active # ... and switch!
       w.bg-anim = 0
-    ), 100
+    ), 100ms
 
 # vim:fdm=marker
