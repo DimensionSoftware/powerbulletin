@@ -298,13 +298,13 @@ $d.on \click  'html.admin .onclick-submit input[type="submit"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form
     inputs =
-     hover: f.find \.tooltip
      saved: f.find 'input, textarea'
     for k, v of inputs
       for e in v # indicated saved
         e = $ e
         e.add-class k
         if e.has-class \clear then e.val '' # clear value
+    show-tooltip $(f.find \.tooltip), \Saved!
     set-timeout (-> # reset ui
       for k, v of inputs
         for e in v
