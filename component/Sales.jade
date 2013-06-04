@@ -14,5 +14,11 @@ ul
   li
     | Friendly Developers ; D
 
-input.Sales-domain(type='text', value=typeof domain != 'undefined' ? domain : '')
+div
+  input.Sales-domain(type='text', value=typeof domain != 'undefined' ? domain : '')
+  span.Sales-available
+    //- unicode checkmark
+    .success &#x2713;
+    //- unicode heavy ballot x
+    .error &#x2718;
 .Sales-create

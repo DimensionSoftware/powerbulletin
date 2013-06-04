@@ -26,12 +26,19 @@ module.exports =
         @children =
           buy: new ParallaxButton {on-click, locals} \.Sales-create @
     on-attach: ->
+      component = @
+      $sa = @$.find(\.Sales-available)
+
       @check-domain-availability = @@$R((domain) ->
         $.get \/ajax/check-domain-availability {domain} (res) ->
-          console.log res
+          $sa.remove-class 'success error'
+          if res.available
+            component.children.buy.enable!
+            $sa.add-class \success
+          else
+            component.children.buy.disable!
+            $sa.add-class \error
       ).bind-to @state.domain
-
-      component = @
 
       @$.on \keyup, \input.Sales-domain, debounce ->
         new-input = $(@).val!
