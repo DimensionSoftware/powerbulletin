@@ -19,6 +19,7 @@ announce = require(\socket.io-announce).create-client!
 
 global <<< require \./helpers
 global <<< require \./shared-helpers
+global <<< require \./pb-helpers.ls
 
 is-editing = /\/(edit|new)\/?([\d+]*)$/
 is-admin   = /\/admin.*/
@@ -479,32 +480,11 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     username = req.body.username
     password = req.body.password
     email    = req.body.email
-
-    err, r <~ db.name-exists name: username, site_id: site.id
-    user-id = 0
-    if err
-      return res.json success: false, errors:[msg:'Account in-use']
-    else if r
-      res.json success: false, errors:[msg:'User name in-use']
-    else
-      err, vstring <~ auth.unique-hash \verify, site.id
-      if err then return next err
-      u =
-        type    : \local
-        profile : { password: auth.hash(password) }
-        site_id : site.id
-        name    : username
-        email   : email
-        verify  : vstring
-
-      err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
-      if err
-        return res.json success: false, errors: [ err ]
-
-      auth.send-registration-email u, site, (err, r) ->
-        console.warn 'registration email', err, r
-      #@login(req, res, next) # on successful registration, automagically @login, too
-      res.json success: true, errors: []
+    (err, u) <- register-local-user site, username, password, email
+    if err then return res.json success:false, errors:[ msg:err ]
+    auth.send-registration-email u, site, (err, r) ->
+      console.warn 'registration email', err, r
+    res.json success:true, errors:[]
 
 @verify = (req, res, next) ->
   v    = req.param \v

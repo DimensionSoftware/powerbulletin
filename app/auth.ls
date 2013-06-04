@@ -85,7 +85,7 @@ export registration-email-template-html = """
 export recovery-email-template-text = """
 Hello,
 
-To recover your password for {{site-name}, please visit:
+To recover your password for {{site-name}}, please visit:
 
   https://{{site-domain}}/\#recover={{user-forgot}}
 

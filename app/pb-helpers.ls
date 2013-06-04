@@ -1,4 +1,6 @@
 # XXX shared by pb-mutants & pb-entry
+#
+auth = require \./auth
 
 timers = {}
 
@@ -10,6 +12,27 @@ timers = {}
 
 @set-online-user = (id) ->
   $ "[data-user-id=#{id}] .profile.photo" .add-class \online
+
+@register-local-user = (site, username, password, email, cb=(->)) ->
+  err, r <~ db.name-exists name:username, site_id:site.id
+  if err
+    return cb 'Account in-use'
+  else if r
+    return cb 'User name in-use'
+  else
+    err, vstring <~ auth.unique-hash \verify, site.id
+    if err then return cb err
+    u =
+      type    : \local
+      profile : { password: auth.hash(password) }
+      site_id : site.id
+      name    : username
+      email   : email
+      verify  : vstring
+    err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
+    if err then return cb err
+    #@login(req, res, cb) # on successful registration, automagically @login, too
+    cb null, u
 
 # double-buffered replace of view with target
 @render-and = (fn, w, target, tmpl, params, cb) -->

@@ -5,10 +5,32 @@ require! {
   h: \./helpers
   sioa: \socket.io-announce
   auth: \./auth
+  async
   #\stylus # pull in stylus when accepting user's own stylesheets
 }
 
 announce = sioa.create-client!
+
+send-invite-email = (site, user, message) ->
+  vars =
+    # I have to quote the keys so that the template-vars with dashes will get replaced.
+    "site-name"   : site.name
+    "site-domain" : site.current_domain
+    "user-email"  : user.email
+    "user-verify" : user.verify
+    "message"     : message
+  tmpl = """
+    {{message}}
+    
+    Follow this link and login:
+     https://{{site-domain}}/auth/verify/{{user-verify}}#invite
+  """
+  email =
+    from    : "#{user.name}@#{site.current_domain}"
+    to      : user.email
+    subject : "Invite to #{site.name}!"
+    text    : h.expand-handlebars tmpl, vars
+  h.send-mail email, (->)
 
 @sites =
   update: (req, res, next) ->
@@ -70,37 +92,19 @@ announce = sioa.create-client!
     site = res.vars.site
     if not user?rights?super then return next 404 # guard
 
-    # TODO generate new users + verifies
-    # - for email in req.body.emails.split ','
-    #err, user-forgot <- auth.user-forgot-password user
-    #if err then return next err
-
+    # TODO generate new users + email w/ inbound verify-&-choose-user-name link
     switch req.body.action
     | \invites =>
-      vars =
-        # I have to quote the keys so that the template-vars with dashes will get replaced.
-        "site-name"   : site.name
-        "site-domain" : site.current_domain
-        "user-name"   : user.name
-        "user-verify" : user.verify
-        "message"     : req.body.message
+      register = (email, cb) ->
+        (err, user) <- register-local-user site, email, email, email
+        if err then return cb err # TODO needs to resend email if already registered
+        send-invite-email site, user, req.body.message
 
-      tmpl = """
-        {{message}}
-        
-        Follow this link and login:
-         https://{{site-domain}}/\#invite={{user-verify}}
-
-            - {{user-name}}
-      """
-
-      email =
-        from    : "#{user.name}@#{site.current_domain}"
-        to      : user.email
-        subject : "Welcome to #{site.name}!"
-        text    : h.expand-handlebars tmpl, vars
-      h.send-mail email, (->)
+      console.log \here
+      (err, r) <- async.each req.body.emails.split(','), register
+      if err then return next err
       res.json success:true
+
     | otherwise =>
       user = req.params.user
       # munge data
