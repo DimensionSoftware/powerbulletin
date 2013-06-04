@@ -271,4 +271,10 @@ date-fields =
       w.bg-anim = 0
     ), 100
 
+# unbind reactive function from all dependencies
+# (use with reactive.js ($R) library)
+@r-unbind = !(rf) ->
+  for d in rf.dependencies
+    d.remove-dependent!
+
 # vim:fdm=marker
