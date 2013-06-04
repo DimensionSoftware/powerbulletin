@@ -17,9 +17,9 @@ require! {
 
 announce = require(\socket.io-announce).create-client!
 
-global <<< require \./helpers
+global <<< require \./server-helpers
 global <<< require \./shared-helpers
-global <<< require \./pb-helpers.ls
+global <<< require \./client-helpers
 
 is-editing = /\/(edit|new)\/?([\d+]*)$/
 is-admin   = /\/admin.*/

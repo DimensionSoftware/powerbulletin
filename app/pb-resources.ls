@@ -2,7 +2,7 @@ require! {
   pg: \./postgres
   v: \./varnish
   c: \./cache
-  h: \./helpers
+  h: \./server-helpers
   sioa: \socket.io-announce
   auth: \./auth
   async

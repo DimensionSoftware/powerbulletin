@@ -13,7 +13,7 @@ require! {
   handlers:  \./pb-handlers
   resources: \./pb-resources
 }
-global <<< require \./helpers # pull helpers (common) into global (play nice :)
+global <<< require \./server-helpers
 
 # middleware we will use only on personalized routes to save cpu cycles!
 personal-mw =

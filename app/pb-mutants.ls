@@ -1,4 +1,4 @@
-global <<< require \./pb-helpers.ls
+global <<< require \./shared-helpers.ls
 global.furl = require \./forum-urls.ls
 
 !function bench subject-name, subject-body
