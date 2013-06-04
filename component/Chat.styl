@@ -9,12 +9,18 @@
     h2
       height 22px
       margin 0
-      padding 0
+      padding 0 0 0 28px
     .close
       position absolute
       opacity 1
       top 0
       right 0
+    .minimize
+      position absolute
+      opacity 1
+      top 0
+      left 4px
+      cursor pointer
 
   .body
     height 244px
@@ -39,3 +45,8 @@
       height 16px
       width 202px
       resize none
+
+.Chat.minimized
+  height 22px
+  .body
+    display none
