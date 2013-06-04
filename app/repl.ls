@@ -13,9 +13,8 @@ global.t     = require \./tasks
 global.s     = require \./search
 
 global <<< require \prelude-ls
-global <<< require \./helpers
+global <<< require \./server-helpers
 global <<< require \./shared-helpers
-global <<< require \./pb-helpers
 
 global.db  = -> pg.procs
 global.el  = require \./elastic

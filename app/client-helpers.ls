@@ -29,3 +29,14 @@ export mutate = (event) ->
   window.last-statechange-was-user = false # flag that this was programmer, not user
   History.push-state params, '', href
   false
+
+timers = {}
+export show-tooltip = ($tooltip, msg, duration=3000ms) ->
+  timer = timers[msg]
+  if timer then clear-timeout timer
+  $tooltip.html msg .add-class \hover # show
+  timers[msg] = set-timeout (-> timers[msg]=void; $tooltip.remove-class \hover), duration # remove
+
+export set-online-user = (id) ->
+  $ "[data-user-id=#{id}] .profile.photo" .add-class \online
+

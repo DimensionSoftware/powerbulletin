@@ -6,10 +6,9 @@ window.furl  = require \./forum-urls.ls
 window.tasks = require \./tasks.ls
 window.ioc   = require \./io-client.ls
 
-global <<< require \./pb-helpers.ls
 global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
-
-require! ch: \./client-helpers.ls
+global <<< require \./shared-helpers.ls
+global <<< require \./client-helpers.ls
 
 # components
 require! \../component/Buy.ls
@@ -190,10 +189,10 @@ $ui.on \nav-top-posts, (e, threads) ->
 
 #}}}
 # {{{ - generic form-handling ui
-$d.on \click '.create .no-surf' ch.require-login(->
+$d.on \click '.create .no-surf' require-login(->
   $ '#main_content .forum' .html '' # clear canvas
   edit-post is-editing(window.location.pathname), forum_id:window.active-forum-id)
-$d.on \click \.edit.no-surf ch.require-login(-> edit-post is-editing(window.location.pathname))
+$d.on \click \.edit.no-surf require-login(-> edit-post is-editing(window.location.pathname))
 $d.on \click '.onclick-submit .cancel' (ev) ->
   f = $ ev.target .closest \.post-edit  # form
   f.hide 350ms \easeOutExpo
@@ -203,7 +202,7 @@ $d.on \click '.onclick-submit .cancel' (ev) ->
   | otherwise   => remove-editing-url meta
   false
 
-submit = ch.require-login(
+submit = require-login(
   (ev) -> submit-form(ev, (data) ->
     f = $ ev.target .closest \.post-edit # form
     p = f.closest \.editing # post being edited
@@ -226,8 +225,8 @@ submit-selectors =
 
 $d.on \click, submit-selectors.join(', '), submit
 
-$d.on \click \.onclick-append-reply-ui ch.require-login(append-reply-ui)
-$d.on \click \.onclick-censor-post ch.require-login(censor)
+$d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
+$d.on \click \.onclick-censor-post require-login(censor)
 #}}}
 #{{{ - login delegated events
 window.switch-and-focus = (remove, add, focus-on) ->
@@ -254,7 +253,7 @@ $d.on \keyup '.fancybox-inner input' ->
 #{{{ - header (main menu)
 #$d.on \click 'html.homepage header .menu a.title' ->
 #  awesome-scroll-to $(this).data \scroll-to; false
-$d.on \click 'html header .menu a.title' ch.mutate
+$d.on \click 'html header .menu a.title' mutate
 
 # search header
 $d.on \click 'header .onclick-close' (e) ->
@@ -288,7 +287,7 @@ if mocha? and window.location.search.match /test=1/
 #}}}
 #}}}
 #{{{ - chat
-$d.on \click  'button.onclick-chat' ch.require-login( (ev) ->
+$d.on \click  'button.onclick-chat' require-login( (ev) ->
   profile-name = $ 'div.profile:first' .data \user-name
   Chat.start [user.name, profile-name]
 )

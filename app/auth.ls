@@ -11,7 +11,7 @@ require! {
   \passport-facebook
   \passport-twitter
   \passport-google-oauth
-  h: \./helpers
+  h: \./server-helpers
   pg: \./postgres
   passport.Passport
 }
