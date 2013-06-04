@@ -1,10 +1,10 @@
 
 window.__    = require \lodash
-window.ioc   = require \./io-client.ls
 window.Chat  = require \../component/Chat.ls
 window.Pager = require \./pager.ls
 window.furl  = require \./forum-urls.ls
 window.tasks = require \./tasks.ls
+window.ioc   = require \./io-client.ls
 
 global <<< require \./pb-helpers.ls
 global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
