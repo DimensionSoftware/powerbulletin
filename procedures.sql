@@ -353,7 +353,6 @@ CREATE FUNCTION procs.name_exists(usr JSON) RETURNS JSON AS $$
   LEFT JOIN users u ON user_id = u.id
   WHERE email = $1 AND site_id = $2
   '''
-  plv8.elog WARNING, sql
   r = plv8.execute sql, [usr.email, usr.site_id]
   if !!r.length
     return r[0]
