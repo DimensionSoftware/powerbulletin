@@ -3,6 +3,7 @@ require! {
   crypto
   bbcode
   nodemailer
+  auth: \./auth
 }
 
 @caching-strategies =

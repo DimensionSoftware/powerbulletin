@@ -1,6 +1,5 @@
 require! {
   __: \lodash
-  auth: \./auth
 }
 
 # XXX keep these functions pure as they're exported to the client & server
