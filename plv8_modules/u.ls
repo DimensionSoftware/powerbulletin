@@ -61,7 +61,7 @@ export top-posts = (sort, limit, fields='p.*') ->
     ) AS user_name,
     COALESCE(
       (SELECT u.photo FROM users u WHERE u.id=p.user_id),
-      'future-owner.png'
+      '/images/future-owner.png'
     ) AS user_photo,
     COUNT(p.id) post_count
   FROM posts p

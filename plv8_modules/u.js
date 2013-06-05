@@ -67,7 +67,7 @@
         throw new Error("invalid sort for top-posts: " + sort);
       }
     }());
-    sql = "SELECT\n  " + fields + ",\n  COALESCE(\n    (SELECT a.name FROM aliases a WHERE a.user_id=p.user_id AND a.site_id=s.id),\n    'Future Owner'\n  ) AS user_name,\n  COALESCE(\n    (SELECT u.photo FROM users u WHERE u.id=p.user_id),\n    'future-owner.png'\n  ) AS user_photo,\n  COUNT(p.id) post_count\nFROM posts p\nJOIN forums f ON f.id = p.forum_id\nJOIN sites s ON s.id=f.site_id\nLEFT JOIN posts p2 ON p2.thread_id=p.id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND m.post_id IS NULL\nGROUP BY p.id, s.id\nORDER BY " + sortExpr + "\nLIMIT $2";
+    sql = "SELECT\n  " + fields + ",\n  COALESCE(\n    (SELECT a.name FROM aliases a WHERE a.user_id=p.user_id AND a.site_id=s.id),\n    'Future Owner'\n  ) AS user_name,\n  COALESCE(\n    (SELECT u.photo FROM users u WHERE u.id=p.user_id),\n    '/images/future-owner.png'\n  ) AS user_photo,\n  COUNT(p.id) post_count\nFROM posts p\nJOIN forums f ON f.id = p.forum_id\nJOIN sites s ON s.id=f.site_id\nLEFT JOIN posts p2 ON p2.thread_id=p.id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND m.post_id IS NULL\nGROUP BY p.id, s.id\nORDER BY " + sortExpr + "\nLIMIT $2";
     f = function(){
       var args;
       args = slice$.call(arguments);
