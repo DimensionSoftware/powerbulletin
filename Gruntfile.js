@@ -19,28 +19,28 @@ module.exports = function(grunt) {
     watch: {
       procs: {
         files: ['plv8_modules/*.ls', 'procedures.sql'],
-        tasks: ['procs', 'browserify', 'launch'],
-        options: {debounceDelay: 250, interrupt: true}
+        tasks: ['procs', 'browserify', 'launch', 'watch'],
+        options: {debounceDelay: 250}
       },
       livescript: {
         files: ['app/main.ls'],
-        tasks: ['livescript', 'browserify', 'launch'],
-        options: {debounceDelay: 250, interrupt: true}
+        tasks: ['livescript', 'browserify', 'launch', 'watch'],
+        options: {debounceDelay: 250}
       },
       clientJade: {
         files: ['app/views/*.jade'],
-        tasks: ['clientJade', 'browserify', 'launch'],
-        options: {debounceDelay: 250, interrupt: true}
+        tasks: ['clientJade', 'browserify', 'launch', 'watch'],
+        options: {debounceDelay: 250}
       },
       componentJade: {
         files: ['component/*.jade'],
-        tasks: ['componentJade', 'browserify', 'launch'],
-        options: {debounceDelay: 250, interrupt: true}
+        tasks: ['componentJade', 'browserify', 'launch', 'watch'],
+        options: {debounceDelay: 250}
       },
       app: {
         files: ['component/*.ls', 'app/*.ls', 'config/*', 'lib/**/*.ls'],
-        tasks: ['browserify', 'launch'],
-        options: {debounceDelay: 1000, interrupt: true}
+        tasks: ['browserify', 'launch', 'watch'],
+        options: {debounceDelay: 250}
       },
     }
   });
@@ -65,8 +65,6 @@ module.exports = function(grunt) {
     }
     var proc = cp.spawn(command, [], opts);
     fs.writeFileSync(pidFile, proc.pid)
-
-    if (process.env.NODE_ENV != 'production') grunt.task.run('watch');
   }
 
   var launch;
@@ -103,5 +101,5 @@ module.exports = function(grunt) {
   if (process.NODE_ENV == 'production')
     grunt.registerTask('default', ['procs', 'clientJade', 'componentJade', 'livescript', 'browserify', 'uglify', 'launch']);
   else
-    grunt.registerTask('default', ['procs', 'clientJade', 'componentJade', 'livescript', 'browserify', 'launch']);
+    grunt.registerTask('default', ['procs', 'clientJade', 'componentJade', 'livescript', 'browserify', 'launch', 'watch']);
 };
