@@ -23,7 +23,7 @@ send-invite-email = (site, user, new-user, message) ->
     {{message}}
     
     Follow this link and login:
-     https://{{site-domain}}/auth/verify/{{user-verify}}\#invite
+     https://{{site-domain}}/auth/verify/{{user-verify}}
   """
   email =
     from    : "#{user.name}@#{site.current_domain}"

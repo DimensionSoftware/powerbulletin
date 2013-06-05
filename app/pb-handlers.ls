@@ -124,18 +124,23 @@ posts-per-page = 30
 
 # TODO - validate username
 @choose-username = (req, res, next) ->
-  if not req.user
-    return res.send "500", 500
+  user = req.user
+  if not user then return res.json success:false, 403
+  # only change username if it's an email address
+  name = req.user.name.to-string!
+  if name.length and name.index-of \@ is -1 then return res.json success:false, 403
+
   db = pg.procs
   usr =
-    user_id : req.user.id
-    site_id : req.user.site_id
+    user_id : user.id
+    site_id : user.site_id
     name    : req.body.username
   (err, r) <- db.change-alias usr
-  if err then return res.send "500", 500
+  if err then return res.json success:false, 403
   console.warn "Changed name to #{req.body.username}"
-  req.session?.passport?.user = "#{req.body.username}:#{req.user.site_id}"
-  res.redirect req.header 'Referer'
+  req.session?passport?user = "#{req.body.username}:#{user.site_id}"
+  #res.redirect req.header \Referer
+  res.json success:true
 
 @login-facebook = (req, res, next) ->
   domain = res.vars.site.current_domain
@@ -493,9 +498,9 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   if err then return next err
   if r
     req.session?passport?user = "#{r.name}:#{site.id}"
-    res.redirect '/#validate'
+    res.redirect if r.name.index-of \@ is -1 then \/#choose else \/#validate
   else
-    res.redirect '/#invalid'
+    res.redirect \/#invalid
 
 cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 @stylus = (req, res, next) ->
