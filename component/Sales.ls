@@ -32,7 +32,7 @@ module.exports =
                 expires: 1
 
               # set cookie so they are 'admin' of temporary site
-              $.cookie \transient_owner', transient_owner, cookie-opts
+              $.cookie \transient_owner, transient_owner, cookie-opts
               window.location = "http://#{domain}"
         locals = {title: 'Create my community'}
         @children =
