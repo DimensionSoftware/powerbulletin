@@ -39,3 +39,9 @@ module.exports =
       off-left = $button.offset!left
       half-window-width = @@$(window).width! / 2
       $button.toggle-class \left-half, off-left < half-window-width
+    enable: !->
+      @$.find('button').attr \disabled, null
+      @attach!
+    disable: !->
+      @$.find('button').attr \disabled, true
+      @detach!

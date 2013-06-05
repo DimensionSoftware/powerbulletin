@@ -14,6 +14,7 @@ s-app.get '/dynamic/css/:file' pb-handlers.stylus
 s-app.get '/' (req, res, next) ->
   scripts =
     * jsu.jquery
+    * jsu.jquery-cookie
     * jsu.jquery-fancybox
     * jsu.jquery-history
     * jsu.jquery-history-native
@@ -30,5 +31,11 @@ s-app.get '/' (req, res, next) ->
   sl = new SalesLoader {locals}
   res.content-type \html
   res.send sl.html(false)
+
+s-app.get '/ajax/check-domain-availability' (req, res, next) ->
+  domain = req.query.domain
+  err, domain-exists <- db.domain-by-name-exists domain
+  if err then return next err
+  res.json {available: !domain-exists}
 
 module.exports = s-app

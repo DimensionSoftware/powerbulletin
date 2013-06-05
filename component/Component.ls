@@ -1,4 +1,4 @@
-require! $R:reactivejs
+require! reactivejs
 
 dollarish =
   if window?
@@ -29,7 +29,8 @@ dollarish =
 
 module.exports =
   class Component
-    @@$ = dollarish # shortcut
+    @$ = dollarish # shortcut
+    @$R = reactivejs # shortcut
     component-name: \Component
 
     # locals is the locals used to instantiate the Component
@@ -41,7 +42,7 @@ module.exports =
     # @$ could be thought of as 'the container'
     ({locals = {}, @auto-render = true} = {}, @selector, @parent) ->
       @state =
-        {[k, (if v?_is-reactive then v else $R.state(v))] for k,v of locals}
+        {[k, (if v?_is-reactive then v else @@$R.state(v))] for k,v of locals}
       if @selector
         if @parent
           @$ = @parent.$.find @selector

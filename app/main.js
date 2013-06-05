@@ -217,7 +217,7 @@ if (k != 'orm' && k != 'client' && k != 'driver') {
               i = ref$[i$];
               sock.use(express.vhost(cvars["cache" + i + "Url"].slice(2), cacheApp));
             }
-            sock.use(express.vhost('sales.pb.com', salesApp));
+            sock.use(express.vhost('pb.com', salesApp));
             sock.use(app);
             server = http.createServer(sock);
             ioServer.init(server);

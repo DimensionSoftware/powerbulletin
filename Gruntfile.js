@@ -40,7 +40,7 @@ module.exports = function(grunt) {
       app: {
         files: ['component/*.ls', 'app/*.ls', 'config/*', 'lib/**/*.ls'],
         tasks: ['browserify', 'launch'],
-        options: {debounceDelay: 250, interrupt: true}
+        options: {debounceDelay: 1000, interrupt: true}
       },
     }
   });

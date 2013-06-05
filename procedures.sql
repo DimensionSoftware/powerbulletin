@@ -789,5 +789,10 @@ CREATE FUNCTION procs.messages_by_cid(cid JSON, page JSON) RETURNS JSON AS $$
   messages = plv8.execute sql, [cid]
   return messages
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.domain_by_name_exists(name JSON) RETURNS JSON AS $$
+  return !!plv8.execute("SELECT TRUE FROM domains WHERE name=$1 LIMIT 1", [name]).0
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 --}}}
 -- vim:fdm=marker

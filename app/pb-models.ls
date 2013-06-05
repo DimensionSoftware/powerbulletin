@@ -35,7 +35,7 @@ get-cols = (dbname, tname, cb) ->
   sql = '''
   SELECT ordinal_position, column_name
   FROM information_schema.columns
-  WHERE table_catalog=$1 AND table_name=$2
+  WHERE table_catalog=$1 AND table_name=$2 AND table_schema='public'
   ORDER BY ordinal_position asc
   '''
   err, rows <- postgres.query sql, [dbname, tname]

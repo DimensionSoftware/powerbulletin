@@ -1,5 +1,4 @@
 h1 PowerBulletin Powers YOUR Communities
-
 p
   Why buy powerbulletin? because we are basically the best forum softwared since sliced bread was invented
 
@@ -15,4 +14,11 @@ ul
   li
     | Friendly Developers ; D
 
-.Sales-buy
+div
+  input.Sales-domain(type='text', value=typeof domain != 'undefined' ? domain : '')
+  span.Sales-available
+    //- unicode checkmark
+    .success &#x2713;
+    //- unicode heavy ballot x
+    .error &#x2718;
+.Sales-create
