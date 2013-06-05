@@ -792,10 +792,53 @@ CREATE FUNCTION procs.messages_by_cid(cid JSON, page JSON) RETURNS JSON AS $$
   messages = plv8.execute sql, [cid]
   return messages
 $$ LANGUAGE plls IMMUTABLE STRICT;
+--}}}
 
 CREATE FUNCTION procs.domain_by_name_exists(name JSON) RETURNS JSON AS $$
   return !!plv8.execute("SELECT TRUE FROM domains WHERE name=$1 LIMIT 1", [name]).0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
---}}}
+-- site.user_id is optional (you will get back a transient_owner identifier)
+-- site.domain is required
+CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
+  require! u
+  unless site.domain
+    return {errors: ["must specify a domain"]}
+
+  if site.user_id
+    site_id = plv8.execute('INSERT INTO sites (name, user_id) VALUES ($1, $2) RETURNING id', [site.domain, site.user_id]).0.id
+  else
+    # random string generated to identify transient_owner
+    transient_owner = (Math.random()*new Date).to-string!replace '.' ''
+    site_id = plv8.execute('INSERT INTO sites (name, transient_owner) VALUES ($1, $2) RETURNING id', [site.domain, transient_owner]).0.id
+
+  try
+    plv8.execute 'INSERT INTO domains (site_id, name) VALUES ($1, $2)', [site_id, site.domain]
+  catch
+    return {errors: ["domain '#{site.domain}' already exists"]}
+
+
+  # no need to worry about uniqueness anymore at this point
+  f = {
+    site_id
+    title: 'General Forum'
+    slug: 'general'
+    description: 'General Discussion'
+  }
+  sql = '''
+  INSERT INTO forums (site_id, title, slug, uri, description)
+    VALUES ($1,$2,$3,$4,$5)
+    RETURNING id
+  '''
+  forum_id = plv8.execute(sql, [f.site_id, f.title, f.slug, f.uri, f.description]).0.id
+
+  # set forum uri
+  uri = u.uri-for-forum forum_id
+  plv8.execute 'UPDATE forums SET uri=$1 WHERE id=$2', [uri, forum_id]
+
+  rval = {site_id, errors: []}
+  rval <<< {site.user_id} if site.user_id
+  rval <<< {transient_owner} if transient_owner
+  return rval
+$$ LANGUAGE plls IMMUTABLE STRICT;
 -- vim:fdm=marker

@@ -38,4 +38,8 @@ s-app.get '/ajax/check-domain-availability' (req, res, next) ->
   if err then return next err
   res.json {available: !domain-exists}
 
+s-app.post '/ajax/can-has-site-plz' (req, res, next) ->
+  {domain} = req.body
+  db
+
 module.exports = s-app
