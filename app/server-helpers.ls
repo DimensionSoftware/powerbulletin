@@ -82,11 +82,11 @@ process-cached-data = {}
   smtp.send-mail email, cb
 
 @register-local-user = (site, username, password, email, cb=(->)) ->
-  err, r <~ db.name-exists name:username, site_id:site.id
+  err, user <~ db.name-exists {email:email, site_id:site.id}
   if err
-    return cb 'Account in-use'
-  else if r
-    return cb 'User name in-use'
+    cb 'Account in-use'
+  else if user
+    cb user # error w/ data
   else
     err, vstring <~ auth.unique-hash \verify, site.id
     if err then return cb err

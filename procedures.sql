@@ -348,11 +348,15 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.name_exists(usr JSON) RETURNS JSON AS $$
   sql = '''
-  SELECT user_id, name FROM aliases WHERE name = $1 and site_id = $2
+  SELECT user_id, u.email, name, verify
+  FROM aliases
+  LEFT JOIN users u ON user_id = u.id
+  WHERE email = $1 AND site_id = $2
   '''
-  r = plv8.execute sql, [usr.name, usr.site_id]
+  plv8.elog WARNING, sql
+  r = plv8.execute sql, [usr.email, usr.site_id]
   if !!r.length
-    return r[0].user_id
+    return r[0]
   else
     return 0 # relying on 0 to be false
 $$ LANGUAGE plls IMMUTABLE STRICT;
