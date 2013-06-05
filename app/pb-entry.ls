@@ -262,7 +262,6 @@ $d.on \click 'header .onclick-close' (e) ->
 $d.on \click \#handle ->
   $l = $ \#left_content
   $ \body .toggle-class \collapsed
-  console.log($l.width! + left-offset)
   $ '#main_content .resizable'
     .css(\padding-left, ($l.width! + left-offset))
   save-ui!
@@ -338,11 +337,4 @@ window.do-test = ->
   new Buy {} 'body'
 #}}}
 
-# hash actions
-switch window.location.hash
-| \#validate =>
-  after-login! # email activation
-| \#choose   =>
-  show-login-dialog!
-  switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
 # vim:fdm=marker
