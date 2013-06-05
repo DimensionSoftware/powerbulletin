@@ -1,7 +1,7 @@
 export post = (post) ->
   errors = []
-  unless post.user_id
-    errors.push 'user_id cannot be blank'
+  unless post.user_id or post.transient_owner
+    errors.push 'must specify a user_id or transient_owner'
   unless post.forum_id
     errors.push 'forum_id cannot be blank'
   unless post.title or post.parent_id

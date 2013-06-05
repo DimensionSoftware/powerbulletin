@@ -55,21 +55,24 @@ export top-posts = (sort, limit, fields='p.*') ->
   sql = """
   SELECT
     #{fields},
-    MIN(a.name) user_name,
-    MIN(u.photo) user_photo,
+    COALESCE(
+      (SELECT a.name FROM aliases a WHERE a.user_id=p.user_id AND a.site_id=s.id),
+      'Future Owner'
+    ) AS user_name,
+    COALESCE(
+      (SELECT u.photo FROM users u WHERE u.id=p.user_id),
+      'future-owner.png'
+    ) AS user_photo,
     COUNT(p.id) post_count
-  FROM aliases a
-  JOIN posts p ON a.user_id=p.user_id
-  JOIN users u ON u.id=a.user_id
+  FROM posts p
   JOIN forums f ON f.id = p.forum_id
   JOIN sites s ON s.id=f.site_id
   LEFT JOIN posts p2 ON p2.thread_id=p.id
   LEFT JOIN moderations m ON m.post_id=p.id
-  WHERE a.site_id=s.id
-    AND p.parent_id IS NULL
+  WHERE p.parent_id IS NULL
     AND p.forum_id=$1
     AND m.post_id IS NULL
-  GROUP BY p.id
+  GROUP BY p.id, s.id
   ORDER BY #{sort-expr}
   LIMIT $2
   """
@@ -82,7 +85,7 @@ sub-posts = (site-id, post-id, fields, limit, offset) ->
   SELECT #fields, a.name user_name, u.photo user_photo
   FROM posts p
   JOIN aliases a ON a.user_id=p.user_id
-  JOIN users u ON u.id=a.user_id
+  LEFT JOIN users u ON u.id=a.user_id
   LEFT JOIN moderations m ON m.post_id=p.id
   WHERE a.site_id=$1
     AND p.parent_id=$2

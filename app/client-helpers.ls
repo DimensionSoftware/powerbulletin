@@ -49,10 +49,18 @@ export submit-form = (event, fn) -> # form submission
   $e = $ \textarea.body
   $e.html $e.data!sceditor?val! if $e.length and $e.data!sceditor
 
+  # pass transient_owner as alternate auth mechanism
+  # to support sandbox mode
+  serialized =
+    if tid = $.cookie('transient_owner')
+      $f.serialize! + "&transient_owner=#tid"
+    else
+      $f.serialize!
+
   $.ajax {
-    url:      $f.attr(\action)
-    type:     $f.attr(\method)
-    data:     $f.serialize!
+    url: $f.attr(\action)
+    type: $f.attr(\method)
+    data: serialized
     data-type: \json
     success:  (data) ->
       $s.remove-attr \disabled

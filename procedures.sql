@@ -658,8 +658,8 @@ CREATE FUNCTION procs.uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
     FROM posts p
     JOIN forums f ON p.forum_id=f.id
     LEFT JOIN moderations m ON m.post_id=p.id
-    JOIN users u ON p.user_id=u.id
-    JOIN aliases a ON a.user_id=u.id
+    LEFT JOIN users u ON p.user_id=u.id
+    LEFT JOIN aliases a ON a.user_id=u.id
     WHERE f.site_id=$1
       AND p.uri=$2
       --AND m.post_id IS NULL -- change to m.is_malicious (only malicious content & spam should be hidden from browsers & search engines)

@@ -3,8 +3,8 @@
   out$.post = post = function(post){
     var errors;
     errors = [];
-    if (!post.user_id) {
-      errors.push('user_id cannot be blank');
+    if (!(post.user_id || post.transient_owner)) {
+      errors.push('must specify a user_id or transient_owner');
     }
     if (!post.forum_id) {
       errors.push('forum_id cannot be blank');
