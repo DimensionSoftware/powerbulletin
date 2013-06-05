@@ -8,7 +8,6 @@ require! {
   program: \commander
   pg: '../app/postgres'
   __: \lodash
-  h: '../app/helpers'
   varnish: '../app/varnish'
   sioa: 'socket.io-announce'
 }
