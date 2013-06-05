@@ -81,7 +81,6 @@ censor = (ev) ->
 #.
 #### main   ###############>======-- -   -
 ##
-if window.location.hash is \#validate then after-login! # email activation
 load-ui!
 $ \#query .focus!
 
@@ -328,8 +327,7 @@ $d.on \change 'html.admin .domain' -> # set keys
     \googleConsumerSecret]
       $ "[name='#k']" .val domain.config[k]
 #}}}
-
-# components
+# {{{ - components
 window.component = {}
 
 window.do-buy = ->
@@ -338,4 +336,13 @@ window.do-buy = ->
 
 window.do-test = ->
   new Buy {} 'body'
+#}}}
+
+# hash actions
+switch window.location.hash
+| \#validate =>
+  after-login! # email activation
+| \#choose   =>
+  show-login-dialog!
+  switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
 # vim:fdm=marker
