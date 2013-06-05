@@ -96,7 +96,7 @@ CREATE FUNCTION procs.edit_post(usr JSON, post JSON) RETURNS JSON AS $$
   r = fn(post.id, usr.id)
   errors.push "Higher access required" unless r.length
   res = {success: !errors.length, errors}
-  if res.success 
+  if res.success
     sqlres = plv8.execute('UPDATE posts SET title=$1,body=$2,html=$3 WHERE id=$4 RETURNING id,title,body,forum_id', [post.title, post.body, post.html, post.id])
 
     res <<< sqlres
@@ -117,7 +117,7 @@ CREATE FUNCTION procs.add_post(post JSON) RETURNS JSON AS $$
   require! <[u validations]>
   errors = validations.post(post)
   if !errors.length
-    if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])[0]?.site_id
+    if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])[0]?site_id
       [{nextval}] = plv8.execute("SELECT nextval('posts_id_seq')", [])
 
       forum-id = parse-int(post.forum_id) or null
@@ -838,6 +838,9 @@ CREATE FUNCTION procs.authorize_transient(transient_owner JSON, site_id JSON) RE
   sql = '''
   SELECT TRUE FROM sites
   WHERE transient_owner=$1 AND id=$2
+  UNION
+  SELECT TRUE FROM sites
+  WHERE transient_owner IS NULL AND id=$2
   '''
   return !!plv8.execute(sql, [transient_owner, site_id]).0
 $$ LANGUAGE plls IMMUTABLE STRICT;
