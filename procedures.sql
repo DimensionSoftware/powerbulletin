@@ -842,4 +842,12 @@ CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
   rval <<< {transient_owner} if transient_owner
   return rval
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.authorize_transient(transient_owner JSON, site_id JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT TRUE FROM sites
+  WHERE transient_owner=$1 AND id=$2
+  '''
+  return !!plv8.execute(sql, [transient_owner, site_id]).0
+$$ LANGUAGE plls IMMUTABLE STRICT;
 -- vim:fdm=marker

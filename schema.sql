@@ -122,7 +122,7 @@ CREATE TABLE posts (
   id          BIGSERIAL NOT NULL,
   thread_id   BIGINT NOT NULL,
   parent_id   BIGINT,
-  user_id     BIGINT NOT NULL references users(id),
+  user_id     BIGINT references users(id),
   forum_id    BIGINT NOT NULL references forums(id),
   title       VARCHAR(256),
   slug        VARCHAR(256) NOT NULL,

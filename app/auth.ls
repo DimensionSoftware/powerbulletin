@@ -20,14 +20,38 @@ require! {
 # site-aware passport middleware wrappers
 export mw =
   initialize: (req, res, next) ~>
-    domain = res.vars.site?current_domain
-    err, passport <~ @passport-for-domain domain
-    if err then return next(err)
-    if passport
-      passport.mw-initialize(req, res, next)
+    do-connect = ->
+      domain = res.vars.site?current_domain
+      err, passport <~ @passport-for-domain domain
+      if err then return next(err)
+      if passport
+        passport.mw-initialize(req, res, next)
+      else
+        next(404)
+
+    if tid = req.cookies.transient_owner
+      console.log \authorize-transient, tid, res.vars.site.id
+      err, transient-authorized <- db.authorize-transient tid, res.vars.site.id
+      if err then return next err
+
+      if transient-authorized
+        #XXX: need to mock this better probably
+        req.user =
+          id: -1
+          transient: true
+          rights: {admin: true}
+        console.log 'transient owner logged in:', req.user
+        next!
+      else
+        # remove cookie so session mw ignores the
+        # transient_owner branch
+        delete req.cookies.transient_owner
+        do-connect!
     else
-      next(404)
+      do-connect!
   session: (req, res, next) ~>
+    return next! if req.cookies.transient_owner
+
     domain = res.vars.site?current_domain
     err, passport <~ @passport-for-domain domain
     if err then return next(err)
