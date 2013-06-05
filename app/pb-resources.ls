@@ -11,25 +11,26 @@ require! {
 
 announce = sioa.create-client!
 
-send-invite-email = (site, user, message) ->
+send-invite-email = (site, user, new-user, message) ->
   vars =
     # I have to quote the keys so that the template-vars with dashes will get replaced.
     "site-name"   : site.name
     "site-domain" : site.current_domain
-    "user-email"  : user.email
-    "user-verify" : user.verify
+    "user-email"  : new-user.email
+    "user-verify" : new-user.verify
     "message"     : message
   tmpl = """
     {{message}}
     
     Follow this link and login:
-     https://{{site-domain}}/auth/verify/{{user-verify}}#invite
+     https://{{site-domain}}/auth/verify/{{user-verify}}\#invite
   """
   email =
     from    : "#{user.name}@#{site.current_domain}"
     to      : user.email
     subject : "Invite to #{site.name}!"
     text    : h.expand-handlebars tmpl, vars
+  console.log \sent: + JSON.stringify(email)
   h.send-mail email, (->)
 
 @sites =
@@ -88,21 +89,29 @@ send-invite-email = (site, user, message) ->
       res.json success:true
 @users =
   create : (req, res, next) ->
-    user = req.user
-    site = res.vars.site
-    if not user?rights?super then return next 404 # guard
+    user   = req.user
+    site   = res.vars.site
+    emails = req.body.emails.to-string!
 
-    # TODO generate new users + email w/ inbound verify-&-choose-user-name link
+    # guards
+    if not user?rights?super then return next 404
+    if not emails.length then return res.json {success:false, msg:'Who to invite?'}
+    emails = emails.split ','
+
+    # generate new users + email w/ inbound verify-&-choose-user-name link
     switch req.body.action
     | \invites =>
       register = (email, cb) ->
-        (err, user) <- register-local-user site, email, email, email
-        if err then return cb err # TODO needs to resend email if already registered
-        send-invite-email site, user, req.body.message
+        (err, new-user) <- register-local-user site, email, email, email
+        u = if err?name then err else new-user
+        if err and !u
+          cb err
+        else # resend email if already registered
+          send-invite-email site, user, u, req.body.message
+          cb(if err then "Re-invited #{u.name}" else null)
 
-      console.log \here
-      (err, r) <- async.each req.body.emails.split(','), register
-      if err then return next err
+      (err, r) <- async.each emails, register
+      if err then return res.json {success:false, msg:err}
       res.json success:true
 
     | otherwise =>

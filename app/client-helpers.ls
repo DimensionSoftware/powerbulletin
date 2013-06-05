@@ -40,3 +40,50 @@ export show-tooltip = ($tooltip, msg, duration=3000ms) ->
 export set-online-user = (id) ->
   $ "[data-user-id=#{id}] .profile.photo" .add-class \online
 
+export submit-form = (event, fn) -> # form submission
+  $f = $ event.target .closest(\form) # get event's form
+  $s = $ $f.find('[type=submit]:first')
+  $s.attr \disabled \disabled
+
+  # update textarea body from sceditor
+  $e = $ \textarea.body
+  $e.html $e.data!sceditor?val! if $e.length and $e.data!sceditor
+
+  $.ajax {
+    url:      $f.attr(\action)
+    type:     $f.attr(\method)
+    data:     $f.serialize!
+    data-type: \json
+    success:  (data) ->
+      $s.remove-attr \disabled
+      if fn then fn.call $f, data
+    error: (data) ->
+      $s.remove-attr \disabled
+      show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
+  }
+  false
+
+export respond-resize = ->
+  w = $ window
+  if w.width! <= 800px then $ \body .add-class \collapsed
+
+export align-breadcrumb = ->
+  b = $ \#breadcrumb
+  m = $ \#main_content
+  l = $ \#left_content
+  pos = (m.width!-b.width!)/2
+  b.transition {left:(if pos < l.width! then l.width! else pos)}, 300ms \easeOutExpo
+
+export remove-editing-url = (meta) ->
+  History.replace-state {no-surf:true} '' meta.thread-uri
+
+export scroll-to-edit = (cb) ->
+  cb = -> noop=1 unless cb
+  id = is-editing window.location.pathname
+  if id then # scroll to id
+    awesome-scroll-to "\#post_#{id}" 600ms cb
+    true
+  else
+    scroll-to-top cb
+    false
+

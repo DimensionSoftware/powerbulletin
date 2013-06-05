@@ -296,19 +296,25 @@ $d.on \click  'button.onclick-chat' require-login( (ev) ->
 $d.on \click  'html.admin .onclick-submit input[type="submit"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form
-    inputs =
-     saved: f.find 'input, textarea'
-    for k, v of inputs
-      for e in v # indicated saved
-        e = $ e
-        e.add-class k
-        if e.has-class \clear then e.val '' # clear value
-    show-tooltip $(f.find \.tooltip), \Saved!
-    set-timeout (-> # reset ui
+    t = $(f.find \.tooltip)
+    inputs = # class to apply & which input
+      saved: f.find 'input, textarea'
+
+    f.find \input:first .focus!
+    if data?success
+      # indicated saved
+      show-tooltip t, \Saved!
       for k, v of inputs
         for e in v
-          $ e .remove-class k), 3000ms
-    f.find \input:first .focus! # ... and focus!
+          e = $ e
+          e.add-class k
+          if e.has-class \clear then e.val '' # clear value
+      set-timeout (-> # reset ui
+        for k, v of inputs
+          for e in v
+            $ e .remove-class k), 3000ms
+    else # indicated failure
+      show-tooltip t, data?msg
   )
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)

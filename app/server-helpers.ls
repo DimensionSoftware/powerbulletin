@@ -3,6 +3,7 @@ require! {
   crypto
   bbcode
   nodemailer
+  auth: \./auth
 }
 
 @caching-strategies =
@@ -80,5 +81,26 @@ process-cached-data = {}
 @send-mail = (email, cb) ->
   smtp = nodemailer.create-transport \SMTP
   smtp.send-mail email, cb
+
+@register-local-user = (site, username, password, email, cb=(->)) ->
+  err, user <~ db.name-exists {email:email, site_id:site.id}
+  if err
+    cb 'Account in-use'
+  else if user
+    cb user # error w/ data
+  else
+    err, vstring <~ auth.unique-hash \verify, site.id
+    if err then return cb err
+    u =
+      type    : \local
+      profile : { password: auth.hash(password) }
+      site_id : site.id
+      name    : username
+      email   : email
+      verify  : vstring
+    err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
+    if err then return cb err
+    #@login(req, res, cb) # on successful registration, automagically @login, too
+    cb null, u
 
 # vim:fdm=marker
