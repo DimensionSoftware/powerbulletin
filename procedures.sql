@@ -15,18 +15,19 @@ CREATE FUNCTION procs.owns_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.post(id JSON) RETURNS JSON AS $$
+  require! u
   return {} unless id # guard
-  sql = '''
-  SELECT p.*,
-  a.name AS user_name ,
-  u.photo AS user_photo,
+  sql = """
+  SELECT
+    p.*,
+    #{u.user-fields \p.user_id},
   (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count,
   ARRAY(SELECT tags.name FROM tags JOIN tags_posts ON tags.id = tags_posts.tag_id WHERE tags_posts.post_id = p.id) AS tags
   FROM posts p
   JOIN users u ON p.user_id = u.id
   JOIN aliases a ON u.id = a.user_id
   WHERE p.id = $1;
-  '''
+  """
   return plv8.execute(sql, [id])?0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -35,7 +36,7 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
   sql = '''
   SELECT
   p.*,
-  a.name AS user_name ,
+  a.name AS user_name,
   u.photo AS user_photo,
   m.reason,
   (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count
