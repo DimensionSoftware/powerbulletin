@@ -20,11 +20,20 @@ module.exports =
 
       # init children
       do ~>
-        on-click = ->
+        on-click = ~>
           console.log \create-community
-          window.do-buy!
-          # XXX/TODO:  this should take you to admin control panel as soon as
-          # community is created
+          domain = @local(\domain)
+          @@$.post '/ajax/can-has-site-plz', {domain}, ({errors, transient_owner}) ->
+            if errors.length
+              console.error errors
+            else
+              cookie-opts =
+                domain: '.' + window.location.hostname
+                expires: 1
+
+              # set cookie so they are 'admin' of temporary site
+              $.cookie \transient_owner', transient_owner, cookie-opts
+              window.location = "http://#{domain}"
         locals = {title: 'Create my community'}
         @children =
           buy: new ParallaxButton {on-click, locals} \.Sales-create @
@@ -33,7 +42,7 @@ module.exports =
       $sa = @$.find(\.Sales-available)
 
       @check-domain-availability = @@$R((domain) ->
-        $.get \/ajax/check-domain-availability {domain} (res) ->
+        @@$.get \/ajax/check-domain-availability {domain} (res) ->
           $sa.remove-class 'success error'
           if res.available
             component.children.buy.enable!
