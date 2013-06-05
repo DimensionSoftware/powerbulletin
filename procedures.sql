@@ -802,6 +802,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- site.user_id is optional (you will get back a transient_owner identifier)
 -- site.domain is required
 CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
+  require! u
   unless site.domain
     return {errors: ["must specify a domain"]}
 
@@ -816,6 +817,25 @@ CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
     plv8.execute 'INSERT INTO domains (site_id, name) VALUES ($1, $2)', [site_id, site.domain]
   catch
     return {errors: ["domain '#{site.domain}' already exists"]}
+
+
+  # no need to worry about uniqueness anymore at this point
+  f = {
+    site_id
+    title: 'General Forum'
+    slug: 'general'
+    description: 'General Discussion'
+  }
+  sql = '''
+  INSERT INTO forums (site_id, title, slug, uri, description)
+    VALUES ($1,$2,$3,$4,$5)
+    RETURNING id
+  '''
+  forum_id = plv8.execute(sql, [f.site_id, f.title, f.slug, f.uri, f.description]).0.id
+
+  # set forum uri
+  uri = u.uri-for-forum forum_id
+  plv8.execute 'UPDATE forums SET uri=$1 WHERE id=$2', [uri, forum_id]
 
   rval = {site_id, errors: []}
   rval <<< {site.user_id} if site.user_id
