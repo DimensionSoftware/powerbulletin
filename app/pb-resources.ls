@@ -141,9 +141,11 @@ send-invite-email = (site, user, new-user, message) ->
 
     unless post.parent_id
       err, new-post <- db.post post.id
+      if err then return next err
       announce.emit \thread-create new-post
     else
       err, new-post <- db.post post.id
+      if err then return next err
       new-post.posts = []
       announce.emit \post-create new-post
 

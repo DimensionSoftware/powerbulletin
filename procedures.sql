@@ -15,40 +15,38 @@ CREATE FUNCTION procs.owns_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.post(id JSON) RETURNS JSON AS $$
+  require! u
   return {} unless id # guard
-  sql = '''
-  SELECT p.*,
-  a.name AS user_name ,
-  u.photo AS user_photo,
+  sql = """
+  SELECT
+    p.*,
+    #{u.user-fields \p.user_id},
   (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count,
   ARRAY(SELECT tags.name FROM tags JOIN tags_posts ON tags.id = tags_posts.tag_id WHERE tags_posts.post_id = p.id) AS tags
   FROM posts p
-  JOIN users u ON p.user_id = u.id
-  JOIN aliases a ON u.id = a.user_id
   WHERE p.id = $1;
-  '''
+  """
   return plv8.execute(sql, [id])?0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON AS $$
   require! u
-  sql = '''
+  sql = """
   SELECT
-  p.*,
-  a.name AS user_name ,
-  u.photo AS user_photo,
-  m.reason,
-  (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count
+    p.*,
+    #{u.user-fields \p.user_id},
+    m.reason,
+    (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count
   FROM posts p
   JOIN users u ON p.user_id = u.id
-  JOIN aliases a ON u.id = a.user_id
+  JOIN aliases a ON u.id = p.user_id
   LEFT JOIN moderations m ON p.id=m.post_id
   WHERE p.forum_id IN (SELECT id FROM forums WHERE site_id = $1)
   AND a.name = $2
   ORDER BY p.created DESC
   LIMIT  $3
   OFFSET $4
-  '''
+  """
   offset = (page - 1) * ppp
   posts = plv8.execute(sql, [usr.site_id, usr.name, ppp, offset])
 
@@ -79,7 +77,7 @@ CREATE FUNCTION procs.posts_by_user_pages_count(usr JSON, ppp JSON) RETURNS JSON
   COUNT(p.id) as c
   FROM posts p
   JOIN users u ON p.user_id = u.id
-  JOIN aliases a ON u.id = a.user_id
+  JOIN aliases a ON u.id = p.user_id
   WHERE p.forum_id IN (SELECT id FROM forums WHERE site_id = $1)
   AND a.name = $2
   '''
@@ -586,6 +584,7 @@ CREATE FUNCTION procs.homepage_forums(forum_id JSON, sort JSON) RETURNS JSON AS 
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON) RETURNS JSON AS $$
+  require! u
   forumf = plv8.find_function('procs.forum')
   forum  = forumf(forum_id)
 
@@ -601,16 +600,10 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
   sql = """
   SELECT
     p.*,
-    a.name user_name,
-    u.photo user_photo
+    #{u.user-fields \p.user_id}
   FROM posts p
-  JOIN aliases a ON a.user_id = p.user_id
-  JOIN users u ON u.id = a.user_id
-  JOIN forums f ON f.id = p.forum_id
-  JOIN sites s ON s.id = f.site_id
   LEFT JOIN moderations m ON m.post_id = p.id
-  WHERE a.site_id = s.id
-    AND p.forum_id = $1
+  WHERE p.forum_id = $1
     AND p.parent_id IS NULL
   ORDER BY (LENGTH(p.media_url) > 1) DESC, #sort-sql
   LIMIT $2
@@ -652,8 +645,8 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 CREATE FUNCTION procs.uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
   require! u
   try
-    sql = '''
-    SELECT p.*, u.photo user_photo, a.name user_name
+    sql = """
+    SELECT p.*, #{u.user-fields \p.user_id}
     FROM posts p
     JOIN forums f ON p.forum_id=f.id
     LEFT JOIN moderations m ON m.post_id=p.id
@@ -662,7 +655,7 @@ CREATE FUNCTION procs.uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
     WHERE f.site_id=$1
       AND p.uri=$2
       --AND m.post_id IS NULL -- change to m.is_malicious (only malicious content & spam should be hidden from browsers & search engines)
-    '''
+    """
     [post] = plv8.execute sql, [site_id, uri]
     return post
   catch
@@ -701,19 +694,18 @@ CREATE FUNCTION procs.sub_posts_count(parent_id JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.idx_posts(lim JSON) RETURNS JSON AS $$
-  sql = '''
+  require! u
+  sql = """
   SELECT p.id, p.thread_id, p.forum_id, p.user_id, p.title, p.body, p.created,
          p.updated, p.uri, p.html, f.title forum_title, t.uri thread_uri,
-         t.title thread_title, a.name user_name, u.photo user_photo
+         t.title thread_title, #{u.user-fields \p.user_id}
   FROM posts p
   JOIN forums f ON p.forum_id=f.id
   JOIN posts t ON p.thread_id=t.id
-  JOIN users u ON p.user_id=u.id
-  JOIN aliases a ON a.user_id=p.user_id
   WHERE p.index_dirty='t'
   ORDER BY updated
   LIMIT $1
-  '''
+  """
   return plv8.execute sql, [lim]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 

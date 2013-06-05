@@ -25,6 +25,20 @@ export unique = (xs) -> # from prelude.ls
 
 export map = (f, xs) -->
   [f x for x in xs]
+
+default-u-name = 'Future Owner'
+default-u-photo = '/images/future-owner.png'
+export user-fields = user-fields = (uid) ->
+  """
+  COALESCE(
+    (SELECT a.name FROM aliases a WHERE a.user_id=#uid),
+    '#default-u-name'
+  ) AS user_name,
+  COALESCE(
+    (SELECT u.photo FROM users u WHERE u.id=#uid),
+    '#default-u-photo'
+  ) AS user_photo
+  """
 ## END PURE FUNCTIONS ##
 
 top-forums = (limit, fields='*') ->
@@ -48,31 +62,22 @@ sub-forums = (id, fields='*') ->
 export top-posts = (sort, limit, fields='p.*') ->
   sort-expr =
     switch sort
-    | \recent   => 'p.created DESC, id ASC'
+    | \recent   => 'p.created DESC, p.id ASC'
     | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC'
     | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
 
   sql = """
   SELECT
-    #{fields},
-    COALESCE(
-      (SELECT a.name FROM aliases a WHERE a.user_id=p.user_id AND a.site_id=s.id),
-      'Future Owner'
-    ) AS user_name,
-    COALESCE(
-      (SELECT u.photo FROM users u WHERE u.id=p.user_id),
-      '/images/future-owner.png'
-    ) AS user_photo,
+    #fields,
+    #{user-fields \p.user_id},
     COUNT(p.id) post_count
   FROM posts p
-  JOIN forums f ON f.id = p.forum_id
-  JOIN sites s ON s.id=f.site_id
   LEFT JOIN posts p2 ON p2.thread_id=p.id
   LEFT JOIN moderations m ON m.post_id=p.id
   WHERE p.parent_id IS NULL
     AND p.forum_id=$1
     AND m.post_id IS NULL
-  GROUP BY p.id, s.id
+  GROUP BY p.id
   ORDER BY #{sort-expr}
   LIMIT $2
   """
@@ -82,12 +87,13 @@ export top-posts = (sort, limit, fields='p.*') ->
 
 sub-posts = (site-id, post-id, fields, limit, offset) ->
   sql = """
-  SELECT #fields, a.name user_name, u.photo user_photo
+  SELECT
+    #fields,
+    #{user-fields \p.user_id}
   FROM posts p
-  JOIN aliases a ON a.user_id=p.user_id
-  LEFT JOIN users u ON u.id=a.user_id
+  JOIN forums f ON f.id=p.forum_id
   LEFT JOIN moderations m ON m.post_id=p.id
-  WHERE a.site_id=$1
+  WHERE f.site_id=$1
     AND p.parent_id=$2
     AND m.post_id IS NULL
   ORDER BY p.created ASC, p.id ASC
