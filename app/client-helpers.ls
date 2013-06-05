@@ -57,9 +57,9 @@ export submit-form = (event, fn) -> # form submission
     success:  (data) ->
       $s.remove-attr \disabled
       if fn then fn.call $f, data
-    error: ->
+    error: (data) ->
       $s.remove-attr \disabled
-      show-tooltip $($f.find \.tooltip), 'Try again!'
+      show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
   }
   false
 
