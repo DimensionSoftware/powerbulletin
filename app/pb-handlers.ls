@@ -412,7 +412,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   fdoc.page  = parse-int page
   fdoc.title = name
   with fdoc.profile # transform
-    ..human_post_count = add-commas(..post_count.to-string!)
+    ..human_post_count = add-commas(..post_count?to-string!)
 
   res.locals fdoc
   res.mutant \profile
