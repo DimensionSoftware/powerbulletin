@@ -96,13 +96,15 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
     html       : t.html
     build_docs : false
 
-  emit = (type, id) ->
+  emit = (type, id, len) ->
     err, new-post <- pg.procs.post id
-    announce.emit type, new-post
+    if not err
+      new-post.post_count = len
+      announce.emit type, new-post
 
   pg.procs.add-post top-post, (err, insertion) ->
     if err then return cb(err)
-    emit \thread-create, insertion.id
+    emit \thread-create, insertion.id, t.posts?length
 
     create-post = (p, cb) ->
       q = {}
@@ -113,9 +115,11 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
       q.build_docs = false
 
       pg.procs.add-post q, (err, r) ->
-        if not err
+        if r.success and not err
           util.print "."
           emit \post-create, r.id
+        else
+          console.error \add-post, err
         cb(err, r)
 
     t.posts.shift!
