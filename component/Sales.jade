@@ -1,24 +1,37 @@
-h1 PowerBulletin Powers YOUR Communities
-p
-  Why buy powerbulletin? because we are basically the best forum softwared since sliced bread was invented
+mixin create
+  fieldset
+    input.Sales-domain(type='text', value=typeof domain != 'undefined' ? domain : '')
+      t
+    span.Sales-available
+      //- unicode checkmark
+      .success &#x2713;
+      //- unicode heavy ballot x
+      .error &#x2718;
+    .Sales-create
 
-h2 Features
-ul
-  li
-    | Modern Responsive Layout which adapts to mobile apps and browsers
-  li
-    | Super lightweight wire protocol enhanced by clever caching and CDNs
-  li
-    | Mutant Surfing technology! No need to load the page more than once as long as the
-    | visitor does not leave the domain (AJAX and socket.io goodness)
-  li
-    | Friendly Developers ; D
-
-div
-  input.Sales-domain(type='text', value=typeof domain != 'undefined' ? domain : '')
-  span.Sales-available
-    //- unicode checkmark
-    .success &#x2713;
-    //- unicode heavy ballot x
-    .error &#x2718;
-.Sales-create
+h1 PowerBulletin
+  em Power YOUR Communities
+mixin create
+h2 Why you'll love PowerBulletin
+  menu
+  li Breakthrough Navigation
+    p
+      | From SEO technology that speedily transmits page differences instead of reloading browsers,
+      | to a split-thread &amp; post interface, the PowerBulletin experience is always secure, fast &amp; fluid.
+  li Responsive
+    p
+      | A modern, responsive interface that scales from to your phone,
+      | tablet and PC to wide-screen projectors--your PowerBulletin community always stuns.
+  li Real-time
+    p
+      | Ultrafast PowerBulletin is built on a real-time engine that powers
+      | everything from user chat &amp; posts to administration, such as creating products.
+  li Products &amp; e-Commerce
+    p
+      | Sell your business products &amp; services around PowerBulletin communities.
+      | Offering e-commerce is so easy to use, it's easy to love.
+  li Support
+    p
+      | Knowledge is PowerBulletin.  With direct access to our team of friendly developers,
+      | there's almost no limit to what you can build.
+mixin create

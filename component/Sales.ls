@@ -54,6 +54,7 @@ module.exports =
 
       @$.on \keyup, \input.Sales-domain, debounce ->
         new-input = $(@).val!
+        $ \input.Sales-domain .val new-input # update all inputs
         unless new-input is component.local(\domain)
           # only signal changes on _different_ input
           component.state.domain new-input
