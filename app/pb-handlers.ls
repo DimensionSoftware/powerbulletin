@@ -48,7 +48,7 @@ posts-per-page = 30
     passport.authenticate('local', auth-response)(req, res, next)
   else
     console.warn "no passport for #{domain}"
-    res.send "500", 500
+    res.send \500, 500
 
 @forgot = (req, res, next) ->
   db    = pg.procs
@@ -66,13 +66,11 @@ posts-per-page = 30
     res.json success: false, errors: [ err ]
     return
 
-  console.log \user, user
   if user
     err, user-forgot <- auth.user-forgot-password user
     if err
       res.json success: false, errors: [ err ]
       return
-    console.log \user-forgot, user-forgot
 
     err <- auth.send-recovery-email user-forgot, site
     if err
@@ -125,21 +123,20 @@ posts-per-page = 30
 # TODO - validate username
 @choose-username = (req, res, next) ->
   user = req.user
-  if not user then return res.json success:false, 403
+  if not user then return res.json success:false
   # only change username if it's an email address
   name = req.user.name.to-string!
-  if name.length and name.index-of \@ is -1 then return res.json success:false, 403
-
+  if name.length and not is-email name
+    res.json {success:false,msg:'Name already chosen!'}
   db = pg.procs
   usr =
     user_id : user.id
     site_id : user.site_id
     name    : req.body.username
   (err, r) <- db.change-alias usr
-  if err then return res.json success:false, 403
+  if err then return res.json {success:false, msg:'Name in-use!'}
   console.warn "Changed name to #{req.body.username}"
   req.session?passport?user = "#{req.body.username}:#{user.site_id}"
-  #res.redirect req.header \Referer
   res.json success:true
 
 @login-facebook = (req, res, next) ->
@@ -150,7 +147,7 @@ posts-per-page = 30
     passport.authenticate('facebook')(req, res, next)
   else
     console.warn "no passport for #{domain}"
-    res.send "500", 500
+    res.send \500, 500
 
 @login-facebook-return = (req, res, next) ->
   domain = res.vars.site.current_domain
@@ -160,7 +157,7 @@ posts-per-page = 30
     passport.authenticate('facebook', { success-redirect: '/auth/facebook/finish', failure-redirect: '/auth/facebook/finish?fail=1' })(req, res, next)
   else
     console.warn "no passport for #{domain}"
-    res.send "500", 500
+    res.send \500, 500
 
 auth-finisher = (req, res, next) ->
   user = req.user
@@ -194,7 +191,7 @@ auth-finisher = (req, res, next) ->
     passport.authenticate('google', {scope})(req, res, next)
   else
     console.warn "no passport for #{domain}"
-    res.send "500", 500
+    res.send \500, 500
 
 @login-google-return = (req, res, next) ->
   domain = res.vars.site.current_domain
@@ -204,7 +201,7 @@ auth-finisher = (req, res, next) ->
     passport.authenticate('google', { success-redirect: '/auth/google/finish', failure-redirect: '/auth/google/finish?fail=1' })(req, res, next)
   else
     console.warn "no passport for #{domain}"
-    res.send "500", 500
+    res.send \500, 500
 
 @login-google-finish = auth-finisher
 
@@ -216,7 +213,7 @@ auth-finisher = (req, res, next) ->
     passport.authenticate('twitter')(req, res, next)
   else
     console.warn "no passport for #{domain}"
-    res.send "500", 500
+    res.send \500, 500
 
 @login-twitter-return = (req, res, next) ->
   domain = res.vars.site.current_domain
@@ -226,7 +223,7 @@ auth-finisher = (req, res, next) ->
     passport.authenticate('twitter', { success-redirect: '/auth/twitter/finish', failure-redirect: '/auth/twitter/finish?fail=1' })(req, res, next)
   else
     console.warn "no passport for #{domain}"
-    res.send "500", 500
+    res.send \500, 500
 
 @login-twitter-finish = auth-finisher
 
@@ -498,7 +495,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   if err then return next err
   if r
     req.session?passport?user = "#{r.name}:#{site.id}"
-    res.redirect if r.name.index-of \@ is -1 then \/#choose else \/#validate
+    res.redirect if is-email r.name then \/#choose else \/#validate
   else
     res.redirect \/#invalid
 

@@ -204,7 +204,7 @@ window.login = ->
       $.fancybox.close!
       after-login!
     else
-      $fancybox = $form.parents('.fancybox-wrap:first')
+      $fancybox = $form.parents \.fancybox-wrap:first
       $fancybox.add-class \on-error
       $fancybox.remove-class \shake
       show-tooltip $form.find(\.tooltip), 'Try again!' # display error
@@ -240,11 +240,21 @@ window.register = ->
         $e.add-class \validation-error .focus!    # focus control
         show-tooltip $form.find(\.tooltip), e.msg # display error
       shake-dialog $form, 100ms
-  return false
+  false
 
-$d.on \submit '.login form' login
-$d.on \submit '.register form' register
-$d.on \click \.require-login ch.require-login(-> this.click)
+# choose a username
+window.choose = ->
+  $form = $ this
+  $.post $form.attr(\action), $form.serialize!, (r) ->
+    if r.success
+      $.fancybox.close!
+      after-login!
+      window.location.hash = ''
+    else
+      $form.find \input:first .focus!
+      show-tooltip $form.find(\.tooltip), r.msg # display error
+      shake-dialog $form, 100ms
+  false
 
 # forgot password
 window.forgot-password = ->
@@ -256,8 +266,6 @@ window.forgot-password = ->
       show-tooltip $form.find(\.tooltip), "Email not found."
       shake-dialog $form, 100ms
   return false
-
-$d.on \submit '.forgot form' forgot-password
 
 window.show-reset-password-dialog = ->
   $form = $ '#auth .reset form'
@@ -292,7 +300,12 @@ window.reset-password = ->
       show-tooltip $form.find(\.tooltip), "Choose a better password."
   return false
 
+$d.on \submit '.login form' login
+$d.on \submit '.register form' register
+$d.on \submit '.forgot form' forgot-password
+$d.on \submit '.choose form' choose
 $d.on \submit '.reset form' reset-password
+$d.on \click \.require-login ch.require-login(-> this.click)
 
 # 3rd-party auth
 $ '.social a' .click ->
@@ -351,11 +364,15 @@ onload-resizable!
 window.user <- $.getJSON \/auth/user
 onload-personalize!
 
-if window.location.hash.match /^\#recover=/
-  show-reset-password-dialog!
+# hash actions
+if window.location.hash.match /^\#recover=/ then show-reset-password-dialog!
+switch window.location.hash
+| \#validate =>
+  after-login! # email activation
 
-mutant.run mutants[window.initial-mutant], {initial: true, window.user}, ->
-  mutant = mutants?[window.initial-mutant]
-  if mutant.on-personalize
-    mutant.on-personalize window, window.user, (->)
+<- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
+  #mutant = mutants?[window.initial-mutant]
+  #console.log \on-initial
+  #if mutant.on-personalize
+  #  mutant.on-personalize window, window.user, (->)
 # vim:fdm=marker

@@ -1,5 +1,6 @@
-global <<< require \./shared-helpers.ls
 global.furl = require \./forum-urls.ls
+
+global <<< require \./shared-helpers.ls
 
 !function bench subject-name, subject-body
   bef = new Date
@@ -28,12 +29,20 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     w.$(last p.parents \li) .find \.title .add-class \active # get parent, too
 
 layout-on-personalize = (w, u) ->
+  console.log \on-personalize, u
   if u # guard
     set-online-user u.id
     $ ".post[data-user-id=#{u.id}] .edit, .post[data-user-id=#{u.id}] .censor"
       .css \display \inline # enable censor
     if u.rights?super # always enable for super admins
       $ \.censor .css \display \inline
+
+    # hash actions
+    switch window.location.hash
+    | \#choose   =>
+      if is-email user?name
+        show-login-dialog!
+        switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
 
 # initialize pager
 pager-init = (w) ->
@@ -59,6 +68,9 @@ export homepage =
 #        window.$ \body .prepend e
       layout-static window, \homepage
       next!
+  on-personalize: (w, u, next) ->
+    layout-on-personalize w, u
+    next!
   on-load:
     (window, next) ->
       # reflow masonry content

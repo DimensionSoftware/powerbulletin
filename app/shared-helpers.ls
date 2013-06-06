@@ -146,6 +146,8 @@ date-fields =
 @render-and-append  = @render-and \append
 @render-and-prepend = @render-and \prepend
 
+@is-email = (name) ->
+  name.index-of(\@) isnt -1
 @is-forum-homepage = (path) ->
   furl.parse path .type is \forum
 @is-editing = (path) ->
