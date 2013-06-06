@@ -379,8 +379,13 @@ body.scrolled
         text-shadow none
       h3::before
         display none
-    .small h3
-      color #777
+    .small
+      h3
+        color #777
+      h3:hover
+        color #333
+        text-shadow 0 0 0 highlight-color2
+        transition all .1s ease-out
     .msg
       overflow hidden
       display block
@@ -395,7 +400,7 @@ body.scrolled
     font-weight 200
     position relative
     font-size 15px
-    color #777
+    color #555
   .social h3::before
     display none
   .onclick-show-forgot h3::before
@@ -574,14 +579,14 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
       background-image linear-gradient(to top, #fff 10px, #f2f2f2)
 //}}}
 //{{{ Tooltip
-tooltip-border-color = rgba(100, 100, 100, 1)
+tooltip-border-color = rgb(100, 100, 100)
 .tooltip
   color #fff
-  background-color tooltip-border-color
+  background-color rgb(110, 110, 110)
   border 2px solid tooltip-border-color
   border-radius 2px
   opacity 0
-  box-shadow 0 1px 5px tooltip-border-color
+  box-shadow 0 2px 20px tooltip-border-color
   text-shadow 0 -1px 0 #000
 .tooltip::after
   border-top 10px solid tooltip-border-color
