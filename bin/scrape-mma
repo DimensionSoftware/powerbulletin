@@ -115,7 +115,7 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
       q.build_docs = false
 
       pg.procs.add-post q, (err, r) ->
-        if r.success and not err
+        if r?success and not err
           util.print "."
           emit \post-create, r.id
         else
