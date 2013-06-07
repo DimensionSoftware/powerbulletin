@@ -408,11 +408,12 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   err, fdoc <- async.auto tasks
   if err then return next err
+  unless fdoc.profile then return next 404 # guard
   fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
   fdoc.page  = parse-int page
   fdoc.title = name
   with fdoc.profile # transform
-    ..human_post_count = add-commas(..post_count?to-string!)
+    ..human_post_count = add-commas(..post_count.to-string!)
 
   res.locals fdoc
   res.mutant \profile
