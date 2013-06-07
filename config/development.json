@@ -7,4 +7,8 @@
 , "cache3Url": "//muscache3.pb.com"
 , "cache4Url": "//muscache4.pb.com"
 , "cache5Url": "//muscache5.pb.com"
+, "stripe":
+  { "privateKey": "sk_test_Zn4dz9SjDQ4viJ4j5Th5VfU7"
+  , "publicKey": "pk_test_pLmrPdctjhzQWGSFjZqiAa9w"
+  }
 }
