@@ -89,10 +89,15 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
 #{{{ Personalizing behaviors
 window.onload-personalize = ->
   if window.user # logged in, so ...
-    $ \.onclick-profile .each -> this.href = "/user/#{window.user.name}"
-    $ \.onclick-login   .hide!
-    $ \.onclick-logout  .show!
-    $ \.onclick-profile .show!
+    if window.user.transient
+      $ \.onclick-login   .show!
+      $ \.onclick-logout  .hide!
+      $ \.onclick-profile .hide!
+    else
+      $ \.onclick-profile .each -> this.href = "/user/#{window.user.name}"
+      $ \.onclick-login   .hide!
+      $ \.onclick-logout  .show!
+      $ \.onclick-profile .show!
     unless user?rights?super then $ \.admin-only .hide! else $ \.admin-only .show!
   else
     $ \.onclick-login   .show!
