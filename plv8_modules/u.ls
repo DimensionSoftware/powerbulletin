@@ -26,8 +26,8 @@ export unique = (xs) -> # from prelude.ls
 export map = (f, xs) -->
   [f x for x in xs]
 
-default-u-name = 'Future Owner'
-default-u-photo = '/images/future-owner.png'
+default-u-name  = \Transient
+default-u-photo = \/images/transient.png
 export user-fields = user-fields = (uid) ->
   """
   COALESCE(

@@ -38,8 +38,8 @@
     }
     return results$;
   });
-  defaultUName = 'Future Owner';
-  defaultUPhoto = '/images/future-owner.png';
+  defaultUName = 'Transient';
+  defaultUPhoto = '/images/transient.png';
   out$.userFields = userFields = userFields = function(uid){
     return "COALESCE(\n  (SELECT a.name FROM aliases a WHERE a.user_id=" + uid + "),\n  '" + defaultUName + "'\n) AS user_name,\nCOALESCE(\n  (SELECT u.photo FROM users u WHERE u.id=" + uid + "),\n  '" + defaultUPhoto + "'\n) AS user_photo";
   };

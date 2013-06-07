@@ -65,7 +65,9 @@ site-by-domain = (domain, cb) ->
   io.set \authorization, (handshake, accept) ->
     if handshake.headers.cookie
       handshake.cookies = cookie.parse handshake.headers.cookie
-      unsigned = connect.utils.parse-signed-cookie handshake.cookies['connect.sess'], cvars.secret
+      connect-cookie = handshake.cookies['connect.sess']
+      unless connect-cookie then return accept("no connect session cookie", false) # guard
+      unsigned = connect.utils.parse-signed-cookie connect-cookie, cvars.secret
 
       if unsigned
         original-hash = crc32.signed unsigned
@@ -77,7 +79,7 @@ site-by-domain = (domain, cb) ->
       else
         return accept("bad session?", false)
     else
-      return accept("no cookie", false)
+      return accept("no cookies", false)
 
   io.on \connection, (socket) ->
     var search-room

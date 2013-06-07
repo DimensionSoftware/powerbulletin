@@ -229,8 +229,8 @@ auth-finisher = (req, res, next) ->
 
 @logout = (req, res, next) ->
   if req.user # guard
+    unless req.user.transient then req.logout!
     redirect-url = req.param(\redirect-url) or req.header(\Referer) or '/'
-    req.logout!
     res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '').replace(is-auth, '')
   else
     res.redirect '/'
@@ -408,6 +408,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   err, fdoc <- async.auto tasks
   if err then return next err
+  unless fdoc.profile then return next 404 # guard
   fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
   fdoc.page  = parse-int page
   fdoc.title = name
