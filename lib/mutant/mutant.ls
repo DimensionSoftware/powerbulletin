@@ -159,7 +159,7 @@ else
     # playskool pretend server-side window
     var-statements = []
     marshal = (key, val) ->
-      var-statements.push "window['#{key}']=#{JSON.stringify(val)}"
+      if val isnt void then var-statements.push "window['#{key}']=#{JSON.stringify(val)}"
 
     run-static = (window) ->
       window <<< {render, replace-html}

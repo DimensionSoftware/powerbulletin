@@ -184,7 +184,7 @@ export forum =
 
       $l = $ \#left_container
       $l.find \.active .remove-class \active # set active post
-      $l.find ".thread[data-id='#{active-thread-id}']" .add-class \active
+      $l.find ".thread[data-id='#{window.active-thread-id}']" .add-class \active
 
       # editing handler
       id = is-editing window.location.pathname
