@@ -229,8 +229,8 @@ auth-finisher = (req, res, next) ->
 
 @logout = (req, res, next) ->
   if req.user # guard
+    unless req.user.transient then req.logout!
     redirect-url = req.param(\redirect-url) or req.header(\Referer) or '/'
-    req.logout!
     res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '').replace(is-auth, '')
   else
     res.redirect '/'
