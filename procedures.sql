@@ -838,9 +838,6 @@ CREATE FUNCTION procs.authorize_transient(transient_owner JSON, site_id JSON) RE
   sql = '''
   SELECT TRUE FROM sites
   WHERE transient_owner=$1 AND id=$2
-  UNION
-  SELECT TRUE FROM sites
-  WHERE transient_owner IS NULL AND id=$2
   '''
   return !!plv8.execute(sql, [transient_owner, site_id]).0
 $$ LANGUAGE plls IMMUTABLE STRICT;

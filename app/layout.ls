@@ -98,7 +98,7 @@ window.onload-personalize = ->
       $ \.onclick-login   .hide!
       $ \.onclick-logout  .show!
       $ \.onclick-profile .show!
-    unless user?rights?super then $ \.admin-only .hide! else $ \.admin-only .show!
+    unless (user?rights?super or user?rights?admin) then $ \.admin-only .hide! else $ \.admin-only .show!
   else
     $ \.onclick-login   .show!
     $ \.onclick-logout  .hide!
