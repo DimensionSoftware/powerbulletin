@@ -11,8 +11,17 @@ export post = (post) ->
   [{site_id}] = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])
 
   plv8.elog WARNING, JSON.stringify(post)
-  unless authorize-transient(post.transient_owner, site_id)
-    errors.push 'invalid transient_owner'
+
+  u-exists =
+    if post.user_id
+      !!plv8.execute('SELECT TRUE FROM users WHERE id=$1', [post.user_id])
+
+  t-exists =
+    if post.transient_owner
+      authorize-transient(post.transient_owner, site_id)
+
+  unless u-exists or t-exists
+    errors.push 'posting is not authorized'
 
   return errors
 
