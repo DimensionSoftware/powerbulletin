@@ -53,6 +53,7 @@ common-js = [ #{{{ Common JS
   "#{cvars.cache3-url}/local/jquery.nicescroll.min.js",
   "#{cvars.cache2-url}/local/raf.js",
   "#{cvars.cache4-url}/socket.io/socket.io.js",
+  "#{cvars.cache5-url}/local/jquery.mjs.nestedSortable.js",
   "#{cvars.cache-url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
 #}}}
 common-css = [ #{{{ Common CSS

@@ -298,6 +298,7 @@ export admin =
       window.render-mutant \main_content switch @action
       | \domains  => \admin-domains
       | \invites  => \admin-invites
+      | \menu     => \admin-menu
       | otherwise => \admin-general
       layout-static window, \admin
       window.marshal \site @site

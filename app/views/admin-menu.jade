@@ -1,0 +1,6 @@
+.resizable
+  form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
+    input(type='button', name='+ Item')
+    input(type='hidden', name='action', value='menu')
+    ol.sortable
+      li General Forum
