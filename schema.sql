@@ -242,3 +242,24 @@ CREATE TABLE pages (
   PRIMARY KEY (id)
 );
 CREATE TRIGGER pages_timestamp BEFORE UPDATE ON pages FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
+-- purchases: track each distinct purchase
+CREATE TABLE purchases (
+  id      BIGSERIAL NOT NULL PRIMARY KEY,
+  user_id BIGINT NOT NULL REFERENCES users(id),
+  cart    JSON NOT NULL,
+  receipt JSON NOT NULL,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated TIMESTAMP
+);
+CREATE TRIGGER purchases_timestamp BEFORE UPDATE ON purchases FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
+-- products: track each product
+CREATE TABLE products (
+  id VARCHAR(64) NOT NULL PRIMARY KEY,
+  description TEXT NOT NULL,
+  price BIGINT NOT NULL, -- USD
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated TIMESTAMP
+);
+CREATE TRIGGER products_timestamp BEFORE UPDATE ON products FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
