@@ -27,7 +27,9 @@ module.exports =
             if errors.length
               console.error errors
             else
-              cookie-opts = {domain, expires: 1}
+              cookie-opts =
+                domain: '.' + window.location.hostname
+                expires: 1
 
               # set cookie so they are 'admin' of temporary site
               $.cookie \transient_owner, transient_owner, cookie-opts
