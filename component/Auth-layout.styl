@@ -1,0 +1,124 @@
+
+//{{{ states
+.on-validate
+  #auth
+    .validate
+      display block!important
+      h2
+        font-size 1.5em
+      .msg
+        h3::before
+          visibility hidden
+        h3
+          margin-top (grid*2)!important
+          text-transform uppercase
+          letter-spacing 0
+          font-weight bold
+  .register, .login
+    display none!important
+.on-register
+  #auth
+    input[name="username"], input[name="password"]
+      background #fff
+    input[name="email"]:focus
+      border-top-left-radius 4px
+      border-top-right-radius 4px
+    input[name="email"]
+      border-top-left-radius 0
+      border-top-right-radius 0
+    .register
+      display block!important
+    .choose, .login, .forgot, .reset
+      display none!important
+.on-choose
+  #auth
+    h3
+    .choose
+      display block!important
+    .login, .forgot, .reset
+      display none!important
+    .msg
+      visibility hidden
+.on-forgot
+  #auth
+    .forgot
+      display block!important
+    .login, .choose, .reset
+      display none!important
+.on-reset
+  #auth
+    .reset
+      display block!important
+    .login, .choose, .forgot
+      display none!important
+.on-error
+  #auth
+    .msg
+      height 30px
+      opacity 1
+      transition height .5s, opacity 1s
+//}}}
+
+#auth
+  .register, .login, .forgot, .reset, .choose
+    .tooltip
+      width 210px
+      bottom auto
+      margin-top -42px
+      font-size 1em
+      z-index 99
+  .login .tooltip
+    width 100px
+    margin-left -60px
+  .login
+    .small.msg
+      float right
+      cursor help
+      opacity 1
+      height auto
+      h3
+        text-shadow none
+        font-size .8em
+  .choose, .forgot, .register, .reset
+    h3
+      margin-top (grid+2)
+      float right
+      padding-left 12px
+    input[type='submit']
+      margin-top 4px
+  .error
+    display none
+  h2
+    text-align center
+    margin 20px 0 20px 0
+    letter-spacing 3px
+    font-weight 200
+    font-style italic
+    font-size 2em
+  h3
+    margin 0 5px 10px 0
+  .social
+    margin 20px auto
+    width 313px
+    a
+      text-decoration none
+  fieldset
+    padding 20px 102px
+  input[name="email"]
+    width 297px
+    padding 10px
+    margin -6px 0 5px 0
+    position relative
+  input[name="username"]
+    width 300px
+    display block
+  input[name="password"]
+    width 300px
+  input[type="submit"]
+    height 42px
+    width 315px
+    margin-left 2px
+    margin-top 5px
+    display block
+
+// vim:fdm=marker

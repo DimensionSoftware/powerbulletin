@@ -1,0 +1,81 @@
+#auth
+  .login
+    .msg.onclick-show-register
+      opacity 1
+      height 30px
+      h3:hover
+        color #222
+        text-shadow 0 0 1px highlight-color2
+        transition all .1s ease-out
+      h3
+        position relative
+        float right
+        margin-top grid
+        text-shadow none
+      h3::before
+        display none
+    .small
+      h3
+        color #777
+      h3:hover
+        color #333
+        text-shadow 0 0 0 highlight-color2
+        transition all .1s ease-out
+    .msg
+      overflow hidden
+      display block
+      height 0
+      opacity 0
+      h3
+        text-shadow 0 0 1px highlight-color2
+  .msg.onclick-show-login
+    h3:hover
+      color #444
+  h3
+    font-weight 200
+    position relative
+    font-size 15px
+    color #555
+  .social h3::before
+    display none
+  .onclick-show-forgot h3::before
+    border none
+  h3:hover::before
+    border-right 10px solid #aaa
+    left -10px
+    transition all .2s ease-out
+  h3::before
+    display block
+    position absolute
+    border-right 9px solid #ddd
+    border-left 5px solid transparent
+    border-top 5px solid transparent
+    border-bottom 5px solid transparent
+    content ''
+    left -7px
+    top 7px
+  fieldset
+    padding-top 40px
+    border-color #f0f0f0
+    border-radius 2px
+    background-color #fff
+  input[name="password"]:focus
+    border-top-left-radius 3px
+    border-top-right-radius 3px
+  input[name="username"]:focus
+    border-bottom-left-radius 3px
+    border-bottom-right-radius 3px
+  input[name="username"]
+    border-bottom-left-radius 0
+    border-bottom-right-radius 0
+    padding-bottom grid
+  input[name="password"]
+    padding-top grid
+    margin-top -8px
+    border-top-left-radius 0
+    border-top-right-radius 0
+  input.register-email
+    padding-left 9px!important
+    display block
+  input.validation-error
+    border-left 2px solid #f42
