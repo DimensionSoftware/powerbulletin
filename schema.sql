@@ -247,8 +247,8 @@ CREATE TRIGGER pages_timestamp BEFORE UPDATE ON pages FOR EACH ROW EXECUTE PROCE
 CREATE TABLE purchases (
   id      BIGSERIAL NOT NULL PRIMARY KEY,
   user_id BIGINT NOT NULL REFERENCES users(id),
-  cart    JSON NOT NULL,
-  receipt JSON NOT NULL,
+  cart    JSON NOT NULL, -- list of products [{id,description,price}, ...]
+  receipt JSON NOT NULL, -- stripe charge response metadata which we store
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP
 );
