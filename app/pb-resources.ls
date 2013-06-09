@@ -191,4 +191,13 @@ send-invite-email = (site, user, new-user, message) ->
     else
       next 404
 
+@products =
+  show: (req, res, next) ->
+    return next 404 unless id = req.params.product
+    err, product <- db.products.find-one {
+      criteria: {id}
+      columns: [\id \description \price]
+    }
+    if err then return next err
+    if product then res.json product else next 404
 # vim:fdm=indent
