@@ -329,8 +329,16 @@ $d.on \change 'html.admin .domain' -> # set keys
 # {{{ - components
 window.component = {}
 
-window.do-buy = ->
-  window.component.buy ||= (new Buy).attach!
+window.do-buy = (product-id) ->
+  throw new Error "window.do-buy must specify a product-id" unless product-id
+
+  product <- $.get(\/resources/products/ + product-id)
+  locals = {product}
+
+  existing.detach! if existing = window.component.buy
+
+  window.component.buy = (new Buy {locals}).attach!
+
   $.fancybox(window.component.buy.$)
 
 window.do-test = ->
