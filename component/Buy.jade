@@ -1,4 +1,22 @@
 h2 Buy #{product.description}
 h1 only! $#{(product.price / 100.0).toFixed(2)}
-i id: #{product.id}
-.Buy-checkout
+
+div
+  i id: #{product.id}
+div
+  img(src=cacheUrl+'/images/accepted-cards.png')
+div
+  label
+    strong Card number
+    input.Buy-card-number(type='text')
+div
+  label
+    strong Expiration date
+      em (MM/YY)
+    input.Buy-card-expiration(type='text')
+div
+  label
+    strong CVV Code
+    input.Buy-card-code(type='text')
+div
+  .Buy-checkout
