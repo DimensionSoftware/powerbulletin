@@ -1,13 +1,12 @@
-.resizable
-  form.onclick-submit(action="/resources/users", method="post")
-    fieldset
-      label(for='emails') Email Addresses
-      input(id='emails', class='emails clear', name='emails', type='text')
-      .note Separated by commas
-      .break
-      label(for='message') Message
-      textarea(id='message', name='message')
+form.onclick-submit(action="/resources/users", method="post")
+  fieldset
+    label(for='emails') Email Addresses
+    input(id='emails', class='emails clear', name='emails', type='text')
+    .note Separated by commas
+    .break
+    label(for='message') Message
+    textarea(id='message', name='message')
 
-    input.button(type='submit', value='Send')
-    .tooltip
-    input(type='hidden', name='action', value='invites')
+  input.button(type='submit', value='Send')
+  .tooltip
+  input(type='hidden', name='action', value='invites')

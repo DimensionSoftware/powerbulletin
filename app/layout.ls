@@ -109,32 +109,33 @@ window.onload-personalize = ->
 window.onload-resizable = ->
   left-offset = 50px
 
-  # handle main content
+  $l = $ \#left_content
   $r = $ '#main_content .resizable'
 
-  # handle left
-  $l = $ \#left_content
-  $l.resizable(
-    min-width: 200px
-    max-width: 450px
-    resize: (e, ui) ->
-      $l.toggle-class \wide ($l.width! > 300px)        # resize left nav
-      $r.css \padding-left (ui.size.width+left-offset) # " resizable
-      $l.find \.scrollable .get-nice-scroll!resize!
-      window.save-ui!)
-  # TODO
-  #  - would be nice to ease-expo-out on scroll
-  #  - fix scrollable region to include another few hundred px on bottom
-  $l.find(\.scrollable).nice-scroll {
-    bouncescroll:    true
-    cursorcolor:     \#aaa
-    cursorwidth:     2
-    hidecursordelay: 800
-    mousescrollstep: 5
-    railoffset:      true
-    railpadding:     {bottom:50px}}
   if $r.length
+    $l.resizable(
+      min-width: 200px
+      max-width: 450px
+      resize: (e, ui) ->
+        $l.toggle-class \wide ($l.width! > 300px)        # resize left nav
+        $r.css \padding-left (ui.size.width+left-offset) # " resizable
+        $l.find \.scrollable .get-nice-scroll!resize!
+        window.save-ui!)
+    # TODO
+    #  - would be nice to ease-expo-out on scroll
+    #  - fix scrollable region to include another hundred px on bottom
+    $l.find \.scrollable .nice-scroll {
+      bouncescroll:    true
+      cursorcolor:     \#aaa
+      cursorwidth:     2
+      hidecursordelay: 800
+      mousescrollstep: 5
+      railoffset:      true
+      railpadding:     {bottom:50px}}
     $r.css \padding-left ($l.width!+left-offset) # snap
+  else
+    try
+      $l.resizable \destroy
 #}}}
 #{{{ Scrolling behaviors
 window.scroll-to-top = (cb=->) ->

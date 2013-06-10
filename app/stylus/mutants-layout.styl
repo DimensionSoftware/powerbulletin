@@ -444,17 +444,21 @@ html.search
 //}}}
 //{{{ - admin
 html.admin
-  #left_container
-    padding-top 60px
-    menu
-      float right
-      list-style none
-      padding 12px
-      margin 0 0 0 3px
-      li
-        margin-bottom (grid+3)
-        text-align right
+  #left_content
+    max-width 150px
+    #left_container
+      padding-top 60px
+      menu
+        float right
+        list-style none
+        padding 12px
+        margin 0 0 0 3px
+        transition all .2s ease-out
+        li
+          margin-bottom (grid+3)
+          text-align right
   #main_content
+    padding-left 200px
     .note
       color #aaa
       font-size .7em
