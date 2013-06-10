@@ -291,6 +291,10 @@ $d.on \click  'button.onclick-chat' require-login( (ev) ->
 )
 #}}}
 #{{{ - admin
+$d.on \click 'html.admin .onclick-add' (ev) ->
+  console.log \add-sortable
+  false
+
 $d.on \click  'html.admin .onclick-submit input[type="submit"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form
@@ -301,7 +305,7 @@ $d.on \click  'html.admin .onclick-submit input[type="submit"]' (ev) ->
     f.find \input:first .focus!
     if data?success
       # indicated saved
-      show-tooltip t, \Saved!
+      show-tooltip t, (t.data(\msg) or \Saved!)
       for k, v of inputs
         for e in v
           e = $ e
