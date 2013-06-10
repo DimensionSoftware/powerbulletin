@@ -722,15 +722,32 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- #''' getting around quoting bug
 
-CREATE FUNCTION procs.conversation_create(users JSON, message JSON) RETURNS JSON AS $$
-  sql = 'INSERT INTO conversations DEFAULT VALUES RETURNING *'
-  [c] = plv8.execute sql, []
+-- this should actually find-or-create a conversation by the set of users given
+CREATE FUNCTION procs.conversation_find_or_create(users JSON) RETURNS JSON AS $$
+  find-or-create = plv8.find_function \procs.find_or_create
+  find-sql = '''
+  SELECT c.*
+  FROM conversations c
+  LEFT JOIN users_conversations uc0 on uc0.conversation_id = c.id
+  LEFT JOIN users_conversations uc1 on uc1.conversation_id = c.id
+  WHERE uc0.user_id = $1
+  AND   uc1.user_id = $2
+  '''
+  find-params = ins-params = [ users.0?id, users.1?id ]
+  ins-sql = '''
+  WITH c AS (
+      INSERT INTO conversations DEFAULT VALUES RETURNING *
+    ), i AS (
+      INSERT INTO users_conversations (user_id, conversation_id) SELECT $1, id FROM c
+    )
+  INSERT INTO users_conversations (user_id, conversation_id) SELECT $2, id FROM C
+  '''
+  c = find-or-create find-sql, find-params, ins-sql, ins-params
   if not c
     return null
-  add-participants = plv8.find_function \procs.conversation_add_participants
-  add-message      = plv8.find_function \procs.conversation_add_message
-  c.participants   = add-participants c.id, users
-  c.messages       = [ add-message c.id, message ]
+
+  c.participants   = users
+  c.messages       = []
   return c
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -751,15 +768,15 @@ CREATE FUNCTION procs.conversation_add_message(cid JSON, message JSON) RETURNS J
   return c
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION procs.conversation_by_cid(cid JSON, page JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.conversation_by_id(cid JSON) RETURNS JSON AS $$
   sql = 'SELECT * FROM conversations WHERE id = $1'
   [c] = plv8.execute sql, [cid]
+  # TODO - fill out this object with sane defaults
   if not c
     return null
   else
-    messages-by-cid = plv8.find_function \procs.messages_by_cid
-    messages = messages-by-cid cid, page
-    c.messages = messages
+    c.messages = [] # TODO - fill out
+    c.participants = [] # TODO - fill out
   return c
 $$ LANGUAGE plls IMMUTABLE STRICT;
 

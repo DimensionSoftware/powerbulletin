@@ -287,7 +287,11 @@ if mocha? and window.location.search.match /test=1/
 #{{{ - chat
 $d.on \click  'button.onclick-chat' require-login( (ev) ->
   profile-name = $ 'div.profile:first' .data \user-name
-  Chat.start [user.name, profile-name]
+  f = user
+  t =
+    id   : $ 'div.profile:first' .data \user-id
+    name : $ 'div.profile:first' .data \user-name
+  Chat.start [f, t]
 )
 #}}}
 #{{{ - admin
