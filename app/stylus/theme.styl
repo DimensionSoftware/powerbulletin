@@ -200,9 +200,9 @@ header
     border-right 1px solid #bbb
   #paginator
     border-right 1px solid #ddd
-    background-color rgba(100,100,100,0.1)
+    background-color rgba(150,150,150,0.1)
     border-top 2px solid #ccc
-    border-bottom 2px solid #ccc
+    border-bottom 1px solid #ccc
     .current:hover
       color #fff
       text-shadow 1px 1px 0 #555
@@ -212,6 +212,7 @@ header
       border-bottom 1px solid #aaa
     .current
       background-color #ddd
+      background-image linear-gradient(top, #eaeaea 45%, #fafafa)
       color #fafafa
       text-shadow 1px 1px 0 #777
       border-top 1px solid #bbb
@@ -486,9 +487,10 @@ textarea:focus, select:focus
 .button:hover::before
   background-color rgba(100,100,100,.2)
   border-radius 6px
-.button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
-  background -moz-linear-gradient(center top , #ffce29, #f38437) repeat scroll 0 0 #ffffff
-  background -webkit-gradient(linear, left top, left bottom, from(#ffce29), to(#f38437))
+.button:hover, .button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
+  //background -moz-linear-gradient(center top , #ffce29, #f38437) repeat scroll 0 0 #ffffff
+  //background -webkit-gradient(linear, left top, left bottom, from(#ffce29), to(#f38437))
+  background-image linear-gradient(bottom, #ffce29 48%, #f38437)
   //text-indent -2px
   background-color #ffca27
   border-color #777
@@ -509,7 +511,7 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   color #eee
   opacity .8
   transition opacity .3s
-.button:enabled:active, button:enabled:active,
+.button:active, .button:enabled:active, button:enabled:active,
   input[type='submit']:enabled:active,input[type='button']:enabled:active,button:enabled:focus,
   input[type="submit"]:enabled:focus, input[type="button"]:enabled:focus
   //text-indent 2px
@@ -538,9 +540,10 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   white-space nowrap
   position relative
   text-shadow 0 1px 0 #444,1px 1px 0 #444
-  background -moz-linear-gradient(center top , #FFC447, #F38437) repeat scroll 0 0 #FFFFFF
   letter-spacing 1px
-  background -webkit-gradient(linear, left top, left bottom, from(#FFC447), to(#F38437))
+  //background -webkit-gradient(linear, left top, left bottom, from(#FFC447), to(#F38437))
+  //background -moz-linear-gradient(center top , #FFC447, #F38437) repeat scroll 0 0 #FFFFFF
+  background-image linear-gradient(bottom, #ffc447 45%, #f38437)
   background-color #F38437
   box-shadow 0px 0px 3px #C35407
   border 1px solid #666
