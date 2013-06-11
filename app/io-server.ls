@@ -16,7 +16,8 @@ enter-site = (socket, site, user) ~>
   @state[s] ||= {}
   @state[s].users ||= {}
   @state[s].users[user.name] = u = { id: user.id, name: user.name }
-  socket.join(s)
+  socket.join s
+  socket.join "#s/users/#{user.id}"
   socket.in(s).broadcast.emit \enter-site, u
 
 leave-site = (socket, site, user) ~>
@@ -24,8 +25,8 @@ leave-site = (socket, site, user) ~>
   @state[s] ||= {}
   @state[s].users ||= {}
   delete @state[s].users[user.name]
-  socket.leave(s)
-  console.log "leaving #{s}"
+  socket.leave s
+  socket.leave "#s/users/#{user.id}"
   socket.in(s).broadcast.emit \leave-site, { id: user.id, name: user.name }
 
 in-site = (socket, site) ~>
@@ -35,7 +36,6 @@ in-site = (socket, site) ~>
   users = keys @state[s].users
   users.for-each (name) ~>
     u = @state[s].users[name]
-    console.warn \enter-site, \on-connect, u
     socket.in(s).emit \enter-site, u # not braoadcast
 
 user-from-session = (s, cb) ->
@@ -109,9 +109,8 @@ site-by-domain = (domain, cb) ->
         in-site socket, site
 
     socket.on \debug, ->
-      socket.emit \debug, 'hi'
       socket.emit \debug, socket.manager.rooms
-      socket.in('1').emit \debug, 'hi again to 1'
+      io.sockets.in('1/users/3').emit \debug, 'hi again to 3'
 
     # client no longer needs realtime query updates (navigated away from search page)
     socket.on \search-end, ->
@@ -141,5 +140,32 @@ site-by-domain = (domain, cb) ->
     #Chat.server-socket-init socket
     socket.on \chat_message, (message, cb) ->
       # create conversation if it doesn't already exist
-      # join the room for the channel if we haven't already joined
+      err, c <- db.conversation-find-or-create [{id:user.id, name:user.name}, {id:message.to.id, name:message.to.name}]
+      if err then cb err
+
+      # join the room for the conversation if we haven't already joined
+      c.room = "#{site.id}/conversations/#{c.id}"
+      socket.join c.room
+
+      # TODO - add message
+
+      # request a remote chat window be opened
+      user-room = "#{site.id}/users/#{message.to?id}"
+      io.sockets.in(user-room).emit \chat_open, c
+
       # broadcast message to channel
+      message.conversation_id = c.id
+      io.sockets.in(c.room).emit \chat_message, message
+      cb null, { conversation: c }
+
+    socket.on \chat_join, (c, cb) ->
+      c.room = "#{site.id}/conversations/#{c.id}"
+      socket.join c.room
+      cb null, c
+
+    socket.on \chat_close, (c, cb) ->
+      # XXX
+      console.log \chat_close, c
+      # leave room
+      socket.leave c?room
+      cb null, {}
