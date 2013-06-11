@@ -138,7 +138,7 @@ site-by-domain = (domain, cb) ->
       io.sockets.emit \register-search, {searchopts, site-id: site.id, room: search-room}
 
     #Chat.server-socket-init socket
-    socket.on \chat_message, (message, cb) ->
+    socket.on \chat-message, (message, cb) ->
       # create conversation if it doesn't already exist
       err, c <- db.conversation-find-or-create [{id:user.id, name:user.name}, {id:message.to.id, name:message.to.name}]
       if err then cb err
@@ -151,21 +151,19 @@ site-by-domain = (domain, cb) ->
 
       # request a remote chat window be opened
       user-room = "#{site.id}/users/#{message.to?id}"
-      io.sockets.in(user-room).emit \chat_open, c
+      io.sockets.in(user-room).emit \chat-open, c
 
       # broadcast message to channel
       message.conversation_id = c.id
-      io.sockets.in(c.room).emit \chat_message, message
+      io.sockets.in(c.room).emit \chat-message, message
       cb null, { conversation: c }
 
-    socket.on \chat_join, (c, cb) ->
+    socket.on \chat-join, (c, cb) ->
       c.room = "#{site.id}/conversations/#{c.id}"
       socket.join c.room
       cb null, c
 
-    socket.on \chat_close, (c, cb) ->
-      # XXX
-      console.log \chat_close, c
+    socket.on \chat-close, (c, cb) ->
       # leave room
       socket.leave c?room
       cb null, {}
