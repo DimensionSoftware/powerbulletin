@@ -19,7 +19,8 @@ socket.on \leave-site, (message, cb) ->
 
 socket.on \thread-impression (thread, cb) ->
   if thread.forum_id is window.active-forum-id
-    $("\#left_container ul.threads li[data-id=#{thread.id}] span.views").html("#{thread.views} <i>views</i>")
+    $ "\#left_container ul.threads li[data-id=#{thread.id}] span.views"
+      .html "#{thread.views}<i>views</i>"
 
 socket.on \thread-create (thread, cb) ->
   if window.active-forum-id is thread?forum_id

@@ -5,12 +5,13 @@ mixin _thread(t)
     a.mutant(data-surf=t.forum_id, href=t.uri)
       h4.stylish.title= t.title
       .break
-      span.created(data-time=t.created_iso)!= t.created_human
       .profile.photo
         img(src="#{cacheUrl}#{t.user_photo}")
       .container
-        .username by
+        span.username by
           em= t.user_name // XXX weird things happened when I tried to turn this into an anchor
+        span.created(data-time=t.created_iso)!= t.created_human
+        .clear
         span.post-count= t.post_count
           i posts
         span.views= t.views
