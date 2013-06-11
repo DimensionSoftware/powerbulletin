@@ -55,8 +55,6 @@ common-js = [ #{{{ Common JS
 #}}}
 common-css = [ #{{{ Common CSS
   "#{cvars.cache2-url}/fancybox/jquery.fancybox.css",
-  "#{cvars.cache3-url}/local/editor/styles.css",
-  "#{cvars.cache4-url}/jcrop/css/jquery.Jcrop.min.css",
   '/dynamic/css/master.styl']
 #}}}
 

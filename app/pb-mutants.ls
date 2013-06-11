@@ -28,6 +28,12 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     p.parent!add-class \active
     w.$(last p.parents \li) .find \.title .add-class \active # get parent, too
 
+load-css = []
+load-css = (href) ->
+  return if load-css[href] # guard
+  $ \head .append($ '<link rel="stylesheet" type="text/css">' .attr(\href, href))
+  load-css[href] = true
+
 layout-on-personalize = (w, u) ->
   if u # guard
     set-online-user u.id
@@ -35,6 +41,9 @@ layout-on-personalize = (w, u) ->
     unless CKEDITOR?version        then $.get-script "#cache-url/local/editor/ckeditor.js"
     unless $!html5-uploader?length then $.get-script "#cache-url/local/jquery.html5uploader.js"
     unless $!Jcrop?length          then $.get-script "#cache-url/jcrop/js/jquery.Jcrop.min.js"
+    # ...and css
+    load-css "#cache-url/local/editor/skins/moono/editor.css"
+    load-css "#cache-url/jcrop/css/jquery.Jcrop.min.css"
     # hash actions
     switch window.location.hash
     | \#choose   =>
