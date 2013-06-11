@@ -1,6 +1,7 @@
 require('shelljs/global');
-var cp = require('child_process'),
-    fs = require('fs');
+var cp     = require('child_process'),
+    fs     = require('fs'),
+    config = require('./config/common');
 
 module.exports = function(grunt) {
 
@@ -20,27 +21,27 @@ module.exports = function(grunt) {
       procs: {
         files: ['plv8_modules/*.ls', 'procedures.sql'],
         tasks: ['procs', 'browserify', 'launch', 'watch'],
-        options: {debounceDelay: 250, interrupt:true}
+        options: {debounceDelay: 250, interrupt:true, nospawn:true}
       },
       livescript: {
         files: ['app/main.ls'],
         tasks: ['livescript', 'browserify', 'launch', 'watch'],
-        options: {debounceDelay: 250, interrupt:true}
+        options: {debounceDelay: 250, interrupt:true, nospawn:true}
       },
       clientJade: {
         files: ['app/views/*.jade'],
         tasks: ['clientJade', 'browserify', 'launch', 'watch'],
-        options: {debounceDelay: 250, interrupt:true}
+        options: {debounceDelay: 250, interrupt:true, nospawn:true}
       },
       componentJade: {
         files: ['component/*.jade'],
         tasks: ['componentJade', 'browserify', 'launch', 'watch'],
-        options: {debounceDelay: 250, interrupt:true}
+        options: {debounceDelay: 250, interrupt:true, nospawn:true}
       },
       app: {
         files: ['component/*.ls', 'app/*.ls', 'config/*', 'lib/**/*.ls'],
         tasks: ['browserify', 'launch', 'watch'],
-        options: {debounceDelay: 250, interrupt:true}
+        options: {debounceDelay: 250, interrupt:true, nospawn:true}
       },
     }
   });
@@ -71,9 +72,7 @@ module.exports = function(grunt) {
   grunt.registerTask('launch', 'Launch PowerBulletin!', launch = function() {
     exec('killall -9 pb-supervisor pb-worker powerbulletin', {silent:true});
     // XXX surely there's a more automatic way to manage this?
-    var config = require('./config/common');
-    var file   = config.tmp+'/pb.pid';
-    daemon('./bin/powerbulletin', file);
+    daemon('./bin/powerbulletin', config.tmp+'/pb.pid');
   });
 
   grunt.registerTask('livescript', 'compile ls -> js', function() {
@@ -94,7 +93,8 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('browserify', 'generate browser bundle', function() {
-    exec('bin/build-browser-bundle');
+    //exec('bin/build-browser-bundle');
+    daemon('bin/build-browser-bundle', config.tmp+'/browserify.pid');
   });
 
   // Default task(s).
