@@ -378,8 +378,4 @@ switch window.location.hash
   after-login! # email activation
 
 <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
-  #mutant = mutants?[window.initial-mutant]
-  #console.log \on-initial
-  #if mutant.on-personalize
-  #  mutant.on-personalize window, window.user, (->)
 # vim:fdm=marker
