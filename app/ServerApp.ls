@@ -62,7 +62,7 @@ require! mw: './middleware'
 module.exports =
   class ServerApp
     (@port) ->
-    start: !->
+    start: !(cb = (->)) ->
       # XXX: I know this is a messy port, but we had a lot going on
       # and I had to encapsulate this all
       #
@@ -78,13 +78,14 @@ module.exports =
 
       server = null
 
-      graceful-shutdown = ->
+      graceful-shutdown = !(cb = (->)) ->
         console.warn 'Graceful shutdown started'
-        set-timeout (-> console.warn("Forcing shutdown"); process.exit!), 5000ms
+        sd-timeout = set-timeout (-> console.warn("Server never closed, restarting anyways"); cb!), 5000ms
         server.close (err) ->
+          clear-timeout sd-timeout
           console.warn 'Graceful shutdown finished'
           console.warn err if err
-          process.exit!
+          cb!
 
       html_50x = fs.read-file-sync('public/50x.html').to-string!
       html_404 = fs.read-file-sync('public/404.html').to-string!
@@ -100,7 +101,7 @@ module.exports =
         catch e
           console.log "Unable to setuid/setgid #{id}: #{e}"
 
-      proc.title = "pb-worker: port=#{@port}"
+      proc.title = "pb-worker-#{@port}"
       console.log "[1;30;30m  `+ worker #{proc.pid}[0;m"
 
       err <~ pg.init
@@ -216,7 +217,7 @@ module.exports =
       console.log {@port}
       server.listen @port
 
-      export stop = !->
-        graceful-shutdown!
+      @stop = graceful-shutdown
+      cb!
 
 # vim:fdm=marker

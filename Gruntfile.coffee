@@ -75,13 +75,22 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks "grunt-contrib-uglify"
   grunt.loadNpmTasks "grunt-contrib-watch"
   launch = undefined
+  isLaunched = false
   grunt.registerTask "launch", "Launch PowerBulletin!", launch = ->
-    exec "killall -9 pb-supervisor pb-worker powerbulletin",
-      silent: true
+    isLaunched = ! exec('ps aux | grep pb-worker | grep -v grep', {silent: true}).code
 
+    if isLaunched
+      # soft reload
+      console.log 'soft reload'
+      exec "killall -HUP -r pb-worker"
+    else
+      # initial load
+      console.log 'initial load'
+      exec "killall -9 -r pb-worker powerbulletin",
+        silent: true
     
-    # XXX surely there's a more automatic way to manage this?
-    daemon "./bin/powerbulletin", config.tmp + "/pb.pid"
+      # XXX surely there's a more automatic way to manage this?
+      daemon "./bin/powerbulletin", config.tmp + "/pb.pid"
 
   grunt.registerTask "livescript", "compile ls -> js", ->
     exec "node_modules/.bin/lsc -c app/main.ls"
