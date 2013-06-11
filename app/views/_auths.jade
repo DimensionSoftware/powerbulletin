@@ -4,7 +4,8 @@
       h2 Authenticating...
     fieldset
       .tooltip
-      input(id="password", name="password", type="password", placeholder="Password", disabled="disabled")
+      input(id="password", name="password", type="text", placeholder="Password", disabled="disabled")
+      .toggle-password Hide
       input(type="hidden", name="forgot")
       input(type="submit", value="Save", disabled="disabled")
       a.msg.onclick-show-login
@@ -44,7 +45,8 @@
     fieldset
       .tooltip
       input(id="username", name="username", type="text", placeholder="Username")
-      input(name="password", type="password", placeholder="Password")
+      input(name="password", type="text", placeholder="Password")
+      .toggle-password Hide
       input(name="email", class="register-email", type="text", placeholder="Email")
       input(type="submit", value="Sign In")
       a.msg.onclick-show-login

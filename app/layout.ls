@@ -302,9 +302,21 @@ window.reset-password = ->
         show-tooltip $('#auth .login form .tooltip'), "Now log in!"
       ), 1500ms
     else
-      show-tooltip $form.find(\.tooltip), "Choose a better password."
-  return false
+      show-tooltip $form.find(\.tooltip), "Choose a better password"
+  false
 
+window.toggle-password = (ev) ->
+  e = $ ev.target
+  p = e.prev '[name=password]'
+  if p.attr(\type) is \password
+    e.html \Hide
+    p.attr \type \text
+  else
+    e.html \Show
+    p.attr \type \password
+  false
+
+$d.on \click '.toggle-password' toggle-password
 $d.on \submit '.login form' login
 $d.on \submit '.register form' register
 $d.on \submit '.forgot form' forgot-password
