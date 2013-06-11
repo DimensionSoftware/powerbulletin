@@ -42,7 +42,7 @@ module.exports =
     send-message: (ev) ~>
       if ev.key-code is 13
         m = @message-from-env!
-        err, r <~ socket.emit \chat_message, m
+        err, r <~ socket.emit \chat-message, m
         if err
           console.error err
           return
@@ -66,7 +66,7 @@ module.exports =
 
     close: ~>
       console.warn \c, @
-      err, r <~ socket.emit \chat_close, @conversation
+      err, r <~ socket.emit \chat-close, @conversation
       key = @key!
       console.log \key, key
       Chat.stop(@key!)
