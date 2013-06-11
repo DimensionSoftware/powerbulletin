@@ -109,9 +109,9 @@ Chat.reorganize = ->
 
 Chat.client-socket-init = (socket) ->
 
-  socket.on \chat_open, (conversation, cb) ->
+  socket.on \chat-open, (conversation, cb) ->
     console.warn "received request to open chat #{conversation.id}"
-    err, c2 <- socket.emit \chat_join, conversation
+    err, c2 <- socket.emit \chat-join, conversation
     console.log \after-chat-join, err, c2
     me-first = (a, b) ->
       | a.name is window.user?name => -1
@@ -125,8 +125,7 @@ Chat.client-socket-init = (socket) ->
     c.conversation = conversation
     c.room = c2.room
 
-  socket.on \chat_message, (msg, cb) ~>
-    throw('boom')
+  socket.on \chat-message, (msg, cb) ~>
     return if msg.from.id is user?id
     # load appropriate chat instance
     c = Obj.find (-> it.conversation?id is msg.conversation_id), Chat.chats
@@ -134,5 +133,5 @@ Chat.client-socket-init = (socket) ->
       # add message to that chat
       c.add-message msg
     else
-      console.warn \chat_message, 'c not found', msg
+      console.warn \chat-message, 'c not found', msg
 
