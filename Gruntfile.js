@@ -20,27 +20,27 @@ module.exports = function(grunt) {
     watch: {
       procs: {
         files: ['plv8_modules/*.ls', 'procedures.sql'],
-        tasks: ['procs', 'browserify', 'launch', 'watch'],
+        tasks: ['procs', 'browserify', 'launch'],
         options: {debounceDelay: 250, interrupt:true, nospawn:true}
       },
       livescript: {
         files: ['app/main.ls'],
-        tasks: ['livescript', 'browserify', 'launch', 'watch'],
+        tasks: ['livescript', 'browserify', 'launch'],
         options: {debounceDelay: 250, interrupt:true, nospawn:true}
       },
       clientJade: {
         files: ['app/views/*.jade'],
-        tasks: ['clientJade', 'browserify', 'launch', 'watch'],
+        tasks: ['clientJade', 'browserify', 'launch'],
         options: {debounceDelay: 250, interrupt:true, nospawn:true}
       },
       componentJade: {
         files: ['component/*.jade'],
-        tasks: ['componentJade', 'browserify', 'launch', 'watch'],
+        tasks: ['componentJade', 'browserify', 'launch'],
         options: {debounceDelay: 250, interrupt:true, nospawn:true}
       },
       app: {
         files: ['component/*.ls', 'app/*.ls', 'config/*', 'lib/**/*.ls'],
-        tasks: ['browserify', 'launch', 'watch'],
+        tasks: ['browserify', 'launch'],
         options: {debounceDelay: 250, interrupt:true, nospawn:true}
       },
     }
