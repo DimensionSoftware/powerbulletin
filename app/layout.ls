@@ -158,14 +158,11 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
     cb!
   else # animate
     dst-scroll = Math.round(e.position!top) - offset
-    cur-scroll = window.scrollY
+    cur-scroll = window.scroll-y
     if Math.abs(dst-scroll - cur-scroll) > 30px
       <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms
       <- $ 'html,body' .animate { scroll-top:dst-scroll+threshold }, 110ms
       <- $ 'html,body' .animate { scroll-top:dst-scroll }, 75ms
-#      new-cur-scroll = Math.round(e.position!top) - offset
-#      if dst-scroll isnt new-cur-scroll # try again
-#        set-timeout (-> $ 'html,body' .animate { scroll-top:dst-scroll }, 50ms), 100ms
       cb!
     else
       cb!
@@ -173,7 +170,7 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
 
 # indicate to stylus that view scrolled
 has-scrolled = ->
-  st = $w.scrollTop!
+  st = $w.scroll-top!
   $ \body .toggle-class \scrolled (st > threshold)
 set-timeout (->
   $w.on \scroll -> has-scrolled!
@@ -241,11 +238,12 @@ window.register = ->
       $form.find("input:text,input:password").remove-class(\validation-error).val ''
       switch-and-focus \on-register \on-validate ''
     else
-      # NOTE:  Only the last tooltip is shown and only the last input is focused.
+      msgs = []
       r.errors?for-each (e) ->
         $e = $form.find("input[name=#{e.param}]")
-        $e.add-class \validation-error .focus!    # focus control
-        show-tooltip $form.find(\.tooltip), e.msg # display error
+        $e.add-class \validation-error .focus! # focus control
+        msgs.push e.msg
+      show-tooltip $form.find(\.tooltip), msgs.join \<br> # display errors
       shake-dialog $form, 100ms
   false
 
@@ -270,9 +268,9 @@ window.forgot-password = ->
     if r.success
       show-tooltip $form.find(\.tooltip), "Recovery link emailed!"
     else
-      show-tooltip $form.find(\.tooltip), "Email not found."
+      show-tooltip $form.find(\.tooltip), "Email not found"
       shake-dialog $form, 100ms
-  return false
+  false
 
 window.show-reset-password-dialog = ->
   $form = $ '#auth .reset form'
@@ -291,7 +289,7 @@ window.reset-password = ->
   $form = $ this
   password = $form.find('input[name=password]').val!
   if password.match /^\s*$/
-    show-tooltip $form.find(\.tooltip), "Password may not be blank."
+    show-tooltip $form.find(\.tooltip), "Password may not be blank"
     return false
   $.post $form.attr(\action), $form.serialize!, (r) ->
     if r.success
