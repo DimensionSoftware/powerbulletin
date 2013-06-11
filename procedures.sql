@@ -39,7 +39,7 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
     (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count
   FROM posts p
   JOIN users u ON p.user_id = u.id
-  JOIN aliases a ON u.id = p.user_id
+  JOIN aliases a ON u.id = a.user_id
   LEFT JOIN moderations m ON p.id=m.post_id
   WHERE p.forum_id IN (SELECT id FROM forums WHERE site_id = $1)
   AND a.name = $2
@@ -56,7 +56,7 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
       SELECT p.id,p.title,p.uri, a.user_id,a.name, f.uri furi,f.title ftitle
       FROM posts p
         LEFT JOIN aliases a ON a.user_id=p.user_id
-        LEFT JOIN posts f ON f.id=p.forum_id
+        LEFT JOIN forums f ON f.id=p.forum_id
       WHERE p.id IN (#{(u.unique [p.thread_id for p,i in posts]).join(', ')})
     """
     ctx = plv8.execute(thread-sql, [])
