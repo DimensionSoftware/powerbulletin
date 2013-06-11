@@ -188,10 +188,12 @@ $ui.on \nav-top-posts, (e, threads) ->
 
 #}}}
 # {{{ - generic form-handling ui
-$d.on \click '.create .no-surf' require-login(->
+$d.on \click '.create .no-surf' require-login((ev) ->
   $ '#main_content .forum' .html '' # clear canvas
-  set-timeout (-> edit-post is-editing(window.location.pathname), forum_id:window.active-forum-id), 200ms)
-$d.on \click \.edit.no-surf require-login(-> edit-post is-editing(window.location.pathname))
+  e = $ ev.target
+  edit-post e.data(\edit), forum_id:window.active-forum-id)
+$d.on \click \.edit.no-surf require-login((ev) ->
+  edit-post $(ev.target).data \edit)
 $d.on \click '.onclick-submit .cancel' (ev) ->
   f = $ ev.target .closest \.post-edit  # form
   f.hide 350ms \easeOutExpo

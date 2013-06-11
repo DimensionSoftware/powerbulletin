@@ -85,13 +85,3 @@ export align-breadcrumb = ->
 export remove-editing-url = (meta) ->
   History.replace-state {no-surf:true} '' meta.thread-uri
 
-export scroll-to-edit = (cb) ->
-  cb = -> noop=1 unless cb
-  id = is-editing window.location.pathname
-  if id then # scroll to id
-    awesome-scroll-to "\#post_#{id}" 600ms cb
-    true
-  else
-    scroll-to-top cb
-    false
-
