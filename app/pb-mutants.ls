@@ -29,14 +29,12 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     w.$(last p.parents \li) .find \.title .add-class \active # get parent, too
 
 layout-on-personalize = (w, u) ->
-  console.log \on-personalize, u
   if u # guard
     set-online-user u.id
-    $ ".post[data-user-id=#{u.id}] .edit, .post[data-user-id=#{u.id}] .censor"
-      .css \display \inline # enable censor
-    if u.rights?super # always enable for super admins
-      $ \.censor .css \display \inline
-
+    # load editing scripts
+    unless CKEDITOR?version        then $.get-script "#cache-url/local/editor/ckeditor.js"
+    unless $!html5-uploader?length then $.get-script "#cache-url/local/jquery.html5uploader.js"
+    unless $!Jcrop?length          then $.get-script "#cache-url/jcrop/js/jquery.Jcrop.min.js"
     # hash actions
     switch window.location.hash
     | \#choose   =>
@@ -309,6 +307,8 @@ export admin =
       next!
   on-load:
     (window, next) ->
+      unless $!nested-sortable?length # load for /admin/menu
+        $.get-script "#cache-url/local/jquery.mjs.nestedSortable.js"
       # expand left nav or not?
       $b = $ \body
       if window.admin-expanded = $b.has-class \collapsed
