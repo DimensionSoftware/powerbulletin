@@ -94,6 +94,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('browserify', 'generate browser bundle', function() {
     //exec('bin/build-browser-bundle');
+    exec('killall -9 build-browser-bundle', {silent:true});
     daemon('bin/build-browser-bundle', config.tmp+'/browserify.pid');
   });
 
