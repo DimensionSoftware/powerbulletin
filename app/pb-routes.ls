@@ -54,7 +54,6 @@ common-js = [ #{{{ Common JS
   "#{cvars.cache-url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
 #}}}
 common-css = [ #{{{ Common CSS
-  "#{cvars.cache2-url}/fancybox/jquery.fancybox.css",
   '/dynamic/css/master.styl']
 #}}}
 

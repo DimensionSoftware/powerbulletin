@@ -38,7 +38,6 @@ module.exports = (grunt) ->
         options:
           debounceDelay: 250
           interrupt: true
-          nospawn: true
 
       livescript:
         files: ["app/main.ls"]
@@ -46,7 +45,6 @@ module.exports = (grunt) ->
         options:
           debounceDelay: 250
           interrupt: true
-          nospawn: true
 
       clientJade:
         files: ["app/views/*.jade"]
@@ -54,7 +52,6 @@ module.exports = (grunt) ->
         options:
           debounceDelay: 250
           interrupt: true
-          nospawn: true
 
       componentJade:
         files: ["component/*.jade"]
@@ -62,7 +59,6 @@ module.exports = (grunt) ->
         options:
           debounceDelay: 250
           interrupt: true
-          nospawn: true
 
       app:
         files: ["component/*.ls", "app/*.ls", "config/*", "lib/**/*.ls"]
@@ -70,7 +66,6 @@ module.exports = (grunt) ->
         options:
           debounceDelay: 250
           interrupt: true
-          nospawn: true
 
   grunt.loadNpmTasks "grunt-contrib-uglify"
   grunt.loadNpmTasks "grunt-contrib-watch"
@@ -100,7 +95,6 @@ module.exports = (grunt) ->
     exec "bin/psql pb < procedures.sql",
       silent: true
 
-
   grunt.registerTask "clientJade", "compile regular jade", ->
     exec "bin/build-client-jade"
 
@@ -108,11 +102,8 @@ module.exports = (grunt) ->
     exec "bin/build-component-jade"
 
   grunt.registerTask "browserify", "generate browser bundle", ->
-    
-    #exec('bin/build-browser-bundle');
     exec "killall -9 build-browser-bundle",
       silent: true
-
     daemon "bin/build-browser-bundle", config.tmp + "/browserify.pid"
 
   
