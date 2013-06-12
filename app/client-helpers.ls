@@ -1,11 +1,17 @@
 export show-login-dialog = ->
   $.fancybox.open \#auth,
     close-effect: \elastic
-    close-speed:  200ms
+    close-speed:  150ms
     close-easing: \easeOutExpo
     open-effect: \fade
     open-speed: 300ms
   set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
+  # password complexity ui
+  window.COMPLEXIFY_BANLIST = [\god \money \password]
+  $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
+    e = $ this .parent!
+    e.find \.strength-meter .toggle-class \strong, pass
+    e.find \.strength .css(height:parse-int(percent)+\%))
 
 export require-login = (fn) ->
   ~>

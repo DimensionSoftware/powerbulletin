@@ -530,6 +530,23 @@ html.search body.scrolled
       opacity 1
       transition height .5s, opacity 1s
 #auth
+  .strength-meter
+    position absolute
+    right 118px
+    z-index 11
+    height 20px
+    width 6px
+    margin-top -36px
+  .toggle-password
+    position absolute
+    z-index 10
+    margin-top -37px
+    letter-spacing 1px
+    font-size 11px
+    font-weight 200
+    right 130px
+    padding 0 6px
+    cursor pointer
   .register, .login, .forgot, .reset, .choose
     .tooltip
       width 210px
@@ -573,6 +590,7 @@ html.search body.scrolled
     a
       text-decoration none
   fieldset
+    position relative
     padding 20px 102px
   input[name="email"]
     width 297px
