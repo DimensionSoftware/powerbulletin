@@ -21,9 +21,7 @@ global <<< require \./server-helpers
 global <<< require \./shared-helpers
 global <<< require \./client-helpers
 
-is-editing = /\/(edit|new)\/?([\d+]*)$/
-is-admin   = /\/admin.*/
-is-auth    = /\/auth.*/
+{is-editing, is-admin, is-auth} = require \./path-regexps
 
 posts-per-page = 30
 

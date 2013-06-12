@@ -8,6 +8,8 @@ require! {
   __: lodash
 }
 
+{is-editing, is-admin, is-auth} = require \./path-regexps
+
 @login = (req, res, next) ->
   domain   = res.vars.site.current_domain
   err, passport <- auth.passport-for-domain domain
