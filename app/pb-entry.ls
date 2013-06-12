@@ -12,6 +12,7 @@ global <<< require \./client-helpers.ls
 
 # components
 require! \../component/Buy.ls
+require! \../component/Paginator.ls
 
 # XXX client-side entry
 # shortcuts
@@ -352,7 +353,10 @@ window.do-buy = (product-id) ->
   $.fancybox(window.component.buy.$)
 
 window.do-test = ->
-  new Buy {} 'body'
+  window.component.paginator ||=
+    (new Paginator {locals: {qty: 100}}).attach!
+  $.fancybox(window.component.paginator.$)
+
 #}}}
 
 # vim:fdm=marker

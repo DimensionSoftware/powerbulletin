@@ -1,2 +1,5 @@
-each page in activePages
-  a.Paginator-page(href='#')= page
+each p in pages
+  if p.active
+    strong.Paginator-page= p.num
+  else
+    a.Paginator-page(href=p.href)= p.num

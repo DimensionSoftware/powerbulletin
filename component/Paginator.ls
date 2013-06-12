@@ -2,29 +2,40 @@ require! \./Component.ls
 
 {templates} = require \../build/component-jade.js
 
-function calculate {page, step, qty}
+function calc {active-page, step, qty}, pnum-to-href
   page-qty = qty / step
   {
     page-qty
-    active-pages: [1 to page-qty]
+    pages:
+      for num in [1 to page-qty]
+        {num, href: pnum-to-href(num), active: active-page is num}
   }
 
 module.exports =
   class Paginator extends Component
     default-locals =
-      page: 1
+      active-page: 1
       step: 8
       qty: 0
 
     (opts, ...rest) ->
       opts ||= {}
+
+      # overridable
+      @pnum-to-href =
+        opts.pnum-to-href or (-> "?page=#it")
+
       locals = {} <<< default-locals <<< opts.locals
-      locals <<< calculate(locals)
+      locals <<< @calculate locals
       opts <<< {locals}
 
       super opts, ...rest
     component-name: \Paginator
     template: templates.Paginator
+    calculate: (override-locals) ->
+      locals = override-locals or @locals!
+      {} <<< locals <<< calc(locals, @pnum-to-href)
+
 
 # REPL EXAMPLE:
 # require! \./component/Paginator; p = new Paginator {locals: {qty: 500}}; p.html!
