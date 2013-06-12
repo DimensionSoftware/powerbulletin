@@ -40,7 +40,7 @@ module.exports =
     # component instances' container
     #
     # @$ could be thought of as 'the container'
-    ({locals = {}, @auto-render = true, @auto-attach = true} = {}, @selector, @parent) ->
+    ({locals = {}, @auto-render = true, @auto-attach = @is-client} = {}, @selector, @parent) ->
       @state =
         {[k, (if v?_is-reactive then v else @@$R.state(v))] for k,v of locals}
       if @selector
@@ -53,6 +53,8 @@ module.exports =
         # the wrapping div for the component (only when no container specified)
         @$top = @@$ '<div><div/></div>'
         @$ = @$top.find \div
+
+      @init! if @init # component init, right before rendering/attaching
 
       if @parent
         @render(false) if @parent.auto-render
@@ -122,7 +124,17 @@ module.exports =
       return @
     locals: ->
       {[k, s.val] for k,s of @state}
-    local: (k) ->
-      @state[k]?val
+    local: (k, v) ->
+      existing-r = @state[k]
+      if v
+        if existing-r
+          # set existing reactive var
+          existing-r(v)
+        else
+          # no state exists, create reactive var
+          @state[k] = @@$R v
+          v
+      else
+        existing-r?val
     html: (wrapped = true) ->
       ((wrapped and @$top) or @$).html!
