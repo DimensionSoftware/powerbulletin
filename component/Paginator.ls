@@ -2,9 +2,7 @@ require! \./Component.ls
 
 {templates} = require \../build/component-jade.js
 
-function calc {active-page, step, qty, page-distance}, pnum-to-href
-  page-qty = Math.ceil(qty / step)
-
+function calc {active-page, step, qty, page-distance, page-qty}, pnum-to-href
   beg =
     if active-page > page-distance
       active-page - page-distance
@@ -53,6 +51,10 @@ module.exports =
     init: ->
       for k,v of default-locals when @local(k) is void
         @local k, v
+
+      @state.page-qty = @@$R(
+        (qty, step) -> Math.ceil(qty / step)
+      ).bind-to @state.qty, @state.step
 
       @calculate!
 

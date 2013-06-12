@@ -123,11 +123,11 @@ module.exports =
 
       return @
     locals: ->
-      {[k, s.val] for k,s of @state}
+      {[k, s!] for k,s of @state}
     local: (k, v) ->
       existing-r = @state[k]
       if v is void
-        existing-r?val
+        existing-r! if existing-r
       else
         if existing-r
           # set existing reactive var
