@@ -20,12 +20,10 @@ function calc {active-page, step, qty, page-distance}, pnum-to-href
   min-len = page-distance * 2
   act-len = end - beg
   if act-len < min-len
-    # len needs to be increased
     if beg < page-distance
+      # len needs to be increased
       end += page-distance - beg
-      console.log {end}
       end = Math.min(page-qty, end) # don't overshoot actual page-qty
-      console.log {end}
 
   pages =
     for num in [beg to end]
@@ -48,28 +46,19 @@ module.exports =
       # how many other pages behind and in front of active-page should we show?
       page-distance: 4
 
-    (opts, ...rest) ->
-      opts ||= {}
+    ({@pnum-to-href} = {}) ->
+      @pnum-to-href ||= (-> "?page=#it")
+      super ...
 
-      # overridable
-      @pnum-to-href =
-        opts.pnum-to-href or (-> "?page=#it")
+    init: ->
+      for k,v of default-locals when @local(k) is void
+        @local k, v
 
-      locals = {} <<< default-locals <<< opts.locals
-      locals <<< @calculate locals
-      opts <<< {locals}
+      @calculate!
 
-      super opts, ...rest
     component-name: \Paginator
     template: templates.Paginator
-    calculate: (override-locals) ->
-      locals = override-locals or @locals!
-      rval = {} <<< locals <<< calc(locals, @pnum-to-href)
-      console.log rval
-      rval
-
-# REPL EXAMPLE:
-# livescript> require! \./component/Paginator; p = new Paginator {locals: {qty:100}}; p.html!
-# '<div class="Paginator"><strong class="Paginator-page"></strong><a href="?page=2" class="Paginator-page"></a><a href="?page=3" class="Paginator-page"></a><a href="?page=4" class="Paginator-page"></a><a href="?page=5" class="Paginator-page"></a><a href="?page=6" class="Paginator-page"></a><a href="?page=7" class="Paginator-page"></a><a href="?page=8" class="Paginator-page"></a><a href="?page=9" class="Paginator-page"></a><a href="?page=10" class="Paginator-page"></a><a href="?page=11" class="Paginator-page"></a><a href="?page=12" class="Paginator-page"></a><a href="?page=13" class="Paginator-page"></a><a href="?page=13" class="Paginator-page"></a></div>'
-# require! \./component/Paginator; p = new Paginator {locals: {active-page:14, qty:100}}; p.html!
-# '<div class="Paginator"><a href="?page=1" class="Paginator-page">first</a><a href="?page=10" class="Paginator-page">10</a><a href="?page=11" class="Paginator-page">11</a><a href="?page=12" class="Paginator-page">12</a><a href="?page=13" class="Paginator-page">13</a></div>'
+    calculate: !->
+      locals = @locals!
+      for k, v of calc(locals, @pnum-to-href)
+        @local k, v

@@ -126,15 +126,15 @@ module.exports =
       {[k, s.val] for k,s of @state}
     local: (k, v) ->
       existing-r = @state[k]
-      if v
+      if v is void
+        existing-r?val
+      else
         if existing-r
           # set existing reactive var
           existing-r(v)
         else
           # no state exists, create reactive var
-          @state[k] = @@$R v
+          @state[k] = @@$R.state v
           v
-      else
-        existing-r?val
     html: (wrapped = true) ->
       ((wrapped and @$top) or @$).html!
