@@ -4,7 +4,7 @@
 // XXX default theme containing all color decoration & embellishments
 
 highlight-color             = #ffeedd
-highlight-color2            = #ff6803
+highlight-color2            = #ff9225
 highlight-color-translucent = rgba(255,100,50,.3)
 
 footer-height = 25px
@@ -200,9 +200,10 @@ header
     border-right 1px solid #bbb
   #paginator
     border-right 1px solid #ddd
-    background-color rgba(100,100,100,0.1)
+    background-color rgba(150,150,150,0.1)
+    background-image linear-gradient(96deg,#eee,#fff 10px,#eee)
     border-top 2px solid #ccc
-    border-bottom 2px solid #ccc
+    border-bottom 1px solid #ccc
     .current:hover
       color #fff
       text-shadow 1px 1px 0 #555
@@ -212,6 +213,7 @@ header
       border-bottom 1px solid #aaa
     .current
       background-color #ddd
+      background-image linear-gradient(top, #eaeaea 45%, #fafafa)
       color #fafafa
       text-shadow 1px 1px 0 #777
       border-top 1px solid #bbb
@@ -404,8 +406,7 @@ textarea:focus, select:focus
   background-color rgba(100,100,100,.2)
   border-radius 6px
 .button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
-  background -moz-linear-gradient(center top , #ffce29, #f38437) repeat scroll 0 0 #ffffff
-  background -webkit-gradient(linear, left top, left bottom, from(#ffce29), to(#f38437))
+  background-image linear-gradient(bottom, #ffce29 45%, #febe19 60%)
   //text-indent -2px
   background-color #ffca27
   border-color #777
@@ -455,9 +456,10 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   white-space nowrap
   position relative
   text-shadow 0 1px 0 #444,1px 1px 0 #444
-  background -moz-linear-gradient(center top , #FFC447, #F38437) repeat scroll 0 0 #FFFFFF
   letter-spacing 1px
-  background -webkit-gradient(linear, left top, left bottom, from(#FFC447), to(#F38437))
+  //background -webkit-gradient(linear, left top, left bottom, from(#FFC447), to(#F38437))
+  //background -moz-linear-gradient(center top , #FFC447, #F38437) repeat scroll 0 0 #FFFFFF
+  background-image linear-gradient(bottom, #ffc447 45%, #fdb235 50%)
   background-color #F38437
   box-shadow 0px 0px 3px #C35407
   border 1px solid #666
@@ -465,7 +467,7 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   border-left 1px solid #ffe457
   border-bottom-color #444
   color #fff
-  font-size 1.1em
+  font-size 1.25em
   font-weight 600
   padding 6px 15px
   margin-right (grid/2)

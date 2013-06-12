@@ -109,8 +109,6 @@ html.forum, html.profile, html.search
           display inline-block
           border-bottom 1px solid transparent
         .created
-          background-color #fdfdfd
-          border-radius 3px
           color #444
           opacity 0
         a
@@ -133,13 +131,14 @@ html.forum, html.profile, html.search
         a #fff
       .thread.active:last-child, .thread.active
         background-color #fff
+        background-image linear-gradient(bottom, #fff 80px,#eee)
         border-left 3px solid highlight-color2
         transition background-color .5s cubic-bezier(0, 0, 0.17, 1)
         a
           color #111
         .created
           opacity 1
-          background-color #fff
+          display block
 //}}}
 //{{{ - profile
 html.profile

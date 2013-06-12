@@ -82,12 +82,10 @@ html.forum, html.profile, html.search
         margin (grid/2) (grid*2.5) (grid/2) (grid*2)
   #left_content.wide
     #left_container
-      .create
-        font-size 1.1em
       .threads
         .created
-          display block
           opacity 1
+          display inline
   #left_content
     transform translateX(0)
     opacity 1
@@ -116,6 +114,7 @@ html.forum, html.profile, html.search
         padding 1px (grid*1.5) grid ((grid*2)+3)
         .mutant
           display block
+          border none
           animation-name none
         .title
           overflow hidden
@@ -124,6 +123,7 @@ html.forum, html.profile, html.search
           margin grid grid 0 -5px
           padding 1px 5px
         .username
+          margin-right 5px
           font-size .7em
           em
             text-transform capitalize
@@ -132,12 +132,10 @@ html.forum, html.profile, html.search
             font-size 1.1em
         .created
           font-size .8em
-          display inline-block
           font-weight 200
-          padding 1px 5px
-          position absolute
-          right (grid/2)
-          bottom grid
+          display none
+        .clear
+          margin-top -5px
         .created, .username, .post-count
           white-space nowrap
           text-overflow ellipsis
@@ -187,12 +185,13 @@ html.forum, html.profile, html.search
           text-align right
         .button
           position absolute
-          left 70px
-          bottom -41px
           z-index 15
           padding 2px 5px
           font-size .9em
-          height 25px
+          height 26px
+          right -14px
+          bottom 9px
+          left auto
         .close
           opacity 0
           right -25px
@@ -201,7 +200,7 @@ html.forum, html.profile, html.search
           z-index 10
         .summary
           .profile.photo
-            margin-left grid
+            margin-left 3px
             border-radius 1px
             height 39px
             width 49px
@@ -399,10 +398,6 @@ html.profile
           display none
         .username
           display none
-        .post-edit .button
-          right -14px
-          bottom 7px
-          left auto
         .date
           font-weight 200
           font-style italic
@@ -444,23 +439,30 @@ html.search
 //}}}
 //{{{ - admin
 html.admin
-  #left_container
-    padding-top 60px
-    menu
-      float right
-      list-style none
-      padding 12px
-      margin 0 0 0 3px
-      li
-        margin-bottom (grid+3)
-        text-align right
+  #left_content
+    max-width 150px
+    #left_container
+      padding-top 60px
+      menu
+        float right
+        list-style none
+        padding 12px
+        margin 0 0 0 3px
+        transition all .2s ease-out
+        li
+          margin-bottom (grid+3)
+          text-align right
   #main_content
+    padding-left 200px
     .note
       color #aaa
       font-size .7em
       position absolute
       margin-top -6px
       left 183px
+    .menus
+      .col1, col2
+        float left
     .domains
       form
         fieldset

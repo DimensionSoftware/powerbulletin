@@ -1,17 +1,16 @@
-.resizable
-  form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
-    fieldset
-      label(for='posts_per_page') Posts per Page
-      input(id='posts_per_page', class='posts-per-page', name='postsPerPage', type='text', value=site.config.postsPerPage)
-      //-.break
-      //-label(for='theme') Base Theme
-      //-select(id='theme', name='theme')
-      //-  each t in themes
-      //-    option(value=t.id)= t.name
-      .break
-      label(for='keywords') Meta Keywords
-      textarea(id='keywords', name='metaKeywords')= site.config.metaKeywords
+form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
+  fieldset
+    label(for='posts_per_page') Posts per Page
+    input(id='posts_per_page', class='posts-per-page', name='postsPerPage', type='text', value=site.config.postsPerPage)
+    //-.break
+    //-label(for='theme') Base Theme
+    //-select(id='theme', name='theme')
+    //-  each t in themes
+    //-    option(value=t.id)= t.name
+    .break
+    label(for='keywords') Meta Keywords
+    textarea(id='keywords', name='metaKeywords')= site.config.metaKeywords
 
-    input.button(type='submit', value='Save')
-    .tooltip
-    input(type='hidden', name='action', value='general')
+  input.button(type='submit', value='Save')
+  .tooltip
+  input(type='hidden', name='action', value='general')

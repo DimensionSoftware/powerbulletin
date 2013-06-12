@@ -1,0 +1,18 @@
+form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
+  .col1
+    button.onclick-add Add Page
+    ol.sortable
+      li General Forum
+  .col2
+    fieldset
+      label(for='type') Select a Type
+      select(id='type', name='type')
+        option(value=2) Forum
+        option(value=1) Page
+      br
+      label(for='hide_menu') Hide main menu
+      input(id='hide_menu', type='checkbox')
+      
+      input.button(type='submit', value='Save')
+      .tooltip
+      input(type='hidden', name='action', value='menu')

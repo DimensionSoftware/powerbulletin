@@ -182,7 +182,7 @@ date-fields =
     sel = "\#post_#{id}"
     e   = $ sel
     unless e.find("\#post_edit_#{id}:visible").length # guard
-      scroll-to-edit!
+      awesome-scroll-to "\#post_#{id}" 600ms
       $.get "/resources/posts/#{id}" (p) ->
         render sel, p
         e .add-class \editing

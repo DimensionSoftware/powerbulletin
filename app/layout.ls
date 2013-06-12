@@ -98,7 +98,8 @@ window.onload-personalize = ->
       $ \.onclick-login   .hide!
       $ \.onclick-logout  .show!
       $ \.onclick-profile .show!
-    unless (user?rights?super or user?rights?admin) then $ \.admin-only .hide! else $ \.admin-only .show!
+    # admin
+    if user?rights?super or user?rights?admin then $ \.admin-only .show! else $ \.admin-only .hide!
   else
     $ \.onclick-login   .show!
     $ \.onclick-logout  .hide!
@@ -109,32 +110,33 @@ window.onload-personalize = ->
 window.onload-resizable = ->
   left-offset = 50px
 
-  # handle main content
+  $l = $ \#left_content
   $r = $ '#main_content .resizable'
 
-  # handle left
-  $l = $ \#left_content
-  $l.resizable(
-    min-width: 200px
-    max-width: 450px
-    resize: (e, ui) ->
-      $l.toggle-class \wide ($l.width! > 300px)        # resize left nav
-      $r.css \padding-left (ui.size.width+left-offset) # " resizable
-      $l.find \.scrollable .get-nice-scroll!resize!
-      window.save-ui!)
-  # TODO
-  #  - would be nice to ease-expo-out on scroll
-  #  - fix scrollable region to include another few hundred px on bottom
-  $l.find(\.scrollable).nice-scroll {
-    bouncescroll:    true
-    cursorcolor:     \#aaa
-    cursorwidth:     2
-    hidecursordelay: 800
-    mousescrollstep: 5
-    railoffset:      true
-    railpadding:     {bottom:50px}}
   if $r.length
+    $l.resizable(
+      min-width: 200px
+      max-width: 450px
+      resize: (e, ui) ->
+        $l.toggle-class \wide ($l.width! > 300px)        # resize left nav
+        $r.css \padding-left (ui.size.width+left-offset) # " resizable
+        $l.find \.scrollable .get-nice-scroll!resize!
+        window.save-ui!)
+    # TODO
+    #  - would be nice to ease-expo-out on scroll
+    #  - fix scrollable region to include another hundred px on bottom
+    $l.find \.scrollable .nice-scroll {
+      bouncescroll:    true
+      cursorcolor:     \#aaa
+      cursorwidth:     2
+      hidecursordelay: 800
+      mousescrollstep: 5
+      railoffset:      true
+      railpadding:     {bottom:50px}}
     $r.css \padding-left ($l.width!+left-offset) # snap
+  else
+    try
+      $l.resizable \destroy
 #}}}
 #{{{ Scrolling behaviors
 window.scroll-to-top = (cb=->) ->
@@ -156,14 +158,11 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
     cb!
   else # animate
     dst-scroll = Math.round(e.position!top) - offset
-    cur-scroll = window.scrollY
+    cur-scroll = window.scroll-y
     if Math.abs(dst-scroll - cur-scroll) > 30px
       <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms
       <- $ 'html,body' .animate { scroll-top:dst-scroll+threshold }, 110ms
       <- $ 'html,body' .animate { scroll-top:dst-scroll }, 75ms
-#      new-cur-scroll = Math.round(e.position!top) - offset
-#      if dst-scroll isnt new-cur-scroll # try again
-#        set-timeout (-> $ 'html,body' .animate { scroll-top:dst-scroll }, 50ms), 100ms
       cb!
     else
       cb!
@@ -171,7 +170,7 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
 
 # indicate to stylus that view scrolled
 has-scrolled = ->
-  st = $w.scrollTop!
+  st = $w.scroll-top!
   $ \body .toggle-class \scrolled (st > threshold)
 set-timeout (->
   $w.on \scroll -> has-scrolled!
@@ -192,8 +191,6 @@ $d.on \mousedown \.onclick-scroll-top ->
 window.shake-dialog = ($form, time) ->
   $fancybox = $form.parents(\.fancybox-wrap:first) .remove-class \shake
   set-timeout (-> $fancybox.add-class(\shake)), 100ms
-
-$d.on \click \.onclick-login -> ch.show-login-dialog!; false
 
 # register action
 # login action
@@ -239,11 +236,12 @@ window.register = ->
       $form.find("input:text,input:password").remove-class(\validation-error).val ''
       switch-and-focus \on-register \on-validate ''
     else
-      # NOTE:  Only the last tooltip is shown and only the last input is focused.
+      msgs = []
       r.errors?for-each (e) ->
         $e = $form.find("input[name=#{e.param}]")
-        $e.add-class \validation-error .focus!    # focus control
-        show-tooltip $form.find(\.tooltip), e.msg # display error
+        $e.add-class \validation-error .focus! # focus control
+        msgs.push e.msg
+      show-tooltip $form.find(\.tooltip), msgs.join \<br> # display errors
       shake-dialog $form, 100ms
   false
 
@@ -268,9 +266,9 @@ window.forgot-password = ->
     if r.success
       show-tooltip $form.find(\.tooltip), "Recovery link emailed!"
     else
-      show-tooltip $form.find(\.tooltip), "Email not found."
+      show-tooltip $form.find(\.tooltip), "Email not found"
       shake-dialog $form, 100ms
-  return false
+  false
 
 window.show-reset-password-dialog = ->
   $form = $ '#auth .reset form'
@@ -289,7 +287,7 @@ window.reset-password = ->
   $form = $ this
   password = $form.find('input[name=password]').val!
   if password.match /^\s*$/
-    show-tooltip $form.find(\.tooltip), "Password may not be blank."
+    show-tooltip $form.find(\.tooltip), "Password may not be blank"
     return false
   $.post $form.attr(\action), $form.serialize!, (r) ->
     if r.success
@@ -302,15 +300,29 @@ window.reset-password = ->
         show-tooltip $('#auth .login form .tooltip'), "Now log in!"
       ), 1500ms
     else
-      show-tooltip $form.find(\.tooltip), "Choose a better password."
-  return false
+      show-tooltip $form.find(\.tooltip), "Choose a better password"
+  false
 
+window.toggle-password = (ev) ->
+  e = $ ev.target
+  p = e.prev '[name=password]'
+  if p.attr(\type) is \password
+    e.html \Hide
+    p.attr \type \text
+  else
+    e.html \Show
+    p.attr \type \password
+  false
+
+$d.on \click \.require-login ch.require-login(-> this.click)
+$d.on \click \.onclick-login -> ch.show-login-dialog!; false
+$d.on \click '.toggle-password' toggle-password
 $d.on \submit '.login form' login
 $d.on \submit '.register form' register
 $d.on \submit '.forgot form' forgot-password
 $d.on \submit '.choose form' choose
 $d.on \submit '.reset form' reset-password
-$d.on \click \.require-login ch.require-login(-> this.click)
+
 
 # 3rd-party auth
 $ '.social a' .click ->
@@ -376,8 +388,4 @@ switch window.location.hash
   after-login! # email activation
 
 <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
-  #mutant = mutants?[window.initial-mutant]
-  #console.log \on-initial
-  #if mutant.on-personalize
-  #  mutant.on-personalize window, window.user, (->)
 # vim:fdm=marker

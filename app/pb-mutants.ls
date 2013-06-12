@@ -28,15 +28,22 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     p.parent!add-class \active
     w.$(last p.parents \li) .find \.title .add-class \active # get parent, too
 
+load-css = []
+load-css = (href) ->
+  return if load-css[href] # guard
+  $ \head .append($ '<link rel="stylesheet" type="text/css">' .attr(\href, href))
+  load-css[href] = true
+
 layout-on-personalize = (w, u) ->
-  console.log \on-personalize, u
   if u # guard
     set-online-user u.id
-    $ ".post[data-user-id=#{u.id}] .edit, .post[data-user-id=#{u.id}] .censor"
-      .css \display \inline # enable censor
-    if u.rights?super # always enable for super admins
-      $ \.censor .css \display \inline
-
+    # load editing scripts
+    unless CKEDITOR?version        then $.get-script "#cache-url/local/editor/ckeditor.js"
+    unless $!html5-uploader?length then $.get-script "#cache-url/local/jquery.html5uploader.js"
+    unless $!Jcrop?length          then $.get-script "#cache-url/jcrop/js/jquery.Jcrop.min.js"
+    # ...and css
+    load-css "#cache-url/local/editor/skins/moono/editor.css"
+    load-css "#cache-url/jcrop/css/jquery.Jcrop.min.css"
     # hash actions
     switch window.location.hash
     | \#choose   =>
@@ -298,6 +305,7 @@ export admin =
       window.render-mutant \main_content switch @action
       | \domains  => \admin-domains
       | \invites  => \admin-invites
+      | \menu     => \admin-menu
       | otherwise => \admin-general
       layout-static window, \admin
       window.marshal \site @site
@@ -308,6 +316,8 @@ export admin =
       next!
   on-load:
     (window, next) ->
+      unless $!nested-sortable?length # load for /admin/menu
+        $.get-script "#cache-url/local/jquery.mjs.nestedSortable.js"
       # expand left nav or not?
       $b = $ \body
       if window.admin-expanded = $b.has-class \collapsed

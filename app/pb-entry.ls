@@ -12,6 +12,7 @@ global <<< require \./client-helpers.ls
 
 # components
 require! \../component/Buy.ls
+require! \../component/Paginator.ls
 
 # XXX client-side entry
 # shortcuts
@@ -188,10 +189,12 @@ $ui.on \nav-top-posts, (e, threads) ->
 
 #}}}
 # {{{ - generic form-handling ui
-$d.on \click '.create .no-surf' require-login(->
+$d.on \click '.create .no-surf' require-login((ev) ->
   $ '#main_content .forum' .html '' # clear canvas
-  set-timeout (-> edit-post is-editing(window.location.pathname), forum_id:window.active-forum-id), 200ms)
-$d.on \click \.edit.no-surf require-login(-> edit-post is-editing(window.location.pathname))
+  e = $ ev.target
+  edit-post e.data(\edit), forum_id:window.active-forum-id)
+$d.on \click \.edit.no-surf require-login((ev) ->
+  edit-post $(ev.target).data \edit)
 $d.on \click '.onclick-submit .cancel' (ev) ->
   f = $ ev.target .closest \.post-edit  # form
   f.hide 350ms \easeOutExpo
@@ -287,10 +290,18 @@ if mocha? and window.location.search.match /test=1/
 #{{{ - chat
 $d.on \click  'button.onclick-chat' require-login( (ev) ->
   profile-name = $ 'div.profile:first' .data \user-name
-  Chat.start [user.name, profile-name]
+  f = user
+  t =
+    id   : $ 'div.profile:first' .data \user-id
+    name : $ 'div.profile:first' .data \user-name
+  Chat.start [f, t]
 )
 #}}}
 #{{{ - admin
+$d.on \click 'html.admin .onclick-add' (ev) ->
+  console.log \add-sortable
+  false
+
 $d.on \click  'html.admin .onclick-submit input[type="submit"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form
@@ -301,7 +312,7 @@ $d.on \click  'html.admin .onclick-submit input[type="submit"]' (ev) ->
     f.find \input:first .focus!
     if data?success
       # indicated saved
-      show-tooltip t, \Saved!
+      show-tooltip t, (t.data(\msg) or \Saved!)
       for k, v of inputs
         for e in v
           e = $ e
@@ -329,12 +340,22 @@ $d.on \change 'html.admin .domain' -> # set keys
 # {{{ - components
 window.component = {}
 
-window.do-buy = ->
-  window.component.buy ||= (new Buy).attach!
+window.do-buy = (product-id) ->
+  throw new Error "window.do-buy must specify a product-id" unless product-id
+
+  product <- $.get(\/resources/products/ + product-id)
+  locals = {product}
+
+  existing.detach! if existing = window.component.buy
+
+  window.component.buy = new Buy {locals}
   $.fancybox(window.component.buy.$)
 
 window.do-test = ->
-  new Buy {} 'body'
+  window.component.paginator ||=
+    new Paginator {locals: {qty: 100}}
+  $.fancybox(window.component.paginator.$)
+
 #}}}
 
 # vim:fdm=marker

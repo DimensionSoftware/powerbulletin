@@ -35,12 +35,8 @@ html
     else
       script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
     if jsUrls
-      |<script type="text/javascript">
-      |  window.initialMutant = !{JSON.stringify(initialMutant)};
-      |  window.cacheUrl = !{JSON.stringify(cvars.cacheUrl)};
-      |  head.js.apply(head, !{JSON.stringify(cvars.baseJsUrls.concat(jsUrls))});
-      |</script>
-
+      script(type="text/javascript")
+        window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};head.js.apply(head,!{JSON.stringify(cvars.baseJsUrls.concat(jsUrls))});
   body
     header.header.toggler
       h1.logo
@@ -114,4 +110,5 @@ html
     #chat_drawer
 
     //- css not required for initial page render -- performance mod.
+    link(href="#{cache2Url}/fancybox/jquery.fancybox.css", rel='stylesheet', type='text/css')
     link(href="#{cache5Url}/local/jquery-ui.min.css", rel='stylesheet', type='text/css')

@@ -1,5 +1,4 @@
 require! {
-  sio: 'socket.io'
   crc32: 'express/node_modules/buffer-crc32'
   cookie: 'express/node_modules/cookie'
   connect: 'express/node_modules/connect'
@@ -9,14 +8,69 @@ require! {
 }
 
 # might need to put this somewhere more persistent
-@state = {}
+@state = {} # XXX - may need to move this to redis
+
+# I might move this to another file later.
+# I'm just not sure where in the dir hierarchy it should go.
+# component/ChatServer.ls? even though it's not a component.
+class ChatServer
+  (@io, @socket, @site, @user) ->
+
+  connections: {} # XXX - may need to move this to redis
+  chat-join: (c, cb) ~>
+    console.warn \chat-join
+    c.room = "#{@site.id}/conversations/#{c.id}"
+    @connections[@socket.id] ||= {}
+    @connections[@socket.id][c.id] = c
+    @socket.join c.room
+    cb null, c
+  chat-leave: (c, cb) ~>
+    console.warn \chat-leave
+    delete @connections[@socket.id]?[c.id]
+    @socket.leave c?room
+    cb null, c
+  chat-message: (message, cb) ~>
+    console.warn \chat-message, arguments
+    ## if connection has a chat with message.chat_id use it
+    if c = @connections[@socket.id]?[message.conversation_id]
+      console.warn "remote chat already opened"
+      @io.sockets.in(c.room).emit \chat-message, message
+      cb null, { conversation: c }
+
+    ## else load it from the database
+    else
+      console.warn "need to setup new remote chat"
+      err, c <~ db.conversation-find-or-create [{id:@user.id, name:@user.name}, {id:message.to.id, name:message.to.name}]
+      if err then cb err
+
+      # join the room for the conversation if we haven't already joined
+      c.room = "#{@site.id}/conversations/#{c.id}"
+      @connections[@socket.id] ||= {}
+      @connections[@socket.id][c.id] = c
+      @socket.join c.room
+
+      # request a remote chat window be opened
+      user-room = "#{@site.id}/users/#{message.to?id}"
+      @io.sockets.in(user-room).emit \chat-open, c
+
+      # broadcast message to channel after delay
+      send-chat-message = ~>
+        message.conversation_id = c.id
+        @io.sockets.in(c.room).emit \chat-message, message
+        cb null, { conversation: c }
+      set-timeout send-chat-message, 100ms
+
+  chat-debug: (cb) ~>
+    console.warn \chat-debug
+    @socket.emit \debug, @connections
 
 enter-site = (socket, site, user) ~>
   s = site.id
   @state[s] ||= {}
   @state[s].users ||= {}
   @state[s].users[user.name] = u = { id: user.id, name: user.name }
-  socket.join(s)
+  socket.join s
+  socket.join "#s/users/#{user.id}"
   socket.in(s).broadcast.emit \enter-site, u
 
 leave-site = (socket, site, user) ~>
@@ -24,8 +78,8 @@ leave-site = (socket, site, user) ~>
   @state[s] ||= {}
   @state[s].users ||= {}
   delete @state[s].users[user.name]
-  socket.leave(s)
-  console.log "leaving #{s}"
+  socket.leave s
+  socket.leave "#s/users/#{user.id}"
   socket.in(s).broadcast.emit \leave-site, { id: user.id, name: user.name }
 
 in-site = (socket, site) ~>
@@ -35,7 +89,6 @@ in-site = (socket, site) ~>
   users = keys @state[s].users
   users.for-each (name) ~>
     u = @state[s].users[name]
-    console.warn \enter-site, \on-connect, u
     socket.in(s).emit \enter-site, u # not braoadcast
 
 user-from-session = (s, cb) ->
@@ -53,7 +106,11 @@ site-by-domain = (domain, cb) ->
     db.site-by-domain domain, cb
 
 @init = (server) ->
-  io = sio.listen server
+  # manually reload socket.io
+  keys require.cache |> filter (-> it.match /node_modules\/socket.io\//) |> each (-> delete require.cache[it])
+  sio = require \socket.io
+
+  io  = sio.listen server
   io.set 'log level', 1
 
   redis-pub    = redis.create-client!
@@ -109,9 +166,8 @@ site-by-domain = (domain, cb) ->
         in-site socket, site
 
     socket.on \debug, ->
-      socket.emit \debug, 'hi'
       socket.emit \debug, socket.manager.rooms
-      socket.in('1').emit \debug, 'hi again to 1'
+      io.sockets.in('1/users/3').emit \debug, 'hi again to 3'
 
     # client no longer needs realtime query updates (navigated away from search page)
     socket.on \search-end, ->
@@ -138,8 +194,9 @@ site-by-domain = (domain, cb) ->
       # register search with the search notifier
       io.sockets.emit \register-search, {searchopts, site-id: site.id, room: search-room}
 
-    #Chat.server-socket-init socket
-    socket.on \chat_message, (message, cb) ->
-      # create conversation if it doesn't already exist
-      # join the room for the channel if we haven't already joined
-      # broadcast message to channel
+    #ChatServer
+    chat-server = new ChatServer(io, socket, site, user)
+    socket.on \chat-message, chat-server.chat-message
+    socket.on \chat-join, chat-server.chat-join
+    socket.on \chat-leave, chat-server.chat-leave
+    socket.on \chat-debug, chat-server.chat-debug
