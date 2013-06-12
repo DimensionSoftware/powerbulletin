@@ -2,6 +2,8 @@ global.furl = require \./forum-urls.ls
 
 global <<< require \./shared-helpers.ls
 
+require! \../component/Paginator.ls
+
 !function bench subject-name, subject-body
   bef = new Date
   subject-body!
@@ -341,7 +343,6 @@ export search =
     prepare:
       (window, next) ->
         params = @
-
         # fresh state
         after = window.after-prepare = []
 
@@ -423,6 +424,17 @@ export search =
 
         bench \layout-static ->
           layout-static window, \search
+
+        window.component ||= {}
+
+        # XXX
+        # I know I am bruteforcing this right now but I don't wanna think of when stuff is
+        # already around at the moment (the component can be reused in the future)
+        if window.component.search-paginator and History?
+          window.component.search-paginator.detach!
+
+        window.component.search-paginator = new Paginator {locals: {qty: @elres.total, active-page: @page}} \#search_paginator
+
         next!
   on-initial:
     (window, next) ->
