@@ -25,7 +25,7 @@ function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-hre
 
   pages =
     for num in [beg to end]
-      {title: num, href: pnum-to-href(num), active: active-page is num}
+      {title: num, href: pnum-to-href(num), active: parse-int(active-page) is num}
 
   if pages.length and pages.0.title isnt 1
     pages.unshift {title: 'first', href: pnum-to-href(1)}

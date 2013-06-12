@@ -42,7 +42,7 @@ module.exports =
     # @$ could be thought of as 'the container'
     ({locals = {}, @auto-render = true, @auto-attach = @is-client} = {}, @selector, @parent) ->
       @state =
-        {[k, (if v?_is-reactive then v else @@$R.state(v))] for k,v of locals}
+        {[k, (if v?_is-reactive then v else @@$R.state(v or null))] for k,v of locals}
       if @selector
         if @parent
           @$ = @parent.$.find @selector
@@ -136,10 +136,10 @@ module.exports =
             throw new Error "'#k' is not reactive state, you can only set reactive state"
           else
             # set existing reactive var
-            existing-r(v)
+            existing-r(v or null)
         else
           # no state exists, create reactive var
-          @state[k] = @@$R.state v
+          @state[k] = @@$R.state(v or null)
           v
     html: (wrapped = true) ->
       ((wrapped and @$top) or @$).html!
