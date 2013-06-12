@@ -40,7 +40,7 @@ module.exports =
     # component instances' container
     #
     # @$ could be thought of as 'the container'
-    ({locals = {}, @auto-render = true} = {}, @selector, @parent) ->
+    ({locals = {}, @auto-render = true, @auto-attach = true} = {}, @selector, @parent) ->
       @state =
         {[k, (if v?_is-reactive then v else @@$R.state(v))] for k,v of locals}
       if @selector
@@ -56,28 +56,30 @@ module.exports =
 
       if @parent
         @render(false) if @parent.auto-render
+        @attach(false) if @parent.auto-attach
       else
         @render(false) if @auto-render
+        @attach(false) if @auto-attach
     is-client: !!window?
     template: (-> '')
-    attach: ->
+    attach: (do-children = true) ->
       unless @is-client then throw new Error "Component can only attach on client"
 
       return @ if @is-attached # guard from attaching twice
 
-      if @children
+      if @children and do-children
         for ,child of @children
           child.attach!
 
       @on-attach! if @on-attach
       @is-attached = true
       return @ # chain chain chain! chain of fools...
-    detach: ->
+    detach: (do-children = true) ->
       unless @is-client then throw new Error "Component can only detach on client"
 
       return @ unless @is-attached # guard from detaching twice
 
-      if @children
+      if @children and do-children
         for ,child of @children
           child.detach!
 
@@ -86,7 +88,7 @@ module.exports =
       return @ # chain chain chain! chain of fools...
     # programmer/sub-classer can override render
     # it just needs to output html given @locals
-    render: ->
+    render: (do-children = true) ->
       @$.add-class @component-name # add class-name to container
 
       locals = @locals!
@@ -109,7 +111,7 @@ module.exports =
 
         @$.html $dom.html!
 
-        if @children
+        if @children and do-children
           for ,child of @children
             child.$ = @$.find child.selector
             child.render!
