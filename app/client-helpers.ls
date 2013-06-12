@@ -1,25 +1,30 @@
 export show-login-dialog = ->
-  $.fancybox.open \#auth,
-    close-effect: \elastic
-    close-speed:  150ms
-    close-easing: \easeOutExpo
-    open-effect: \fade
-    open-speed: 300ms
-  set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
-  # password complexity ui
-  window.COMPLEXIFY_BANLIST = [\god \money \password]
-  $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
-    e = $ this .parent!
-    e.find \.strength-meter .toggle-class \strong, pass
-    e.find \.strength .css(height:parse-int(percent)+\%))
+  # lazy load complexify && render auth dialog
+  window.$.get-script "#{window.cache-url}/local/jquery.complexify.min.js", ~>
+    window._auth = new Auth locals: {site-name: 'test'}, $('#auth')
+    window._auth.attach!
+
+    $.fancybox.open \#auth,
+      close-effect: \elastic
+      close-speed:  150ms
+      close-easing: \easeOutExpo
+      open-effect: \fade
+      open-speed: 300ms
+    set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
+    # password complexity ui
+    window.COMPLEXIFY_BANLIST = [\god \money \password]
+    $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
+      e = $ this .parent!
+      e.find \.strength-meter .toggle-class \strong, pass
+      e.find \.strength .css(height:parse-int(percent)+\%))
 
 export require-login = (fn) ->
   ~>
     if window.user
       fn.apply window, arguments
     else
-       @show-login-dialog!
-       false
+      @show-login-dialog!
+      false
 
 export mutate = (event) ->
   $e = $ this
