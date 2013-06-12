@@ -36,7 +36,7 @@ html
       script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
     if jsUrls
       script(type="text/javascript")
-        window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};head.js.apply(head,!{JSON.stringify(cvars.baseJsUrls.concat(jsUrls))});
+        window.siteName="!{siteName}";window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};head.js.apply(head,!{JSON.stringify(cvars.baseJsUrls.concat(jsUrls))});
   body
     header.header.toggler
       h1.logo
