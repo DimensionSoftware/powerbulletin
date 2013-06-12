@@ -33,7 +33,7 @@ function calc {active-page, step, qty, page-distance, page-qty}, pnum-to-href
   if pages.length and pages[pages.length - 1].title isnt page-qty
     pages.push {title: 'last', href: pnum-to-href(page-qty)}
 
-  {page-qty, pages}
+  {pages}
 
 module.exports =
   class Paginator extends Component
