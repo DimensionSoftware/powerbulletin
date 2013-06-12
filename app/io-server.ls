@@ -61,7 +61,7 @@ class ChatServer
       set-timeout send-chat-message, 100ms
 
   chat-debug: (cb) ~>
-    console.warn \chat-debug, this
+    console.warn \chat-debug
     @socket.emit \debug, @connections
 
 enter-site = (socket, site, user) ~>
