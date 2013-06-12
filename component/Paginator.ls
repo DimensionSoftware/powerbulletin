@@ -2,7 +2,7 @@ require! \./Component.ls
 
 {templates} = require \../build/component-jade.js
 
-function calc {active-page, step, qty, page-distance, page-qty}, pnum-to-href
+function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-href
   beg =
     if active-page > page-distance
       active-page - page-distance
@@ -33,7 +33,7 @@ function calc {active-page, step, qty, page-distance, page-qty}, pnum-to-href
   if pages.length and pages[pages.length - 1].title isnt page-qty
     pages.push {title: 'last', href: pnum-to-href(page-qty)}
 
-  {pages}
+  pages
 
 module.exports =
   class Paginator extends Component
@@ -56,11 +56,8 @@ module.exports =
         (qty, step) -> Math.ceil(qty / step)
       ).bind-to @state.qty, @state.step
 
-      @calculate!
-
+      @state.pages = @@$R(
+        (...args) ~> calc-pages ...(args ++ @pnum-to-href)
+      ).bind-to @state.active-page, @state.step, @state.qty, @state.page-distance, @state.page-qty
     component-name: \Paginator
     template: templates.Paginator
-    calculate: !->
-      locals = @locals!
-      for k, v of calc(locals, @pnum-to-href)
-        @local k, v
