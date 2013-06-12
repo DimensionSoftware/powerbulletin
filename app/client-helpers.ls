@@ -6,10 +6,10 @@ export show-login-dialog = ->
 
     $.fancybox.open \#auth,
       close-effect: \elastic
-      close-speed:  150ms
+      close-speed:  200ms
       close-easing: \easeOutExpo
       open-effect: \fade
-      open-speed: 300ms
+      open-speed: 450ms
     set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
     # password complexity ui
     window.COMPLEXIFY_BANLIST = [\god \money \password]

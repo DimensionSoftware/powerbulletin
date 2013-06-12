@@ -103,6 +103,7 @@ html.forum, html.profile, html.search
       .thread
         border-top 1px solid transparent
         border-left 2px solid transparent
+        border-right 2px solid transparent
         .title
           text-shadow none
           color highlight-color2
@@ -131,8 +132,12 @@ html.forum, html.profile, html.search
         a #fff
       .thread.active:last-child, .thread.active
         background-color #fff
-        background-image linear-gradient(bottom, #fff 80px,#eee)
+        border-radius 5px / 10px
+        border-right 2px solid #ddd
+        border-bottom 1px solid #ddd
+        border-top 1px solid #fff
         border-left 3px solid highlight-color2
+        background-image linear-gradient(to bottom, #f6f6f6, #fff)
         transition background-color .5s cubic-bezier(0, 0, 0.17, 1)
         a
           color #111

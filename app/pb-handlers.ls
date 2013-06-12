@@ -657,6 +657,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     elres
     facets
     menu
+    page: req.query.page
     title: "Search#{if res.locals.searchopts.q then (' : ' + res.locals.searchopts.q) else ''}"
   }
 
