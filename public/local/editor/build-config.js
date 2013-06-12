@@ -24,7 +24,6 @@ var CKBUILDER_CONFIG = {
 		'.mailmap'
 	],
 	plugins : {
-		'about' : 1,
 		'basicstyles' : 1,
 		'clipboard' : 1,
 		'toolbar' : 1,
@@ -41,7 +40,8 @@ var CKBUILDER_CONFIG = {
 		'button' : 1,
 		'fakeobjects' : 1,
 		'mediaembed' : 1,
-		'bbcode' : 1
+		'bbcode' : 1,
+		'save' : 1
 	},
 	languages : {
 		'en' : 1,
