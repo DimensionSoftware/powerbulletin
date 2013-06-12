@@ -192,8 +192,6 @@ window.shake-dialog = ($form, time) ->
   $fancybox = $form.parents(\.fancybox-wrap:first) .remove-class \shake
   set-timeout (-> $fancybox.add-class(\shake)), 100ms
 
-$d.on \click \.onclick-login -> ch.show-login-dialog!; false
-
 # register action
 # login action
 window.login = ->
@@ -316,13 +314,15 @@ window.toggle-password = (ev) ->
     p.attr \type \password
   false
 
+$d.on \click \.require-login ch.require-login(-> this.click)
+$d.on \click \.onclick-login -> ch.show-login-dialog!; false
 $d.on \click '.toggle-password' toggle-password
 $d.on \submit '.login form' login
 $d.on \submit '.register form' register
 $d.on \submit '.forgot form' forgot-password
 $d.on \submit '.choose form' choose
 $d.on \submit '.reset form' reset-password
-$d.on \click \.require-login ch.require-login(-> this.click)
+
 
 # 3rd-party auth
 $ '.social a' .click ->
