@@ -23,15 +23,18 @@ function calc {active-page, step, qty, page-distance}, pnum-to-href
     # len needs to be increased
     if beg < page-distance
       end += page-distance - beg
+      console.log {end}
+      end = Math.min(page-qty, end) # don't overshoot actual page-qty
+      console.log {end}
 
   pages =
     for num in [beg to end]
       {title: num, href: pnum-to-href(num), active: active-page is num}
 
-  unless pages.0.title is 1
+  if pages.length and pages.0.title isnt 1
     pages.unshift {title: 'first', href: pnum-to-href(1)}
 
-  unless pages[pages.length - 1].title is page-qty
+  if pages.length and pages[pages.length - 1].title isnt page-qty
     pages.push {title: 'last', href: pnum-to-href(page-qty)}
 
   {page-qty, pages}
