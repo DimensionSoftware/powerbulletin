@@ -129,9 +129,14 @@ module.exports =
       if v is void
         existing-r! if existing-r
       else
+        # if this branch is hit, they want to set a value
         if existing-r
-          # set existing reactive var
-          existing-r(v)
+          if existing-r.val is void
+            # this is a reactive function, _not_ reactive state, and hence cannot be set
+            throw new Error "'#k' is not reactive state, you can only set reactive state"
+          else
+            # set existing reactive var
+            existing-r(v)
         else
           # no state exists, create reactive var
           @state[k] = @@$R.state v
