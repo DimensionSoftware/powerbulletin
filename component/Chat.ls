@@ -29,6 +29,7 @@ module.exports =
     message-from-env: ~>
       u = @state?others?val?0
       m =
+        cid  : @conversation?id
         from : window.user
         to   : {id: u.id, name: u.name}
         text : @$.find('textarea').val!
@@ -66,7 +67,7 @@ module.exports =
 
     close: ~>
       console.warn \c, @
-      err, r <~ socket.emit \chat-close, @conversation
+      err, r <~ socket.emit \chat-leave, @conversation
       key = @key!
       console.log \key, key
       Chat.stop(@key!)
