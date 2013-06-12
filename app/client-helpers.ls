@@ -1,7 +1,7 @@
 export show-login-dialog = ->
   # lazy load complexify && render auth dialog
   window.$.get-script "#{window.cache-url}/local/jquery.complexify.min.js", ~>
-    window._auth = new Auth locals: {site-name: 'test'}, $('#auth')
+    window._auth = new Auth locals: {site-name: window.site-name}, $('#auth')
     window._auth.attach!
 
     $.fancybox.open \#auth,
