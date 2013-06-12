@@ -1,5 +1,4 @@
 require! {
-  sio: 'socket.io'
   crc32: 'express/node_modules/buffer-crc32'
   cookie: 'express/node_modules/cookie'
   connect: 'express/node_modules/connect'
@@ -53,7 +52,11 @@ site-by-domain = (domain, cb) ->
     db.site-by-domain domain, cb
 
 @init = (server) ->
-  io = sio.listen server
+  # manually reload socket.io
+  keys require.cache |> filter (-> it.match /node_modules\/socket.io\//) |> each (-> delete require.cache[it])
+  sio = require \socket.io
+
+  io  = sio.listen server
   io.set 'log level', 1
 
   redis-pub    = redis.create-client!
