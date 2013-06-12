@@ -4,6 +4,7 @@ require! {
   mutant
   async
   \./auth
+  \./auth-handlers
   \express-validator
   mmw: \mutant/middleware
   pg:  \./postgres
@@ -49,7 +50,6 @@ common-js = [ #{{{ Common JS
   "#{cvars.cache5-url}/local/jquery.transit-0.9.9.min.js",
   "#{cvars.cache-url}/local/reactive.js",
   "#{cvars.cache2-url}/local/jquery.nicescroll.min.js",
-  "#{cvars.cache3-url}/local/jquery.complexify.min.js",
   "#{cvars.cache4-url}/local/raf.js",
   "#{cvars.cache5-url}/socket.io/socket.io.js",
   "#{cvars.cache-url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
@@ -75,31 +75,9 @@ app.get \/admin/:action?,
   ),
   handlers.admin
 #}}}
-#{{{ Local auth
-#
-app.post '/auth/login',           personal-mw, handlers.login
-app.post '/auth/register',        personal-mw, handlers.register
-app.post '/auth/choose-username', personal-mw, handlers.choose-username
-app.get  '/auth/user',            personal-mw, handlers.user
-app.get  '/auth/verify/:v',       personal-mw, handlers.verify
-app.post '/auth/forgot',          personal-mw, handlers.forgot
-app.post '/auth/forgot-user'      personal-mw, handlers.forgot-user
-app.post '/auth/reset-password'   personal-mw, handlers.reset-password
 
-app.get  '/auth/facebook',        personal-mw, handlers.login-facebook
-app.get  '/auth/facebook/return', personal-mw, handlers.login-facebook-return
-app.get  '/auth/facebook/finish', personal-mw, handlers.login-facebook-finish
+auth-handlers.init-with-app app, personal-mw
 
-app.get  '/auth/google',          personal-mw, handlers.login-google
-app.get  '/auth/google/return',   personal-mw, handlers.login-google-return
-app.get  '/auth/google/finish',   personal-mw, handlers.login-google-finish
-
-app.get  '/auth/twitter',         personal-mw, handlers.login-twitter
-app.get  '/auth/twitter/return',  personal-mw, handlers.login-twitter-return
-app.get  '/auth/twitter/finish',  personal-mw, handlers.login-twitter-finish
-
-app.get  '/auth/logout',          personal-mw, handlers.logout
-#}}}
 #{{{ Users
 app.get '/u/:name', (req, res, next) ->
   res.redirect "/user/#{req.params.name}/", 301
