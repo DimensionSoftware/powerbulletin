@@ -68,3 +68,5 @@ module.exports =
 # REPL EXAMPLE:
 # livescript> require! \./component/Paginator; p = new Paginator {locals: {qty:100}}; p.html!
 # '<div class="Paginator"><strong class="Paginator-page"></strong><a href="?page=2" class="Paginator-page"></a><a href="?page=3" class="Paginator-page"></a><a href="?page=4" class="Paginator-page"></a><a href="?page=5" class="Paginator-page"></a><a href="?page=6" class="Paginator-page"></a><a href="?page=7" class="Paginator-page"></a><a href="?page=8" class="Paginator-page"></a><a href="?page=9" class="Paginator-page"></a><a href="?page=10" class="Paginator-page"></a><a href="?page=11" class="Paginator-page"></a><a href="?page=12" class="Paginator-page"></a><a href="?page=13" class="Paginator-page"></a><a href="?page=13" class="Paginator-page"></a></div>'
+# require! \./component/Paginator; p = new Paginator {locals: {active-page:14, qty:100}}; p.html!
+# '<div class="Paginator"><a href="?page=1" class="Paginator-page">first</a><a href="?page=10" class="Paginator-page">10</a><a href="?page=11" class="Paginator-page">11</a><a href="?page=12" class="Paginator-page">12</a><a href="?page=13" class="Paginator-page">13</a></div>'
