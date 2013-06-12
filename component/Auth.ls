@@ -1,3 +1,23 @@
+require! \./Component.ls
+
+{templates} = require \../build/component-jade.js
+
+module.exports =
+  class Auth extends Component
+    # attributes
+    component-name: \Auth
+    template: templates.Auth
+
+    # constructor
+    ->
+      super ...
+
+    on-attach: !~>
+      console.warn \on-attach
+
+    on-detach: !~>
+
+/*
 
 #{{{ Login & Authentication
 window.shake-dialog = ($form, time) ->
@@ -129,3 +149,5 @@ $ '.social a' .click ->
   window.open url, \popup, "width=980,height=650,scrollbars=no,toolbar=no,location=no,directories=no,status=no,menubar=no"
   false
 #}}}
+
+*/
