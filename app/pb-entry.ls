@@ -358,7 +358,7 @@ window.do-buy = (product-id) ->
 
 window.do-test = ->
   window.component.paginator ||=
-    new Paginator {locals: {qty: 100}}
+    new Paginator {locals: {step: 10, qty: 100}}
   $.fancybox(window.component.paginator.$)
 
 #}}}
