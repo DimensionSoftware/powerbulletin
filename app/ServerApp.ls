@@ -81,10 +81,13 @@ module.exports =
       graceful-shutdown = !(cb = (->)) ->
         console.warn 'Graceful shutdown started'
         sd-timeout = set-timeout (-> console.warn("Server never closed, restarting anyways"); cb!), 5000ms
-        server.close (err) ->
-          clear-timeout sd-timeout
-          console.warn 'Graceful shutdown finished'
-          console.warn err if err
+        try
+          server.close (err) ->
+            clear-timeout sd-timeout
+            console.warn 'Graceful shutdown finished'
+            console.warn err if err
+            cb!
+        catch
           cb!
 
       html_50x = fs.read-file-sync('public/50x.html').to-string!
@@ -211,7 +214,7 @@ module.exports =
       sock.use(app)
 
       # need this for socket.io
-      server := http.create-server sock
+      server = http.create-server sock
       io-server.init server
 
       console.log {@port}
