@@ -433,7 +433,8 @@ export search =
         if window.component.search-paginator and History?
           window.component.search-paginator.detach!
 
-        window.component.search-paginator = new Paginator {locals: {qty: @elres.total, active-page: @page}} \#search_paginator
+        console.log @elres.total
+        window.component.search-paginator = new Paginator {locals: {qty: @elres.total, active-page: @page}} window.$(\#search_paginator)
 
         next!
   on-initial:
