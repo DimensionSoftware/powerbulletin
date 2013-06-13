@@ -30,7 +30,6 @@ class ChatServer
     @socket.leave c?room
     cb null, c
   chat-message: (message, cb) ~>
-    console.warn \chat-message, arguments
     ## if connection has a chat with message.chat_id use it
     if c = @connections[@socket.id]?[message.conversation_id]
       console.warn "remote chat already opened"
