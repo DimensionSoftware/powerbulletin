@@ -35,6 +35,14 @@ describe 'new Component' ->
     _it "should return ''" !->
       assert.equal c.html(false), ''
 
+  expected = {a:1,b:2}
+  describe ".locals(#{JSON.stringify expected})", ->
+    _it "should return #{JSON.stringify expected}" !->
+      assert.deep-equal c.locals(expected), expected
+
+    _it "should setup two locals: a and b" !->
+      assert.deep-equal c.locals!, expected
+
   describe ".locall(\\foo)", ->
     _it "should return void" !->
       assert.equal c.local(\foo), void

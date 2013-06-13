@@ -122,7 +122,12 @@ module.exports =
         @$.html template-out
 
       return @
-    locals: ->
+    locals: (new-locals) ->
+      # mass merge of locals
+      if new-locals
+        for k,v of new-locals
+          @local k, v
+
       {[k, s!] for k,s of @state}
     local: (k, v) ->
       existing-r = @state[k]
