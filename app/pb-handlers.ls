@@ -648,6 +648,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     hit-count = t.count
 
     newopts = {} <<< res.locals.searchopts <<< {forum_id}
+    delete newopts.page # resets to page 1 when filtering by a forum
     if qs = ["#{k}=#{encode-URI-component v}" for k,v of newopts].join \&
       uri = "/search?#{qs}"
     else

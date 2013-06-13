@@ -119,8 +119,9 @@ do ->
         submit-type = \soft
 
       console.log "keyup:#{it.which} triggered a #{submit-type} search"
-
-      r-searchopts({} <<< window.searchopts <<< {q, submit-type})
+      newopts = {} <<< window.searchopts <<< {q, submit-type}
+      delete newopts.page # remove page from new term searches
+      r-searchopts newopts
   ), 500ms
 
 $d.on \change, '#search_filters [name=forum_id]', ->
@@ -128,7 +129,9 @@ $d.on \change, '#search_filters [name=forum_id]', ->
   submit-type = \soft
   forum_id = $(@).val!
 
-  r-searchopts({} <<< window.searchopts <<< {forum_id, submit-type})
+  newopts = {} <<< window.searchopts <<< {forum_id, submit-type}
+  delete newopts.page # remove page from new filtered results
+  r-searchopts newopts
 
   return false
 
@@ -137,7 +140,9 @@ $d.on \change, '#search_filters [name=within]', ->
   submit-type = \soft
   within = $(@).val!
 
-  r-searchopts({} <<< window.searchopts <<< {within, submit-type})
+  newopts = {} <<< window.searchopts <<< {within, submit-type}
+  delete newopts.page # remove page from new filtered results
+  r-searchopts newopts
 
   return false
 

@@ -433,8 +433,21 @@ export search =
         if window.component.search-paginator and History?
           window.component.search-paginator.detach!
 
-        console.log @elres.total
-        window.component.search-paginator = new Paginator {locals: {qty: @elres.total, active-page: @page}} window.$(\#search_paginator)
+        pnum-to-href = (pnum) ->
+          query =
+            if pnum is void or parse-int(pnum) is 1
+              rval = {} <<< @searchopts
+              delete rval.page
+              rval
+            else
+              {} <<< @searchopts <<< {page: pnum}
+
+          if Object.keys(query).length
+            \/search? + ["#k=#v" for k,v of query].join('&')
+          else
+            \/search
+
+        window.component.search-paginator = new Paginator {locals: {qty: @elres.total, active-page: @page}, pnum-to-href} window.$(\#search_paginator)
 
         next!
   on-initial:
