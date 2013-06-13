@@ -15,22 +15,21 @@ describe 'new Component' ->
       assert.equal '', c.template!
 
   describe ".attach!" ->
-    _it "should throw Error" ->
-      assert.throws c.attach
+    _it "should return @" ->
+      assert.equal c.attach!, c
+
+  describe ".detach!", ->
+    _it "should return @" ->
+      assert.equal c.detach!, c
 
   describe ".locals!", ->
     _it "should be {}" ->
       assert.deep-equal {}, c.locals!
 
   describe ".local \\reactiveFun, 1" ->
-   
     _it "should throw an Error since only reactive state can be set" ->
       c.state.reactive-fun = $R(->)
       assert.throws (-> c.local(\reactiveFun, 1))
-
-  describe ".detach!", ->
-    _it "should throw Error" ->
-      assert.throws c.detach
 
   describe ".html!", ->
     markup = '<div class="Component"></div>'
