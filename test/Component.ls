@@ -26,19 +26,43 @@ describe 'new Component' ->
     _it "should be {}" ->
       assert.deep-equal {}, c.locals!
 
-  describe ".local \\reactiveFun, 1" ->
-    _it "should throw an Error since only reactive state can be set" ->
-      c.state.reactive-fun = $R(->)
-      assert.throws (-> c.local(\reactiveFun, 1))
-
   describe ".html!", ->
     markup = '<div class="Component"></div>'
-    _it "should return '#{markup}'" !->
+    _it "should return expected markup" !->
       assert.equal c.html!, markup
 
   describe ".html(false)", ->
     _it "should return ''" !->
       assert.equal c.html(false), ''
+
+  describe ".locall(\\foo)", ->
+    _it "should return void" !->
+      assert.equal c.local(\foo), void
+
+  describe ".locall(\\foo, 1)", ->
+    _it "should return 1" !->
+      assert.equal c.local(\foo, 1), 1
+
+    _it "should create a reactive state named \\foo" !->
+      assert c.state.foo._is-reactive
+      old-foo = c.state.foo
+
+    _it "should create a reactive state named \\foo which resolves to 1" !->
+      assert.equal c.state.foo!, 1
+
+    var old-foo
+
+    _it "should return 2 when called again with (\\foo, 2)" !->
+      old-foo := c.state.foo
+      assert.equal c.local(\foo, 2), 2
+
+    _it "should reuse the reactive state named \\foo when called again with (\\foo, 2)" !->
+      assert.equal c.state.foo, old-foo
+
+  describe ".local \\reactiveFun, 1" ->
+    _it "should throw an Error since only reactive state can be set" ->
+      c.state.reactive-fun = $R(->)
+      assert.throws (-> c.local(\reactiveFun, 1))
 
 describe "new Component {} $dom" !->
   $dom = $ '<div><div/></div>'
