@@ -29,7 +29,7 @@ describe 'new Paginator {locals: {qty: 8}}' ->
 
   describe ".html(false)", ->
     expected = '<strong class="Paginator-page">1</strong>'
-    _it "should return #expected" !->
+    _it "should return expected html" !->
       assert.equal c.html(false), expected
 
 describe 'new Paginator {locals: {qty: 16}}' ->
@@ -41,7 +41,7 @@ describe 'new Paginator {locals: {qty: 16}}' ->
     <a href="?page=2" class="mutant Paginator-page">2</a>
     '
 
-    _it "should return #expected" !->
+    _it "should return expected html" !->
       assert.equal c.html(false), expected
 
 describe 'new Paginator {locals: {qty: 17}}' ->
@@ -54,7 +54,7 @@ describe 'new Paginator {locals: {qty: 17}}' ->
     <a href="?page=3" class="mutant Paginator-page">3</a>
     '
 
-    _it "should return #expected" !->
+    _it "should return expected html" !->
       assert.equal c.html(false), expected
 
 describe 'new Paginator {locals: {active-page: 2, qty: 16}}' ->
@@ -66,7 +66,7 @@ describe 'new Paginator {locals: {active-page: 2, qty: 16}}' ->
     <strong class="Paginator-page">2</strong>
     '
 
-    _it "should return #expected" !->
+    _it "should return expected html" !->
       assert.equal c.html(false), expected
 
 describe 'new Paginator {locals: {qty: 64}}' ->
@@ -84,7 +84,7 @@ describe 'new Paginator {locals: {qty: 64}}' ->
     <a href="?page=8" class="mutant Paginator-page">8</a>
     '
 
-    _it "should return #expected" !->
+    _it "should return expected html" !->
       assert.equal c.html(false), expected
 
 describe 'new Paginator {locals: {qty: 65}}' ->
@@ -100,10 +100,10 @@ describe 'new Paginator {locals: {qty: 65}}' ->
     <a href="?page=6" class="mutant Paginator-page">6</a>
     <a href="?page=7" class="mutant Paginator-page">7</a>
     <a href="?page=8" class="mutant Paginator-page">8</a>
-    <a href="?page=9" class="mutant Paginator-page">last</a>
+    <a href="?page=9" class="mutant Paginator-page">9</a>
     '
 
-    _it "should return #expected" !->
+    _it "should return expected html" !->
       assert.equal c.html(false), expected
 
 describe 'new Paginator {locals: {qty: 129}}' ->
@@ -119,10 +119,11 @@ describe 'new Paginator {locals: {qty: 129}}' ->
     <a href="?page=6" class="mutant Paginator-page">6</a>
     <a href="?page=7" class="mutant Paginator-page">7</a>
     <a href="?page=8" class="mutant Paginator-page">8</a>
+    <a href="?page=9" class="mutant Paginator-page">9</a>
     <a href="?page=17" class="mutant Paginator-page">last</a>
     '
 
-    _it "should return #expected" !->
+    _it "should return expected html" !->
       assert.equal c.html(false), expected
 
 describe 'new Paginator {locals: {active-page: 10, qty: 129}}' ->
@@ -143,6 +144,6 @@ describe 'new Paginator {locals: {active-page: 10, qty: 129}}' ->
     <a href="?page=17" class="mutant Paginator-page">last</a>
     '
 
-    _it "should return #expected" !->
+    _it "should return expected html" !->
       assert.equal c.html(false), expected
 

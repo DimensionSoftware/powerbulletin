@@ -3,29 +3,25 @@ require! \./Component.ls
 {templates} = require \../build/component-jade.js
 
 function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-href
-  beg =
-    if active-page > page-distance
-      active-page - page-distance
-    else
-      1
+  active-page = parse-int active-page
+  step = parse-int step
+  qty = parse-int qty
+  page-distance = parse-int page-distance
+  page-qty = parse-int page-qty
+  active-page = parse-int active-page
 
-  end =
-    if active-page < (page-qty - page-distance)
-      active-page + page-distance
-    else
-      page-qty
 
-  min-len = page-distance * 2
-  act-len = end - beg
-  if act-len < min-len
-    if beg < page-distance
-      # len needs to be increased
-      end += page-distance - beg
-      end = Math.min(page-qty, end) # don't overshoot actual page-qty
+  beg = Math.max(active-page - page-distance, 1)
+  end = Math.min(active-page + page-distance, page-qty)
+
+  if active-page <= page-distance # near beg
+    end = Math.min(end + (page-distance - active-page) + 1, page-qty)
+  else if active-page >= (page-qty - page-distance) # near end
+    beg = Math.max(beg - (page-distance - (page-qty - active-page)), 1)
 
   pages =
     for num in [beg to end]
-      {title: num, href: pnum-to-href(num), active: parse-int(active-page) is num}
+      {title: num, href: pnum-to-href(num), active: active-page is num}
 
   if pages.length and pages.0.title isnt 1
     pages.unshift {title: 'first', href: pnum-to-href(1)}
