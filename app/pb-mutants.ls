@@ -366,7 +366,7 @@ mk-search-paginator = (window, locals, searchopts, auto-render = true) ->
   sp.render! if auto-render
   sp.attach!
 
-  window.$(\#search_paginator).append sp.$top
+  window.$(\#search_paginator).append sp.$
 
 export search =
   static:
