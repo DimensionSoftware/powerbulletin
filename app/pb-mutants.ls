@@ -338,6 +338,36 @@ join-search = (sock) ->
 end-search = ->
   socket.emit \search-end
 
+mk-pnum-to-href = (searchopts) ->
+  (pnum) ->
+    query =
+      if pnum is void or parse-int(pnum) is 1
+        rval = {} <<< searchopts
+        delete rval.page
+        rval
+      else
+        {} <<< searchopts <<< {page: pnum}
+
+    if Object.keys(query).length
+      \/search? + ["#k=#v" for k,v of query].join('&')
+    else
+      \/search
+
+# encapsulates lazy code
+mk-search-paginator = (window, locals, searchopts, auto-render = true) ->
+  wc = window.component ||= {}
+  pnum-to-href = mk-pnum-to-href searchopts
+
+  sp = wc.search-paginator ||= new Paginator
+  sp.locals locals
+  sp.pnum-to-href pnum-to-href
+
+  sp.detach!
+  sp.render! if auto-render
+  sp.attach!
+
+  window.$(\#search_paginator).append sp.$top
+
 export search =
   static:
     prepare:
@@ -425,29 +455,14 @@ export search =
         bench \layout-static ->
           layout-static window, \search
 
-        window.component ||= {}
+        paginator-locals =
+          step: 10
+          qty: @elres.total
+          active-page: @page
 
-        # XXX
-        # I know I am bruteforcing this right now but I don't wanna think of when stuff is
-        # already around at the moment (the component can be reused in the future)
-        window.component.search-paginator?detach!  # detach previous component
+        window.marshal \paginatorLocals, paginator-locals
 
-        pnum-to-href = (pnum) ->
-          query =
-            if pnum is void or parse-int(pnum) is 1
-              rval = {} <<< @searchopts
-              delete rval.page
-              rval
-            else
-              {} <<< @searchopts <<< {page: pnum}
-
-          if Object.keys(query).length
-            \/search? + ["#k=#v" for k,v of query].join('&')
-          else
-            \/search
-
-        window.component.search-paginator = new Paginator {locals: {step: 10, qty: @elres.total, active-page: @page}, pnum-to-href} window.$(\#search_paginator)
-
+        mk-search-paginator window, paginator-locals, @searchopts # static rendering
         next!
   on-initial:
     (window, next) ->
@@ -456,10 +471,14 @@ export search =
       # i.e. on-load was happening way before socket was
       # ready in chrome
       $R(join-search).bind-to window.r-socket
+
+      mk-search-paginator window, window.paginator-locals, window.searchopts, false
       next!
   on-mutate:
     (window, next) ->
       join-search(window.socket)
+
+      mk-search-paginator window, window.paginator-locals, window.searchopts
       next!
   on-load:
     (window, next) ->
