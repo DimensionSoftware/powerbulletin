@@ -447,7 +447,7 @@ export search =
           else
             \/search
 
-        window.component.search-paginator = new Paginator {locals: {qty: @elres.total, active-page: @page}, pnum-to-href} window.$(\#search_paginator)
+        window.component.search-paginator = new Paginator {locals: {step: 10, qty: @elres.total, active-page: @page}, pnum-to-href} window.$(\#search_paginator)
 
         next!
   on-initial:
