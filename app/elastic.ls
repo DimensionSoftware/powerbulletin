@@ -38,4 +38,4 @@ export configure = (cb = (->)) ->
   #        type: \string
   #        index: \not_analyzed
 
-  superagent.post('http://127.0.0.1:9200/pb').send({settings, mappings}).end(cb)
+  superagent.post('http://127.0.0.1:9200/pb').send({settings}).end(cb)
