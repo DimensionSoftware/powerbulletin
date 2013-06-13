@@ -118,7 +118,6 @@ Chat.client-socket-init = (socket) ->
       | a.name is window.user?name => -1
       | otherwise                  =>  1
     people = sort-with me-first, conversation.participants
-    console.log people, conversation
     names  = map (.name), people
     key    = names.join '/'
     return if Chat.chats[key]
