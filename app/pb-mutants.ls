@@ -430,8 +430,7 @@ export search =
         # XXX
         # I know I am bruteforcing this right now but I don't wanna think of when stuff is
         # already around at the moment (the component can be reused in the future)
-        if window.component.search-paginator and History?
-          window.component.search-paginator.detach!
+        window.component.search-paginator?detach!  # detach previous component
 
         pnum-to-href = (pnum) ->
           query =
