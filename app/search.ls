@@ -30,6 +30,7 @@ parseopts = ({
   forum_id = void
   within = void
   stream = void
+  page = 1
 } = {}) ->
   query = {}
   filters = []
@@ -89,7 +90,10 @@ parseopts = ({
 
   filtered <<< {filter: {and: filters}} if filters.length
 
-  {query: {filtered}, facets}
+  #XXX: step assumed to be fixed at 10 for now
+  step = 10
+  from = (page - 1) * step
+  {query: {filtered}, facets, from}
 
 # usage on repl:
 #   s.search q: \mma, console.log
