@@ -22,4 +22,16 @@ grid = 10px
 @import "component/Buy"
 @import "component/Chat"
 @import "component/ParallaxButton"
+
 @import "component/Paginator"
+
+// integrate fixed footer into paginator, on select pages
+#pb_paginator
+  display: none
+
+html.search, html.forum
+  footer
+    height 60px
+
+  #pb_paginator
+    display: block
