@@ -10,7 +10,6 @@ function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-hre
   page-qty = parse-int page-qty
   active-page = parse-int active-page
 
-
   beg = Math.max(active-page - page-distance, 1)
   end = Math.min(active-page + page-distance, page-qty)
 
@@ -40,8 +39,8 @@ module.exports =
       # how many other pages behind and in front of active-page should we show?
       page-distance: 4
 
-    ({@pnum-to-href} = {}) ->
-      @pnum-to-href ||= (-> "?page=#it")
+    ({pnum-to-href = (-> "?page=#it")} = {}) ->
+      @pnum-to-href = @@$R.state pnum-to-href
       super ...
 
     init: ->
@@ -52,8 +51,15 @@ module.exports =
         (qty, step) -> Math.ceil(qty / step)
       ).bind-to @state.qty, @state.step
 
-      @state.pages = @@$R(
-        (...args) ~> calc-pages ...(args ++ @pnum-to-href)
-      ).bind-to @state.active-page, @state.step, @state.qty, @state.page-distance, @state.page-qty
+      do ~>
+        bindings =
+          * @state.active-page
+          * @state.step
+          * @state.qty
+          * @state.page-distance
+          * @state.page-qty
+          * @pnum-to-href
+
+        @state.pages = @@$R(calc-pages).bind-to ...bindings
     component-name: \Paginator
     template: templates.Paginator
