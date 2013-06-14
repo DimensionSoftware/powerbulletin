@@ -795,10 +795,21 @@ CREATE FUNCTION procs.conversations_by_user(u JSON, page JSON) RETURNS JSON AS $
   return conversations
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION procs.messages_by_cid(cid JSON, page JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.messages_by_cid(cid JSON, last JSON) RETURNS JSON AS $$
   # TODO - pagination
-  sql = 'SELECT * FROM messages WHERE conversation_id = $1 ORDER BY id'
-  messages = plv8.execute sql, [cid]
+  if last
+    sql = '''
+    SELECT * FROM messages WHERE conversation_id = $1 AND id < $2
+    ORDER BY id DESC
+    '''
+    params = [cid, last]
+  else
+    sql = '''
+    SELECT * FROM messages WHERE conversation_id = $1
+    ORDER BY id DESC
+    '''
+    params = [cid]
+  messages = plv8.execute sql, params
   return messages
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
