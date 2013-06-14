@@ -1,7 +1,8 @@
 mixin create
   fieldset
-    input.Sales-domain(type='text', value=typeof domain != 'undefined' ? domain : '')
+    input.Sales-subdomain(type='text', value=typeof subdomain != 'undefined' ? subdomain : '')
       t
+    span.hostname= hostname
     span.Sales-available
       //- unicode checkmark
       .success &#x2713;
@@ -10,10 +11,10 @@ mixin create
     .Sales-create
 
 h1 PowerBulletin
-  em Power YOUR Communities
+em Power YOUR Communities
 mixin create
 h2 Why you'll love PowerBulletin
-  menu
+menu
   li Breakthrough Navigation
     p
       | From SEO technology that speedily transmits page differences instead of reloading browsers,
