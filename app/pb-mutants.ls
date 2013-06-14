@@ -40,7 +40,6 @@ layout-on-personalize = (w, u) ->
   if u # guard
     set-online-user u.id
     # load editing scripts
-    unless CKEDITOR?version        then $.get-script "#cache-url/local/editor/ckeditor.js"
     unless $!html5-uploader?length then $.get-script "#cache-url/local/jquery.html5uploader.js"
     unless $!Jcrop?length          then $.get-script "#cache-url/jcrop/js/jquery.Jcrop.min.js"
     # ...and css
@@ -228,7 +227,33 @@ export forum =
       window.socket?emit \online-now
       next!
   on-personalize: (w, u, next) ->
-    layout-on-personalize w, u
+    if u
+      layout-on-personalize w, u
+      # enable edit actions
+      # - censor
+      $ ".post[data-user-id=#{u.id}] .censor"
+        .css \display \inline
+      if u.rights?super
+        $ \.censor .css \display \inline
+      # - editing
+      $ ".post[data-user-id=#{u.id}] .post-content"
+        .attr \contentEditable true
+      inline-all = ->
+        $ '[contentEditable=true]' |> each (e) ->
+          CKEDITOR.inline e,
+            on:
+              instanceReady: (ev) ->
+                # TODO set-timeout periodic save
+              focus: (ev) ->
+                data = ev.editor.get-data!
+                # TODO setup form w/ edit-post
+              blur: (ev) ->
+                # TODO save
+      unless CKEDITOR?version
+        <- $.get-script "#cache-url/local/editor/ckeditor.js"
+        inline-all!
+      else
+        inline-all!
     next!
   on-unload:
     (window, next-mutant, next) ->

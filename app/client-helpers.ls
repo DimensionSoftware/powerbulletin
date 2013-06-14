@@ -91,3 +91,36 @@ export align-breadcrumb = ->
 export remove-editing-url = (meta) ->
   History.replace-state {no-surf:true} '' meta.thread-uri
 
+# handle in-line editing
+export edit-post = (id, data={}) ->
+  focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 100ms
+  render = (sel, locals, cb=(->)) ~>
+    $e = $ sel
+    @render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
+      cb!
+      focus $e
+
+  if id is true # render new
+    console.log \create-new
+    scroll-to-top!
+    data.action = \/resources/post
+    data.method = \post
+    render \.forum, data, -> # init ckeditor on post!
+      init-editor = -> CKEDITOR.replace($ '#post_edit_0 textarea' .0)
+      unless CKEDITOR?version # lazy-load
+        <- $.get-script "#cache-url/local/editor/ckeditor.js"
+        init-editor!
+      else
+        init-editor!
+  else # fetch existing & edit
+    console.log \fetch
+    sel = "\#post_#{id}"
+    e   = $ sel
+    unless e.find("\#post_edit_#{id}:visible").length # guard
+      awesome-scroll-to "\#post_#{id}" 600ms
+      $.get "/resources/posts/#{id}" (p) ->
+        console.log \editing: + p
+        render sel, p
+        e .add-class \editing
+    else
+      focus e

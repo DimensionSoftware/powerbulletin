@@ -157,38 +157,6 @@ date-fields =
   | \edit       => meta.id
   | otherwise   => false
 
-# handle in-line editing
-@edit-post = (id, data={}) ->
-  focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 100ms
-  render = (sel, locals) ~>
-    $e = $ sel
-    @render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
-      # init sceditor
-      $e.find \textarea.body .sceditor(
-        plugins:        \bbcode
-        style:          "#{window.cache-url}/local/jquery.sceditor.default.min.css"
-        toolbar:        'bold,italic,underline|image,link,youtube|emoticon|source'
-        width:          \85%
-        emoticons-root: "#{window.cache-url}/")
-      $e.find \.sceditor-container .prepend($e.find \.title) # place title inside
-      focus $e
-
-  if id is true # render new
-    scroll-to-top!
-    data.action = \/resources/post
-    data.method = \post
-    render \.forum, data
-  else # fetch existing & render
-    sel = "\#post_#{id}"
-    e   = $ sel
-    unless e.find("\#post_edit_#{id}:visible").length # guard
-      awesome-scroll-to "\#post_#{id}" 600ms
-      $.get "/resources/posts/#{id}" (p) ->
-        render sel, p
-        e .add-class \editing
-    else
-      focus e
-
 @flip-background = (w, cur, direction=\down) ->
   clear-timeout w.bg-anim if w.bg-anim
   last = w.$ \.bg.active
