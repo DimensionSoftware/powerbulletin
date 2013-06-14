@@ -60,9 +60,9 @@ module.exports =
       $messages[0].scroll-top = $messages[0].scroll-height
       @$.find \textarea .val ''
 
-    load-more-messages: (offset, limit=8) ~>
-      console.debug \load-more-messages, offset, limit
-      r <- $.get '/resources/chats/messages', {}
+    load-more-messages: (last) ~>
+      last ||= @$.find '.messages .msg:first' .data \message-id
+      r <~ $.get "/resources/conversations/#{@conversation.id}", { last }
 
     minimize: (ev) ~>
       @$.toggle-class \minimized
