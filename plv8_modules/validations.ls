@@ -21,7 +21,7 @@ export post = (post) ->
       authorize-transient(post.transient_owner, site_id)
 
   unless u-exists or t-exists
-    errors.push 'posting is not authorized'
+    errors.push 'Posting is not authorized'
 
   return errors
 
