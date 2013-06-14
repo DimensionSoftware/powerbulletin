@@ -36,6 +36,7 @@ module.exports =
 
     message-node: (m) ~>
       $msg = @$.find('.body > .msg').clone!
+      $msg.attr('data-message-id', m.id)
       $msg.find('.text').html m.text
       $msg.find('.from-name').html m.from.name
       $msg
@@ -49,6 +50,7 @@ module.exports =
           return
         if (@conversation is null)
           @conversation = r.conversation
+        m.id = r.message.id
         @add-message m
 
     add-message: (m) ~>
@@ -58,9 +60,9 @@ module.exports =
       $messages[0].scroll-top = $messages[0].scroll-height
       @$.find \textarea .val ''
 
-    load-more-messages: (offset, limit=8) ~>
-      console.debug \load-more-messages, offset, limit
-      r <- $.get '/resources/chats/messages', {}
+    load-more-messages: (last) ~>
+      last ||= @$.find '.messages .msg:first' .data \message-id
+      r <~ $.get "/resources/conversations/#{@conversation.id}", { last }
 
     minimize: (ev) ~>
       @$.toggle-class \minimized
