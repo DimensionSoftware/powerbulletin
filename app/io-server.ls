@@ -34,6 +34,8 @@ class ChatServer
     if c = @connections[@socket.id]?[message.conversation_id]
       console.warn "remote chat already opened"
       err <~ db.conversation-add-message c.id, { user_id: message.from.id, body: message.text }
+      return cb(err) if err
+      message.id = m.id
       @io.sockets.in(c.room).emit \chat-message, message
       cb null, { conversation: c }
 
@@ -56,7 +58,9 @@ class ChatServer
       # broadcast message to channel after delay
       send-chat-message = ~>
         message.conversation_id = c.id
-        err <~ db.conversation-add-message c.id, { user_id: message.from.id, body: message.text }
+        err, m <~ db.conversation-add-message c.id, { user_id: message.from.id, body: message.text }
+        return cb(err) if err
+        message.id = m.id
         @io.sockets.in(c.room).emit \chat-message, message
         cb null, { conversation: c }
       set-timeout send-chat-message, 100ms
