@@ -32,9 +32,9 @@ s-app.get '/' (req, res, next) ->
   res.content-type \html
   res.send sl.html(false)
 
-s-app.get '/ajax/check-domain-availability' (req, res, next) ->
-  domain = req.query.domain
-  err, domain-exists <- db.domain-by-name-exists domain
+s-app.get '/ajax/check-subdomain-availability' (req, res, next) ->
+  sub-domain = req.query.subdomain
+  err, domain-exists <- db.domain-by-name-exists sub-domain
   if err then return next err
   res.json {available: !domain-exists}
 

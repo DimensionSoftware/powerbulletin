@@ -34,7 +34,7 @@ module.exports =
 
               # set cookie so they are 'admin' of temporary site
               $.cookie \transient_owner, transient_owner, cookie-opts
-              window.location = "http://#{subdomain}"
+              window.location = "http://#subdomain#hostname"
         locals = {title: 'Create Community'}
         @children =
           buy: new ParallaxButton {on-click, locals} \.Sales-create @

@@ -14,12 +14,10 @@ module.exports =
         return false
 
       @on-load-resize ||= ~>
-        console.log \on-load-resize
         @render-left-half!
         @render-top-half!
 
       @on-scroll ||= ~>
-        console.log \on-scroll
         @render-top-half!
 
       @@$(window).on 'load resize', @on-load-resize
