@@ -214,7 +214,7 @@ module.exports =
       sock.use(app)
 
       # need this for socket.io
-      server = http.create-server sock
+      server := http.create-server sock
       io-server.init server
 
       console.log {@port}
