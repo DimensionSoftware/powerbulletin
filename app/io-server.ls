@@ -37,7 +37,7 @@ class ChatServer
       return cb(err) if err
       message.id = m.id
       @io.sockets.in(c.room).emit \chat-message, message
-      cb null, { conversation: c }
+      cb null, { conversation: c, message: m }
 
     ## else load it from the database
     else
@@ -62,7 +62,7 @@ class ChatServer
         return cb(err) if err
         message.id = m.id
         @io.sockets.in(c.room).emit \chat-message, message
-        cb null, { conversation: c }
+        cb null, { conversation: c, message: m }
       set-timeout send-chat-message, 100ms
 
   chat-debug: (cb) ~>

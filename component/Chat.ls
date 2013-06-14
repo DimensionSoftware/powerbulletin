@@ -36,6 +36,7 @@ module.exports =
 
     message-node: (m) ~>
       $msg = @$.find('.body > .msg').clone!
+      $msg.attr('data-message-id', m.id)
       $msg.find('.text').html m.text
       $msg.find('.from-name').html m.from.name
       $msg
@@ -49,6 +50,7 @@ module.exports =
           return
         if (@conversation is null)
           @conversation = r.conversation
+        m.id = r.message.id
         @add-message m
 
     add-message: (m) ~>
