@@ -91,6 +91,13 @@ export align-breadcrumb = ->
 export remove-editing-url = (meta) ->
   History.replace-state {no-surf:true} '' meta.thread-uri
 
+export lazy-load-editor = (cb) ->
+  unless CKEDITOR?version # load!
+    <- $.get-script "#cache-url/local/editor/ckeditor.js"
+    cb!
+  else
+    cb!
+
 # handle in-line editing
 export edit-post = (id, data={}) ->
   focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 100ms
