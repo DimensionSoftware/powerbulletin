@@ -115,6 +115,6 @@ process-cached-data = {}
     if url.match /\.(jpe?g|png|gif)$/i
       """<img src="#{url}" />"""
     else
-      """<a href="#{url}">#{url}</a>"""
+      """<a href="#{url}" target="_blank">#{url}</a>"""
 
 # vim:fdm=marker
