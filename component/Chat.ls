@@ -51,6 +51,8 @@ module.exports =
         if (@conversation is null)
           @conversation = r.conversation
         m.id = r.message.id
+        m.text = r.message.body
+        console.log \r, r.message
         @add-message m
 
     add-message: (m) ~>

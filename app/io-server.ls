@@ -36,6 +36,7 @@ class ChatServer
       err <~ db.conversation-add-message c.id, { user_id: message.from.id, body: message.text }
       return cb(err) if err
       message.id = m.id
+      m.body = message.text = format.chat-message message.text
       @io.sockets.in(c.room).emit \chat-message, message
       cb null, { conversation: c, message: m }
 
@@ -61,6 +62,7 @@ class ChatServer
         err, m <~ db.conversation-add-message c.id, { user_id: message.from.id, body: message.text }
         return cb(err) if err
         message.id = m.id
+        m.body = message.text = format.chat-message message.text
         @io.sockets.in(c.room).emit \chat-message, message
         cb null, { conversation: c, message: m }
       set-timeout send-chat-message, 100ms

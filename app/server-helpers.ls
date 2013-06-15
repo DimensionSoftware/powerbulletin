@@ -5,6 +5,7 @@ require! {
   nodemailer
   auth: \./auth
 }
+sanitize = require('express-validator/node_modules/validator').sanitize
 
 @caching-strategies =
   nocache: (res) ->
@@ -102,5 +103,18 @@ process-cached-data = {}
     if err then return cb err
     #@login(req, res, cb) # on successful registration, automagically @login, too
     cb null, u
+
+@format =
+  chat-message: (s, options={}) ->
+    t0 = @replace-urls(s, @embedded)
+    t1 = sanitize(t0).xss!
+  url-pattern: /(\w+:\/\/[\w\.\?\&=\%\/-]+[\w\?\&=\%\/-])/g
+  replace-urls: (s, fn) ->
+    s.replace @url-pattern, fn
+  embedded: (url) ->
+    if url.match /\.(jpe?g|png|gif)$/i
+      """<img src="#{url}" />"""
+    else
+      """<a href="#{url}">#{url}</a>"""
 
 # vim:fdm=marker
