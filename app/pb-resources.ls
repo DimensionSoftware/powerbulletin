@@ -127,7 +127,7 @@ send-invite-email = (site, user, new-user, message) ->
   create  : (req, res, next) ->
     return next 404 unless req.user
     db           = pg.procs
-    post         = req.body
+    post         = req.body.to-string!
     post.user_id = req.user.id
     post.html    = h.html post.body
     post.ip      = res.vars.remote-ip
