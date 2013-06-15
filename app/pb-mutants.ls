@@ -184,6 +184,7 @@ export forum =
       layout-static window, \forum, @active-forum-id
 
       do ~>
+        if not @post then return
         wc = window.component ||= {}
 
         locals =
