@@ -30,7 +30,6 @@ send-invite-email = (site, user, new-user, message) ->
     to      : user.email
     subject : "Invite to #{site.name}!"
     text    : h.expand-handlebars tmpl, vars
-  console.log \sent: + JSON.stringify(email)
   h.send-mail email, (->)
 
 @sites =

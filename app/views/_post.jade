@@ -2,23 +2,22 @@ include _post-actions
 include _post-profile
 
 mixin _post(p, i)
-  form(method="post", action="/resources/post/#{p.id}")
-    .post(id="post_#{p.id}", class=p.reason ? 'censored' : '', data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id, data-forum-id=p.forum_id)
-      if p.thread_uri
-        h4.title
-          a.mutant(href=p.thread_uri)= p.title
-      else
-        h4.title= p.title
-      mixin _post-profile(p)
-      .date(data-time=p.created_iso)!= p.created_human
-      .post-content
-        if p.html
-          p.body!= p.html
-      .reply
-      mixin _post-actions(p)
-    .children
-      if p.posts && p.posts.length
-        each pp, ii in p.posts
-          mixin _post(pp, ii)
-      else if p.morePosts
-        a(href='#') Load more posts ...
+  .post(id="post_#{p.id}", class=p.reason ? 'censored' : '', data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id, data-forum-id=p.forum_id)
+    if p.thread_uri
+      h4.title
+        a.mutant(href=p.thread_uri)= p.title
+    else
+      h4.title= p.title
+    mixin _post-profile(p)
+    .date(data-time=p.created_iso)!= p.created_human
+    .post-content
+      if p.html
+        p.body!= p.html
+    .reply
+    mixin _post-actions(p)
+  .children
+    if p.posts && p.posts.length
+      each pp, ii in p.posts
+        mixin _post(pp, ii)
+    else if p.morePosts
+      a(href='#') Load more posts ...

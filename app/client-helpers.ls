@@ -51,9 +51,10 @@ export submit-form = (event, fn) -> # form submission
   $s = $ $f.find('[type=submit]:first')
   $s.attr \disabled \disabled
 
-  # update textarea body from sceditor
+  # TODO update textarea body from ckeditor
   $e = $ \textarea.body
-  $e.html $e.data!sceditor?val! if $e.length and $e.data!sceditor
+
+  #$e.html $e.data!sceditor?val! if $e.length and $e.data!sceditor
 
   # pass transient_owner as alternate auth mechanism
   # to support sandbox mode
@@ -110,21 +111,17 @@ export edit-post = (id, data={}) ->
   if id is true # render new
     console.log \create-new
     scroll-to-top!
-    data.action = \/resources/post
+    data.action = \/resources/posts
     data.method = \post
-    render \.forum, data, -> # init ckeditor on post!
-      init-editor = -> CKEDITOR.replace($ '#post_edit_0 textarea' .0)
-      unless CKEDITOR?version # lazy-load
-        <- $.get-script "#cache-url/local/editor/ckeditor.js"
-        init-editor!
-      else
-        init-editor!
+    render \.forum, data, -> # init editor on post
+      <- lazy-load-editor
+      CKEDITOR.replace($ \#editor .0)
   else # fetch existing & edit
     console.log \fetch
     sel = "\#post_#{id}"
     e   = $ sel
     unless e.find("\#post_edit_#{id}:visible").length # guard
-      awesome-scroll-to "\#post_#{id}" 600ms
+      #awesome-scroll-to "\#post_#{id}" 600ms
       $.get "/resources/posts/#{id}" (p) ->
         console.log \editing: + p
         render sel, p

@@ -238,22 +238,22 @@ export forum =
       # - editing
       $ ".post[data-user-id=#{u.id}] .post-content"
         .attr \contentEditable true
-      inline-all = ->
-        $ '[contentEditable=true]' |> each (e) ->
-          CKEDITOR.inline e,
-            on:
-              instanceReady: (ev) ->
-                # TODO set-timeout periodic save
-              focus: (ev) ->
-                data = ev.editor.get-data!
-                # TODO setup form w/ edit-post
-              blur: (ev) ->
-                # TODO save
-      unless CKEDITOR?version
-        <- $.get-script "#cache-url/local/editor/ckeditor.js"
-        inline-all!
-      else
-        inline-all!
+      <- lazy-load-editor
+      $ '[data-post-id]' |> each (e) ->
+        id = $ e .data \post-id
+        unless CKEDITOR?instances[id] # setup inline?
+          make-editable = $ e .find '[contentEditable=true]'
+          if make-editable.length # yes!
+            try
+              CKEDITOR.inline make-editable,
+                on:
+                  instanceReady: (ev) ->
+                    # TODO set-timeout periodic save
+                  focus: (ev) ->
+                    data = ev.editor.get-data!
+                    # TODO setup form w/ edit-post
+                  blur: (ev) ->
+                    # TODO save
     next!
   on-unload:
     (window, next-mutant, next) ->
