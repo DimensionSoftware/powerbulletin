@@ -181,6 +181,26 @@ export forum =
       #window.$ \.bg .remove! # XXX kill background (for now)
 
       layout-static window, \forum, @active-forum-id
+
+      do ~>
+        if not @post then return
+        wc = window.component ||= {}
+
+        locals =
+          step: @limit
+          qty: @qty
+          active-page: @page
+
+        pnum-to-href = mk-post-pnum-to-href @post.uri
+
+        if wc.paginator
+          wc.paginator.locals locals
+          wc.paginator.pnum-to-href pnum-to-href
+          wc.paginator.render!
+        else
+          wc.paginator =
+            new Paginator {locals, pnum-to-href} window.$(\#pb_paginator)
+
       next!
   on-load:
     (window, next) ->
@@ -363,7 +383,7 @@ join-search = (sock) ->
 end-search = ->
   socket.emit \search-end
 
-mk-pnum-to-href = (searchopts) ->
+mk-search-pnum-to-href = (searchopts) ->
   (pnum) ->
     query =
       if pnum is void or parse-int(pnum) is 1
@@ -378,20 +398,8 @@ mk-pnum-to-href = (searchopts) ->
     else
       \/search
 
-# encapsulates lazy code
-mk-search-paginator = (window, locals, searchopts, auto-render = true) ->
-  wc = window.component ||= {}
-  pnum-to-href = mk-pnum-to-href searchopts
-
-  sp = wc.search-paginator ||= new Paginator
-  sp.locals locals
-  sp.pnum-to-href pnum-to-href
-
-  sp.detach!
-  sp.render! if auto-render
-  sp.attach!
-
-  window.$(\#search_paginator).append sp.$
+mk-post-pnum-to-href = (post-uri) ->
+  (pnum) -> if pnum > 1 then "#{post-uri}/page/#{pnum}" else post-uri
 
 export search =
   static:
@@ -480,39 +488,45 @@ export search =
         bench \layout-static ->
           layout-static window, \search
 
-        paginator-locals =
-          step: 10
-          qty: @elres.total
-          active-page: @page
+        do ~>
+          wc = window.component ||= {}
 
-        window.marshal \paginatorLocals, paginator-locals
+          locals =
+            step: 10
+            qty: @elres.total
+            active-page: @page
 
-        mk-search-paginator window, paginator-locals, @searchopts # static rendering
+          pnum-to-href = mk-search-pnum-to-href @searchopts
+
+          if wc.paginator
+            wc.paginator.locals locals
+            wc.paginator.pnum-to-href pnum-to-href
+            wc.paginator.render!
+          else
+            wc.paginator =
+              new Paginator {locals, pnum-to-href} window.$(\#pb_paginator)
+
         next!
   on-initial:
-    (window, next) ->
+    (w, next) ->
       # work around race condition! thx reactive ; )
       # chrome had different timing than FF
       # i.e. on-load was happening way before socket was
       # ready in chrome
-      $R(join-search).bind-to window.r-socket
-
-      mk-search-paginator window, window.paginator-locals, window.searchopts, false
+      $R(join-search).bind-to w.r-socket
       next!
   on-mutate:
-    (window, next) ->
-      join-search(window.socket)
-
-      mk-search-paginator window, window.paginator-locals, window.searchopts
+    (w, next) ->
+      join-search(w.socket)
       next!
   on-load:
-    (window, next) ->
-      pager-init window
+    (w, next) ->
+      pager-init w
       next!
   on-unload:
-    (window, next-mutant, next) ->
+    (w, next-mutant, next) ->
       end-search!
-      delete window.searchopts # reset filter state so it doesn't come back to haunt us
+      delete w.searchopts # reset filter state so it doesn't come back to haunt us
       next!
 
 export page =

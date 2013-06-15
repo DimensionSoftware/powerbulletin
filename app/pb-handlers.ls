@@ -353,8 +353,9 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     fdoc.title = post.title
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.post.posts = delete fdoc.sub-posts-tree
-    fdoc.pages-count = Math.ceil(delete fdoc.sub-posts-count / limit)
-
+    fdoc.qty = parse-int(delete fdoc.sub-posts-count)
+    fdoc.limit = parse-int limit
+    fdoc.pages-count = Math.ceil(fdoc.qty / fdoc.limit)
     fdoc.active-forum-id  = fdoc.post.forum_id
     fdoc.active-thread-id = post.id
 
