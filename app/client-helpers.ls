@@ -51,7 +51,7 @@ export submit-form = (event, fn) -> # form submission
   $s = $ $f.find('[type=submit]:first')
   $s.attr \disabled \disabled
 
-  # update textarea body from ckeditor
+  # TODO update textarea body from ckeditor
   $ \textarea.body .val CKEDITOR.instances.editor.get-data!
 
   # pass transient_owner as alternate auth mechanism
@@ -96,6 +96,29 @@ export lazy-load-editor = (cb) ->
     cb!
   else
     cb!
+
+# makes entire page inline-editable for user-id
+export editable-posts = (user-id) ->
+  console.log \making-editable-for: + user-id
+  $ ".post[data-user-id=#{user-id}] .post-content"
+    .attr \contentEditable true
+  <- lazy-load-editor
+  for e in CKEDITOR.instances then e.destroy! # cleanup
+  $ '[data-post-id]' |> each (e) ->
+    id = $ e .data \post-id
+    unless CKEDITOR?instances[id] # setup inline?
+      make-editable = $ e .find '[contentEditable=true]'
+      if make-editable.length # yes!
+        try
+          CKEDITOR.inline make-editable,
+            on:
+              instanceReady: (ev) ->
+                # TODO set-timeout periodic save
+              focus: (ev) ->
+                data = ev.editor.get-data!
+                # TODO setup form w/ edit-post
+              blur: (ev) ->
+                # TODO save
 
 # handle in-line editing
 export edit-post = (id, data={}) ->

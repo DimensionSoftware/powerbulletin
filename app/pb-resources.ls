@@ -125,12 +125,13 @@ send-invite-email = (site, user, new-user, message) ->
     res.render \post-new
   create  : (req, res, next) ->
     return next 404 unless req.user
-    db           = pg.procs
-    post         = req.body.to-string!
-    post.user_id = req.user.id
-    post.html    = h.html post.body
-    post.ip      = res.vars.remote-ip
-    post.tags    = h.hash-tags post.body
+    db = pg.procs
+    post          = req.body
+    post.user_id  = req.user.id
+    post.html     = h.html post.body
+    post.ip       = res.vars.remote-ip
+    post.tags     = h.hash-tags post.body
+    post.forum_id = post.forum_id
     err, ap-res <- db.add-post post
     if err then return next err
 

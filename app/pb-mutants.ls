@@ -255,25 +255,8 @@ export forum =
         .css \display \inline
       if u.rights?super
         $ \.censor .css \display \inline
-      # - editing
-      $ ".post[data-user-id=#{u.id}] .post-content"
-        .attr \contentEditable true
-      <- lazy-load-editor
-      $ '[data-post-id]' |> each (e) ->
-        id = $ e .data \post-id
-        unless CKEDITOR?instances[id] # setup inline?
-          make-editable = $ e .find '[contentEditable=true]'
-          if make-editable.length # yes!
-            try
-              CKEDITOR.inline make-editable,
-                on:
-                  instanceReady: (ev) ->
-                    # TODO set-timeout periodic save
-                  focus: (ev) ->
-                    data = ev.editor.get-data!
-                    # TODO setup form w/ edit-post
-                  blur: (ev) ->
-                    # TODO save
+      # - post editing
+      editable-posts u.id
     next!
   on-unload:
     (window, next-mutant, next) ->
