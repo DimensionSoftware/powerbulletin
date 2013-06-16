@@ -47,8 +47,12 @@ module.exports =
       for k,v of default-locals when @local(k) is void
         @local k, v
 
+      component = @$
       @state.page-qty = @@$R(
-        (qty, step) -> Math.ceil(qty / step)
+        (qty, step) ->
+          pgs = Math.ceil(qty / step)
+          if pgs < 2 then component.add-class \hidden else component.remove-class \hidden
+          pgs
       ).bind-to @state.qty, @state.step
 
       do ~>
