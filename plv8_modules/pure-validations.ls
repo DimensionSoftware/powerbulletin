@@ -5,9 +5,9 @@ export post = (post) ->
   unless post.forum_id
     errors.push 'Forum cannot be blank'
   unless post.title or post.parent_id
-    errors.push 'Title cannot be blank'
+    errors.push 'Title your creation!'
   unless post.body
-    errors.push 'Body cannot be blank'
+    errors.push 'Write something!'
   errors
 
 export censor = (c) ->

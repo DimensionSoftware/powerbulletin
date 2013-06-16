@@ -10,10 +10,10 @@
       errors.push('Forum cannot be blank');
     }
     if (!(post.title || post.parent_id)) {
-      errors.push('Title cannot be blank');
+      errors.push('Title your creation!');
     }
     if (!post.body) {
-      errors.push('Body cannot be blank');
+      errors.push('Write something!');
     }
     return errors;
   };
