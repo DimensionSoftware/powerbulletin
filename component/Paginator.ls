@@ -47,8 +47,8 @@ module.exports =
       for k,v of default-locals when @local(k) is void
         @local k, v
 
-      @state.page-qty = @@$R(
-        (qty, step) -> Math.ceil(qty / step)
+      @state.page-qty = @@$R((qty, step) ->
+        Math.ceil(qty / step)
       ).bind-to @state.qty, @state.step
 
       do ~>

@@ -41,6 +41,8 @@ body.waiting, body.waiting a
   padding 5px
   font-size .8em
 
+.hidden
+  display none
 
 //{{{ Header
 .logo
@@ -350,6 +352,11 @@ body.paginator
     clear both
 //}}}
 //{{{ Footer
+footer.active
+  opacity 1
+  bottom -(grid * 1.4)
+  font-size .65em
+  transition all 1s ease-out
 footer
   text-align center
   position fixed
@@ -416,7 +423,6 @@ body.scrolled
     opacity 1
     font-size .85em
     bottom -(grid)
-    line-height (grid*2)
 //}}}
 //{{{ Collapsed left nav
 body.collapsed
