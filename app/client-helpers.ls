@@ -51,10 +51,8 @@ export submit-form = (event, fn) -> # form submission
   $s = $ $f.find('[type=submit]:first')
   $s.attr \disabled \disabled
 
-  # TODO update textarea body from ckeditor
-  $e = $ \textarea.body
-
-  #$e.html $e.data!sceditor?val! if $e.length and $e.data!sceditor
+  # update textarea body from ckeditor
+  $ \textarea.body .val CKEDITOR.instances.editor.get-data!
 
   # pass transient_owner as alternate auth mechanism
   # to support sandbox mode
