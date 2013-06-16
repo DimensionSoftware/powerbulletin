@@ -28,9 +28,8 @@ describe 'new Paginator {locals: {qty: 8}}' ->
   c = new Paginator {locals: {qty: 8}}
 
   describe ".html(false)", ->
-    expected = '<strong class="Paginator-page">1</strong>'
-    _it "should return expected html" !->
-      assert.equal c.html(false), expected
+    _it "should return ''" !->
+      assert.equal c.html(false), ''
 
 describe 'new Paginator {locals: {qty: 16}}' ->
   c = new Paginator {locals: {qty: 16}}
