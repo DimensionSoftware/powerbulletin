@@ -47,13 +47,17 @@ module.exports =
       for k,v of default-locals when @local(k) is void
         @local k, v
 
-      component = @$
-      @state.page-qty = @@$R(
-        (qty, step) ->
-          pgs = Math.ceil(qty / step)
-          if pgs < 2 then component.add-class \hidden else component.remove-class \hidden
-          pgs
+      @state.page-qty = @@$R((qty, step) ->
+        Math.ceil(qty / step)
       ).bind-to @state.qty, @state.step
+
+      # if pages < 2, hide control
+      @@$R((pgs) ~>
+        if pgs < 2
+          @$.add-class \hidden
+        else
+          @$.remove-class \hidden
+      ).bind-to @state.page-qty
 
       do ~>
         bindings =
