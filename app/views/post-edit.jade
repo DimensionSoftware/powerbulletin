@@ -1,12 +1,12 @@
 
 mixin post-edit(u, p)
-  html_id = !p.is_comment && p.id ? "_#{p.id}" : ''
-  .post-edit.onclick-submit(id="post_edit#{html_id}", class=p.is_comment ? 'comment' : '')
+  html_id = p.id ? "_#{p.id}" : ''
+  .post-edit.onclick-submit(id=p.is_comment ? html_id : 'post_edit', class=p.is_comment ? 'comment' : '')
     form(action="/resources/posts", method="#{p.method || 'put'}")
       .tooltip
       if !p.is_comment
         input.title(name='title', type='text', placeholder='Title', value=p.title)
-      textarea.body.onshiftenter-submit(id="editor#{html_id}", name='body', placeholder='Reply ...')= p.body
+      textarea.body.onshiftenter-submit(id="editor#{p.is_comment ? html_id : ''}", name='body', placeholder='Reply ...')= p.body
       input(type='hidden', name='id', value=p.id)
       input(type='hidden', name='forum_id', value=p.forum_id)
       input(type='hidden', name='parent_id', value=p.parent_id)
