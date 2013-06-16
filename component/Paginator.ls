@@ -51,14 +51,6 @@ module.exports =
         Math.ceil(qty / step)
       ).bind-to @state.qty, @state.step
 
-      # if pages < 2, hide control
-      @@$R((pgs) ~>
-        if pgs < 2
-          @$.add-class \hidden
-        else
-          @$.remove-class \hidden
-      ).bind-to @state.page-qty
-
       do ~>
         bindings =
           * @state.active-page
