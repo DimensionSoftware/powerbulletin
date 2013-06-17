@@ -54,7 +54,8 @@ export submit-form = (event, fn) -> # form submission
   # update textarea body from ckeditor
   input = CKEDITOR.instances?editor?get-data!
   if input?length then $ \textarea.body .val input
-  CKEDITOR.instances?editor?destroy! # cleanup
+  try
+    CKEDITOR.instances.editor.destroy! # cleanup
 
   # pass transient_owner as alternate auth mechanism
   # to support sandbox mode
