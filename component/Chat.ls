@@ -41,7 +41,6 @@ module.exports =
       $msg.find('.text').html m.text
       $msg.find('a.from-name').attr('href', "/user/#{m.from.name}").html m.from.name
       my-name = @state.me?val?name
-      console.warn \my-name, my-name
       if m.from.name is not my-name
         $msg.add-class \other
       $msg
@@ -49,6 +48,8 @@ module.exports =
     send-message: (ev) ~>
       if ev.key-code is 13
         m = @message-from-env!
+        if m.text.match /^\s*$/
+          return false
         err, r <~ socket.emit \chat-message, m
         if err
           console.error err
