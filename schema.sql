@@ -25,6 +25,7 @@ CREATE TABLE users (
   id      BIGSERIAL NOT NULL,
   email   VARCHAR(256),
   photo   VARCHAR(256),
+  stripe_id TEXT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
   UNIQUE (email),
@@ -263,3 +264,14 @@ CREATE TABLE products (
   updated TIMESTAMP
 );
 CREATE TRIGGER products_timestamp BEFORE UPDATE ON products FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
+
+CREATE TABLE subscriptions (
+  site_id     BIGINT NOT NULL REFERENCES sites(id),
+  product_id  VARCHAR(64) NOT NULL REFERENCES products(id),
+  description TEXT NOT NULL,
+  price       BIGINT NOT NULL, -- USD
+  created     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated     TIMESTAMP,
+  UNIQUE (site_id, product_id)
+);
+CREATE TRIGGER subscriptions_timestamp BEFORE UPDATE ON subscriptions FOR EACH ROW EXECUTE PROCEDURE upd_timestamp();
