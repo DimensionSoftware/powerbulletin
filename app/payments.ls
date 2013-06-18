@@ -21,6 +21,7 @@ export test = ->
     card: @test-card
   }, console.log
 
+# NOTE: need to verify yourself whether said can purchase for this site
 initial-purchase = (site-id, product-id, card, cb) ->
   err, res <~ db.sites.find-one {
     criteria: {id: site-id}
@@ -33,9 +34,8 @@ initial-purchase = (site-id, product-id, card, cb) ->
   err <~ db.add-subscription site-id, product-id
   if err then return cb err
 
-  # XXX: this needs to be calculated on the fly in the future
-  # calculate based on total sum of all prices of all subscriptions
-  total-monthly-cost = 100cents
+  err, total-monthly-cost <~ db.subscription-total user-id
+  if err then return cb err
 
   stripe-cust-info = {
     plan: \plan
@@ -45,7 +45,6 @@ initial-purchase = (site-id, product-id, card, cb) ->
 
   err, customer <- @client.customers.create stripe-cust-info
   if err then return cb err
-  #if customer instanceof Error then return cb customer
 
   err <- db.users.update {criteria: {id: user-id}, data: {stripe_id: customer.id}}
   if err then return cb err
