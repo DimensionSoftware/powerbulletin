@@ -880,4 +880,16 @@ CREATE FUNCTION procs.add_subscription(site_id JSON, product_id JSON) RETURNS JS
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+-- get total amount of all prics of all subscriptions for a user
+CREATE FUNCTION procs.subscription_total(user_id JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT SUM(sub.price)
+  FROM subscriptions sub
+  JOIN sites s ON s.id=sub.site_id
+  JOIN users u ON u.id=s.user_id
+  WHERE u.id=$1
+  '''
+  [{sum}] = plv8.execute sql, [user_id]
+  return sum or 0
+$$ LANGUAGE plls IMMUTABLE STRICT;
 -- vim:fdm=marker
