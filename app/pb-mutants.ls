@@ -258,7 +258,7 @@ export forum =
       if u.rights?super
         $ \.censor .css \display \inline
       # - post editing
-      editable-posts u.id
+      set-inline-editor u.id
     next!
   on-unload:
     (window, next-mutant, next) ->

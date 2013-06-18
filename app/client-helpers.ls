@@ -1,3 +1,5 @@
+
+#{{{ Login
 export show-login-dialog = ->
   $.fancybox.open \#auth,
     close-effect: \elastic
@@ -20,8 +22,118 @@ export require-login = (fn) ->
     else
        @show-login-dialog!
        false
+#}}}
+#{{{ Editing Posts
+export post-success = (ev, data) ->
+  f = $ ev.target .closest \.post-edit # form
+  p = f.closest \.editing # post being edited
+  t = $(f.find \.tooltip)
+  unless data.success
+    show-tooltip t, data?errors?join \<br>
+  else
+    # render updated post
+    p.find \.title .html data.0?title
+    p.find \.body  .html data.0?body
+    f.remove-class \fadein .hide 300s # & hide
+    meta = furl.parse window.location.pathname
+    window.last-statechange-was-user = false # flag that this was programmer, not user
+    switch meta.type
+    | \new-thread => History.replace-state {} '' data.uri
+    | \edit       => remove-editing-url meta
+  false
 
-export mutate = (event) ->
+export lazy-load-editor = (cb) ->
+  unless CKEDITOR?version # load!
+    <- $.get-script "#cache-url/local/editor/ckeditor.js"
+    cb!
+  else
+    cb!
+
+export ck-submit-form = (e) ->
+  input = CKEDITOR.instances[e.id]?get-data!
+  if input?length then $ \textarea.body .val input # update from ckeditor
+  ev = {target:editor}      # mock event
+  submit-form ev, (data) -> # ...and sumbit!
+    post-success ev, data
+
+export submit-form = (ev, fn) ->
+  $f = $ ev.target .closest(\form) # get event's form
+  $s = $ $f.find('[type=submit]:first')
+  $s.attr \disabled \disabled
+
+  # pass transient_owner as alternate auth mechanism
+  # to support sandbox mode
+  serialized =
+    if tid = $.cookie \transient_owner
+      $f.serialize! + "&transient_owner=#tid"
+    else
+      $f.serialize!
+
+  $.ajax { # submit!
+    url:       $f.attr \action
+    type:      $f.attr \method
+    data:      serialized
+    data-type: \json
+    success:   (data) ->
+      $s.remove-attr \disabled
+      if fn then fn.call $f, data
+    error: (data) ->
+      $s.remove-attr \disabled
+      show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
+  }
+  false
+
+# makes entire page inline-editable for user-id
+export set-inline-editor = (user-id) ->
+  $ ".post[data-user-id=#user-id] .post-content"
+    .attr \contentEditable true
+  <- lazy-load-editor
+  for e in CKEDITOR.instances then e.destroy! # cleanup
+  try CKEDITOR.inline-all!
+
+# handle in-line editing
+export edit-post = (id, data={}) ->
+  focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 100ms
+  render = (sel, locals, cb=(->)) ~>
+    $e = $ sel
+    @render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
+      cb!
+      focus $e
+
+  if id is true # render new
+    scroll-to-top!
+    data.action = \/resources/posts
+    data.method = \post
+    render \.forum, data, -> # init editor on post
+      <- lazy-load-editor
+      CKEDITOR.replace($ \#editor .0)
+  else # fetch existing & edit
+    sel = "\#post_#{id}"
+    e   = $ sel
+    unless e.find("\#post_edit_#{id}:visible").length # guard
+      #awesome-scroll-to "\#post_#{id}" 600ms
+      $.get "/resources/posts/#{id}" (p) ->
+        render sel, p
+        e .add-class \editing
+    else
+      focus e
+#}}}
+
+export respond-resize = ->
+  w = $ window
+  if w.width! <= 800px then $ \body .add-class \collapsed
+
+export align-breadcrumb = ->
+  b = $ \#breadcrumb
+  m = $ \#main_content
+  l = $ \#left_content
+  pos = (m.width!-b.width!)/2
+  b.transition {left:(if pos < l.width! then l.width! else pos)}, 300ms \easeOutExpo
+
+export remove-editing-url = (meta) ->
+  History.replace-state {no-surf:true} '' meta.thread-uri
+
+export mutate = ->
   $e = $ this
   return if $e.has-class \require-login and !user # guard
   href = $e .attr \href
@@ -46,109 +158,4 @@ export show-tooltip = ($tooltip, msg, duration=3000ms) ->
 export set-online-user = (id) ->
   $ "[data-user-id=#{id}] .profile.photo" .add-class \online
 
-export submit-form = (event, fn) -> # form submission
-  $f = $ event.target .closest(\form) # get event's form
-  $s = $ $f.find('[type=submit]:first')
-  $s.attr \disabled \disabled
-
-  # update textarea body from ckeditor
-  input = CKEDITOR.instances?editor?get-data!
-  if input?length then $ \textarea.body .val input
-  try
-    CKEDITOR.instances.editor.destroy! # cleanup
-
-  # pass transient_owner as alternate auth mechanism
-  # to support sandbox mode
-  serialized =
-    if tid = $.cookie('transient_owner')
-      $f.serialize! + "&transient_owner=#tid"
-    else
-      $f.serialize!
-
-  $.ajax {
-    url: $f.attr(\action)
-    type: $f.attr(\method)
-    data: serialized
-    data-type: \json
-    success:  (data) ->
-      $s.remove-attr \disabled
-      if fn then fn.call $f, data
-    error: (data) ->
-      $s.remove-attr \disabled
-      show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
-  }
-  false
-
-export respond-resize = ->
-  w = $ window
-  if w.width! <= 800px then $ \body .add-class \collapsed
-
-export align-breadcrumb = ->
-  b = $ \#breadcrumb
-  m = $ \#main_content
-  l = $ \#left_content
-  pos = (m.width!-b.width!)/2
-  b.transition {left:(if pos < l.width! then l.width! else pos)}, 300ms \easeOutExpo
-
-export remove-editing-url = (meta) ->
-  History.replace-state {no-surf:true} '' meta.thread-uri
-
-export lazy-load-editor = (cb) ->
-  unless CKEDITOR?version # load!
-    <- $.get-script "#cache-url/local/editor/ckeditor.js"
-    cb!
-  else
-    cb!
-
-# makes entire page inline-editable for user-id
-export editable-posts = (user-id) ->
-  console.log \making-editable-for: + user-id
-  $ ".post[data-user-id=#{user-id}] .post-content"
-    .attr \contentEditable true
-  <- lazy-load-editor
-  for e in CKEDITOR.instances then e.destroy! # cleanup
-  $ '[data-post-id]' |> each (e) ->
-    id = $ e .data \post-id
-    unless CKEDITOR?instances[id] # setup inline?
-      make-editable = $ e .find '[contentEditable=true]'
-      if make-editable.length # yes!
-        try
-          CKEDITOR.inline make-editable,
-            on:
-              instanceReady: (ev) ->
-                # TODO set-timeout periodic save
-              focus: (ev) ->
-                data = ev.editor.get-data!
-                # TODO setup form w/ edit-post
-              blur: (ev) ->
-                # TODO save
-
-# handle in-line editing
-export edit-post = (id, data={}) ->
-  focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 100ms
-  render = (sel, locals, cb=(->)) ~>
-    $e = $ sel
-    @render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
-      cb!
-      focus $e
-
-  if id is true # render new
-    console.log \create-new
-    scroll-to-top!
-    data.action = \/resources/posts
-    data.method = \post
-    render \.forum, data, -> # init editor on post
-      <- lazy-load-editor
-      CKEDITOR.replace($ \#editor .0)
-  else # fetch existing & edit
-    console.log \fetch
-    sel = "\#post_#{id}"
-    e   = $ sel
-    unless e.find("\#post_edit_#{id}:visible").length # guard
-      #awesome-scroll-to "\#post_#{id}" 600ms
-      $.get "/resources/posts/#{id}" (p) ->
-        console.log \editing: + p
-        render sel, p
-        e .add-class \editing
-    else
-      focus e
+# vim:fdm=marker
