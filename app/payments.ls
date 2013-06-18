@@ -30,13 +30,11 @@ initial-purchase = (site-id, product-id, card, cb) ->
   unless user-id = res.user_id
     throw new Error "the site must have an owner to subscribe"
 
-  err, product <~ db.products.find-one {
-    criteria: {id: product-id}
-    columns: [\id \description \price]
-  }
+  err <~ db.add-subscription site-id, product-id
   if err then return cb err
 
   # XXX: this needs to be calculated on the fly in the future
+  # calculate based on total sum of all prices of all subscriptions
   total-monthly-cost = 100cents
 
   stripe-cust-info = {

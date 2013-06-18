@@ -32,7 +32,7 @@ set-timeout (-> v.init!), 1000ms
 
 err <- pg.init
 if err then throw err
-global.db << pg.procs
+global.db <<< pg.procs
 
 err <- m.init
 if err then throw err
