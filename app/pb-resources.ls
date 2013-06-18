@@ -202,17 +202,20 @@ send-invite-email = (site, user, new-user, message) ->
 @conversations =
   show: (req, res, next) ->
     id = req.params.conversation
+    limit = 4
     err, c <~ db.conversation-by-id id
     if err
       console.error \conversations-show, req.path, err
       res.json success: false
       return
     if c
-      err, c.messages <- db.messages-by-cid c.id, (req.query.last || null)
+      err, messages <- db.messages-by-cid c.id, (req.query.last || null), limit
       if err
         console.error \conversations-show, req.path, err
         res.json success: false
         return
+      c.messages = messages |> map (-> it.body = format.chat-message it.body; it)
+      c.success = true
       res.json c
     else
       console.error \conversations-show, "nothing"
