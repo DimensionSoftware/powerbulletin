@@ -11,3 +11,5 @@ module.exports =
       super ...
       @children =
         sales: new Sales {} \.SalesApp-content @
+    on-attach: ->
+      @@$ \.Sales-subdomain:first .focus!

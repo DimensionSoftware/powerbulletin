@@ -14,20 +14,18 @@ module.exports =
         return false
 
       @on-load-resize ||= ~>
-        console.log \on-load-resize
         @render-left-half!
         @render-top-half!
 
       @on-scroll ||= ~>
-        console.log \on-scroll
         @render-top-half!
 
       @@$(window).on 'load resize', @on-load-resize
-      @@$(\body).on \scroll, @on-scroll
+      @@$(window).on \scroll, @on-scroll
     on-detach: !->
       @$.off \click, \button
       @@$(window).off 'load resize', @on-load-resize
-      @@$(\body).off \scroll, @on-scroll
+      @@$(window).off \scroll, @on-scroll
     render-top-half: !->
       $button = @$.find \button
       off-top = $button.offset!top

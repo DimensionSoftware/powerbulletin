@@ -84,6 +84,7 @@ censor = (ev) ->
 #### main   ###############>======-- -   -
 ##
 load-ui!
+set-timeout (-> $ \footer .add-class \active), 2500ms
 $ \#query .focus!
 
 # Delegated Events
@@ -120,8 +121,9 @@ do ->
         submit-type = \soft
 
       console.log "keyup:#{it.which} triggered a #{submit-type} search"
-
-      r-searchopts({} <<< window.searchopts <<< {q, submit-type})
+      newopts = {} <<< window.searchopts <<< {q, submit-type}
+      delete newopts.page # remove page from new term searches
+      r-searchopts newopts
   ), 500ms
 
 $d.on \change, '#search_filters [name=forum_id]', ->
@@ -129,7 +131,9 @@ $d.on \change, '#search_filters [name=forum_id]', ->
   submit-type = \soft
   forum_id = $(@).val!
 
-  r-searchopts({} <<< window.searchopts <<< {forum_id, submit-type})
+  newopts = {} <<< window.searchopts <<< {forum_id, submit-type}
+  delete newopts.page # remove page from new filtered results
+  r-searchopts newopts
 
   return false
 
@@ -138,7 +142,9 @@ $d.on \change, '#search_filters [name=within]', ->
   submit-type = \soft
   within = $(@).val!
 
-  r-searchopts({} <<< window.searchopts <<< {within, submit-type})
+  newopts = {} <<< window.searchopts <<< {within, submit-type}
+  delete newopts.page # remove page from new filtered results
+  r-searchopts newopts
 
   return false
 
@@ -209,15 +215,19 @@ submit = require-login(
   (ev) -> submit-form(ev, (data) ->
     f = $ ev.target .closest \.post-edit # form
     p = f.closest \.editing # post being edited
-    # render updated post
-    p.find \.title .html data.0?title
-    p.find \.body  .html data.0?body
-    f.remove-class \fadein .hide 300s # & hide
-    meta = furl.parse window.location.pathname
-    window.last-statechange-was-user = false # flag that this was programmer, not user
-    switch meta.type
-    | \new-thread => History.replace-state {} '' data.uri
-    | \edit       => remove-editing-url meta
+    t = $(f.find \.tooltip)
+    unless data.success
+      show-tooltip t, data?errors?join \<br>
+    else
+      # render updated post
+      p.find \.title .html data.0?title
+      p.find \.body  .html data.0?body
+      f.remove-class \fadein .hide 300s # & hide
+      meta = furl.parse window.location.pathname
+      window.last-statechange-was-user = false # flag that this was programmer, not user
+      switch meta.type
+      | \new-thread => History.replace-state {} '' data.uri
+      | \edit       => remove-editing-url meta
     false))
 $d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then submit it
 
@@ -354,7 +364,7 @@ window.do-buy = (product-id) ->
 
 window.do-test = ->
   window.component.paginator ||=
-    new Paginator {locals: {qty: 100}}
+    new Paginator {locals: {step: 10, qty: 100}}
   $.fancybox(window.component.paginator.$)
 
 #}}}

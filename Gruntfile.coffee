@@ -36,35 +36,35 @@ module.exports = (grunt) ->
         files: ["plv8_modules/*.ls", "procedures.sql"]
         tasks: ["procs", "browserify", "launch"]
         options:
-          debounceDelay: 250
+          debounceDelay: 50
           interrupt: true
 
       livescript:
         files: ["app/main.ls"]
         tasks: ["livescript", "browserify", "launch"]
         options:
-          debounceDelay: 250
+          debounceDelay: 50
           interrupt: true
 
       clientJade:
         files: ["app/views/*.jade"]
         tasks: ["clientJade", "browserify", "launch"]
         options:
-          debounceDelay: 250
+          debounceDelay: 50
           interrupt: true
 
       componentJade:
         files: ["component/*.jade"]
         tasks: ["componentJade", "browserify", "launch"]
         options:
-          debounceDelay: 250
+          debounceDelay: 50
           interrupt: true
 
       app:
         files: ["component/*.ls", "app/*.ls", "config/*", "lib/**/*.ls"]
         tasks: ["browserify", "launch"]
         options:
-          debounceDelay: 250
+          debounceDelay: 50
           interrupt: true
 
   grunt.loadNpmTasks "grunt-contrib-uglify"

@@ -351,8 +351,9 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     fdoc.title = post.title
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.post.posts = delete fdoc.sub-posts-tree
-    fdoc.pages-count = Math.ceil(delete fdoc.sub-posts-count / limit)
-
+    fdoc.qty = parse-int(delete fdoc.sub-posts-count)
+    fdoc.limit = parse-int limit
+    fdoc.pages-count = Math.ceil(fdoc.qty / fdoc.limit)
     fdoc.active-forum-id  = fdoc.post.forum_id
     fdoc.active-thread-id = post.id
 
@@ -646,6 +647,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     hit-count = t.count
 
     newopts = {} <<< res.locals.searchopts <<< {forum_id}
+    delete newopts.page # resets to page 1 when filtering by a forum
     if qs = ["#{k}=#{encode-URI-component v}" for k,v of newopts].join \&
       uri = "/search?#{qs}"
     else
@@ -657,7 +659,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     elres
     facets
     menu
-    page: req.query.page
+    page: (req.query.page or '1')
     title: "Search#{if res.locals.searchopts.q then (' : ' + res.locals.searchopts.q) else ''}"
   }
 

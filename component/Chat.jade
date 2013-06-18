@@ -2,12 +2,14 @@
   h2 #{others[0].name}
   .minimize -
   .close.onclick-close X
-.body
+.container
   .messages
+    .load-more(style="display:none;") load more...
 
   .msg(style="display:none;")
-    .from-name
-    .text
+    .body
+    .from
+      a.from-name.mutant
 .footer
   form
     textarea(name="body")

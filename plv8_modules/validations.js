@@ -10,7 +10,7 @@
     uExists = post.user_id ? !!plv8.execute('SELECT TRUE FROM users WHERE id=$1', [post.user_id]) : void 8;
     tExists = post.transient_owner ? authorizeTransient(post.transient_owner, site_id) : void 8;
     if (!(uExists || tExists)) {
-      errors.push('posting is not authorized');
+      errors.push('Posting is not authorized');
     }
     return errors;
   };

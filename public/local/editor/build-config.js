@@ -40,8 +40,7 @@ var CKBUILDER_CONFIG = {
 		'button' : 1,
 		'fakeobjects' : 1,
 		'mediaembed' : 1,
-		'bbcode' : 1,
-		'save' : 1
+		'bbcode' : 1
 	},
 	languages : {
 		'en' : 1,

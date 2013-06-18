@@ -5,7 +5,7 @@
     var k, ref$, v;
     for (k in ref$ = require.cache) {
       v = ref$[k];
-      if (k.indexOf(process.cwd() + "/app") !== -1 || k.indexOf(process.cwd() + "/component") !== -1) {
+      if (k.indexOf(process.cwd() + '/build') !== -1 || k.indexOf(process.cwd() + "/app") !== -1 || k.indexOf(process.cwd() + "/component") !== -1) {
         console.log('unrequiring: ' + k);
         delete require.cache[k];
       }

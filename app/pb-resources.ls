@@ -190,7 +190,6 @@ send-invite-email = (site, user, new-user, message) ->
       res.json {success: true}
     else
       next 404
-
 @products =
   show: (req, res, next) ->
     return next 404 unless id = req.params.product
@@ -200,4 +199,27 @@ send-invite-email = (site, user, new-user, message) ->
     }
     if err then return next err
     if product then res.json product else next 404
+@conversations =
+  show: (req, res, next) ->
+    id = req.params.conversation
+    limit = 4
+    err, c <~ db.conversation-by-id id
+    if err
+      console.error \conversations-show, req.path, err
+      res.json success: false
+      return
+    if c
+      err, messages <- db.messages-by-cid c.id, (req.query.last || null), limit
+      if err
+        console.error \conversations-show, req.path, err
+        res.json success: false
+        return
+      c.messages = messages |> map (-> it.body = format.chat-message it.body; it)
+      c.success = true
+      res.json c
+    else
+      console.error \conversations-show, "nothing"
+      res.json success: false
+
+
 # vim:fdm=indent

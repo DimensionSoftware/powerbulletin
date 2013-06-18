@@ -40,7 +40,7 @@ module.exports =
     # component instances' container
     #
     # @$ could be thought of as 'the container'
-    ({locals = {}, @auto-render = true, @auto-attach = @is-client} = {}, @selector, @parent) ->
+    ({locals = {}, @auto-render = true, @auto-attach = true} = {}, @selector, @parent) ->
       @state =
         {[k, (if v?_is-reactive then v else @@$R.state(if v is void  then null else v))] for k,v of locals}
       if @selector
@@ -65,7 +65,7 @@ module.exports =
     is-client: !!window?
     template: (-> '')
     attach: (do-children = true) ->
-      unless @is-client then throw new Error "Component can only attach on client"
+      return @ unless @is-client
 
       return @ if @is-attached # guard from attaching twice
 
@@ -77,7 +77,7 @@ module.exports =
       @is-attached = true
       return @ # chain chain chain! chain of fools...
     detach: (do-children = true) ->
-      unless @is-client then throw new Error "Component can only detach on client"
+      return @ unless @is-client
 
       return @ unless @is-attached # guard from detaching twice
 
@@ -122,7 +122,12 @@ module.exports =
         @$.html template-out
 
       return @
-    locals: ->
+    locals: (new-locals) ->
+      # mass merge of locals
+      if new-locals
+        for k,v of new-locals
+          @local k, v
+
       {[k, s!] for k,s of @state}
     local: (k, v) ->
       existing-r = @state[k]
