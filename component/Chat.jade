@@ -4,10 +4,12 @@
   .close.onclick-close X
 .body
   .messages
+    .load-more(style="display:none;") load more...
 
   .msg(style="display:none;")
-    .from-name
     .text
+    .from
+      a.from-name.mutant
 .footer
   form
     textarea(name="body")

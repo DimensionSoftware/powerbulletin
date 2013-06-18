@@ -255,7 +255,7 @@ body.paginator
     a.page.previous
       top 0
     a.page.next
-      bottom 0
+      bottom 15px
     a.page.previous::before
       position absolute
       height 0
@@ -353,9 +353,9 @@ body.paginator
 //}}}
 //{{{ Footer
 footer.active
-  opacity 1
+  opacity .8
   bottom -(grid * 1.4)
-  font-size .65em
+  font-size .75em
   transition all 1s ease-out
 footer
   text-align center
@@ -414,7 +414,7 @@ body.scrolled
       a.page.previous::before
         top -5px
       a.page.next::before
-        bottom 30px
+        bottom 10px
   #main_content
     #breadcrumb
       top (header-scrolled-height+3)

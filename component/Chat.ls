@@ -16,11 +16,12 @@ module.exports =
       @$.on \click,    \.minimize,  @minimize
       @$.on \click,    \.close,     @close
       @$.on \keydown,  \textarea,   @send-message
-      console.log \attached
 
-    on-detach: !->
-      @$.find \.minimize .off!
-      @$.find \.close .off!
+      @$.find(\.messages).scroll @maybe-load-more
+
+    on-detach: !~>
+      #@$.find \.minimize .off!
+      #@$.find \.close .off!
 
     key: ~>
       [me,others] = [@state.me.val, @state.others.val]
@@ -38,7 +39,11 @@ module.exports =
       $msg = @$.find('.body > .msg').clone!
       $msg.attr('data-message-id', m.id)
       $msg.find('.text').html m.text
-      $msg.find('.from-name').html m.from.name
+      $msg.find('a.from-name').attr('href', "/user/#{m.from.name}").html m.from.name
+      my-name = @state.me?val?name
+      console.warn \my-name, my-name
+      if m.from.name is not my-name
+        $msg.add-class \other
       $msg
 
     send-message: (ev) ~>
@@ -61,6 +66,9 @@ module.exports =
       $msg.show!
       $messages[0].scroll-top = $messages[0].scroll-height
       @$.find \textarea .val ''
+
+    maybe-load-more: (ev) ~>
+      console.log $(ev.target).scrollTop!
 
     load-more-messages: (last) ~>
       last ||= @$.find '.messages .msg:first' .data \message-id
