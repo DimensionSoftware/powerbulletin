@@ -2,6 +2,13 @@ require! \./Component.ls
 
 {templates} = require \../build/component-jade.js
 
+add-message = (fn, m) -->
+  $msg = @message-node m
+  $messages = @$.find('.messages')[fn] $msg
+  $msg.show!
+  $messages[0].scroll-top = $messages[0].scroll-height
+  @$.find \textarea .val ''
+
 module.exports =
   class Chat extends Component
     @duration  = 300ms
@@ -27,21 +34,23 @@ module.exports =
       [me,others] = [@state.me.val, @state.others.val]
       "#{me.name}/#{others.map((-> it.name)).join '/'}"
 
+    users: ~>
+      flatten [@state.me.val, @state.others.val] |> fold ((m, u) -> m[u.id] = u; m), {}
+
     message-from-env: ~>
       u = @state?others?val?0
       m =
         cid  : @conversation?id
         from : window.user
         to   : {id: u.id, name: u.name}
-        text : @$.find('textarea').val!
+        body : @$.find('textarea').val!
 
     message-node: (m) ~>
-      $msg = @$.find('.body > .msg').clone!
+      $msg = @$.find('.container > .msg').clone!
       $msg.attr('data-message-id', m.id)
-      $msg.find('.text').html m.text
+      $msg.find('.body').html m.body
       $msg.find('a.from-name').attr('href', "/user/#{m.from.name}").html m.from.name
       my-name = @state.me?val?name
-      console.warn \my-name, my-name
       if m.from.name is not my-name
         $msg.add-class \other
       $msg
@@ -49,36 +58,46 @@ module.exports =
     send-message: (ev) ~>
       if ev.key-code is 13
         m = @message-from-env!
+        console.log \m, m
+        if m.body.match /^\s*$/
+          return false
         err, r <~ socket.emit \chat-message, m
         if err
           console.error err
           return
         if (@conversation is null)
           @conversation = r.conversation
+        console.log \r, r
         m.id = r.message.id
-        m.text = r.message.body
+        m.body = r.message.body
         console.log \r, r.message
-        @add-message m
+        @append-message m
 
-    add-message: (m) ~>
-      $msg = @message-node m
-      $messages = @$.find('.messages').append $msg
-      $msg.show!
-      $messages[0].scroll-top = $messages[0].scroll-height
-      @$.find \textarea .val ''
+    append-message: add-message \append
+
+    prepend-message: add-message \prepend
 
     maybe-load-more: (ev) ~>
-      console.log $(ev.target).scrollTop!
+      pos = $(ev.target).scrollTop!
+      if pos is 0
+        @load-more-messages!
 
     load-more-messages: (last) ~>
-      last ||= @$.find '.messages .msg:first' .data \message-id
+      $first-msg = @$.find '.messages .msg:first'
+      last ||= $first-msg.data \message-id
       r <~ $.get "/resources/conversations/#{@conversation.id}", { last }
+      console.log r, users
+      if r.success
+        users = @users!
+        r.messages
+        |> map  (~> it.from = users[it.user_id]; it)
+        |> each (~> @prepend-message it)
+        @$.find \.messages .scroll-top( $first-msg.offset!top )
 
     minimize: (ev) ~>
       @$.toggle-class \minimized
 
     close: ~>
-      console.warn \c, @
       err, r <~ socket.emit \chat-leave, @conversation
       key = @key!
       console.log \key, key
@@ -143,7 +162,7 @@ Chat.client-socket-init = (socket) ->
     c = Obj.find (-> it.conversation?id is msg.conversation_id), Chat.chats
     if c
       # add message to that chat
-      c.add-message msg
+      c.append-message msg
     else
       console.warn \chat-message, 'c not found', msg
 
