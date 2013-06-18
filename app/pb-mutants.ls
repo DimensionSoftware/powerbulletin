@@ -226,7 +226,9 @@ export forum =
       pager-init window
 
       # bring down first reply
-      if user then $ \.onclick-append-reply-ui:first .click!
+      if user
+        $ \.onclick-append-reply-ui:first .click!
+        set-timeout (-> $ \textarea .focus!), 100ms
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
