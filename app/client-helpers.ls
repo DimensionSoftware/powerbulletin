@@ -42,13 +42,6 @@ export post-success = (ev, data) ->
     | \edit       => remove-editing-url meta
   false
 
-export lazy-load-editor = (cb) ->
-  unless CKEDITOR?version # load!
-    <- $.get-script "#cache-url/local/editor/ckeditor.js"
-    cb!
-  else
-    cb!
-
 export ck-submit-form = (e) ->
   editor = e?element?$
   ev = {target:editor} # mock event
@@ -136,6 +129,36 @@ export edit-post = (id, data={}) ->
         e .add-class \editing
     else
       focus e
+#}}}
+#{{{ Lazy loading
+load-css = []
+load-css = (href) ->
+  return if load-css[href] # guard
+  $ \head .append($ '<link rel="stylesheet" type="text/css">' .attr(\href, href))
+  load-css[href] = true
+
+export lazy-load = (test, script, css, cb) ->
+  unless test!
+    <- $.get-script script
+    if css then load-css css
+    cb!
+  else
+    cb!
+export lazy-load-html5-uploader = (cb) ->
+  lazy-load (-> window.$!html5-uploader?length),
+    "#cache-url/local/jquery.html5uploader.js",
+    "#cache-url/local/editor/skins/moono/editor.css",
+    cb
+export lazy-load-jcrop = (cb) ->
+  lazy-load (-> window.$!Jcrop?length),
+    "#cache-url/jcrop/js/jquery.Jcrop.min.js",
+    "#cache-url/jcrop/css/jquery.Jcrop.min.css",
+    cb
+export lazy-load-editor = (cb) ->
+  lazy-load (-> CKEDITOR?version),
+    "#cache-url/local/editor/ckeditor.js",
+    null,
+    cb
 #}}}
 
 export respond-resize = ->
