@@ -63,14 +63,17 @@ process-cached-data = {}
 
 # find all #hashtags in a string
 @hash-tags = (body) ->
-  body.match(/#\w+/g)?map (tag) -> tag.replace(/^#/, '').toLowerCase!
+  unless body?length then return # guard
+  body.match(/#\w+/g)?map (tag) -> tag?replace(/^#/, '').toLowerCase!
 
 # find all @attags in a string
 @at-tags = (body) ->
-  body.match(/@\w+/g)?map (tag) -> tag.replace(/^@/, '')
+  unless body?length then return # guard
+  body.match(/@\w+/g)?map (tag) -> tag?replace(/^@/, '')
 
 # take marked up text and turn it into html
 @html = (body) ->
+  unless body?length then return # guard
   # TODO - escape html before sending to bbcode parser
   # TODO - add #hashtag and @attag support
   bbcode.parse body

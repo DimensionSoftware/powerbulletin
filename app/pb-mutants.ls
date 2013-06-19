@@ -40,7 +40,6 @@ layout-on-personalize = (w, u) ->
   if u # guard
     set-online-user u.id
     # load editing scripts
-    unless CKEDITOR?version        then $.get-script "#cache-url/local/editor/ckeditor.js"
     unless $!html5-uploader?length then $.get-script "#cache-url/local/jquery.html5uploader.js"
     unless $!Jcrop?length          then $.get-script "#cache-url/jcrop/js/jquery.Jcrop.min.js"
     # ...and css
@@ -227,7 +226,9 @@ export forum =
       pager-init window
 
       # bring down first reply
-      if user then $ \.onclick-append-reply-ui:first .click!
+      if user
+        $ \.onclick-append-reply-ui:first .click!
+        set-timeout (-> $ \textarea .focus!), 100ms
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
@@ -248,7 +249,16 @@ export forum =
       window.socket?emit \online-now
       next!
   on-personalize: (w, u, next) ->
-    layout-on-personalize w, u
+    if u
+      layout-on-personalize w, u
+      # enable edit actions
+      # - censor
+      $ ".post[data-user-id=#{u.id}] .censor"
+        .css \display \inline
+      if u.rights?super
+        $ \.censor .css \display \inline
+      # - post editing
+      set-inline-editor u.id
     next!
   on-unload:
     (window, next-mutant, next) ->

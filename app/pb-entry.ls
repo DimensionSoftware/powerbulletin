@@ -210,32 +210,18 @@ $d.on \click '.onclick-submit .cancel' (ev) ->
   | otherwise   => remove-editing-url meta
   false
 
-submit = require-login(
-  (ev) -> submit-form(ev, (data) ->
-    f = $ ev.target .closest \.post-edit # form
-    p = f.closest \.editing # post being edited
-    t = $(f.find \.tooltip)
-    unless data.success
-      show-tooltip t, data?errors?join \<br>
-    else
-      # render updated post
-      p.find \.title .html data.0?title
-      p.find \.body  .html data.0?body
-      f.remove-class \fadein .hide 300s # & hide
-      meta = furl.parse window.location.pathname
-      window.last-statechange-was-user = false # flag that this was programmer, not user
-      switch meta.type
-      | \new-thread => History.replace-state {} '' data.uri
-      | \edit       => remove-editing-url meta
-    false))
-$d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then submit it
-
+# editing & posting
+# - ckeditor
+ck-submit = require-login((ev) ->
+  ck-submit-form({element:{$:{id:\editor}}}, (data) -> post-success ev, data); false)
+# - standard form
+post-submit = require-login((ev) -> submit-form(ev, (data) -> post-success ev, data); false)
 submit-selectors =
   * "html.profile .onclick-submit input[type='submit']"
   * "html.forum .onclick-submit input[type='submit']"
   * "html.search .onclick-submit input[type='submit']"
-
-$d.on \click, submit-selectors.join(', '), submit
+$d.on \click, submit-selectors.join(', '), post-submit
+$d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then post-submit it
 
 $d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post require-login(censor)
