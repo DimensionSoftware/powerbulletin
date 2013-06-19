@@ -76,6 +76,10 @@ app.get \/admin/:action?,
   ),
   handlers.admin
 #}}}
+
+# MISC AJAX
+app.post '/ajax/checkout/:productId', personal-mw, handlers.checkout
+
 #{{{ Local auth
 #
 app.post '/auth/login',           personal-mw, handlers.login
