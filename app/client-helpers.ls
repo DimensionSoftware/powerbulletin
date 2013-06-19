@@ -50,16 +50,35 @@ export lazy-load-editor = (cb) ->
     cb!
 
 export ck-submit-form = (e) ->
-  input = CKEDITOR.instances[e.id]?get-data!
-  if input?length then $ \textarea.body .val input # update from ckeditor
-  ev = {target:editor}      # mock event
-  submit-form ev, (data) -> # ...and sumbit!
-    post-success ev, data
+  editor = e?element?$
+  ev = {target:editor} # mock event
+  unless editor?id # editing, so--build post
+    $p = $ editor .closest \.post
+    $.ajax {
+      url: \/resources/posts/ + $p.data \post-id
+      type: \put
+      data:
+        id:        $p.data \post-id
+        forum_id:  $p.data \forum-id
+        parent_id: $p.data \thread-id
+        body:      e.get-data!
+      success: (data) ->
+        e.fire \blur
+        $p.find '[contentEditable=true]' .blur!
+    }
+  else
+    submit-form ev, (data) -> # ...and sumbit!
+      post-success ev, data
 
 export submit-form = (ev, fn) ->
   $f = $ ev.target .closest(\form) # get event's form
   $s = $ $f.find('[type=submit]:first')
   $s.attr \disabled \disabled
+
+  # is body in ckeditor?
+  body  = $f.find \textarea.body
+  input = CKEDITOR.instances[body.attr \id]?get-data!
+  if input?length then body.val input # fill-in
 
   # pass transient_owner as alternate auth mechanism
   # to support sandbox mode
@@ -88,7 +107,7 @@ export set-inline-editor = (user-id) ->
   $ ".post[data-user-id=#user-id] .post-content"
     .attr \contentEditable true
   <- lazy-load-editor
-  for e in CKEDITOR.instances then e.destroy! # cleanup
+  for e in CKEDITOR.instances then e.destroy true # cleanup
   try CKEDITOR.inline-all!
 
 # handle in-line editing

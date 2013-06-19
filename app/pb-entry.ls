@@ -211,14 +211,9 @@ $d.on \click '.onclick-submit .cancel' (ev) ->
   false
 
 # editing & posting
-#do-submit = (fn) ->
-#  require-login((ev) ->
-#    fn.call this, ev, (data) -> post-success ev, data
-#    false)
 # - ckeditor
 ck-submit = require-login((ev) ->
-  ck-submit-form({id:\editor}, (data) -> post-success ev, data); false)
-$d.on \click, 'html.forum #post_edit.onclick-submit input[type="submit"]', ck-submit
+  ck-submit-form({element:{$:{id:\editor}}}, (data) -> post-success ev, data); false)
 # - standard form
 post-submit = require-login((ev) -> submit-form(ev, (data) -> post-success ev, data); false)
 submit-selectors =
