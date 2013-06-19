@@ -39,10 +39,10 @@ module.exports =
     message-from-env: ~>
       u = @state?others?val?0
       m =
-        cid  : @conversation?id
-        from : window.user
-        to   : {id: u.id, name: u.name}
-        body : @$.find('textarea').val!
+        conversation_id: @conversation?id
+        from           : window.user
+        to             : {id: u.id, name: u.name}
+        body           : @$.find('textarea').val!
 
     message-node: (m) ~>
       $msg = @$.find('.container > .msg').clone!

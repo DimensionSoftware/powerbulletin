@@ -33,8 +33,8 @@ class ChatServer
     ## if connection has a chat with message.chat_id use it
     if c = @connections[@socket.id]?[message.conversation_id]
       console.warn "remote chat already opened"
-      err <~ db.conversation-add-message c.id, { user_id: message.from.id, body: message.body }
-      return cb(err) if err
+      err, m <~ db.conversation-add-message c.id, { user_id: message.from.id, body: message.body }
+      return cb err if err
       message.id = m.id
       m.body = message.body = format.chat-message message.body
       @io.sockets.in(c.room).emit \chat-message, message
@@ -60,7 +60,7 @@ class ChatServer
       send-chat-message = ~>
         message.conversation_id = c.id
         err, m <~ db.conversation-add-message c.id, { user_id: message.from.id, body: message.body }
-        return cb(err) if err
+        return cb err if err
         message.id = m.id
         m.body = message.body = format.chat-message message.body
         @io.sockets.in(c.room).emit \chat-message, message
