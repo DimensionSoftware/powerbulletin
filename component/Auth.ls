@@ -9,6 +9,8 @@ module.exports =
     template: templates.Auth
 
     # static methods
+
+    # helper to construct an Auth component and show it
     @show-login-dialog = ->
       conditionally-load-js window.$.fn.complexify, "#{window.cache-url}/local/jquery.complexify.min.js", ~>
         window._auth             = new Auth locals: {site-name: window.site-name}, $('#auth')
@@ -29,6 +31,7 @@ module.exports =
           e.find \.strength-meter .toggle-class \strong, pass
           e.find \.strength .css(height:parse-int(percent)+\%))
 
+    # helper for wrapping event handlers in a function that requires authentication first
     @require-login = (fn) ->
       ->
         if window.user
@@ -46,20 +49,22 @@ module.exports =
       @$.on \submit '.login form' @login
       @$.on \submit '.register form' @register
       @$.on \submit '.forgot form' @forgot-password
-      @$.on \submit '.choose form' @choose
       @$.on \submit '.reset form' @reset-password
       @$.on \click '.toggle-password' @toggle-password
+      @$.on \submit '.choose form' @choose
 
       # XXX - do this outside, not here
       #@$.on \click \.require-login ch.require-login(-> this.click)
 
     on-detach: !~>
 
+    # open window for 3rd party authentication
     open-oauth-window: (ev) ~>
       url = $(ev.target).attr \href
       window.open url, \popup, "width=980,height=650,scrollbars=no,toolbar=no,location=no,directories=no,status=no,menubar=no"
       false
 
+    # handler for login form
     login: (ev) ~>
       $form = $ ev.target
       u = $form.find('input[name=username]')
@@ -79,8 +84,9 @@ module.exports =
           set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100ms
       false
 
+    # After a login, different webapps may want to do differnt things.
     after-login: ~>
-      # this may be overridden after construction
+      # This may be overridden after construction.
 
     # TODO - what am I going to do about
     # - switch-and-focus
@@ -103,14 +109,28 @@ module.exports =
           shake-dialog $form, 100ms
       false
 
-    forgot-password: ~>
-      console.log \forgot-password
-    choose: ~>
-      console.log \choose
+    # handler for form that asking for a password reset email
+    forgot-password: (ev) ~>
+      $form = $ ev.target
+      $.post $form.attr(\action), $form.serialize!, (r) ~>
+        if r.success
+          $.fancybox.close!
+          # XXX - this should show a message telling them to check their email for a password reset link
+          #@after-login! if @after-login
+          #window.location.hash = ''
+        else
+          $form.find \input:first .focus!
+          show-tooltip $form.find(\.tooltip), r.msg # display error
+          shake-dialog $form, 100ms
+      false
+
+    # handler for form for resetting a forgotten password
     reset-password: ~>
       console.log \reset-password
     toggle-password: ~>
       console.log \toggle-password
+    choose: ~>
+      console.log \choose
 
 /*
 

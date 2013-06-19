@@ -222,17 +222,6 @@ window.choose = ->
       shake-dialog $form, 100ms
   false
 
-# forgot password
-window.forgot-password = ->
-  $form = $ this
-  $.post $form.attr(\action), $form.serialize!, (r) ->
-    if r.success
-      show-tooltip $form.find(\.tooltip), "Recovery link emailed!"
-    else
-      show-tooltip $form.find(\.tooltip), "Email not found"
-      shake-dialog $form, 100ms
-  false
-
 window.show-reset-password-dialog = ->
   $form = $ '#auth .reset form'
   Auth.show-login-dialog!
@@ -282,7 +271,7 @@ $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
 $d.on \click '.toggle-password' toggle-password
 #$d.on \submit '.login form' login
 #$d.on \submit '.register form' register
-$d.on \submit '.forgot form' forgot-password
+#$d.on \submit '.forgot form' forgot-password
 $d.on \submit '.choose form' choose
 $d.on \submit '.reset form' reset-password
 
