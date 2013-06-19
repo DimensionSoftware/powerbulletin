@@ -163,7 +163,7 @@ send-invite-email = (site, user, new-user, message) ->
     # is_owner req?user
     err, owns-post <- db.owns-post req.body.id, req.user?id
     if err then return next err
-    return next 404 unless owns-post.length
+    return next 404 unless owns-post?length
     # TODO secure & csrf
     # save post
     req.body.user_id = req.user.id

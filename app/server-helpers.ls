@@ -64,12 +64,12 @@ process-cached-data = {}
 # find all #hashtags in a string
 @hash-tags = (body) ->
   unless body?length then return # guard
-  body.match(/#\w+/g)?map (tag) -> tag.replace(/^#/, '').toLowerCase!
+  body.match(/#\w+/g)?map (tag) -> tag?replace(/^#/, '').toLowerCase!
 
 # find all @attags in a string
 @at-tags = (body) ->
   unless body?length then return # guard
-  body.match(/@\w+/g)?map (tag) -> tag.replace(/^@/, '')
+  body.match(/@\w+/g)?map (tag) -> tag?replace(/^@/, '')
 
 # take marked up text and turn it into html
 @html = (body) ->
