@@ -1,4 +1,4 @@
-//{{{ states
+//{{{ Login
 .on-validate
   #auth
     .validate
@@ -56,15 +56,14 @@
       height 30px
       opacity 1
       transition height .5s, opacity 1s
-//}}}
-
 #auth
   .strength-meter
     position absolute
-    right 118px
+    transform rotate(180deg)
+    right 115px
     z-index 11
     height 20px
-    width 6px
+    width 8px
     margin-top -36px
   .toggle-password
     position absolute
@@ -74,7 +73,7 @@
     font-size 11px
     font-weight 200
     right 130px
-    padding 0 6px
+    padding 0 5px
     cursor pointer
   .register, .login, .forgot, .reset, .choose
     .tooltip
@@ -82,7 +81,6 @@
       bottom auto
       margin-top -42px
       font-size 1em
-      z-index 99
   .login .tooltip
     width 100px
     margin-left -60px
@@ -138,4 +136,5 @@
     margin-top 5px
     display block
 
-// vim:fdm=marker
+//}}}
+
