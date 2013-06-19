@@ -82,8 +82,27 @@ module.exports =
     after-login: ~>
       # this may be overridden after construction
 
-    register: ~>
-      console.log \register
+    # TODO - what am I going to do about
+    # - switch-and-focus
+    # - show-tooltip
+    # - shake-dialog
+    register: (ev) ~>
+      $form = $ ev.target
+      $form.find(\input).remove-class \validation-error
+      $.post $form.attr(\action), $form.serialize!, (r) ~>
+        if r.success
+          $form.find("input:text,input:password").remove-class(\validation-error).val ''
+          switch-and-focus \on-register \on-validate ''
+        else
+          msgs = []
+          r.errors?for-each (e) ->
+            $e = $form.find("input[name=#{e.param}]")
+            $e.add-class \validation-error .focus! # focus control
+            msgs.push e.msg
+          show-tooltip $form.find(\.tooltip), msgs.join \<br> # display errors
+          shake-dialog $form, 100ms
+      false
+
     forgot-password: ~>
       console.log \forgot-password
     choose: ~>

@@ -208,24 +208,6 @@ window.logout = ->
   window.location = \/auth/logout; false # for intelligent redirect
 $d.on \click \.onclick-logout -> window.logout!; false
 
-# register
-window.register = ->
-  $form = $(this)
-  $form.find(\input).remove-class \validation-error
-  $.post $form.attr(\action), $form.serialize!, (r) ->
-    if r.success
-      $form.find("input:text,input:password").remove-class(\validation-error).val ''
-      switch-and-focus \on-register \on-validate ''
-    else
-      msgs = []
-      r.errors?for-each (e) ->
-        $e = $form.find("input[name=#{e.param}]")
-        $e.add-class \validation-error .focus! # focus control
-        msgs.push e.msg
-      show-tooltip $form.find(\.tooltip), msgs.join \<br> # display errors
-      shake-dialog $form, 100ms
-  false
-
 # choose a username
 window.choose = ->
   $form = $ this
@@ -299,7 +281,7 @@ $d.on \click \.require-login, Auth.require-login(-> this.click)
 $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
 $d.on \click '.toggle-password' toggle-password
 #$d.on \submit '.login form' login
-$d.on \submit '.register form' register
+#$d.on \submit '.register form' register
 $d.on \submit '.forgot form' forgot-password
 $d.on \submit '.choose form' choose
 $d.on \submit '.reset form' reset-password
