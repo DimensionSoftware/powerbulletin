@@ -28,6 +28,16 @@ module.exports =
           e.find \.strength-meter .toggle-class \strong, pass
           e.find \.strength .css(height:parse-int(percent)+\%))
 
+    @require-login = (fn) ->
+      ->
+        if window.user
+          console.warn 'require-login - user exists'
+          fn.apply window, arguments
+        else
+          console.warn 'require-login - no user - show dialog'
+          Auth.show-login-dialog!
+          false
+
     # constructor
     ->
       super ...

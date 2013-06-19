@@ -196,11 +196,11 @@ $ui.on \nav-top-posts, (e, threads) ->
 
 #}}}
 # {{{ - generic form-handling ui
-$d.on \click '.create .no-surf' require-login((ev) ->
+$d.on \click '.create .no-surf' Auth.require-login((ev) ->
   $ '#main_content .forum' .html '' # clear canvas
   e = $ ev.target
   edit-post e.data(\edit), forum_id:window.active-forum-id)
-$d.on \click \.edit.no-surf require-login((ev) ->
+$d.on \click \.edit.no-surf Auth.require-login((ev) ->
   edit-post $(ev.target).data \edit)
 $d.on \click '.onclick-submit .cancel' (ev) ->
   f = $ ev.target .closest \.post-edit  # form
@@ -211,7 +211,7 @@ $d.on \click '.onclick-submit .cancel' (ev) ->
   | otherwise   => remove-editing-url meta
   false
 
-submit = require-login(
+submit = Auth.require-login(
   (ev) -> submit-form(ev, (data) ->
     f = $ ev.target .closest \.post-edit # form
     p = f.closest \.editing # post being edited
@@ -238,8 +238,8 @@ submit-selectors =
 
 $d.on \click, submit-selectors.join(', '), submit
 
-$d.on \click \.onclick-append-reply-ui require-login(append-reply-ui)
-$d.on \click \.onclick-censor-post require-login(censor)
+$d.on \click \.onclick-append-reply-ui Auth.require-login(append-reply-ui)
+$d.on \click \.onclick-censor-post Auth.require-login(censor)
 #}}}
 #{{{ - login delegated events
 window.switch-and-focus = (remove, add, focus-on) ->
@@ -299,7 +299,7 @@ if mocha? and window.location.search.match /test=1/
 #}}}
 #}}}
 #{{{ - chat
-$d.on \click  'button.onclick-chat' require-login( (ev) ->
+$d.on \click  'button.onclick-chat' Auth.require-login( (ev) ->
   profile-name = $ 'div.profile:first' .data \user-name
   f = user
   t =

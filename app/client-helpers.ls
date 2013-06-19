@@ -4,14 +4,6 @@ export conditionally-load-js = (is-loaded, url, cb) ->
   else
     window.$.get-script url, cb
 
-export require-login = (fn) ->
-  ->
-    if window.user
-      fn.apply window, arguments
-    else
-      Auth.show-login-dialog!
-      false
-
 export mutate = (event) ->
   $e = $ this
   return if $e.has-class \require-login and !user # guard

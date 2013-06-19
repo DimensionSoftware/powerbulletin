@@ -5,6 +5,7 @@ window.mutants = require \./pb-mutants.ls
 mutant  = require \../lib/mutant/mutant.ls
 
 require! ch: \./client-helpers.ls
+window.Auth  = require \../component/Auth.ls
 
 window.hints =
   last:
@@ -314,7 +315,7 @@ window.toggle-password = (ev) ->
     p.attr \type \password
   false
 
-$d.on \click \.require-login ch.require-login(-> this.click)
+$d.on \click \.require-login, Auth.require-login(-> this.click)
 $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
 $d.on \click '.toggle-password' toggle-password
 $d.on \submit '.login form' login
