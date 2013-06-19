@@ -78,6 +78,7 @@ module.exports =
     prepend-message: add-message \prepend
 
     maybe-load-more: (ev) ~>
+      if @loaded-all then return false
       pos = $(ev.target).scrollTop!
       if pos is 0
         @load-more-messages!
@@ -86,13 +87,16 @@ module.exports =
       $first-msg = @$.find '.messages .msg:first'
       last ||= $first-msg.data \message-id
       r <~ $.get "/resources/conversations/#{@conversation.id}", { last }
-      console.log r, users
       if r.success
+        id = r.messages[0]?id
+        if (not id) or id >= last
+          @loaded-all = true
+          return
         users = @users!
         r.messages
         |> map  (~> it.from = users[it.user_id]; it)
         |> each (~> @prepend-message it)
-        @$.find \.messages .scroll-top( $first-msg.offset!top )
+        @$.find \.messages .scroll-top( 0 + 50 )
 
     minimize: (ev) ~>
       @$.toggle-class \minimized
