@@ -8,6 +8,7 @@ require! {
   mmw: \mutant/middleware
   pg:  \./postgres
   mw:  \./middleware
+  jsu: \./js-urls
 
   mutants:   \./pb-mutants
   handlers:  \./pb-handlers
@@ -37,27 +38,26 @@ app.post \/resources/posts/:id/censor,     handlers.censor
 app.post \/resources/users/:id/avatar,     handlers.profile-avatar
 #}}}
 
-# XXX Common is for all environments
-common-js = [ #{{{ Common JS
-  "#{cvars.cache2-url}/local/jquery-1.9.1.min.js",
-  "#{cvars.cache3-url}/local/jquery-ui.min.js",
-  "#{cvars.cache4-url}/local/jquery.masonry.min.js",
-  "#{cvars.cache5-url}/local/jquery.cookie-1.3.1.min.js",
-  "#{cvars.cache-url}/local/waypoints.min.js",
-  "#{cvars.cache2-url}/local/history.min.js",
-  "#{cvars.cache3-url}/local/history.adapter.native.min.js",
-  "#{cvars.cache4-url}/fancybox/jquery.fancybox.pack.js",
-  "#{cvars.cache5-url}/local/jquery.transit-0.9.9.min.js",
-  "#{cvars.cache-url}/local/reactive.js",
-  "#{cvars.cache2-url}/local/jquery.nicescroll.min.js",
-  "#{cvars.cache3-url}/local/jquery.complexify.min.js",
-  "#{cvars.cache4-url}/local/raf.js",
-  "#{cvars.cache5-url}/socket.io/socket.io.js",
-  "#{cvars.cache-url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"]
-#}}}
-common-css = [ #{{{ Common CSS
-  '/dynamic/css/master.styl']
-#}}}
+# common is for all environments
+common-css = [\/dynamic/css/master.styl]
+#{{{ Common JS
+common-js = [v for k,v of jsu when k in [
+  \jquery
+  \jqueryComplexify
+  \jqueryCookie
+  \jqueryFancybox
+  \jqueryHistory
+  \jqueryHistoryNative
+  \jqueryMasonry
+  \jqueryNicescroll
+  \jqueryTransit
+  \jqueryUi
+  \jqueryWaypoints
+  \raf
+  \reactivejs
+  \socketio
+  \powerbulletin]]
+##}}}
 
 # inject testing code in dev only
 app.configure \development ->
