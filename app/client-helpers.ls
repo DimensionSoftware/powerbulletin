@@ -4,32 +4,12 @@ export conditionally-load-js = (is-loaded, url, cb) ->
   else
     window.$.get-script url, cb
 
-export show-login-dialog = ->
-  # lazy load complexify && render auth dialog
-  conditionally-load-js window.$.fn.complexify, "#{window.cache-url}/local/jquery.complexify.min.js", ~>
-    window._auth = new Auth locals: {site-name: window.site-name}, $('#auth')
-    window._auth.attach!
-
-    $.fancybox.open \#auth,
-      close-effect: \elastic
-      close-speed:  200ms
-      close-easing: \easeOutExpo
-      open-effect: \fade
-      open-speed: 450ms
-    set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
-    # password complexity ui
-    window.COMPLEXIFY_BANLIST = [\god \money \password]
-    $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
-      e = $ this .parent!
-      e.find \.strength-meter .toggle-class \strong, pass
-      e.find \.strength .css(height:parse-int(percent)+\%))
-
 export require-login = (fn) ->
-  ~>
+  ->
     if window.user
       fn.apply window, arguments
     else
-      @show-login-dialog!
+      Auth.show-login-dialog!
       false
 
 export mutate = (event) ->

@@ -272,7 +272,7 @@ window.forgot-password = ->
 
 window.show-reset-password-dialog = ->
   $form = $ '#auth .reset form'
-  ch.show-login-dialog!
+  Auth.show-login-dialog!
   set-timeout (-> switch-and-focus '', \on-reset, '#auth .reset input:first'), 500ms
   hash = location.hash.split('=')[1]
   $form.find('input[type=hidden]').val(hash)
@@ -315,7 +315,7 @@ window.toggle-password = (ev) ->
   false
 
 $d.on \click \.require-login ch.require-login(-> this.click)
-$d.on \click \.onclick-login -> ch.show-login-dialog!; false
+$d.on \click \.onclick-login -> Auth.show-login-dialog!; false
 $d.on \click '.toggle-password' toggle-password
 $d.on \submit '.login form' login
 $d.on \submit '.register form' register

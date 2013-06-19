@@ -8,6 +8,26 @@ module.exports =
     component-name: \Auth
     template: templates.Auth
 
+    # static methods
+    @show-login-dialog = ->
+      conditionally-load-js window.$.fn.complexify, "#{window.cache-url}/local/jquery.complexify.min.js", ~>
+        window._auth = new Auth locals: {site-name: window.site-name}, $('#auth')
+        window._auth.attach!
+
+        $.fancybox.open \#auth,
+          close-effect: \elastic
+          close-speed:  200ms
+          close-easing: \easeOutExpo
+          open-effect: \fade
+          open-speed: 450ms
+        set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
+        # password complexity ui
+        window.COMPLEXIFY_BANLIST = [\god \money \password]
+        $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
+          e = $ this .parent!
+          e.find \.strength-meter .toggle-class \strong, pass
+          e.find \.strength .css(height:parse-int(percent)+\%))
+
     # constructor
     ->
       super ...
