@@ -1,6 +1,12 @@
+export conditionally-load-js = (is-loaded, url, cb) ->
+  if is-loaded
+    cb!
+  else
+    window.$.get-script url, cb
+
 export show-login-dialog = ->
   # lazy load complexify && render auth dialog
-  window.$.get-script "#{window.cache-url}/local/jquery.complexify.min.js", ~>
+  conditionally-load-js window.$.fn.complexify, "#{window.cache-url}/local/jquery.complexify.min.js", ~>
     window._auth = new Auth locals: {site-name: window.site-name}, $('#auth')
     window._auth.attach!
 
