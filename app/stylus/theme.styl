@@ -479,13 +479,21 @@ body.scrolled
 .shake
   animation-name shake
   animation-duration .8s
+.fancybox-overlay::after
+  position absolute
+  bottom (grid*2)
+  right (grid*2)
+  height 24px
+  width 228px
+  content ''
+  background-image url(cache-url + '/images/secure.png')
 .fancybox-overlay
-  //background none!important
-  //background-color rgba(255,255,255,.9)!important
+  background radial-gradient(circle closest-corner at 50% 20%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.8) 100%)!important
   overflow none
   .fancybox-wrap
     .fancybox-skin
-      box-shadow 0px 1px 12px 2px rgba(0, 0, 0, 0.3)!important
+      //box-shadow 0px 1px 12px 2px rgba(0, 0, 0, 0.3)!important
+      box-shadow 0 1px 8px 3px rgba(0,0,0,0.3) !important
     .fancybox-skin, .fancybox-inner
       background-color #f9f9f9
       background-image linear-gradient(to top, #fff 10px, #f2f2f2)
