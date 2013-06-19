@@ -1,12 +1,13 @@
 
 #{{{ Login
-export show-login-dialog = ->
-  $.fancybox.open \#auth,
+export fancybox-params =
     close-effect: \elastic
     close-speed:  200ms
     close-easing: \easeOutExpo
-    open-effect: \fade
-    open-speed: 450ms
+    open-effect:  \fade
+    open-speed:   450ms
+export show-login-dialog = ->
+  $.fancybox.open \#auth, fancybox-params
   set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
   # password complexity ui
   window.COMPLEXIFY_BANLIST = [\god \money \password]
@@ -42,13 +43,6 @@ export post-success = (ev, data) ->
     | \edit       => remove-editing-url meta
   false
 
-export lazy-load-editor = (cb) ->
-  unless CKEDITOR?version # load!
-    <- $.get-script "#cache-url/local/editor/ckeditor.js"
-    cb!
-  else
-    cb!
-
 export ck-submit-form = (e) ->
   editor = e?element?$
   ev = {target:editor} # mock event
@@ -77,7 +71,7 @@ export submit-form = (ev, fn) ->
 
   # is body in ckeditor?
   body  = $f.find \textarea.body
-  input = CKEDITOR.instances[body.attr \id]?get-data!
+  input = CKEDITOR?instances[body.attr \id]?get-data!
   if input?length then body.val input # fill-in
 
   # pass transient_owner as alternate auth mechanism
@@ -136,6 +130,36 @@ export edit-post = (id, data={}) ->
         e .add-class \editing
     else
       focus e
+#}}}
+#{{{ Lazy loading
+load-css = []
+load-css = (href) ->
+  return if load-css[href] # guard
+  $ \head .append($ '<link rel="stylesheet" type="text/css">' .attr(\href, href))
+  load-css[href] = true
+
+export lazy-load = (test, script, css, cb) ->
+  unless test!
+    <- $.get-script script
+    if css then load-css css
+    cb!
+  else
+    cb!
+export lazy-load-html5-uploader = (cb) ->
+  lazy-load (-> window.$!html5-uploader?length),
+    "#cache-url/local/jquery.html5uploader.js",
+    "#cache-url/local/editor/skins/moono/editor.css",
+    cb
+export lazy-load-jcrop = (cb) ->
+  lazy-load (-> window.$!Jcrop?length),
+    "#cache-url/jcrop/js/jquery.Jcrop.min.js",
+    "#cache-url/jcrop/css/jquery.Jcrop.min.css",
+    cb
+export lazy-load-editor = (cb) ->
+  lazy-load (-> CKEDITOR?version),
+    "#cache-url/local/editor/ckeditor.js",
+    null,
+    cb
 #}}}
 
 export respond-resize = ->

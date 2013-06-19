@@ -1,22 +1,23 @@
-h2 Buy #{product.description}
-h1 only! $#{(product.price / 100.0).toFixed(2)}
+h1 #{product.description}
+h2 Only! $#{(product.price / 100.0).toFixed(2)}
 
-div
-  i id: #{product.id}
-div
-  img(src=cacheUrl+'/images/accepted-cards.png')
-div
-  label
-    strong Card number
-    input.Buy-card-number(type='text')
-div
+.left
+  div
+    i id: #{product.id}
+  div
+    img(src=cacheUrl+'/images/accepted-cards.png')
+.right
+  div
+    label
+      strong Card number
+      input.Buy-card-number(type='text')
   label
     strong Expiration date
       em (MM/YY)
     input.Buy-card-expiration(type='text')
-div
-  label
-    strong CVV Code
-    input.Buy-card-code(type='text')
-div
-  .Buy-checkout
+  div
+    label
+      strong CVV Code
+      input.Buy-card-code(type='text')
+  div
+    .Buy-checkout
