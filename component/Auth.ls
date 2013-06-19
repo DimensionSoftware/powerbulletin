@@ -11,7 +11,8 @@ module.exports =
     # static methods
     @show-login-dialog = ->
       conditionally-load-js window.$.fn.complexify, "#{window.cache-url}/local/jquery.complexify.min.js", ~>
-        window._auth = new Auth locals: {site-name: window.site-name}, $('#auth')
+        window._auth             = new Auth locals: {site-name: window.site-name}, $('#auth')
+        window._auth.after-login = Auth.after-login if Auth.after-login
         window._auth.attach!
 
         $.fancybox.open \#auth,
@@ -31,10 +32,8 @@ module.exports =
     @require-login = (fn) ->
       ->
         if window.user
-          console.warn 'require-login - user exists'
           fn.apply window, arguments
         else
-          console.warn 'require-login - no user - show dialog'
           Auth.show-login-dialog!
           false
 
@@ -44,13 +43,55 @@ module.exports =
 
     on-attach: !~>
       @$.find '.social a' .click @open-oauth-window
+      @$.on \submit '.login form' @login
+      @$.on \submit '.register form' @register
+      @$.on \submit '.forgot form' @forgot-password
+      @$.on \submit '.choose form' @choose
+      @$.on \submit '.reset form' @reset-password
+      @$.on \click '.toggle-password' @toggle-password
+
+      # XXX - do this outside, not here
+      #@$.on \click \.require-login ch.require-login(-> this.click)
 
     on-detach: !~>
 
-    open-oauth-window: ->
-      url = $ this .attr \href
+    open-oauth-window: (ev) ~>
+      url = $(ev.target).attr \href
       window.open url, \popup, "width=980,height=650,scrollbars=no,toolbar=no,location=no,directories=no,status=no,menubar=no"
       false
+
+    login: (ev) ~>
+      $form = $ ev.target
+      u = $form.find('input[name=username]')
+      p = $form.find('input[name=password]')
+      params =
+        username: u.val!
+        password: p.val!
+      $.post $form.attr(\action), params, (r) ~>
+        if r.success
+          $.fancybox.close!
+          @after-login! if @after-login
+        else
+          $fancybox = $form.parents \.fancybox-wrap:first
+          $fancybox.add-class \on-error
+          $fancybox.remove-class \shake
+          show-tooltip $form.find(\.tooltip), 'Try again!' # display error
+          set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100ms
+      false
+
+    after-login: ~>
+      # this may be overridden after construction
+
+    register: ~>
+      console.log \register
+    forgot-password: ~>
+      console.log \forgot-password
+    choose: ~>
+      console.log \choose
+    reset-password: ~>
+      console.log \reset-password
+    toggle-password: ~>
+      console.log \toggle-password
 
 /*
 

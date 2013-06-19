@@ -194,28 +194,8 @@ window.shake-dialog = ($form, time) ->
   set-timeout (-> $fancybox.add-class(\shake)), 100ms
 
 # register action
-# login action
-window.login = ->
-  $form = $(this)
-  u = $form.find('input[name=username]')
-  p = $form.find('input[name=password]')
-  params =
-    username: u.val!
-    password: p.val!
-  $.post $form.attr(\action), params, (r) ->
-    if r.success
-      $.fancybox.close!
-      after-login!
-    else
-      $fancybox = $form.parents \.fancybox-wrap:first
-      $fancybox.add-class \on-error
-      $fancybox.remove-class \shake
-      show-tooltip $form.find(\.tooltip), 'Try again!' # display error
-      set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100ms
-  false
-
 # get the user after a successful login
-window.after-login = ->
+Auth.after-login = ->
   window.user <- $.getJSON \/auth/user
   onload-personalize!
   if user and mutants?[window.mutator]?on-personalize
@@ -318,7 +298,7 @@ window.toggle-password = (ev) ->
 $d.on \click \.require-login, Auth.require-login(-> this.click)
 $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
 $d.on \click '.toggle-password' toggle-password
-$d.on \submit '.login form' login
+#$d.on \submit '.login form' login
 $d.on \submit '.register form' register
 $d.on \submit '.forgot form' forgot-password
 $d.on \submit '.choose form' choose
