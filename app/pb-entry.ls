@@ -231,12 +231,19 @@ submit = Auth.require-login(
     false))
 $d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then submit it
 
+# editing & posting
+# - ckeditor
+ck-submit = Auth.require-login((ev) ->
+  ck-submit-form({element:{$:{id:\editor}}}, (data) -> post-success ev, data); false)
+# - standard form
+post-submit = Auth.require-login((ev) -> submit-form(ev, (data) -> post-success ev, data); false)
+
 submit-selectors =
   * "html.profile .onclick-submit input[type='submit']"
   * "html.forum .onclick-submit input[type='submit']"
   * "html.search .onclick-submit input[type='submit']"
-
-$d.on \click, submit-selectors.join(', '), submit
+$d.on \click, submit-selectors.join(', '), post-submit
+$d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then post-submit it
 
 $d.on \click \.onclick-append-reply-ui Auth.require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post Auth.require-login(censor)
@@ -360,12 +367,12 @@ window.do-buy = (product-id) ->
   existing.detach! if existing = window.component.buy
 
   window.component.buy = new Buy {locals}
-  $.fancybox(window.component.buy.$)
+  $.fancybox(window.component.buy.$, fancybox-params)
 
 window.do-test = ->
   window.component.paginator ||=
     new Paginator {locals: {step: 10, qty: 100}}
-  $.fancybox(window.component.paginator.$)
+  $.fancybox(window.component.paginator.$, fancybox-params)
 
 #}}}
 

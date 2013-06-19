@@ -16,7 +16,6 @@ global <<< require \prelude-ls
 global <<< require \./server-helpers
 global <<< require \./shared-helpers
 
-global.db  = -> pg.procs
 global.el  = require \./elastic
 global.elc = -> el.client
 global.m   = require \./pb-models
@@ -27,14 +26,17 @@ global.announce = sioa.create-client!
 require! \./payments
 require! \./validate-cc
 payments.init!
-global <<< {pay: payments, vcc: validate-cc}
+global <<< {db: {}, pay: payments, vcc: validate-cc}
 
 set-timeout (-> v.init!), 1000ms
-set-timeout (-> pg.procs <<< { [k,v] for k,v of global.m when k not in <[orm client driver]> }), 1000ms
 
 err <- pg.init
 if err then throw err
+global.db <<< pg.procs
+
 err <- m.init
 if err then throw err
+global.db <<< { [k,v] for k,v of global.m when k not in <[orm client driver]> }
+
 err <- el.init
 if err then throw err

@@ -202,22 +202,18 @@ header
     border-top 2px solid #ccc
     border-bottom 1px solid #ccc
     .current:hover
-      color #fff
-      text-shadow 1px 1px 0 #555
-      border-left 1px solid #aaa
-      border-top 1px solid #aaa
+      border-left 1px solid #ccc
+      border-top 1px solid #ccc
       border-right 1px solid #888
-      border-bottom 1px solid #aaa
+      border-bottom 2px solid #aaa
+      transition all .2s ease-out
     .current
-      background-color #ddd
-      background-image linear-gradient(top, #eaeaea 45%, #fafafa)
-      color #fafafa
-      text-shadow 1px 1px 0 #777
-      border-top 1px solid #bbb
-      border-left 1px solid #bbb
-      border-bottom 1px solid #bbb
+      background-color #eee
+      background-image linear-gradient(top, #eee 5%, #fefefe)
+      border-top 1px solid #ddd
+      border-left 1px solid #ddd
+      border-bottom 2px solid #bbb
       border-right 1px solid #999
-      font-weight bold
     a.page.next:hover::before
       border-top 9px solid #aaa
     a.page.previous:hover::before
@@ -378,13 +374,21 @@ body.scrolled
 .shake
   animation-name shake
   animation-duration .8s
+.fancybox-overlay::after
+  position absolute
+  bottom (grid*2)
+  right (grid*2)
+  height 24px
+  width 228px
+  content ''
+  background-image url(cache-url + '/images/secure.png')
 .fancybox-overlay
-  //background none!important
-  //background-color rgba(255,255,255,.9)!important
+  background radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,0.35) 20%, rgba(0,0,0,0.8) 100%)!important
   overflow none
   .fancybox-wrap
     .fancybox-skin
-      box-shadow 0px 1px 12px 2px rgba(0, 0, 0, 0.3)!important
+      //box-shadow 0px 1px 12px 2px rgba(0, 0, 0, 0.3)!important
+      box-shadow 0 1px 8px 3px rgba(0,0,0,0.3) !important
     .fancybox-skin, .fancybox-inner
       background-color #f9f9f9
       background-image linear-gradient(to top, #fff 10px, #f2f2f2)
@@ -395,12 +399,12 @@ tooltip-border-color = rgb(100, 100, 100)
   color #fff
   background-color rgb(110, 110, 110)
   border 2px solid tooltip-border-color
-  border-radius 2px
+  border-radius 6px / 2px
   opacity 0
-  box-shadow 0 2px 20px tooltip-border-color
+  box-shadow 0 1px 0px 1px #333,0 3px 5px 1px tooltip-border-color
   text-shadow 0 -1px 0 #000
 .tooltip::after
-  border-top 10px solid tooltip-border-color
+  border-top 9px solid #444
 .tooltip.right::after
   border-right 10px solid tooltip-border-color
 //}}}

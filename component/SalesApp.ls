@@ -5,7 +5,6 @@ require! \./Sales.ls
 
 module.exports =
   class SalesApp extends Component
-    component-name: \SalesApp
     template: templates.SalesApp
     ->
       super ...

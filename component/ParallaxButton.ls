@@ -3,7 +3,6 @@ require! \./Component.ls
 
 module.exports =
   class ParallaxButton extends Component
-    component-name: \ParallaxButton
     template: ({title}) -> "<button>#{title}</button>"
     ({@on-click = (->)}) ->
       super ...

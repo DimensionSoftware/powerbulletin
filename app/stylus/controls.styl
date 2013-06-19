@@ -24,7 +24,7 @@ input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:h
 input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #000
   position relative
-  letter-spacing 1px
+  letter-spacing .08em
   z-index 10
   background-color #fffcfc
   border 1px solid highlight-color2
@@ -40,15 +40,14 @@ textarea:focus, select:focus
   background-color rgba(100,100,100,.2)
   border-radius 6px
 .button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
-  background-image linear-gradient(bottom, #ffce29 45%, #febe19 60%)
-  //text-indent -2px
+  background-image linear-gradient(bottom, #ffd467 12px, #ffce29 87%, #febe19 90%)
   background-color #ffca27
   border-color #777
   border-top 1px solid #fff467
   border-left 1px solid #fff467
   border-bottom 1px solid #555
   box-shadow 0 0 5px #bbb,0 1px 5px 0 #c35407
-  text-shadow 0px 1px 0 black,1px 1px 0 black
+  text-shadow 0px 1px 0 black,1px 1px 0 rgba(100,100,100,.5)
   transition box-shadow .1s
 .button:active::before
   background-color rgba(0,0,0,.15)
@@ -64,16 +63,15 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
 .button:enabled:active, button:enabled:active,
   input[type='submit']:enabled:active,input[type='button']:enabled:active,button:enabled:focus,
   input[type="submit"]:enabled:focus, input[type="button"]:enabled:focus
-  //text-indent 2px
   border-top 1px solid #666
   margin-right (grid/2 - 1)
   text-indent 1px
   border-left 1px solid #666
   box-shadow 0 0 1px #777, 1px 1px 1px #a33400 inset,0 1px 3px #aaa
-  text-shadow 1px 1px 1px black,0 1px 1px black
+  text-shadow 0 1px 1px black,1px 1px 1px rgba(100,100,100,.5)
   border-bottom 1px solid highlight-color2
   border-right 1px solid highlight-color2
-  transition box-shadow .3s ease-out
+  transition box-shadow .3s ease-out, border-top .2s ease-out, border-left .1s ease-out
   border-radius 2px
 .button::before
   position absolute
@@ -89,11 +87,9 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   outline none
   white-space nowrap
   position relative
-  text-shadow 0 1px 0 #444,1px 1px 0 #444
+  text-shadow 0 1px 0 #444,1px 1px 0 rgba(100,100,100,.5)
   letter-spacing 1px
-  //background -webkit-gradient(linear, left top, left bottom, from(#FFC447), to(#F38437))
-  //background -moz-linear-gradient(center top , #FFC447, #F38437) repeat scroll 0 0 #FFFFFF
-  background-image linear-gradient(bottom, #ffc447 45%, #fdb235 50%)
+  background-image linear-gradient(to bottom, #ffd467 10px, #ffc447 85%, #fdb235 90%)
   background-color #F38437
   box-shadow 0px 0px 3px #C35407
   border 1px solid #666

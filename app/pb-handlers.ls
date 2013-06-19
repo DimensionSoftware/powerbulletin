@@ -13,6 +13,7 @@ require! {
   pg:   \./postgres
   auth: \./auth
   furl: \./forum-urls
+  pay: \./payments
 }
 
 announce = require(\socket.io-announce).create-client!
@@ -439,5 +440,31 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     res.mutant \page
   else
     next!
+
+@checkout = (req, res, next) ->
+  site-id = res.vars.site.id
+  product-id = req.params.product-id
+
+  err, existing-subscription <- db.subscriptions.find-one {
+    criteria: {site_id: site-id, product_id: product-id}
+    columns: [\product_id]
+  }
+  if err then return next err
+  if existing-subscription
+    return res.json {errors: ['subscription exists']}
+
+  card =
+    number: req.body.number
+    exp_month: req.body.expiration.split('/').0 # XXX could use more validations / robustness
+    exp_year: req.body.expiration.split('/').1
+    cvc: req.body.code
+
+
+  err <- pay.subscribe {site-id, product-id, card}
+  if err then return next err
+
+  console.log \checkout, {site-id, product-id, card}
+
+  res.json {errors: []}
 
 # vim:fdm=indent

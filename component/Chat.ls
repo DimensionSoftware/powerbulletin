@@ -15,7 +15,6 @@ module.exports =
     @easing    = \easeOutExpo
     @chats     = {}
 
-    component-name: \Chat
     conversation: null
     template: templates.Chat
 

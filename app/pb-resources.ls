@@ -30,7 +30,6 @@ send-invite-email = (site, user, new-user, message) ->
     to      : user.email
     subject : "Invite to #{site.name}!"
     text    : h.expand-handlebars tmpl, vars
-  console.log \sent: + JSON.stringify(email)
   h.send-mail email, (->)
 
 @sites =
@@ -126,12 +125,13 @@ send-invite-email = (site, user, new-user, message) ->
     res.render \post-new
   create  : (req, res, next) ->
     return next 404 unless req.user
-    db           = pg.procs
-    post         = req.body
-    post.user_id = req.user.id
-    post.html    = h.html post.body
-    post.ip      = res.vars.remote-ip
-    post.tags    = h.hash-tags post.body
+    db = pg.procs
+    post          = req.body
+    post.user_id  = req.user.id
+    post.html     = h.html post.body
+    post.ip       = res.vars.remote-ip
+    post.tags     = h.hash-tags post.body
+    post.forum_id = post.forum_id
     err, ap-res <- db.add-post post
     if err then return next err
 
@@ -163,7 +163,7 @@ send-invite-email = (site, user, new-user, message) ->
     # is_owner req?user
     err, owns-post <- db.owns-post req.body.id, req.user?id
     if err then return next err
-    return next 404 unless owns-post.length
+    return next 404 unless owns-post?length
     # TODO secure & csrf
     # save post
     req.body.user_id = req.user.id

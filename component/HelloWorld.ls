@@ -2,7 +2,6 @@ require! \./Component.ls
 
 module.exports =
   class HelloWorld extends Component
-    component-name: \HelloWorld
     template: ({name}={}) ->
       "<p>Hello, World</p>#{if name then ' <strong>' + name + '</strong>' else ''}"
     mutate: !($dom) ->

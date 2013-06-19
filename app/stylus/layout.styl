@@ -233,6 +233,7 @@ body.paginator
     padding-bottom footer-height
     cursor pointer
     .current
+      border-radius 8px / 4px
       min-height 51px
       cursor ns-resize
       position relative
@@ -334,7 +335,7 @@ body.paginator
     position fixed
     top -100px
     text-align center
-    z-index 12
+    z-index 16
     border-bottom-left-radius 3px
     border-bottom-right-radius 3px
     padding (grid/2+2) (grid*2.5) 3px (grid*2.5)
@@ -518,7 +519,7 @@ img.bg.active
   transform scale(0) rotate(40deg) translate(100px, 180px)
   display block
   position absolute
-  z-index 1
+  z-index 99
   padding 5px 13px
   left 50%
   bottom 25px

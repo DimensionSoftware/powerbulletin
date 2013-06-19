@@ -2,7 +2,10 @@ global.furl = require \./forum-urls.ls
 
 global <<< require \./shared-helpers.ls
 
-require! \../component/Paginator.ls
+require! {
+  \../component/AdminUpgrade.ls
+  \../component/Paginator.ls
+}
 
 !function bench subject-name, subject-body
   bef = new Date
@@ -11,6 +14,11 @@ require! \../component/Paginator.ls
   set-timeout(_, 1) ->
     dur = aft - bef
     console.log "benchmarked '#{subject-name}': took #{dur}ms"
+
+!function admin-upgrade-component w
+  wc = w.component ||= {}
+  wc.admin-upgrade ||= new AdminUpgrade
+  w.$('#main_content').html('').append(wc.admin-upgrade.$)
 
 # Common
 layout-static = (w, next-mutant, active-forum-id=-1) ->
@@ -30,22 +38,10 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     p.parent!add-class \active
     w.$(last p.parents \li) .find \.title .add-class \active # get parent, too
 
-load-css = []
-load-css = (href) ->
-  return if load-css[href] # guard
-  $ \head .append($ '<link rel="stylesheet" type="text/css">' .attr(\href, href))
-  load-css[href] = true
-
 layout-on-personalize = (w, u) ->
   if u # guard
     set-online-user u.id
-    # load editing scripts
-    unless CKEDITOR?version        then $.get-script "#cache-url/local/editor/ckeditor.js"
-    unless $!html5-uploader?length then $.get-script "#cache-url/local/jquery.html5uploader.js"
-    unless $!Jcrop?length          then $.get-script "#cache-url/jcrop/js/jquery.Jcrop.min.js"
-    # ...and css
-    load-css "#cache-url/local/editor/skins/moono/editor.css"
-    load-css "#cache-url/jcrop/css/jquery.Jcrop.min.css"
+
     # hash actions
     switch window.location.hash
     | \#choose   =>
@@ -227,7 +223,9 @@ export forum =
       pager-init window
 
       # bring down first reply
-      if user then $ \.onclick-append-reply-ui:first .click!
+      if user
+        $ \.onclick-append-reply-ui:first .click!
+        set-timeout (-> $ \textarea .focus!), 100ms
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
@@ -248,7 +246,16 @@ export forum =
       window.socket?emit \online-now
       next!
   on-personalize: (w, u, next) ->
-    layout-on-personalize w, u
+    if u
+      layout-on-personalize w, u
+      # enable edit actions
+      # - censor
+      $ ".post[data-user-id=#{u.id}] .censor"
+        .css \display \inline
+      if u.rights?super
+        $ \.censor .css \display \inline
+      # - post editing
+      set-inline-editor u.id
     next!
   on-unload:
     (window, next-mutant, next) ->
@@ -294,12 +301,13 @@ export profile =
   on-personalize: (w, u, next) ->
     if u # guard
       layout-on-personalize w, u
-
+      <- lazy-load-jcrop
       path-parts = window.location.pathname.split '/'
       jcrop = void
       if path-parts.2 is u.name
         $ '.avatar img' .Jcrop aspect-ratio: 1.25, ->
           jcrop := this
+        <- lazy-load-html5-uploader
         $ \.avatar .html5-uploader({
           name     : \avatar
           post-url : "/resources/users/#{u.id}/avatar"
@@ -324,11 +332,14 @@ export admin =
   static:
     (window, next) ->
       window.render-mutant \left_container \admin-nav
-      window.render-mutant \main_content switch @action
-      | \domains  => \admin-domains
-      | \invites  => \admin-invites
-      | \menu     => \admin-menu
-      | otherwise => \admin-general
+
+      switch @action
+      | \domains  => window.render-mutant \main_content, \admin-domains
+      | \invites  => window.render-mutant \main_content, \admin-invites
+      | \menu     => window.render-mutant \main_content, \admin-menu
+      | \upgrade  => admin-upgrade-component(window)
+      | otherwise => window.render-mutant \main_content, \admin-general
+
       layout-static window, \admin
       window.marshal \site @site
       next!
@@ -350,6 +361,9 @@ export admin =
       window.pages-count = 0
       pager-init window
       next!
+  on-initial:
+    (w, next) ->
+      admin-upgrade-component(w)
 
 join-search = (sock) ->
   console.log 'joining search notifier channel', window.searchopts

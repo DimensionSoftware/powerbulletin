@@ -10,8 +10,9 @@ mixin _post(p, i)
       h4.title= p.title
     mixin _post-profile(p)
     .date(data-time=p.created_iso)!= p.created_human
-    if p.html
-      p.body!= p.html
+    .post-content
+      if p.html
+        p.body!= p.html
     .reply
     mixin _post-actions(p)
   .children

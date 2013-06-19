@@ -4,16 +4,16 @@
     var errors;
     errors = [];
     if (!(post.user_id || post.transient_owner)) {
-      errors.push('Must specify a user_id or transient_owner');
+      errors.push('Must specify a user');
     }
     if (!post.forum_id) {
       errors.push('Forum cannot be blank');
     }
     if (!(post.title || post.parent_id)) {
-      errors.push('Must specify a title or parent_id');
+      errors.push('Title your creation!');
     }
     if (!post.body) {
-      errors.push('Body cannot be blank');
+      errors.push('Write something!');
     }
     return errors;
   };

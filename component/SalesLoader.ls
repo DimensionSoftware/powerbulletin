@@ -5,7 +5,6 @@ require! \./SalesApp.ls
 
 module.exports =
   class SalesLoader extends Component
-    component-name: \SalesLoader
     template: templates.SalesLoader # shared with forum app
     ->
       super ...
