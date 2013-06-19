@@ -64,24 +64,24 @@ module.exports =
 
     is-client: !!window?
     template: (-> '')
-    attach: (do-children = true) ->
+    attach: ->
       return @ unless @is-client
 
       return @ if @is-attached # guard from attaching twice
 
-      if @children and do-children
+      if @children
         for ,child of @children
           child.attach!
 
       @on-attach! if @on-attach
       @is-attached = true
       return @ # chain chain chain! chain of fools...
-    detach: (do-children = true) ->
+    detach: ->
       return @ unless @is-client
 
       return @ unless @is-attached # guard from detaching twice
 
-      if @children and do-children
+      if @children
         for ,child of @children
           child.detach!
 
@@ -90,7 +90,7 @@ module.exports =
       return @ # chain chain chain! chain of fools...
     # programmer/sub-classer can override render
     # it just needs to output html given @locals
-    render: (do-children = true) ->
+    render: ->
       @$.add-class @.constructor.name # add class-name to container
 
       locals = @locals!
@@ -113,7 +113,7 @@ module.exports =
 
         @$.html $dom.html!
 
-        if @children and do-children
+        if @children
           for ,child of @children
             child.$ = @$.find child.selector
             child.render!
