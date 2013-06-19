@@ -689,7 +689,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     next!
 
 @checkout = (req, res, next) ->
-  site-id = res.vars.site
+  site-id = res.vars.site.id
   product-id = req.params.product-id
 
   card =
@@ -698,10 +698,11 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     exp_year: req.body.expiration.split('/').1
     cvc: req.body.code
 
-  console.log {site-id, product-id, card}
 
   err <- pay.subscribe {site-id, product-id, card}
   if err then return next err
+
+  console.log \checkout, {site-id, product-id, card}
 
   res.json {errors: []}
 

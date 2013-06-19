@@ -9,7 +9,7 @@ module.exports =
     init: ->
       on-click = ~>
         data =
-          number: @$.find(\.Buy-card-expiration).val!
+          number: @$.find(\.Buy-card-number).val!
           expiration: @$.find(\.Buy-card-expiration).val!
           code: @$.find(\.Buy-card-code).val!
         @@$.post "/ajax/checkout/#{@local(\product).id}", data, -> console.log ...arguments

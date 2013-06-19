@@ -49,18 +49,17 @@ export subscribe = ({
   total-monthly-cost += product.price
   console.log {user-id, new-total-monthly-cost: total-monthly-cost}
 
-  err, res <~ db.users.find-one {
-    criteria: {id: user-id}
-    columns: [\stripe_id]
-  }
-  if err then return cb err
-
   subscription = {
     plan: \plan
     quantity: total-monthly-cost
     card
   }
 
+  err, res <~ db.users.find-one {
+    criteria: {id: user-id}
+    columns: [\stripe_id]
+  }
+  if err then return cb err
   if stripe-id = res.stripe_id
     err <- @client.customers.update_subscription stripe-id, subscription
     if err then return cb err
