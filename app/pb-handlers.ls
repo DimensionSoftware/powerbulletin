@@ -692,6 +692,14 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   site-id = res.vars.site.id
   product-id = req.params.product-id
 
+  err, existing-subscription <- db.subscriptions.find-one {
+    criteria: {site_id: site-id, product_id: product-id}
+    columns: [\product_id]
+  }
+  if err then return next err
+  if existing-subscription
+    return res.json {errors: ['subscription exists']}
+
   card =
     number: req.body.number
     exp_month: req.body.expiration.split('/').0 # XXX could use more validations / robustness
