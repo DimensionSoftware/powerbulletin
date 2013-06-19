@@ -2,7 +2,10 @@ global.furl = require \./forum-urls.ls
 
 global <<< require \./shared-helpers.ls
 
-require! \../component/Paginator.ls
+require! {
+  \../component/AdminUpgrade.ls
+  \../component/Paginator.ls
+}
 
 !function bench subject-name, subject-body
   bef = new Date
@@ -11,6 +14,11 @@ require! \../component/Paginator.ls
   set-timeout(_, 1) ->
     dur = aft - bef
     console.log "benchmarked '#{subject-name}': took #{dur}ms"
+
+!function admin-upgrade-component w
+  wc = w.component ||= {}
+  wc.admin-upgrade ||= new AdminUpgrade
+  w.$('#main_content').html('').append(wc.admin-upgrade.$)
 
 # Common
 layout-static = (w, next-mutant, active-forum-id=-1) ->
@@ -334,11 +342,14 @@ export admin =
   static:
     (window, next) ->
       window.render-mutant \left_container \admin-nav
-      window.render-mutant \main_content switch @action
-      | \domains  => \admin-domains
-      | \invites  => \admin-invites
-      | \menu     => \admin-menu
-      | otherwise => \admin-general
+
+      switch @action
+      | \domains  => window.render-mutant \main_content, \admin-domains
+      | \invites  => window.render-mutant \main_content, \admin-invites
+      | \menu     => window.render-mutant \main_content, \admin-menu
+      | \upgrade  => admin-upgrade-component(window)
+      | otherwise => window.render-mutant \main_content, \admin-general
+
       layout-static window, \admin
       window.marshal \site @site
       next!
@@ -360,6 +371,9 @@ export admin =
       window.pages-count = 0
       pager-init window
       next!
+  on-initial:
+    (w, next) ->
+      admin-upgrade-component(w)
 
 join-search = (sock) ->
   console.log 'joining search notifier channel', window.searchopts
