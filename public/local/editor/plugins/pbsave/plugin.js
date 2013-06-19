@@ -4,7 +4,7 @@
 (function() {
 	var saveCmd = { modes:{wysiwyg:1,source:1 },
 		readOnly: 1,
-		exec: function(editor) { ckSubmitForm(editor.element.$); }
+		exec: function(editor) { ckSubmitForm(editor); }
 	};
 
 	var pluginName = 'pbsave';
