@@ -39,7 +39,7 @@ module.exports =
     # component instances' container
     #
     # @$ could be thought of as 'the container'
-    ({locals = {}, @auto-render = true, @auto-attach = true} = {}, @selector, @parent) ->
+    ({locals = {}, auto-render = true, auto-attach = true} = {}, @selector, @parent) ->
       @state =
         {[k, (if v?_is-reactive then v else @@$R.state(if v is void  then null else v))] for k,v of locals}
       if @selector
@@ -55,12 +55,13 @@ module.exports =
 
       @init! if @init # component init, right before rendering/attaching
 
-      if @parent
-        @render(false) if @parent.auto-render
-        @attach(false) if @parent.auto-attach
-      else
-        @render(false) if @auto-render
-        @attach(false) if @auto-attach
+      # render self & children
+      unless @parent
+        if auto-render
+          @render!
+          if auto-attach
+            @attach!
+
     is-client: !!window?
     template: (-> '')
     attach: (do-children = true) ->

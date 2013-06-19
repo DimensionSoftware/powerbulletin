@@ -1,9 +1,6 @@
 require! stripe
 
-export init = ->
-  console.log 'initializing stripe client'
-  console.log JSON.stringify(cvars.stripe)
-  export client = stripe cvars.stripe.private-key
+export client = stripe cvars.stripe.private-key
 
 export test-card =
   number: '4242424242424242'

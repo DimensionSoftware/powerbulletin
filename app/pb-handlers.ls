@@ -13,6 +13,7 @@ require! {
   pg:   \./postgres
   auth: \./auth
   furl: \./forum-urls
+  pay: \./payments
 }
 
 announce = require(\socket.io-announce).create-client!
@@ -686,5 +687,22 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     res.mutant \page
   else
     next!
+
+@checkout = (req, res, next) ->
+  site-id = res.vars.site
+  product-id = req.params.product-id
+
+  card =
+    number: req.body.number
+    exp_month: req.body.expiration.split('/').0 # XXX could use more validations / robustness
+    exp_year: req.body.expiration.split('/').1
+    cvc: req.body.code
+
+  console.log {site-id, product-id, card}
+
+  err <- pay.subscribe {site-id, product-id, card}
+  if err then return next err
+
+  res.json {errors: []}
 
 # vim:fdm=indent

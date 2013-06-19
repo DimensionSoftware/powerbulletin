@@ -38,9 +38,9 @@ sub vcl_recv {
     error 302 "Found"; 
   }
   
-  # depersonalize everything EXCEPT urls starting with /auth or /resources
+  # depersonalize everything EXCEPT urls starting with /auth or /resources or /admin or /socket.io or /ajax
   # also depersonalize ending in /new /edit because they 404 when user is not allowed to do so
-  if (  req.url !~ "(?i)^/(auth|resources|admin|socket\.io)"
+  if (  req.url !~ "(?i)^/(auth|resources|admin|socket\.io|ajax)"
      && req.url !~ "(?i)/new$"
      && req.url !~ "(?i)/edit/[^/]+$"
      )

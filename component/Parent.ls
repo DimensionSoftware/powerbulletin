@@ -4,8 +4,7 @@ require! \./HelloWorld.ls
 module.exports =
   class Parent extends Component
     template: -> "<div class=\"Parent-hw\"></div>"
-    ->
-      super ...
+    init: ->
       @children =
         hw: new HelloWorld {}, \.Parent-hw, @
     on-attach: ->
