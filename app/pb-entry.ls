@@ -345,12 +345,12 @@ window.do-buy = (product-id) ->
   existing.detach! if existing = window.component.buy
 
   window.component.buy = new Buy {locals}
-  $.fancybox(window.component.buy.$)
+  $.fancybox(window.component.buy.$, fancybox-params)
 
 window.do-test = ->
   window.component.paginator ||=
     new Paginator {locals: {step: 10, qty: 100}}
-  $.fancybox(window.component.paginator.$)
+  $.fancybox(window.component.paginator.$, fancybox-params)
 
 #}}}
 

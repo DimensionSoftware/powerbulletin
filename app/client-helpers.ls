@@ -1,12 +1,13 @@
 
 #{{{ Login
-export show-login-dialog = ->
-  $.fancybox.open \#auth,
+export fancybox-params =
     close-effect: \elastic
     close-speed:  200ms
     close-easing: \easeOutExpo
-    open-effect: \fade
-    open-speed: 450ms
+    open-effect:  \fade
+    open-speed:   450ms
+export show-login-dialog = ->
+  $.fancybox.open \#auth, fancybox-params
   set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
   # password complexity ui
   window.COMPLEXIFY_BANLIST = [\god \money \password]
