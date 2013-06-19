@@ -43,9 +43,14 @@ module.exports =
       super ...
 
     on-attach: !~>
-      console.warn \on-attach
+      @$.find '.social a' .click @open-oauth-window
 
     on-detach: !~>
+
+    open-oauth-window: ->
+      url = $ this .attr \href
+      window.open url, \popup, "width=980,height=650,scrollbars=no,toolbar=no,location=no,directories=no,status=no,menubar=no"
+      false
 
 /*
 

@@ -324,12 +324,6 @@ $d.on \submit '.forgot form' forgot-password
 $d.on \submit '.choose form' choose
 $d.on \submit '.reset form' reset-password
 
-
-# 3rd-party auth
-$ '.social a' .click ->
-  url = $ this .attr(\href)
-  window.open url, \popup, "width=980,height=650,scrollbars=no,toolbar=no,location=no,directories=no,status=no,menubar=no"
-  false
 #}}}
 #{{{ Keep human readable time up to date
 time-updater = ->
