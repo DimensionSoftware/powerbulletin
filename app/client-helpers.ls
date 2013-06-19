@@ -77,7 +77,7 @@ export submit-form = (ev, fn) ->
 
   # is body in ckeditor?
   body  = $f.find \textarea.body
-  input = CKEDITOR.instances[body.attr \id]?get-data!
+  input = CKEDITOR?instances[body.attr \id]?get-data!
   if input?length then body.val input # fill-in
 
   # pass transient_owner as alternate auth mechanism
