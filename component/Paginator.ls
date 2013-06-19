@@ -61,5 +61,4 @@ module.exports =
           * @pnum-to-href
 
         @state.pages = @@$R(calc-pages).bind-to ...bindings
-    component-name: \Paginator
     template: templates.Paginator

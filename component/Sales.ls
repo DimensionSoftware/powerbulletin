@@ -11,7 +11,6 @@ debounce = lodash.debounce _, 250
 
 module.exports =
   class Sales extends Component
-    component-name: \Sales
     template: templates.Sales
     init: ->
       # mandatory state

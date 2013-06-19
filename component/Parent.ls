@@ -3,7 +3,6 @@ require! \./HelloWorld.ls
 
 module.exports =
   class Parent extends Component
-    component-name: \Parent
     template: -> "<div class=\"Parent-hw\"></div>"
     ->
       super ...

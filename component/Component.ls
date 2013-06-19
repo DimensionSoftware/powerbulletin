@@ -31,7 +31,6 @@ module.exports =
   class Component
     @$ = dollarish # shortcut
     @$R = reactivejs # shortcut
-    component-name: \Component
 
     # locals is the locals used to instantiate the Component
     # locals is passed thru a template then mutate phase
@@ -91,7 +90,7 @@ module.exports =
     # programmer/sub-classer can override render
     # it just needs to output html given @locals
     render: (do-children = true) ->
-      @$.add-class @component-name # add class-name to container
+      @$.add-class @.constructor.name # add class-name to container
 
       locals = @locals!
 

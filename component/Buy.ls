@@ -5,7 +5,6 @@ require! \./ParallaxButton.ls
 
 module.exports =
   class Buy extends Component
-    component-name: \Buy
     template: templates.Buy
     ->
       super ...
