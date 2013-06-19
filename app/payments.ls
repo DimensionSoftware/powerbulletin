@@ -22,39 +22,64 @@ export test = ->
   }, console.log
 
 # NOTE: need to verify yourself whether said can purchase for this site
-initial-purchase = (site-id, product-id, card, cb) ->
+export subscribe = ({
+  site-id = void
+  product-id = void
+  card = void
+} = {}, cb = (->)) ->
+  unless site-id
+    return cb new Error "siteId is required to subscribe"
+
+  err, product <~ db.products.find-one {
+    criteria: {id: product-id}
+    columns: [\price]
+  }
+  if err then return cb err
+  unless product
+    return cb new Error "subscription requires a valid product"
+
   err, res <~ db.sites.find-one {
     criteria: {id: site-id}
     columns: [\user_id]
   }
   if err then return cb err
-  unless user-id = res.user_id
-    throw new Error "the site must have an owner to subscribe"
-
-  err <~ db.add-subscription site-id, product-id
-  if err then return cb err
+  unless user-id = res?user_id
+    return cb new Error "the site must have an owner to subscribe"
 
   err, total-monthly-cost <~ db.subscription-total user-id
   if err then return cb err
+  console.log {user-id, total-monthly-cost}
+  total-monthly-cost += product.price
+  console.log {user-id, new-total-monthly-cost: total-monthly-cost}
 
-  stripe-cust-info = {
+  err, res <~ db.users.find-one {
+    criteria: {id: user-id}
+    columns: [\stripe_id]
+  }
+  if err then return cb err
+
+  subscription = {
     plan: \plan
     quantity: total-monthly-cost
     card
   }
 
-  err, customer <- @client.customers.create stripe-cust-info
-  if err then return cb err
+  if stripe-id = res.stripe_id
+    err <- @client.customers.update_subscription stripe-id, subscription
+    if err then return cb err
 
-  err <- db.users.update {criteria: {id: user-id}, data: {stripe_id: customer.id}}
-  if err then return cb err
+    err <- db.add-subscription site-id, product-id
+    if err then return cb err
 
-  cb null, customer
+    cb!
+  else
+    err, customer <- @client.customers.create subscription
+    if err then return cb err
 
-subsequent-purchase = (site-id, product-id, cb) ->
-  # infer owner (user-id) from site-id
-  # needs to update subscription (and qty) on stripe side
+    err <- db.users.update {criteria: {id: user-id}, data: {stripe_id: customer.id}}
+    if err then return cb err
 
-# in repl: pay.purchase 1, 1, pay.test-card, cl
-export purchase = (user-id, product-id, card, cb) ->
-  initial-purchase.call(@, user-id, product-id, card, cb)
+    err <- db.add-subscription site-id, product-id
+    if err then return cb err
+
+    cb!
