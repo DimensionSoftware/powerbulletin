@@ -229,7 +229,6 @@ submit = Auth.require-login(
       | \new-thread => History.replace-state {} '' data.uri
       | \edit       => remove-editing-url meta
     false))
-$d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then submit it
 
 # editing & posting
 # - ckeditor
