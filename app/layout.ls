@@ -222,39 +222,6 @@ window.choose = ->
       shake-dialog $form, 100ms
   false
 
-window.show-reset-password-dialog = ->
-  $form = $ '#auth .reset form'
-  Auth.show-login-dialog!
-  set-timeout (-> switch-and-focus '', \on-reset, '#auth .reset input:first'), 500ms
-  hash = location.hash.split('=')[1]
-  $form.find('input[type=hidden]').val(hash)
-  $.post '/auth/forgot-user', { forgot: hash }, (r) ->
-    if r.success
-      $form .find 'h2:first' .html 'Choose a New Password'
-      $form .find('input').prop('disabled', false)
-    else
-      $form .find 'h2:first' .html "Couldn't find you. :("
-
-window.reset-password = ->
-  $form = $ this
-  password = $form.find('input[name=password]').val!
-  if password.match /^\s*$/
-    show-tooltip $form.find(\.tooltip), "Password may not be blank"
-    return false
-  $.post $form.attr(\action), $form.serialize!, (r) ->
-    if r.success
-      $form.find('input').prop(\disabled, true)
-      show-tooltip $form.find(\.tooltip), "Password changed!"
-      location.hash = ''
-      $form.find('input[name=password]').val('')
-      set-timeout ( ->
-        switch-and-focus \on-reset, \on-login, '#auth .login input:first'
-        show-tooltip $('#auth .login form .tooltip'), "Now log in!"
-      ), 1500ms
-    else
-      show-tooltip $form.find(\.tooltip), "Choose a better password"
-  false
-
 window.toggle-password = (ev) ->
   e = $ ev.target
   p = e.prev '[name=password]'
@@ -272,8 +239,8 @@ $d.on \click '.toggle-password' toggle-password
 #$d.on \submit '.login form' login
 #$d.on \submit '.register form' register
 #$d.on \submit '.forgot form' forgot-password
+#$d.on \submit '.reset form' reset-password
 $d.on \submit '.choose form' choose
-$d.on \submit '.reset form' reset-password
 
 #}}}
 #{{{ Keep human readable time up to date
@@ -328,7 +295,7 @@ window.user <- $.getJSON \/auth/user
 onload-personalize!
 
 # hash actions
-if window.location.hash.match /^\#recover=/ then show-reset-password-dialog!
+if window.location.hash.match /^\#recover=/ then Auth.show-reset-password-dialog!
 switch window.location.hash
 | \#validate =>
   after-login! # email activation

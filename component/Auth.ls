@@ -11,18 +11,13 @@ module.exports =
     # static methods
 
     # helper to construct an Auth component and show it
-    @show-login-dialog = ->
+    @show-login-dialog = (cb=(->)) ->
       lazy-load (-> window.$.fn.complexify), "#{window.cache-url}/local/jquery.complexify.min.js", [], ~>
         window._auth             = new Auth locals: {site-name: window.site-name}, $('#auth')
         window._auth.after-login = Auth.after-login if Auth.after-login
         window._auth.attach!
 
-        $.fancybox.open \#auth,
-          close-effect: \elastic
-          close-speed:  200ms
-          close-easing: \easeOutExpo
-          open-effect: \fade
-          open-speed: 450ms
+        $.fancybox.open \#auth, window.fancybox-params
         set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
         # password complexity ui
         window.COMPLEXIFY_BANLIST = [\god \money \password]
@@ -30,6 +25,21 @@ module.exports =
           e = $ this .parent!
           e.find \.strength-meter .toggle-class \strong, pass
           e.find \.strength .css(height:parse-int(percent)+\%))
+        cb window._auth.$
+
+    @show-reset-password-dialog = ->
+      $auth <- Auth.show-login-dialog
+      $form = $auth .find('.reset form')
+      set-timeout (-> switch-and-focus '', \on-reset, '#auth .reset input:first'), 500ms
+      hash = location.hash.split('=')[1]
+      $form.find('input[type=hidden]').val(hash)
+      console.log hash, $form, $auth
+      $.post '/auth/forgot-user', { forgot: hash }, (r) ->
+        if r.success
+          $form .find 'h2:first' .html 'Choose a New Password'
+          $form .find('input').prop('disabled', false)
+        else
+          $form .find 'h2:first' .html "Couldn't find you. :("
 
     # helper for wrapping event handlers in a function that requires authentication first
     @require-login = (fn) ->
@@ -125,8 +135,26 @@ module.exports =
       false
 
     # handler for form for resetting a forgotten password
-    reset-password: ~>
-      console.log \reset-password
+    reset-password: (ev) ~>
+      $form = $ ev.target
+      password = $form.find('input[name=password]').val!
+      if password.match /^\s*$/
+        show-tooltip $form.find(\.tooltip), "Password may not be blank"
+        return false
+      $.post $form.attr(\action), $form.serialize!, (r) ~>
+        if r.success
+          $form.find('input').prop(\disabled, true)
+          show-tooltip $form.find(\.tooltip), "Password changed!"
+          location.hash = ''
+          $form.find('input[name=password]').val('')
+          set-timeout ( ->
+            switch-and-focus \on-reset, \on-login, '#auth .login input:first'
+            show-tooltip $('#auth .login form .tooltip'), "Now log in!"
+          ), 1500ms
+        else
+          show-tooltip $form.find(\.tooltip), "Choose a better password"
+      false
+
     toggle-password: ~>
       console.log \toggle-password
     choose: ~>
