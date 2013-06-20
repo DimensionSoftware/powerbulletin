@@ -25,7 +25,6 @@ global.announce = sioa.create-client!
 
 require! \./payments
 require! \./validate-cc
-payments.init!
 global <<< {db: {}, pay: payments, vcc: validate-cc}
 
 set-timeout (-> v.init!), 1000ms

@@ -6,7 +6,6 @@ require! \./SalesApp.ls
 module.exports =
   class SalesLoader extends Component
     template: templates.SalesLoader # shared with forum app
-    ->
-      super ...
+    init: ->
       @children =
         sales: new SalesApp {} \body @

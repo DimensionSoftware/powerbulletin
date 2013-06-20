@@ -6,8 +6,7 @@ require! \./Sales.ls
 module.exports =
   class SalesApp extends Component
     template: templates.SalesApp
-    ->
-      super ...
+    init: ->
       @children =
         sales: new Sales {} \.SalesApp-content @
     on-attach: ->
