@@ -44,9 +44,13 @@ export submit-form = (ev, fn) ->
   $s.attr \disabled \disabled
 
   # is body in ckeditor?
-  body  = $f.find \textarea.body
-  input = CKEDITOR?instances[body.attr \id]?get-data!
-  if input?length then body.val input # fill-in
+  body = $f.find \textarea.body
+  e    = CKEDITOR?instances?[body.attr \id]
+  if e
+    input = e.get-data!
+    if input?length
+      body.val input # fill-in
+      e.set-data ''  # clear
 
   # pass transient_owner as alternate auth mechanism
   # to support sandbox mode
