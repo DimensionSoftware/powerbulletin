@@ -222,20 +222,9 @@ window.choose = ->
       shake-dialog $form, 100ms
   false
 
-window.toggle-password = (ev) ->
-  e = $ ev.target
-  p = e.prev '[name=password]'
-  if p.attr(\type) is \password
-    e.html \Hide
-    p.attr \type \text
-  else
-    e.html \Show
-    p.attr \type \password
-  false
-
 $d.on \click \.require-login, Auth.require-login(-> this.click)
 $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
-$d.on \click '.toggle-password' toggle-password
+#$d.on \click '.toggle-password' toggle-password
 #$d.on \submit '.login form' login
 #$d.on \submit '.register form' register
 #$d.on \submit '.forgot form' forgot-password

@@ -63,9 +63,6 @@ module.exports =
       @$.on \click '.toggle-password' @toggle-password
       @$.on \submit '.choose form' @choose
 
-      # XXX - do this outside, not here
-      #@$.on \click \.require-login ch.require-login(-> this.click)
-
     on-detach: !~>
 
     # open window for 3rd party authentication
@@ -155,8 +152,19 @@ module.exports =
           show-tooltip $form.find(\.tooltip), "Choose a better password"
       false
 
-    toggle-password: ~>
-      console.log \toggle-password
+    # this toggles the visibility of the password field in case people want to see
+    # their password as they type it
+    toggle-password: (ev) ~>
+      e = $ ev.target
+      p = e.prev '[name=password]'
+      if p.attr(\type) is \password
+        e.html \Hide
+        p.attr \type \text
+      else
+        e.html \Show
+        p.attr \type \password
+      false
+
     choose: ~>
       console.log \choose
 
