@@ -208,20 +208,6 @@ window.logout = ->
   window.location = \/auth/logout; false # for intelligent redirect
 $d.on \click \.onclick-logout -> window.logout!; false
 
-# choose a username
-window.choose = ->
-  $form = $ this
-  $.post $form.attr(\action), $form.serialize!, (r) ->
-    if r.success
-      $.fancybox.close!
-      after-login!
-      window.location.hash = ''
-    else
-      $form.find \input:first .focus!
-      show-tooltip $form.find(\.tooltip), r.msg # display error
-      shake-dialog $form, 100ms
-  false
-
 $d.on \click \.require-login, Auth.require-login(-> this.click)
 $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
 #$d.on \click '.toggle-password' toggle-password
@@ -229,7 +215,7 @@ $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
 #$d.on \submit '.register form' register
 #$d.on \submit '.forgot form' forgot-password
 #$d.on \submit '.reset form' reset-password
-$d.on \submit '.choose form' choose
+#$d.on \submit '.choose form' choose
 
 #}}}
 #{{{ Keep human readable time up to date

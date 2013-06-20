@@ -66,8 +66,8 @@ module.exports =
     on-detach: !~>
 
     # open window for 3rd party authentication
-    open-oauth-window: (ev) ~>
-      url = $(ev.target).attr \href
+    open-oauth-window: (ev) ->
+      url = $(this).attr \href
       window.open url, \popup, "width=980,height=650,scrollbars=no,toolbar=no,location=no,directories=no,status=no,menubar=no"
       false
 
@@ -165,8 +165,20 @@ module.exports =
         p.attr \type \password
       false
 
-    choose: ~>
-      console.log \choose
+    # choose a username
+    choose: (ev) ~>
+      $form = $ ev.target
+      $.post $form.attr(\action), $form.serialize!, (r) ->
+        if r.success
+          $.fancybox.close!
+          after-login!
+          window.location.hash = ''
+        else
+          $form.find \input:first .focus!
+          show-tooltip $form.find(\.tooltip), r.msg # display error
+          shake-dialog $form, 100ms
+      false
+
 
 /*
 
