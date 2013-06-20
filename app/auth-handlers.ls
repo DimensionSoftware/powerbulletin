@@ -68,10 +68,8 @@ require! {
   site  = res.vars.site
   email = req.body.email
 
-  console.warn req.header \Referrer
-
   if not email
-    res.json success: false, errors: [ 'Blank email' ]
+    res.json success: false, errors: [ msg:'Blank email' ]
     return
 
   err, user <- db.usr { email, site_id: site.id }
@@ -91,7 +89,7 @@ require! {
     else
       res.json success: true
   else
-    res.json success: false, errors: [ 'User not found' ]
+    res.json success: false, errors: [ msg:'User not found' ]
 
 @forgot-user = (req, res, next) ->
   site = res.vars.site

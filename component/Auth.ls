@@ -122,13 +122,11 @@ module.exports =
       $form = $ ev.target
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
-          $.fancybox.close!
-          # XXX - this should show a message telling them to check their email for a password reset link
-          #@after-login! if @after-login
-          #window.location.hash = ''
+          switch-and-focus \on-forgot \on-validate ''
         else
           $form.find \input:first .focus!
-          show-tooltip $form.find(\.tooltip), r.msg # display error
+          msg = r.errors?0?name or r.errors?0?msg or 'Unable to find you'
+          show-tooltip $form.find(\.tooltip), msg # display error
           shake-dialog $form, 100ms
       false
 
