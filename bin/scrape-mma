@@ -66,6 +66,7 @@ with-posts = (max, t, cb) --> # {{{1
           $p = $ p
           $p.find("img[src$='apple.png'],img[src$='droid.png']").remove!
           first-image = $p.find \img:first .attr \src
+          first-image = null if first-image?length > 2000
           html = $p.html!
           post =
             parent-id : thread-id
