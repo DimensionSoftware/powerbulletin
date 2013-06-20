@@ -4,6 +4,7 @@ require! {
   mutant
   async
   \./auth
+  \./auth-handlers
   \express-validator
   mmw: \mutant/middleware
   pg:  \./postgres
@@ -80,31 +81,9 @@ app.get \/admin/:action?,
 # MISC AJAX
 app.post '/ajax/checkout/:productId', personal-mw, handlers.checkout
 
-#{{{ Local auth
-#
-app.post '/auth/login',           personal-mw, handlers.login
-app.post '/auth/register',        personal-mw, handlers.register
-app.post '/auth/choose-username', personal-mw, handlers.choose-username
-app.get  '/auth/user',            personal-mw, handlers.user
-app.get  '/auth/verify/:v',       personal-mw, handlers.verify
-app.post '/auth/forgot',          personal-mw, handlers.forgot
-app.post '/auth/forgot-user'      personal-mw, handlers.forgot-user
-app.post '/auth/reset-password'   personal-mw, handlers.reset-password
+# auth
+auth-handlers.init-with-app app, personal-mw
 
-app.get  '/auth/facebook',        personal-mw, handlers.login-facebook
-app.get  '/auth/facebook/return', personal-mw, handlers.login-facebook-return
-app.get  '/auth/facebook/finish', personal-mw, handlers.login-facebook-finish
-
-app.get  '/auth/google',          personal-mw, handlers.login-google
-app.get  '/auth/google/return',   personal-mw, handlers.login-google-return
-app.get  '/auth/google/finish',   personal-mw, handlers.login-google-finish
-
-app.get  '/auth/twitter',         personal-mw, handlers.login-twitter
-app.get  '/auth/twitter/return',  personal-mw, handlers.login-twitter-return
-app.get  '/auth/twitter/finish',  personal-mw, handlers.login-twitter-finish
-
-app.get  '/auth/logout',          personal-mw, handlers.logout
-#}}}
 #{{{ Users
 app.get '/u/:name', (req, res, next) ->
   res.redirect "/user/#{req.params.name}/", 301

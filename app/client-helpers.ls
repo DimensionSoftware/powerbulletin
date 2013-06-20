@@ -1,29 +1,3 @@
-
-#{{{ Login
-export fancybox-params =
-    close-effect: \elastic
-    close-speed:  200ms
-    close-easing: \easeOutExpo
-    open-effect:  \fade
-    open-speed:   450ms
-export show-login-dialog = ->
-  $.fancybox.open \#auth, fancybox-params
-  set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
-  # password complexity ui
-  window.COMPLEXIFY_BANLIST = [\god \money \password]
-  $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
-    e = $ this .parent!
-    e.find \.strength-meter .toggle-class \strong, pass
-    e.find \.strength .css(height:parse-int(percent)+\%))
-
-export require-login = (fn) ->
-  ~>
-    if window.user
-      fn.apply window, arguments
-    else
-       @show-login-dialog!
-       false
-#}}}
 #{{{ Editing Posts
 export post-success = (ev, data) ->
   f = $ ev.target .closest \.post-edit # form
@@ -161,6 +135,13 @@ export lazy-load-editor = (cb) ->
     null,
     cb
 #}}}
+
+export fancybox-params =
+  close-effect: \elastic
+  close-speed:  200ms
+  close-easing: \easeOutExpo
+  open-effect:  \fade
+  open-speed:   450ms
 
 export respond-resize = ->
   w = $ window

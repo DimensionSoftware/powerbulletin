@@ -46,7 +46,7 @@ layout-on-personalize = (w, u) ->
     switch window.location.hash
     | \#choose   =>
       if is-email user?name
-        show-login-dialog!
+        Auth.show-login-dialog!
         switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
 
 # initialize pager
