@@ -10,9 +10,7 @@ require! {
 # might need to put this somewhere more persistent
 @state = {} # XXX - may need to move this to redis
 
-# I might move this to another file later.
-# I'm just not sure where in the dir hierarchy it should go.
-# component/ChatServer.ls? even though it's not a component.
+# TODO move to app/io-chat-server.ls
 class ChatServer
   (@io, @socket, @site, @user) ->
 
@@ -24,8 +22,11 @@ class ChatServer
     @connections[@socket.id][c.id] = c
     @socket.join c.room
     cb null, c
+  disconnect: ~>
+    # leave all user's chats
+    for c in keys @connections[@socket.id]
+      @chat-leave {id:c, room:"#{@site.id}/conversations/#c"}, (->)
   chat-leave: (c, cb) ~>
-    console.warn \chat-leave
     delete @connections[@socket.id]?[c.id]
     @socket.leave c?room
     cb null, c
@@ -37,7 +38,7 @@ class ChatServer
       return cb err if err
       message.id = m.id
       m.body = message.body = format.chat-message message.body
-      @io.sockets.in(c.room).emit \chat-message, message
+      @io.sockets.in c.room .emit \chat-message, message
       cb null, { conversation: c, message: m }
 
     ## else load it from the database
@@ -161,10 +162,18 @@ site-by-domain = (domain, cb) ->
       #console.warn { site: site.name }
       in-site socket, site
 
+    #ChatServer
+    chat-server = new ChatServer(io, socket, site, user)
+    socket.on \chat-message, chat-server.chat-message
+    socket.on \chat-join, chat-server.chat-join
+    socket.on \chat-leave, chat-server.chat-leave
+    socket.on \chat-debug, chat-server.chat-debug
+
     socket.on \disconnect, ->
       console.warn \disconnected
       if user and site
         leave-site socket, site, user
+        chat-server.disconnect!
       if search-room
         socket.leave search-room
 
@@ -200,10 +209,3 @@ site-by-domain = (domain, cb) ->
 
       # register search with the search notifier
       io.sockets.emit \register-search, {searchopts, site-id: site.id, room: search-room}
-
-    #ChatServer
-    chat-server = new ChatServer(io, socket, site, user)
-    socket.on \chat-message, chat-server.chat-message
-    socket.on \chat-join, chat-server.chat-join
-    socket.on \chat-leave, chat-server.chat-leave
-    socket.on \chat-debug, chat-server.chat-debug
