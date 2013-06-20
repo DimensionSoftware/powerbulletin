@@ -361,7 +361,7 @@ window.do-buy = (product-id) ->
   throw new Error "window.do-buy must specify a product-id" unless product-id
 
   product <- $.get(\/resources/products/ + product-id)
-  locals = {product}
+  locals = {product, card-needed: !window.user?has-stripe}
 
   existing.detach! if existing = window.component.buy
 

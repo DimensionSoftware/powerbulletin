@@ -7,17 +7,25 @@ h2 Only! $#{(product.price / 100.0).toFixed(2)}
   div
     img(src=cacheUrl+'/images/accepted-cards.png')
 .right
-  div
+  if cardNeeded
+    div
+      label
+        strong Card number
+        input.Buy-card-number(type='text')
     label
-      strong Card number
-      input.Buy-card-number(type='text')
-  label
-    strong Expiration date
-      em (MM/YY)
-    input.Buy-card-expiration(type='text')
-  div
-    label
-      strong CVV Code
-      input.Buy-card-code(type='text')
-  div
-    .Buy-checkout
+      strong Expiration date
+        em (MM/YY)
+      input.Buy-card-expiration(type='text')
+    div
+      label
+        strong CVV Code
+        input.Buy-card-code(type='text')
+    div
+      .Buy-checkout
+  else
+    div
+      strong Your card is on file
+    div
+      a(href='#') enter different card details
+    div
+      em note: this will change the card for all your subscriptions

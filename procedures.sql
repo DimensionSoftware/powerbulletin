@@ -246,7 +246,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param String verify       aliases.verify
 CREATE FUNCTION procs.find_or_create_user(usr JSON) RETURNS JSON AS $$
   sel = '''
-  SELECT u.id, u.created, a.site_id, a.name, auths.type, auths.profile
+  SELECT u.id, u.created, hasStripe AS (u.stripe_id IS NOT NULL), a.site_id, a.name, auths.type, auths.profile
   FROM users u
     LEFT JOIN aliases a ON a.user_id = u.id
     LEFT JOIN auths ON auths.user_id = u.id
