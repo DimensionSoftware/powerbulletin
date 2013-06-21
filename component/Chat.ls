@@ -112,8 +112,6 @@ Chat.start = ([me,...others]:users) ->
   if c = @chats[key]
     return c
   c = @chats[key] = new Chat locals: { me, others }, $('<div/>').hide!
-  c.attach!
-  #c.render!
   $cs = $('#chat_drawer .Chat')
   if $cs.length
     right = $cs.length * ($cs.first!width! + 8) + 8
@@ -130,7 +128,7 @@ Chat.stop = (key) ->
   c = @chats[key]
   if not c then return
   <~ c.$.fade-out @duration
-  c.$.empty!
+  c.$.empty!remove!
   @reorganize!
   delete @chats[key]
 
