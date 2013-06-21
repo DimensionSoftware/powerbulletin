@@ -34,11 +34,11 @@
       input(type="submit", value="Send Reset")
       a.msg.onclick-show-login
         h3 Back
-.validate(style="display:none;")
-  h2 Check your inbox for activation
+.dialog(style="display:none;")
+  h2#msg Check your inbox for activation
     i !
-    a.msg.onclick-close-fancybox
-      h3 Close
+  a.msg.onclick-close-fancybox
+    h3 Close
 .register(style="display:none;")
   form(method="post", action="/auth/register")
     label(for="username")

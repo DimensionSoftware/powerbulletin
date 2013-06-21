@@ -271,9 +271,10 @@ onload-personalize!
 
 # hash actions
 if window.location.hash.match /^\#recover=/ then Auth.show-reset-password-dialog!
+if m = window.location.hash.match /^\#invalid=(.+)/ then Auth.show-info-dialog "Welcome back #{m.1}!"
 switch window.location.hash
-| \#validate =>
-  after-login! # email activation
+| \#invalid  => Auth.show-info-dialog 'Invalid invite code!'
+| \#validate => Auth.after-login! # email activation
 
 <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
 # vim:fdm=marker

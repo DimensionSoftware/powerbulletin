@@ -28,6 +28,13 @@ module.exports =
           e.find \.strength .css(height:parse-int(percent)+\%))
         cb window._auth.$
 
+    @show-info-dialog = (msg, cb=(->)) ->
+      <- Auth.show-login-dialog
+      fb = $ \.fancybox-wrap:first
+      fb.find \#msg .html msg
+      set-timeout (-> switch-and-focus '', \on-dialog, ''), 500ms
+      cb window._auth.$
+
     @show-reset-password-dialog = ->
       $auth <- Auth.show-login-dialog
       $form = $auth .find('.reset form')
@@ -106,7 +113,7 @@ module.exports =
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $form.find("input:text,input:password").remove-class(\validation-error).val ''
-          switch-and-focus \on-register \on-validate ''
+          switch-and-focus \on-register \on-dialog ''
         else
           msgs = []
           r.errors?for-each (e) ->
@@ -122,7 +129,7 @@ module.exports =
       $form = $ ev.target
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
-          switch-and-focus \on-forgot \on-validate ''
+          show-info-dialog 'Check your inbox for reset link!'
         else
           $form.find \input:first .focus!
           msg = r.errors?0?name or r.errors?0?msg or 'Unable to find you'
