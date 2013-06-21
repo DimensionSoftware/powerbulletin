@@ -4,16 +4,16 @@ p Add your own personal flair.  Point any domain at your PowerBulletin site.
 if subscriptions.indexOf('custom_domain') == -1
   input(type='button', onclick="doBuy('custom_domain')", value='Buy Custom Domain')
 else
-  div
+  p
     | Custom Domain Purchased!
     span(style='font-size:larger') &#x2713;
     
 
 h2 Go Private
-  p Privacy?  We got you covered.
+p Privacy?  We got you covered.
 if subscriptions.indexOf('private_site') == -1
   input(type='button', onclick="doBuy('private_site')", value='Buy Private Site')
 else
-  div
+  p
     | Private Site Purchased!
     span(style='font-size:larger') &#x2713;
