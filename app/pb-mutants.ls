@@ -15,9 +15,11 @@ require! {
     dur = aft - bef
     console.log "benchmarked '#{subject-name}': took #{dur}ms"
 
-!function admin-upgrade-component w
+!function admin-upgrade-component w, subscriptions
   wc = w.component ||= {}
-  wc.admin-upgrade ||= new AdminUpgrade
+  wc.admin-upgrade ||= new AdminUpgrade {-auto-render, -auto-attach}
+  wc.admin-upgrade.local \subscriptions, subscriptions
+  wc.admin-upgrade.detach!.render!.attach!
   w.$('#main_content').html('').append(wc.admin-upgrade.$)
 
 # Common
@@ -337,7 +339,7 @@ export admin =
       | \domains  => window.render-mutant \main_content, \admin-domains
       | \invites  => window.render-mutant \main_content, \admin-invites
       | \menu     => window.render-mutant \main_content, \admin-menu
-      | \upgrade  => admin-upgrade-component(window)
+      | \upgrade  => admin-upgrade-component(window, @site.subscriptions)
       | otherwise => window.render-mutant \main_content, \admin-general
 
       layout-static window, \admin

@@ -470,11 +470,18 @@ CREATE FUNCTION procs.site_by_id(id JSON) RETURNS JSON AS $$
   LEFT JOIN users u ON u.id=s.user_id
   WHERE u.id = $1
   """
-  s = plv8.execute(sql, [ id ])
-  if s[0]
+  s = plv8.execute sql, [id]
+  if site = s.0
     domains_by_site_id = plv8.find_function 'procs.domains_by_site_id'
-    s[0].domains = domains_by_site_id(s[0].id)
-  return s[0]
+    site.domains = domains_by_site_id(s.0.id)
+    site.subscriptions = do ->
+      sql = 'SELECT product_id FROM subscriptions WHERE site_id=$1'
+      sqlres = plv8.execute sql, [id]
+      sqlres.map (.product_id)
+    plv8.elog WARNING, JSON.stringify(site)
+    return site
+  else
+    return null
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.site_update(site JSON) RETURNS JSON AS $$
