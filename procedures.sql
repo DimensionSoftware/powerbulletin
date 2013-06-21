@@ -246,7 +246,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param String verify       aliases.verify
 CREATE FUNCTION procs.find_or_create_user(usr JSON) RETURNS JSON AS $$
   sel = '''
-  SELECT u.id, u.created, (u.stripe_id IS NOT NULL) AS hasStripe, a.site_id, a.name, auths.type, auths.profile
+  SELECT u.id, u.created, a.site_id, a.name, auths.type, auths.profile
   FROM users u
     LEFT JOIN aliases a ON a.user_id = u.id
     LEFT JOIN auths ON auths.user_id = u.id
@@ -465,7 +465,10 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- @param Integer id
 CREATE FUNCTION procs.site_by_id(id JSON) RETURNS JSON AS $$
   sql = """
-  SELECT * FROM sites WHERE id = $1
+  SELECT s.*, (u.stripe_id IS NOT NULL) AS has_stripe
+  FROM sites s
+  LEFT JOIN users u ON u.id=s.user_id
+  WHERE u.id = $1
   """
   s = plv8.execute(sql, [ id ])
   if s[0]
