@@ -361,9 +361,6 @@ export admin =
       window.pages-count = 0
       pager-init window
       next!
-  on-initial:
-    (w, next) ->
-      admin-upgrade-component(w)
 
 join-search = (sock) ->
   console.log 'joining search notifier channel', window.searchopts
