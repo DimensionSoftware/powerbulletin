@@ -6,27 +6,6 @@ dollarish =
   else
     require \cheerio
 
-!function bench subject-name, subject-body
-  bef = new Date
-  subject-body!
-  aft = new Date
-  set-timeout(_, 1) ->
-    dur = aft - bef
-    console.log "benchmarked '#{subject-name}': took #{dur}ms"
-
-# like inner html, except super rice
-# mutant has lots of entropy so we can avoid the teardown performance hit
-# http://blog.stevenlevithan.com/archives/faster-than-innerhtml
-!function replace-html $el, html
-  if window?
-    el = $el.0
-    new-el = el.clone-node false
-    new-el.inner-HTML = html
-    el.parent-node.replace-child new-el, el
-  else
-    # server side cheerio does the normal thing
-    $el.html html
-
 module.exports =
   class Component
     @$ = dollarish # shortcut

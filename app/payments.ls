@@ -52,8 +52,8 @@ export subscribe = ({
   subscription = {
     plan: \plan
     quantity: total-monthly-cost
-    card
   }
+  subscription <<< {card} if card
 
   err, res <~ db.users.find-one {
     criteria: {id: user-id}

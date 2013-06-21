@@ -453,12 +453,14 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   if existing-subscription
     return res.json {errors: ['subscription exists']}
 
-  card =
-    number: req.body.number
-    exp_month: req.body.expiration.split('/').0 # XXX could use more validations / robustness
-    exp_year: req.body.expiration.split('/').1
-    cvc: req.body.code
-
+  if req.body.number and req.body.expiration and req.body.code
+    card =
+      number: req.body.number
+      exp_month: req.body.expiration.split('/').0 # XXX could use more validations / robustness
+      exp_year: req.body.expiration.split('/').1
+      cvc: req.body.code
+  else
+    card = void
 
   err <- pay.subscribe {site-id, product-id, card}
   if err then return next err
