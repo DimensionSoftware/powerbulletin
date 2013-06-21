@@ -3,22 +3,30 @@ module.exports = class ChatServer
   (@io, @socket, @site, @user) ->
 
   connections: {} # XXX - may need to move this to redis
-  chat-join: (c, cb) ~>
+
+  join: (c, cb) ~>
     console.warn \chat-join
     c.room = "#{@site.id}/conversations/#{c.id}"
     @connections[@socket.id] ||= {}
     @connections[@socket.id][c.id] = c
     @socket.join c.room
     cb null, c
+
   disconnect: ~>
     # leave all user's chats
+    console.warn \chat-disconnect
     for c in keys @connections[@socket.id]
       @chat-leave {id:c, room:"#{@site.id}/conversations/#c"}, (->)
-  chat-leave: (c, cb) ~>
+
+  leave: (c, cb) ~>
+    console.warn \chat-leave
+    #console.warn \socket-id, @socket.id
+    #console.warn \connections, @connections
     delete @connections[@socket.id]?[c.id]
     @socket.leave c?room
     cb null, c
-  chat-message: (message, cb) ~>
+
+  message: (message, cb) ~>
     ## if connection has a chat with message.chat_id use it
     if c = @connections[@socket.id]?[message.conversation_id]
       console.warn "remote chat already opened"
@@ -56,7 +64,8 @@ module.exports = class ChatServer
         cb null, { conversation: c, message: m }
       set-timeout send-chat-message, 100ms
 
-  chat-debug: (cb) ~>
+  debug: (cb) ~>
     console.warn \chat-debug
     @socket.emit \debug, @connections
+    @socket.emit \debug, @socket.id
 

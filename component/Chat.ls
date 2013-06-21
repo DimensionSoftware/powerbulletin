@@ -130,7 +130,7 @@ Chat.stop = (key) ->
   c = @chats[key]
   if not c then return
   <~ c.$.fade-out @duration
-  c.$.remove!
+  c.$.empty!
   @reorganize!
   delete @chats[key]
 

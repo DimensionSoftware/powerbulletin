@@ -103,10 +103,10 @@ site-by-domain = (domain, cb) ->
 
     #ChatServer
     chat-server = new ChatServer(io, socket, site, user)
-    socket.on \chat-message, chat-server.chat-message
-    socket.on \chat-join, chat-server.chat-join
-    socket.on \chat-leave, chat-server.chat-leave
-    socket.on \chat-debug, chat-server.chat-debug
+    socket.on \chat-message, chat-server.message
+    socket.on \chat-join, chat-server.join
+    socket.on \chat-leave, chat-server.leave
+    socket.on \chat-debug, chat-server.debug
 
     socket.on \disconnect, ->
       console.warn \disconnected
