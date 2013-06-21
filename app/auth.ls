@@ -141,6 +141,28 @@ export send-recovery-email = (user, site, cb) ->
     text    : h.expand-handlebars recovery-email-template-text, vars
   h.send-mail email, cb
 
+export send-invite-email = (site, user, new-user, message, cb) ->
+  vars =
+    # I have to quote the keys so that the template-vars with dashes will get replaced.
+    "site-name"   : site.name
+    "site-domain" : site.current_domain
+    "user-email"  : new-user.email
+    "user-verify" : new-user.verify
+    "message"     : message
+  tmpl = """
+    {{message}}
+    
+    Follow this link and login:
+     https://{{site-domain}}/auth/invite/{{user-verify}}
+  """
+  email =
+    from    : "#{user.name}@#{site.current_domain}"
+    to      : user.email
+    subject : "Invite to #{site.name}!"
+    text    : h.expand-handlebars tmpl, vars
+  console.log email
+  h.send-mail email, cb
+
 export user-forgot-password = (user, cb) ->
   err, hash <- unique-hash \forgot, user.site_id
   if err then return cb err

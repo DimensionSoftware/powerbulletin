@@ -11,27 +11,6 @@ require! {
 
 announce = sioa.create-client!
 
-send-invite-email = (site, user, new-user, message) ->
-  vars =
-    # I have to quote the keys so that the template-vars with dashes will get replaced.
-    "site-name"   : site.name
-    "site-domain" : site.current_domain
-    "user-email"  : new-user.email
-    "user-verify" : new-user.verify
-    "message"     : message
-  tmpl = """
-    {{message}}
-    
-    Follow this link and login:
-     https://{{site-domain}}/auth/verify/{{user-verify}}
-  """
-  email =
-    from    : "#{user.name}@#{site.current_domain}"
-    to      : user.email
-    subject : "Invite to #{site.name}!"
-    text    : h.expand-handlebars tmpl, vars
-  h.send-mail email, (->)
-
 @sites =
   update: (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
@@ -106,8 +85,11 @@ send-invite-email = (site, user, new-user, message) ->
         if err and !u
           cb err
         else # resend email if already registered
-          send-invite-email site, user, u, req.body.message
-          cb(if err then "Re-invited #{u.name}" else null)
+          if u.verify then
+            auth.send-invite-email site, user, u, req.body.message
+            cb(if err then "Re-invited #{u.name}" else null)
+          else
+            cb "#{u.name} is registered!"
 
       (err, r) <- async.each emails, register
       if err then return res.json {success:false, msg:err}

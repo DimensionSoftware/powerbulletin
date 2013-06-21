@@ -52,16 +52,23 @@ require! {
       console.warn 'registration email', err, r
     res.json success:true, errors:[]
 
-@verify = (req, res, next) ->
+do-verify = (req, res, next) ~>
   v    = req.param \v
   site = res.vars.site
   err, r <- db.verify-user site.id, v
   if err then return next err
   if r
     req.session?passport?user = "#{r.name}:#{site.id}"
-    res.redirect if is-email r.name then \/#choose else \/#validate
+    res.redirect if res.vars.is-invite then \/#choose else \/#validate
   else
     res.redirect \/#invalid
+@verify = (req, res, next) -> do-verify req, res, next
+@invite = (req, res, next) ->
+  if req.user
+    res.redirect "/\#invalid=#{req.user.name.replace /@.*/, ''}"
+  else
+    res.vars.is-invite = true
+    do-verify req, res, next
 
 @forgot = (req, res, next) ->
   db    = pg.procs
@@ -131,16 +138,14 @@ require! {
     console.warn \usr, "User not found"
     res.json success: false, errors: [ "User not found" ]
 
-# TODO - validate username
+# XXX users may change user names any amount of times by avoiding the ui
+# - in the future, consider adding field to aliases to count # of changes,
+# - then build a setting in general admin to user-specify
 @choose-username = (req, res, next) ->
   user = req.user
   if not user then return res.json success:false
-  # only change username if it's an email address
-  name = req.user.name.to-string!
-  if name.length and not is-email name
-    res.json {success:false,msg:'Name already chosen!'}
-  db = pg.procs
-  usr =
+  db   = pg.procs
+  usr  =
     user_id : user.id
     site_id : user.site_id
     name    : req.body.username
@@ -259,6 +264,7 @@ auth-finisher = (req, res, next) ->
   app.post '/auth/choose-username', mw, @choose-username
   app.get  '/auth/user',            mw, @user
   app.get  '/auth/verify/:v',       mw, @verify
+  app.get  '/auth/invite/:v',       mw, @invite
   app.post '/auth/forgot',          mw, @forgot
   app.post '/auth/forgot-user'      mw, @forgot-user
   app.post '/auth/reset-password'   mw, @reset-password
