@@ -20,8 +20,6 @@ h2 Only! $#{(product.price / 100.0).toFixed(2)}
       label
         strong CVV Code
         input.Buy-card-code(type='text')
-    div
-      button.Buy-checkout CHECK OUT
   else
     div
       strong Your card is on file
@@ -29,3 +27,5 @@ h2 Only! $#{(product.price / 100.0).toFixed(2)}
       a.Buy-change-card(href='#') enter different card details
     div
       em note: this will change the card for all your subscriptions
+  div
+    button.Buy-checkout CHECK OUT
