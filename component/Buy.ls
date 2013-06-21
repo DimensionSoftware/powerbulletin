@@ -20,3 +20,11 @@ module.exports =
       @children = {
         checkout-button: new ParallaxButton {on-click, locals:{title: 'CHECKOUT'}}, \.Buy-checkout, @
       }
+    on-attach: ->
+      component = @
+      @$.on \click \.Buy-change-card ->
+        component.local \cardNeeded, true
+        component.detach!render!attach!
+        return false
+    on-detach: ->
+      @$.off!
