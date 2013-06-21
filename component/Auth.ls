@@ -18,7 +18,7 @@ module.exports =
           window._auth.after-login = Auth.after-login if Auth.after-login
           window._auth.attach!
 
-        $.fancybox.open \#auth, window.fancybox-params
+        $.fancybox.open \#auth, window.fancybox-params unless $ \.fancybox-overlay:visible .length
         set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
         # password complexity ui
         window.COMPLEXIFY_BANLIST = [\god \money \password]
@@ -28,17 +28,17 @@ module.exports =
           e.find \.strength .css(height:parse-int(percent)+\%))
         cb window._auth.$
 
-    @show-info-dialog = (msg, cb=(->)) ->
+    @show-info-dialog = (msg, remove='', cb=(->)) ->
       <- Auth.show-login-dialog
       fb = $ \.fancybox-wrap:first
       fb.find \#msg .html msg
-      set-timeout (-> switch-and-focus '', \on-dialog, ''), 500ms
+      switch-and-focus remove, \on-dialog, ''
       cb window._auth.$
 
     @show-reset-password-dialog = ->
       $auth <- Auth.show-login-dialog
       $form = $auth .find('.reset form')
-      set-timeout (-> switch-and-focus '', \on-reset, '#auth .reset input:first'), 500ms
+      switch-and-focus '', \on-reset, '#auth .reset input:first'
       hash = location.hash.split('=')[1]
       $form.find('input[type=hidden]').val(hash)
       console.log hash, $form, $auth
@@ -129,7 +129,7 @@ module.exports =
       $form = $ ev.target
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
-          show-info-dialog 'Check your inbox for reset link!'
+          Auth.show-info-dialog 'Check your inbox for reset link!', \on-forgot
         else
           $form.find \input:first .focus!
           msg = r.errors?0?name or r.errors?0?msg or 'Unable to find you'
