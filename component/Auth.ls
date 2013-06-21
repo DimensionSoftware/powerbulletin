@@ -174,10 +174,10 @@ module.exports =
     # choose a username
     choose: (ev) ~>
       $form = $ ev.target
-      $.post $form.attr(\action), $form.serialize!, (r) ->
+      $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $.fancybox.close!
-          after-login!
+          @after-login!
           window.location.hash = ''
         else
           $form.find \input:first .focus!
