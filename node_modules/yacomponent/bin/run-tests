@@ -1,0 +1,2 @@
+#!/bin/sh -e
+mocha -R spec --compilers ls:LiveScript test
