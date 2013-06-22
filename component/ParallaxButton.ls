@@ -1,5 +1,7 @@
-require! $R:reactivejs
-require! \./Component.ls
+require! {
+  Component: yacomponent
+  $R:reactivejs
+}
 
 module.exports =
   class ParallaxButton extends Component

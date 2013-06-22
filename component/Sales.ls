@@ -1,6 +1,6 @@
 require! {
   lodash
-  \./Component.ls
+  Component: yacomponent
   \./ParallaxButton.ls
   sh: \../app/shared-helpers.ls
 }

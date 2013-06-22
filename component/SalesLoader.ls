@@ -1,4 +1,4 @@
-require! \./Component.ls
+require! Component: yacomponent
 require! \./SalesApp.ls
 
 {templates} = require \../build/component-jade.js
