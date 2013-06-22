@@ -11,19 +11,19 @@ debounce = lodash.debounce _, 250
 
 module.exports =
   class Sales extends Component
+    hostname = if process.env.NODE_ENV is \production then \.powerbulletin.com else \.pb.com
     template: templates.Sales
     init: ->
       # mandatory state
-      @state.subdomain ||= @@$R.state ''
-      @local \hostname, if process.env.NODE_ENV is \production then \.powerbulletin.com else \.pb.com
+      @local \hostname, hostname
+      @local \subdomain ''
 
       # init children
       do ~>
         on-click = ~>
           console.log \created: + subdomain
           subdomain   = @local \subdomain
-          hostname = @local \hostname
-          @@$.post '/ajax/can-has-site-plz', {subdomain}, ({errors, transient_owner}) ->
+          @@$.post '/ajax/can-has-site-plz', {domain: subdomain+hostname}, ({errors, transient_owner}) ->
             if errors.length
               console.error errors
             else
@@ -42,7 +42,7 @@ module.exports =
       $sa = @$.find(\.Sales-available)
 
       @check-subdomain-availability = @@$R((subdomain) ->
-        @@$.get \/ajax/check-subdomain-availability {subdomain} (res) ->
+        @@$.get \/ajax/check-domain-availability {domain: subdomain+hostname} (res) ->
           $sa.remove-class 'success error'
           if res.available
             component.children.buy.enable!
