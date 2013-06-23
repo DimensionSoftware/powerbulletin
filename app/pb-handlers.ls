@@ -453,7 +453,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   if existing-subscription
     return res.json {success:false, errors: ['You\'re already subscribed']}
 
-  if req.body.number and req.body.expiration and req.body.code
+  if req.body.number and req.body.expmo and req.body.expyear and req.body.code
     card =
       number:    req.body.number
       exp_month: req.body.expmo

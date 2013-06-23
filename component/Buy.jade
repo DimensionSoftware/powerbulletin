@@ -7,7 +7,7 @@ h1 #{product.description}
     .clear
     label(for='card_month') Expiration
     select#card_month.Buy-card-month
-      option - Month -
+      option(disabled=true, selected=true) - Month -
       option Jan - 1
       option Feb - 2
       option Mar - 3
@@ -22,7 +22,7 @@ h1 #{product.description}
       option Dec - 12
     small /
     select#card_year.Buy-card-year
-      option - Year -
+      option(disabled=true, selected=true) - Year -
       d = new Date().getFullYear()
       - for (var i=0; i<=16; i++)
         option= d + i
