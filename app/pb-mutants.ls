@@ -335,6 +335,10 @@ export admin =
     (window, next) ->
       window.render-mutant \left_container \admin-nav
 
+      # set active nav
+      window.$ '#left_container menu li' .remove-class \active
+      window.$ "\#left_container menu .#{@action or \general}" .add-class \active
+
       switch @action
       | \domains  => window.render-mutant \main_content, \admin-domains
       | \invites  => window.render-mutant \main_content, \admin-invites

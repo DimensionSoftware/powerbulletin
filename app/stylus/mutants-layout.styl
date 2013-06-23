@@ -448,12 +448,25 @@ html.admin
       menu
         float right
         list-style none
-        padding 12px
+        padding 18px
         margin 0 0 0 3px
         transition all .2s ease-out
         li
+          padding 5px 12px 5px 5px
           margin-bottom (grid+3)
           text-align right
+          position relative
+          span
+            position absolute
+            font-size .8em
+            top -12px
+            left -10px
+            transform rotate(-10deg)
+            background-color #ddd
+            color #555
+            border-radius 6px / 3px
+            padding 0 4px
+            opacity .7
   #main_content
     padding-left 200px
     .note

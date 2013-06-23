@@ -163,6 +163,33 @@ html.profile
 //{{{ - admin
 html.admin
   #left_container
+    li.feature
+      font-size .7em
+      font-style italic
+    li:hover
+      border-radius 5px / 3px
+      background-color #fdfdfd
+    li
+      border-left 1px solid transparent
+      border-bottom 1px solid transparent
+    li.active
+      background-color #fafafa
+      border-radius 8px / 4px
+      position relative
+      border-left 1px solid #ddd
+      border-bottom 1px solid #ddd
+      span
+        padding 1px 6px!important
+        opacity 1!important
+        color #333!important
+        transition all .2s ease-out
+    li.active::after
+      position absolute
+      content ''
+      top 2px
+      right -28px
+      border 15px solid transparent
+      border-left 18px solid #fafafa
     li
       a
         padding 2px 8px
