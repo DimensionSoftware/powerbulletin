@@ -8,15 +8,17 @@ module.exports =
     init: ->
       @local \cardNeeded, true if @local(\cardNeeded) is void
     on-attach: ->
+      set-timeout (-> @@$ \.Buy-card-number .focus!), 200ms
       @$.on \click \.Buy-change-card ~>
         @local \cardNeeded, true
         @detach!render!attach!
         return false
       @$.on \click \.Buy-checkout ~>
         data =
-          number: @$.find(\.Buy-card-number).val!
-          expiration: @$.find(\.Buy-card-expiration).val!
-          code: @$.find(\.Buy-card-code).val!
+          number:  @$.find \.Buy-card-number .val!
+          expmo:   @$.find \.Buy-card-year .val!
+          expyear: @$.find \.Buy-card-month .val!
+          code:    @$.find \.Buy-card-code .val!
         @@$.post "/ajax/checkout/#{@local(\product).id}", data, ->
           console.log ...arguments
         return false

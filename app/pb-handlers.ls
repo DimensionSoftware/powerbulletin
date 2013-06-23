@@ -451,14 +451,14 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   }
   if err then return next err
   if existing-subscription
-    return res.json {errors: ['subscription exists']}
+    return res.json {success:false, errors: ['You\'re already subscribed']}
 
   if req.body.number and req.body.expiration and req.body.code
     card =
-      number: req.body.number
-      exp_month: req.body.expiration.split('/').0 # XXX could use more validations / robustness
-      exp_year: req.body.expiration.split('/').1
-      cvc: req.body.code
+      number:    req.body.number
+      exp_month: req.body.expmo
+      exp_year:  req.body.expyear
+      cvc:       req.body.code
   else
     card = void
 

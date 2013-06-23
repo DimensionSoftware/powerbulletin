@@ -1,31 +1,50 @@
 h1 #{product.description}
-h2 Only! $#{(product.price / 100.0).toFixed(2)}
-
-.left
-  div
-    i id: #{product.id}
-  div
-    img(src=cacheUrl+'/images/accepted-cards.png')
-.right
+.right.info
   if cardNeeded
-    div
-      label
-        strong Card number
-        input.Buy-card-number(type='text')
-    label
-      strong Expiration date
-        em (MM/YY)
-      input.Buy-card-expiration(type='text')
-    div
-      label
-        strong CVV Code
-        input.Buy-card-code(type='text')
+    .clear
+    label(for='card_number') Card Number
+    input#card_number.Buy-card-number(type='text')
+    .clear
+    label(for='card_month') Expiration
+    select#card_month.Buy-card-month
+      option - Month -
+      option Jan - 1
+      option Feb - 2
+      option Mar - 3
+      option Apr - 4
+      option May - 5
+      option Jun - 6
+      option Jul - 7
+      option Aug - 8
+      option Sept - 9
+      option Oct - 10
+      option Nov - 11
+      option Dec - 12
+    small /
+    select#card_year.Buy-card-year
+      option - Year -
+      d = new Date().getFullYear()
+      - for (var i=0; i<=16; i++)
+        option= d + i
+    .clear
+    label(for='card_code') Security Code
+    input#card_code.Buy-card-code(type='text')
   else
-    div
-      strong Your card is on file
-    div
-      a.Buy-change-card(href='#') enter different card details
-    div
-      em note: this will change the card for all your subscriptions
-  div
-    button.Buy-checkout CHECK OUT
+    h3 Your payment information is Ready-to-Go
+      i !
+    .clear
+      a.Buy-change-card(href='#') Enter different card details
+      em This will change the card for all your subscriptions
+  .clear
+    button.Buy-checkout CHECKOUT
+  .cards
+    .discover
+    .amex
+    .mastercard
+    .visa
+.right
+  h2 Only 
+    b
+      small $
+      != (product.price / 100.0).toFixed(0)
+      small /mo
