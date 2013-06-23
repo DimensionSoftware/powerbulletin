@@ -757,6 +757,7 @@ CREATE FUNCTION procs.conversation_find_or_create(users JSON) RETURNS JSON AS $$
     return null
 
   c.participants   = users
+  # TODO resolve users for avatar
   c.messages       = []
   return c
 $$ LANGUAGE plls IMMUTABLE STRICT;
