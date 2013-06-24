@@ -5,6 +5,11 @@ require! {
 
 {templates} = require \../build/component-jade.js
 
+switch-and-focus = (remove, add, focus-on) ->
+  $e = $ \.fancybox-wrap
+  $e.remove-class("#remove shake slide").add-class(add)
+  set-timeout (-> $e.add-class \slide; $ focus-on .focus! ), 10ms
+
 module.exports =
   class Auth extends Component
     # attributes
@@ -35,13 +40,13 @@ module.exports =
       <- Auth.show-login-dialog
       fb = $ \.fancybox-wrap:first
       fb.find \#msg .html msg
-      ch.switch-and-focus remove, \on-dialog, ''
+      switch-and-focus remove, \on-dialog, ''
       cb window._auth.$
 
     @show-reset-password-dialog = ->
       $auth <- Auth.show-login-dialog
       $form = $auth .find('.reset form')
-      ch.switch-and-focus '', \on-reset, '#auth .reset input:first'
+      switch-and-focus '', \on-reset, '#auth .reset input:first'
       hash = location.hash.split('=')[1]
       $form.find('input[type=hidden]').val(hash)
       console.log hash, $form, $auth
@@ -73,6 +78,23 @@ module.exports =
       @$.on \submit '.reset form' @reset-password
       @$.on \click '.toggle-password' @toggle-password
       @$.on \submit '.choose form' @choose
+
+      @$.on \click \.onclick-close-fancybox ->
+        $.fancybox.close!
+      @$.on \click \.onclick-show-login ->
+        switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=username]'
+      @$.on \click \.onclick-show-forgot ->
+        switch-and-focus \on-error \on-forgot '#auth input[name=email]'
+      @$.on \click \.onclick-show-choose ->
+        switch-and-focus \on-login \on-choose '#auth input[name=username]'
+      @$.on \click \.onclick-show-register ->
+        switch-and-focus \on-login \on-register '#auth input[name=username]'
+
+      # catch esc key events on input boxes for login box
+      @$.on \keyup '.fancybox-inner input' ->
+        if it.which is 27 # esc
+          $.fancybox.close!
+          false
 
     on-detach: !~>
 
@@ -116,7 +138,7 @@ module.exports =
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $form.find("input:text,input:password").remove-class(\validation-error).val ''
-          ch.switch-and-focus \on-register \on-dialog ''
+          switch-and-focus \on-register \on-dialog ''
         else
           msgs = []
           r.errors?for-each (e) ->
@@ -154,7 +176,7 @@ module.exports =
           location.hash = ''
           $form.find('input[name=password]').val('')
           set-timeout ( ->
-            ch.switch-and-focus \on-reset, \on-login, '#auth .login input:first'
+            switch-and-focus \on-reset, \on-login, '#auth .login input:first'
             show-tooltip $('#auth .login form .tooltip'), "Now log in!"
           ), 1500ms
         else
