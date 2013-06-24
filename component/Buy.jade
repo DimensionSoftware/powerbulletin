@@ -1,9 +1,10 @@
 h1 #{product.description}
 .right.info
+  .tooltip
   if cardNeeded
     .clear
     label(for='card_number') Card Number
-    input#card_number.Buy-card-number(type='text')
+    input#card_number.Buy-card-number(type='text', placeholder='XXXX - XXXX - XXXX - XXXX')
     .clear
     label(for='card_month') Expiration
     select#card_month.Buy-card-month
@@ -28,23 +29,29 @@ h1 #{product.description}
         option= d + i
     .clear
     label(for='card_code') Security Code
-    input#card_code.Buy-card-code(type='text')
+    input#card_code.Buy-card-code(type='text', placeholder='CCV')
+    span.code ?
+      .cvvinfo
+        img(src=cacheUrl + '/images/cvv2_example.gif')
+        img(src=cacheUrl + '/images/cvv2_example_amex.gif')
   else
     h3 Your payment information is Ready-to-Go
       i !
+    a.Buy-change-card(href='#') Enter different card details
     .clear
-      a.Buy-change-card(href='#') Enter different card details
-      em This will change the card for all your subscriptions
+    em Saves for all subscriptions
   .clear
     button.Buy-checkout CHECKOUT
-  .cards
-    .discover
-    .amex
-    .mastercard
-    .visa
 .right
   h2 Only 
     b
       small $
       != (product.price / 100.0).toFixed(0)
       small /mo
+.cards
+  .jcb
+  .dinersclub
+  .discover
+  .amex
+  .mastercard
+  .visa

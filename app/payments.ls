@@ -33,7 +33,7 @@ export subscribe = ({
   }
   if err then return cb err
   unless product
-    return cb new Error "subscription requires a valid product"
+    return cb new Error "Subscription requires a valid product"
 
   err, res <~ db.sites.find-one {
     criteria: {id: site-id}
@@ -41,7 +41,7 @@ export subscribe = ({
   }
   if err then return cb err
   unless user-id = res?user_id
-    return cb new Error "the site must have an owner to subscribe"
+    return cb new Error "Site must have an owner to subscribe"
 
   err, total-monthly-cost <~ db.subscription-total user-id
   if err then return cb err

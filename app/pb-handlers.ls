@@ -442,31 +442,33 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     next!
 
 @checkout = (req, res, next) ->
-  site-id = res.vars.site.id
+  site-id    = res.vars.site.id
   product-id = req.params.product-id
+  errors     = []
 
   err, existing-subscription <- db.subscriptions.find-one {
     criteria: {site_id: site-id, product_id: product-id}
     columns: [\product_id]
   }
   if err then return next err
-  if existing-subscription
-    return res.json {success:false, errors: ['You\'re already subscribed']}
+  if existing-subscription then errors.push 'You\'re already subscribed'
 
-  if req.body.number and req.body.expmo and req.body.expyear and req.body.code
-    card =
-      number:    req.body.number
-      exp_month: req.body.expmo
-      exp_year:  req.body.expyear
-      cvc:       req.body.code
+  card = if req.body.number and req.body.expmo and req.body.expyear and req.body.code
+    number:    req.body.number
+    exp_month: req.body.expmo
+    exp_year:  req.body.expyear
+    cvc:       req.body.code
   else
-    card = void
+    void
 
-  err <- pay.subscribe {site-id, product-id, card}
-  if err then return next err
-
-  console.log \checkout, {site-id, product-id, card}
-
-  res.json {errors: []}
+  finish = -> res.json {success:!errors.length, errors}
+  if card and !errors.length
+    err <- pay.subscribe {site-id, product-id, card}
+    if err then errors.push err.message
+    if !errors.length then console.log \checkout, {site-id, product-id, card}
+    finish!
+  else
+    errors.push 'Credit card must be valid'
+    finish!
 
 # vim:fdm=indent
