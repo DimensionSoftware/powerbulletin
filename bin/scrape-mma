@@ -139,7 +139,7 @@ delay-by = (ms, fn) --> # {{{1
 #
 
 defaults =
-  site  : 1
+  site  : 2
   forum : 1
   delay : 1500
   max   : 3
