@@ -37,20 +37,21 @@ h1 #{product.description}
   else
     h3 Your payment information is Ready-to-Go
       i !
+    a.Buy-change-card(href='#') Enter different card details
     .clear
-      a.Buy-change-card(href='#') Enter different card details
-      em This will change the card for all your subscriptions
+    em Saves for all subscriptions
   .clear
     button.Buy-checkout CHECKOUT
-  .cards
-    .dinersclub
-    .discover
-    .amex
-    .mastercard
-    .visa
 .right
   h2 Only 
     b
       small $
       != (product.price / 100.0).toFixed(0)
       small /mo
+.cards
+  .jcb
+  .dinersclub
+  .discover
+  .amex
+  .mastercard
+  .visa

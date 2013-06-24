@@ -8,10 +8,13 @@ module.exports =
     init: ->
       @local \cardNeeded, true if @local(\cardNeeded) is void
     on-attach: ->
-      set-timeout (-> @@$ \.Buy-card-number .focus!), 200ms
+      set-timeout (-> @@$ \.Buy-card-number .focus!), 100ms
       @$.on \click \.Buy-change-card ~>
         @local \cardNeeded, true
         @detach!render!attach!
+        $fb = @@$ \.fancybox-wrap:first # animate switch
+        $fb.remove-class \slide
+        set-timeout (-> $fb.add-class \slide), 10ms
         return false
       @$.on \click \.Buy-checkout ~>
         data =

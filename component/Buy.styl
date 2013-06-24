@@ -25,7 +25,10 @@
   .right
     float right
   .cards
-    margin-bottom 8px
+    margin-top 12px
+    margin-right 17px
+    float right
+    clear both
     .amex
       background-image url(cache-url + '/images/amex.png')
     .discover
@@ -34,12 +37,17 @@
       background-image url(cache-url + '/images/visa.png')
     .mastercard
       background-image url(cache-url + '/images/mastercard.png')
-    .mastercard, .visa, .discover, .amex, .dinersclub
+    .jcb
+      background-image url(cache-url + '/images/jcb.png')
+    .mastercard, .visa, .discover, .amex, .dinersclub, .jcb
       display inline-block
       height 26px
       width 37px
       margin-right 5px
       float right
+    .jcb
+      width 39px
+      background url(cache-url + '/images/jcb.png') -5px -10px
     .dinersclub
       background-image url(cache-url + '/images/dinersclub.png')
       width 40px
@@ -47,7 +55,7 @@
       margin-top -1px
   .info
     position relative
-    padding 20px
+    padding 20px 20px 10px 20px
     border 1px solid #f3f3f3
     border-radius 12px / 8px
     background-color #fff
@@ -69,6 +77,17 @@
       width 60px
     .Buy-card-expiration
       width 75px
+    h3
+      margin 0
+    .Buy-change-card
+      margin-top 15px
+      font-size 1.1em
+      float right
+    em
+      float right
+      color #888
+      font-size .8em
+      font-style italic
   .tooltip
     top -35px
     bottom auto
