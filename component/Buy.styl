@@ -15,7 +15,7 @@
   h2
     color green
     font-weight 300
-    font-size 1.2em
+    font-size 1.4em
     b
       font-size 1.2em
       font-weight bold
@@ -46,6 +46,7 @@
       height 27px
       margin-top -1px
   .info
+    position relative
     padding 20px
     border 1px solid #f3f3f3
     border-radius 12px / 8px
@@ -78,10 +79,10 @@
       opacity 1
       height 85px
       padding 10px
-      transition height .2s ease-in-out .2s, opacity .6s ease-in-out .1s
+      top -119px
+      transition top .2s ease-out .1s, height .2s ease-in-out .2s, opacity .6s ease-in-out .1s
   .code
     font-weight bold
-    font-style italic
     background-color #fafafa
     border 1px solid #f6f6f6
     padding 1px 4px
@@ -93,10 +94,10 @@
     position relative
     .cvvinfo
       border-radius 12px / 8px
-      top -113px
+      top 0
+      left -96px
       background-color #eee
       border 1px solid #ccc
-      left -210px
       padding 0
       margin 0
       opacity 0
