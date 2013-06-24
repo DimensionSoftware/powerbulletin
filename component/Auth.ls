@@ -1,4 +1,7 @@
-require! Component: yacomponent
+require! {
+  Component: yacomponent
+  ch: \../app/client-helpers.ls
+}
 
 {templates} = require \../build/component-jade.js
 
@@ -12,7 +15,7 @@ module.exports =
 
     # helper to construct an Auth component and show it
     @show-login-dialog = (cb=(->)) ->
-      lazy-load (-> window.$.fn.complexify), "#{window.cache-url}/local/jquery.complexify.min.js", [], ~>
+      ch.lazy-load (-> window.$.fn.complexify), "#{window.cache-url}/local/jquery.complexify.min.js", [], ~>
         if not window._auth
           window._auth             = new Auth locals: {site-name: window.site-name}, $('#auth')
           window._auth.after-login = Auth.after-login if Auth.after-login
@@ -32,13 +35,13 @@ module.exports =
       <- Auth.show-login-dialog
       fb = $ \.fancybox-wrap:first
       fb.find \#msg .html msg
-      switch-and-focus remove, \on-dialog, ''
+      ch.switch-and-focus remove, \on-dialog, ''
       cb window._auth.$
 
     @show-reset-password-dialog = ->
       $auth <- Auth.show-login-dialog
       $form = $auth .find('.reset form')
-      switch-and-focus '', \on-reset, '#auth .reset input:first'
+      ch.switch-and-focus '', \on-reset, '#auth .reset input:first'
       hash = location.hash.split('=')[1]
       $form.find('input[type=hidden]').val(hash)
       console.log hash, $form, $auth
@@ -113,7 +116,7 @@ module.exports =
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $form.find("input:text,input:password").remove-class(\validation-error).val ''
-          switch-and-focus \on-register \on-dialog ''
+          ch.switch-and-focus \on-register \on-dialog ''
         else
           msgs = []
           r.errors?for-each (e) ->
@@ -151,7 +154,7 @@ module.exports =
           location.hash = ''
           $form.find('input[name=password]').val('')
           set-timeout ( ->
-            switch-and-focus \on-reset, \on-login, '#auth .login input:first'
+            ch.switch-and-focus \on-reset, \on-login, '#auth .login input:first'
             show-tooltip $('#auth .login form .tooltip'), "Now log in!"
           ), 1500ms
         else
