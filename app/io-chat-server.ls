@@ -16,7 +16,7 @@ module.exports = class ChatServer
     # leave all user's chats
     console.warn \chat-disconnect
     for c in keys @connections[@socket.id]
-      @chat-leave {id:c, room:"#{@site.id}/conversations/#c"}, (->)
+      @leave {id:c, room:"#{@site.id}/conversations/#c"}, (->)
 
   leave: (c, cb) ~>
     console.warn \chat-leave
