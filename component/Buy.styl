@@ -3,6 +3,8 @@
 .Buy
   .clear
     clear both
+  .error
+    background rgb(255,240,240)!important
   h1
     color #777
     letter-spacing 2px
@@ -13,7 +15,7 @@
   h2
     color green
     font-weight 300
-    font-size 1.2em
+    font-size 1.4em
     b
       font-size 1.2em
       font-weight bold
@@ -23,7 +25,10 @@
   .right
     float right
   .cards
-    margin-bottom 8px
+    margin-top 12px
+    margin-right 17px
+    float right
+    clear both
     .amex
       background-image url(cache-url + '/images/amex.png')
     .discover
@@ -32,19 +37,25 @@
       background-image url(cache-url + '/images/visa.png')
     .mastercard
       background-image url(cache-url + '/images/mastercard.png')
-    .mastercard, .visa, .discover, .amex, .dinersclub
+    .jcb
+      background-image url(cache-url + '/images/jcb.png')
+    .mastercard, .visa, .discover, .amex, .dinersclub, .jcb
       display inline-block
       height 26px
       width 37px
       margin-right 5px
       float right
+    .jcb
+      width 39px
+      background url(cache-url + '/images/jcb.png') -5px -10px
     .dinersclub
       background-image url(cache-url + '/images/dinersclub.png')
       width 40px
       height 27px
       margin-top -1px
   .info
-    padding 20px
+    position relative
+    padding 20px 20px 10px 20px
     border 1px solid #f3f3f3
     border-radius 12px / 8px
     background-color #fff
@@ -66,6 +77,20 @@
       width 60px
     .Buy-card-expiration
       width 75px
+    h3
+      margin 0
+    .Buy-change-card
+      margin-top 15px
+      font-size 1.1em
+      float right
+    em
+      float right
+      color #888
+      font-size .8em
+      font-style italic
+  .tooltip
+    top -35px
+    bottom auto
   .code:hover
     background-color #f3f3f3
     border 1px solid #f4f4f4
@@ -73,10 +98,10 @@
       opacity 1
       height 85px
       padding 10px
-      transition height .2s ease-in-out .2s, opacity .6s ease-in-out .1s
+      top -119px
+      transition top .2s ease-out .1s, height .2s ease-in-out .2s, opacity .6s ease-in-out .1s
   .code
     font-weight bold
-    font-style italic
     background-color #fafafa
     border 1px solid #f6f6f6
     padding 1px 4px
@@ -88,10 +113,10 @@
     position relative
     .cvvinfo
       border-radius 12px / 8px
-      top -113px
+      top 0
+      left -96px
       background-color #eee
       border 1px solid #ccc
-      left -210px
       padding 0
       margin 0
       opacity 0

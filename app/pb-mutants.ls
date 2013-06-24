@@ -19,7 +19,7 @@ require! {
   wc = w.component ||= {}
   wc.admin-upgrade ||= new AdminUpgrade {-auto-render, -auto-attach}
   wc.admin-upgrade.local \subscriptions, subscriptions
-  wc.admin-upgrade.detach!.render!.attach!
+  wc.admin-upgrade.detach!render!attach!
   w.$('#main_content').html('').append(wc.admin-upgrade.$)
 
 # Common
