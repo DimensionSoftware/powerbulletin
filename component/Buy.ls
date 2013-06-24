@@ -19,7 +19,20 @@ module.exports =
           expmo:   @$.find \.Buy-card-month .val!
           expyear: @$.find \.Buy-card-year .val!
           code:    @$.find \.Buy-card-code .val!
-        @@$.post "/ajax/checkout/#{@local(\product).id}", data, ->
-          console.log ...arguments
+        @@$.post "/ajax/checkout/#{@local(\product).id}", data, (r) ->
+          if r.success
+            $.fancybox.close!
+            # TODO render new AdminUpgrade component
+
+          else # error handling
+            show-tooltip (@@$ \.tooltip), r.errors.join "\n" if r.errors?length
+            card-number = @@$ \.Buy-card-number
+            for e in [card-number, @@$ \.Buy-card-code] then e.add-class \error
+
+            $fb = @@$ \.fancybox-wrap:first
+            $fb.add-class \on-error
+            $fb.remove-class \shake
+
+            set-timeout (-> $fb.add-class \shake; card-number.focus!), 100ms
         return false
     on-detach: -> @$.off!
