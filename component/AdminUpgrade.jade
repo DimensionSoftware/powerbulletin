@@ -1,24 +1,27 @@
 
-h2 Custom Domain
-p Add your own personal flair!  Get serious and aim any domain at your PowerBulletin site.
-if subscriptions.indexOf('custom_domain') == -1
-  input(type='button', onclick="doBuy('custom_domain')", value='Buy')
-else
-  p.green Custom Domain Purchased
-    span &#x2713;
+fieldset
+  h2 Custom Domain
+  p Add your own personal flair!  Get serious and aim any domain at your PowerBulletin site.
+  if subscriptions.indexOf('custom_domain') == -1
+    input(type='button', onclick="doBuy('custom_domain')", value='Buy')
+  else
+    p.green Custom Domain Purchased
+      span &#x2713;
     
-h2 Go Private
-p Privacy?  We got you covered.  This feature hides your content from Search Engines and the public.
-if subscriptions.indexOf('private_site') == -1
-  input(type='button', onclick="doBuy('private_site')", value='Buy')
-else
-  p.green Private Site Purchased
-    span &#x2713;
+fieldset
+  h2 Go Private
+  p Privacy?  We got you covered.  This feature hides your content from Search Engines and the public.
+  if subscriptions.indexOf('private_site') == -1
+    input(type='button', onclick="doBuy('private_site')", value='Buy')
+  else
+    p.green Private Site Purchased
+      span &#x2713;
 
-h2 Super Computing Instance
-p Your site really took off and you'd like more horsepower--speed is everything!  With your turbo-charged instance comes additional security, monitoring and peace of mind.
-if subscriptions.indexOf('private_site') == -1
-  input(type='button', onclick="doBuy('compute_instance')", value='Buy')
-else
-  p.green Comuputing instance purchased
-    span &#x2713;
+fieldset
+  h2 Super Computing Instance
+  p Your site really took off and you'd like more horsepower--speed is everything!  With your turbo-charged instance comes additional security, monitoring and peace of mind.
+  if subscriptions.indexOf('private_site') == -1
+    input(type='button', onclick="doBuy('compute_instance')", value='Buy')
+  else
+    p.green Comuputing instance purchased
+      span &#x2713;

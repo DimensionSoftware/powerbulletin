@@ -1,5 +1,5 @@
 h1 #{product.description}
-.right.info
+.right.ccinfo
   form
     .tooltip
     if cardNeeded
@@ -43,12 +43,15 @@ h1 #{product.description}
       em Saves for all subscriptions
     .clear
       input.Buy-checkout(type='submit', value='CHECKOUT') CHECKOUT
-.right
+.right.features
   h2 Only 
     b
       small $
       != (product.price / 100.0).toFixed(0)
-      small /mo
+    small /mo
+  menu
+    each f in product.config.features
+      li= f
 .cards
   .jcb
   .dinersclub

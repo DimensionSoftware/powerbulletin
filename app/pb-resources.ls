@@ -177,9 +177,10 @@ announce = sioa.create-client!
     return next 404 unless id = req.params.product
     err, product <- db.products.find-one {
       criteria: {id}
-      columns: [\id \description \price]
+      columns: [\id \description \price \config]
     }
     if err then return next err
+    product.config = JSON.parse product.config # p00f--jsonify
     if product then res.json product else next 404
 @conversations =
   show: (req, res, next) ->
