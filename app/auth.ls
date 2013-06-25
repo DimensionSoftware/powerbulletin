@@ -30,11 +30,13 @@ export mw =
   session: (req, res, next) ~>
     domain = res.vars.site?current_domain
     err, passport <~ @passport-for-domain domain
-    if err then return next(err)
+    if err then return next err
     if passport
+      if err then return next err
       passport.mw-session req, res, (err) ->
         if err then return next err
-        req.user <<< {transient_owner: req.cookies.transient_owner}
+        # XXX: THIS A HACK!!!
+        req._passport.session.user = "transient:#{req.cookies.transient_owner}:#{res.vars.site.id}"
         next!
     else
       next(404)
