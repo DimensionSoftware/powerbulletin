@@ -7,7 +7,7 @@ require! LiveScript
 
 var is-starting
 var s
-!function reload
+!function restart
   load = ->
     is-starting := true
     ServerApp = require \./ServerApp
@@ -16,7 +16,7 @@ var s
       is-starting := false
 
   if is-starting
-    console.warn "Can't reload yet! SLOW DOWN!"
+    console.warn "Still restarting ..."
   else
     if s
       s.stop ->
@@ -25,7 +25,7 @@ var s
     else
       load!
 
-process.on \SIGHUP, reload
+process.on \SIGHUP, restart
 
-reload!
+restart!
 # vim:fdm=marker
