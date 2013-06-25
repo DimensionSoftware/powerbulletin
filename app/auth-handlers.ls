@@ -258,7 +258,7 @@ auth-finisher = (req, res, next) ->
   else
     res.json null
 
-@init-with-app = (app, mw) ->
+@apply-to = (app, mw) ->
   app.post '/auth/login',           mw, @login
   app.post '/auth/register',        mw, @register
   app.post '/auth/choose-username', mw, @choose-username

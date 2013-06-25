@@ -4,7 +4,6 @@ require! {
   csu: \./css-urls
   jsu: \./js-urls
   \./pb-handlers
-  \./auth-handlers
 }
 
 # would like to just call it app, but global 'app' is reserved
@@ -46,7 +45,5 @@ s-app.post '/ajax/can-has-site-plz', express.body-parser(), (req, res, next) ->
   if err then return next err
   console.log result
   res.json result
-
-auth-handlers.init-with-app s-app, [express.body-parser!]
 
 module.exports = s-app
