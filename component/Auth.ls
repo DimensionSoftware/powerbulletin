@@ -120,7 +120,7 @@ module.exports =
           $fancybox = $form.parents \.fancybox-wrap:first
           $fancybox.add-class \on-error
           $fancybox.remove-class \shake
-          show-tooltip $form.find(\.tooltip), 'Try again!' # display error
+          ch.show-tooltip $form.find(\.tooltip), 'Try again!' # display error
           set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100ms
       false
 
@@ -130,7 +130,7 @@ module.exports =
 
     # TODO - what am I going to do about
     # - switch-and-focus
-    # - show-tooltip
+    # - ch.show-tooltip
     # - shake-dialog
     register: (ev) ~>
       $form = $ ev.target
@@ -145,7 +145,7 @@ module.exports =
             $e = $form.find("input[name=#{e.param}]")
             $e.add-class \validation-error .focus! # focus control
             msgs.push e.msg
-          show-tooltip $form.find(\.tooltip), msgs.join \<br> # display errors
+          ch.show-tooltip $form.find(\.tooltip), msgs.join \<br> # display errors
           shake-dialog $form, 100ms
       false
 
@@ -158,7 +158,7 @@ module.exports =
         else
           $form.find \input:first .focus!
           msg = r.errors?0?name or r.errors?0?msg or 'Unable to find you'
-          show-tooltip $form.find(\.tooltip), msg # display error
+          ch.show-tooltip $form.find(\.tooltip), msg # display error
           shake-dialog $form, 100ms
       false
 
@@ -167,20 +167,20 @@ module.exports =
       $form = $ ev.target
       password = $form.find('input[name=password]').val!
       if password.match /^\s*$/
-        show-tooltip $form.find(\.tooltip), "Password may not be blank"
+        ch.show-tooltip $form.find(\.tooltip), "Password may not be blank"
         return false
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $form.find('input').prop(\disabled, true)
-          show-tooltip $form.find(\.tooltip), "Password changed!"
+          ch.show-tooltip $form.find(\.tooltip), "Password changed!"
           location.hash = ''
           $form.find('input[name=password]').val('')
           set-timeout ( ->
             switch-and-focus \on-reset, \on-login, '#auth .login input:first'
-            show-tooltip $('#auth .login form .tooltip'), "Now log in!"
+            ch.show-tooltip $('#auth .login form .tooltip'), "Now log in!"
           ), 1500ms
         else
-          show-tooltip $form.find(\.tooltip), "Choose a better password"
+          ch.show-tooltip $form.find(\.tooltip), "Choose a better password"
       false
 
     # this toggles the visibility of the password field in case people want to see
@@ -206,6 +206,6 @@ module.exports =
           window.location.hash = ''
         else
           $form.find \input:first .focus!
-          show-tooltip $form.find(\.tooltip), r.msg # display error
+          ch.show-tooltip $form.find(\.tooltip), r.msg # display error
           shake-dialog $form, 100ms
       false
