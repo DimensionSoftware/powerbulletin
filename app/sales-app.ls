@@ -15,7 +15,6 @@ s-app.get '/' (req, res, next) ->
   scripts =
     * jsu.jquery
     * jsu.jquery-cookie
-    * jsu.jquery-fancybox
     * jsu.jquery-history
     * jsu.jquery-history-native
     * jsu.jquery-nicescroll
@@ -23,9 +22,9 @@ s-app.get '/' (req, res, next) ->
     * jsu.raf
     * jsu.powerbulletin-sales
 
-  stylesheets =
-    * csu.jquery-fancybox
-    * csu.master-sales
+  stylesheets = [
+    csu.master-sales
+  ]
 
   locals = {scripts, stylesheets} <<< cvars
   sl = new SalesLoader {locals}

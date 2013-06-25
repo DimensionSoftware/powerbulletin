@@ -5,11 +5,6 @@ require! {
 
 {templates} = require \../build/component-jade.js
 
-switch-and-focus = (remove, add, focus-on) ->
-  $e = $ \.fancybox-wrap
-  $e.remove-class("#remove shake slide").add-class(add)
-  set-timeout (-> $e.add-class \slide; $ focus-on .focus! ), 10ms
-
 module.exports =
   class Auth extends Component
     # attributes
@@ -20,33 +15,34 @@ module.exports =
 
     # helper to construct an Auth component and show it
     @show-login-dialog = (cb=(->)) ->
-      ch.lazy-load (-> window.$.fn.complexify), "#{window.cache-url}/local/jquery.complexify.min.js", [], ~>
-        if not window._auth
-          window._auth             = new Auth locals: {site-name: window.site-name}, $('#auth')
-          window._auth.after-login = Auth.after-login if Auth.after-login
-          window._auth.attach!
+      <~ ch.lazy-load-fancybox
+      <~ ch.lazy-load (-> window.$.fn.complexify), "#{window.cache-url}/local/jquery.complexify.min.js", null
+      if not window._auth
+        window._auth             = new Auth locals: {site-name: window.site-name}, $('#auth')
+        window._auth.after-login = Auth.after-login if Auth.after-login
+        window._auth.attach!
 
-        $.fancybox.open \#auth, window.fancybox-params unless $ \.fancybox-overlay:visible .length
-        set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
-        # password complexity ui
-        window.COMPLEXIFY_BANLIST = [\god \money \password]
-        $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
-          e = $ this .parent!
-          e.find \.strength-meter .toggle-class \strong, pass
-          e.find \.strength .css(height:parse-int(percent)+\%))
-        cb window._auth.$
+      $.fancybox.open \#auth, window.fancybox-params unless $ \.fancybox-overlay:visible .length
+      set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
+      # password complexity ui
+      window.COMPLEXIFY_BANLIST = [\god \money \password]
+      $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
+        e = $ this .parent!
+        e.find \.strength-meter .toggle-class \strong, pass
+        e.find \.strength .css(height:parse-int(percent)+\%))
+      cb window._auth.$
 
     @show-info-dialog = (msg, remove='', cb=(->)) ->
       <- Auth.show-login-dialog
       fb = $ \.fancybox-wrap:first
       fb.find \#msg .html msg
-      switch-and-focus remove, \on-dialog, ''
+      ch.switch-and-focus remove, \on-dialog, ''
       cb window._auth.$
 
     @show-reset-password-dialog = ->
       $auth <- Auth.show-login-dialog
       $form = $auth .find('.reset form')
-      switch-and-focus '', \on-reset, '#auth .reset input:first'
+      ch.switch-and-focus '', \on-reset, '#auth .reset input:first'
       hash = location.hash.split('=')[1]
       $form.find('input[type=hidden]').val(hash)
       console.log hash, $form, $auth
@@ -82,13 +78,13 @@ module.exports =
       @$.on \click \.onclick-close-fancybox ->
         $.fancybox.close!
       @$.on \click \.onclick-show-login ->
-        switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=username]'
+        ch.switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=username]'
       @$.on \click \.onclick-show-forgot ->
-        switch-and-focus \on-error \on-forgot '#auth input[name=email]'
+        ch.switch-and-focus \on-error \on-forgot '#auth input[name=email]'
       @$.on \click \.onclick-show-choose ->
-        switch-and-focus \on-login \on-choose '#auth input[name=username]'
+        ch.switch-and-focus \on-login \on-choose '#auth input[name=username]'
       @$.on \click \.onclick-show-register ->
-        switch-and-focus \on-login \on-register '#auth input[name=username]'
+        ch.switch-and-focus \on-login \on-register '#auth input[name=username]'
 
       # catch esc key events on input boxes for login box
       @$.on \keyup '.fancybox-inner input' ->
@@ -129,7 +125,7 @@ module.exports =
       # This may be overridden after construction.
 
     # TODO - what am I going to do about
-    # - switch-and-focus
+    # - ch.switch-and-focus
     # - ch.show-tooltip
     # - shake-dialog
     register: (ev) ~>
@@ -138,7 +134,7 @@ module.exports =
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $form.find("input:text,input:password").remove-class(\validation-error).val ''
-          switch-and-focus \on-register \on-dialog ''
+          ch.switch-and-focus \on-register \on-dialog ''
         else
           msgs = []
           r.errors?for-each (e) ->
@@ -176,7 +172,7 @@ module.exports =
           location.hash = ''
           $form.find('input[name=password]').val('')
           set-timeout ( ->
-            switch-and-focus \on-reset, \on-login, '#auth .login input:first'
+            ch.switch-and-focus \on-reset, \on-login, '#auth .login input:first'
             ch.show-tooltip $('#auth .login form .tooltip'), "Now log in!"
           ), 1500ms
         else
