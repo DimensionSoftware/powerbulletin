@@ -247,28 +247,6 @@ $d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then 
 $d.on \click \.onclick-append-reply-ui Auth.require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post Auth.require-login(censor)
 #}}}
-#{{{ - login delegated events
-window.switch-and-focus = (remove, add, focus-on) ->
-  $e = $ \.fancybox-wrap
-  $e.remove-class("#remove shake slide").add-class(add)
-  set-timeout (-> $e.add-class \slide; $ focus-on .focus! ), 10ms
-$d.on \click \.onclick-close-fancybox ->
-  $.fancybox.close!
-$d.on \click \.onclick-show-login ->
-  switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=username]'
-$d.on \click \.onclick-show-forgot ->
-  switch-and-focus \on-error \on-forgot '#auth input[name=email]'
-$d.on \click \.onclick-show-choose ->
-  switch-and-focus \on-login \on-choose '#auth input[name=username]'
-$d.on \click \.onclick-show-register ->
-  switch-and-focus \on-login \on-register '#auth input[name=username]'
-
-# catch esc key events on input boxes for login box
-$d.on \keyup '.fancybox-inner input' ->
-  if it.which is 27 # esc
-    $.fancybox.close!
-    false
-#}}}
 #{{{ - header (main menu)
 #$d.on \click 'html.homepage header .menu a.title' ->
 #  awesome-scroll-to $(this).data \scroll-to; false

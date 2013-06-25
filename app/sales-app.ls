@@ -4,7 +4,6 @@ require! {
   csu: \./css-urls
   jsu: \./js-urls
   \./pb-handlers
-  \./auth-handlers
 }
 
 # would like to just call it app, but global 'app' is reserved
@@ -16,7 +15,6 @@ s-app.get '/' (req, res, next) ->
   scripts =
     * jsu.jquery
     * jsu.jquery-cookie
-    * jsu.jquery-fancybox
     * jsu.jquery-history
     * jsu.jquery-history-native
     * jsu.jquery-nicescroll
@@ -24,9 +22,9 @@ s-app.get '/' (req, res, next) ->
     * jsu.raf
     * jsu.powerbulletin-sales
 
-  stylesheets =
-    * csu.jquery-fancybox
-    * csu.master-sales
+  stylesheets = [
+    csu.master-sales
+  ]
 
   locals = {scripts, stylesheets} <<< cvars
   sl = new SalesLoader {locals}
@@ -46,7 +44,5 @@ s-app.post '/ajax/can-has-site-plz', express.body-parser(), (req, res, next) ->
   if err then return next err
   console.log result
   res.json result
-
-auth-handlers.init-with-app s-app, [express.body-parser!]
 
 module.exports = s-app

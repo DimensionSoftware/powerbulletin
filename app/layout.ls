@@ -276,5 +276,7 @@ switch window.location.hash
 | \#invalid  => Auth.show-info-dialog 'Invalid invite code!'
 | \#validate => Auth.after-login! # email activation
 
-<- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
+# XXX sales-app doesn't have a mutant.
+if typeof window.mutant is not \undefined
+  <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
 # vim:fdm=marker

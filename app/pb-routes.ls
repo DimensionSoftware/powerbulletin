@@ -82,7 +82,7 @@ app.get \/admin/:action?,
 app.post '/ajax/checkout/:productId', personal-mw, handlers.checkout
 
 # auth
-auth-handlers.init-with-app app, personal-mw
+auth-handlers.apply-to app, personal-mw
 
 #{{{ Users
 app.get '/u/:name', (req, res, next) ->
