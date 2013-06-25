@@ -1,5 +1,6 @@
 .Chat
-  position fixed
+  position fixed!important
+  z-index 999
   border-radius 5px
   right 0
   bottom 0
@@ -81,7 +82,7 @@
 .Chat.minimized
   height 22px
   width 0
-  transition height .2s ease-out .05s, width .3s ease-out
+  transition height .1s ease-out .1s, width .15s ease-out
   .body, .container, .footer
     display none
   h2

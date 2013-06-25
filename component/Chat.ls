@@ -82,7 +82,7 @@ module.exports =
 
     maybe-load-more: (ev) ~>
       if @loaded-all then return false
-      pos = $(ev.target).scrollTop!
+      pos = $ ev.target .scroll-top!
       if pos is 0
         @load-more-messages!
 
@@ -122,15 +122,16 @@ Chat.start = ([me,...others]:users) ->
   if c = @chats[key]
     return c
   c = @chats[key] = new Chat locals: { me, others }, $('<div/>').hide!
-  $cs = $('#chat_drawer .Chat')
-  if $cs.length
-    right = $cs.length * ($cs.first!width! + 8) + 8
-    c.$.show!transition { right }, @duration, @easing
-    $ \#chat_drawer .prepend c.$
-  else
-    right = 8
-    c.$.show!css { right }
-    $ \#chat_drawer .prepend c.$.show(@duration, @easing)
+#  $cs = $ '#chat_drawer .Chat'
+#  if $cs.length
+#    right = $cs.length * ($cs.first!width! + 8) + 8
+#    c.$.show!transition { right }, @duration, @easing
+#    $ \#chat_drawer .prepend c.$
+#  else
+#    right = 8
+#    c.$.show!css { right }
+#    $ \#chat_drawer .prepend c.$.show(@duration, @easing)
+  $ \#chat_drawer .after c.$.show(@duration, @easing)
   c.$.find \textarea .focus!
   c
 
@@ -168,6 +169,7 @@ Chat.client-socket-init = (socket) ->
     c.room = c2.room
 
   socket.on \chat-message, (msg, cb) ~>
+    console.log \incoming-chat, msg
     return if msg.from.id is user?id
     # load appropriate chat instance
     c = Obj.find (-> it.conversation?id is msg.conversation_id), Chat.chats
