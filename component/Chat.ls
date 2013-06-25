@@ -19,7 +19,10 @@ module.exports =
     template: templates.Chat
 
     on-attach: ~>
-      @$.draggable {cursor: \move} .css {left:50, bottom:35}
+      @$.draggable {
+        cursor: \move
+        start: (ev) ->
+          $ ev.target .find(\.minimize).add-class \no-click } .css {left:50, bottom:335}
       @$.on \click,    \.minimize,  @minimize
       @$.on \click,    \.close,     @close
       @$.on \keydown,  \textarea,   @send-message
@@ -99,8 +102,12 @@ module.exports =
         @$.find \.messages .scroll-top( 0 + 50 )
 
     minimize: (ev) ~>
-      @$.toggle-class \minimized
-      @$.find \textarea .focus!
+      e = $ ev.target
+      if e.has-class \no-click # click from draggable
+        e.remove-class \no-click
+      else
+        @$.toggle-class \minimized
+        @$.find \textarea .focus!
 
     close: ~>
       err, r <~ socket.emit \chat-leave, @conversation
