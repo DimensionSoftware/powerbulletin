@@ -83,7 +83,7 @@ module.exports =
       graceful-shutdown = !->
         console.warn 'Graceful shutdown started'
         hup-or-die = ->
-          if process.env is \production
+          if process.env.NODE_ENV is \production
             process.exit!
           else
             process.kill process.pid, \SIGHUP
