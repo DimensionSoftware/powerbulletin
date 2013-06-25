@@ -32,33 +32,16 @@ export mw =
     err, passport <~ @passport-for-domain domain
     if err then return next(err)
     if passport
-      passport.mw-session req, res, ->
-        # TRANSIENT OWNER BUSINESS
-        if tid = req.cookies.transient_owner
-
-          console.log \authorize-transient, tid, res.vars.site.id
-          err, transient-authorized <- db.authorize-transient tid, res.vars.site.id
-          if err then return next err
-
-          if transient-authorized
-            #XXX: need to mock this better probably
-            req.user =
-              transient: true
-              rights: {admin: true}
-            console.log 'transient owner logged in:', req.user
-            next!
-          else
-            next!
-        else
-          next!
+      passport.mw-session req, res, (err) ->
+        if err then return next err
+        req.user <<< {transient_owner: req.cookies.transient_owner}
+        next!
     else
       next(404)
 
-#
 export hash = (s) ->
   bcrypt.hash-sync s, 5
 
-#
 export valid-password = (user, password) ->
   return false if not user or not password
   bcrypt.compare-sync password, user?auths?local?password
