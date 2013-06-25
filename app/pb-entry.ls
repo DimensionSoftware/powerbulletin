@@ -305,12 +305,14 @@ if mocha? and window.location.search.match /test=1/
 #}}}
 #}}}
 #{{{ - chat
-$d.on \click  'button.onclick-chat' Auth.require-login( (ev) ->
+$d.on \click  \.onclick-chat Auth.require-login( (ev) ->
   profile-name = $ 'div.profile:first' .data \user-name
-  f = user
-  t =
-    id   : $ 'div.profile:first' .data \user-id
-    name : $ 'div.profile:first' .data \user-name
+  f  = user
+  $p = $ \div.profile:first
+  t  =
+    id     : $p.data \user-id
+    name   : $p.data \user-name
+    profile: $p.find \img .attr \src
   Chat.start [f, t]
 )
 #}}}

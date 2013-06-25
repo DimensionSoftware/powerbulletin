@@ -1,7 +1,9 @@
 .header
+  .profile
+    .minimize(title='Minimize!')
+      img(src=others[0].profile)
   h2 #{others[0].name}
-  .minimize -
-  .close.onclick-close X
+  .close.onclick-close(title='Close') X
 .container
   .messages
     .load-more(style="display:none;") load more...

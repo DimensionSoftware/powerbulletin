@@ -4,9 +4,9 @@ require! Component: yacomponent
 
 add-message = (fn, m) -->
   $msg = @message-node m
-  $messages = @$.find('.messages')[fn] $msg
+  $messages = @$.find(\.messages)[fn] $msg
   $msg.show!
-  $messages[0].scroll-top = $messages[0].scroll-height
+  $messages.0.scroll-top = $messages.0.scroll-height
   @$.find \textarea .val ''
 
 module.exports =
@@ -19,6 +19,7 @@ module.exports =
     template: templates.Chat
 
     on-attach: ~>
+      @$.draggable {cursor: \move} .css {left:50, bottom:35}
       @$.on \click,    \.minimize,  @minimize
       @$.on \click,    \.close,     @close
       @$.on \keydown,  \textarea,   @send-message
@@ -99,6 +100,7 @@ module.exports =
 
     minimize: (ev) ~>
       @$.toggle-class \minimized
+      @$.find \textarea .focus!
 
     close: ~>
       err, r <~ socket.emit \chat-leave, @conversation
@@ -108,6 +110,7 @@ module.exports =
 
 Chat.start = ([me,...others]:users) ->
   console.log \users, users
+  # TODO setup profile here
   key = map (.name), users |> join '/'
   if c = @chats[key]
     return c
@@ -115,13 +118,13 @@ Chat.start = ([me,...others]:users) ->
   $cs = $('#chat_drawer .Chat')
   if $cs.length
     right = $cs.length * ($cs.first!width! + 8) + 8
-    c.$.show!.transition({ right }, @duration, @easing)
-    $('#chat_drawer').prepend(c.$)
+    c.$.show!transition { right }, @duration, @easing
+    $ \#chat_drawer .prepend c.$
   else
     right = 8
-    c.$.show!.css({ right })
-    $('#chat_drawer').prepend(c.$.show(@duration, @easing))
-  c.$.find('textarea').focus!
+    c.$.show!css { right }
+    $ \#chat_drawer .prepend c.$.show(@duration, @easing)
+  c.$.find \textarea .focus!
   c
 
 Chat.stop = (key) ->
