@@ -58,7 +58,7 @@ do-verify = (req, res, next) ~>
   err, r <- db.verify-user site.id, v
   if err then return next err
   if r
-    req.session?passport?user = "#{r.name}:#{site.id}"
+    req.session?passport?user = "permanent:#{r.name}:#{site.id}" # XXX
     res.redirect if res.vars.is-invite then \/#choose else \/#validate
   else
     res.redirect \/#invalid

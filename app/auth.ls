@@ -187,15 +187,26 @@ export create-passport = (domain, cb) ->
   pass.mw-session    = pass.session()
 
   pass.serialize-user (user, done) ~>
-    parts = "#{user.name}:#{user.site_id}"
-    #console.warn "serialize", parts
+    console.warn \user, \xxx, user
+    if user.transient_owner and not user.id
+      parts = "transient:#{user.transient_owner}:#{user.site_id}"
+    else
+      parts = "permanent:#{user.name}:#{user.site_id}"
     done null, parts
 
   pass.deserialize-user (parts, done) ~>
-    [name, site_id] = parts.split ':'
-    #console.warn "deserialize", name, site_id
-    (err, user) <~ db.usr {name, site_id}
-    done err, user
+    [type, name, site_id] = parts.split ':'
+    console.warn \parts, parts
+    switch type
+    | \transient =>
+      transient-user =
+        transient: true
+        rights:
+          admin: true
+      done err, transient-user
+    | \permanent =>
+      (err, user) <~ db.usr {name, site_id}
+      done err, user
 
   pass.use new passport-local.Strategy (username, password, done) ~>
     (err, user) <~ db.usr { name: username, site_id: site.id }  # XXX - how do i get site_id?
