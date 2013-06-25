@@ -110,11 +110,11 @@ export edit-post = (id, data={}) ->
       focus e
 #}}}
 #{{{ Lazy loading
-load-css = []
+load-css-cache = {}
 load-css = (href) ->
-  return if load-css[href] # guard
+  return if load-css-cache[href] # guard
   $ \head .append($ '<link rel="stylesheet" type="text/css">' .attr(\href, href))
-  load-css[href] = true
+  load-css-cache[href] = true
 
 export lazy-load = (test, script, css, cb) ->
   unless test!
@@ -137,6 +137,11 @@ export lazy-load-editor = (cb) ->
   lazy-load (-> CKEDITOR?version),
     "#cache-url/local/editor/ckeditor.js",
     null,
+    cb
+export lazy-load-fancybox = (cb) ->
+  lazy-load (-> window.$!Jcrop?length),
+    "#cache-url/fancybox/jquery.fancybox.pack.js",
+    "#cache-url/fancybox/jquery.fancybox.css",
     cb
 #}}}
 
@@ -182,6 +187,11 @@ export show-tooltip = ($tooltip, msg, duration=3000ms) ->
   if timer then clear-timeout timer
   $tooltip.html msg .add-class \hover # show
   timers[msg] = set-timeout (-> timers[msg]=void; $tooltip.remove-class \hover), duration # remove
+
+export switch-and-focus = (remove, add, focus-on) ->
+  $e = $ \.fancybox-wrap
+  $e.remove-class("#remove shake slide").add-class(add)
+  set-timeout (-> $e.add-class \slide; $ focus-on .focus! ), 10ms
 
 export set-online-user = (id) ->
   $ "[data-user-id=#{id}] .profile.photo" .add-class \online
