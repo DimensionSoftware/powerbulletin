@@ -80,17 +80,23 @@ module.exports =
 
       server = null
 
-      graceful-shutdown = !(cb = (->)) ->
+      graceful-shutdown = !->
         console.warn 'Graceful shutdown started'
-        sd-timeout = set-timeout (-> console.warn("Server never closed, restarting anyways"); cb!), 5000ms
+        hup-or-die = ->
+          if process.env is \production
+            process.exit!
+          else
+            process.kill process.pid, \SIGHUP
+
+        sd-timeout = set-timeout (-> console.warn("Server never closed, restarting anyways"); hup-or-die!), 5000ms
         try
           server.close (err) ->
             clear-timeout sd-timeout
             console.warn 'Graceful shutdown finished'
             console.warn err if err
-            cb!
+            hup-or-die!
         catch
-          cb!
+          hup-or-die!
 
       html_50x = fs.read-file-sync('public/50x.html').to-string!
       html_404 = fs.read-file-sync('public/404.html').to-string!
