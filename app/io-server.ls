@@ -48,9 +48,15 @@ user-from-session = (s, cb) ->
       transient: true
       rights:
         admin: true
-    cb err, transient-user
+    (err, authorized) <~ db.authorize-transient {name, site_id}
+    if err then return cb err
+    if authorized
+      cb null, transient-user
+    else
+      cb null, null
   | \permanent =>
     (err, user) <~ db.usr {name, site_id}
+    if err then return cb err
     cb err, user
 
 site-by-domain = (domain, cb) ->

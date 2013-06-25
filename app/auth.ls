@@ -32,7 +32,6 @@ export mw =
     err, passport <~ @passport-for-domain domain
     if err then return next err
     if passport
-      if err then return next err
       passport.mw-session req, res, (err) ->
         if err then return next err
         # XXX: THIS A HACK!!!
@@ -180,20 +179,15 @@ export create-passport = (domain, cb) ->
     done null, parts
 
   pass.deserialize-user (parts, done) ~>
-    [type, name, site_id] = parts.split ':'
     console.warn \parts, parts
+    [type, name, site_id] = parts.split ':'
     switch type
     | \transient =>
-      (err, authorized) <~ db.authorize-transient name, site_id
-      if err then return done(err)
-      if authorized
-        transient-user =
-          transient: true
-          rights:
-            admin: true
-        done err, transient-user
-      else
-        done null, null
+      transient-user =
+        transient: true
+        rights:
+          admin: true
+      done err, transient-user
     | \permanent =>
       (err, user) <~ db.usr {name, site_id}
       done err, user
