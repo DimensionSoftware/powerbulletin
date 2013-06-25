@@ -16,12 +16,14 @@ module.exports =
         $fb.remove-class \slide
         set-timeout (-> $fb.add-class \slide), 10ms
         return false
-      @$.on \click \.Buy-checkout ~>
+      @$.on \click \.Buy-checkout (ev) ~>
+        $ ev.target .attr \disabled \disabled # disable ui
         data =
           number:  @$.find \.Buy-card-number .val!
           expmo:   @$.find \.Buy-card-month .val!
           expyear: @$.find \.Buy-card-year .val!
           code:    @$.find \.Buy-card-code .val!
+        show-tooltip (@@$ \.tooltip), 'Securing connection ...'
         @@$.post "/ajax/checkout/#{@local(\product).id}", data, (r) ->
           if r.success
             $.fancybox.close!
@@ -36,6 +38,7 @@ module.exports =
             $fb.add-class \on-error
             $fb.remove-class \shake
 
-            set-timeout (-> $fb.add-class \shake; card-number.focus!), 100ms
+            set-timeout (-> $fb.add-class \shake; card-number.focus!), 10ms
+          $ ev.target .attr \disabled null # re-enable ui
         return false
     on-detach: -> @$.off!

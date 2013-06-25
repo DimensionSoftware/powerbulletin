@@ -1,47 +1,48 @@
 h1 #{product.description}
 .right.info
-  .tooltip
-  if cardNeeded
+  form
+    .tooltip
+    if cardNeeded
+      .clear
+      label(for='card_number') Card Number
+      input#card_number.Buy-card-number(type='text', placeholder='XXXX - XXXX - XXXX - XXXX')
+      .clear
+      label(for='card_month') Expiration
+      select#card_month.Buy-card-month
+        option(disabled=true, selected=true) - Month -
+        option(value=1) Jan - 1
+        option(value=2) Feb - 2
+        option(value=3) Mar - 3
+        option(value=4) Apr - 4
+        option(value=5) May - 5
+        option(value=6) Jun - 6
+        option(value=7) Jul - 7
+        option(value=8) Aug - 8
+        option(value=9) Sept - 9
+        option(value=10) Oct - 10
+        option(value=11) Nov - 11
+        option(value=12) Dec - 12
+      small /
+      select#card_year.Buy-card-year
+        option(disabled=true, selected=true) - Year -
+        d = new Date().getFullYear()
+        - for (var i=0; i<=16; i++)
+          option= d + i
+      .clear
+      label(for='card_code') Security Code
+      input#card_code.Buy-card-code(type='text', placeholder='CCV')
+      span.code ?
+        .cvvinfo
+          img(src=cacheUrl + '/images/cvv2_example.gif')
+          img(src=cacheUrl + '/images/cvv2_example_amex.gif')
+    else
+      h3 Your payment information is Ready-to-Go
+        i !
+      a.Buy-change-card(href='#') Enter different credit card details
+      .clear
+      em Saves for all subscriptions
     .clear
-    label(for='card_number') Card Number
-    input#card_number.Buy-card-number(type='text', placeholder='XXXX - XXXX - XXXX - XXXX')
-    .clear
-    label(for='card_month') Expiration
-    select#card_month.Buy-card-month
-      option(disabled=true, selected=true) - Month -
-      option(value=1) Jan - 1
-      option(value=2) Feb - 2
-      option(value=3) Mar - 3
-      option(value=4) Apr - 4
-      option(value=5) May - 5
-      option(value=6) Jun - 6
-      option(value=7) Jul - 7
-      option(value=8) Aug - 8
-      option(value=9) Sept - 9
-      option(value=10) Oct - 10
-      option(value=11) Nov - 11
-      option(value=12) Dec - 12
-    small /
-    select#card_year.Buy-card-year
-      option(disabled=true, selected=true) - Year -
-      d = new Date().getFullYear()
-      - for (var i=0; i<=16; i++)
-        option= d + i
-    .clear
-    label(for='card_code') Security Code
-    input#card_code.Buy-card-code(type='text', placeholder='CCV')
-    span.code ?
-      .cvvinfo
-        img(src=cacheUrl + '/images/cvv2_example.gif')
-        img(src=cacheUrl + '/images/cvv2_example_amex.gif')
-  else
-    h3 Your payment information is Ready-to-Go
-      i !
-    a.Buy-change-card(href='#') Enter different card details
-    .clear
-    em Saves for all subscriptions
-  .clear
-    button.Buy-checkout CHECKOUT
+      input.Buy-checkout(type='submit', value='CHECKOUT') CHECKOUT
 .right
   h2 Only 
     b
