@@ -182,11 +182,16 @@ export create-passport = (domain, cb) ->
     console.warn \parts, parts
     switch type
     | \transient =>
-      transient-user =
-        transient: true
-        rights:
-          admin: true
-      done err, transient-user
+      (err, authorized) <~ db.authorize-transient name, site_id
+      if err then return done(err)
+      if authorized
+        transient-user =
+          transient: true
+          rights:
+            admin: true
+        done err, transient-user
+      else
+        done null, null
     | \permanent =>
       (err, user) <~ db.usr {name, site_id}
       done err, user
