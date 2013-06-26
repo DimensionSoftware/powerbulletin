@@ -24,7 +24,7 @@ window.cors =
     params <<< @ajax-params
     params <<< { type: \POST, url, data }
     params.success = cb if cb
-   $.ajax params
+    $.ajax params
 
 window.hints =
   last:
