@@ -37,6 +37,7 @@ delete-unnecessary-surf-data = (res) ->
   locals = res.locals
   unnecessary =
      \siteName
+     \analytics
      \cache2Url # keeping cacheUrl
      \cache3Url
      \cache4Url

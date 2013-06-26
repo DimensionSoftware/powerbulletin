@@ -23,6 +23,7 @@ require! {
     res.vars.site = {id, name, current_domain, config}
     res.locals.site-id        = id
     res.locals.site-name      = name
+    res.locals.analytics      = config.analytics # FIXME check subscriptions
     res.locals.current-domain = current_domain
     for i in ['', 2, 3, 4, 5]
       res.locals["cache#{i}Url"] = cvars["cache#{i}Url"]

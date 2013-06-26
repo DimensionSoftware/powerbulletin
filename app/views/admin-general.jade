@@ -10,6 +10,11 @@ form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
     .break
     label(for='keywords') Meta Keywords
     textarea(id='keywords', name='metaKeywords')= site.config.metaKeywords
+    .note Separated by commas
+    .break
+    label(for='analytics') Analytics
+    textarea(id='analytics', name='analytics')= site.config.analytics
+    .note Paste script code in above
 
   input.button(type='submit', value='Save')
   .tooltip

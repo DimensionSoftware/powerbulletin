@@ -25,7 +25,7 @@ announce = sioa.create-client!
     | \general =>
       should-ban = site.config.posts-per-page isnt req.body.posts-per-page
       # extract specific keys
-      site.config <<< { [k, val] for k, val of req.body when k in [\postsPerPage \metaKeywords] }
+      site.config <<< { [k, val] for k, val of req.body when k in [\postsPerPage \metaKeywords \analytics] }
       err, r <- db.site-update site
       if err then return next err
       if should-ban # ban all site's domains in varnish

@@ -299,7 +299,7 @@ $d.on \click 'html.admin .onclick-add' (ev) ->
   console.log \add-sortable
   false
 
-$d.on \click  'html.admin .onclick-submit input[type="submit"]' (ev) ->
+$d.on \click 'html.admin .onclick-submit input[type="submit"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form
     t = $(f.find \.tooltip)
@@ -333,6 +333,8 @@ $d.on \change 'html.admin .domain' -> # set keys
     \googleConsumerKey
     \googleConsumerSecret]
       $ "[name='#k']" .val domain.config[k]
+$d.on \focus 'html.admin #analytics' ->
+  unless subscriptions?index-of(\analytics) > -1 then do-buy \analytics
 #}}}
 # {{{ - components
 window.component = {}
