@@ -341,19 +341,13 @@ window.do-buy = (product-id) ->
   throw new Error "window.do-buy must specify a product-id" unless product-id
 
   product <- $.get(\/resources/products/ + product-id)
-  locals = {product, card-needed: !window.site?has_stripe}
+  locals = {product, card-needed:!window.site?has_stripe}
 
   existing.detach! if existing = window.component.buy
 
   window.component.buy = new Buy {locals}
   <- lazy-load-fancybox
   $.fancybox window.component.buy.$, fancybox-params
-
-window.do-test = ->
-  window.component.paginator ||=
-    new Paginator {locals: {step: 10, qty: 100}}
-  <- lazy-load-fancybox
-  $.fancybox window.component.paginator.$, fancybox-params
 #}}}
 
 # vim:fdm=marker
