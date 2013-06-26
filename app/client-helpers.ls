@@ -55,7 +55,7 @@ export submit-form = (ev, fn) ->
   $.ajax { # submit!
     url:       $f.attr \action
     type:      $f.attr \method
-    data:      f.serialize!
+    data:      $f.serialize!
     data-type: \json
     success:   (data) ->
       $s.remove-attr \disabled

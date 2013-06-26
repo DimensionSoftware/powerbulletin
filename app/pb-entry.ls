@@ -203,7 +203,7 @@ $d.on \click '.create .no-surf' Auth.require-login((ev) ->
 $d.on \click \.edit.no-surf Auth.require-login((ev) ->
   edit-post $(ev.target).data \edit)
 $d.on \click '.onclick-submit .cancel' (ev) ->
-  f = $ ev.target .closest \.post-edit  # form
+  f = $(ev.target).closest(\.post-edit)  # form
   f.hide 350ms \easeOutExpo
   meta = furl.parse window.location.pathname
   switch meta.type
@@ -213,7 +213,7 @@ $d.on \click '.onclick-submit .cancel' (ev) ->
 
 submit = Auth.require-login(
   (ev) -> submit-form(ev, (data) ->
-    f = $ ev.target .closest \.post-edit # form
+    f = $(ev.target).closest(\.post-edit) # form
     p = f.closest \.editing # post being edited
     t = $(f.find \.tooltip)
     unless data.success
