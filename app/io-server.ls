@@ -46,9 +46,10 @@ user-from-session = (s, cb) ->
   | \transient =>
     transient-user =
       transient: true
+      transient_id: parse-int name
       rights:
         admin: true
-    (err, authorized) <~ db.authorize-transient {name, site_id}
+    (err, authorized) <~ db.authorize-transient name, site_id
     if err then return cb err
     if authorized
       cb null, transient-user

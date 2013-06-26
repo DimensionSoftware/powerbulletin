@@ -35,7 +35,10 @@ export mw =
       passport.mw-session req, res, (err) ->
         if err then return next err
         # XXX: THIS A HACK!!!
-        req._passport.session.user = "transient:#{req.cookies.transient_owner}:#{res.vars.site.id}"
+        if req.cookies.transient_owner and !req.cookies['connect.sess']
+          # if this is already set (connect.sess), this means the user is logged in as a non-transient
+          req._passport.session.user = "transient:#{req.cookies.transient_owner}:#{res.vars.site.id}"
+
         next!
     else
       next(404)
@@ -172,7 +175,7 @@ export create-passport = (domain, cb) ->
 
   pass.serialize-user (user, done) ~>
     console.warn \user, \xxx, user
-    if user.transient_owner and not user.id
+    if user.transient
       parts = "transient:#{user.transient_owner}:#{user.site_id}"
     else
       parts = "permanent:#{user.name}:#{user.site_id}"
@@ -185,11 +188,18 @@ export create-passport = (domain, cb) ->
     | \transient =>
       transient-user =
         transient: true
+        transient_id: parse-int name
         rights:
           admin: true
-      done err, transient-user
+      (err, authorized) <~ db.authorize-transient name, site_id
+      if err then return cb err
+      if authorized
+        done null, transient-user
+      else
+        done null, null
     | \permanent =>
       (err, user) <~ db.usr {name, site_id}
+      if err then return cb err
       done err, user
 
   pass.use new passport-local.Strategy (username, password, done) ~>
