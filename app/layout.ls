@@ -7,6 +7,25 @@ mutant  = require \../lib/mutant/mutant.ls
 require! ch: \./client-helpers.ls
 window.Auth  = require \../component/Auth.ls
 
+window.cors =
+  ajax-params:
+    xhr-fields:
+      with-credentials: true
+    success: (->)
+    error: (->)
+  get: (url, data, cb) ->
+    params = {}
+    params <<< @ajax-params
+    params <<< { type: \GET, url, data }
+    params.success = cb if cb
+    $.ajax params
+  post: (url, data, cb) ->
+    params = {}
+    params <<< @ajax-params
+    params <<< { type: \POST, url, data }
+    params.success = cb if cb
+   $.ajax params
+
 window.hints =
   last:
     pathname: null

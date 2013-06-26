@@ -19,6 +19,7 @@ require! {
   async
   express
   http
+  cors
   \express-resource
   \express-validator
   stylus
@@ -207,6 +208,7 @@ module.exports =
       sales-app.enable 'json callback'
       sales-app.enable 'trust proxy' # parse x-forwarded-for in req.ip, etc...
       sales-personal-mw =
+        * cors(origin: true, credentials: true)
         * express-validator
         * express.body-parser!
         * express.cookie-parser!
