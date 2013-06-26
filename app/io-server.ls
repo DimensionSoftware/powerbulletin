@@ -41,10 +41,24 @@ in-site = (socket, site) ~>
 user-from-session = (s, cb) ->
   unless s?passport?user
     return cb null, {id:0, name:\Anonymous, guest:true}
-  [name, site_id] = s?passport?user?split \:
-  #console.warn "deserialize", name, site_id
-  (err, user) <- db.usr {name, site_id}
-  cb err, user
+  [type, name, site_id] = s?passport?user?split \:
+  switch type
+  | \transient =>
+    transient-user =
+      transient: true
+      transient_id: parse-int name
+      rights:
+        admin: true
+    (err, authorized) <~ db.authorize-transient name, site_id
+    if err then return cb err
+    if authorized
+      cb null, transient-user
+    else
+      cb null, null
+  | \permanent =>
+    (err, user) <~ db.usr {name, site_id}
+    if err then return cb err
+    cb err, user
 
 site-by-domain = (domain, cb) ->
   if not domain

@@ -30,35 +30,22 @@ export mw =
   session: (req, res, next) ~>
     domain = res.vars.site?current_domain
     err, passport <~ @passport-for-domain domain
-    if err then return next(err)
+    if err then return next err
     if passport
-      passport.mw-session req, res, ->
-        # TRANSIENT OWNER BUSINESS
-        if tid = req.cookies.transient_owner
+      passport.mw-session req, res, (err) ->
+        if err then return next err
+        # XXX: THIS A HACK!!!
+        if req.cookies.transient_owner and !req.cookies['connect.sess']
+          # if this is already set (connect.sess), this means the user is logged in as a non-transient
+          req._passport.session.user = "transient:#{req.cookies.transient_owner}:#{res.vars.site.id}"
 
-          console.log \authorize-transient, tid, res.vars.site.id
-          err, transient-authorized <- db.authorize-transient tid, res.vars.site.id
-          if err then return next err
-
-          if transient-authorized
-            #XXX: need to mock this better probably
-            req.user =
-              transient: true
-              rights: {admin: true}
-            console.log 'transient owner logged in:', req.user
-            next!
-          else
-            next!
-        else
-          next!
+        next!
     else
       next(404)
 
-#
 export hash = (s) ->
   bcrypt.hash-sync s, 5
 
-#
 export valid-password = (user, password) ->
   return false if not user or not password
   bcrypt.compare-sync password, user?auths?local?password
@@ -187,15 +174,33 @@ export create-passport = (domain, cb) ->
   pass.mw-session    = pass.session()
 
   pass.serialize-user (user, done) ~>
-    parts = "#{user.name}:#{user.site_id}"
-    #console.warn "serialize", parts
+    console.warn \user, \xxx, user
+    if user.transient
+      parts = "transient:#{user.transient_owner}:#{user.site_id}"
+    else
+      parts = "permanent:#{user.name}:#{user.site_id}"
     done null, parts
 
   pass.deserialize-user (parts, done) ~>
-    [name, site_id] = parts.split ':'
-    #console.warn "deserialize", name, site_id
-    (err, user) <~ db.usr {name, site_id}
-    done err, user
+    console.warn \parts, parts
+    [type, name, site_id] = parts.split ':'
+    switch type
+    | \transient =>
+      transient-user =
+        transient: true
+        transient_id: parse-int name
+        rights:
+          admin: true
+      (err, authorized) <~ db.authorize-transient name, site_id
+      if err then return cb err
+      if authorized
+        done null, transient-user
+      else
+        done null, null
+    | \permanent =>
+      (err, user) <~ db.usr {name, site_id}
+      if err then return cb err
+      done err, user
 
   pass.use new passport-local.Strategy (username, password, done) ~>
     (err, user) <~ db.usr { name: username, site_id: site.id }  # XXX - how do i get site_id?
