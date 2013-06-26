@@ -9,5 +9,6 @@ window.component =
 
 window.do-buy = ->
   window.component.buy ||= (new Buy).attach!
+  <- lazy-load-fancybox
   $.fancybox(window.component.buy.$)
 # vim:fdm=marker

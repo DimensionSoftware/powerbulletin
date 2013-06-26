@@ -18,14 +18,13 @@ module.exports =
       <~ ch.lazy-load-fancybox
       <~ ch.lazy-load (-> window.$.fn.complexify), "#{window.cache-url}/local/jquery.complexify.min.js", null
       if not window._auth
-        window._auth             = new Auth locals: {site-name: window.site-name}, $('#auth')
+        window._auth             = new Auth locals: {site-name: window.site-name}, $ \#auth
         window._auth.after-login = Auth.after-login if Auth.after-login
-        window._auth.attach!
 
       $.fancybox.open \#auth, window.fancybox-params unless $ \.fancybox-overlay:visible .length
       set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
       # password complexity ui
-      window.COMPLEXIFY_BANLIST = [\god \money \password]
+      window.COMPLEXIFY_BANLIST = [\god \money \password \love]
       $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
         e = $ this .parent!
         e.find \.strength-meter .toggle-class \strong, pass
