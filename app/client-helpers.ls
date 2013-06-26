@@ -118,8 +118,8 @@ load-css = (href) ->
 
 export lazy-load = (test, script, css, cb) ->
   unless test!
-    <- $.get-script script
     if css then load-css css
+    <- headjs script
     cb!
   else
     cb!
