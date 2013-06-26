@@ -4,13 +4,10 @@
 # assumes cvars is present
 module.exports =
   jquery                : "#{cvars.cache-url}/local/jquery-1.9.1.min.js"
-  jquery-complexify     : "#{cvars.cache2-url}/local/jquery.complexify.min.js"
   jquery-cookie         : "#{cvars.cache3-url}/local/jquery.cookie-1.3.1.min.js"
-  jquery-fancybox       : "#{cvars.cache4-url}/fancybox/jquery.fancybox.pack.js"
   jquery-history        : "#{cvars.cache5-url}/local/history.min.js"
   jquery-history-native : "#{cvars.cache-url}/local/history.adapter.native.min.js"
   jquery-html5-uploader : "#{cvars.cache2-url}/local/jquery.html5uploader.js"
-  jquery-jcrop          : "#{cvars.cache3-url}/jcrop/js/jquery.Jcrop.min.js"
   jquery-masonry        : "#{cvars.cache4-url}/local/jquery.masonry.min.js"
   jquery-nicescroll     : "#{cvars.cache5-url}/local/jquery.nicescroll.min.js"
   jquery-sceditor       : "#{cvars.cache-url}/local/jquery.sceditor.bbcode.min.js"
