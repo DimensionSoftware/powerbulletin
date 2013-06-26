@@ -462,13 +462,12 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     void
 
   finish = -> res.json {success:!errors.length, errors}
-  if card and !errors.length
+  if !errors.length
     err <- pay.subscribe {site-id, product-id, card}
     if err then errors.push err.message
     if !errors.length then console.log \checkout, {site-id, product-id, card}
     finish!
   else
-    errors.push 'Credit card must be valid'
     finish!
 
 # vim:fdm=indent

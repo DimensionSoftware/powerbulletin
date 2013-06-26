@@ -885,7 +885,7 @@ CREATE FUNCTION procs.add_subscription(site_id JSON, product_id JSON) RETURNS JS
   [product] = plv8.execute sql, [product_id]
 
   unless product
-    throw new Error "cannot create subscription from product id: #{product_id}"
+    throw new Error "Cannot create subscription from product id: #{product_id}"
 
   sql = '''
   INSERT INTO subscriptions
