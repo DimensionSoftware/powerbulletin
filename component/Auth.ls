@@ -140,7 +140,7 @@ module.exports =
             $e = $form.find("input[name=#{e.param}]")
             $e.add-class \validation-error .focus! # focus control
             msgs.push e.msg
-          ch.show-tooltip $form.find(\.tooltip), msgs.join \<br> # display errors
+          ch.show-tooltip $form.find(\.tooltip), unique(msgs).join \<br> # display errors
           shake-dialog $form, 100ms
       false
 
