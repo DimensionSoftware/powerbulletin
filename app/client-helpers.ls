@@ -52,18 +52,10 @@ export submit-form = (ev, fn) ->
       body.val input # fill-in
       e.set-data ''  # clear
 
-  # pass transient_owner as alternate auth mechanism
-  # to support sandbox mode
-  serialized =
-    if tid = $.cookie \transient_owner
-      $f.serialize! + "&transient_owner=#tid"
-    else
-      $f.serialize!
-
   $.ajax { # submit!
     url:       $f.attr \action
     type:      $f.attr \method
-    data:      serialized
+    data:      f.serialize!
     data-type: \json
     success:   (data) ->
       $s.remove-attr \disabled
