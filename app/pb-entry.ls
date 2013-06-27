@@ -334,7 +334,7 @@ $d.on \change 'html.admin .domain' -> # set keys
     \googleConsumerSecret]
       $ "[name='#k']" .val domain.config[k]
 $d.on \focus 'html.admin #analytics' ->
-  unless subscriptions?index-of(\analytics) > -1 then do-buy \analytics
+  unless find (-> it is \analytics), site.subscriptions then do-buy \analytics
 #}}}
 # {{{ - components
 window.component = {}
