@@ -23,15 +23,15 @@ module.exports =
           expmo:   @$.find \.Buy-card-month .val!
           expyear: @$.find \.Buy-card-year .val!
           code:    @$.find \.Buy-card-code .val!
-        show-tooltip (@@$ \.tooltip), 'Securing connection ...'
-        @@$.post "/ajax/checkout/#{@local(\product).id}", data, (r) ->
+        show-tooltip (@$.find \.tooltip), 'Securing connection ...'
+        @@$.post "/ajax/checkout/#{@local(\product).id}", data, (r) ~>
           if r.success
             $.fancybox.close!
             # TODO render new AdminUpgrade component
 
           else # error handling
-            show-tooltip (@@$ \.tooltip), r.errors.join "\n" if r.errors?length
-            card-number = @@$ \.Buy-card-number
+            show-tooltip (@$.find \.tooltip), r.errors.join "\n" if r.errors?length
+            card-number = @$.find \.Buy-card-number
             for e in [card-number, @@$ \.Buy-card-code] then e.add-class \error
 
             $fb = @@$ \.fancybox-wrap:first
