@@ -468,7 +468,7 @@ CREATE FUNCTION procs.site_by_id(id JSON) RETURNS JSON AS $$
   SELECT s.*, (u.stripe_id IS NOT NULL) AS has_stripe
   FROM sites s
   LEFT JOIN users u ON u.id=s.user_id
-  WHERE u.id = $1
+  WHERE s.id = $1
   """
   s = plv8.execute sql, [id]
   if site = s.0
