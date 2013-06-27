@@ -184,8 +184,11 @@ announce = sioa.create-client!
       columns: [\id \description \price \config]
     }
     if err then return next err
-    product.config = JSON.parse product.config # p00f--jsonify
-    if product then res.json product else next 404
+    if product
+      product.config = JSON.parse product.config # p00f--json'ify
+      res.json product
+    else
+      next 404
 @conversations =
   show: (req, res, next) ->
     id = req.params.conversation
