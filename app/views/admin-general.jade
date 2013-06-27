@@ -1,3 +1,4 @@
+analytics = unescape(site.config.analytics)
 form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
   fieldset
     label(for='posts_per_page') Posts per Page
@@ -13,7 +14,7 @@ form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
     .note Separated by commas
     .break
     label(for='analytics') Analytics
-    textarea(id='analytics', name='analytics')= site.config.analytics
+    textarea(id='analytics', name='analytics')= analytics
     .note Paste script code in above
 
   input.button(type='submit', value='Save')
