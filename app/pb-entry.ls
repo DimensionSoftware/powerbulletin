@@ -203,7 +203,7 @@ $d.on \click '.create .no-surf' Auth.require-login((ev) ->
 $d.on \click \.edit.no-surf Auth.require-login((ev) ->
   edit-post $(ev.target).data \edit)
 $d.on \click '.onclick-submit .cancel' (ev) ->
-  f = $ ev.target .closest \.post-edit  # form
+  f = $(ev.target).closest(\.post-edit)  # form
   f.hide 350ms \easeOutExpo
   meta = furl.parse window.location.pathname
   switch meta.type
@@ -213,7 +213,7 @@ $d.on \click '.onclick-submit .cancel' (ev) ->
 
 submit = Auth.require-login(
   (ev) -> submit-form(ev, (data) ->
-    f = $ ev.target .closest \.post-edit # form
+    f = $(ev.target).closest(\.post-edit) # form
     p = f.closest \.editing # post being edited
     t = $(f.find \.tooltip)
     unless data.success
@@ -341,18 +341,13 @@ window.do-buy = (product-id) ->
   throw new Error "window.do-buy must specify a product-id" unless product-id
 
   product <- $.get(\/resources/products/ + product-id)
-  locals = {product, card-needed: !window.site?has_stripe}
+  locals = {product, card-needed:!window.site?has_stripe}
 
   existing.detach! if existing = window.component.buy
 
   window.component.buy = new Buy {locals}
-  $.fancybox(window.component.buy.$, fancybox-params)
-
-window.do-test = ->
-  window.component.paginator ||=
-    new Paginator {locals: {step: 10, qty: 100}}
-  $.fancybox(window.component.paginator.$, fancybox-params)
-
+  <- lazy-load-fancybox
+  $.fancybox window.component.buy.$, fancybox-params
 #}}}
 
 # vim:fdm=marker

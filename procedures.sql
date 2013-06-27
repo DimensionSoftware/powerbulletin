@@ -468,7 +468,7 @@ CREATE FUNCTION procs.site_by_id(id JSON) RETURNS JSON AS $$
   SELECT s.*, (u.stripe_id IS NOT NULL) AS has_stripe
   FROM sites s
   LEFT JOIN users u ON u.id=s.user_id
-  WHERE u.id = $1
+  WHERE s.id = $1
   """
   s = plv8.execute sql, [id]
   if site = s.0
@@ -885,7 +885,7 @@ CREATE FUNCTION procs.add_subscription(site_id JSON, product_id JSON) RETURNS JS
   [product] = plv8.execute sql, [product_id]
 
   unless product
-    throw new Error "cannot create subscription from product id: #{product_id}"
+    throw new Error "Cannot create subscription from product id: #{product_id}"
 
   sql = '''
   INSERT INTO subscriptions

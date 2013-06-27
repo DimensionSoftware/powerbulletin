@@ -11,7 +11,7 @@
       }
     }
   }
-  function reload(){
+  function restart(){
     var load;
     load = function(){
       var ServerApp;
@@ -23,7 +23,7 @@
       });
     };
     if (isStarting) {
-      console.warn("Can't reload yet! SLOW DOWN!");
+      console.warn("Still restarting ...");
     } else {
       if (s) {
         s.stop(function(){
@@ -35,6 +35,6 @@
       }
     }
   }
-  process.on('SIGHUP', reload);
-  reload();
+  process.on('SIGHUP', restart);
+  restart();
 }).call(this);

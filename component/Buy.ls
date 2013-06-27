@@ -15,7 +15,7 @@ module.exports =
         $fb = @@$ \.fancybox-wrap:first # animate switch
         $fb.remove-class \slide
         set-timeout (-> $fb.add-class \slide), 10ms
-        return false
+        false
       @$.on \click \.Buy-checkout (ev) ~>
         $ ev.target .attr \disabled \disabled # disable ui
         data =
@@ -40,5 +40,5 @@ module.exports =
 
             set-timeout (-> $fb.add-class \shake; card-number.focus!), 10ms
           $ ev.target .attr \disabled null # re-enable ui
-        return false
+        false
     on-detach: -> @$.off!
