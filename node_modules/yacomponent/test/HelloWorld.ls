@@ -1,6 +1,6 @@
 require! {
   assert
-  \../HelloWorld
+  \../src/HelloWorld
 }
 
 _it = it

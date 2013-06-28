@@ -1,4 +1,4 @@
-require! \./Component.ls
+require! \./Component
 
 module.exports =
   class HelloWorld extends Component

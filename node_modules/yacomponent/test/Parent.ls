@@ -1,6 +1,6 @@
 require! {
   assert
-  \../Parent
+  \../src/Parent
 }
 
 _it = it
