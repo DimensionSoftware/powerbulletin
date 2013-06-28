@@ -333,13 +333,14 @@ $d.on \change 'html.admin .domain' -> # set keys
     \googleConsumerKey
     \googleConsumerSecret]
       $ "[name='#k']" .val domain.config[k]
-$d.on \focus 'html.admin #analytics' ->
-  unless find (-> it is \analytics), site.subscriptions then do-buy \analytics
+has = (what) -> find (-> it is what), site.subscriptions
+$d.on \click 'html.admin #private_site' -> unless has \private_site then do-buy \private_site; return false
+$d.on \click 'html.admin #analytics' -> unless has \analytics then do-buy \analytics; return false
 #}}}
 # {{{ - components
 window.component = {}
 
-$d.on \click \.onclick-buy (ev) -> console.log \here; do-buy($ ev.target .data \product)
+$d.on \click \.onclick-buy (ev) -> do-buy($ ev.target .data \product)
 window.do-buy = (product-id) ->
   throw new Error "window.do-buy must specify a product-id" unless product-id
   <- lazy-load-fancybox

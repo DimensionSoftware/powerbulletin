@@ -367,6 +367,10 @@ export admin =
       window.pages-count = 0
       pager-init window
       next!
+  on-mutate:
+    (window, next) ->
+      scroll-to-top!
+      next!
 
 join-search = (sock) ->
   console.log 'joining search notifier channel', window.searchopts

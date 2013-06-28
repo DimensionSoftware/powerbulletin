@@ -466,7 +466,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   finish = -> res.json {success:!errors.length, errors}
   if !errors.length
     err <- pay.subscribe {site-id, product-id, card}
-    if err then errors.push err.message
+    if err then errors.push err.message; console.log \card-error:, err
     if !errors.length then console.log \checkout, {site-id, product-id, card}
     finish!
   else

@@ -24,13 +24,19 @@ module.exports =
           expyear: @$.find \.Buy-card-year .val!
           code:    @$.find \.Buy-card-code .val!
         product = @local \product .id
+        re-enable = -> $ ev.target .attr \disabled null
         show-tooltip (@$.find \.tooltip), 'Securing connection ...'
         @@$.post "/ajax/checkout/#product", data, (r) ~>
           if r.success
-            site.subscriptions.push product
-            $ product .focus!
-            $.fancybox.close!
-            # TODO render new AdminUpgrade component
+            site.subscriptions.push product # subscribe!
+            $ "\##product" .focus!
+            show-tooltip (@$.find \.tooltip), "Thank you!"
+            set-timeout (->
+              re-enable!
+              # show new product
+              $ ".#{product}-available" .hide!
+              $ ".#{product}-purchased" .show 500ms
+              $.fancybox.close!), 2000ms
 
           else # error handling
             show-tooltip (@$.find \.tooltip), if r.errors?length then r.errors.join "\n" else 'Invalid payment!'
@@ -42,6 +48,6 @@ module.exports =
             $fb.remove-class \shake
 
             set-timeout (-> $fb.add-class \shake; card-number.focus!), 10ms
-          $ ev.target .attr \disabled null # re-enable ui
+            re-enable!
         false
     on-detach: -> @$.off!

@@ -3,12 +3,29 @@ form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
   fieldset
     label(for='posts_per_page') Posts per Page
     input(id='posts_per_page', class='posts-per-page', name='postsPerPage', type='text', value=site.config.postsPerPage)
+    .break
+    label Privacy
+    .box
+      input#private_site(type='checkbox', value='checked', name='private_site', checked=site.config.private_site)
+      label(for='private_site')
+        .switch
+      span.label.checked On
+      .note Privacy hides your content from search engines &amp; the public
+    .break
+    label Invite Only
+    .box
+      input#registration(type='checkbox', value='checked', name='registration', checked=site.config.registration)
+      label(for='registration')
+        .switch
+      span.label.checked On
+      .note Disallow the public from registering
+
     //-.break
     //-label(for='theme') Base Theme
     //-select(id='theme', name='theme')
     //-  each t in themes
     //-    option(value=t.id)= t.name
-    .break
+    .break.double
     label(for='keywords') Meta Keywords
     textarea(id='keywords', name='metaKeywords')= site.config.metaKeywords
     .note Separated by commas
