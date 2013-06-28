@@ -339,6 +339,7 @@ $d.on \focus 'html.admin #analytics' ->
 # {{{ - components
 window.component = {}
 
+$d.on \click \.onclick-buy (ev) -> console.log \here; do-buy($ ev.target .data \product)
 window.do-buy = (product-id) ->
   throw new Error "window.do-buy must specify a product-id" unless product-id
   <- lazy-load-fancybox
