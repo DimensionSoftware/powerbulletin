@@ -341,14 +341,13 @@ window.component = {}
 
 window.do-buy = (product-id) ->
   throw new Error "window.do-buy must specify a product-id" unless product-id
-
+  <- lazy-load-fancybox
   product <- $.get(\/resources/products/ + product-id)
   locals = {product, card-needed:!window.site?has_stripe}
 
   existing.detach! if existing = window.component.buy
 
   window.component.buy = new Buy {locals}
-  <- lazy-load-fancybox
   $.fancybox window.component.buy.$, fancybox-params
 #}}}
 
