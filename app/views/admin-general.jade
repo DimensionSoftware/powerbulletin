@@ -18,7 +18,9 @@ form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
       label(for='registration')
         .switch
       span.label.checked On
-      .note Disallow the public from registering
+      .note Disallow the public from registering - 
+        a.mutant(href='/admin/invites') invite here
+          i !
 
     //-.break
     //-label(for='theme') Base Theme

@@ -17,18 +17,26 @@ fieldset
   h2 Custom Domain
   p Add your own personal flair!  Get serious and aim any domain at your PowerBulletin site.
   mixin product('custom_domain', 'Custom Domain Purchased')
+  .notes
+    a.mutant(href='/admin/domains') Click here to bring your domains online!
     
 fieldset
   h2 Go Private
   p Privacy?  We got you covered.  This feature hides your content from Search Engines and the public.
   mixin product('private_site', 'Private Site Purchased')
+  .notes
+    a.mutant(href='/admin') Click here to toggle privacy settings!
 
 fieldset
   h2 Analytics
   p Your enterprising PowerBulletin community is bustling!  Know who, where and how with your favorite analytics tracker.
   mixin product('analytics', 'Analytics Purchased')
+  .notes
+    a.mutant(href='/admin') Get started with analytics here!
 
 fieldset
   h2 Super Computing Instance
   p Your site really took off and you'd like more horsepower--speed is everything!  With your turbo-charged instance comes additional security, monitoring and peace of mind.
   mixin product('compute_instance', 'Super Computing Instance Purchased')
+  .notes
+    p A PowerBulletin team member will contact you after purchase!

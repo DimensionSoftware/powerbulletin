@@ -30,7 +30,7 @@ module.exports =
           if r.success
             site.subscriptions.push product # subscribe!
             $ "\##product" .focus!
-            show-tooltip (@$.find \.tooltip), "Thank you!"
+            show-tooltip (@$.find \.tooltip), "Sincere thanks!"
             set-timeout (->
               re-enable!
               # show new product
