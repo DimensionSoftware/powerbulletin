@@ -106,4 +106,10 @@ Vagrant::Config.run do |config|
                        "--memory", "2048",
                        "--cpus", "2",
                       ]
+
+  # finally! escape from symlink hell when using npm install in /vagrant on vm
+  # http://www.conroyp.com/2013/04/13/symlink-shenanigans-nodejs-npm-express-vagrant/
+  # http://blog.liip.ch/archive/2012/07/25/vagrant-and-node-js-quick-tip.html
+  config.vm.customize ["setextradata", :id,
+                       "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
 end
