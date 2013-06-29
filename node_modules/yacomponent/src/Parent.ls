@@ -1,5 +1,5 @@
-require! \./Component.ls
-require! \./HelloWorld.ls
+require! \./Component
+require! \./HelloWorld
 
 module.exports =
   class Parent extends Component

@@ -80,12 +80,12 @@ export homepage =
     next!
   on-load:
     (window, next) ->
-      # reflow masonry content
-      window.$ '.forum .container' .masonry(
-        item-selector: \.post
-        is-animated:   true
-        is-fit-width:  true
-        is-resizable:  true)
+      try # reflow masonry content
+        window.$ '.forum .container' .masonry(
+          item-selector: \.post
+          is-animated:   true
+          is-fit-width:  true
+          is-resizable:  true)
 
       # fill-in extra
       active = window.location.search.match(/order=(\w+)/)?1 or \recent
@@ -150,8 +150,6 @@ export homepage =
         window.$ '#order li' .waypoint(\destroy)
         window.$ \.bg .remove!
         window.$ $(\.extra:first) .html ''
-      catch
-        # do nothing
       next!
 
 export forum =
