@@ -333,9 +333,11 @@ $d.on \change 'html.admin .domain' -> # set keys
     \googleConsumerKey
     \googleConsumerSecret]
       $ "[name='#k']" .val domain.config[k]
-has = (what) -> find (-> it is what), site.subscriptions
-$d.on \click 'html.admin #private_site' -> unless has \private_site then do-buy \private_site; return false
-$d.on \click 'html.admin #analytics' -> unless has \analytics then do-buy \analytics; return false
+subscribe = (what) -> unless what in site.subscriptions
+  do-buy what
+  false
+$d.on \click 'html.admin #private_site' -> subscribe \private_site
+$d.on \click 'html.admin #analytics'    -> subscribe \analytics
 #}}}
 # {{{ - components
 window.component = {}

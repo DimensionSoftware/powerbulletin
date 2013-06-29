@@ -6,8 +6,8 @@ form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
     .break
     label Privacy
     .box
-      input#private_site(type='checkbox', value='checked', name='private_site', checked=site.config.private_site)
-      label(for='private_site')
+      input#private(type='checkbox', value='checked', name='private', checked=site.config.private)
+      label(for='private')
         .switch
       span.label.checked On
       .note Privacy hides your content from search engines &amp; the public
