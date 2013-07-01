@@ -28,6 +28,7 @@ export mw =
     else
       next(404)
   session: (req, res, next) ~>
+    site_id = res.vars.site?id
     domain = res.vars.site?current_domain
     err, passport <~ @passport-for-domain domain
     if err then return next err
@@ -35,11 +36,14 @@ export mw =
       passport.mw-session req, res, (err) ->
         if err then return next err
         # XXX: THIS A HACK!!!
-        if req.cookies.transient_owner and !req.cookies['connect.sess']
-          # if this is already set (connect.sess), this means the user is logged in as a non-transient
-          req._passport.session.user = "transient:#{req.cookies.transient_owner}:#{res.vars.site.id}"
-
-        next!
+        if tid = req.cookies.transient_owner
+          (err, authorized) <~ db.authorize-transient tid, site_id
+          if err then return next err
+          if authorized
+            req._passport.session.user = "transient:#{req.cookies.transient_owner}:#{res.vars.site.id}"
+          next!
+        else
+          next!
     else
       next(404)
 
@@ -191,12 +195,7 @@ export create-passport = (domain, cb) ->
         transient_id: parse-int name
         rights:
           admin: true
-      (err, authorized) <~ db.authorize-transient name, site_id
-      if err then return cb err
-      if authorized
-        done null, transient-user
-      else
-        done null, null
+      done null, transient-user
     | \permanent =>
       (err, user) <~ db.usr {name, site_id}
       if err then return cb err

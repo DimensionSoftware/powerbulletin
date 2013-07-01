@@ -11,7 +11,7 @@ var s
   load = ->
     is-starting := true
     ServerApp = require \./ServerApp
-    s := new ServerApp 3000
+    s := new ServerApp(parse-int(process.env.NODE_PORT) or 3000)
     s.start ->
       is-starting := false
 
