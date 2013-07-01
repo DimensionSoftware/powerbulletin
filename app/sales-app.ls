@@ -1,13 +1,38 @@
 require! express
 require! \../component/SalesLoader
 require! {
+  cors
+  \express-validator
   csu: \./css-urls
   jsu: \./js-urls
+  mw: \./middleware
   \./pb-handlers
+  \./auth-handlers
+  \./auth
 }
 
 # would like to just call it app, but global 'app' is reserved
 s-app = express!
+s-app.enable 'json callback'
+s-app.enable 'trust proxy' # parse x-forwarded-for in req.ip, etc...
+
+# middleware for the whole app
+sales-mw =
+  * mw.vars
+  * mw.cvars
+  * mw.multi-domain
+sales-mw.for-each ((m) -> s-app.use m)
+
+# middleware for auth routes
+sales-personal-mw =
+  * cors(origin: true, credentials: true)
+  * express-validator
+  * express.body-parser!
+  * express.cookie-parser!
+  * express.cookie-session {secret:cvars.secret}
+  * auth.mw.initialize
+  * auth.mw.session
+auth-handlers.apply-to s-app, sales-personal-mw
 
 s-app.get '/dynamic/css/:file' pb-handlers.stylus
 
@@ -31,14 +56,16 @@ s-app.get '/' (req, res, next) ->
   res.content-type \html
   res.send sl.html(false)
 
-s-app.get '/ajax/check-domain-availability' (req, res, next) ->
+s-app.get '/ajax/check-domain-availability', (req, res, next) ->
   domain = req.query.domain
   err, domain-exists <- db.domain-by-name-exists domain
   if err then return next err
   res.json {available: !domain-exists}
 
-s-app.post '/ajax/can-has-site-plz', express.body-parser(), (req, res, next) ->
+s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
+  user = req.user
   site = req.body
+  site.user_id = user.id if user and site
   console.log {site}
   err, result <- db.create-site site
   if err then return next err
