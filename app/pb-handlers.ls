@@ -359,9 +359,9 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     * id:0 name:\None
   defaults =
     posts-per-page: posts-per-page
-    meta-keywords: "#{site.name}, PowerBulletin"
+    meta-keywords:  "#{site.name}, PowerBulletin"
   fdoc.site.config = defaults <<< fdoc.site.config
-  fdoc.site.config.analytics = escape fdoc.site.config.analytics
+  fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')
   fdoc.title = \Admin
   res.locals fdoc
 
