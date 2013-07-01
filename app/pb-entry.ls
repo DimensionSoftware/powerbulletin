@@ -336,8 +336,8 @@ $d.on \change 'html.admin .domain' -> # set keys
 subscribe = (what) -> unless what in site.subscriptions
   do-buy what
   false
-$d.on \click 'html.admin #private_site' -> subscribe \private_site
-$d.on \click 'html.admin #analytics'    -> subscribe \analytics
+$d.on \click 'html.admin #private'   -> subscribe \private
+$d.on \click 'html.admin #analytics' -> subscribe \analytics
 #}}}
 # {{{ - components
 window.component = {}
