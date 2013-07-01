@@ -30,15 +30,6 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
   w.$ \html .attr(\class "#{next-mutant}#{forum-class}") # stylus
   w.marshal \mutator, next-mutant                        # js
 
-  # FIXME won't work because of personalization
-  # private site?
-  if \private_site in (@subscriptions or [])
-    console.log \private
-    for e in [\#menu \#left_container \#main_container]
-      console.log \remove
-      w.$ e .remove!
-    return
-
   # handle active main menu
   fid = active-forum-id or w.active-forum-id
   w.$ 'header .menu' .find \.active .remove-class \active # remove prev
