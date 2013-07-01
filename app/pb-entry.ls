@@ -41,8 +41,6 @@ window.load-ui = -> # restore ui state from cookie
   s  = $.cookie \s
   $l = $ \#left_content
 
-  set-wide = -> $l.toggle-class \wide ($l.width! > 300px)
-
   if s # restore
     [collapsed, w] = s.split sep
     if collapsed is \1 and not $ \html .has-class \admin

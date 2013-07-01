@@ -148,6 +148,10 @@ export respond-resize = ->
   w = $ window
   if w.width! <= 800px then $ \body .add-class \collapsed
 
+export set-wide = ->
+  l = $ \#left_content
+  l.toggle-class \wide (l.width! > 300px)
+
 export align-breadcrumb = ->
   b = $ \#breadcrumb
   m = $ \#main_content
@@ -174,7 +178,7 @@ export mutate = ->
   false
 
 timers = {}
-export show-tooltip = ($tooltip, msg, duration=3000ms) ->
+export show-tooltip = ($tooltip, msg, duration=3500ms) ->
   timer = timers[msg]
   if timer then clear-timeout timer
   $tooltip.html msg .add-class \hover # show

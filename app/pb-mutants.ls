@@ -243,6 +243,7 @@ export forum =
   on-mutate:
     (window, next) ->
       scroll-to-top!
+      set-wide! # ensures correct style for width
       window.socket?emit \online-now
       next!
   on-personalize: (w, u, next) ->
