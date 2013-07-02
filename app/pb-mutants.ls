@@ -4,6 +4,7 @@ global <<< require \./shared-helpers.ls
 
 require! {
   \../component/AdminUpgrade.ls
+  \../component/AdminMenu.ls
   \../component/Paginator.ls
 }
 
@@ -15,11 +16,19 @@ require! {
     dur = aft - bef
     console.log "benchmarked '#{subject-name}': took #{dur}ms"
 
+# TODO: universal fn -- move registering bits inside component?
+#!function render-component name, c, window, locals, target
+!function admin-menu-component w, site
+  wc = w.component ||= {}
+  wc.admin-menu-component ||= new AdminMenu {-auto-render, -auto-attach}
+  wc.admin-menu-component.local \siteId, site.id
+  wc.admin-menu-component.reload!
+  w.$('#main_content').html('').append(wc.admin-menu-component.$)
 !function admin-upgrade-component w, subscriptions
   wc = w.component ||= {}
   wc.admin-upgrade ||= new AdminUpgrade {-auto-render, -auto-attach}
   wc.admin-upgrade.local \subscriptions, subscriptions
-  wc.admin-upgrade.detach!render!attach!
+  wc.admin-upgrade.reload!
   w.$('#main_content').html('').append(wc.admin-upgrade.$)
 
 # Common
@@ -341,7 +350,7 @@ export admin =
       switch @action
       | \domains  => window.render-mutant \main_content, \admin-domains
       | \invites  => window.render-mutant \main_content, \admin-invites
-      | \menu     => window.render-mutant \main_content, \admin-menu
+      | \menu     => admin-menu-component(window, @site)
       | \upgrade  => admin-upgrade-component(window, @site.subscriptions)
       | otherwise => window.render-mutant \main_content, \admin-general
 
