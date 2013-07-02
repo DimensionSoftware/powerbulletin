@@ -70,6 +70,16 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
   err, result <- db.create-site site
   if err then return next err
   console.log result
-  res.json result
+
+  done = -> res.json result
+  if result.user_id
+    alias =
+      user_id  : user.id
+      site_id  : result.site_id
+      name     : user.name
+    <- db.alias-create-preverified alias
+    done!
+  else
+    done!
 
 module.exports = s-app
