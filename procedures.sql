@@ -403,9 +403,17 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --
 CREATE FUNCTION procs.verify_user(site_id JSON, verify JSON) RETURNS JSON AS $$
   sql = '''
-  UPDATE aliases SET verified = true WHERE site_id = $1 AND verify = $2 RETURNING *
+  UPDATE aliases SET verified = true, verify = NULL WHERE site_id = $1 AND verify = $2 RETURNING *
   '''
   return plv8.execute(sql, [site_id, verify])[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+--
+CREATE FUNCTION procs.authorize_by_login_token(site_id JSON, login_token JSON) RETURNS JSON AS $$
+  sql = '''
+  UPDATE aliases SET login_token = NULL WHERE site_id = $1 AND login_token = $2 RETURNING *
+  '''
+  return plv8.execute(sql, [site_id, login_token])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- @param Object usr
