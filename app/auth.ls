@@ -163,6 +163,15 @@ export user-forgot-password = (user, cb) ->
 
   cb null, user
 
+export set-login-token = (user, cb) ->
+  err, hash <- unique-hash \login_token, user.site_id
+  if err then return cb err
+
+  user.login_token = hash
+  err <- db.aliases.update criteria: { user_id: user.id, site_id: user.site_id }, data: { login_token: hash }
+
+  cb null, user
+
 export create-passport = (domain, cb) ->
   (err, site) <~ db.site-by-domain domain
   if err then return cb(err)
