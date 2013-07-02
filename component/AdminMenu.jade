@@ -5,14 +5,19 @@ form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
       li General Forum
   .col2
     fieldset
-      label(for='type') Select a Type
+      label(for='type') Type
       select(id='type', name='type')
         option(value=2) Forum
         option(value=1) Page
       br
-      label(for='hide_menu') Hide main menu
-      input(id='hide_menu', type='checkbox')
+      label Main menu
+      .box
+        input#hide_menu(type='checkbox', value='checked', name='hideMenu', checked=)
+        label(for='hide_menu')
+          .switch
+        span.label.checked On
+        .note Hides the main menu for this page
       
-      input.button(type='submit', value='Save')
-      .tooltip
-      input(type='hidden', name='action', value='menu')
+    input.button(type='submit', value='Save')
+    .tooltip
+    input(type='hidden', name='action', value='menu')
