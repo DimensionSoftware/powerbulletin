@@ -16,20 +16,12 @@ require! {
     dur = aft - bef
     console.log "benchmarked '#{subject-name}': took #{dur}ms"
 
-# TODO: universal fn -- move registering bits inside component?
-#!function render-component name, c, window, locals, target
-!function admin-menu-component w, site
-  wc = w.component ||= {}
-  wc.admin-menu-component ||= new AdminMenu {-auto-render, -auto-attach}
-  wc.admin-menu-component.local \siteId, site.id
-  wc.admin-menu-component.reload!
-  w.$('#main_content').html('').append(wc.admin-menu-component.$)
-!function admin-upgrade-component w, subscriptions
-  wc = w.component ||= {}
-  wc.admin-upgrade ||= new AdminUpgrade {-auto-render, -auto-attach}
-  wc.admin-upgrade.local \subscriptions, subscriptions
-  wc.admin-upgrade.reload!
-  w.$('#main_content').html('').append(wc.admin-upgrade.$)
+!function render-component c, locals, window, target
+  wc = window.component ||= {}
+  wc[c.constructor?name] = c # register
+  c.locals locals
+  c.reload!
+  window.$ target .html('').append c.$ # render
 
 # Common
 layout-static = (w, next-mutant, active-forum-id=-1) ->
@@ -350,8 +342,16 @@ export admin =
       switch @action
       | \domains  => window.render-mutant \main_content, \admin-domains
       | \invites  => window.render-mutant \main_content, \admin-invites
-      | \menu     => admin-menu-component(window, @site)
-      | \upgrade  => admin-upgrade-component(window, @site.subscriptions)
+      | \menu     => render-component(
+        new AdminMenu({-auto-render, -auto-attach}),
+        site-id:@site.id,
+        window,
+        \#main_content)
+      | \upgrade  => render-component(
+        new AdminUpgrade({-auto-render, -auto-attach}),
+        subscriptions:@site.subscriptions,
+        window,
+        \#main_content)
       | otherwise => window.render-mutant \main_content, \admin-general
 
       layout-static window, \admin
