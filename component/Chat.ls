@@ -28,10 +28,6 @@ module.exports =
       @$.on \keydown,  \textarea,   @send-message
 
       @$.find(\.messages).scroll @maybe-load-more
-      err, r <~ socket.emit \conversate
-      if err then return # guard
-      @conversation = r.conversation
-      @load-more-messages 0
 
     on-detach: !~>
       #@$.find \.minimize .off!

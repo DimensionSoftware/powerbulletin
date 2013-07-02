@@ -26,16 +26,6 @@ module.exports = class ChatServer
     @socket.leave c?room
     cb null, c
 
-  conversate: (message, cb) ~>
-    err, c <~ db.conversation-find-or-create [{id:@user.id, name:@user.name}, {id:message.to.id, name:message.to.name}]
-    if err then cb err
-    # join the room for the conversation if we haven't already joined
-    c.room = "#{@site.id}/conversations/#{c.id}"
-    @connections[@socket.id] ||= {}
-    @connections[@socket.id][c.id] = c
-    @socket.join c.room
-    cb null, c
-
   message: (message, cb) ~>
     ## if connection has a chat with message.chat_id use it
     if c = @connections[@socket.id]?[message.conversation_id]
@@ -50,8 +40,14 @@ module.exports = class ChatServer
     ## else load it from the database
     else
       console.warn "need to setup new remote chat"
-      (err, c) <~ @conversate message
-      return cb err if err
+      err, c <~ db.conversation-find-or-create [{id:@user.id, name:@user.name}, {id:message.to.id, name:message.to.name}]
+      if err then cb err
+
+      # join the room for the conversation if we haven't already joined
+      c.room = "#{@site.id}/conversations/#{c.id}"
+      @connections[@socket.id] ||= {}
+      @connections[@socket.id][c.id] = c
+      @socket.join c.room
 
       # request a remote chat window be opened
       user-room = "#{@site.id}/users/#{message.to?id}"
