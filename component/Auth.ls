@@ -38,6 +38,11 @@ module.exports =
       ch.switch-and-focus remove, \on-dialog, ''
       cb window._auth.$
 
+    @show-register-dialog = (remove='', cb=(->)) ->
+      <- Auth.show-login-dialog
+      ch.switch-and-focus remove, \on-register, '.register input:first'
+      cb window._auth.$
+
     @show-reset-password-dialog = ->
       $auth <- Auth.show-login-dialog
       $form = $auth .find('.reset form')
