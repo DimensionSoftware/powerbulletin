@@ -172,8 +172,10 @@ html.admin
     li
       border-left 1px solid transparent
       border-bottom 1px solid transparent
+      height 23px
     li.active
       background-color #666
+      text-shadow 0 1px 0 #000
       border-radius 8px / 4px
       border-top-right-radius 0
       border-bottom-right-radius 0
@@ -183,11 +185,18 @@ html.admin
       span
         padding 1px 6px!important
         opacity 1!important
-        transition all .2s cubic-bezier(0,1.72,0,.75)
+    li::after
+      position absolute
+      content ''
+      top 10px
+      opacity 0
+      right -5px
+      border 10px solid transparent
     li.active::after
       position absolute
       content ''
       top 0
+      opacity 1
       right -34px
       border 17px solid transparent
       border-left 17px solid #666
