@@ -11,7 +11,7 @@ require! {
 {is-editing, is-admin, is-auth} = require \./path-regexps
 
 @login = (req, res, next) ->
-  domain   = res.vars.site.current_domain
+  domain = res.vars.site.current_domain
   err, passport <- auth.passport-for-domain domain
   if err then return next(err)
   if passport
@@ -28,6 +28,28 @@ require! {
   else
     console.warn "no passport for #{domain}"
     res.send \500, 500
+
+@once = (req, res, next) ->
+  token = req.body.token
+  site  = res.vars.site
+  err, r <- db.authorize-by-login-token site.id, token
+  if err then return next err
+  if r
+    req.session?passport?user = "permanent:#{r.name}:#{site.id}"
+    res.json success: true
+  else
+    res.json success: false
+
+@once-setup = (req, res, next) ->
+  user =
+    id      : req.body.id
+    site_id : req.body.site_id
+  err, r <- auth.set-login-token user
+  if err then return next err
+  if r
+    res.json success: true, token: r.login_token
+  else
+    res.json success: false
 
 @register = (req, res, next) ~>
   site     = res.vars.site
@@ -260,6 +282,7 @@ auth-finisher = (req, res, next) ->
 
 @apply-to = (app, mw) ->
   app.post '/auth/login',           mw, @login
+  app.post '/auth/once',            mw, @once
   app.post '/auth/register',        mw, @register
   app.post '/auth/choose-username', mw, @choose-username
   app.get  '/auth/user',            mw, @user
