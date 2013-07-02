@@ -34,10 +34,12 @@ require! {
   domain   = site.current_domain
   passport = auth.passport-for-domain[domain]
 
+  if res.locals.invite-only then next 404; return # registration disabled
+
   # TODO more validation
-  req.assert('username').not-empty!is-alphanumeric!  # .len(min, max) .regex(/pattern/)
-  req.assert('password').not-empty!  # .len(min, max) .regex(/pattern/)
-  req.assert('email').is-email!
+  req.assert \username .not-empty!is-alphanumeric!  # .len(min, max) .regex(/pattern/)
+  req.assert \password .not-empty!  # .len(min, max) .regex(/pattern/)
+  req.assert \email .is-email!
 
   if errors = req.validation-errors!
     console.warn errors

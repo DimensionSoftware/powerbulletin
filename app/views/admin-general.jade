@@ -10,12 +10,14 @@ form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
       label(for='private')
         .switch
       span.label.checked On
-      .note Privacy hides your content from search engines &amp; the public
+      .note Coming soon
+        i !
+      //-.note Privacy hides your content from search engines &amp; the public
     .break
     label Invite Only
     .box
-      input#registration(type='checkbox', value='checked', name='registration', checked=site.config.registration)
-      label(for='registration')
+      input#invite_only(type='checkbox', value='checked', name='inviteOnly', checked=site.config.inviteOnly)
+      label(for='invite_only')
         .switch
       span.label.checked On
       .note Disallow the public from registering - 

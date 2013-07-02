@@ -38,6 +38,7 @@ delete-unnecessary-surf-data = (res) ->
   unnecessary =
      \siteName
      \analytics
+     \inviteOnly
      \cache2Url # keeping cacheUrl
      \cache3Url
      \cache4Url

@@ -25,8 +25,7 @@ require! {
     res.locals.site-name      = name
     res.locals.current-domain = current_domain
     res.locals.analytics      = config.analytics
-    res.locals.private        = config.private
-    res.locals.registration   = config.registration
+    res.locals.invite-only    = config.invite-only
     for i in ['', 2, 3, 4, 5]
       res.locals["cache#{i}Url"] = cvars["cache#{i}Url"]
     next!
