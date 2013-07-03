@@ -6,6 +6,7 @@ html
       link(rel='stylesheet', type='text/css', href=stylesheet)
     script(type='text/javascript', src="#{cacheUrl}/local/head-0.99.load.min.js")
     |<script type="text/javascript">
+    |  window.headjs = head.js
     |  head.js.apply(head, !{JSON.stringify(scripts)});
     |  window.cacheUrl = '//muscache.pb.com';
     |  window.siteName = 'PowerBulletin';

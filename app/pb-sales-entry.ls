@@ -2,6 +2,7 @@ require! {
   \../component/SalesApp.ls
   \../component/Buy.ls
 }
+global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
 
 # components
 window.component =

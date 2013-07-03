@@ -3,6 +3,7 @@ require! {
   express
   mutant
   async
+  cors
   \./auth
   \./auth-handlers
   \express-validator
@@ -19,6 +20,7 @@ global <<< require \./server-helpers
 
 # middleware we will use only on personalized routes to save cpu cycles!
 personal-mw =
+  * cors(origin: true, credentials: true)
   * express-validator
   * express.body-parser!
   * express.cookie-parser!

@@ -57,6 +57,20 @@ module.exports =
         else
           $form .find 'h2:first' .html "Couldn't find you. :("
 
+    @login-with-token = ->
+      r <- cors.get 'https://pb.com/auth/once', { site_id: window.site-id }
+      #console.warn \cors, r
+      if r
+        rr <- $.post '/auth/once', { token: r.token }
+        #console.warn \once, rr
+        if rr.success
+          Auth.after-login!
+          window.location.hash = ''
+        #else
+          #console.error 'local /auth/once failed'
+      #else
+        #console.error 'remote /auth/once failed'
+
     # helper for wrapping event handlers in a function that requires authentication first
     @require-login = (fn) ->
       ->
