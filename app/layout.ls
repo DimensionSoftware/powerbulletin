@@ -294,6 +294,7 @@ if m = window.location.hash.match /^\#invalid=(.+)/ then Auth.show-info-dialog "
 switch window.location.hash
 | \#invalid  => Auth.show-info-dialog 'Invalid invite code!'
 | \#validate => Auth.after-login! # email activation
+| \#once     => Auth.login-with-token!
 
 # XXX sales-app doesn't have a mutant.
 if typeof window.mutant is not \undefined

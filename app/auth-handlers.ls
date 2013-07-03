@@ -42,7 +42,7 @@ require! {
 
 @once-setup = (req, res, next) ->
   user =
-    id      : req.query.id
+    id      : req.user.id
     site_id : req.query.site_id
   err, r <- auth.set-login-token user
   if err then return next err
