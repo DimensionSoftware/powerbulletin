@@ -115,6 +115,11 @@ export lazy-load = (test, script, css, cb) ->
     cb!
   else
     cb!
+export lazy-load-nested-sortable = (cb) ->
+  lazy-load (-> window.$!nested-sortable?length),
+    "#cache-url/local/jquery.mjs.nestedSortable.js",
+    null,
+    cb
 export lazy-load-html5-uploader = (cb) ->
   lazy-load (-> window.$!html5-uploader?length),
     "#cache-url/local/jquery.html5uploader.js",

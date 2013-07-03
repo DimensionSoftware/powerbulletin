@@ -363,8 +363,6 @@ export admin =
       next!
   on-load:
     (window, next) ->
-      unless $!nested-sortable?length # load for /admin/menu
-        $.get-script "#cache-url/local/jquery.mjs.nestedSortable.js"
       # expand left nav or not?
       $b = $ \body
       if window.admin-expanded = $b.has-class \collapsed
