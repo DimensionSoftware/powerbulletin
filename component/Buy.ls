@@ -23,15 +23,24 @@ module.exports =
           expmo:   @$.find \.Buy-card-month .val!
           expyear: @$.find \.Buy-card-year .val!
           code:    @$.find \.Buy-card-code .val!
-        show-tooltip (@@$ \.tooltip), 'Securing connection ...'
-        @@$.post "/ajax/checkout/#{@local(\product).id}", data, (r) ->
+        product = @local \product .id
+        re-enable = -> $ ev.target .attr \disabled null
+        show-tooltip (@$.find \.tooltip), 'Securing connection ...'
+        @@$.post "/ajax/checkout/#product", data, (r) ~>
           if r.success
-            $.fancybox.close!
-            # TODO render new AdminUpgrade component
+            site.subscriptions.push product # subscribe!
+            $ "\##product" .focus!
+            show-tooltip (@$.find \.tooltip), "Sincere thanks!"
+            set-timeout (->
+              re-enable!
+              # show new product
+              $ ".#{product}-available" .hide!
+              $ ".#{product}-purchased" .show 500ms
+              $.fancybox.close!), 2000ms
 
           else # error handling
-            show-tooltip (@@$ \.tooltip), r.errors.join "\n" if r.errors?length
-            card-number = @@$ \.Buy-card-number
+            show-tooltip (@$.find \.tooltip), if r.errors?length then r.errors.join "\n" else 'Invalid payment!'
+            card-number = @$.find \.Buy-card-number
             for e in [card-number, @@$ \.Buy-card-code] then e.add-class \error
 
             $fb = @@$ \.fancybox-wrap:first
@@ -39,6 +48,6 @@ module.exports =
             $fb.remove-class \shake
 
             set-timeout (-> $fb.add-class \shake; card-number.focus!), 10ms
-          $ ev.target .attr \disabled null # re-enable ui
+            re-enable!
         false
     on-detach: -> @$.off!

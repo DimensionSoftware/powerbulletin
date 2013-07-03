@@ -37,6 +37,8 @@ delete-unnecessary-surf-data = (res) ->
   locals = res.locals
   unnecessary =
      \siteName
+     \analytics
+     \inviteOnly
      \cache2Url # keeping cacheUrl
      \cache3Url
      \cache4Url
@@ -358,8 +360,9 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
     * id:0 name:\None
   defaults =
     posts-per-page: posts-per-page
-    meta-keywords: "#{site.name}, PowerBulletin"
+    meta-keywords:  "#{site.name}, PowerBulletin"
   fdoc.site.config = defaults <<< fdoc.site.config
+  fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')
   fdoc.title = \Admin
   res.locals fdoc
 
@@ -464,7 +467,7 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
   finish = -> res.json {success:!errors.length, errors}
   if !errors.length
     err <- pay.subscribe {site-id, product-id, card}
-    if err then errors.push err.message
+    if err then errors.push err.message; console.log \card-error:, err
     if !errors.length then console.log \checkout, {site-id, product-id, card}
     finish!
   else

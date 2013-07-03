@@ -18,7 +18,7 @@ module.exports =
       <~ ch.lazy-load-fancybox
       <~ ch.lazy-load (-> window.$.fn.complexify), "#{window.cache-url}/local/jquery.complexify.min.js", null
       if not window._auth
-        window._auth             = new Auth locals: {site-name: window.site-name}, $ \#auth
+        window._auth             = new Auth locals: {site-name: window.site-name, invite-only:window.invite-only}, $ \#auth
         window._auth.after-login = Auth.after-login if Auth.after-login
 
       $.fancybox.open \#auth, window.fancybox-params unless $ \.fancybox-overlay:visible .length
@@ -120,11 +120,13 @@ module.exports =
     # handler for login form
     login: (ev) ~>
       $form = $ ev.target
-      u = $form.find('input[name=username]')
-      p = $form.find('input[name=password]')
+      u = $form.find 'input[name=username]'
+      p = $form.find 'input[name=password]'
+      s = $form.find 'input[type=submit]'
       params =
         username: u.val!
         password: p.val!
+      s.attr \disabled \disabled
       $.post $form.attr(\action), params, (r) ~>
         if r.success
           $.fancybox.close!
@@ -134,7 +136,8 @@ module.exports =
           $fancybox.add-class \on-error
           $fancybox.remove-class \shake
           ch.show-tooltip $form.find(\.tooltip), 'Try again!' # display error
-          set-timeout (-> $fancybox.add-class(\shake); u.focus!), 100ms
+          set-timeout (-> $fancybox.add-class(\shake); u.focus!), 10ms
+        s.remove-attr \disabled
       false
 
     # After a login, different webapps may want to do differnt things.
@@ -148,6 +151,8 @@ module.exports =
     register: (ev) ~>
       $form = $ ev.target
       $form.find(\input).remove-class \validation-error
+      s = $form.find 'input[type=submit]'
+      s.attr \disabled \disabled
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $form.find("input:text,input:password").remove-class(\validation-error).val ''
@@ -160,11 +165,14 @@ module.exports =
             msgs.push e.msg
           ch.show-tooltip $form.find(\.tooltip), unique(msgs).join \<br> # display errors
           shake-dialog $form, 100ms
+        s.remove-attr \disabled
       false
 
     # handler for form that asking for a password reset email
     forgot-password: (ev) ~>
       $form = $ ev.target
+      s = $form.find 'input[type=submit]'
+      s.attr \disabled \disabled
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           Auth.show-info-dialog 'Check your inbox for reset link!', \on-forgot
@@ -173,6 +181,7 @@ module.exports =
           msg = r.errors?0?name or r.errors?0?msg or 'Unable to find you'
           ch.show-tooltip $form.find(\.tooltip), msg # display error
           shake-dialog $form, 100ms
+        s.remove-attr \disabled
       false
 
     # handler for form for resetting a forgotten password
@@ -182,6 +191,8 @@ module.exports =
       if password.match /^\s*$/
         ch.show-tooltip $form.find(\.tooltip), "Password may not be blank"
         return false
+      s = $form.find 'input[type=submit]'
+      s.attr \disabled \disabled
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $form.find('input').prop(\disabled, true)
@@ -194,6 +205,7 @@ module.exports =
           ), 1500ms
         else
           ch.show-tooltip $form.find(\.tooltip), "Choose a better password"
+        s.remove-attr \disabled
       false
 
     # this toggles the visibility of the password field in case people want to see
@@ -212,6 +224,8 @@ module.exports =
     # choose a username
     choose: (ev) ~>
       $form = $ ev.target
+      s = $form.find 'input[type=submit]'
+      s.attr \disabled \disabled
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $.fancybox.close!
@@ -221,4 +235,5 @@ module.exports =
           $form.find \input:first .focus!
           ch.show-tooltip $form.find(\.tooltip), r.msg # display error
           shake-dialog $form, 100ms
+        s.remove-attr \disabled
       false

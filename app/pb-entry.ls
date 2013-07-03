@@ -41,8 +41,6 @@ window.load-ui = -> # restore ui state from cookie
   s  = $.cookie \s
   $l = $ \#left_content
 
-  set-wide = -> $l.toggle-class \wide ($l.width! > 300px)
-
   if s # restore
     [collapsed, w] = s.split sep
     if collapsed is \1 and not $ \html .has-class \admin
@@ -299,7 +297,7 @@ $d.on \click 'html.admin .onclick-add' (ev) ->
   console.log \add-sortable
   false
 
-$d.on \click  'html.admin .onclick-submit input[type="submit"]' (ev) ->
+$d.on \click 'html.admin .onclick-submit input[type="submit"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form
     t = $(f.find \.tooltip)
@@ -333,20 +331,25 @@ $d.on \change 'html.admin .domain' -> # set keys
     \googleConsumerKey
     \googleConsumerSecret]
       $ "[name='#k']" .val domain.config[k]
+subscribe = (what) -> unless what in site.subscriptions
+  do-buy what
+  false
+$d.on \click 'html.admin #private'   -> subscribe \private
+$d.on \click 'html.admin #analytics' -> subscribe \analytics
 #}}}
 # {{{ - components
 window.component = {}
 
+$d.on \click \.onclick-buy (ev) -> do-buy($ ev.target .data \product)
 window.do-buy = (product-id) ->
   throw new Error "window.do-buy must specify a product-id" unless product-id
-
+  <- lazy-load-fancybox
   product <- $.get(\/resources/products/ + product-id)
   locals = {product, card-needed:!window.site?has_stripe}
 
   existing.detach! if existing = window.component.buy
 
   window.component.buy = new Buy {locals}
-  <- lazy-load-fancybox
   $.fancybox window.component.buy.$, fancybox-params
 #}}}
 

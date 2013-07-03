@@ -445,8 +445,10 @@ html.search
 html.admin
   #left_content
     max-width 150px
+    background-color #fffbf8
+    .handle
+      display none
     #left_container
-      padding-top 60px
       menu
         float right
         list-style none
@@ -464,18 +466,19 @@ html.admin
             top -12px
             left -10px
             transform rotate(-10deg)
-            background-color #ddd
-            color #555
+            background-color orange
+            color #fff
             border-radius 6px / 3px
             padding 0 4px
             opacity .7
   #main_content
     padding-left 200px
+    padding-bottom 50px
     .note
       color #aaa
-      font-size .7em
+      font-size .75em
       position absolute
-      margin-top -6px
+      margin-top -4px
       left 183px
     .menus
       .col1, col2
@@ -534,7 +537,10 @@ html.admin
         vertical-align top
         margin-top grid
       .break
-        margin-top (grid*2.5)
+        padding-bottom (grid*2.5)
+        clear both
+      .break.double
+        padding-top (grid*2.5)
       fieldset
         padding grid (grid*3) grid (grid*4)
         border 0
@@ -562,6 +568,62 @@ html.admin
       .tooltip
         left 350px
         bottom 60px
+
+      input[type="checkbox"]
+        display none
+
+      input[type="checkbox"]:checked ~ label[for="private"] .switch, input[type="checkbox"]:checked ~ label[for="invite_only"] .switch
+        margin-left 40px
+        padding 6px
+        margin-top -1px
+      label[for="private"], label[for="invite_only"]
+        display inline-block
+        width 60px
+        height 20px
+        padding 3px
+        margin 0 10px 8px 0
+        border-radius 30px
+        background rgba(0,0,0,.1)
+        box-shadow inset 0 2px 10px #666, 0 2px 5px #eee
+
+      .box
+        display inline-block
+        margin-top 12px
+
+      input[type="checkbox"]:checked + label .switch::after
+        transition background-color .3s ease-out
+      .switch 
+        cursor pointer
+        display block
+        width 10px
+        height 10px
+        padding 4px
+        margin-top 1px
+        background #eee
+        box-shadow inset 0 0 2px rgba(0, 0, 0,0.25), 0 0 5px #999
+        border-radius 20px
+        transition all .4s cubic-bezier(0,1.72,0,.75)
+      .switch::after 
+        content ''
+        display block
+        float left
+        margin 0
+        width 10px
+        height 10px
+        background #888
+        border-radius 8px
+        box-shadow inset 0 0 3px #555
+
+      span
+        color #aaa
+        font-size 18px
+        font-weight bold
+        line-height 26px
+        label
+          width 60px
+
+      input[type="checkbox"]:checked ~ span[class*="checked"]
+        color #444
 //}}}
 
 #left_container

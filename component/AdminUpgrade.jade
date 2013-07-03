@@ -1,36 +1,42 @@
 
+mixin product(p, msg)
+  if subscriptions.indexOf(p)==-1
+    div(class="#{p}-available")
+      input.onclick-buy(type='button', data-product=p, value='Buy')
+    div(class="#{p}-purchased hidden")
+      p.green= msg
+        span &#x2713;
+  else
+    div(class="#{p}-available hidden")
+      input.onclick-buy(type='button', data-product=p, value='Buy')
+    div(class="#{p}-purchased")
+      p.green= msg
+        span &#x2713;
+
 fieldset
   h2 Custom Domain
   p Add your own personal flair!  Get serious and aim any domain at your PowerBulletin site.
-  if subscriptions.indexOf('custom_domain') == -1
-    input(type='button', onclick="doBuy('custom_domain')", value='Buy')
-  else
-    p.green Custom Domain Purchased
-      span &#x2713;
+  mixin product('custom_domain', 'Custom Domain Purchased')
+  .notes
+    a.mutant(href='/admin/domains') Click here to bring your domains online!
     
 fieldset
   h2 Go Private
   p Privacy?  We got you covered.  This feature hides your content from Search Engines and the public.
-  if subscriptions.indexOf('private_site') == -1
-    input(type='button', onclick="doBuy('private_site')", value='Buy')
-  else
-    p.green Private Site Purchased
-      span &#x2713;
+  mixin product('private', 'Private Site Purchased')
+  .notes
+    a.mutant(href='/admin') Click here to toggle privacy settings!
 
 fieldset
   h2 Analytics
   p Your enterprising PowerBulletin community is bustling!  Know who, where and how with your favorite analytics tracker.
-  if subscriptions.indexOf('analytics') == -1
-    input(type='button', onclick="doBuy('analytics')", value='Buy')
-  else
-    p.green Analytics Purchased
-      span &#x2713;
+  mixin product('analytics', 'Analytics Purchased')
+  .notes
+    a.mutant(href='/admin') Get started with analytics here!
 
 fieldset
   h2 Super Computing Instance
   p Your site really took off and you'd like more horsepower--speed is everything!  With your turbo-charged instance comes additional security, monitoring and peace of mind.
-  if subscriptions.indexOf('compute_instance') == -1
-    input(type='button', onclick="doBuy('compute_instance')", value='Buy')
-  else
-    p.green Computing Instance Purchased
-      span &#x2713;
+  mixin product('compute_instance', 'Super Computing Instance Purchased')
+  .notes
+    p A PowerBulletin team member will contact you after purchase!

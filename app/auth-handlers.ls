@@ -56,10 +56,12 @@ require! {
   domain   = site.current_domain
   passport = auth.passport-for-domain[domain]
 
+  if res.locals.invite-only then next 404; return # registration disabled
+
   # TODO more validation
-  req.assert('username').not-empty!is-alphanumeric!  # .len(min, max) .regex(/pattern/)
-  req.assert('password').not-empty!  # .len(min, max) .regex(/pattern/)
-  req.assert('email').is-email!
+  req.assert \username .not-empty!is-alphanumeric!  # .len(min, max) .regex(/pattern/)
+  req.assert \password .not-empty!  # .len(min, max) .regex(/pattern/)
+  req.assert \email .is-email!
 
   if errors = req.validation-errors!
     console.warn errors
@@ -69,10 +71,37 @@ require! {
     password = req.body.password
     email    = req.body.email
     (err, u) <- register-local-user site, username, password, email
-    if err then return res.json success:false, errors:[ msg:err ]
-    auth.send-registration-email u, site, (err, r) ->
-      console.warn 'registration email', err, r
-    res.json success:true, errors:[]
+    if err
+      # FIXME possible email abuse if if attacker is able to create accounts
+      if err?verify # err is existing user, so ...
+        console.warn 'user exists:', err, site
+        <- auth.send-registration-email err, site # resend!
+        res.json success:false, errors:[msg:'Resent verification email!']
+      else
+        # default error situation
+        return next err
+
+    done(was-transient)  = ->
+      auth.send-registration-email u, site, (err, r) ->
+        console.warn 'registration email', err, r
+      res.json success:true, errors:[], user-linked-need-reload: was-transient
+
+    # TODO 
+    # - if transient_owner of this site, associate site with this user
+    # - delete transient_owner cookie
+    if tid = req.cookies.transient_owner
+      (err, authorized) <~ db.authorize-transient tid, site.id
+      if err then next err
+
+
+      if authorized
+        err <~ db.sites.update criteria: { id: site.id }, data: { user_id: u.id, transient_owner: null }
+        if err then next err
+        done true
+      else
+        done!
+    else
+      done!
 
 do-verify = (req, res, next) ~>
   v    = req.param \v
