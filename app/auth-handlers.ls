@@ -56,12 +56,30 @@ require! {
         <- auth.send-registration-email err, site # resend!
         res.json success:false, errors:[msg:'Resent verification email!']
       else
-        res.json success:false, errors:[msg:err]
-    else
-      # send initial registration
+        # default error situation
+        return next err
+
+    done(was-transient)  = ->
       auth.send-registration-email u, site, (err, r) ->
         console.warn 'registration email', err, r
-      res.json success:true, errors:[]
+      res.json success:true, errors:[], user-linked-need-reload: was-transient
+
+    # TODO 
+    # - if transient_owner of this site, associate site with this user
+    # - delete transient_owner cookie
+    if tid = req.cookies.transient_owner
+      (err, authorized) <~ db.authorize-transient tid, site.id
+      if err then next err
+
+
+      if authorized
+        err <~ db.sites.update criteria: { id: site.id }, data: { user_id: u.id, transient_owner: null }
+        if err then next err
+        done true
+      else
+        done!
+    else
+      done!
 
 do-verify = (req, res, next) ~>
   v    = req.param \v
