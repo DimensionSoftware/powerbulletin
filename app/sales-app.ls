@@ -32,7 +32,6 @@ sales-personal-mw =
   * express.cookie-session {secret:cvars.secret}
   * auth.mw.initialize
   * auth.mw.session
-auth-handlers.apply-to s-app, sales-personal-mw
 
 s-app.get '/dynamic/css/:file' pb-handlers.stylus
 
@@ -81,5 +80,11 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
     done!
   else
     done!
+
+# /auth/*
+auth-handlers.apply-to s-app, sales-personal-mw
+
+# The ability to give out login tokens is not applied by default.
+s-app.get '/auth/once', sales-personal-mw, auth-handlers.once-setup
 
 module.exports = s-app
