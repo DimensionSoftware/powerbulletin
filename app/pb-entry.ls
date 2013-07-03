@@ -118,14 +118,13 @@ do ->
       else
         submit-type = \soft
 
-      console.log "keyup:#{it.which} triggered a #{submit-type} search"
+      #console.log "keyup:#{it.which} triggered a #{submit-type} search"
       newopts = {} <<< window.searchopts <<< {q, submit-type}
       delete newopts.page # remove page from new term searches
       r-searchopts newopts
   ), 500ms
 
 $d.on \change, '#search_filters [name=forum_id]', ->
-  console.log it
   submit-type = \soft
   forum_id = $(@).val!
 
@@ -172,7 +171,7 @@ $R((sopts) ->
   [k for k,v of sopts when not v].map -> delete sopts[it]
 
   if should-search
-    console.log 'search request:', sopts
+    #console.log 'search request:', sopts
     qs = $.param sopts
     uri = "/search#{if qs then \? else ''}#{qs}"
 
