@@ -76,6 +76,7 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
       user_id : user.id
       site_id : result.site_id
       name    : user.name
+      rights  : { super : 1 }
     <- db.alias-create-preverified alias
     done!
   else

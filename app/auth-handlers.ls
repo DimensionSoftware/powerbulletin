@@ -33,6 +33,7 @@ require! {
   token = req.body.token
   site  = res.vars.site
   err, r <- db.authorize-by-login-token site.id, token
+  console.warn \authorize-by-login-token, [err, r]
   if err then return next err
   if r
     req.session?passport?user = "permanent:#{r.name}:#{site.id}"
@@ -81,7 +82,7 @@ require! {
         # default error situation
         return next err
 
-    done(was-transient)  = ->
+    done = (was-transient) ->
       auth.send-registration-email u, site, (err, r) ->
         console.warn 'registration email', err, r
       res.json success:true, errors:[], user-linked-need-reload: was-transient
@@ -95,7 +96,12 @@ require! {
 
 
       if authorized
+        console.warn \authorized-u, u
+        # ex-transient user should own site
         err <~ db.sites.update criteria: { id: site.id }, data: { user_id: u.id, transient_owner: null }
+        if err then next err
+        # ex-transient user should have super admin privileges
+        err <~ db.aliases.update criteria: { user_id: u.id, site_id: site.id }, data: { rights: JSON.stringify(super:1) }
         if err then next err
         done true
       else
