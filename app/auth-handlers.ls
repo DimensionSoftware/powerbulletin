@@ -32,8 +32,8 @@ require! {
 @once = (req, res, next) ->
   token = req.body.token
   site  = res.vars.site
-  err, r <- db.authorize-by-login-token site.id, token
-  console.warn \authorize-by-login-token, [err, r]
+  err, r <- db.authenticate-login-token site.id, token
+  console.warn \authenticate-login-token, [err, r]
   if err then return next err
   if r
     req.session?passport?user = "permanent:#{r.name}:#{site.id}"
