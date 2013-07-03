@@ -19,6 +19,7 @@ require! {
   async
   express
   http
+  cors
   \express-resource
   \express-validator
   stylus
@@ -204,23 +205,6 @@ module.exports =
 
       app.use err-or-notfound
       sales-app.use err-or-notfound
-
-      require! \./auth-handlers
-      sales-mw =
-        * mw.vars
-        * mw.cvars
-        * mw.multi-domain
-      sales-mw.for-each (-> sales-app.use it)
-      sales-app.enable 'json callback'
-      sales-app.enable 'trust proxy' # parse x-forwarded-for in req.ip, etc...
-      sales-personal-mw =
-        * express-validator
-        * express.body-parser!
-        * express.cookie-parser!
-        * express.cookie-session {secret:cvars.secret}
-        * auth.mw.initialize
-        * auth.mw.session
-      auth-handlers.apply-to sales-app, sales-mw ++ sales-personal-mw # XXX - The ++ shouldn't be necessary, but I can't seem to get it to work otherwise.
 
       # all domain-based catch-alls & redirects, # cache 1 year in production, (cache will get blown on deploy due to changeset tagging)
       max-age = if DISABLE_HTTP_CACHE then 0 else (60 * 60 * 24 * 365) * 1000

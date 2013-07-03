@@ -384,7 +384,7 @@ CREATE FUNCTION procs.alias_unique_hash(field JSON, site_id JSON, hash JSON) RET
   return plv8.execute(sql, [site_id, hash])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
--- find an alias by site_id and verify string
+-- blank out an alias' forgot field
 CREATE FUNCTION procs.alias_blank(usr JSON) RETURNS JSON AS $$
   sql = """
   UPDATE aliases SET forgot = NULL WHERE user_id = $1 AND site_id = $2 RETURNING *
@@ -392,12 +392,28 @@ CREATE FUNCTION procs.alias_blank(usr JSON) RETURNS JSON AS $$
   return plv8.execute(sql, [usr.id, usr.site_id])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+-- Create a preverified user.  Just need user_id, site_id, and name.
+CREATE FUNCTION procs.alias_create_preverified(alias JSON) RETURNS JSON AS $$
+  sql = """
+  INSERT INTO aliases (user_id, site_id, name, rights, verified) VALUES ($1, $2, $3, $4, 't') RETURNING *
+  """
+  return plv8.execute(sql, [alias.user_id, alias.site_id, alias.name, alias.rights])[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 --
 CREATE FUNCTION procs.verify_user(site_id JSON, verify JSON) RETURNS JSON AS $$
   sql = '''
-  UPDATE aliases SET verified = true WHERE site_id = $1 AND verify = $2 RETURNING *
+  UPDATE aliases SET verified = true, verify = NULL WHERE site_id = $1 AND verify = $2 RETURNING *
   '''
   return plv8.execute(sql, [site_id, verify])[0]
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+--
+CREATE FUNCTION procs.authorize_by_login_token(site_id JSON, login_token JSON) RETURNS JSON AS $$
+  sql = '''
+  UPDATE aliases SET login_token = NULL WHERE site_id = $1 AND login_token = $2 RETURNING *
+  '''
+  return plv8.execute(sql, [site_id, login_token])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- @param Object usr
