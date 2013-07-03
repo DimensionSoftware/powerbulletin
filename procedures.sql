@@ -409,7 +409,7 @@ CREATE FUNCTION procs.verify_user(site_id JSON, verify JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 --
-CREATE FUNCTION procs.authorize_by_login_token(site_id JSON, login_token JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.authenticate_login_token(site_id JSON, login_token JSON) RETURNS JSON AS $$
   sql = '''
   UPDATE aliases SET login_token = NULL WHERE site_id = $1 AND login_token = $2 RETURNING *
   '''
