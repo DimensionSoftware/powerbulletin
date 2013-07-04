@@ -386,7 +386,11 @@ join-search = (sock) ->
   #console.log 'joining search notifier channel', window.searchopts
   sock.emit \search window.searchopts
 
-end-search = ->
+end-search = (w) ->
+  if w.component.paginator
+    w.component.paginator
+      ..local \qty 0
+      ..reload!
   socket.emit \search-end
 
 mk-search-pnum-to-href = (searchopts) ->
@@ -527,7 +531,7 @@ export search =
       next!
   on-unload:
     (w, next-mutant, next) ->
-      end-search!
+      end-search(w)
       delete w.searchopts # reset filter state so it doesn't come back to haunt us
       next!
 
