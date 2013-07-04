@@ -10,9 +10,15 @@ module.exports =
     template: templates.AdminMenu
 
     on-attach: !~>
-      <~ ch.lazy-load-nested-sortable
+      @$.on \click \.onclick-add (ev) ~>
+        console.log \add-sortable
+        false
 
-#      $d.on \click 'html.admin .onclick-add' (ev) ->
-#        console.log \add-sortable
-#        false
-#
+      # init
+      <~ ch.lazy-load-nested-sortable
+      $ \.sortable .nested-sortable {
+        handle: \div
+        items:  \li
+        tolerance-element: '> div'}
+
+    on-detach: -> @$.off!
