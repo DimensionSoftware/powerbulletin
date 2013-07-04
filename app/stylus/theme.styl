@@ -128,8 +128,6 @@ header
     .search::before
       border-left 7px solid highlight-color2
     .search
-      top 5px!important
-      right 6px!important
       .query::-webkit-input-placeholder
           color #777
       .query:-moz-placeholder
@@ -151,7 +149,7 @@ header
         letter-spacing 1px
         text-align right
         background transparent
-        font-weight 200
+        font-weight 400
         border none
       .query
         font-size 1.15em
@@ -272,22 +270,21 @@ header
 ///}}}
 //{{{ Footer
 footer::before
-  border-top 1px solid #ddd
-  box-shadow 0 -1px 6px 0 #999
+  border-top 1px solid #eee
   top 0
   left 0
   right 0
   content ''
   position absolute
 footer:hover::before
-  border-top 1px solid #ccc
-  box-shadow 0 -1px 8px 0 #666
-  transition box-shadow .1s ease-out
+  border-top 1px solid #ddd
+  transition border-top .2s ease-out
 footer:hover
   color #666
 footer
   opacity 0
   background-color #f7f7f7
+  background-image linear-gradient(bottom, #fff 13px, #ccc)
   text-align center
   color #777
   h6
@@ -300,8 +297,10 @@ footer
 //{{{ Scrolled <body>
 body.scrolled
   footer::before
+    border-top 1px solid #ddd
+  footer:hover::before
     border-top 1px solid #ccc
-    box-shadow 0 -2px 9px 0 #777
+    transition border-top .2s ease-out
   header::after
     border-bottom 1px solid #ccc
     box-shadow 0 2px 6px 0px #ddd

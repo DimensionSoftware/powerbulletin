@@ -208,7 +208,7 @@ html.forum, html.profile, html.search
             display inline-block
           .button
             bottom 20px
-            right 5px
+            right 12px
       .post-edit
         position relative
         margin-bottom (grid*2)
@@ -285,7 +285,7 @@ html.forum, html.profile, html.search
         img
           max-width 100%
         .title
-          margin 0 0 1px -1px
+          margin 0 0 6px -1px
           font-size 1.5em
         .user
           font-weight bold
@@ -416,30 +416,69 @@ html.profile
     margin grid 0 0 0
 //}}}
 //{{{ - search
+html.search body.scrolled
+  header
+    .onclick-close
+      top 5px
 html.search
-  #facets
-    .facet-title
-      font-weight bold
+  #left_container 
+    h1, h2, h3, h4
+      margin 11px 0
+      color #555
+    #search_filters, #search_facets
+      padding 0 15px
+    #facets
+      .facet-title
+        font-weight bold
+      a.facet-hit
+        display block
+    .facet
+      a
+        display block
     a.facet-hit
       display block
-
+      em
+        font-size .9em
+        color #555
+        width 25px
+        display inline-block
+  #main_content
+    #hit_count
+      color #888
   header
     .search
-      #query.query, #query.query:focus, #query.query:hover
-        box-shadow 0 1px 3px rgba(0,0,0,0.25) inset
-        border-radius 20px
-
-  #search_facets
-    padding-left 14px
+    .container
+      .search
+        #query.query
+          position relative
+          z-index 9
+          font-size 1.35em
+          font-weight 400
+        #query.query, #query.query:focus, #query.query:hover
+          box-shadow 0 1px 3px rgba(0,0,0,0.25) inset, 0 1px 1px #888
+          border-radius 25px / 10px
+      .advanced
+        right 80px
+        top (header-height + 5)
+        transition right .2s ease-out
+        .check, label
+          cursor pointer
+    .onclick-close
+      cursor pointer
+      position absolute
+      right 15px
+      top 15px
+      z-index 14
+      opacity 1
+      font-size 1.1em
+      line-height 6px
+      transition opacity .5s ease-out .1s
 
     h2.title
       font-size 1em
       text-overflow ellipsis
       max-height 20px
       overflow hidden
-    a.facet-hit
-      display block
-      padding 10px 4px 4px 14px
 //}}}
 //{{{ - admin
 html.admin
