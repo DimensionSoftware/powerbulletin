@@ -367,6 +367,26 @@ footer
   height footer-height
   z-index 9
   width auto
+  .onclick-scroll-top:hover
+    color #222
+  .onclick-scroll-top:hover::before
+    border-bottom 8px solid #aaa
+    top 1px
+    transition all .1s ease-out
+  .onclick-scroll-top::before
+    position absolute
+    content ''
+    border 6px solid transparent
+    border-bottom 6px solid #ccc
+    top 3px
+    right 45px
+  .onclick-scroll-top
+    position absolute
+    top 0
+    right 0
+    font-size .8em
+    letter-spacing 2px
+    padding 0 15px 0 30px
 #chat_drawer
   position fixed
   height 0
