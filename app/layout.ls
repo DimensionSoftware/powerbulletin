@@ -103,8 +103,8 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
             onload-resizable!
             window.hints.current.mutator = window.mutator
             spin false
-        else
-          console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
+        #else
+        #  console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
 #}}}
 #{{{ Personalizing behaviors
 window.onload-personalize = ->

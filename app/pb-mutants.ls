@@ -9,12 +9,15 @@ require! {
 }
 
 !function bench subject-name, subject-body
-  bef = new Date
-  subject-body!
-  aft = new Date
-  set-timeout(_, 1) ->
-    dur = aft - bef
-    console.log "benchmarked '#{subject-name}': took #{dur}ms"
+  if process.env.NODE_ENV is \production
+    subject-body! # run only
+  else
+    bef = new Date
+    subject-body!
+    aft = new Date
+    set-timeout(_, 1) ->
+      dur = aft - bef
+      console.log "benchmarked '#{subject-name}': took #{dur}ms"
 
 !function render-component c, locals, window, target
   wc = window.component ||= {}
@@ -379,7 +382,7 @@ export admin =
       next!
 
 join-search = (sock) ->
-  console.log 'joining search notifier channel', window.searchopts
+  #console.log 'joining search notifier channel', window.searchopts
   sock.emit \search window.searchopts
 
 end-search = ->
@@ -449,10 +452,6 @@ export search =
           # only perform on client-side
 
           if @statechange-was-user
-            set-timeout(->
-              console.log('overriding querystring due to forward/back button event')
-            , 1)
-
             # only perform when back/forward button is pressed
             after.push ->
               bench \query-string-update ->

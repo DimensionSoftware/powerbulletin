@@ -8,4 +8,6 @@
     .facet
       .facet-title Hits by Forum
       each forum in facets.forum
-        a.mutant.facet-hit(href=forum.uri) #{forum.title} (#{forum.hitCount})
+        a.mutant.facet-hit(href=forum.uri)
+          em= forum.hitCount
+          span= forum.title
