@@ -1,24 +1,35 @@
-module.exports = class Presence
-  (@redis, @site-id) ->
-    # @redis.select @site-id
+require! {
+  redis
+}
 
-  # who is in a channel
+module.exports = class Presence
+  (@site-id, cb) ->
+    @r = redis.create-client!
+    @r.select @site-id, cb
+
+  # who is in a channel -- list of connection ids, user ids tuples
   in: (room, cb) ~>
+    (err, cids) <~ @r.smembers room
+    if err then return cb err
+    (err, users-json) <~ @r.hmget \users, ...cids
+    if err then return cb err
+    cb null (users-json |> map -> JSON.parse it)
 
   # enter a room
   enter: (room, cid, cb) ~>
+    @r.sadd room, cid, cb
 
   # leave a room
   leave: (room, cid, cb) ~>
+    @r.srem room, cid, cb
 
-  # user by connection id
-  user-by-cid: (cid, cb) ~>
-
-  # socket.io connection ids associated to a user
-  cids-by-user-id: (user-id, cb) ~>
+  # TODO socket.io connection ids associated to a user
+  cids-by-users: (users, cb) ~>
 
   # associate a user with a connection
-  user-add-client: (user-id, cid, cb) ~>
+  user-add-client: (user, cid, cb) ~>
+    @r.hset \users, cid, JSON.stringify(user), cb
 
   # disassociate a user with a connection
-  user-remove-client: (user-id, cid, cb) ~>
+  user-remove-client: (cid, cb) ~>
+    @r.hrem \users, cid, cb

@@ -12,6 +12,8 @@ global.v     = require \./varnish
 global.t     = require \./tasks
 global.s     = require \./search
 
+global.Presence = require \./presence
+
 global <<< require \prelude-ls
 global <<< require \./server-helpers
 global <<< require \./shared-helpers

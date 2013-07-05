@@ -1,10 +1,11 @@
 require! {
+  redis
   crc32: 'express/node_modules/buffer-crc32'
   cookie: 'express/node_modules/cookie'
   connect: 'express/node_modules/connect'
   RedisStore: 'socket.io/lib/stores/redis'
-  redis: 'socket.io/node_modules/redis'
   ChatServer: './io-chat-server'
+  Presence: './presence'
   '../component/Chat'
 }
 
