@@ -44,6 +44,11 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     p.parent!add-class \active
     w.$(last p.parents \li) .find \.title .add-class \active # get parent, too
 
+  # private sites remove info unless logged in
+  if @private
+    #XXX/TODO need to remove the elements from page which are sensitive in this case with .remove!
+    console.log \private!
+
 layout-on-personalize = (w, u) ->
   if u # guard
     set-online-user u.id
@@ -77,7 +82,7 @@ export homepage =
 #      window.$ \.bg .each ->
 #        e = window.$ this .add-class \bg-set .remove!
 #        window.$ \body .prepend e
-      layout-static window, \homepage
+      layout-static.call @, window, \homepage
       next!
   on-personalize: (w, u, next) ->
     layout-on-personalize w, u
@@ -181,8 +186,6 @@ export forum =
 
       #window.$ \.bg .remove! # XXX kill background (for now)
 
-      layout-static window, \forum, @active-forum-id
-
       do ~>
         if not @post then return
         wc = window.component ||= {}
@@ -202,6 +205,7 @@ export forum =
           wc.paginator =
             new Paginator {locals, pnum-to-href} window.$(\#pb_paginator)
 
+      layout-static.call @, window, \forum, @active-forum-id
       next!
   on-load:
     (window, next) ->
@@ -293,7 +297,7 @@ export profile =
       window.render-mutant \main_content \posts-by-user
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
-      layout-static window, \profile
+      layout-static.call @, window, \profile
       next!
   on-load:
     (window, next) ->
@@ -357,8 +361,8 @@ export admin =
         \#main_content)
       | otherwise => window.render-mutant \main_content, \admin-general
 
-      layout-static window, \admin
       window.marshal \site @site
+      layout-static.call @, window, \admin
       next!
   on-unload:
     (window, next-mutant, next) ->
@@ -385,7 +389,11 @@ join-search = (sock) ->
   #console.log 'joining search notifier channel', window.searchopts
   sock.emit \search window.searchopts
 
-end-search = ->
+end-search = (w) ->
+  if w.component.paginator
+    w.component.paginator
+      ..local \qty 0
+      ..reload!
   socket.emit \search-end
 
 mk-search-pnum-to-href = (searchopts) ->
@@ -486,9 +494,6 @@ export search =
           window.$('#search_filters [name=forum_id]').val @searchopts.forum_id
           window.$('#search_filters [name=within]').val @searchopts.within
 
-        bench \layout-static ->
-          layout-static window, \search
-
         do ~>
           wc = window.component ||= {}
 
@@ -507,6 +512,8 @@ export search =
             wc.paginator =
               new Paginator {locals, pnum-to-href} window.$(\#pb_paginator)
 
+        bench \layout-static ~>
+          layout-static.call @ window, \search
         next!
   on-initial:
     (w, next) ->
@@ -526,7 +533,7 @@ export search =
       next!
   on-unload:
     (w, next-mutant, next) ->
-      end-search!
+      end-search(w)
       delete w.searchopts # reset filter state so it doesn't come back to haunt us
       next!
 
@@ -535,7 +542,7 @@ export page =
     (window, next) ->
       window.replace-html window.$(\#left_container), ''
       window.replace-html window.$(\#main_content), @page.config.main_content
-      layout-static window, \page
+      layout-static.call @, window, \page
       next!
   on-load:
     (window, next) ->
