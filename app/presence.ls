@@ -41,7 +41,10 @@ module.exports = class Presence
   # also deletes rooms:$cid key
   leave-all: (cid, cb) ~>
     (err, rooms) <~ @rooms-by-cid cid
-    async.each rooms, ((room, cb) ~> @leave room, cid, cb), cb
+    if err then return cb err
+    (err) <~ async.each rooms, ((room, cb) ~> @leave room, cid, cb)
+    @r.del "rooms:#{cid}", cb
+
 
   # rooms a connection is in
   rooms-by-cid: (cid, cb) ~>
