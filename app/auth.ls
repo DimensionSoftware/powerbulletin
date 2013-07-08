@@ -209,6 +209,8 @@ export create-passport = (domain, cb) ->
       (err, user) <~ db.usr {name, site_id}
       if err then return cb err
       done err, user
+    | otherwise =>
+      done new Error("bad cookie #{parts}")
 
   pass.use new passport-local.Strategy (username, password, done) ~>
     (err, user) <~ db.usr { name: username, site_id: site.id }  # XXX - how do i get site_id?

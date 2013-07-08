@@ -9,7 +9,7 @@ do
         echo ':: Killing PowerBulletin'
         killall -q -9 powerbulletin
         killall -q -9 pb-supervisor
-        killall -q -9 pb-worker
+        killall -q -r -9 pb-worker
         echo ':: Purging Varnish'
         varnishadm -T 127.0.0.1:2000 ban.url ^.
         echo ':: Starting PowerBulletin'
