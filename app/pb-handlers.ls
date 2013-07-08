@@ -401,9 +401,9 @@ cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 
   facets = {forum: []}
   for t in elres2.facets.forum.terms
-    forum_id = t.term
-    title = forum-dict[forum_id]
-    hit-count = t.count
+    forum_id  = t.term
+    title     = forum-dict[forum_id]
+    hit-count = add-commas t.count
 
     newopts = {} <<< res.locals.searchopts <<< {forum_id}
     delete newopts.page # resets to page 1 when filtering by a forum
