@@ -45,7 +45,6 @@ module.exports = class Presence
     (err) <~ async.each rooms, ((room, cb) ~> @leave room, cid, cb)
     @r.del "rooms:#{cid}", cb
 
-
   # rooms a connection is in
   rooms-by-cid: (cid, cb) ~>
     @r.smembers "rooms:#{cid}", cb
@@ -60,3 +59,5 @@ module.exports = class Presence
   # disassociate a user with a connection
   users-client-remove: (cid, cb) ~>
     @r.hrem \users, cid, cb
+
+# vim:fdm=indent
