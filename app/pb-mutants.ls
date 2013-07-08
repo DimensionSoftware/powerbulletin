@@ -514,7 +514,7 @@ export search =
               new Paginator {locals, pnum-to-href} window.$(\#pb_paginator)
 
         bench \layout-static ~>
-          layout-static.call @ window, \search
+          layout-static.call @, window, \search
         next!
   on-initial:
     (w, next) ->
