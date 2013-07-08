@@ -12,7 +12,8 @@ require! {
 module.exports = class Presence
   (@site-id, cb) ->
     @r = redis.create-client!
-    @r.select @site-id, cb
+    err <~ @r.select @site-id
+    cb err, @
 
   # who is in a channel -- list of connection ids, user ids tuples
   in: (room, cb) ~>
