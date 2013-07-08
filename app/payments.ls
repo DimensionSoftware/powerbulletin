@@ -1,4 +1,5 @@
 require! stripe
+require! \./on-purchase
 
 export client = stripe cvars.stripe.private-key
 
@@ -76,6 +77,11 @@ export subscribe = ({
     if err then return cb err
 
     err <- db.add-subscription site-id, product-id
+    if err then return cb err
+
+    # execute purchase hooks
+    console.log "Executing on-purchase hooks for product: #{product-id}"
+    err <- on-purchase[product-id] site-id
     if err then return cb err
 
     cb!
