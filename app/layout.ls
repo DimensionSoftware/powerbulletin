@@ -296,7 +296,6 @@ switch window.location.hash
 | \#validate => Auth.after-login! # email activation
 | \#once     => Auth.login-with-token!
 
-# XXX sales-app doesn't have a mutant.
-if typeof window.mutant is not \undefined
+if window.initial-mutant # XXX sales-app doesn't have a mutant
   <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
 # vim:fdm=marker
