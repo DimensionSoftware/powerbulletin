@@ -3,9 +3,12 @@ form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
     button.onclick-add Add Page
     ol.sortable
       li
-        div General Forum
+        div
+          input(id='title', name='title', value='General Forum')
   .col2
     fieldset
+      label(for='url') Url
+      input(id='url', type='text', name='url')
       label(for='type') Type
       select(id='type', name='type')
         option(value=2) Forum

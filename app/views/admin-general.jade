@@ -2,7 +2,7 @@ analytics = unescape(site.config.analytics)
 form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
   fieldset
     label(for='posts_per_page') Posts per Page
-    input(id='posts_per_page', class='posts-per-page', name='postsPerPage', type='text', value=site.config.postsPerPage)
+    input(id='posts_per_page', class='posts-per-page', name='postsPerPage', type='text', value=site.config.postsPerPage, maxlength=4)
     .break
     label Privacy
     .box

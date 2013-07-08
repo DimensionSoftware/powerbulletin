@@ -30,7 +30,7 @@
         i !
     fieldset
       .tooltip
-      input(id="email", name="email", type="text", placeholder="Email")
+      input(id="email", name="email", type="text", placeholder="Email", maxlength=254)
       input(type="submit", value="Send Reset")
       a.msg.onclick-show-login
         h3 Back
@@ -51,7 +51,7 @@
       .toggle-password Hide
       .strength-meter(title="Stronger passwords are green")
         .strength
-      input(name="email", class="register-email", type="text", placeholder="Email")
+      input(name="email", class="register-email", type="text", placeholder="Email", maxlength=254)
       input(type="submit", value="Sign In")
       a.msg.onclick-show-login
         h3 Back
