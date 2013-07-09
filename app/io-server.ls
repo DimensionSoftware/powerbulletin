@@ -83,14 +83,19 @@ site-by-domain = (domain, cb) ->
     err, site <- site-by-domain socket.handshake.domain
     if err then console.warn err
 
+    site-room = site.id
+    user-room = "#site-room/user/#{user.id}"
+
     err, presence <- new Presence site.id
 
-    err <- presence.enter "#{site.id}", socket.id
+    err <- presence.enter site-room, socket.id
     if err then console.error \presence.enter, err
+    socket.join site-room
     if user
       err <- presence.users-client-add socket.id, user
       if err then console.error \presence.users-client-add, err
-      socket.in("#{site.id}").emit \enter-site, user
+      socket.join user-room
+      io.sockets.in("#{site.id}").emit \enter-site, user
       # let it fall through
 
     #ChatServer
@@ -107,7 +112,7 @@ site-by-domain = (domain, cb) ->
       if user and site
         err <- presence.leave-all socket.id
         if err then console.warn \presence.leave-all, err
-        socket.in("#{site.id}").emit \leave-site, user
+        io.sockets.in(site-room).emit \leave-site, user
         chat-server.disconnect!
 
     socket.on \online-now, ->

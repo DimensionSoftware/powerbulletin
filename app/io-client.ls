@@ -12,9 +12,11 @@ socket.on \disconnect, ->
   #console.log \disconnected
 
 socket.on \enter-site, (message, cb) ->
+  console.warn \enter-site, message
   set-online-user message?id
 
 socket.on \leave-site, (message, cb) ->
+  console.warn \leave-site, message
   $ "[data-user-id=#{message.id}] .profile.photo" .remove-class \online
 
 socket.on \thread-impression (thread, cb) ->

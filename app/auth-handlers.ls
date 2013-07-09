@@ -3,15 +3,20 @@ require! {
   async
   jade
   querystring
+  sioa: \socket.io-announce
   pg:   \./postgres
   auth: \./auth
   __: lodash
 }
 
+announce = sioa.create-client!
+
 {is-editing, is-admin, is-auth} = require \./path-regexps
 
 @login = (req, res, next) ->
-  domain = res.vars.site.current_domain
+  site      = res.vars.site
+  domain    = site.current_domain
+  site-room = site.id
   err, passport <- auth.passport-for-domain domain
   if err then return next(err)
   if passport
@@ -22,6 +27,8 @@ require! {
       if not user then return res.json { success: false }
       req.login user, (err) ->
         if err then return next(err)
+        console.warn "emitting enter-site #{JSON.stringify(user)}"
+        announce.in(site-room).emit \enter-site, user
         res.json { success: true }
 
     passport.authenticate('local', auth-response)(req, res, next)
