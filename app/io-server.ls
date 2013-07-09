@@ -9,36 +9,6 @@ require! {
   '../component/Chat'
 }
 
-# might need to put this somewhere more persistent
-@state = {} # XXX - may need to move this to redis
-
-enter-site = (socket, site, user) ~>
-  s = site.id
-  @state[s] ||= {}
-  @state[s].users ||= {}
-  @state[s].users[user.name] = u = { id: user.id, name: user.name }
-  socket.join s
-  socket.join "#s/users/#{user.id}"
-  socket.in(s).broadcast.emit \enter-site, u
-
-leave-site = (socket, site, user) ~>
-  s = site.id
-  @state[s] ||= {}
-  @state[s].users ||= {}
-  delete @state[s].users[user.name]
-  socket.leave s
-  socket.leave "#s/users/#{user.id}"
-  socket.in(s).broadcast.emit \leave-site, { id: user.id, name: user.name }
-
-in-site = (socket, site) ~>
-  s = site.id
-  @state[s] ||= {}
-  @state[s].users ||= {}
-  users = keys @state[s].users
-  users.for-each (name) ~>
-    u = @state[s].users[name]
-    socket.in(s).emit \enter-site, u # not braoadcast
-
 user-from-session = (s, cb) ->
   unless s?passport?user
     return cb null, {id:0, name:\Anonymous, guest:true}
@@ -59,7 +29,10 @@ user-from-session = (s, cb) ->
   | \permanent =>
     (err, user) <~ db.usr {name, site_id}
     if err then return cb err
+    delete user.auths
     cb err, user
+  | otherwise =>
+    cb new Error("bad cookie #{s.passport.user}")
 
 site-by-domain = (domain, cb) ->
   if not domain
@@ -102,6 +75,7 @@ site-by-domain = (domain, cb) ->
 
   io.on \connection, (socket) ->
     var search-room
+    var presence
 
     err, user <- user-from-session socket.handshake.session
     if err then console.warn err
@@ -109,12 +83,15 @@ site-by-domain = (domain, cb) ->
     err, site <- site-by-domain socket.handshake.domain
     if err then console.warn err
 
-    if user and site
-      #console.warn { site: site.name, user: user.name }
-      enter-site socket, site, user
-    if site
-      #console.warn { site: site.name }
-      in-site socket, site
+    err, presence <- new Presence site.id
+
+    err <- presence.enter "#{site.id}", socket.id
+    if err then console.error \presence.enter, err
+    if user
+      err <- presence.users-client-add socket.id, user
+      if err then console.error \presence.users-client-add, err
+      socket.in("#{site.id}").emit \enter-site, user
+      # let it fall through
 
     #ChatServer
     chat-server = new ChatServer(io, socket, site, user)
@@ -125,15 +102,19 @@ site-by-domain = (domain, cb) ->
 
     socket.on \disconnect, ->
       console.warn \disconnected
-      if user and site
-        leave-site socket, site, user
-        chat-server.disconnect!
       if search-room
         socket.leave search-room
+      if user and site
+        err <- presence.leave-all socket.id
+        if err then console.warn \presence.leave-all, err
+        socket.in("#{site.id}").emit \leave-site, user
+        chat-server.disconnect!
 
     socket.on \online-now, ->
-      if site
-        in-site socket, site
+      err, users <- presence.in "#{site.id}"
+      users |> filter (-> it) |> each (u) ->
+        console.log \u, u
+        socket.in("#{site.id}").emit \enter-site, u # not braoadcast
 
     socket.on \debug, ->
       socket.emit \debug, socket.manager.rooms
