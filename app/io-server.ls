@@ -1,5 +1,6 @@
 require! {
   redis
+  debug
   crc32: 'express/node_modules/buffer-crc32'
   cookie: 'express/node_modules/cookie'
   connect: 'express/node_modules/connect'
@@ -8,6 +9,8 @@ require! {
   Presence: './presence'
   '../component/Chat'
 }
+
+log = debug 'io-server'
 
 user-from-session = (s, cb) ->
   unless s?passport?user
@@ -64,7 +67,7 @@ site-by-domain = (domain, cb) ->
       if unsigned
         original-hash = crc32.signed unsigned
         session = connect.utils.parse-JSON-cookie(unsigned) || {}
-        #console.log \session, session
+        #log \session, session
         handshake.session = session
         handshake.domain  = handshake.headers.host
         return accept(null, true)
@@ -78,22 +81,24 @@ site-by-domain = (domain, cb) ->
     var presence
 
     err, user <- user-from-session socket.handshake.session
-    if err then console.warn err
+    if err then log err
 
     err, site <- site-by-domain socket.handshake.domain
-    if err then console.warn err
+    if err then log err
 
     site-room = site.id
-    user-room = "#site-room/user/#{user.id}"
+    user-room = "#site-room/users/#{user.id}"
 
     err, presence <- new Presence site.id
 
     err <- presence.enter site-room, socket.id
-    if err then console.error \presence.enter, err
+    if err then log \presence.enter, err
+    log "joining #site-room"
     socket.join site-room
     if user
       err <- presence.users-client-add socket.id, user
-      if err then console.error \presence.users-client-add, err
+      if err then log \presence.users-client-add, err
+      log "joining #user-room"
       socket.join user-room
       io.sockets.in("#{site.id}").emit \enter-site, user
       # let it fall through
@@ -106,19 +111,18 @@ site-by-domain = (domain, cb) ->
     socket.on \chat-debug, chat-server.debug
 
     socket.on \disconnect, ->
-      console.warn \disconnected
+      log \disconnected
       if search-room
         socket.leave search-room
       if user and site
         err <- presence.leave-all socket.id
-        if err then console.warn \presence.leave-all, err
+        if err then log \presence.leave-all, err
         io.sockets.in(site-room).emit \leave-site, user
         chat-server.disconnect!
 
     socket.on \online-now, ->
       err, users <- presence.in "#{site.id}"
       users |> filter (-> it) |> each (u) ->
-        console.log \u, u
         socket.in("#{site.id}").emit \enter-site, u # not braoadcast
 
     socket.on \debug, ->
