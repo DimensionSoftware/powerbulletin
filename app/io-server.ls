@@ -104,7 +104,7 @@ site-by-domain = (domain, cb) ->
       # let it fall through
 
     #ChatServer
-    chat-server = new ChatServer(io, socket, site, user)
+    chat-server = new ChatServer(io, socket, presence, site, user)
     socket.on \chat-message, chat-server.message
     socket.on \chat-join, chat-server.join
     socket.on \chat-leave, chat-server.leave

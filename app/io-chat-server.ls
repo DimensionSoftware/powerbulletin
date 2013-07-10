@@ -6,7 +6,7 @@ log = debug 'io-chat-server'
 
 module.exports = class ChatServer
 
-  (@io, @socket, @site, @user) ->
+  (@io, @socket, @presence, @site, @user) ->
 
   connections: {} # XXX - may need to move this to redis
 
