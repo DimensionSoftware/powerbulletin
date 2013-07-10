@@ -7,9 +7,9 @@ do
     then
         git pull
         echo ':: Killing PowerBulletin'
-        killall -q -9 powerbulletin
-        killall -q -9 pb-supervisor
-        killall -q -r -9 pb-worker
+        killall -9 mon
+        sleep 1
+        killall -9 -r pb-worker pb-supervisor powerbulletin
         echo ':: Purging Varnish'
         varnishadm -T 127.0.0.1:2000 ban.url ^.
         echo ':: Starting PowerBulletin'
