@@ -188,7 +188,10 @@ module.exports =
           #{err.stack}
           """
           responder res
-          graceful-shutdown!
+          if err.non-fatal
+            console.warn "non-fatal error; keep working"
+          else
+            graceful-shutdown!
 
       # routes
       #
