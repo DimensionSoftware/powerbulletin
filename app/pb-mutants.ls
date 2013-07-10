@@ -25,15 +25,15 @@ require! {
   c.reload!
   window.$ target .html('').append c.$ # render
 
-!function paginator-component locals, pnum-to-href
-  wc = window.component ||= {}
+!function paginator-component w, locals, pnum-to-href
+  wc = w.component ||= {}
   if wc.paginator
     wc.paginator.locals locals
     wc.paginator.pnum-to-href pnum-to-href
     wc.paginator.render!
   else
     wc.paginator =
-      new Paginator {locals, pnum-to-href} window.$(\#pb_paginator)
+      new Paginator {locals, pnum-to-href} w.$(\#pb_paginator)
 
 #!function deactivate-paginator
 
@@ -208,7 +208,7 @@ export forum =
 
         pnum-to-href = mk-post-pnum-to-href @post.uri
 
-        paginator-component locals, pnum-to-href
+        paginator-component window, locals, pnum-to-href
 
       layout-static.call @, window, \forum, @active-forum-id
       next!
@@ -511,7 +511,7 @@ export search =
 
           pnum-to-href = mk-search-pnum-to-href @searchopts
 
-          paginator-component locals, pnum-to-href
+          paginator-component window, locals, pnum-to-href
 
         bench \layout-static ~>
           layout-static.call @, window, \search
