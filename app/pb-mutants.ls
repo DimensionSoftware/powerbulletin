@@ -385,7 +385,13 @@ export admin =
       # no pager (for now)
       window.pages-count = 0
       pager-init window
+      <~ lazy-load-nested-sortable
       next!
+  on-initial:
+    (window, next) ->
+      console.log \initial
+      new AdminMenu({-auto-render})
+      new AdminUpgrade({-auto-render})
   on-mutate:
     (window, next) ->
       scroll-to-top!

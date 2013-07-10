@@ -1,3 +1,7 @@
+li.default
+  div
+    input.row(placeholder='Title', data-menu=true, data-type='forum', data-url='', data-page='')
+
 form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
   .col1
     button.onclick-add Add Page
@@ -8,11 +12,18 @@ form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
   .col2
     fieldset
       label(for='url') Url
-      input(id='url', type='text', name='url')
+      input(id='url', type='text', name='url', placeholder='http://')
       label(for='type') Type
       select(id='type', name='type')
         option(value=2) Forum
+        option(value=2) External Link
         option(value=1) Page
+//-      label(for='forum') Forum
+//-      input(id='forum', type='radio', group='type', checked='checked')
+//-      label(for='link') Link
+//-      input(id='link', type='radio', group='type')
+//-      label(for='page') Page
+//-      input(id='page', type='radio', group='type')
       br
       label Main menu
       .box

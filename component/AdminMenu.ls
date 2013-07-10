@@ -7,18 +7,28 @@ require! {
 
 module.exports =
   class AdminMenu extends Component
+    opts =
+      handle: \div
+      items:  \li
+      max-levels: 2
+      tolerance: \pointer
+      tolerance-element: '> div'
+      placeholder: \placeholder
+
     template: templates.AdminMenu
 
     on-attach: !~>
       @$.on \click \.onclick-add (ev) ~>
-        console.log \add-sortable
+        @$.find \.sortable
+          ..append(@$.find \.default .clone!remove-class \default) # clone
+          ..find 'li:last input' .focus!
+          ..nested-sortable opts
         false
+      @$.on \click \.row (ev) ~>
+        # load data for row
+
 
       # init
-      <~ ch.lazy-load-nested-sortable
-      $ \.sortable .nested-sortable {
-        handle: \div
-        items:  \li
-        tolerance-element: '> div'}
+      @$.find \.sortable .nested-sortable opts
 
     on-detach: -> @$.off!
