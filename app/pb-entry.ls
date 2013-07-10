@@ -346,7 +346,7 @@ window.do-buy = (product-id) ->
   product <- $.get(\/resources/products/ + product-id)
   locals = {product, card-needed:!window.site?has_stripe}
 
-  existing.detach! if existing is window.component.buy
+  #existing.detach! if existing is window.component.buy
 
   window.component.buy = new Buy {locals}
   $.fancybox window.component.buy.$, fancybox-params
