@@ -64,15 +64,14 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   input[type='submit']:enabled:active,input[type='button']:enabled:active,button:enabled:focus,
   input[type="submit"]:enabled:focus, input[type="button"]:enabled:focus
   border-top 1px solid #666
-  margin-right (grid/2 - 1)
   text-indent 1px
   border-left 1px solid #666
   box-shadow 0 0 1px #777, 1px 1px 1px #a33400 inset,0 1px 3px #aaa
   text-shadow 0 1px 1px black,1px 1px 1px rgba(100,100,100,.5)
   border-bottom 1px solid highlight-color2
   border-right 1px solid highlight-color2
-  transition box-shadow .3s ease-out, border-top .2s ease-out, border-left .1s ease-out
-  border-radius 2px
+  transform translateY(2px)
+  border-radius 3px / 2px
 .button::before
   position absolute
   content ''
@@ -100,5 +99,4 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   font-size 1.25em
   font-weight 600
   padding 6px 15px
-  margin-right (grid/2)
   text-align center

@@ -6,10 +6,10 @@ window.r-socket = $R.state!
 
 socket.on \connect, ->
   r-socket socket # set reactive state
-  console.log \connected
+  #console.log \connected
 
 socket.on \disconnect, ->
-  console.log \disconnected
+  #console.log \disconnected
 
 socket.on \enter-site, (message, cb) ->
   set-online-user message?id
@@ -58,10 +58,10 @@ socket.on \new-hit, (hit) ->
   last: <strong>#{hit._source.title || hit._source.body}</strong>
   """
   $('#new_hits').html realtime-html
-  console.log \new-hit, hit
+  #console.log \new-hit, hit
 
 socket.on \debug, (message, cb) ->
-  console.log \debug, message
+  console?log \debug, message
 
 Chat.client-socket-init socket
 

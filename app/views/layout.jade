@@ -1,3 +1,4 @@
+- var invite = (inviteOnly) ? "window.inviteOnly='true';" : ''
 |<!DOCTYPE html><!--
 ░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
 ░█▀▀░█░█░█▄█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░░█░░░█░░█░█
@@ -36,14 +37,14 @@ html
       script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
     if jsUrls
       script(type="text/javascript")
-        window.siteName="!{siteName}";window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.headjs=head.js;head.js.apply(head,!{JSON.stringify(cvars.baseJsUrls.concat(jsUrls))});
+        window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.headjs=head.js;head.js.apply(head,!{JSON.stringify(cvars.baseJsUrls.concat(jsUrls))});
   body
     header.header.toggler
       h1.logo
         a.mutant(href='/') Power
           strong Bulletin
       .container
-        menu.menu
+        menu#menu.menu
           each f,i in menu
             li.row
               a.title(data-surf=f.id, data-scroll-to="#forum_#{f.id}", class="forum-#{f.id}", href="/#{f.slug}")= f.title
@@ -103,6 +104,7 @@ html
       #mocha
 
     footer
+      .onclick-scroll-top Top
       #pb_paginator
       h6
         small &copy; #{siteName} &nbsp;
@@ -111,3 +113,4 @@ html
 
     //- css not required for initial page render -- performance mod.
     link(href="#{cache5Url}/local/jquery-ui.min.css", rel='stylesheet', type='text/css')
+    != analytics

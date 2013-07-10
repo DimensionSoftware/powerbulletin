@@ -168,28 +168,38 @@ html.admin
       font-style italic
     li:hover
       border-radius 5px / 3px
-      background-color #fdfdfd
+      border-bottom 1px solid #ddd
     li
       border-left 1px solid transparent
       border-bottom 1px solid transparent
+      height 23px
     li.active
-      background-color #fafafa
+      background-color #666
+      text-shadow 0 1px 0 #000
       border-radius 8px / 4px
+      border-top-right-radius 0
+      border-bottom-right-radius 0
       position relative
-      border-left 1px solid #ddd
-      border-bottom 1px solid #ddd
+      border-left 1px solid #333
+      border-bottom 1px solid #333
       span
         padding 1px 6px!important
         opacity 1!important
-        color #333!important
-        transition all .2s ease-out
+    li::after
+      position absolute
+      content ''
+      top 10px
+      opacity 0
+      right -5px
+      border 10px solid transparent
     li.active::after
       position absolute
       content ''
-      top 2px
-      right -28px
-      border 15px solid transparent
-      border-left 18px solid #fafafa
+      top 0
+      opacity 1
+      right -34px
+      border 17px solid transparent
+      border-left 17px solid #666
     li
       a
         padding 2px 8px
@@ -197,14 +207,10 @@ html.admin
         text-decoration none
 
   #main_content
-    position absolute
-    bottom 0
-    background-color #fbfbfb
     .domains form fieldset
       border 1px solid #f9f9f9
     form
       fieldset:hover
-        border-top 1px solid #f2f2f2
         border-radius 2px
         legend
           color #000
@@ -214,13 +220,29 @@ html.admin
         img
           opacity 1
       fieldset
-        border-top 1px solid transparent
         color #555
         label
           color #777
         img
           opacity .9
-//}}}
+
+      input[type="checkbox"]:checked + label .switch::after
+        background-color #ffa500
+      label[for="private"]:hover, label[for="registration"]:hover
+        box-shadow inset 0 2px 10px #666, 0 2px 5px #eee, 0px 0px 0px 1px highlight-color2
+        transition box-shadow .1s ease-out
+    .notes
+      font-weight 300
+      a
+        color highlight-color2
+  //}}}
+html.search
+  header
+    .onclick-close
+      box-shadow 0 0 0 1px highlight-color2
+    .search
+      #query.query, #query.query:focus, #query.query:hover
+        border-bottom 1px solid highlight-color2
 
 // hover fx for links
 .stylish:hover

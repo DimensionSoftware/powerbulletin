@@ -3,8 +3,13 @@
 # main
 # ---------
 if [ "$NODE_ENV" = 'production' ] ; then
-  grunt procs clientJade browserify uglify
-  node app/main.js 2>> error_log
+  set -e
+  grunt procs clientJade componentJade livescript browserify uglify
+  mkdir -p logs
+  mon -d \
+      -l logs/powerbulletin.log \
+      -m /tmp/pb.pid \
+      'node app/main.js'
 else
   export NODE_WORKERS=${NODE_WORKERS:=1}
   # XXX: may want to limit --prof to child process, but don't know api

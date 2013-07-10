@@ -23,9 +23,17 @@ announce = sioa.create-client!
     # save site
     switch req.body.action
     | \general =>
-      should-ban = site.config.posts-per-page isnt req.body.posts-per-page
-      # extract specific keys
-      site.config <<< { [k, val] for k, val of req.body when k in [\postsPerPage \metaKeywords] }
+      should-ban = false
+      for f in [\postsPerPage \inviteOnly \private \analytics]
+        if site.config[f] isnt req.body[f] then should-ban = true
+      # save specific keys
+      site.config <<< { [k, val] for k, val of req.body when k in
+        [\postsPerPage \metaKeywords \inviteOnly \private \analytics] }
+      for c in [\inviteOnly \private] # uncheck checkboxes?
+        delete site.config[c] unless req.body[c]
+      for s in [\private \analytics] # tampering
+        delete site.config[s] unless s in site.subscriptions
+      console.log \updating:, site.config
       err, r <- db.site-update site
       if err then return next err
       if should-ban # ban all site's domains in varnish

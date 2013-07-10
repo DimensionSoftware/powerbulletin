@@ -4,7 +4,8 @@ include _post
   #new_hits
 
   div
-    strong#hit_count #{elres.total} Hits!
+    if elres.total
+      em#hit_count #{elres.total} total hits
 
   if elres.hits.length
     each hit in elres.hits
@@ -16,8 +17,8 @@ include _post
         .comment-hit
           mixin _post(hit._source, 0)
   else
-    div
-      strong Enter some less restrictive terms you silly goose!
+    h4 Try a more general search
+      i !
     //- div
     //-   if env != 'production'
     //-     strong #{hit._source.title} (score: #{hit._score})

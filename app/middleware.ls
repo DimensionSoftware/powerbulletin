@@ -20,10 +20,13 @@ require! {
 
   if site
     {id, name, current_domain, config} = site
-    res.vars.site = {id, name, current_domain, config}
+    res.vars.site = site
     res.locals.site-id        = id
     res.locals.site-name      = name
     res.locals.current-domain = current_domain
+    res.locals.analytics      = config.analytics
+    res.locals.invite-only    = config.invite-only
+    res.locals.private        = config.private
     for i in ['', 2, 3, 4, 5]
       res.locals["cache#{i}Url"] = cvars["cache#{i}Url"]
     next!

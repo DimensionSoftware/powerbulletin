@@ -105,6 +105,7 @@ process-cached-data = {}
     err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
     if err then return cb err
     #@login(req, res, cb) # on successful registration, automagically @login, too
+    u.id = r.id
     cb null, u
 
 @format =

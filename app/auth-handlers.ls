@@ -11,7 +11,7 @@ require! {
 {is-editing, is-admin, is-auth} = require \./path-regexps
 
 @login = (req, res, next) ->
-  domain   = res.vars.site.current_domain
+  domain = res.vars.site.current_domain
   err, passport <- auth.passport-for-domain domain
   if err then return next(err)
   if passport
@@ -29,15 +29,40 @@ require! {
     console.warn "no passport for #{domain}"
     res.send \500, 500
 
+@once = (req, res, next) ->
+  token = req.body.token
+  site  = res.vars.site
+  err, r <- db.authenticate-login-token site.id, token
+  console.warn \authenticate-login-token, [err, r]
+  if err then return next err
+  if r
+    req.session?passport?user = "permanent:#{r.name}:#{site.id}"
+    res.json success: true
+  else
+    res.json success: false
+
+@once-setup = (req, res, next) ->
+  user =
+    id      : req.user.id
+    site_id : req.query.site_id
+  err, r <- auth.set-login-token user
+  if err then return next err
+  if r
+    res.json success: true, token: r.login_token
+  else
+    res.json success: false
+
 @register = (req, res, next) ~>
   site     = res.vars.site
   domain   = site.current_domain
   passport = auth.passport-for-domain[domain]
 
+  if res.locals.invite-only then next 404; return # registration disabled
+
   # TODO more validation
-  req.assert('username').not-empty!is-alphanumeric!  # .len(min, max) .regex(/pattern/)
-  req.assert('password').not-empty!  # .len(min, max) .regex(/pattern/)
-  req.assert('email').is-email!
+  req.assert \username .not-empty!is-alphanumeric!  # .len(min, max) .regex(/pattern/)
+  req.assert \password .not-empty!  # .len(min, max) .regex(/pattern/)
+  req.assert \email .is-email!
 
   if errors = req.validation-errors!
     console.warn errors
@@ -47,10 +72,42 @@ require! {
     password = req.body.password
     email    = req.body.email
     (err, u) <- register-local-user site, username, password, email
-    if err then return res.json success:false, errors:[ msg:err ]
-    auth.send-registration-email u, site, (err, r) ->
-      console.warn 'registration email', err, r
-    res.json success:true, errors:[]
+    if err
+      # FIXME possible email abuse if if attacker is able to create accounts
+      if err?verify # err is existing user, so ...
+        console.warn 'user exists:', err, site
+        <- auth.send-registration-email err, site # resend!
+        res.json success:false, errors:[msg:'Resent verification email!']
+      else
+        # default error situation
+        return next err
+
+    done = (was-transient) ->
+      auth.send-registration-email u, site, (err, r) ->
+        console.warn 'registration email', err, r
+      res.json success:true, errors:[], user-linked-need-reload: was-transient
+
+    # TODO 
+    # - if transient_owner of this site, associate site with this user
+    # - delete transient_owner cookie
+    if tid = req.cookies.transient_owner
+      (err, authorized) <~ db.authorize-transient tid, site.id
+      if err then next err
+
+
+      if authorized
+        console.warn \authorized-u, u
+        # ex-transient user should own site
+        err <~ db.sites.update criteria: { id: site.id }, data: { user_id: u.id, transient_owner: null }
+        if err then next err
+        # ex-transient user should have super admin privileges
+        err <~ db.aliases.update criteria: { user_id: u.id, site_id: site.id }, data: { rights: JSON.stringify(super:1) }
+        if err then next err
+        done true
+      else
+        done!
+    else
+      done!
 
 do-verify = (req, res, next) ~>
   v    = req.param \v
@@ -260,6 +317,7 @@ auth-finisher = (req, res, next) ->
 
 @apply-to = (app, mw) ->
   app.post '/auth/login',           mw, @login
+  app.post '/auth/once',            mw, @once
   app.post '/auth/register',        mw, @register
   app.post '/auth/choose-username', mw, @choose-username
   app.get  '/auth/user',            mw, @user

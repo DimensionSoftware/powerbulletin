@@ -7,6 +7,25 @@ mutant  = require \../lib/mutant/mutant.ls
 require! ch: \./client-helpers.ls
 window.Auth  = require \../component/Auth.ls
 
+window.cors =
+  ajax-params:
+    xhr-fields:
+      with-credentials: true
+    success: (->)
+    error: (->)
+  get: (url, data, cb) ->
+    params = {}
+    params <<< @ajax-params
+    params <<< { type: \GET, url, data }
+    params.success = cb if cb
+    $.ajax params
+  post: (url, data, cb) ->
+    params = {}
+    params <<< @ajax-params
+    params <<< { type: \POST, url, data }
+    params.success = cb if cb
+    $.ajax params
+
 window.hints =
   last:
     pathname: null
@@ -84,8 +103,8 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
             onload-resizable!
             window.hints.current.mutator = window.mutator
             spin false
-        else
-          console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
+        #else
+        #  console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
 #}}}
 #{{{ Personalizing behaviors
 window.onload-personalize = ->
@@ -275,8 +294,8 @@ if m = window.location.hash.match /^\#invalid=(.+)/ then Auth.show-info-dialog "
 switch window.location.hash
 | \#invalid  => Auth.show-info-dialog 'Invalid invite code!'
 | \#validate => Auth.after-login! # email activation
+| \#once     => Auth.login-with-token!
 
-# XXX sales-app doesn't have a mutant.
-if typeof window.mutant is not \undefined
+if window.initial-mutant # XXX sales-app doesn't have a mutant
   <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
 # vim:fdm=marker

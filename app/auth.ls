@@ -5,6 +5,7 @@ require! {
   \async
   \bcrypt
   \crypto
+  \debug
   \nodemailer
   \passport
   \passport-local
@@ -16,6 +17,7 @@ require! {
   passport.Passport
 }
 
+log = debug 'auth'
 
 # site-aware passport middleware wrappers
 export mw =
@@ -151,7 +153,7 @@ export send-invite-email = (site, user, new-user, message, cb) ->
     to      : user.email
     subject : "Invite to #{site.name}!"
     text    : h.expand-handlebars tmpl, vars
-  console.log email
+  log email
   h.send-mail email, cb
 
 export user-forgot-password = (user, cb) ->
@@ -160,6 +162,15 @@ export user-forgot-password = (user, cb) ->
 
   user.forgot = hash
   err <- db.aliases.update criteria: { user_id: user.id, site_id: user.site_id }, data: { forgot: hash }
+
+  cb null, user
+
+export set-login-token = (user, cb) ->
+  err, hash <- unique-hash \login_token, user.site_id
+  if err then return cb err
+
+  user.login_token = hash
+  err <- db.aliases.update criteria: { user_id: user.id, site_id: user.site_id }, data: { login_token: hash }
 
   cb null, user
 
@@ -178,7 +189,7 @@ export create-passport = (domain, cb) ->
   pass.mw-session    = pass.session()
 
   pass.serialize-user (user, done) ~>
-    console.warn \user, \xxx, user
+    log \user, \xxx, user
     if user.transient
       parts = "transient:#{user.transient_owner}:#{user.site_id}"
     else
@@ -186,7 +197,7 @@ export create-passport = (domain, cb) ->
     done null, parts
 
   pass.deserialize-user (parts, done) ~>
-    console.warn \parts, parts
+    log \parts, parts
     [type, name, site_id] = parts.split ':'
     switch type
     | \transient =>
@@ -200,17 +211,19 @@ export create-passport = (domain, cb) ->
       (err, user) <~ db.usr {name, site_id}
       if err then return cb err
       done err, user
+    | otherwise =>
+      done new Error("bad cookie #{parts}")
 
   pass.use new passport-local.Strategy (username, password, done) ~>
     (err, user) <~ db.usr { name: username, site_id: site.id }  # XXX - how do i get site_id?
     if err then return done(err)
     if not user
-      console.warn 'no user'
+      log 'no user'
       return done(null, false, { message: 'User not found' })
     if not valid-password(user, password)
-      console.warn 'invalid password', password, user
+      log 'invalid password', password, user
       return done(null, false, { message: 'Incorrect password' })
-    console.warn 'ok'
+    log 'ok'
     done(null, user)
 
   facebook-options =
@@ -218,7 +231,7 @@ export create-passport = (domain, cb) ->
     client-secret : config?facebook-client-secret or \x
     callback-URL  : "http://#{domain}/auth/facebook/return"
   pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
-    console.warn 'facebook profile', profile
+    log 'facebook profile', profile
     err, name <- db.unique-name name: profile.display-name, site_id: site.id
     if err then return cb err
     err, vstring <- unique-hash \verify, site.id
@@ -231,7 +244,7 @@ export create-passport = (domain, cb) ->
       name    : name
       verify  : vstring
     (err, user) <- db.find-or-create-user u
-    console.warn 'err', err if err
+    log 'err', err if err
     done(err, user)
 
   twitter-options =
@@ -239,7 +252,7 @@ export create-passport = (domain, cb) ->
     consumer-secret : config?twitter-consumer-secret or \x
     callback-URL    : "http://#{domain}/auth/twitter/return"
   pass.use new passport-twitter.Strategy twitter-options, (access-token, refresh-token, profile, done) ->
-    console.warn 'twitter profile', profile
+    log 'twitter profile', profile
     err, name <- db.unique-name name: profile.display-name, site_id: site.id
     if err then return cb err
     err, vstring <- unique-hash \verify, site.id
@@ -252,7 +265,7 @@ export create-passport = (domain, cb) ->
       name    : name
       verify  : vstring
     (err, user) <- db.find-or-create-user u
-    console.warn 'err', err if err
+    log 'err', err if err
     done(err, user)
 
   google-options =
@@ -260,7 +273,7 @@ export create-passport = (domain, cb) ->
     client-secret : config?google-consumer-secret or \x
     callback-URL  : "https://#{domain}/auth/google/return"
   pass.use new passport-google-oauth.OAuth2Strategy google-options, (access-token, refresh-token, profile, done) ->
-    console.warn 'google profile', profile
+    log 'google profile', profile
     err, name <- db.unique-name name: profile.display-name, site_id: site.id
     if err then return cb err
     err, vstring <- unique-hash \verify, site.id
@@ -273,9 +286,9 @@ export create-passport = (domain, cb) ->
       site_id : site.id
       name    : name
       verify  : vstring
-    console.warn \u, u
+    log \u, u
     (err, user) <- db.find-or-create-user u
-    console.warn 'err', err if err
+    log 'err', err if err
     done(err, user)
 
   cb(null, pass)
@@ -284,17 +297,17 @@ export passports = {}
 
 export passport-for-domain = (domain, cb) ~>
   if @passports[domain]
-    #console.log "found cached passport for #domain"
+    #log "found cached passport for #domain"
     cb null, @passports[domain]
   else
     err, pass <~ @create-passport domain
     if err then return cb err
     if pass
-      #console.log "created new passport for #domain"
+      #log "created new passport for #domain"
       @passports[domain] = pass
       cb null, pass
     else
-      #console.log "could not create passport for #domain"
+      #log "could not create passport for #domain"
       cb new Error("Could not create Passport for #domain.")
 
 # vim:fdm=indent

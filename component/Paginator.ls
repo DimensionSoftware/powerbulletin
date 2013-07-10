@@ -23,10 +23,10 @@ function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-hre
       {title: num, href: pnum-to-href(num), active: active-page is num}
 
   if pages.length and pages.0.title isnt 1
-    pages.unshift {title: 'first', href: pnum-to-href(1)}
+    pages.unshift {title: \First, href: pnum-to-href(1)}
 
   if pages.length and pages[pages.length - 1].title isnt page-qty
-    pages.push {title: 'last', href: pnum-to-href(page-qty)}
+    pages.push {title: \Last, href: pnum-to-href(page-qty)}
 
   pages
 
