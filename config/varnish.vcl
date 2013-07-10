@@ -8,16 +8,45 @@ backend default {
   .between_bytes_timeout = 60s;
 }
 
-sub depersonalize {
-  # strip cookies so request is depersonalized (not able to be identified as a particular user by backend by stripping cookies)
-  # this also allows default varnish logic to cache request (it avoids cookie requests by default)
-  unset req.http.cookie;
-  unset req.http.cache-control;
-  unset req.http.pragma;
-}
-
 sub depersonalize_response {
   unset beresp.http.set-cookie;
+}
+
+# default behavior from stock varnish config
+# NOTES:
+# we had to override the default behavior where varnish will not
+# cache if a cookie is sent in the request header, hence this sub
+sub default_vcl_recv {
+  if (req.restarts == 0) {
+    if (req.http.x-forwarded-for) {
+        set req.http.X-Forwarded-For =
+    	req.http.X-Forwarded-For + ", " + client.ip;
+    } else {
+        set req.http.X-Forwarded-For = client.ip;
+    }
+  }
+  if (req.request != "GET" &&
+    req.request != "HEAD" &&
+    req.request != "PUT" &&
+    req.request != "POST" &&
+    req.request != "TRACE" &&
+    req.request != "OPTIONS" &&
+    req.request != "DELETE") {
+      /* Non-RFC2616 or CONNECT which is weird. */
+      return (pipe);
+  }
+  if (req.request != "GET" && req.request != "HEAD") {
+      /* We only deal with GET and HEAD by default */
+      return (pass);
+  }
+  #XXX: original behavior
+  #if (req.http.Authorization || req.http.Cookie) {
+  #XXX: new behavior
+  if (req.http.Authorization) {
+      /* Not cacheable by default */
+      return (pass);
+  }
+  return (lookup);
 }
 
 sub vcl_recv {
@@ -37,16 +66,8 @@ sub vcl_recv {
     set req.http.Location = "https://" + req.http.host + regsub(req.url, "(.+)/$", "\1");
     error 302 "Found"; 
   }
-  
-  # depersonalize everything EXCEPT urls starting with /auth or /resources or /admin or /socket.io or /ajax
-  # also depersonalize ending in /new /edit because they 404 when user is not allowed to do so
-  if (  req.url !~ "(?i)^/(auth|resources|admin|socket\.io|ajax)"
-     && req.url !~ "(?i)/new$"
-     && req.url !~ "(?i)/edit/[^/]+$"
-     )
-  {
-    call depersonalize;
-  }
+
+  call default_vcl_recv;
 }
 
 sub vcl_fetch {
