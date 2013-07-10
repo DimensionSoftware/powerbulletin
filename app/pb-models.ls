@@ -1,15 +1,18 @@
 require! {
   async
   pg
+  debug
   \fs
   \mkdirp
   orm: \thin-orm
   postgres: \./postgres
 }
 
+logger = debug 'thin-orm'
+
 export orm    = orm
 export client = { connect: (cb) -> pg.connect postgres.conn-str, cb }
-export driver = orm.create-driver \pg, { pg: client }
+export driver = orm.create-driver \pg, { pg: client, logger }
 #export schema = [
 #  [ \users,   <[id email photo created updated]> ]
 #  [ \aliases, <[user_id site_id name verify verified forgot rights created updated]> ]

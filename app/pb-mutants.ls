@@ -25,6 +25,18 @@ require! {
   c.reload!
   window.$ target .html('').append c.$ # render
 
+!function paginator-component w, locals, pnum-to-href
+  wc = w.component ||= {}
+  if wc.paginator
+    wc.paginator.locals locals
+    wc.paginator.pnum-to-href pnum-to-href
+    wc.paginator.render!
+  else
+    wc.paginator =
+      new Paginator {locals, pnum-to-href} w.$(\#pb_paginator)
+
+#!function deactivate-paginator
+
 # Common
 layout-static = (w, next-mutant, active-forum-id=-1) ->
   # XXX to be run last in mutant static
@@ -196,13 +208,7 @@ export forum =
 
         pnum-to-href = mk-post-pnum-to-href @post.uri
 
-        if wc.paginator
-          wc.paginator.locals locals
-          wc.paginator.pnum-to-href pnum-to-href
-          wc.paginator.render!
-        else
-          wc.paginator =
-            new Paginator {locals, pnum-to-href} window.$(\#pb_paginator)
+        paginator-component window, locals, pnum-to-href
 
       layout-static.call @, window, \forum, @active-forum-id
       next!
@@ -505,13 +511,7 @@ export search =
 
           pnum-to-href = mk-search-pnum-to-href @searchopts
 
-          if wc.paginator
-            wc.paginator.locals locals
-            wc.paginator.pnum-to-href pnum-to-href
-            wc.paginator.render!
-          else
-            wc.paginator =
-              new Paginator {locals, pnum-to-href} window.$(\#pb_paginator)
+          paginator-component window, locals, pnum-to-href
 
         bench \layout-static ~>
           layout-static.call @, window, \search
