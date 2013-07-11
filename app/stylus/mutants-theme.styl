@@ -165,14 +165,19 @@ html.admin
   #left_container
     li.feature
       font-size .7em
-      font-style italic
     li:hover
       border-radius 5px / 3px
-      border-bottom 1px solid #ddd
     li
       border-left 1px solid transparent
-      border-bottom 1px solid transparent
       height 23px
+    li.feature.upgrade.active::after
+      border-left-color highlight-color2
+    li.feature.upgrade.active
+      background-color highlight-color2
+      border-left 1px solid #666
+      border-bottom 1px solid #666
+      a
+        color #333
     li.active
       background-color #666
       text-shadow 0 1px 0 #000
@@ -182,9 +187,6 @@ html.admin
       position relative
       border-left 1px solid #333
       border-bottom 1px solid #333
-      span
-        padding 1px 6px!important
-        opacity 1!important
     li::after
       position absolute
       content ''
