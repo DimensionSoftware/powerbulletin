@@ -1,15 +1,47 @@
-.default
-  display none
+.AdminMenu
+  .default
+    display none
 
-.col1
-  .sortable
-    li
-      cursor move
+  .col1
+    width 325px
+    .sortable
+      margin 20px 0
+      li
+        cursor move
+        input
+          width 250px
 
-  .placeholder
-    outline 1px dashed #333
-    margin -1px
-    border-radius 3px
-.col2
-  fieldset
-    min-width 360px
+    .placeholder
+      outline 1px dashed #333
+      margin -1px
+      border-radius 3px
+  .col2
+    fieldset
+      min-width 500px
+      position relative
+      .options
+        list-style none
+        margin 0
+        padding 0
+        li
+          float left
+        li, input[type='radio']:checked + label
+          font-weight bold
+        li, input[type='radio'] + label
+          display inline-block
+        li > div, input[type='radio']
+          position absolute
+          left 0
+          top 10px
+        input[type='radio']:checked ~ div
+          display block
+        input[type='radio'] ~ div
+          display none
+        input[type='radio']
+          opacity 0
+        .dialog
+          position absolute
+          top 100px
+          left 0
+          .note
+            left 144px!important

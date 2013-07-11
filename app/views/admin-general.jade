@@ -7,7 +7,7 @@ form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
     label Privacy
     .box
       input#private(type='checkbox', value='checked', name='private', checked=site.config.private)
-      label(for='private')
+      label.switch-control(for='private')
         .switch
       span.label.checked On
       .note Coming soon
@@ -17,7 +17,7 @@ form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
     label Invite Only
     .box
       input#invite_only(type='checkbox', value='checked', name='inviteOnly', checked=site.config.inviteOnly)
-      label(for='invite_only')
+      label.switch-control(for='invite_only')
         .switch
       span.label.checked On
       .note Disallow the public from registering - 
