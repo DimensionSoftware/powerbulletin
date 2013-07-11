@@ -346,10 +346,10 @@ window.do-buy = (product-id) ->
   product <- $.get(\/resources/products/ + product-id)
   locals = {product, card-needed:!window.site?has_stripe}
 
-  existing.detach! if existing = window.component.buy
-
-  window.component.buy = new Buy {locals}
-  $.fancybox window.component.buy.$, fancybox-params
+  b = window.component?buy # existing?
+  if b then b.detach!      # cleanup
+  b = window.component.buy = new Buy {locals}
+  $.fancybox b.$, fancybox-params
 #}}}
 
 # vim:fdm=marker
