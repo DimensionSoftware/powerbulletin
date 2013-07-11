@@ -1,3 +1,4 @@
+price = (product.price / 100.0).toFixed(0)
 h1 #{product.description}
 .right.ccinfo
   form
@@ -44,11 +45,16 @@ h1 #{product.description}
     .clear
       input.Buy-checkout(type='submit', value='CHECKOUT') CHECKOUT
 .right.features
-  h2 Only 
-    b
-      small $
-      != (product.price / 100.0).toFixed(0)
-    small /mo
+  if price && (price !== '0')
+    h2 Only 
+      b
+        small $
+        != price
+      small /mo
+  else
+    h2
+      b Free
+        i !
   menu
     each f in product.config.features
       li= f
