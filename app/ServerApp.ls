@@ -166,6 +166,7 @@ module.exports =
         a.use mw.multi-domain
         a.use mw.ip-lookup
         a.use mw.rate-limit
+        a.use express-validator
         a.set 'view engine' \jade
         a.set \views \app/views
         a.enable 'json callback'
@@ -187,7 +188,10 @@ module.exports =
           #{err.stack}
           """
           responder res
-          graceful-shutdown!
+          if err.non-fatal
+            console.warn "non-fatal error; keep working"
+          else
+            graceful-shutdown!
 
       # routes
       #

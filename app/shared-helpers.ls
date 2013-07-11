@@ -7,6 +7,7 @@ require! {
 #{{{ String functions
 @add-commas = (s) -> # 1234 -> 1,234
   s.to-string!
+    |> Str.reverse
     |> split /(\d{3})/
     |> filter (.length)
     |> join \, |> Str.reverse
