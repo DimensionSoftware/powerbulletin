@@ -77,7 +77,7 @@ CREATE FUNCTION procs.posts_by_user_pages_count(usr JSON, ppp JSON) RETURNS JSON
   COUNT(p.id) as c
   FROM posts p
   JOIN users u ON p.user_id = u.id
-  JOIN aliases a ON u.id = p.user_id
+  JOIN aliases a ON u.id = a.user_id
   WHERE p.forum_id IN (SELECT id FROM forums WHERE site_id = $1)
   AND a.name = $2
   '''

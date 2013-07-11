@@ -6,7 +6,6 @@ require! {
   cors
   \./auth
   \./auth-handlers
-  \express-validator
   mmw: \mutant/middleware
   pg:  \./postgres
   mw:  \./middleware
@@ -21,7 +20,6 @@ global <<< require \./server-helpers
 # middleware we will use only on personalized routes to save cpu cycles!
 personal-mw =
   * cors(origin: true, credentials: true)
-  * express-validator
   * express.body-parser!
   * express.cookie-parser!
   * express.cookie-session {secret:cvars.secret}

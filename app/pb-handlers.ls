@@ -194,6 +194,15 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   ppp  = posts-per-page
   usr  = { name: name, site_id: site.id }
 
+  if req.params.page
+    req.assert(\page, 'Invalid page number').isInt()
+
+  errors = req.validation-errors!
+  if errors
+    err = new Error errors.0?msg
+    err.non-fatal = true
+    return next err
+
   tasks =
     menu           : db.menu site.id, _
     profile        : db.usr usr, _
