@@ -194,6 +194,7 @@ CREATE TRIGGER tags_posts_timestamp BEFORE UPDATE ON tags_posts FOR EACH ROW EXE
 -- a collection of related messages (like gmail threads)
 CREATE TABLE conversations (
   id        BIGSERIAL NOT NULL,
+  site_id   BIGINT NOT NULL REFERENCES sites(id),
   created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated   TIMESTAMP,
   PRIMARY   KEY (id)
