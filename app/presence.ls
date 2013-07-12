@@ -10,7 +10,7 @@ require! {
 # $room - room names are arbitrary strings; value is a set of cids
 
 module.exports = class Presence
-  (@site-id, cb) ->
+  (@site-id, cb=(->)) ->
     @r = redis.create-client!
     err <~ @r.select @site-id
     cb err, @
@@ -26,17 +26,17 @@ module.exports = class Presence
 
   # enter a room
   enter: (room, cid, cb) ~>
-    tasks =
-      r  : @r.sadd room, cid, _
-      rc : @r.sadd "rooms:#{cid}", room, _
-    async.auto tasks, cb
+    @r.multi!
+      .sadd room, cid
+      .sadd "rooms:#{cid}", room
+      .exec cb
 
   # leave a room
   leave: (room, cid, cb) ~>
-    tasks =
-      r  : @r.srem room, cid, _
-      rc : @r.srem "rooms:#{cid}", room, _
-    async.auto tasks, cb
+    @r.multi!
+      .srem room, cid
+      .srem "rooms:#{cid}", room
+      .exec cb
 
   # leave all rooms a connection is using.  useful for disconnection.
   # also deletes rooms:$cid key
