@@ -112,11 +112,13 @@ site-by-domain = (domain, cb) ->
 
     socket.on \disconnect, ->
       log \disconnected
+      err <- presence.leave-all socket.id
+      if err then log \presence.leave-all, err
       if search-room
         socket.leave search-room
       if user and site
-        err <- presence.leave-all socket.id
-        if err then log \presence.leave-all, err
+        err <- presence.users-client-remove socket.id
+        if err then log \presence.users-client-remove, err
         err, cids <- presence.cids-by-uid user.id
         if err then log \presence.cids-by-uid, err
         if cids.length is 0
