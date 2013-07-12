@@ -51,9 +51,9 @@ module.exports = class Presence
   rooms-by-cid: (cid, cb) ~>
     @r.smembers "rooms:#{cid}", cb
 
-  # socket.io connection ids associated to a user
+  # socket.io connection ids associated with a user
   cids-by-uid: (uid, cb) ~>
-    @r.smembers "cids:#uid", cb
+    @r.smembers "cids:#{uid}", cb
 
   # associate a user with a connection
   users-client-add: (cid, user, cb) ~>
@@ -63,16 +63,10 @@ module.exports = class Presence
       .exec cb
 
   # disassociate a user with a connection
-  users-client-remove: (cid, cb) ~>
-    err, user-json <~ @r.hget \users, cid
-    if err then return cb err
-    if user-json then user = JSON.parse(user-json)
-    if user
-      @r.multi!
-        .srem "cids:#{user.id}", cid
-        .hdel \users, cid
-        .exec cb
-    else
-      @r.hdel \users, cid, cb
+  users-client-remove: (cid, user, cb) ~>
+    @r.multi!
+      .srem "cids:#{user.id}", cid
+      .hdel \users, cid
+      .exec cb
 
 # vim:fdm=indent
