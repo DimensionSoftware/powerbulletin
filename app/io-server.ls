@@ -117,7 +117,10 @@ site-by-domain = (domain, cb) ->
       if user and site
         err <- presence.leave-all socket.id
         if err then log \presence.leave-all, err
-        io.sockets.in(site-room).emit \leave-site, user
+        err, cids <- presence.cids-by-uid user.id
+        if err then log \presence.cids-by-uid, err
+        if cids.length is 0
+          io.sockets.in(site-room).emit \leave-site, user
         chat-server.disconnect!
 
     socket.on \online-now, ->
