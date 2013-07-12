@@ -58,6 +58,7 @@ site-by-domain = (domain, cb) ->
   io.set \store, redis-store
 
   io.set \authorization, (handshake, accept) ->
+    handshake.domain = handshake.headers.host
     if handshake.headers.cookie
       handshake.cookies = cookie.parse handshake.headers.cookie
       connect-cookie = handshake.cookies['connect.sess']
@@ -69,12 +70,12 @@ site-by-domain = (domain, cb) ->
         session = connect.utils.parse-JSON-cookie(unsigned) || {}
         #log \session, session
         handshake.session = session
-        handshake.domain  = handshake.headers.host
         return accept(null, true)
       else
         return accept("bad session?", false)
     else
-      return accept("no cookies", false)
+      log "no cookies found during socket.io authorization phase"
+      return accept(null, true)
 
   io.on \connection, (socket) ->
     var search-room
