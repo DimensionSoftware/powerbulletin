@@ -25,6 +25,14 @@ form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
               span.label.checked Locked
               .note Lock entire forum (read-only except admin)
             .break    
+            label(for='flat') Threading
+            .box
+              input#flat(type='checkbox', value='checked', name='flat')
+              label.switch-control(for='flat')
+                .switch
+              span.label.checked Flat
+              .note Flat forums are linear and not threaded (like phpBB)
+            .break    
             input.button(type='submit', value='Save')
             .tooltip
             input(type='hidden', name='action', value='menu')
