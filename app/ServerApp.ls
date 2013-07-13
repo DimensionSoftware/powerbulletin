@@ -2,8 +2,6 @@ function get-CHANGESET
   {code, output} = shelljs.exec('git rev-parse HEAD', silent: true)
   output.trim!
 
-# XXX: ugh ?
-# I hate messing with global state, can we remove this? : )
 global <<< require \prelude-ls
 
 # this file is compiled to js so this is so we can load .ls files
@@ -33,6 +31,7 @@ require! {
   m: \./pb-models
   \./sales-app
   shelljs
+  _: \lodash
 }
 
 # {{{ Caching strategy notes (pages expire quickly; assets forever)
@@ -73,15 +72,19 @@ module.exports =
 
       proc = process
 
-      proc.on \uncaughtException, (e) -> throw e
+      proc.on \uncaughtException, (err) ->
+        timestamp = new Date
+        console.warn 'timestamp', timestamp
+        console.warn err.message
+        console.warn 'uncaught exception in worker, shutting down'
+        graceful-shutdown!
 
       app = global.app = express!
-
       cache-app        = express!
 
       server = null
 
-      graceful-shutdown = !(cb = (->)) ->
+      _graceful-shutdown = !(cb = (->)) ->
         console.warn 'Graceful shutdown started'
         hup-or-die = ->
           if process.env.NODE_ENV is \production
@@ -90,7 +93,7 @@ module.exports =
             process.kill process.pid, \SIGHUP # XXX be sure to reload (if cb is default)
             cb!
 
-        restart = set-timeout (-> console.warn("Server never closed, restarting anyways"); hup-or-die!), 5000ms
+        restart = set-timeout (-> console.warn("Server never closed, restarting anyways"); hup-or-die!), 1000ms
         try
           server.close (err) ->
             clear-timeout restart
@@ -99,6 +102,7 @@ module.exports =
             hup-or-die!
         #catch # XXX shouldn't need to catch (duplicates call to hup-or-die)
         #  hup-or-die!
+      graceful-shutdown = _.debounce _graceful-shutdown, 2000ms
 
       html_50x = fs.read-file-sync('public/50x.html').to-string!
       html_404 = fs.read-file-sync('public/404.html').to-string!
@@ -137,13 +141,6 @@ module.exports =
       global.elc = elastic.client
 
       if proc.env.NODE_ENV == 'production'
-        proc.on 'uncaughtException', (err) ->
-          timestamp = new Date
-          console.warn 'timestamp', timestamp
-          console.warn err.message
-          console.warn 'uncaught exception in worker, shutting down'
-          graceful-shutdown!
-
         proc.on 'SIGTERM', ->
           console.warn 'SIGTERM received by worker, shutting down'
           graceful-shutdown!
@@ -166,6 +163,7 @@ module.exports =
         a.use mw.multi-domain
         a.use mw.ip-lookup
         a.use mw.rate-limit
+        a.use express-validator
         a.set 'view engine' \jade
         a.set \views \app/views
         a.enable 'json callback'
@@ -187,7 +185,10 @@ module.exports =
           #{err.stack}
           """
           responder res
-          graceful-shutdown!
+          if err.non-fatal
+            console.warn "non-fatal error; keep working"
+          else
+            graceful-shutdown!
 
       # routes
       #

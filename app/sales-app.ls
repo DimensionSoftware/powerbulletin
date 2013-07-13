@@ -21,12 +21,12 @@ sales-mw =
   * mw.vars
   * mw.cvars
   * mw.multi-domain
+  * express-validator
 sales-mw.for-each ((m) -> s-app.use m)
 
 # middleware for auth routes
 sales-personal-mw =
   * cors(origin: true, credentials: true)
-  * express-validator
   * express.body-parser!
   * express.cookie-parser!
   * express.cookie-session {secret:cvars.secret}
