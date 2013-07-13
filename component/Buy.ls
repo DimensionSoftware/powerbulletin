@@ -29,6 +29,7 @@ module.exports =
         @@$.post "/ajax/checkout/#product", data, (r) ~>
           if r.success
             site.subscriptions.push product # subscribe!
+            site.has_stripe = true
             $ "\##product" .focus!
             show-tooltip (@$.find \.tooltip), "Sincere thanks!"
             set-timeout (->
