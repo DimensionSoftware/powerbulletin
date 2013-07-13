@@ -30,12 +30,29 @@ require! {
   if wc.paginator
     wc.paginator.locals locals
     wc.paginator.pnum-to-href pnum-to-href
-    wc.paginator.render!
+    wc.paginator.reload!
   else
     wc.paginator =
       new Paginator {locals, pnum-to-href} w.$(\#pb_paginator)
 
 #!function deactivate-paginator
+
+function parse-url url
+  if document?
+    a = document.create-element \a
+    a.href = url
+    {a.search, a.pathname}
+  else
+    p = require(\url).parse url
+    {p.search, p.pathname}
+
+function default-pnum-to-href-fun uri
+  (pg) ->
+    parsed = parse-url(uri)
+    if pg > 1
+      parsed.pathname + "?page=#pg"
+    else
+      parsed.pathname
 
 # Common
 layout-static = (w, next-mutant, active-forum-id=-1) ->
@@ -300,8 +317,19 @@ export profile =
         window.render-mutant \left_container \profile
 
       window.render-mutant \main_content \posts-by-user
+      window.marshal \step @step
+      window.marshal \qty @qty
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
+      do ~>
+        locals =
+          step: @limit
+          qty: @qty
+          active-page: @page
+
+        pnum-to-href = default-pnum-to-href-fun @uri
+        window.marshal \uri, @uri
+        paginator-component window, locals, pnum-to-href
       layout-static.call @, window, \profile
       next!
   on-load:
@@ -340,6 +368,16 @@ export profile =
     next!
   on-unload:
     (window, next-mutant, next) ->
+      next!
+  on-initial:
+    (window, next) ->
+      do ~>
+        locals =
+          step: window.step
+          qty: window.qty
+          active-page: window.page
+        pnum-to-href = default-pnum-to-href-fun window.uri
+        paginator-component window, locals, pnum-to-href
       next!
 
 export admin =

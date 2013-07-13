@@ -71,6 +71,13 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
   return posts
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
+CREATE FUNCTION procs.posts_count_by_user(user_id JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT COUNT(*) FROM posts WHERE user_id=$1
+  '''
+  return plv8.execute(sql, [user_id])[0].count
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
 CREATE FUNCTION procs.posts_by_user_pages_count(usr JSON, ppp JSON) RETURNS JSON AS $$
   sql = '''
   SELECT
