@@ -14,6 +14,7 @@ require! {
   auth: \./auth
   furl: \./forum-urls
   pay: \./payments
+  url
 }
 
 announce = require(\socket.io-announce).create-client!
@@ -190,7 +191,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   db   = pg.procs
   site = res.vars.site
   name = req.params.name
-  page = req.params.page or 1
+  page = req.query.page or 1
   ppp  = posts-per-page
   usr  = { name: name, site_id: site.id }
 
@@ -207,6 +208,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     menu           : db.menu site.id, _
     profile        : db.usr usr, _
     posts-by-user  : db.posts-by-user usr, page, ppp, _
+    qty            : [\profile, (cb, a) ->
+      console.log \ZZZZZZZ, a.profile
+      db.posts-count-by-user(a.profile.id, cb)
+    ]
     pages-count    : db.posts-by-user-pages-count usr, ppp, _
 
   if req.surfing
@@ -223,6 +228,16 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     ..human_post_count = add-commas(..post_count)
 
   res.locals fdoc
+  res.locals.step = 2 #ppp
+
+  # i know this is hacky, XXX use proper parsing later
+  res.locals.uri = req.url
+  res.locals.uri =
+    res.locals.uri.replace /(_surf=[^&]*&?)|(_surfData=[^&]*&?)/, ''
+  res.locals.uri =
+    res.locals.uri.replace /\?$/, ''
+  res.locals.limit = ppp
+
   res.mutant \profile
 
 @profile-avatar = (req, res, next) ->
