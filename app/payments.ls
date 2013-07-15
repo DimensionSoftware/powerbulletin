@@ -1,5 +1,6 @@
 require! stripe
 require! \./on-purchase
+require! h:\./server-helpers
 
 export client = stripe cvars.stripe.private-key
 
@@ -77,6 +78,15 @@ export subscribe = ({
     if err then return cb err
 
     err <- db.add-subscription site-id, product-id
+    if err then return cb err
+
+    # send notificaiton email to sales person
+    email =
+      from    : \conversion.tunnel.o.matic@powerbulletin.com
+      to      : \sales@powerbulletin.com
+      subject : "new subscription was just purchased (#{product-id})"
+      text    : "new subscription was just purchased (#{product-id}). site-id: #{site-id}"
+    err <- h.send-mail email
     if err then return cb err
 
     # execute purchase hooks
