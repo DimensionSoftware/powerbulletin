@@ -25,13 +25,13 @@ module.exports =
           code:    @$.find \.Buy-card-code .val!
         product = @local \product .id
         re-enable = -> $ ev.target .attr \disabled null
-        show-tooltip (@$.find \.tooltip), 'Securing connection ...'
+        show-tooltip (@$.find \.tooltip), 'Securing a connection'
         @@$.post "/ajax/checkout/#product", data, (r) ~>
           if r.success
             site.subscriptions.push product # subscribe!
             site.has_stripe = true
             $ "\##product" .focus!
-            show-tooltip (@$.find \.tooltip), "Sincere thanks!"
+            show-tooltip (@$.find \.tooltip), (['Sincere thanks!', "Awesome.  Go ahead!", 'You got it!', 'Thank you!'][parse-int Math.random!*5])
             set-timeout (->
               re-enable!
               # show new product
