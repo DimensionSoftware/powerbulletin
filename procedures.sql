@@ -756,7 +756,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- #''' getting around quoting bug
 
 -- this should actually find-or-create a conversation by the set of users given
-CREATE FUNCTION procs.conversation_find_or_create(site_id, users JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.conversation_find_or_create(site_id JSON, users JSON) RETURNS JSON AS $$
   find-or-create = plv8.find_function \procs.find_or_create
   find-sql = '''
   SELECT c.*
