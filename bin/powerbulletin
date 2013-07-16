@@ -4,7 +4,7 @@
 # ---------
 if [ "$NODE_ENV" = 'production' ] ; then
   set -e
-  grunt procs clientJade componentJade livescript browserify uglify
+  grunt css procs clientJade componentJade livescript browserify uglify
   mkdir -p logs
   mon -d \
       -l logs/powerbulletin.log \

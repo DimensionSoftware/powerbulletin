@@ -1,9 +1,13 @@
 # XXX server-side helpers merged into global
 require! {
+  fs
+  stylus
+  fluidity
   crypto
   bbcode
   nodemailer
-  auth: \./auth
+  auth:  \./auth
+  cvars: \./load-cvars
 }
 sanitize = require('express-validator/node_modules/validator').sanitize
 
@@ -120,5 +124,33 @@ process-cached-data = {}
       """<img src="#{url}" />"""
     else
       """<a href="#{url}" target="_blank">#{url}</a>"""
+
+
+_stylus = (buffer, cb) ->
+  cvars = global.cvars
+  options =
+    compress: true
+  stylus(buffer.to-string!, options) # build css
+    .define \cache-url  cvars.cache-url
+    .define \cache2-url cvars.cache2-url
+    .define \cache3-url cvars.cache3-url
+    .define \cache4-url cvars.cache4-url
+    .define \cache5-url cvars.cache5-url
+    .set \paths [\app/stylus]
+    .use fluidity!
+    .render cb
+@render-css-sync = (file-name, cb) ->
+  if file-name in global.cvars.acceptable-stylus-files
+    buffer = fs.read-file-sync "app/stylus/#{file-name}" # XXX why is a sync read necessary from Grunt?
+    _stylus buffer, cb
+  else
+    cb "#file-name is not allowed"
+@render-css = (file-name, cb) ->
+  if file-name in global.cvars.acceptable-stylus-files
+    fs.read-file "app/stylus/#{file-name}", (err, buffer) ->
+      if err then return cb err
+      _stylus buffer, cb
+  else
+    cb "#file-name is not allowed"
 
 # vim:fdm=marker
