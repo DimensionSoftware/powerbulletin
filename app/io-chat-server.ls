@@ -46,7 +46,7 @@ module.exports = class ChatServer
     ## else load it from the database
     else
       log "need to setup new remote chat"
-      err, c <~ db.conversation-find-or-create [{id:@user.id, name:@user.name}, {id:message.to.id, name:message.to.name}]
+      err, c <~ db.conversation-find-or-create @site.id, [{id:@user.id, name:@user.name}, {id:message.to.id, name:message.to.name}]
       if err then cb err
 
       # join the room for the conversation if we haven't already joined
