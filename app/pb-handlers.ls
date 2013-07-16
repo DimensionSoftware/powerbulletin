@@ -2,7 +2,6 @@ require! {
   fs
   async
   jade
-  cssmin
   mkdirp
   querystring
   s: \./search
@@ -293,9 +292,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   async.map files, render-css, (err, css-blocks) ->
     if err then return next err
-    blocks = css-blocks.join "\n"
-    #body   = if process.env.NODE_ENV is \production then cssmin.cssmin(blocks, 100) else blocks
-    body = blocks # cssmin broken? XXX: fix or remove
+    body = css-blocks.join "\n"
     caching-strategies.etag res, sha1(body), 7200
     res.content-type \css
     res.send body
