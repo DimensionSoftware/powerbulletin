@@ -1,7 +1,10 @@
 require "shelljs/global"
-cp = require("child_process")
-fs = require("fs")
-config = require("./config/common")
+async      = require('async')
+cp         = require('child_process')
+fs         = require('fs')
+livescript = require('LiveScript')
+h          = require('./app/server-helpers')
+config     = require('./config/common')
 module.exports = (grunt) ->
   
   # Project configuration.
@@ -66,6 +69,10 @@ module.exports = (grunt) ->
         options:
           debounceDelay: 50
           interrupt: true
+
+  grunt.registerTask 'css', 'Build css for all themes', ->
+    h.renderCssSync('master.styl', (err, blocks) ->
+      fs.writeFileSync 'public/master.css', blocks)
 
   grunt.loadNpmTasks "grunt-contrib-uglify"
   grunt.loadNpmTasks "grunt-contrib-watch"

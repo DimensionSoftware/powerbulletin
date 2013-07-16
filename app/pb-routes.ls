@@ -1,5 +1,4 @@
 require! {
-  cssmin
   express
   mutant
   async
@@ -39,8 +38,13 @@ app.post \/resources/posts/:id/censor,     handlers.censor
 app.post \/resources/users/:id/avatar,     handlers.profile-avatar
 #}}}
 
-# common is for all environments
-common-css = [\/dynamic/css/master.styl]
+# common for all pages within a site
+#{{{ Common CSS - TODO be specific by site's theme (default, minimal, etc....)
+common-css = if process.env.NODE_ENV is \production
+  ["#{cvars.cache2-url}/master.styl"]
+else
+  [\/dynamic/css/master.styl] # refresh without building css
+#}}}
 #{{{ Common JS
 common-js = [v for k,v of jsu when k in [
   \jquery

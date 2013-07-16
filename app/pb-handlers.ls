@@ -2,9 +2,6 @@ require! {
   fs
   async
   jade
-  stylus
-  cssmin
-  fluidity
   mkdirp
   querystring
   s: \./search
@@ -288,38 +285,16 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     return res.json { success: false }, 403
   res.json success: true, avatar: url-path
 
-cvars.acceptable-stylus-files = fs.readdir-sync \app/stylus/
 @stylus = (req, res, next) ->
   r = req.route.params
   files = r.file.split ','
   if not files?length then return next 404
 
-  render-css = (file-name, cb) ->
-    if file-name in cvars.acceptable-stylus-files # concat files
-      fs.read-file "app/stylus/#{file-name}", (err, buffer) ->
-        if err then return cb err
-
-        options =
-          compress: true
-        stylus(buffer.to-string!, options)
-          .define \cache-url  cvars.cache-url
-          .define \cache2-url cvars.cache2-url
-          .define \cache3-url cvars.cache3-url
-          .define \cache4-url cvars.cache4-url
-          .define \cache5-url cvars.cache5-url
-          .set \paths [\app/stylus]
-          .use fluidity!
-          .render cb
-    else
-      cb 404
-
   async.map files, render-css, (err, css-blocks) ->
     if err then return next err
-    blocks = css-blocks.join "\n"
-    #body   = if process.env.NODE_ENV is \production then cssmin.cssmin(blocks, 100) else blocks
-    body = blocks # cssmin broken? XXX: fix or remove
+    body = css-blocks.join "\n"
     caching-strategies.etag res, sha1(body), 7200
-    res.content-type 'css'
+    res.content-type \css
     res.send body
 
 @add-impression = (req, res, next) ->
