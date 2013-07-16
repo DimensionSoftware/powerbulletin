@@ -756,7 +756,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- #''' getting around quoting bug
 
 -- this should actually find-or-create a conversation by the set of users given
-CREATE FUNCTION procs.conversation_find_or_create(users JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.conversation_find_or_create(site_id, users JSON) RETURNS JSON AS $$
   find-or-create = plv8.find_function \procs.find_or_create
   find-sql = '''
   SELECT c.*
@@ -765,11 +765,12 @@ CREATE FUNCTION procs.conversation_find_or_create(users JSON) RETURNS JSON AS $$
   LEFT JOIN users_conversations uc1 on uc1.conversation_id = c.id
   WHERE uc0.user_id = $1
   AND   uc1.user_id = $2
+  AND   c.site_id = $3
   '''
-  find-params = ins-params = [ users.0?id, users.1?id ]
+  find-params = ins-params = [ users.0?id, users.1?id, site_id ]
   ins-sql = '''
   WITH c AS (
-      INSERT INTO conversations DEFAULT VALUES RETURNING *
+      INSERT INTO conversations (site_id) VALUES ($3) RETURNING *
     ), i AS (
       INSERT INTO users_conversations (user_id, conversation_id) SELECT $1, id FROM c
     )
@@ -822,9 +823,10 @@ CREATE FUNCTION procs.conversations_by_user(u JSON, page JSON) RETURNS JSON AS $
   LEFT JOIN users_conversations uc ON uc.conversation_id = c.id
   LEFT JOIN users u ON u.id = uc.user_id
   WHERE u.id = $1
+  AND conversations.site_id = $2
   ORDER BY id DESC
   '''
-  conversations = plv8.execute sql, [u.id]
+  conversations = plv8.execute sql, [u.id, u.site_id]
   # TODO order by date of last message in conversation instead of id
   return conversations
 $$ LANGUAGE plls IMMUTABLE STRICT;
