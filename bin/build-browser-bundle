@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
-STANDARD_ARGS='-t liveify --ignore './auth' --ignore cheerio --ignore jade --ignore jsdom -o public/powerbulletin.js app/layout.ls app/pb-entry.ls'
-SALES_STANDARD_ARGS='-t liveify --ignore './auth' --ignore cheerio --ignore jade --ignore jsdom -o public/powerbulletin-sales.js app/layout.ls app/pb-sales-entry.ls'
+STANDARD_ARGS='-t liveify --ignore './auth' --ignore cheerio --ignore jade --ignore jsdom --ignore url -o public/powerbulletin.js app/layout.ls app/pb-entry.ls'
+SALES_STANDARD_ARGS='-t liveify --ignore './auth' --ignore cheerio --ignore jade --ignore jsdom --ignore url -o public/powerbulletin-sales.js app/layout.ls app/pb-sales-entry.ls'
 
 if [ "$NODE_ENV" = 'production' ]; then
   # compress in production
