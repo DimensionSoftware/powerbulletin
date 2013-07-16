@@ -55,7 +55,7 @@ a
 header
   //background-color rgba(255,255,255,0.1)
   background-color #fff
-  border-top 2px solid #aaa
+  border-top 1px solid #aaa
   border-bottom 1px solid rgba(180,180,180,0.4)
   color #555
   .container
@@ -63,26 +63,26 @@ header
       > .row
         .title.active:hover
           color #000
-          border-top 3px solid highlight-color2
+          border-bottom 3px solid highlight-color2
         .title.active
           position relative!important
           z-index 75!important
           color #333
           background-color #fafafa
-          border-top 3px solid highlight-color2
+          border-bottom 3px solid highlight-color2
       > .row
         .title:hover, .title.hover
-          border-top 3px solid #777
+          border-bottom 2px solid #777
           //background-image linear-gradient(bottom, #fff 25px, #fed)
           color #555
           background-color #fdfdfd
           animation-name tiny-grow!important
           animation-duration .1s
-          transition border-top .4s, background-color .3s, color .4s
+          transition border-bottom .4s, background-color .3s, color .4s
       > .row
         .title
           text-decoration none
-          border-top 3px solid #aaa
+          border-bottom 2px solid #aaa
           color #999
           text-transform uppercase
           font-weight bold
@@ -94,7 +94,7 @@ header
           box-shadow 0 2px 4px 0px #ccc
           border-right 1px solid #aaa
           border-bottom 1px solid #aaa
-          border-top 1px solid #bbb
+          border-bottom 1px solid #bbb
           border-bottom-right-radius 5px
           border-bottom-left-radius 5px
           background-color #fff
@@ -125,36 +125,28 @@ header
               text-decoration none
               white-space nowrap
               text-overflow ellipsis
-    .search::before
-      border-left 7px solid highlight-color2
     .search
       .query::-webkit-input-placeholder
-          color #777
+          color #ccc
       .query:-moz-placeholder
-          color #777
+          color #ccc
       .query::-moz-placeholder
-          color #777
+          color #ccc
       .query:-ms-input-placeholder
-          color #777
+          color #ccc
+      .query:focus
+        margin-top -1px
+        height 21px
       .query:hover, .query:focus
         //border none!important
         //box-shadow none!important
-        box-shadow none
+        color #444
       #query.query
-        box-shadow 0
-        //color #fff
-        color #000
         font-style italic
-        border-left none
         letter-spacing 1px
-        text-align right
-        background transparent
         font-weight 400
-        border none
       .query
         font-size 1.15em
-        border-bottom-width 3px
-        border-left 0px
         height 20px
 //}}}
 //{{{ Left side
@@ -333,7 +325,7 @@ body.scrolled
               line-height (grid*3)
       .search
         .query
-          border-bottom-width 2px
+          border-bottom-width 1px
         .query::-webkit-input-placeholder
             color #bbb
         .query:-moz-placeholder

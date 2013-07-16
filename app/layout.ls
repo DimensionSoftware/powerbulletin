@@ -48,7 +48,7 @@ is-touchable = do ->
   catch
     false
 
-threshold = 10px # snap
+const threshold = 20px # snap
 
 #.
 #### main   ###############>======-- -   -

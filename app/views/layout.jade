@@ -44,16 +44,22 @@ html
         a.mutant(href='/') Power
           strong Bulletin
       .container
-        menu#menu.menu
-          each f,i in menu
-            li.row
-              a.title(data-surf=f.id, data-scroll-to="#forum_#{f.id}", class="forum-#{f.id}", href="/#{f.slug}")= f.title
-              .submenu
-                menu
-                  if f.forums
-                    each sf,i in f.forums
-                      li.row
-                        a.mutant(class="forum-#{sf.id}", href=sf.uri)= sf.title
+        .search
+          input#query.query(type='text', placeholder='Search', autocomplete='off')
+          .onclick-close.toggler(title='Close!') x
+        .profile.photo
+          img
+        .menu-container
+          menu#menu.menu
+            each f,i in menu
+              li.row
+                a.title(data-surf=f.id, data-scroll-to="#forum_#{f.id}", class="forum-#{f.id}", href="/#{f.slug}")= f.title
+                .submenu
+                  menu
+                    if f.forums
+                      each sf,i in f.forums
+                        li.row
+                          a.mutant(class="forum-#{sf.id}", href=sf.uri)= sf.title
         menu.tools
           li.onclick-login
             a(href='/auth/login') Login
@@ -63,9 +69,6 @@ html
             a.mutant.onclick-profile(href='/users') Profile
           li.onclick-logout
             a(href='/auth/logout') Logout
-        .search
-          input#query.query(type='text', placeholder='Search', autocomplete='off')
-        .onclick-close.toggler(title='Close!') x
 
     section#left_content
       #handle.handle(title='Toggle')
