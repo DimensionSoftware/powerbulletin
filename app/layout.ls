@@ -164,7 +164,7 @@ window.scroll-to-top = (cb=->) ->
   $e = $ 'html,body'
   do
     <- $e .animate { scroll-top:0 }, 200ms
-    <- $e .animate { scroll-top:threshold }, 110ms
+    <- $e .animate { scroll-top:(threshold/2)}, 110ms
     <- $e .animate { scroll-top:0 }, 75ms
   cb!
 window.awesome-scroll-to = (e, duration, cb=->) ->
