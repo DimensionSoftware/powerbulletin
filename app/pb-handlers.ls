@@ -188,7 +188,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   db   = pg.procs
   site = res.vars.site
   name = req.params.name
-  page = req.query.page or 1
+  page = req.params.page or 1
   ppp  = posts-per-page
   usr  = { name: name, site_id: site.id }
 
@@ -206,7 +206,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     profile        : db.usr usr, _
     posts-by-user  : db.posts-by-user usr, page, ppp, _
     qty            : [\profile, (cb, a) ->
-      console.log \ZZZZZZZ, a.profile
       db.posts-count-by-user(a.profile, cb)
     ]
     pages-count    : db.posts-by-user-pages-count usr, ppp, _

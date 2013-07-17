@@ -327,7 +327,8 @@ export profile =
           qty: @qty
           active-page: @page
 
-        pnum-to-href = default-pnum-to-href-fun @uri
+        pnum-to-href = mk-post-pnum-to-href "/user/#{@profile.name}"
+        console.warn \pro, @profile
         window.marshal \uri, @uri
         paginator-component window, locals, pnum-to-href
       layout-static.call @, window, \profile
@@ -376,7 +377,8 @@ export profile =
           step: window.step
           qty: window.qty
           active-page: window.page
-        pnum-to-href = default-pnum-to-href-fun window.uri
+        name = window.location.pathname.split('/')[2]
+        pnum-to-href = mk-post-pnum-to-href "/user/#name"
         paginator-component window, locals, pnum-to-href
       next!
 
