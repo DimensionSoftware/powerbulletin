@@ -207,7 +207,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     posts-by-user  : db.posts-by-user usr, page, ppp, _
     qty            : [\profile, (cb, a) ->
       console.log \ZZZZZZZ, a.profile
-      db.posts-count-by-user(a.profile.id, cb)
+      db.posts-count-by-user(a.profile, cb)
     ]
     pages-count    : db.posts-by-user-pages-count usr, ppp, _
 

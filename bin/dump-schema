@@ -1,0 +1,4 @@
+#!/bin/sh -e
+# eventually this will be our master schema dumping method, and the hand-coded schema will be obsolete
+# (maybe)
+pg_dump -Upostgres -h127.0.0.1 --schema-only --no-privileges --no-owner pb | grep -Ev '^--'
