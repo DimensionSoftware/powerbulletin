@@ -224,7 +224,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     ..human_post_count = add-commas(..post_count)
 
   res.locals fdoc
-  res.locals.step = 2 #ppp
+  res.locals.step = ppp
 
   # i know this is hacky, XXX use proper parsing later
   res.locals.uri = req.url
