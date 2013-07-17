@@ -193,7 +193,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   usr  = { name: name, site_id: site.id }
 
   if req.params.page
-    req.assert(\page, 'Invalid page number').isInt()
+    req.assert(\page, 'Invalid page number').is-int!
 
   errors = req.validation-errors!
   if errors
