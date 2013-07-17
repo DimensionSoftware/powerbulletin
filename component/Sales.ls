@@ -2,6 +2,7 @@ require! {
   lodash
   Component: yacomponent
   \./ParallaxButton.ls
+  \./SiteRegister.ls
   sh: \../app/shared-helpers.ls
 }
 
@@ -11,57 +12,20 @@ debounce = lodash.debounce _, 250
 
 module.exports =
   class Sales extends Component
-    hostname = if process.env.NODE_ENV is \production then \.powerbulletin.com else \.pb.com
     template: templates.Sales
     init: ->
       # mandatory state
-      @local \hostname, hostname
-      @local \subdomain ''
+      @local \subdomain ''  # make sure reactive variable exists
 
       # init children
-      do ~>
-        on-click = ~>
-          console.log \created: + subdomain
-          subdomain   = @local \subdomain
-          @@$.post '/ajax/can-has-site-plz', {domain: subdomain+hostname}, ({errors, transient_owner}:r) ->
-            if errors.length
-              console.error errors
-            else
-              cookie-opts =
-                domain: hostname
-                expires: 1
+      @children =
+        register-top: new SiteRegister {locals: {subdomain: @state.subdomain}}, \#register-top, @
+        register-bottom: new SiteRegister {locals: {subdomain: @state.subdomain}}, \#register-bottom, @
 
-              # set cookie so they are 'admin' of temporary site
-              if r.user_id
-                window.location = "http://#subdomain#hostname\#once"
-              else
-                $.cookie \transient_owner, transient_owner, cookie-opts
-                window.location = "http://#subdomain#hostname"
-        locals = {title: 'Create Community'}
-        @children =
-          buy: new ParallaxButton {on-click, locals} \.Sales-create @
     on-attach: ->
-      component = @
-      $sa = @$.find(\.Sales-available)
-
-      @check-subdomain-availability = @@$R((subdomain) ->
-        @@$.get \/ajax/check-domain-availability {domain: subdomain+hostname} (res) ->
-          $sa.remove-class 'success error'
-          if res.available
-            component.children.buy.enable!
-            $sa.add-class \success
-          else
-            component.children.buy.disable!
-            $sa.add-class \error
+      @@$R((subdomain) ~>
+        for c in [@children.register-top, @children.register-bottom]
+          #unless subdomain is c.local(\subdomain)
+          c.update-subdomain subdomain
       ).bind-to @state.subdomain
 
-      @$.on \keyup, \input.Sales-subdomain, debounce ->
-        new-input = $(@).val!
-        $ \input.Sales-subdomain .val new-input # update all inputs
-        unless new-input is component.local(\subdomain)
-          # only signal changes on _different_ input
-          component.state.subdomain new-input
-    on-detach: ->
-      sh.r-unbind @check-subdomain-availability
-      delete @check-subdomain-availability
-      @$.off \keyup \input.Sales-subdomain

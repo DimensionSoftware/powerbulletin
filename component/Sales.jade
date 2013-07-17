@@ -1,18 +1,7 @@
-mixin create
-  fieldset
-    input.Sales-subdomain(type='text', value=typeof subdomain != 'undefined' ? subdomain : '')
-      t
-    span.hostname= hostname
-    span.Sales-available
-      //- unicode checkmark
-      .success &#x2713;
-      //- unicode heavy ballot x
-      .error &#x2718;
-    .Sales-create
 
 h1 PowerBulletin
 em Power YOUR Communities
-mixin create
+#register-top
 h2 Why you'll love PowerBulletin
 menu
   li Breakthrough Navigation
@@ -35,4 +24,4 @@ menu
     p
       | Knowledge is PowerBulletin.  With direct access to our team of friendly developers,
       | there's almost no limit to what you can build.
-mixin create
+#register-bottom
