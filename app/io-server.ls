@@ -81,6 +81,10 @@ site-by-domain = (domain, cb) ->
     var search-room
     var presence
 
+    if not socket.handshake
+      log "no socket.handshake; bailing to prevent crash"
+      return
+
     err, user <- user-from-session socket.handshake.session
     if err then log err
 
