@@ -2,7 +2,6 @@ require! {
   fs
   async
   jade
-  cssmin
   mkdirp
   querystring
   s: \./search
@@ -189,12 +188,12 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   db   = pg.procs
   site = res.vars.site
   name = req.params.name
-  page = req.query.page or 1
+  page = req.params.page or 1
   ppp  = posts-per-page
   usr  = { name: name, site_id: site.id }
 
   if req.params.page
-    req.assert(\page, 'Invalid page number').isInt()
+    req.assert(\page, 'Invalid page number').is-int!
 
   errors = req.validation-errors!
   if errors
@@ -207,8 +206,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     profile        : db.usr usr, _
     posts-by-user  : db.posts-by-user usr, page, ppp, _
     qty            : [\profile, (cb, a) ->
-      console.log \ZZZZZZZ, a.profile
-      db.posts-count-by-user(a.profile.id, cb)
+      db.posts-count-by-user(a.profile, cb)
     ]
     pages-count    : db.posts-by-user-pages-count usr, ppp, _
 
@@ -226,7 +224,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     ..human_post_count = add-commas(..post_count)
 
   res.locals fdoc
-  res.locals.step = 2 #ppp
+  res.locals.step = ppp
 
   # i know this is hacky, XXX use proper parsing later
   res.locals.uri = req.url
@@ -293,9 +291,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   async.map files, render-css, (err, css-blocks) ->
     if err then return next err
-    blocks = css-blocks.join "\n"
-    #body   = if process.env.NODE_ENV is \production then cssmin.cssmin(blocks, 100) else blocks
-    body = blocks # cssmin broken? XXX: fix or remove
+    body = css-blocks.join "\n"
     caching-strategies.etag res, sha1(body), 7200
     res.content-type \css
     res.send body

@@ -1,5 +1,4 @@
 require! {
-  cssmin
   express
   mutant
   async

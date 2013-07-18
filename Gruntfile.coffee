@@ -71,14 +71,10 @@ module.exports = (grunt) ->
           interrupt: true
 
   grunt.registerTask 'css', 'Build css for all themes', ->
-    h.renderCssSync('master.styl', (err, cssBlocks) ->
-      #console.log "err:" + err
-      #if err then return throw new Error(err)
-      #blocks = err.join "\n"
-      #body   = if process.env.NODE_ENV is \production then cssmin.cssmin(blocks, 100) else blocks
-      #console.log "blocks:" + blocks
-      blocks = cssBlocks
-      fs.writeFileSync 'public/master.css', blocks)
+    done = this.async()
+    h.renderCss('master.styl', (err, blocks) ->
+      fs.writeFileSync 'public/master.css', blocks
+      done(true))
 
   grunt.loadNpmTasks "grunt-contrib-uglify"
   grunt.loadNpmTasks "grunt-contrib-watch"
