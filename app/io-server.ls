@@ -15,26 +15,13 @@ log = debug 'io-server'
 user-from-session = (s, cb) ->
   unless s?passport?user
     return cb null, {id:0, name:\Anonymous, guest:true}
-  [type, name, site_id] = s?passport?user?split \:
-  switch type
-  | \transient =>
-    transient-user =
-      transient: true
-      transient_id: parse-int name
-      rights:
-        admin: true
-    (err, authorized) <~ db.authorize-transient name, site_id
-    if err then return cb err
-    if authorized
-      cb null, transient-user
-    else
-      cb null, null
-  | \permanent =>
+  [name, site_id] = s?passport?user?split \:
+  if name and site_id
     (err, user) <~ db.usr {name, site_id}
     if err then return cb err
     delete user.auths
-    cb err, user
-  | otherwise =>
+    cb null, user
+  else
     cb new Error("bad cookie #{s.passport.user}")
 
 site-by-domain = (domain, cb) ->
