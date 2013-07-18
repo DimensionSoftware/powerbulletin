@@ -56,6 +56,20 @@ describe 'new Paginator {locals: {qty: 17}}' ->
     _it "should return expected html" !->
       assert.equal c.html(false), expected
 
+  describe "subsequently clicking on '2'" ->
+    expected = '
+    <strong class="Paginator-page">1</strong>
+    <a href="?page=2" class="mutant Paginator-page">2</a>
+    <a href="?page=3" class="mutant Paginator-page">3</a>
+    '
+
+    _it "should invoke the on-page callback" ->
+      assert false
+
+    _it "should reload the paginator and return different/new html" ->
+      assert false
+
+
 describe 'new Paginator {locals: {active-page: 2, qty: 16}}' ->
   c = new Paginator {locals: {active-page: 2, qty: 16}}
 
