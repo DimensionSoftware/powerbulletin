@@ -1,3 +1,4 @@
+ul.SiteRegister-errors
 form.site-register
   fieldset
     input.SiteRegister-subdomain(type='text', name='subdomain', value=typeof subdomain != 'undefined' ? subdomain : '')
@@ -8,9 +9,5 @@ form.site-register
       .success &#x2713;
       //- unicode heavy ballot x
       .error &#x2718;
-    .registration
-      input(type='text', name='name', placeholder='Username')
-      input(type='password',  name='password', placeholder='Password')
-      input(type='text', name='email', placeholder='Email')
     .SiteRegister-create
 

@@ -1,5 +1,5 @@
 (function(){
-  var post, censor, out$ = typeof exports != 'undefined' && exports || this;
+  var post, censor, subdomain, out$ = typeof exports != 'undefined' && exports || this;
   out$.post = post = function(post){
     var errors;
     errors = [];
@@ -28,6 +28,15 @@
     }
     if (!c.reason) {
       errors.push('Reason cannot be blank');
+    }
+    return errors;
+  };
+  out$.subdomain = subdomain = function(subdomain){
+    var allowedChars, errors;
+    allowedChars = /^[a-z0-9\-]+$/i;
+    errors = [];
+    if (!subdomain.match(allowedChars)) {
+      errors.push('Invalid Subdomain');
     }
     return errors;
   };

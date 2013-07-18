@@ -19,3 +19,11 @@ export censor = (c) ->
   unless c.reason
     errors.push 'Reason cannot be blank'
   errors
+
+export subdomain = (subdomain) ->
+  allowed-chars = /^[a-z0-9\-]+$/i
+
+  errors = []
+  unless subdomain.match allowed-chars
+    errors.push 'Invalid Subdomain'
+  errors

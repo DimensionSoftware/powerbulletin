@@ -3,6 +3,7 @@ require! {
   Component: yacomponent
   \./ParallaxButton.ls
   sh: \../app/shared-helpers.ls
+  \../plv8_modules/pure-validations.js
 }
 
 {templates} = require \../build/component-jade.js
@@ -43,10 +44,13 @@ module.exports =
 
     on-attach: ->
       component = @
-      $sa = @$.find(\.SiteRegister-available)
+      $sa = @$.find \.SiteRegister-available
+      $errors = @$.find \.SiteRegister-errors
 
       @check-subdomain-availability = @@$R((subdomain) ->
+        errors = pure-validations.subdomain subdomain
         @@$.get \/ajax/check-domain-availability {domain: subdomain+hostname} (res) ->
+          $errors.html '' # clear previous errors from div
           $sa.remove-class 'success error'
           if res.available
             component.children.buy.enable!
@@ -54,6 +58,10 @@ module.exports =
           else
             component.children.buy.disable!
             $sa.add-class \error
+            errors.push 'Domain is not available, please try another name'
+
+          for err in errors
+            $errors.append @@$("<li>#err</li>")
       ).bind-to @state.subdomain
 
       var last-val
