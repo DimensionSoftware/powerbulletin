@@ -782,8 +782,6 @@ CREATE FUNCTION procs.conversation_find_or_create(site_id JSON, users JSON) RETU
 
   usr = plv8.find_function \procs.usr
   c.participants   = [ usr({ name: u.name, site_id: site_id }) for u in users ]
-  plv8.elog WARNING, users
-  plv8.elog WARNING, JSON.stringify(c.participants)
   c.messages       = []
   return c
 $$ LANGUAGE plls IMMUTABLE STRICT;
