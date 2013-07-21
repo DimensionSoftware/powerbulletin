@@ -220,6 +220,7 @@ module.exports =
       else
         e.html \Show
         p.attr \type \password
+      set-timeout (-> p.focus!), 10ms # focus!
       false
 
     # choose a username

@@ -122,6 +122,8 @@ export homepage =
         window.$ '.forum .container' .masonry(
           item-selector: \.post
           is-animated:   true
+          animation-options:
+            duration: 200ms
           is-fit-width:  true
           is-resizable:  true)
 

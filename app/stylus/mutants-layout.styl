@@ -113,7 +113,7 @@ html.forum, html.profile, html.search
       padding-top grid
       .thread
         position relative
-        padding 1px (grid*1.5) grid ((grid*2)+3)
+        padding 0 (grid*1.5) grid (grid*2)
         .mutant
           display block
           border none
@@ -124,7 +124,7 @@ html.forum, html.profile, html.search
           max-height 65px
           text-transform capitalize
           margin grid grid 0 -5px
-          padding 1px 5px
+          padding 1px 5px 0 3px
         .username
           margin-right 5px
           font-size .7em
@@ -427,6 +427,8 @@ html.search
       color #555
     #search_filters, #search_facets
       padding 0 15px
+      select
+        max-width 100%
     #facets
       .facet-title
         font-weight bold
