@@ -147,10 +147,10 @@ window.onload-resizable = ->
     #  - fix scrollable region to include another hundred px on bottom
     $l.find \.scrollable .nice-scroll {
       bouncescroll:    true
-      cursorcolor:     \#aaa
-      cursorwidth:     2
-      hidecursordelay: 800
-      mousescrollstep: 5
+      cursorcolor:     \#bbb
+      cursorwidth:     6
+      hidecursordelay: 1000
+      mousescrollstep: 6
       railoffset:      true
       railpadding:     {bottom:50px}}
     $r.css \padding-left ($l.width!+left-offset) # snap
