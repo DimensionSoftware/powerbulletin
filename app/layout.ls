@@ -195,6 +195,12 @@ has-scrolled = ->
 set-timeout (->
   $w.on \scroll -> has-scrolled!
   has-scrolled!), 600ms # initially yield
+$ \header.header .on \click (ev) ->
+  if $ ev.target .has-class \header # pull down search when header is clicked
+    b = $ \body
+    if $w.scroll-top! > threshold
+      b.toggle-class \scrolled
+      set-timeout (-> $ \#query .focus!), 1ms # ...and focus search
 
 # attach scroll-to's
 $d.on \click '.onclick-scroll-to' ->
