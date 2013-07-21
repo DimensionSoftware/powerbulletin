@@ -47,8 +47,8 @@ html
         .search
           input#query.query(type='text', placeholder='Search', autocomplete='off')
           .onclick-close.toggler(title='Close!') x
-        .profile.photo
-          img
+        a.profile.photo.mutant
+          img#profile
         .menu-container
           menu#menu.menu
             each f,i in menu

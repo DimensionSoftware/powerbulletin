@@ -81,6 +81,7 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
 layout-on-personalize = (w, u) ->
   if u # guard
     set-online-user u.id
+    set-profile u.photo
 
     # hash actions
     switch window.location.hash

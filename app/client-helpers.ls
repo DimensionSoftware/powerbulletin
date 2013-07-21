@@ -197,4 +197,9 @@ export switch-and-focus = (remove, add, focus-on) ->
 export set-online-user = (id) ->
   $ "[data-user-id=#{id}] .profile.photo" .add-class \online
 
+export set-profile = (src) ->
+  $ \.photo .attr \href "/user/#{user.name}"
+  $ \#profile
+    ..on   \load -> $ \.profile .show!
+    ..attr \src, window.cache-url + src
 # vim:fdm=marker
