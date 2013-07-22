@@ -1,7 +1,7 @@
 price = (product.price / 100.0).toFixed(0)
 h1 #{product.description}
 .right.ccinfo
-  form
+  form(autocomplete='off')
     .tooltip
     if cardNeeded
       .clear

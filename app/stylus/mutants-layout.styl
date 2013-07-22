@@ -222,7 +222,7 @@ html.forum, html.profile, html.search
           position absolute
           z-index 15
           padding 2px 5px
-          font-size .9em
+          font-size 1em
           height 26px
           right -14px
           bottom 9px
@@ -454,24 +454,15 @@ html.search
         #query.query
           position relative
           z-index 9
-          font-size 1.35em
-          font-weight 400
+        .onclick-close
+          opacity 1!important
+          right 11px
       .advanced
         right 80px
         top (header-height + 5)
         transition right .2s ease-out
         .check, label
           cursor pointer
-    .onclick-close
-      cursor pointer
-      position absolute
-      right 11px
-      top 9px
-      z-index 14
-      opacity 1
-      font-size 1.1em
-      line-height 6px
-      transition opacity .5s ease-out .1s
 
     h2.title
       font-size 1em
@@ -508,6 +499,7 @@ html.admin
             position absolute
             right 10px
             font-size 1.3em
+            animation-name none
   #main_content
     padding-left 200px
     padding-bottom 50px
