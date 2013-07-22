@@ -19,15 +19,15 @@ require! {
       dur = aft - bef
       console.log "benchmarked '#{subject-name}': took #{dur}ms"
 
-!function render-component win, target, klass, first-klass-arg
+!function render-component win, target, name, klass, first-klass-arg
   wc = win.component ||= {}
-  if c = wc[klass.name] # already registered
+  if c = wc[name] # already registered
     if locals = first-klass-arg?locals
       c.locals locals
     c.reload!
   else # instantiate and register (locals are in first-klass-arg)
     # always instantiate using 'internal' dom by not passing a target at instantiation
-    c = wc[klass.name] = new klass(first-klass-arg)
+    c = wc[name] = new klass(first-klass-arg)
   win.$(target).html('').append c.$ # render
 
 !function paginator-component w, locals, pnum-to-href
@@ -395,8 +395,8 @@ export profile =
   switch action
   | \domains  => win.render-mutant \main_content, \admin-domains
   | \invites  => win.render-mutant \main_content, \admin-invites
-  | \menu     => render-component win, \#main_content, AdminMenu, {locals: {site-id: site.id}}
-  | \upgrade  => render-component win, \#main_content, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
+  | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site-id: site.id}}
+  | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
   | otherwise => win.render-mutant \main_content, \admin-general
 
 export admin =
