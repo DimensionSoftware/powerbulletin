@@ -40,8 +40,6 @@ require! {
     wc.paginator =
       new Paginator {locals, pnum-to-href} w.$(\#pb_paginator)
 
-#!function deactivate-paginator
-
 function parse-url url
   if document?
     a = document.create-element \a
@@ -218,6 +216,11 @@ export forum =
       if @top-threads
         window.render-mutant \left_container \nav # refresh on forum & mutant change
 
+        render-thread-paginator-component window, @t-qty, @t-step
+        window.marshal \tQty, @t-qty
+        window.marshal \tStep, @t-step
+
+
       window.marshal \activeForumId @active-forum-id
       window.marshal \activeThreadId @active-thread-id
       window.marshal \page @page
@@ -238,10 +241,6 @@ export forum =
         pnum-to-href = mk-post-pnum-to-href @post.uri
 
         paginator-component window, locals, pnum-to-href
-
-      render-thread-paginator-component window, @t-qty, @t-step
-      window.marshal \tQty, @t-qty
-      window.marshal \tStep, @t-step
 
       layout-static.call @, window, \forum, @active-forum-id
       next!
