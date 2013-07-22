@@ -39,7 +39,7 @@ module.exports =
       # how many other pages behind and in front of active-page should we show?
       page-distance: 4
 
-    ({pnum-to-href = (-> "?page=#it")} = {}) ->
+    ({pnum-to-href = (-> "?page=#it"), @on-page} = {}) ->
       @pnum-to-href = @@$R.state pnum-to-href
       super ...
 
@@ -62,3 +62,10 @@ module.exports =
 
         @state.pages = @@$R(calc-pages).bind-to ...bindings
     template: templates.Paginator
+    on-attach: ->
+      # attach optional click handlers
+      if @on-page
+        handler = ~>
+          @on-page @local(\active-page), @
+        @$.on \click \a handler
+    on-detach: -> @$.off!

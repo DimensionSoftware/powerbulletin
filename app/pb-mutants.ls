@@ -19,12 +19,16 @@ require! {
       dur = aft - bef
       console.log "benchmarked '#{subject-name}': took #{dur}ms"
 
-!function render-component c, locals, window, target
-  wc = window.component ||= {}
-  wc[c.constructor?name] = c # register
-  c.locals locals
-  c.reload!
-  window.$ target .html('').append c.$ # render
+!function render-component win, target, klass, first-klass-arg
+  wc = win.component ||= {}
+  if c = wc[klass.name] # already registered
+    if locals = first-klass-arg?locals
+      c.locals locals
+    c.reload!
+  else # instantiate and register (locals are in first-klass-arg)
+    # always instantiate using 'internal' dom by not passing a target at instantiation
+    c = wc[klass.name] = new klass(first-klass-arg)
+  win.$(target).html('').append c.$ # render
 
 !function paginator-component w, locals, pnum-to-href
   wc = w.component ||= {}
@@ -385,6 +389,15 @@ export profile =
         paginator-component window, locals, pnum-to-href
       next!
 
+# this function meant to be shared between static and on-initial
+!function render-admin-components action, site, win
+  switch action
+  | \domains  => win.render-mutant \main_content, \admin-domains
+  | \invites  => win.render-mutant \main_content, \admin-invites
+  | \menu     => render-component win, \#main_content, AdminMenu, {locals: {site-id: site.id}}
+  | \upgrade  => render-component win, \#main_content, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
+  | otherwise => win.render-mutant \main_content, \admin-general
+
 export admin =
   static:
     (window, next) ->
@@ -394,21 +407,10 @@ export admin =
       window.$ '#left_container menu li' .remove-class \active
       window.$ "\#left_container menu .#{@action or \general}" .add-class \active
 
-      switch @action
-      | \domains  => window.render-mutant \main_content, \admin-domains
-      | \invites  => window.render-mutant \main_content, \admin-invites
-      | \menu     => render-component(
-        new AdminMenu({-auto-render, -auto-attach}),
-        site-id:@site.id,
-        window,
-        \#main_content)
-      | \upgrade  => render-component(
-        new AdminUpgrade({-auto-render, -auto-attach}),
-        subscriptions:@site.subscriptions,
-        window,
-        \#main_content)
-      | otherwise => window.render-mutant \main_content, \admin-general
-
+      render-admin-components @action, @site, window
+      # these two vars have to be marshalled so the components have access
+      # to them on-initial
+      window.marshal \action @action
       window.marshal \site @site
       layout-static.call @, window, \admin
       next!
@@ -433,10 +435,9 @@ export admin =
       <~ lazy-load-nested-sortable
       next!
   on-initial:
-    (window, next) ->
-      console.log \initial
-      new AdminMenu({-auto-render})
-      new AdminUpgrade({-auto-render})
+    (win, next) ->
+      render-admin-components win.action, win.site, win
+      next!
   on-mutate:
     (window, next) ->
       scroll-to-top!
