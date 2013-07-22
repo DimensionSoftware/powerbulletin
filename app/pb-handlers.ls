@@ -82,9 +82,9 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   res.mutant \homepage
 
 @forum = (req, res, next) ->
-  db   = pg.procs
   user = req.user
   uri  = req.path
+  t-step = 25 # thread list step size
 
   meta = furl.parse querystring.unescape(req.path)
   console.warn meta.type, meta.path
@@ -123,11 +123,13 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     limit = site.config?posts-per-page or posts-per-page
     offset = (page - 1) * limit
 
+    console.warn \post.forum_id, post.forum_id
     tasks =
       menu            : db.menu site.id, _
       sub-posts-tree  : db.sub-posts-tree site.id, post.id, 'p.*', limit, offset, _
       sub-posts-count : db.sub-posts-count post.id, _
       top-threads     : db.top-threads post.forum_id, \recent, _
+      t-qty           : db.thread-qty post.forum_id, _
       forum           : db.forum post.forum_id, _
 
     if req.surfing
@@ -144,7 +146,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     if page > 1 and fdoc.sub-posts-tree.length < 1 then return next 404
 
     # attach sub-post to fdoc, among other things
-    fdoc <<< {post, forum-id:post.forum_id, page}
+    fdoc <<< {post, forum-id:post.forum_id, page, t-step}
     fdoc.title = post.title
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.post.posts = delete fdoc.sub-posts-tree
@@ -165,6 +167,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       forum       : db.forum forum-id, _
       forums      : db.forum-summary forum-id, 10threads, \recent, _
       top-threads : db.top-threads forum-id, \recent, _
+      t-qty       : db.thread-qty forum-id, _
 
     if req.surfing
       delete-unnecessary-surf-data res
@@ -177,7 +180,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     if err then return next err
     if !fdoc then return next 404
 
-    fdoc <<< {forum-id}
+    fdoc <<< {forum-id, t-step}
     fdoc.active-forum-id = fdoc.forum-id
     fdoc.title = fdoc?forum?title
 

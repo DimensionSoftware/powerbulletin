@@ -198,8 +198,8 @@ export homepage =
       next!
 
 # this function meant to be shared between static and on-initial
-!function render-thread-paginator-component win
-  render-component win, \#thread-paginator, \thread-paginator, Paginator, {locals: {qty: 99}}
+!function render-thread-paginator-component win, qty, step
+  render-component win, \#thread-paginator, \threadPaginator, Paginator, {locals: {qty, step}, on-page: (-> console.warn ...arguments)}
 
 export forum =
   static:
@@ -239,7 +239,9 @@ export forum =
 
         paginator-component window, locals, pnum-to-href
 
-      render-thread-paginator-component window
+      render-thread-paginator-component window, @t-qty, @t-step
+      window.marshal \tQty, @t-qty
+      window.marshal \tStep, @t-step
 
       layout-static.call @, window, \forum, @active-forum-id
       next!
@@ -284,7 +286,7 @@ export forum =
         dst = Math.round($ '#left_container .threads > .active' .position!?top)
         if dst then threads.animate {scroll-top:cur+dst+offset}, 500ms, \easeOutExpo), 500ms
 
-      render-thread-paginator-component window
+      render-thread-paginator-component window, window.t-qty, window.t-step
       next!
   on-mutate:
     (window, next) ->

@@ -930,4 +930,17 @@ CREATE FUNCTION procs.subscription_total(user_id JSON) RETURNS JSON AS $$
   [{sum}] = plv8.execute sql, [user_id]
   return sum or 0
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.thread_qty(forum_id JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT COUNT(*)
+  FROM posts p
+  LEFT JOIN moderations m ON m.post_id=p.id
+  WHERE p.parent_id IS NULL
+    AND p.forum_id=$1
+    AND m.post_id IS NULL
+  '''
+  [{count}] = plv8.execute sql, [forum_id]
+  return count
+$$ LANGUAGE plls IMMUTABLE STRICT;
 -- vim:fdm=marker
