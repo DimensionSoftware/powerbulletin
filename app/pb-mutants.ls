@@ -197,6 +197,10 @@ export homepage =
         window.$ $(\.extra:first) .html ''
       next!
 
+# this function meant to be shared between static and on-initial
+!function render-thread-paginator-component win
+  render-component win, \#thread-paginator, \thread-paginator, Paginator, {locals: {qty: 99}}
+
 export forum =
   static:
     (window, next) ->
@@ -234,6 +238,8 @@ export forum =
         pnum-to-href = mk-post-pnum-to-href @post.uri
 
         paginator-component window, locals, pnum-to-href
+
+      render-thread-paginator-component window
 
       layout-static.call @, window, \forum, @active-forum-id
       next!
@@ -277,6 +283,8 @@ export forum =
         cur = threads.scroll-top!
         dst = Math.round($ '#left_container .threads > .active' .position!?top)
         if dst then threads.animate {scroll-top:cur+dst+offset}, 500ms, \easeOutExpo), 500ms
+
+      render-thread-paginator-component window
       next!
   on-mutate:
     (window, next) ->
