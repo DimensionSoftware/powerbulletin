@@ -136,7 +136,7 @@ export lazy-load-editor = (cb) ->
     null,
     cb
 export lazy-load-fancybox = (cb) ->
-  lazy-load (-> window.$!Jcrop?length),
+  lazy-load (-> window.$!fancybox?length),
     "#cache-url/fancybox/jquery.fancybox.pack.js",
     "#cache-url/fancybox/jquery.fancybox.css",
     cb
