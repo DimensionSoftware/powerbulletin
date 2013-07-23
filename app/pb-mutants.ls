@@ -80,7 +80,7 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
   # private sites remove info unless logged in
   if @private
     #XXX/TODO need to remove the elements from page which are sensitive in this case with .remove!
-    #console.log \private!
+    console.log \private!
 
 layout-on-personalize = (w, u) ->
   if u # guard
@@ -414,9 +414,10 @@ export admin =
       window.marshal \site @site
       layout-static.call @, window, \admin
       next!
-  on-personalize: (w, u, next) ->
-    layout-on-personalize w, u
-    next!
+  on-personalize:
+    (w, u, next) ->
+      layout-on-personalize w, u
+      next!
   on-unload:
     (window, next-mutant, next) ->
       if window.admin-expanded then $ \body .add-class \collapsed # restore
