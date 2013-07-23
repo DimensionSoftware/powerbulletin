@@ -1,5 +1,6 @@
 require! {
   debug
+  redis
 }
 
 log = debug 'io-chat-server'

@@ -28,7 +28,7 @@ module.exports = class Presence
           #console.warn \user, err, user
           if err then return cb(err)
           err <- p.leave-all cid
-          console.warn \leave-all, err
+          #console.warn \leave-all, err
           if err then return cb(err)
           #console.warn \delete-user-maybe
           if user
