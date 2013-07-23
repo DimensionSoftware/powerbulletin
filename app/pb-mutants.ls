@@ -201,11 +201,13 @@ export homepage =
     # XXX: this is sort of a stopgap I know we need pretty ui
     # TODO: This is stub, we need actual real views
     # !!!!!!!!!!!!!!!!!!!!!!!!!! ^_^
-    $.get "/resources/threads/#{window.active-forum-id}" {page} (threads, status) ->
-      console.warn \thread-get, window.active-forum-id, status, threads.length
+    $.get "/resources/threads/#{window.active-forum-id}" {page} (top-threads, status) ->
+      console.warn \thread-get, window.active-forum-id, status, top-threads.length
       container = win.$('#left_container .scrollable')
-      container.html "#{JSON.stringify threads}"
-  render-component win, \#thread-paginator, \threadPaginator, Paginator, {locals: {qty, step}, on-page}
+      container.html win.jade.templates.__threads({top-threads})
+      #container.html "#{JSON.stringify threads}"
+  locals = {qty, step, active-page: 1}
+  render-component win, \#thread-paginator, \threadPaginator, Paginator, {locals, on-page}
 
 export forum =
   static:

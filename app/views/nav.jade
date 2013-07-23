@@ -18,8 +18,5 @@ mixin forum(f, i)
 #thread-paginator
 
 .scrollable
-  ul.threads
-    each t,ii in topThreads
-      mixin _thread(t)
-
+  include __threads
 //- vim:fdm=marker
