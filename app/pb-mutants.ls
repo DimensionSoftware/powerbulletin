@@ -202,7 +202,6 @@ export homepage =
     # TODO: This is stub, we need actual real views
     # !!!!!!!!!!!!!!!!!!!!!!!!!! ^_^
     $.get "/resources/threads/#{window.active-forum-id}" {page} (top-threads, status) ->
-      console.warn \thread-get, window.active-forum-id, status, top-threads.length
       container = win.$('#left_container .scrollable')
       container.html win.jade.templates.__threads({top-threads})
       #container.html "#{JSON.stringify threads}"
