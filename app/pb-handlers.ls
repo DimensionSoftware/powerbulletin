@@ -123,12 +123,11 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     limit = site.config?posts-per-page or posts-per-page
     offset = (page - 1) * limit
 
-    console.warn \post.forum_id, post.forum_id
     tasks =
       menu            : db.menu site.id, _
       sub-posts-tree  : db.sub-posts-tree site.id, post.id, 'p.*', limit, offset, _
       sub-posts-count : db.sub-posts-count post.id, _
-      top-threads     : db.top-threads post.forum_id, \recent, _
+      top-threads     : db.top-threads post.forum_id, \recent, t-step, 0, _ # always offset 0 since thread pagination is ephemeral
       t-qty           : db.thread-qty post.forum_id, _
       forum           : db.forum post.forum_id, _
 
@@ -166,7 +165,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       menu        : db.menu res.vars.site.id, _
       forum       : db.forum forum-id, _
       forums      : db.forum-summary forum-id, 10threads, \recent, _
-      top-threads : db.top-threads forum-id, \recent, _
+      top-threads : db.top-threads forum-id, \recent, t-step, 0, _ # always offset 0 since thread pagination is ephemeral
       t-qty       : db.thread-qty forum-id, _
 
     if req.surfing

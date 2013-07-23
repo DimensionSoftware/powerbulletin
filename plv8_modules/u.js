@@ -59,8 +59,10 @@
     sql = "SELECT " + fields + "\nFROM forums\nWHERE parent_id=$1\nORDER BY created DESC, id DESC";
     return plv8.execute(sql, [id]);
   };
-  out$.topPosts = topPosts = function(sort, limit, fields){
+  out$.topPosts = topPosts = function(sort, limit, offset, fields){
     var sortExpr, sql, f;
+    limit == null && (limit = void 8);
+    offset == null && (offset = 0);
     fields == null && (fields = 'p.*');
     sortExpr = (function(){
       switch (sort) {
@@ -72,11 +74,11 @@
         throw new Error("invalid sort for top-posts: " + sort);
       }
     }());
-    sql = "SELECT\n  " + fields + ",\n  " + userFields('p.user_id') + ",\n  COUNT(p.id) post_count\nFROM posts p\nLEFT JOIN posts p2 ON p2.thread_id=p.id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND m.post_id IS NULL\nGROUP BY p.id\nORDER BY " + sortExpr + "\nLIMIT $2";
+    sql = "SELECT\n  " + fields + ",\n  " + userFields('p.user_id') + ",\n  COUNT(p.id) post_count\nFROM posts p\nLEFT JOIN posts p2 ON p2.thread_id=p.id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND m.post_id IS NULL\nGROUP BY p.id\nORDER BY " + sortExpr + "\nLIMIT $2 OFFSET $3";
     f = function(){
       var args;
       args = slice$.call(arguments);
-      return plv8.execute(sql, args.concat([limit]));
+      return plv8.execute(sql, args.concat([limit, offset]));
     };
     f.fields = fields;
     return f;
@@ -235,8 +237,8 @@
       return [];
     }
   };
-  out$.topThreads = topThreads = function(forumId, sort){
-    return topPosts(sort)(forumId);
+  out$.topThreads = topThreads = function(forumId, sort, limit, offset){
+    return topPosts(sort, limit, offset)(forumId);
   };
   function import$(obj, src){
     var own = {}.hasOwnProperty;
