@@ -110,10 +110,9 @@ module.exports =
         @$.find \textarea .focus!
 
     close: ~>
-      err, r <~ socket.emit \chat-leave, @conversation
       key = @key!
-      console.log \key, key
       Chat.stop(@key!)
+      err, r <~ socket.emit \chat-leave, @conversation
 
 Chat.start = ([me,...others]:users) ->
   console.log \users, users
