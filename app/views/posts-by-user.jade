@@ -10,7 +10,7 @@ include _post
             b #{p.thread_title} 
           a.mutant.by(href="/user/#{p.thread_username}") by 
             b #{p.thread_username} 
-          a.mutant.forum(href=p.forum_uri) in 
+          a.mutant.forum-link(href=p.forum_uri) in 
             b #{p.forum_title}
       mixin _post(p, i)
       last_thread_id = p.thread_id

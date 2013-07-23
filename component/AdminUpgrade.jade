@@ -2,13 +2,13 @@
 mixin product(p, msg)
   if subscriptions.indexOf(p)==-1
     div(class="#{p}-available")
-      input.onclick-buy(type='button', data-product=p, value='Buy')
+      input.onclick-buy(type='button', data-product=p, value='Get It')
     div(class="#{p}-purchased hidden")
       p.green= msg
         span &#x2713;
   else
     div(class="#{p}-available hidden")
-      input.onclick-buy(type='button', data-product=p, value='Buy')
+      input.onclick-buy(type='button', data-product=p, value='Get It')
     div(class="#{p}-purchased")
       p.green= msg
         span &#x2713;
@@ -38,5 +38,12 @@ fieldset
   h2 Super Computing Instance
   p Your site really took off and you'd like more horsepower--speed is everything!  With your turbo-charged instance comes additional security, monitoring and peace of mind.
   mixin product('compute_instance', 'Super Computing Instance Purchased')
+  .notes
+    p A PowerBulletin team member will contact you after purchase!
+
+fieldset
+  h2 Engineering &amp; Creative
+  p Need extra personalization for your PowerBulletin community?  Our engineering ninjas entertain inventive ideas!
+  mixin product('engineering', 'Engineering Purchased')
   .notes
     p A PowerBulletin team member will contact you after purchase!

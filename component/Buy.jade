@@ -1,11 +1,12 @@
+price = (product.price / 100.0).toFixed(0)
 h1 #{product.description}
 .right.ccinfo
-  form
+  form(autocomplete='off')
     .tooltip
     if cardNeeded
       .clear
       label(for='card_number') Card Number
-      input#card_number.Buy-card-number(type='text', placeholder='XXXX - XXXX - XXXX - XXXX')
+      input#card_number.Buy-card-number(type='text', placeholder='XXXX - XXXX - XXXX - XXXX', maxlength=19)
       .clear
       label(for='card_month') Expiration
       select#card_month.Buy-card-month
@@ -30,7 +31,7 @@ h1 #{product.description}
           option= d + i
       .clear
       label(for='card_code') Security Code
-      input#card_code.Buy-card-code(type='text', placeholder='CCV')
+      input#card_code.Buy-card-code(type='password', placeholder='CCV', maxlength=5)
       span.code ?
         .cvvinfo
           img(src=cacheUrl + '/images/cvv2_example.gif')
@@ -44,11 +45,16 @@ h1 #{product.description}
     .clear
       input.Buy-checkout(type='submit', value='CHECKOUT') CHECKOUT
 .right.features
-  h2 Only 
-    b
-      small $
-      != (product.price / 100.0).toFixed(0)
-    small /mo
+  if price && (price !== '0')
+    h2 Only 
+      b
+        small $
+        != price
+      small /mo
+  else
+    h2
+      b Free
+        i !
   menu
     each f in product.config.features
       li= f

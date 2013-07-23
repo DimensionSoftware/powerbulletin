@@ -48,7 +48,7 @@ is-touchable = do ->
   catch
     false
 
-threshold = 10px # snap
+const threshold = 20px # snap
 
 #.
 #### main   ###############>======-- -   -
@@ -147,10 +147,10 @@ window.onload-resizable = ->
     #  - fix scrollable region to include another hundred px on bottom
     $l.find \.scrollable .nice-scroll {
       bouncescroll:    true
-      cursorcolor:     \#aaa
-      cursorwidth:     2
-      hidecursordelay: 800
-      mousescrollstep: 5
+      cursorcolor:     \#bbb
+      cursorwidth:     6
+      hidecursordelay: 1000
+      mousescrollstep: 6
       railoffset:      true
       railpadding:     {bottom:50px}}
     $r.css \padding-left ($l.width!+left-offset) # snap
@@ -164,7 +164,7 @@ window.scroll-to-top = (cb=->) ->
   $e = $ 'html,body'
   do
     <- $e .animate { scroll-top:0 }, 200ms
-    <- $e .animate { scroll-top:threshold }, 110ms
+    <- $e .animate { scroll-top:(threshold/2)}, 110ms
     <- $e .animate { scroll-top:0 }, 75ms
   cb!
 window.awesome-scroll-to = (e, duration, cb=->) ->
@@ -195,6 +195,12 @@ has-scrolled = ->
 set-timeout (->
   $w.on \scroll -> has-scrolled!
   has-scrolled!), 600ms # initially yield
+$ \header.header .on \click (ev) ->
+  if $ ev.target .has-class \header # pull down search when header is clicked
+    b = $ \body
+    if $w.scroll-top! > threshold
+      b.toggle-class \scrolled
+      set-timeout (-> $ \#query .focus!), 1ms # ...and focus search
 
 # attach scroll-to's
 $d.on \click '.onclick-scroll-to' ->
@@ -218,6 +224,7 @@ Auth.after-login = ->
   window.user <- $.getJSON \/auth/user
   onload-personalize!
   if user and mutants?[window.mutator]?on-personalize
+    set-profile user.photo
     mutants?[window.mutator]?on-personalize window, user, ->
       socket?disconnect!
       socket?socket?connect!

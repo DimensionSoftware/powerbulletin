@@ -3,7 +3,7 @@ mixin _thread(t)
   - if (!t.user_photo) t.user_photo = cacheUrl + 'images/transient.png'
   li.thread(data-id=t.id, data-user-id=t.user_id)
     a.mutant(data-surf=t.forum_id, href=t.uri)
-      h4.stylish.title= t.title
+      h4.title= t.title
       .break
       .profile.photo
         img(src="#{cacheUrl}#{t.user_photo}")

@@ -113,7 +113,7 @@ html.forum, html.profile, html.search
       padding-top grid
       .thread
         position relative
-        padding 1px (grid*1.5) grid ((grid*2)+3)
+        padding 0 (grid*1.5) grid (grid*2)
         .mutant
           display block
           border none
@@ -124,7 +124,7 @@ html.forum, html.profile, html.search
           max-height 65px
           text-transform capitalize
           margin grid grid 0 -5px
-          padding 1px 5px
+          padding 1px 5px 0 3px
         .username
           margin-right 5px
           font-size .7em
@@ -222,7 +222,7 @@ html.forum, html.profile, html.search
           position absolute
           z-index 15
           padding 2px 5px
-          font-size .9em
+          font-size 1em
           height 26px
           right -14px
           bottom 9px
@@ -377,7 +377,7 @@ html.profile
           margin 0 1px 0 -1px
           padding 1px 5px
           font-size 1.12em
-        .by, .forum
+        .by, .forum-link
           margin-right 3px
           font-size .8em
           font-weight 200
@@ -427,6 +427,8 @@ html.search
       color #555
     #search_filters, #search_facets
       padding 0 15px
+      select
+        max-width 100%
     #facets
       .facet-title
         font-weight bold
@@ -452,27 +454,15 @@ html.search
         #query.query
           position relative
           z-index 9
-          font-size 1.35em
-          font-weight 400
-        #query.query, #query.query:focus, #query.query:hover
-          box-shadow 0 1px 3px rgba(0,0,0,0.25) inset, 0 1px 1px #888
-          border-radius 25px / 10px
+        .onclick-close
+          opacity 1!important
+          right 11px
       .advanced
         right 80px
         top (header-height + 5)
         transition right .2s ease-out
         .check, label
           cursor pointer
-    .onclick-close
-      cursor pointer
-      position absolute
-      right 15px
-      top 15px
-      z-index 14
-      opacity 1
-      font-size 1.1em
-      line-height 6px
-      transition opacity .5s ease-out .1s
 
     h2.title
       font-size 1em
@@ -494,22 +484,22 @@ html.admin
         padding 18px
         margin 0 0 0 3px
         transition all .2s ease-out
+        li.active
+          a
+            right 6px
+            transition right .15s ease-out
         li
           padding 5px 12px 5px 5px
           margin-bottom (grid+3)
           text-align right
+          width 90px
+          margin-right grid
           position relative
-          span
+          a
             position absolute
-            font-size .8em
-            top -12px
-            left -10px
-            transform rotate(-10deg)
-            background-color orange
-            color #fff
-            border-radius 6px / 3px
-            padding 0 4px
-            opacity .7
+            right 10px
+            font-size 1.3em
+            animation-name none
   #main_content
     padding-left 200px
     padding-bottom 50px
@@ -520,7 +510,7 @@ html.admin
       margin-top -4px
       left 183px
     .menus
-      .col1, col2
+      .col1, .col2
         float left
     .domains
       form
@@ -611,11 +601,11 @@ html.admin
       input[type="checkbox"]
         display none
 
-      input[type="checkbox"]:checked ~ label[for="private"] .switch, input[type="checkbox"]:checked ~ label[for="invite_only"] .switch
+      input[type="checkbox"]:checked ~ label .switch
         margin-left 40px
         padding 6px
         margin-top -1px
-      label[for="private"], label[for="invite_only"]
+      label.switch-control
         display inline-block
         width 60px
         height 20px

@@ -1,0 +1,75 @@
+li.default
+  div
+    input.row(type='text', placeholder='Title', data-menu=true, data-type='forum', data-url='', data-page='')
+
+form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
+  .col1
+    button.onclick-add Add
+    ol.sortable
+  .col2
+    fieldset
+      ul.options
+        li
+          label(for='forum') Forum
+          input.option(id='forum', type='radio', name='dialog', checked='checked')
+          .dialog
+            label(for='forum_slug') Slug
+            input#forum_slug(type='text', name='forumSlug', placeholder='/slug')
+            .note URL prefix for this page
+            .break
+            label(for='locked') Admin Only
+            .box
+              input#locked(type='checkbox', value='checked', name='locked')
+              label.switch-control(for='locked')
+                .switch
+              span.label.checked Locked
+              .note Lock entire forum (read-only except admin)
+            .break    
+            label(for='flat') Threading
+            .box
+              input#flat(type='checkbox', value='checked', name='flat')
+              label.switch-control(for='flat')
+                .switch
+              span.label.checked Flat
+              .note Flat forums are linear and not threaded (like phpBB)
+            .break    
+            input.button(type='submit', value='Save')
+            .tooltip
+            input(type='hidden', name='action', value='menu')
+        li
+          label(for='page') Page
+          input.option(id='page', type='radio', name='dialog')
+          .dialog
+            label(for='page_slug') Slug
+            input#page_slug(type='text', name='pageSlug', placeholder='/slug')
+            .note URL prefix for this page
+            .break
+            label Main Menu
+            .box
+              input#hide_menu(type='checkbox', value='checked', name='hideMenu')
+              label.switch-control(for='hide_menu')
+                .switch
+              span.label.checked On
+              .note Shows &amp; hides the main menu for this page
+            .break    
+            input.button(type='submit', value='Save')
+            .tooltip
+            input(type='hidden', name='action', value='menu')
+        li
+          label(for='link') External Link
+          input.option(id='link', type='radio', name='dialog')
+          .dialog
+            label(for='url') Url
+            input(id='url', type='text', name='url', placeholder='http://')
+            .break
+            .box
+              label(for='separate_window') Separate Window
+              input#separate_window(type='checkbox', value='checked', name='separateWindow')
+              label.switch-control(for='separate_window')
+                .switch
+              span.label.checked Yes
+              .note Open link in separate window
+            .break    
+            input.button(type='submit', value='Save')
+            .tooltip
+            input(type='hidden', name='action', value='menu')

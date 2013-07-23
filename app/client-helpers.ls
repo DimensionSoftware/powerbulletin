@@ -115,6 +115,11 @@ export lazy-load = (test, script, css, cb) ->
     cb!
   else
     cb!
+export lazy-load-nested-sortable = (cb) ->
+  lazy-load (-> window.$!nested-sortable?length),
+    "#cache-url/local/jquery.mjs.nestedSortable.js",
+    null,
+    cb
 export lazy-load-html5-uploader = (cb) ->
   lazy-load (-> window.$!html5-uploader?length),
     "#cache-url/local/jquery.html5uploader.js",
@@ -131,7 +136,7 @@ export lazy-load-editor = (cb) ->
     null,
     cb
 export lazy-load-fancybox = (cb) ->
-  lazy-load (-> window.$!Jcrop?length),
+  lazy-load (-> window.$!fancybox?length),
     "#cache-url/fancybox/jquery.fancybox.pack.js",
     "#cache-url/fancybox/jquery.fancybox.css",
     cb
@@ -192,4 +197,9 @@ export switch-and-focus = (remove, add, focus-on) ->
 export set-online-user = (id) ->
   $ "[data-user-id=#{id}] .profile.photo" .add-class \online
 
+export set-profile = (src) ->
+  $ \.photo .attr \href "/user/#{user.name}"
+  $ \#profile
+    ..on   \load -> $ \.profile .show!
+    ..attr \src, window.cache-url + src
 # vim:fdm=marker
