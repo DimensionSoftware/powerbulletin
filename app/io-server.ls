@@ -94,7 +94,8 @@ site-by-domain = (domain, cb) ->
     site-room = site.id
     user-room = "#site-room/users/#{user.id}"
 
-    err, presence <- new Presence site.id
+    log \new-presence, site.id, socket.id
+    err, presence <- new Presence site.id, socket.id
 
     err <- presence.enter site-room, socket.id
     if err then log \presence.enter, err
