@@ -197,7 +197,15 @@ export homepage =
 
 # this function meant to be shared between static and on-initial
 !function render-thread-paginator-component win, qty, step
-  render-component win, \#thread-paginator, \threadPaginator, Paginator, {locals: {qty, step}, on-page: (-> console.warn ...arguments)}
+  on-page = (page) ->
+    # XXX: this is sort of a stopgap I know we need pretty ui
+    # TODO: This is stub, we need actual real views
+    # !!!!!!!!!!!!!!!!!!!!!!!!!! ^_^
+    $.get "/resources/threads/#{window.active-forum-id}" {page} (threads, status) ->
+      console.warn \thread-get, window.active-forum-id, status, threads.length
+      container = win.$('#left_container .scrollable')
+      container.html "#{JSON.stringify threads}"
+  render-component win, \#thread-paginator, \threadPaginator, Paginator, {locals: {qty, step}, on-page}
 
 export forum =
   static:
