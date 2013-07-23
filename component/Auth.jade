@@ -4,7 +4,7 @@
       h2 Authenticating...
     fieldset
       .tooltip
-      input(id="password", name="password", type="text", placeholder="Password", disabled="disabled")
+      input(id="password", name="password", type="text", placeholder="Password", disabled="disabled", autocomplete="off")
       .toggle-password Hide
       .strength-meter(title="Stronger passwords are green")
         .strength
@@ -30,7 +30,7 @@
         i !
     fieldset
       .tooltip
-      input(id="email", name="email", type="text", placeholder="Email")
+      input(id="email", name="email", type="text", placeholder="Email", maxlength=254)
       input(type="submit", value="Send Reset")
       a.msg.onclick-show-login
         h3 Back
@@ -47,11 +47,11 @@
     fieldset
       .tooltip
       input(id="username", name="username", type="text", placeholder="Username")
-      input(name="password", type="text", placeholder="Password")
+      input(name="password", type="text", placeholder="Password", autocomplete="off")
       .toggle-password Hide
       .strength-meter(title="Stronger passwords are green")
         .strength
-      input(name="email", class="register-email", type="text", placeholder="Email")
+      input(name="email", class="register-email", type="text", placeholder="Email", maxlength=254)
       input(type="submit", value="Sign In")
       a.msg.onclick-show-login
         h3 I already have an account.
@@ -64,7 +64,7 @@
         h3 Forgot?
       .tooltip
       input(id="username", name="username", type="text", placeholder="Username")
-      input(name="password", type="password", placeholder="Password")
+      input(name="password", type="password", placeholder="Password", autocomplete="off")
       input(type="submit", value="Login")
       unless inviteOnly
         a.msg.onclick-show-register

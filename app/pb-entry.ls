@@ -292,10 +292,6 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
 )
 #}}}
 #{{{ - admin
-$d.on \click 'html.admin .onclick-add' (ev) ->
-  console.log \add-sortable
-  false
-
 $d.on \click 'html.admin .onclick-submit input[type="submit"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form

@@ -51,7 +51,10 @@ sub default_vcl_recv {
 
 sub vcl_recv {
   # REDIRECT: force ssl
-  if (req.http.X-Forwarded-Proto !~ "(?i)https") {
+  if (  req.http.user-agent !~ "Zombie\.js/"
+     && req.http.X-Forwarded-Proto !~ "(?i)https"
+     )
+  {
     set req.http.Location = "https://" + req.http.host + req.url; 
     error 302 "Found"; 
   }

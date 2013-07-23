@@ -56,6 +56,20 @@ describe 'new Paginator {locals: {qty: 17}}' ->
     _it "should return expected html" !->
       assert.equal c.html(false), expected
 
+  describe "subsequently clicking on '2'" ->
+    expected = '
+    <strong class="Paginator-page">1</strong>
+    <a href="?page=2" class="mutant Paginator-page">2</a>
+    <a href="?page=3" class="mutant Paginator-page">3</a>
+    '
+
+    _it "should invoke the on-page callback" ->
+      assert false
+
+    _it "should reload the paginator and return different/new html" ->
+      assert false
+
+
 describe 'new Paginator {locals: {active-page: 2, qty: 16}}' ->
   c = new Paginator {locals: {active-page: 2, qty: 16}}
 
@@ -119,7 +133,7 @@ describe 'new Paginator {locals: {qty: 129}}' ->
     <a href="?page=7" class="mutant Paginator-page">7</a>
     <a href="?page=8" class="mutant Paginator-page">8</a>
     <a href="?page=9" class="mutant Paginator-page">9</a>
-    <a href="?page=17" class="mutant Paginator-page">last</a>
+    <a href="?page=17" class="mutant Paginator-page">Last</a>
     '
 
     _it "should return expected html" !->
@@ -130,7 +144,7 @@ describe 'new Paginator {locals: {active-page: 10, qty: 129}}' ->
 
   describe ".html(false)", ->
     expected = '
-    <a href="?page=1" class="mutant Paginator-page">first</a>
+    <a href="?page=1" class="mutant Paginator-page">First</a>
     <a href="?page=6" class="mutant Paginator-page">6</a>
     <a href="?page=7" class="mutant Paginator-page">7</a>
     <a href="?page=8" class="mutant Paginator-page">8</a>
@@ -140,7 +154,7 @@ describe 'new Paginator {locals: {active-page: 10, qty: 129}}' ->
     <a href="?page=12" class="mutant Paginator-page">12</a>
     <a href="?page=13" class="mutant Paginator-page">13</a>
     <a href="?page=14" class="mutant Paginator-page">14</a>
-    <a href="?page=17" class="mutant Paginator-page">last</a>
+    <a href="?page=17" class="mutant Paginator-page">Last</a>
     '
 
     _it "should return expected html" !->

@@ -36,6 +36,7 @@
         padding-left 5px
         margin-bottom 6px
   label
+    vertical-align middle
     display inline-block
     width 120px
     color #333
@@ -83,7 +84,8 @@
       width 100%
     .Buy-card-number
       width 275px
-      margin-bottom 8px
+      margin-bottom 14px
+      font-size 1.2em
     .Buy-card-month
       margin-right 10px
     .Buy-card-year
@@ -109,8 +111,7 @@
     top -35px
     bottom auto
   .code:hover
-    background-color #f3f3f3
-    border 1px solid #f4f4f4
+    border 1px solid #eaeaea
     .cvvinfo
       opacity 1
       height 85px
@@ -119,15 +120,16 @@
       transition top .2s ease-out .1s, height .2s ease-in-out .2s, opacity .6s ease-in-out .1s
   .code
     font-weight bold
-    background-color #fafafa
-    border 1px solid #f6f6f6
+    border 1px solid #f3f3f3
     padding 1px 4px
-    border-radius 30px
+    border-radius 8px / 3px
+    transform rotate(10deg)
     color green
     margin-left 6px
-    font-size .8em
+    font-size .9em
     cursor pointer
     position relative
+    z-index 99
     .cvvinfo
       border-radius 12px / 8px
       top 0

@@ -4,6 +4,7 @@ global <<< require \./shared-helpers.ls
 
 require! {
   \../component/AdminUpgrade.ls
+  \../component/AdminMenu.ls
   \../component/Paginator.ls
 }
 
@@ -80,6 +81,7 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
 layout-on-personalize = (w, u) ->
   if u # guard
     set-online-user u.id
+    set-profile u.photo
 
     # hash actions
     switch window.location.hash
@@ -121,6 +123,8 @@ export homepage =
         window.$ '.forum .container' .masonry(
           item-selector: \.post
           is-animated:   true
+          animation-options:
+            duration: 200ms
           is-fit-width:  true
           is-resizable:  true)
 
@@ -415,8 +419,6 @@ export admin =
       next!
   on-load:
     (window, next) ->
-      unless $!nested-sortable?length # load for /admin/menu
-        $.get-script "#cache-url/local/jquery.mjs.nestedSortable.js"
       # expand left nav or not?
       $b = $ \body
       if window.admin-expanded = $b.has-class \collapsed
@@ -426,7 +428,13 @@ export admin =
       # no pager (for now)
       window.pages-count = 0
       pager-init window
+      <~ lazy-load-nested-sortable
       next!
+  on-initial:
+    (window, next) ->
+      console.log \initial
+      new AdminMenu({-auto-render})
+      new AdminUpgrade({-auto-render})
   on-mutate:
     (window, next) ->
       scroll-to-top!

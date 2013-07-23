@@ -32,8 +32,8 @@ Vagrant::Config.run do |config|
   # computers to access the VM, whereas host only networking does not.
   # config.vm.forward_port 80, 8080
   config.vm.forward_port 3000, 3000
-  config.vm.forward_port 3001, 3001
-  config.vm.forward_port 3002, 3002
+  config.vm.forward_port 80, 3001
+  config.vm.forward_port 443, 3002
   config.vm.forward_port 5432, 5432
 
   # Share an additional folder to the guest VM. The first argument is
