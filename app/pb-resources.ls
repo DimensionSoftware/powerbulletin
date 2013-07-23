@@ -11,6 +11,12 @@ require! {
 
 announce = sioa.create-client!
 
+ban-all-domains = (site-id) ->
+  # varnish ban site's domains
+  err, domains <- db.domains-by-site-id site-id
+  if err then return next err
+  for d in domains then v.ban-domain d.name
+
 @sites =
   update: (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
@@ -36,10 +42,18 @@ announce = sioa.create-client!
       console.log \updating:, site.config
       err, r <- db.site-update site
       if err then return next err
-      if should-ban # ban all site's domains in varnish
-        err, domains <- db.domains-by-site-id site.id
-        if err then return next err
-        for d in domains then v.ban-domain d.name
+      ban-all-domains site.id if should-ban # varnish ban
+      res.json success:true
+
+    | \menu =>
+      # save site config
+      site.config.menu = req.body.menu
+      err, r <- db.site-update site
+      if err then return next err
+      # TODO sync live menu with config
+      # - forums
+      # - pages
+      ban-all-domains site.id # varnish ban
       res.json success:true
 
     | \domains =>
