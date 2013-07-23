@@ -35,17 +35,7 @@ export mw =
     err, passport <~ @passport-for-domain domain
     if err then return next err
     if passport
-      passport.mw-session req, res, (err) ->
-        if err then return next err
-        # XXX: THIS A HACK!!!
-        if tid = req.cookies.transient_owner
-          (err, authorized) <~ db.authorize-transient tid, site_id
-          if err then return next err
-          if authorized
-            req._passport.session.user = "transient:#{req.cookies.transient_owner}:#{res.vars.site.id}"
-          next!
-        else
-          next!
+      passport.mw-session req, res, next
     else
       next(404)
 
@@ -190,28 +180,17 @@ export create-passport = (domain, cb) ->
 
   pass.serialize-user (user, done) ~>
     log \user, \xxx, user
-    if user.transient
-      parts = "transient:#{user.transient_owner}:#{user.site_id}"
-    else
-      parts = "permanent:#{user.name}:#{user.site_id}"
+    parts = "#{user.name}:#{user.site_id}"
     done null, parts
 
   pass.deserialize-user (parts, done) ~>
     log \parts, parts
-    [type, name, site_id] = parts.split ':'
-    switch type
-    | \transient =>
-      transient-user =
-        transient: true
-        transient_id: parse-int name
-        rights:
-          admin: true
-      done null, transient-user
-    | \permanent =>
-      (err, user) <~ db.usr {name, site_id}
-      if err then return cb err
-      done err, user
-    | otherwise =>
+    [name, site_id] = parts.split ':'
+    (err, user) <~ db.usr {name, site_id}
+    if err then return cb err
+    if name and site_id
+      done null, user
+    else
       done new Error("bad cookie #{parts}")
 
   pass.use new passport-local.Strategy (username, password, done) ~>
