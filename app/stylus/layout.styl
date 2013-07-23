@@ -3,7 +3,7 @@
 // XXX decoration & embellishments belong in the theme.styl
 // XXX eventually each forum will have its own theme.{styl,css}
 
-header-height           = 50px
+header-height           = 100px
 header-scrolled-height  = 30px
 
 forum-header-height = 0
@@ -29,8 +29,13 @@ body.waiting, body.waiting a
 .onclick-logout, .onclick-profile, .admin-only, .has-facebook, .has-google, .has-twitter, .has-auth
   display none
 
+body.scrolled .nicescroll-rails
+  top 100px!important
+
 .nicescroll-rails
   position fixed!important
+  cursor s-resize!important
+  top 190px!important
 
 .close, .onclick-close
   opacity 0
@@ -38,7 +43,7 @@ body.waiting, body.waiting a
   line-height 9px
   text-indent 1px
   border-radius 10px
-  padding 5px
+  padding 6px
   font-size .8em
 
 .hidden
@@ -90,22 +95,22 @@ header
     .tools
       list-style none
       position absolute
-      right 0
-      width 5px
-      padding-top 43px
+      right -10px
+      width 20px
+      padding-top 80px
+      top 20px
       z-index 9
       li
         height 0
         opacity 0
-        margin-left -60px
+        margin-left -70px
         overflow hidden
-
     .menu
       padding 0
       margin -3px auto 0 auto
       display inline-block
       position absolute
-      bottom 0
+      bottom -1px
       > .row
           position relative!important
           z-index 50!important
@@ -117,14 +122,13 @@ header
         z-index 7
         .submenu
           opacity 1
-          top 36px
+          top 30px
           max-height 450px
           height auto
           min-width 850px
-          transition opacity .7s ease-out .1s, min-width .2s cubic-bezier(1.000, -0.010, 0.800, 1.530) .4s, max-height .3s cubic-bezier(1, -0.01, 1, .08) .4s, top .45s ease-out .1s
+          transition opacity .5s ease-out .2s, min-width .2s cubic-bezier(1.000, -0.010, 0.800, 1.530) .25s, max-height .25s cubic-bezier(1, -0.01, 1, .08) .3s, top .2s ease-out .1s
           .row:hover
             text-indent 1px
-            transition text-indent .1s ease-out
       .row:nth-last-child(3)
         .submenu
           margin-left -100px
@@ -137,7 +141,7 @@ header
       .row
         cursor pointer
         display inline
-        line-height header-height
+        line-height 38px
         font-size 16px
         .title
           position relative
@@ -165,16 +169,34 @@ header
               line-height 42px
               a
                 display block
+    .profile
+      position absolute
+      display none
+      cursor pointer
+      right 25px
+      top (grid+2)
+      height 75px
+      width 94px
     .search
       top 5px
-      right 10px
+      left 200px
       position absolute 
       z-index 8
       .query
-        width 300px
+        width 400px
         padding-right 45px
         padding-top grid
         font-size 1.3em
+      .onclick-close
+        cursor pointer
+        position absolute
+        right 6px
+        top 9px
+        z-index 14
+        font-size 1.1em
+        line-height 6px
+        opacity 0
+        transition all .2s ease-out
 //}}}
 //{{{ Left side
 body.paginator
@@ -217,7 +239,7 @@ body.paginator
     height 30px
     width 30px
     margin-top (grid/2)
-    top (header-height - 17)
+    top (header-height-20)
     right -13px
     cursor pointer
     position absolute
@@ -329,7 +351,7 @@ body.paginator
 #main_content
   grid(100%, 800px)
   padding forum-header-height 0 0 0
-  padding-top (grid*8)
+  padding-top (header-height+(grid*2))
   z-index 5
   #breadcrumb
     position fixed
@@ -371,15 +393,16 @@ footer
     color #222
   .onclick-scroll-top:hover::before
     border-bottom 8px solid #aaa
-    top 1px
+    top 2px
     transition all .1s ease-out
   .onclick-scroll-top::before
     position absolute
     content ''
-    border 6px solid transparent
+    border 4px solid transparent
     border-bottom 6px solid #ccc
-    top 3px
-    right 45px
+    top 4px
+    right 42px
+    transition all .2s ease-out
   .onclick-scroll-top
     position absolute
     top 0
@@ -406,6 +429,7 @@ body.scrolled
     height header-scrolled-height
     .container
       .menu
+        bottom -2px
         > .row:hover
           .submenu
             top 28px
@@ -415,22 +439,28 @@ body.scrolled
           font-size 16px
       .tools
         padding-top 25px
+        top 0
       .tools::before
         top -3px
       .search
-        top -3px!important
-        transition all .2s ease-out
+        top -200px!important
+        opacity 0
+        transition all .1s ease-out
         .onclick-search
           right 14px
         .query
           font-size 1em
           height 15px
+      .profile
+        height 25px
+        width 31px
+        top 3px
+        transition all .2s ease-out
   #left_content
     top (header-scrolled-height+5)
     padding-top (grid * 1.5)
     transition padding-top .2s ease-out, top .2s ease-out
     .handle
-      top (header-scrolled-height - 13)
       transition top .2s ease-out
     #paginator
       a.page.previous::before
@@ -535,7 +565,7 @@ img.bg.active
 //}}}
 //{{{ Masonry
 .masonry, .masonry .masonry-brick
-  transition-duration 0.3s
+  transition-duration 0.1s
 .masonry
   transition-property width, height
 .masonry .masonry-brick
