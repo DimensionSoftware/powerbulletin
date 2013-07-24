@@ -40,8 +40,8 @@
   });
   defaultUName = 'Transient';
   defaultUPhoto = '/images/transient.png';
-  out$.userFields = userFields = userFields = function(uid){
-    return "COALESCE(\n  (SELECT a.name FROM aliases a WHERE a.user_id=" + uid + "),\n  '" + defaultUName + "'\n) AS user_name,\nCOALESCE(\n  (SELECT u.photo FROM users u WHERE u.id=" + uid + "),\n  '" + defaultUPhoto + "'\n) AS user_photo";
+  out$.userFields = userFields = userFields = function(uField, sid){
+    return "COALESCE(\n  (SELECT a.name FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid + "),\n  '" + defaultUName + "'\n) AS user_name,\nCOALESCE(\n  (SELECT u.photo FROM users u WHERE u.id=" + uField + "),\n  '" + defaultUPhoto + "'\n) AS user_photo";
   };
   topForums = function(limit, fields){
     var sql;
@@ -238,7 +238,16 @@
     }
   };
   out$.topThreads = topThreads = function(forumId, sort, limit, offset){
-    return topPosts(sort, limit, offset)(forumId);
+    var f;
+    plv8.elog(WARNING, JSON.stringify({
+      forumId: forumId,
+      sort: sort,
+      limit: limit,
+      offset: offset
+    }));
+    f = topPosts(sort, limit, offset);
+    plv8.elog(WARNING, f + ' ' + typeof f);
+    return f(forumId);
   };
   function import$(obj, src){
     var own = {}.hasOwnProperty;

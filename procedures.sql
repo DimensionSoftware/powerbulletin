@@ -624,7 +624,7 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
   sort-sql =
     switch sort or \recent
     | \recent   => 'p.created DESC, p.id ASC'
-    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC, p.created DESC'
+    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id) DESC, p.created DESC'
     | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
 
   # This query can be moved into its own proc and generalized so that it can
@@ -633,7 +633,7 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
   sql = """
   SELECT
     p.*,
-    #{u.user-fields \p.user_id}
+    #{u.user-fields \p.user_id, forum.site_id}
   FROM posts p
   LEFT JOIN moderations m ON m.post_id = p.id
   WHERE p.forum_id = $1
@@ -641,6 +641,7 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
   ORDER BY (LENGTH(p.media_url) > 1) DESC, #sort-sql
   LIMIT $2
   """
+  plv8.elog WARNING, sql
   forum.posts = plv8.execute(sql, [forum_id, thread_limit])
   return [forum]
 $$ LANGUAGE plls IMMUTABLE STRICT;

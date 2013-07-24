@@ -28,14 +28,14 @@ export map = (f, xs) -->
 
 default-u-name  = \Transient
 default-u-photo = \/images/transient.png
-export user-fields = user-fields = (uid) ->
+export user-fields = user-fields = (u-field, sid) ->
   """
   COALESCE(
-    (SELECT a.name FROM aliases a WHERE a.user_id=#uid),
+    (SELECT a.name FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid),
     '#default-u-name'
   ) AS user_name,
   COALESCE(
-    (SELECT u.photo FROM users u WHERE u.id=#uid),
+    (SELECT u.photo FROM users u WHERE u.id=#u-field),
     '#default-u-photo'
   ) AS user_photo
   """
@@ -191,4 +191,8 @@ export forums = (forum-id, sort) ->
   if ft then [ft] else []
 
 export top-threads = (forum-id, sort, limit, offset) ->
-  top-posts(sort, limit, offset) forum-id
+  plv8.elog WARNING, JSON.stringify({forum-id, sort, limit, offset})
+  f = top-posts(sort, limit, offset)
+  plv8.elog WARNING, f + ' ' + typeof(f)
+  f forum-id
+  # top-posts(sort, limit, offset) forum-id
