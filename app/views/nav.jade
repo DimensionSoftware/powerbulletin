@@ -15,10 +15,8 @@ mixin forum(f, i)
 .create
   a.mutant.no-surf.require-login.button(data-edit='true', href="#{forum.uri}/new") Create Thread
 
-.scrollable
-  #thread-paginator
-  ul.threads
-    each t,ii in topThreads
-      mixin _thread(t)
+#thread-paginator
 
+.scrollable
+  include __threads
 //- vim:fdm=marker

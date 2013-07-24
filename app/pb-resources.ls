@@ -232,6 +232,15 @@ ban-all-domains = (site-id) ->
     else
       console.error \conversations-show, "nothing"
       res.json success: false
-
+# used for ajax/pagination of lefthand nav (thread listing)
+@threads =
+  show: (req, res, next) ->
+    return next 404 unless forum-id = req.params.thread
+    page = parse-int(req.query.page) or 1
+    offset = (page - 1) * cvars.t-step
+    limit = cvars.t-step
+    err, threads <- db.top-threads forum-id, \recent, limit, offset
+    if err then return next err
+    res.json threads
 
 # vim:fdm=indent

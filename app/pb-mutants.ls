@@ -19,15 +19,15 @@ require! {
       dur = aft - bef
       console.log "benchmarked '#{subject-name}': took #{dur}ms"
 
-!function render-component win, target, klass, first-klass-arg
+!function render-component win, target, name, klass, first-klass-arg
   wc = win.component ||= {}
-  if c = wc[klass.name] # already registered
+  if c = wc[name] # already registered
     if locals = first-klass-arg?locals
       c.locals locals
     c.reload!
   else # instantiate and register (locals are in first-klass-arg)
     # always instantiate using 'internal' dom by not passing a target at instantiation
-    c = wc[klass.name] = new klass(first-klass-arg)
+    c = wc[name] = new klass(first-klass-arg)
   win.$(target).html('').append c.$ # render
 
 !function paginator-component w, locals, pnum-to-href
@@ -39,8 +39,6 @@ require! {
   else
     wc.paginator =
       new Paginator {locals, pnum-to-href} w.$(\#pb_paginator)
-
-#!function deactivate-paginator
 
 function parse-url url
   if document?
@@ -197,6 +195,19 @@ export homepage =
         window.$ $(\.extra:first) .html ''
       next!
 
+# this function meant to be shared between static and on-initial
+!function render-thread-paginator-component win, qty, step
+  on-page = (page) ->
+    # XXX: this is sort of a stopgap I know we need pretty ui
+    # TODO: This is stub, we need actual real views
+    # !!!!!!!!!!!!!!!!!!!!!!!!!! ^_^
+    $.get "/resources/threads/#{window.active-forum-id}" {page} (top-threads, status) ->
+      container = win.$('#left_container .scrollable')
+      container.html win.jade.templates.__threads({top-threads})
+      #container.html "#{JSON.stringify threads}"
+  locals = {qty, step, active-page: 1}
+  render-component win, \#thread-paginator, \threadPaginator, Paginator, {locals, on-page}
+
 export forum =
   static:
     (window, next) ->
@@ -213,6 +224,11 @@ export forum =
       # render left content
       if @top-threads
         window.render-mutant \left_container \nav # refresh on forum & mutant change
+
+        render-thread-paginator-component window, @t-qty, @t-step
+        window.marshal \tQty, @t-qty
+        window.marshal \tStep, @t-step
+
 
       window.marshal \activeForumId @active-forum-id
       window.marshal \activeThreadId @active-thread-id
@@ -277,6 +293,8 @@ export forum =
         cur = threads.scroll-top!
         dst = Math.round($ '#left_container .threads > .active' .position!?top)
         if dst then threads.animate {scroll-top:cur+dst+offset}, 500ms, \easeOutExpo), 500ms
+
+      render-thread-paginator-component window, window.t-qty, window.t-step
       next!
   on-mutate:
     (window, next) ->
@@ -394,8 +412,8 @@ export profile =
   switch action
   | \domains  => win.render-mutant \main_content, \admin-domains
   | \invites  => win.render-mutant \main_content, \admin-invites
-  | \menu     => render-component win, \#main_content, AdminMenu, {locals: {site-id: site.id}}
-  | \upgrade  => render-component win, \#main_content, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
+  | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site-id: site.id}}
+  | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
   | otherwise => win.render-mutant \main_content, \admin-general
 
 export admin =
