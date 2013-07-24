@@ -1,6 +1,5 @@
 mixin _thread(t)
-  - if (!t.user_name)  t.user_name  = 'Transient'
-  - if (!t.user_photo) t.user_photo = cacheUrl + 'images/transient.png'
+  - if (!t.user_photo) t.user_photo = cacheUrl + 'images/profile.jpg'
   li.thread(data-id=t.id, data-user-id=t.user_id)
     a.mutant(data-surf=t.forum_id, href=t.uri)
       h4.title= t.title
