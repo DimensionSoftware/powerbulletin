@@ -4,8 +4,7 @@ include _breadcrumb
 
 //- posts tree
 if typeof(post) !== 'undefined'
-  - if (!post.user_name)  post.user_name  = 'Transient'
-  - if (!post.user_photo) post.user_photo = cacheUrl + 'images/transient.png'
+  - if (!post.user_photo) post.user_photo = cacheUrl + 'images/profile.jpg'
   .forum.resizable
     if page == 1
       .post.head(id="post_#{post.id}", class=post.reason ? 'censored' : '', data-user-id=post.user_id, data-post-id=post.id)
