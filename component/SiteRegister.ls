@@ -2,6 +2,7 @@ require! {
   lodash
   Component: yacomponent
   \./ParallaxButton.ls
+  \./Auth.ls
   sh: \../app/shared-helpers.ls
   \../plv8_modules/pure-validations.js
 }
@@ -21,7 +22,7 @@ module.exports =
 
       # init children
       do ~>
-        on-click = ~>
+        on-click = Auth.require-login ~>
           console.log \created: + subdomain
           subdomain   = @local \subdomain
           @@$.post '/ajax/can-has-site-plz', {domain: subdomain+hostname}, ({errors, transient_owner}:r) ->
