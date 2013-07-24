@@ -861,12 +861,10 @@ CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
   unless site.domain.match /(\.pb\.com|\.powerbulletin\.com)$/
     return {errors: ["domain must end in .pb.com or .powerbulletin.com"]}
 
-  if site.user_id
-    site_id = plv8.execute('INSERT INTO sites (name, user_id) VALUES ($1, $2) RETURNING id', [site.domain, site.user_id]).0.id
-  else
-    # random string generated to identify transient_owner
-    transient_owner = (Math.random()*new Date).to-string!replace '.' ''
-    site_id = plv8.execute('INSERT INTO sites (name, transient_owner) VALUES ($1, $2) RETURNING id', [site.domain, transient_owner]).0.id
+  unless site.user_id
+    return {errors: ["user_id is required for creating a new site"]}
+
+  site_id = plv8.execute('INSERT INTO sites (name, user_id) VALUES ($1, $2) RETURNING id', [site.domain, site.user_id]).0.id
 
   try
     plv8.execute 'INSERT INTO domains (site_id, name) VALUES ($1, $2)', [site_id, site.domain]
