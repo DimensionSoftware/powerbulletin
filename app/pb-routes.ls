@@ -32,6 +32,7 @@ app.resource \resources/posts,             resources.posts
 app.resource \resources/users,             resources.users
 app.resource \resources/products,          resources.products
 app.resource \resources/conversations,     resources.conversations
+app.resource \resources/threads,           resources.threads
 app.get  \/resources/posts/:id/sub-posts,  handlers.sub-posts
 app.post \/resources/posts/:id/impression, handlers.add-impression
 app.post \/resources/posts/:id/censor,     handlers.censor

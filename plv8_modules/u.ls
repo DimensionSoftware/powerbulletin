@@ -59,7 +59,7 @@ sub-forums = (id, fields='*') ->
   """
   plv8.execute sql, [id]
 
-export top-posts = (sort, limit, fields='p.*') ->
+export top-posts = (sort, limit = void, offset = 0, fields='p.*') ->
   sort-expr =
     switch sort
     | \recent   => 'p.created DESC, p.id ASC'
@@ -79,9 +79,9 @@ export top-posts = (sort, limit, fields='p.*') ->
     AND m.post_id IS NULL
   GROUP BY p.id
   ORDER BY #{sort-expr}
-  LIMIT $2
+  LIMIT $2 OFFSET $3
   """
-  f = (...args) -> plv8.execute sql, args.concat([limit])
+  f = (...args) -> plv8.execute sql, args.concat([limit, offset])
   f.fields = fields
   f
 
@@ -190,5 +190,5 @@ export forums = (forum-id, sort) ->
   ft = forum-tree forum-id, top-posts(sort)
   if ft then [ft] else []
 
-export top-threads = (forum-id, sort) ->
-  top-posts(sort) forum-id
+export top-threads = (forum-id, sort, limit, offset) ->
+  top-posts(sort, limit, offset) forum-id

@@ -17,6 +17,7 @@ app/views/search.jade
 app/views/search-filters.jade
 app/views/search-facets.jade
 app/views/_*.jade
+app/views/__*.jade
 '
 
 # apply globbing

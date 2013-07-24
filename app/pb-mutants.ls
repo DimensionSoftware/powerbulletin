@@ -19,12 +19,16 @@ require! {
       dur = aft - bef
       console.log "benchmarked '#{subject-name}': took #{dur}ms"
 
-!function render-component c, locals, window, target
-  wc = window.component ||= {}
-  wc[c.constructor?name] = c # register
-  c.locals locals
-  c.reload!
-  window.$ target .html('').append c.$ # render
+!function render-component win, target, name, klass, first-klass-arg
+  wc = win.component ||= {}
+  if c = wc[name] # already registered
+    if locals = first-klass-arg?locals
+      c.locals locals
+    c.reload!
+  else # instantiate and register (locals are in first-klass-arg)
+    # always instantiate using 'internal' dom by not passing a target at instantiation
+    c = wc[name] = new klass(first-klass-arg)
+  win.$(target).html('').append c.$ # render
 
 !function paginator-component w, locals, pnum-to-href
   wc = w.component ||= {}
@@ -35,8 +39,6 @@ require! {
   else
     wc.paginator =
       new Paginator {locals, pnum-to-href} w.$(\#pb_paginator)
-
-#!function deactivate-paginator
 
 function parse-url url
   if document?
@@ -193,6 +195,19 @@ export homepage =
         window.$ $(\.extra:first) .html ''
       next!
 
+# this function meant to be shared between static and on-initial
+!function render-thread-paginator-component win, qty, step
+  on-page = (page) ->
+    # XXX: this is sort of a stopgap I know we need pretty ui
+    # TODO: This is stub, we need actual real views
+    # !!!!!!!!!!!!!!!!!!!!!!!!!! ^_^
+    $.get "/resources/threads/#{window.active-forum-id}" {page} (top-threads, status) ->
+      container = win.$('#left_container .scrollable')
+      container.html win.jade.templates.__threads({top-threads})
+      #container.html "#{JSON.stringify threads}"
+  locals = {qty, step, active-page: 1}
+  render-component win, \#thread-paginator, \threadPaginator, Paginator, {locals, on-page}
+
 export forum =
   static:
     (window, next) ->
@@ -209,6 +224,11 @@ export forum =
       # render left content
       if @top-threads
         window.render-mutant \left_container \nav # refresh on forum & mutant change
+
+        render-thread-paginator-component window, @t-qty, @t-step
+        window.marshal \tQty, @t-qty
+        window.marshal \tStep, @t-step
+
 
       window.marshal \activeForumId @active-forum-id
       window.marshal \activeThreadId @active-thread-id
@@ -273,6 +293,8 @@ export forum =
         cur = threads.scroll-top!
         dst = Math.round($ '#left_container .threads > .active' .position!?top)
         if dst then threads.animate {scroll-top:cur+dst+offset}, 500ms, \easeOutExpo), 500ms
+
+      render-thread-paginator-component window, window.t-qty, window.t-step
       next!
   on-mutate:
     (window, next) ->
@@ -386,6 +408,15 @@ export profile =
         paginator-component window, locals, pnum-to-href
       next!
 
+# this function meant to be shared between static and on-initial
+!function render-admin-components action, site, win
+  switch action
+  | \domains  => win.render-mutant \main_content, \admin-domains
+  | \invites  => win.render-mutant \main_content, \admin-invites
+  | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site-id: site.id}}
+  | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
+  | otherwise => win.render-mutant \main_content, \admin-general
+
 export admin =
   static:
     (window, next) ->
@@ -395,21 +426,10 @@ export admin =
       window.$ '#left_container menu li' .remove-class \active
       window.$ "\#left_container menu .#{@action or \general}" .add-class \active
 
-      switch @action
-      | \domains  => window.render-mutant \main_content, \admin-domains
-      | \invites  => window.render-mutant \main_content, \admin-invites
-      | \menu     => render-component(
-        new AdminMenu({-auto-render, -auto-attach}),
-        site-id:@site.id,
-        window,
-        \#main_content)
-      | \upgrade  => render-component(
-        new AdminUpgrade({-auto-render, -auto-attach}),
-        subscriptions:@site.subscriptions,
-        window,
-        \#main_content)
-      | otherwise => window.render-mutant \main_content, \admin-general
-
+      render-admin-components @action, @site, window
+      # these two vars have to be marshalled so the components have access
+      # to them on-initial
+      window.marshal \action @action
       window.marshal \site @site
       layout-static.call @, window, \admin
       next!
@@ -431,10 +451,9 @@ export admin =
       <~ lazy-load-nested-sortable
       next!
   on-initial:
-    (window, next) ->
-      console.log \initial
-      new AdminMenu({-auto-render})
-      new AdminUpgrade({-auto-render})
+    (win, next) ->
+      render-admin-components win.action, win.site, win
+      next!
   on-mutate:
     (window, next) ->
       scroll-to-top!

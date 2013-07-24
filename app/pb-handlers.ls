@@ -52,7 +52,7 @@ delete-unnecessary-surf-data = (res) ->
 # @param String keep-string   comma-separated list of tasks to be kept
 # @returns Object             a new, smaller set of tasks
 delete-unnecessary-surf-tasks = (tasks, keep-string) ->
-  always-keep = <[ subPostsCount ]>
+  always-keep = <[ subPostsCount tStep tQty ]>
   keep = always-keep ++ keep-string.split ','
   t = { [k, v] for k, v of tasks when k in keep }
 
@@ -82,9 +82,9 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   res.mutant \homepage
 
 @forum = (req, res, next) ->
-  db   = pg.procs
   user = req.user
   uri  = req.path
+  cvars.t-step = 25 # thread list step size
 
   meta = furl.parse querystring.unescape(req.path)
   console.warn meta.type, meta.path
@@ -127,7 +127,8 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       menu            : db.menu site.id, _
       sub-posts-tree  : db.sub-posts-tree site.id, post.id, 'p.*', limit, offset, _
       sub-posts-count : db.sub-posts-count post.id, _
-      top-threads     : db.top-threads post.forum_id, \recent, _
+      top-threads     : db.top-threads post.forum_id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
+      t-qty           : db.thread-qty post.forum_id, _
       forum           : db.forum post.forum_id, _
 
     if req.surfing
@@ -144,7 +145,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     if page > 1 and fdoc.sub-posts-tree.length < 1 then return next 404
 
     # attach sub-post to fdoc, among other things
-    fdoc <<< {post, forum-id:post.forum_id, page}
+    fdoc <<< {post, forum-id:post.forum_id, page, cvars.t-step}
     fdoc.title = post.title
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.post.posts = delete fdoc.sub-posts-tree
@@ -164,7 +165,8 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       menu        : db.menu res.vars.site.id, _
       forum       : db.forum forum-id, _
       forums      : db.forum-summary forum-id, 10threads, \recent, _
-      top-threads : db.top-threads forum-id, \recent, _
+      top-threads : db.top-threads forum-id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
+      t-qty       : db.thread-qty forum-id, _
 
     if req.surfing
       delete-unnecessary-surf-data res
@@ -177,7 +179,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     if err then return next err
     if !fdoc then return next 404
 
-    fdoc <<< {forum-id}
+    fdoc <<< {forum-id, cvars.t-step}
     fdoc.active-forum-id = fdoc.forum-id
     fdoc.title = fdoc?forum?title
 
