@@ -455,7 +455,7 @@ body.scrolled
         height 25px
         width 31px
         top 3px
-        transition all .2s ease-out
+        transition all .2s cubic-bezier(0,1.72,0,.75)
   #left_content
     top (header-scrolled-height+5)
     padding-top (grid * 1.5)
@@ -470,7 +470,7 @@ body.scrolled
   #main_content
     #breadcrumb
       top (header-scrolled-height+3)
-      transition top .3s ease-out
+      transition top .2s cubic-bezier(0,1.72,0,.75)
   footer
     opacity 1
     font-size .85em
@@ -523,6 +523,7 @@ img.bg.active
 .tooltip-container:hover .tooltip, .tooltip.hover
   opacity .9
   transform scale(1) rotate(0) translate(0, 0)
+  transition all .3s ease-in-out
 .tooltip::before, .tooltip::after
   content ''
   position absolute
@@ -539,7 +540,7 @@ img.bg.active
   margin-left -10px
 .tooltip
   transition all .2s ease-in-out
-  transform scale(0) rotate(40deg) translate(100px, 180px)
+  transform scale(0) rotate(50deg) translate(120px, 200px)
   display block
   position absolute
   z-index 99
