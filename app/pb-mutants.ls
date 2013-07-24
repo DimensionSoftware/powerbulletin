@@ -280,6 +280,7 @@ export forum =
       if user
         $ \.onclick-append-reply-ui:first .click!
         set-timeout (-> $ \textarea .focus!), 100ms
+        new-post!
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id

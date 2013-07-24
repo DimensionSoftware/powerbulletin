@@ -75,14 +75,20 @@ export set-inline-editor = (user-id) ->
   try CKEDITOR.inline-all!
 
 # handle in-line editing
+focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 10ms
+render = (sel, locals, cb=(->)) ~>
+  $e = $ sel
+  render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
+    cb!
+    focus $e
+export new-post = ->
+  data =
+    action: \/resources/posts
+    method: \post
+  render \#post_new, data, ->
+    <- lazy-load-editor
+    CKEDITOR.replace ($ \#post_new .0)
 export edit-post = (id, data={}) ->
-  focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 100ms
-  render = (sel, locals, cb=(->)) ~>
-    $e = $ sel
-    @render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
-      cb!
-      focus $e
-
   if id is true # render new
     scroll-to-top!
     data.action = \/resources/posts
