@@ -621,4 +621,13 @@ export page =
       scroll-to-top!
       next!
 
+# this mutant pre-empts any action for private sites where user is not logged in
+# it means the site owner has specified that the site is private therefore we show a skeleton
+# of the site and prompt for login (all sensitive details should be removed)
+export private-site =
+  static:
+    (window, next) ->
+      #layout-static.call @ window, \privateSite
+      next!
+
 # vim:fdm=indent
