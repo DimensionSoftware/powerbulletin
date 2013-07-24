@@ -24,20 +24,11 @@ module.exports =
         on-click = ~>
           console.log \created: + subdomain
           subdomain   = @local \subdomain
-          @@$.post '/ajax/can-has-site-plz', {domain: subdomain+hostname}, ({errors, transient_owner}:r) ->
+          @@$.post '/ajax/can-has-site-plz', {domain: subdomain+hostname}, ({errors}:r) ->
             if errors.length
               console.error errors
             else
-              cookie-opts =
-                domain: hostname
-                expires: 1
-
-              # set cookie so they are 'admin' of temporary site
-              if r.user_id
-                window.location = "http://#subdomain#hostname\#once"
-              else
-                $.cookie \transient_owner, transient_owner, cookie-opts
-                window.location = "http://#subdomain#hostname"
+              window.location = "http://#subdomain#hostname\#once"
         locals = {title: 'Create Community'}
         @children =
           buy: new ParallaxButton {on-click, locals} \.SiteRegister-create @
