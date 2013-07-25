@@ -22,7 +22,7 @@ module.exports =
 
       # init children
       do ~>
-        on-click = Auth.require-login ~>
+        on-click = Auth.require-registration ~>
           console.log \created: + subdomain
           subdomain   = @local \subdomain
           @@$.post '/ajax/can-has-site-plz', {domain: subdomain+hostname}, ({errors}:r) ->
