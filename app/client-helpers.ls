@@ -183,7 +183,7 @@ export mutate = ->
   false
 
 timers = {}
-export show-tooltip = ($tooltip, msg, duration=3500ms) ->
+export show-tooltip = ($tooltip, msg, duration=4000ms) ->
   timer = timers[msg]
   if timer then clear-timeout timer
   $tooltip.html msg .add-class \hover # show
@@ -192,7 +192,9 @@ export show-tooltip = ($tooltip, msg, duration=3500ms) ->
 export switch-and-focus = (remove, add, focus-on) ->
   $e = $ \.fancybox-wrap
   $e.remove-class("#remove shake slide").add-class(add)
-  set-timeout (-> $e.add-class \slide; $ focus-on .focus! ), 10ms
+  set-timeout (-> # animate & yield before focus, so smooth!
+    $e.add-class \slide
+    set-timeout (-> $ focus-on .focus!), 250ms), 50ms
 
 export set-online-user = (id) ->
   $ "[data-user-id=#{id}] .profile.photo" .add-class \online

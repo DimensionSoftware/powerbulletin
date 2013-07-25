@@ -83,7 +83,7 @@ censor = (ev) ->
 ##
 load-ui!
 set-timeout (-> $ \footer .add-class \active), 2500ms
-$ \#query .focus!
+$ \#query .focus!select!
 
 # Delegated Events
 #{{{ - search and ui delegated events
@@ -299,7 +299,7 @@ $d.on \click 'html.admin .onclick-submit input[type="submit"]' (ev) ->
     inputs = # class to apply & which input
       saved: f.find 'input, textarea'
 
-    f.find \input:first .focus!
+    f.find \input:first .focus!select! unless f.has-class \no-focus
     if data?success
       # indicated saved
       show-tooltip t, (t.data(\msg) or \Saved!)
