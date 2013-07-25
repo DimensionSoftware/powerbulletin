@@ -50,13 +50,16 @@ ban-all-domains = (site-id) ->
       # save css to disk for site
       err <- mkdirp base-css
       if err then return next err
-      stylus(site.config.style, {compress:true}) # build css
-        .render (err, css) ->
-          err <- fs.write-file "#base-css/#{site.id}.css" css
-          if err then return next err
-          # varnish ban
-          ban-all-domains site.id if should-ban
-          res.json success:true
+      console.log \here
+      (err, css) <- stylus.render site.config.style, {compress:true}
+      console.log \after
+      if err then return res.json {success:false, msg:'CSS must be valid!'}
+      console.log \css:, css
+      err <- fs.write-file "#base-css/#{site.id}.css" css
+      if err then return next err
+      # varnish ban
+      ban-all-domains site.id if should-ban
+      res.json success:true
 
     | \menu =>
       # save site config

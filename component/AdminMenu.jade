@@ -26,13 +26,13 @@ form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
               span.label.checked Locked
               .note Lock entire forum (read-only except admin)
             .break    
-            label(for='flat') Threading
+            label(for='comments') Comments
             .box
-              input#flat(type='checkbox', value='checked', name='flat')
-              label.switch-control(for='flat')
+              input#comments(type='checkbox', value='checked', name='comments')
+              label.switch-control(for='comments')
                 .switch
-              span.label.checked Flat
-              .note Flat forums are linear like traditional PHP forums
+              span.label.checked Yes
+              .note Commentable forums are threaded like Reddit
             .break    
             input.button(type='submit', value='Save')
             .tooltip

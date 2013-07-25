@@ -1,5 +1,5 @@
 analytics = unescape(site.config.analytics)
-form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
+form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
   fieldset
     label(for='posts_per_page') Posts per Page
     input(id='posts_per_page', class='posts-per-page', name='postsPerPage', type='text', value=site.config.postsPerPage, maxlength=4)
@@ -10,9 +10,7 @@ form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
       label.switch-control(for='private')
         .switch
       span.label.checked On
-      .note Coming soon
-        i !
-      //-.note Privacy hides your content from search engines &amp; the public
+      .note Hide content from search engines &amp; the public
     .break
     label Invite Only
     .box
