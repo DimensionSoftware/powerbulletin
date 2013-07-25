@@ -56,14 +56,7 @@ export init = (cb) ->
   # query db and create export-model
   each export-model, schema
 
-  ## add model-specific functions below 
-  @sites.save-stylus = (domain, stylus, cb=(->)) ->
-    base = "public/domains/#domain"
-    err <- mkdirp base
-    if err then console.error \mkdirp.rename, err; return cb err # guard
-    err <- fs.write-file "#base/site.css" stylus
-    if err then console.error \fs.write-file, err; return cb err # "
-    cb!
+  # XXX add model-specific functions below 
 
   cb null
 

@@ -29,14 +29,21 @@ form.onclick-submit(action="/resources/sites/#{siteId}", method="put")
     //-  each t in themes
     //-    option(value=t.id)= t.name
     .break.double
-    label(for='keywords') Meta Keywords
+    label(for='keywords') Keywords
     textarea(id='keywords', name='metaKeywords')= site.config.metaKeywords
-    .note Separated by commas
+    .note Separate meta keywords with commas
+    .break
+    label(for='style') Style
+    textarea(id='style', name='style')= site.config.style
+    .note Paste
+      a(href='http://www.w3schools.com/cssref/', target='_blank') CSS
+      | or 
+      a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
+      | code in above
     .break
     label(for='analytics') Analytics
     textarea(id='analytics', name='analytics')= analytics
-    .note Paste script code in above
-
-  input.button(type='submit', value='Save')
+    .note Paste Javascript code above, excluding &lt;script&gt; tags
   .tooltip
+  input.button(type='submit', value='Save')
   input(type='hidden', name='action', value='general')
