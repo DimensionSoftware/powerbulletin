@@ -80,6 +80,14 @@ module.exports =
           Auth.show-login-dialog!
           false
 
+    @require-registration = (fn) ->
+      ->
+        if window.user
+          fn.apply window, arguments
+        else
+          Auth.show-register-dialog!
+          false
+
     # constructor
     ->
       super ...
