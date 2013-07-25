@@ -18,7 +18,10 @@ module.exports =
     template: templates.AdminMenu
 
     init: !~>
-      # TODO pre-load nested sortable + initial active sortable
+     # TODO pre-load nested sortable list + initial active sortable
+     # - safely assume 2 levels max for now)
+     #for item in site.menu
+     #  for sub-item in item.menu
 
     on-attach: !~>
       @$.on \click \.onclick-add (ev) ~>

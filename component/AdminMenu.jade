@@ -15,8 +15,8 @@ form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
           input.option(id='forum', type='radio', name='dialog', checked='checked')
           .dialog
             label(for='forum_slug') Slug
-            input#forum_slug(type='text', name='forumSlug', placeholder='/slug')
-            .note URL prefix for this page
+            input#forum_slug(type='text', name='forumSlug')
+            .note URL suffix for this page
             .break
             label(for='locked') Admin Only
             .box
@@ -41,8 +41,8 @@ form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
           input.option(id='page', type='radio', name='dialog')
           .dialog
             label(for='page_slug') Slug
-            input#page_slug(type='text', name='pageSlug', placeholder='/slug')
-            .note URL prefix for this page
+            input#page_slug(type='text', name='pageSlug')
+            .note URL suffix for this page
             .break
             label Main Menu
             .box
@@ -51,6 +51,10 @@ form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
                 .switch
               span.label.checked On
               .note Shows &amp; hides the main menu for this page
+            .break
+            label(for='body') Body
+            textarea(id='body', name='body')
+            .note Paste the contents of the page above
             .break    
             input.button(type='submit', value='Save')
             .tooltip
@@ -61,10 +65,10 @@ form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
             label(for='url') Url
             input(id='url', type='text', name='url', placeholder='http://')
             .break
+            label(for='separate_tab') Separate Tab
             .box
-              label(for='separate_window') Separate Window
-              input#separate_window(type='checkbox', value='checked', name='separateWindow')
-              label.switch-control(for='separate_window')
+              input#separate_tab(type='checkbox', value='checked', name='separateTab')
+              label.switch-control(for='separate_tab')
                 .switch
               span.label.checked Yes
               .note Open link in separate window
