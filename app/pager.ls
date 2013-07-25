@@ -98,7 +98,7 @@ module.exports = class Pager
     @set-next-and-previous-links!
     # tooltip
     t = @$el.find \.tooltip
-    show-tooltip t, "Page #{@current}", 4000ms
+    show-tooltip t, "Page #{@current}"
 
   # Change to the next page
   next-page: ~>
