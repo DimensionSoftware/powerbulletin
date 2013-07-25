@@ -850,7 +850,7 @@ CREATE FUNCTION procs.domain_by_name_exists(name JSON) RETURNS JSON AS $$
   return !!plv8.execute("SELECT TRUE FROM domains WHERE name=$1 LIMIT 1", [name]).0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
--- site.user_id is optional (you will get back a transient_owner identifier)
+-- site.user_id is required
 -- site.domain is required
 CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
   require! u
@@ -892,16 +892,7 @@ CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
 
   rval = {site_id, errors: []}
   rval <<< {site.user_id} if site.user_id
-  rval <<< {transient_owner} if transient_owner
   return rval
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.authorize_transient(transient_owner JSON, site_id JSON) RETURNS JSON AS $$
-  sql = '''
-  SELECT TRUE FROM sites
-  WHERE transient_owner=$1 AND id=$2
-  '''
-  return !!plv8.execute(sql, [transient_owner, site_id]).0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- add a subscription to a site
