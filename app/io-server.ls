@@ -58,6 +58,8 @@ site-by-domain = (domain, cb) ->
   io.set \store, redis-store
 
   io.set \authorization, (handshake, accept) ->
+    if not handshake
+      return accept("null handshake", false)
     handshake.domain = handshake.headers.host
     if handshake.headers.cookie
       handshake.cookies = cookie.parse handshake.headers.cookie

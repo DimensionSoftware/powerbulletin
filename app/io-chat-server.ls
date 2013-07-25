@@ -1,44 +1,64 @@
 require! {
+  async
   debug
   redis
 }
 
 log = debug 'io-chat-server'
 
+# Redis Keys
+# chats-by-connection:$sid = hash conversation.id => JSON.stringify(conversation)
+
 module.exports = class ChatServer
 
   (@io, @socket, @presence, @site, @user) ->
+    @r = redis.create-client!
 
-  connections: {} # XXX - may need to move this to redis
+  chats-by-connection: ~>
+    "chats-by-connection:#{@socket.id}"
 
   join: (c, cb) ~>
-    log \chat-join
+    log \chat-join, c
+    log \socket, @socket
+    log \site, @site
     c.room = "#{@site.id}/conversations/#{c.id}"
-    @connections[@socket.id] ||= {}
-    @connections[@socket.id][c.id] = c
+    err <~ @r.hset @chats-by-connection!, c.id, JSON.stringify(c)
+    if err then return cb err
+    err <~ @presence.enter c.room, @socket.id
+    if err then return cb err
     @socket.join c.room
     cb null, c
 
-  disconnect: ~>
-    # leave all user's chats
-    log \chat-disconnect
-    for c in keys @connections[@socket.id]
-      @leave {id:c, room:"#{@site.id}/conversations/#c"}, (->)
-
   leave: (c, cb) ~>
-    log \chat-leave
-    #log \socket-id, @socket.id
-    #log \connections, @connections
-    delete @connections[@socket.id]?[c.id]
+    log \chat-leave, { connection: @socket.id, chat: c.id }
+    err <~ @r.hdel @chats-by-connection!, c.id
+    if err then return cb err
+    err <~ @presence.leave c.room, @socket.id
+    if err then return cb err
     @socket.leave c?room
     cb null, c
 
+  disconnect: (cb=(->)) ~>
+    # leave all user's chats
+    log \chat-disconnect
+    #for c in keys @connections[@socket.id]
+    #  @leave {id:c, room:"#{@site.id}/conversations/#c"}, (->)
+    err, cs-json <~ @r.hvals @chats-by-connection!
+    if err then return cb err
+    cs = cs-json |> map (-> JSON.parse it)
+    async.each cs, ((c, cb) -> @leave c cb), cb
+
   message: (message, cb) ~>
+    log \message, message
     ## if connection has a chat with message.chat_id use it
-    if c = @connections[@socket.id]?[message.conversation_id]
+    err, c-json <~ @r.hget @chats-by-connection!, message.conversation_id
+    if err then return cb err
+    c = JSON.parse(c-json) if c-json
+    if c
       log "remote chat already opened"
       err, m <~ db.conversation-add-message c.id, { user_id: message.from.id, body: message.body }
       return cb err if err
+      log \m, m
       message.id = m.id
       m.body = message.body = format.chat-message message.body
       @io.sockets.in c.room .emit \chat-message, message
@@ -51,10 +71,9 @@ module.exports = class ChatServer
       if err then cb err
 
       # join the room for the conversation if we haven't already joined
-      c.room = "#{@site.id}/conversations/#{c.id}"
-      @connections[@socket.id] ||= {}
-      @connections[@socket.id][c.id] = c
-      @socket.join c.room
+      log \join, c
+      err, c <~ @join c
+      if err then return cb err
 
       # request a remote chat window be opened
       user-room = "#{@site.id}/users/#{message.to?id}"
@@ -74,6 +93,5 @@ module.exports = class ChatServer
 
   debug: (cb) ~>
     log \chat-debug
-    @socket.emit \debug, @connections
     @socket.emit \debug, @socket.id
 
