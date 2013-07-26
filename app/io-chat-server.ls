@@ -18,9 +18,7 @@ module.exports = class ChatServer
     "chats-by-connection:#{@socket.id}"
 
   join: (c, cb) ~>
-    log \chat-join, c
-    log \socket, @socket
-    log \site, @site
+    log \chat-join, { connection: @socket.id, chat: c.id }
     c.room = "#{@site.id}/conversations/#{c.id}"
     err <~ @r.hset @chats-by-connection!, c.id, JSON.stringify(c)
     if err then return cb err
@@ -71,7 +69,6 @@ module.exports = class ChatServer
       if err then cb err
 
       # join the room for the conversation if we haven't already joined
-      log \join, c
       err, c <~ @join c
       if err then return cb err
 
