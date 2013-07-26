@@ -18,3 +18,4 @@
 /elasticsearch-logs/
 /elasticsearch-data/
 /build/
+/pb.sql
