@@ -26,18 +26,16 @@ export unique = (xs) -> # from prelude.ls
 export map = (f, xs) -->
   [f x for x in xs]
 
-default-u-name  = \Transient
-default-u-photo = \/images/transient.png
 export user-fields = user-fields = (u-field, sid) ->
+  # XXX temporary fix for sid not being passed in
+  alias-sql = if sid
+    "SELECT a.name FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
+  else
+    "SELECT a.name FROM aliases a WHERE a.user_id=#u-field LIMIT 1"
+
   """
-  COALESCE(
-    (SELECT a.name FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid),
-    '#default-u-name'
-  ) AS user_name,
-  COALESCE(
-    (SELECT u.photo FROM users u WHERE u.id=#u-field),
-    '#default-u-photo'
-  ) AS user_photo
+  (#alias-sql) AS user_name,
+  (SELECT u.photo FROM users u WHERE u.id=#u-field) AS user_photo
   """
 ## END PURE FUNCTIONS ##
 

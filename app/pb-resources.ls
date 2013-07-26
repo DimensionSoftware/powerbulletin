@@ -122,9 +122,6 @@ announce = sioa.create-client!
     post.ip       = res.vars.remote-ip
     post.tags     = h.hash-tags post.body
     post.forum_id = post.forum_id
-    unless post.user_id and req.user.transient
-      # if no user_id, try transient_owner
-      post.transient_owner = req.user.transient_id
 
     err, ap-res <- db.add-post post
     if err then return next err

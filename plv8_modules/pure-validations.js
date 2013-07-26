@@ -3,7 +3,7 @@
   out$.post = post = function(post){
     var errors;
     errors = [];
-    if (!(post.user_id || post.transient_owner)) {
+    if (!post.user_id) {
       errors.push('Must specify a user');
     }
     if (!post.forum_id) {

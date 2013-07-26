@@ -89,32 +89,12 @@ announce = sioa.create-client!
         # default error situation
         return next err
 
-    done = (was-transient) ->
+    done = ->
       auth.send-registration-email u, site, (err, r) ->
         console.warn 'registration email', err, r
-      res.json success:true, errors:[], user-linked-need-reload: was-transient
+      res.json success:true, errors:[]
 
-    # TODO 
-    # - if transient_owner of this site, associate site with this user
-    # - delete transient_owner cookie
-    if tid = req.cookies.transient_owner
-      (err, authorized) <~ db.authorize-transient tid, site.id
-      if err then next err
-
-
-      if authorized
-        console.warn \authorized-u, u
-        # ex-transient user should own site
-        err <~ db.sites.update criteria: { id: site.id }, data: { user_id: u.id, transient_owner: null }
-        if err then next err
-        # ex-transient user should have super admin privileges
-        err <~ db.aliases.update criteria: { user_id: u.id, site_id: site.id }, data: { rights: JSON.stringify(super:1) }
-        if err then next err
-        done true
-      else
-        done!
-    else
-      done!
+    done!
 
 do-verify = (req, res, next) ~>
   v    = req.param \v
@@ -309,7 +289,7 @@ auth-finisher = (req, res, next) ->
 
 @logout = (req, res, next) ->
   if req.user # guard
-    unless req.user.transient then req.logout!
+    req.logout!
     redirect-url = req.param(\redirect-url) or req.header(\Referer) or '/'
     res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '').replace(is-auth, '')
   else
