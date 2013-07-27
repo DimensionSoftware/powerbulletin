@@ -20,13 +20,15 @@ function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-hre
 
   pages =
     for num in [beg to end]
-      {title: num, href: pnum-to-href(num), active: active-page is num}
+      {num, title: num, href: pnum-to-href(num), active: active-page is num}
 
-  if pages.length and pages.0.title isnt 1
-    pages.unshift {title: \First, href: pnum-to-href(1)}
+  first-num = 1
+  if pages.length and pages.0.title isnt first-num
+    pages.unshift {num: first-num, title: \First, href: pnum-to-href(first-num)}
 
-  if pages.length and pages[pages.length - 1].title isnt page-qty
-    pages.push {title: \Last, href: pnum-to-href(page-qty)}
+  last-num = pages.length - 1
+  if pages.length and pages[last-num].title isnt page-qty
+    pages.push {num: page-qty, title: \Last, href: pnum-to-href(page-qty)}
 
   pages
 
@@ -39,7 +41,12 @@ module.exports =
       # how many other pages behind and in front of active-page should we show?
       page-distance: 4
 
-    ({pnum-to-href = (-> "?page=#it")} = {}) ->
+    ({pnum-to-href, @on-page} = {}) ->
+      unless pnum-to-href
+        if @on-page
+          pnum-to-href = (-> \#) # click handlers are used instead of urls
+        else
+          pnum-to-href = (-> "?page=#it")
       @pnum-to-href = @@$R.state pnum-to-href
       super ...
 
@@ -62,3 +69,15 @@ module.exports =
 
         @state.pages = @@$R(calc-pages).bind-to ...bindings
     template: templates.Paginator
+    on-attach: ->
+      # attach optional click handlers
+      if @on-page
+        c = @
+        handler = ->
+          pg = parse-int @@$(@).data(\page)
+          c.local \activePage, pg
+          c.reload!
+          c.on-page pg, c
+          false # override default anchor behavior
+        @$.on \click \a handler
+    on-detach: -> @$.off!

@@ -657,9 +657,12 @@ CREATE FUNCTION procs.site_summary(site_id JSON, thread_limit JSON, sort JSON) R
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 
-CREATE FUNCTION procs.top_threads(forum_id JSON, s JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.top_threads(forum_id JSON, sort JSON, lim JSON, _off JSON) RETURNS JSON AS $$
   require! u
-  return u.top-threads forum_id, s
+  # default / work around bug in plv8 where 0 in json becomes false for some reason
+  offset = _off or 0
+  plv8.elog WARNING, JSON.stringify({forum_id, sort, lim, offset})
+  return u.top-threads forum_id, sort, lim, offset
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.uri_to_forum_id(site_id JSON, uri JSON) RETURNS JSON AS $$
@@ -931,5 +934,18 @@ CREATE FUNCTION procs.subscription_total(user_id JSON) RETURNS JSON AS $$
   '''
   [{sum}] = plv8.execute sql, [user_id]
   return sum or 0
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.thread_qty(forum_id JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT COUNT(*)
+  FROM posts p
+  LEFT JOIN moderations m ON m.post_id=p.id
+  WHERE p.parent_id IS NULL
+    AND p.forum_id=$1
+    AND m.post_id IS NULL
+  '''
+  [{count}] = plv8.execute sql, [forum_id]
+  return count
 $$ LANGUAGE plls IMMUTABLE STRICT;
 -- vim:fdm=marker

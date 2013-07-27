@@ -3,4 +3,4 @@ if pages.length >= 2
     if p.active
       strong.Paginator-page= p.title
     else
-      a.mutant.Paginator-page(href=p.href)= p.title
+      a.mutant.Paginator-page(href=p.href, data-page=p.num)= p.title

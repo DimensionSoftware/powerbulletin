@@ -1,0 +1,2 @@
+#!/bin/sh -e
+pg_dump -Upostgres -h127.0.0.1 pb > pb.sql

@@ -1,0 +1,5 @@
+#!/bin/sh
+psql -Upostgres -h127.0.0.1 -c 'DROP DATABASE pb'
+set -e
+psql -Upostgres -h127.0.0.1 -c 'CREATE DATABASE pb'
+psql -Upostgres -h127.0.0.1 pb < pb.sql
