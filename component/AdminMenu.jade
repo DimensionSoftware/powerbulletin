@@ -2,7 +2,7 @@ li.default
   div
     input.row(type='text', placeholder='Title', data-menu=true, data-type='forum', data-url='', data-page='')
 
-form.menus.onclick-submit(action="/resources/sites/#{siteId}", method="put")
+form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
   input(type='hidden', name='action', value='menu')
   .col1
     button.onclick-add Add
