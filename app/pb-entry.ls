@@ -219,7 +219,7 @@ submit = Auth.require-login(
       # render updated post
       p.find \.title .html data.0?title
       p.find \.body  .html data.0?body
-      f.remove-class \fadein .hide 300s # & hide
+      f.remove-class \fadein .hide 200ms # & hide
       meta = furl.parse window.location.pathname
       window.last-statechange-was-user = false # flag that this was programmer, not user
       switch meta.type
