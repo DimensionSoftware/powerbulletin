@@ -25,8 +25,14 @@ module.exports =
 
     on-attach: !~>
       @$.on \click \.onclick-add (ev) ~>
-        @$.find \.sortable
-          ..append(@$.find \.default .clone!remove-class \default) # clone
+        const prefix = \list_
+        s   = @$.find \.sortable
+
+        # generate id & add new menu item!
+        max = parse-int maximum(s.find \li |> map (-> it.id.replace prefix, ''))
+        id  = unless max then 1 else max+1
+        s
+          ..append(@$.find \.default .clone!remove-class(\default).attr \id, "#prefix#id") # clone
           ..find 'li:last input' .focus!
           ..nested-sortable opts
         false
