@@ -1,3 +1,7 @@
+require! { ch: './client-helpers.ls' }
+
+<- ch.lazy-load-socketio
+
 window.socket = io.connect!
 window.r-socket = $R.state!
 
