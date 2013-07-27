@@ -7,11 +7,11 @@
 html.homepage, html.page
   .nicescroll-rails
     display none
-  #left_content
+  .left-content
     transform translateX(-600px)
     opacity 0
     transition all .2s cubic-bezier(1,.01,.69,1)
-  #main_content
+  .main-content
     padding-top header-height
     .forum
       .title
@@ -53,7 +53,7 @@ html.homepage, html.page
         border-left 8px solid transparent
         border-right 8px solid transparent
   body.scrolled
-    #main_content
+    .main-content
       #left_chrome
         right -2px
         transition right .4s ease-out
@@ -74,13 +74,13 @@ html.homepage, html.forum
 //{{{ - forum, profile & search
 html.forum, html.profile, html.search
   body.scrolled
-    #left_content
+    .left-content
       bottom 0
   body.paginator
-    #left_content
+    .left-content
       .create
         margin (grid/2) (grid*2.5) (grid/2) (grid*2)
-  #left_content.wide
+  .left-content.wide
     #left_container
       .create
         .button
@@ -89,7 +89,7 @@ html.forum, html.profile, html.search
         .created
           opacity 1
           display inline
-  #left_content
+  .left-content
     transform translateX(0)
     opacity 1
     transition opacity .3s cubic-bezier(1,.01,.69,1)
@@ -151,12 +151,9 @@ html.forum, html.profile, html.search
             font-weight 100
             font-size .9em
             margin 0 grid 0 (grid/2)
-
-      .thread:last-child
-        padding-bottom (grid*9)
   #left_chrome
     display none
-  #main_content
+  .main-content
     .forum, .search
       position relative
       clear both
@@ -345,7 +342,7 @@ html.forum, html.profile, html.search
 //}}}
 //{{{ - profile
 html.profile
-  #left_content
+  .left-content
     .container
       margin 0 (grid*2)
       overflow hidden
@@ -360,7 +357,7 @@ html.profile
       text-transform capitalize
       margin-top 0
       margin-left 0
-  #main_content
+  .main-content
     .forum
       .heading
         margin grid 0 0 0
@@ -444,7 +441,7 @@ html.search
         color #555
         width 40px
         display inline-block
-  #main_content
+  .main-content
     #hit_count
       color #888
   header
@@ -472,7 +469,7 @@ html.search
 //}}}
 //{{{ - admin
 html.admin
-  #left_content
+  .left-content
     max-width 150px
     background-color #fffbf8
     .handle
@@ -500,7 +497,7 @@ html.admin
             right 10px
             font-size 1.3em
             animation-name none
-  #main_content
+  .main-content
     padding-left 200px
     padding-bottom 50px
     .note
