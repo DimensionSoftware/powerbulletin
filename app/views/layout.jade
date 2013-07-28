@@ -47,8 +47,6 @@ html
         .search
           input#query.query(type='text', placeholder='Search', autocomplete='off')
           .onclick-close.toggler(title='Close!') x
-        a.profile.photo.mutant
-          img#profile
         .menu-container
           menu#menu.menu
             each f,i in menu
@@ -61,6 +59,8 @@ html
                         li.row
                           a.mutant(class="forum-#{sf.id}", href=sf.uri)= sf.title
         menu.tools
+          a.profile.photo.mutant
+            img#profile
           li.onclick-login
             a(href='/auth/login') Login
           li.admin-only
@@ -70,7 +70,7 @@ html
           li.onclick-logout
             a(href='/auth/logout') Logout
 
-    section#left_content
+    section#left_content.left-content
       #handle.handle(title='Toggle')
       #left_container
       #paginator(title='Go to this Page')
@@ -96,7 +96,7 @@ html
             .tooltip.right
           a.page.next(title='Next Page', href="/", style="display:none;") 
 
-    section#main_content.container
+    section#main_content.main-content.container
 
     section.extra
 
