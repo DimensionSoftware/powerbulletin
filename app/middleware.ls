@@ -1,6 +1,7 @@
 require! {
-  \fs
-  \geoip
+  async
+  fs
+  geoip
   pg: \./postgres
 }
 
@@ -44,6 +45,32 @@ require! {
       return next 404
   else
     next 404
+
+# assumes multi-domain is already ran which populates res.locals.private
+@private-site = (req, res, next) ->
+  console.warn \private-site, \A, res.locals.private
+  # we are gonna show a stripped down site with a login dialog unless one of these two guards fire
+  return next! unless res.locals.private # only private sites run this middleware
+  console.warn \private-site, \B, req.user
+  return next! if req.user # only run this middleware when req.user is null/undefined
+  console.warn \private-site, \C
+
+  #### XXX: this needs to be refactored into a middleware component which
+  #### automagically turns on or off depending on privacy config setting
+  # for now i just return early while i am getting the details right...
+  site-id = res.vars.site.id
+  tasks =
+    menu:   db.menu site-id, _
+    forums: db.site-summary site-id, 6threads, (req.query?order or \recent), _
+
+  err, async-locals <- async.auto tasks
+  if err then return next err
+
+  res.locals async-locals
+
+  res.locals {site-id}
+
+  res.mutant \privateSite # do _not_ call next because this is the end of the road
 
 @ip-lookup = (req, res, next) ->
   res.vars.remote-ip = req.headers['x-real-client-ip']

@@ -133,7 +133,9 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
     # indefinite / manual invalidation caching for forums threads and sub-post pages
     caching-strategies.etag res, sha1(JSON.stringify(adoc)), 0s
-    res.header \x-varnish-ttl \24h
+    unless res.locals.private
+      # only permacache if not a private site, private sites must never be cached
+      res.header \x-varnish-ttl \24h
     res.mutant \forum
 
   if post_part # post
