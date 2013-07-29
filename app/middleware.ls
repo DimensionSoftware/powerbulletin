@@ -48,16 +48,10 @@ require! {
 
 # assumes multi-domain is already ran which populates res.locals.private
 @private-site = (req, res, next) ->
-  console.warn \private-site, \A, res.locals.private
   # we are gonna show a stripped down site with a login dialog unless one of these two guards fire
   return next! unless res.locals.private # only private sites run this middleware
-  console.warn \private-site, \B, req.user
   return next! if req.user # only run this middleware when req.user is null/undefined
-  console.warn \private-site, \C
 
-  #### XXX: this needs to be refactored into a middleware component which
-  #### automagically turns on or off depending on privacy config setting
-  # for now i just return early while i am getting the details right...
   site-id = res.vars.site.id
   tasks =
     menu:   db.menu site-id, _

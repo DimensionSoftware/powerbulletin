@@ -57,30 +57,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   t = { [k, v] for k, v of tasks when k in keep }
 
 @homepage = (req, res, next) ->
-  #### XXX: this needs to be refactored into a middleware component which
-  #### automagically turns on or off depending on privacy config setting
-  # for now i just return early while i am getting the details right...
-  site-id = res.vars.site.id
-  tasks =
-    menu:   db.menu site-id, _
-    forums: db.site-summary site-id, 6threads, (req.query?order or \recent), _
-
-  err, async-locals <- async.auto tasks
-  if err then return next err
-
-  res.locals async-locals
-
-  res.locals {site-id}
-
-  res.mutant \privateSite
-  return
-
-
-
-  ######
-
-
-
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
   site-id = res.vars.site.id
   tasks =
