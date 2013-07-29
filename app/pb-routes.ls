@@ -79,7 +79,6 @@ app.get \/admin/:action?,
     , mw.add-js(common-js)
     , mw.add-css(common-css)
     , mmw.mutant-layout(\layout, mutants)
-    , mw.private-site
   ),
   handlers.admin
 #}}}
