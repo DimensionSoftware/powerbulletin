@@ -25,6 +25,8 @@ module.exports =
 
     on-attach: !~>
       @$.on \click \.onclick-add (ev) ~>
+        @$.find \.col2 .show 300ms # display options
+
         const prefix = \list_
         s   = @$.find \.sortable
 

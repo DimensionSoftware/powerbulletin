@@ -16,18 +16,27 @@
       margin -1px
       border-radius 3px
   .col2
+    display none
     fieldset
+      padding-top 17px!important
       min-width 500px
       position relative
+      .type
+        position absolute
+        left 0
       .options
         list-style none
         margin 0
         padding 0
+        li:first-child .header
+          margin-left 105px
         li
           float left
           > label
-            font-size .8em!important
+            font-size .9em!important
             font-weight bold!important
+            width 80px
+            cursor pointer
         li, input[type='radio']:checked + label
           font-weight bold
         li, input[type='radio'] + label
@@ -44,7 +53,7 @@
           opacity 0
         .dialog
           position absolute
-          top 100px
+          top 75px
           left 0
           .note
             left 144px!important
