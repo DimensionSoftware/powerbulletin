@@ -31,6 +31,20 @@ html
     link(href="#{cache5Url}/domains/#{currentDomain}/site.css", rel='stylesheet', type='text/css')
 
     //- the only .js in our <head> 
+    |<script id="IntercomSettingsScriptTag">
+    |  window.intercomSettings = {
+    |    // TODO: The current logged in user's email address.
+    |    email: "john.doe@example.com",
+    |    // TODO: The current logged in user's sign-up date as a Unix timestamp.
+    |    created_at: 1234567890,
+    |    widget: {
+    |      activator: "#feedback"
+    |    },
+    |    app_id: "db76ae29d759766f6563820623ec9b30b91993fa"
+    |  };
+    |</script>
+    |<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://static.intercomcdn.com/intercom.v1.js';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}};})()</script>
+
     if cvars.env != 'production'
       script(type='text/javascript', src="#{cache5Url}/local/head-0.99.load.min.js") //- offline
     else
@@ -107,6 +121,7 @@ html
       #mocha
 
     footer
+      #feedback
       .onclick-scroll-top Top
       #pb_paginator
       h6
