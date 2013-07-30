@@ -47,6 +47,7 @@ module.exports = class ChatServer
     async.each cs, ((c, cb) -> @leave c cb), cb
 
   message: (message, cb) ~>
+    ## if they're not currently online, there should be some way to notify them of new messages when they do get online
     log \message, message
     ## if connection has a chat with message.chat_id use it
     err, c-json <~ @r.hget @chats-by-connection!, message.conversation_id
@@ -86,7 +87,7 @@ module.exports = class ChatServer
         m.body = message.body = format.chat-message message.body
         @io.sockets.in(c.room).emit \chat-message, message
         cb null, { conversation: c, message: m }
-      set-timeout send-chat-message, 100ms
+      set-timeout send-chat-message, 1000ms
 
   debug: (cb) ~>
     log \chat-debug
