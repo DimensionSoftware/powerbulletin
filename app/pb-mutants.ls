@@ -631,7 +631,12 @@ export private-site =
     window.$ \#main_content .remove!
     next!
   on-load: (window, next) ->
-    Auth.show-login-dialog!
+    # ensure login stays open
+    window.fancybox-params <<< {
+      close-btn:    false
+      close-click:  false
+      modal:        true}
+    Auth.show-login-dialog! # show!
     next!
 
 # vim:fdm=indent
