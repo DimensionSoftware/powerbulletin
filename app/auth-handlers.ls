@@ -318,7 +318,7 @@ auth-finisher = (req, res, next) ->
 @user = (req, res, next) ->
   req.user ||= null
   if req.user
-    res.json __.omit(req.user, \auths)
+    res.json (__.omit(req.user, \auths) <<< {hash: res.locals.user-hash})
   else
     res.json null
 

@@ -45,6 +45,13 @@ export mw =
             req._passport.session.user = "transient:#{req.cookies.transient_owner}:#{res.vars.site.id}"
           next!
         else
+          # XXX: temp code to create an hmac digest of fake users email (testing intercom)
+          # TODO: digest the _real_ email or id of user to pass to intercom (if they let us use id)
+          hmac = crypto.create-hmac \sha256, cvars.intercom.secret-key
+          hmac.update 'john.doe@example.com'
+          res.locals.user-hash = hmac.digest \hex
+          # XXX: end temp code
+
           next!
     else
       next(404)

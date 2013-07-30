@@ -222,6 +222,8 @@ window.shake-dialog = ($form, time) ->
 # get the user after a successful login
 Auth.after-login = ->
   window.user <- $.getJSON \/auth/user
+  maybe-init-intercom!
+
   onload-personalize!
   if user and mutants?[window.mutator]?on-personalize
     set-profile user.photo
@@ -291,8 +293,17 @@ window.spin = (loading = true) ->
 
 onload-resizable!
 
+function maybe-init-intercom
+  if window.user and not window.intercom-initialized
+    window.intercom-settings <<< {
+      user_hash: window.user.hash
+    }
+    window.intercom-init!
+    window.intercom-initialized = true
+
 # run initial mutant & personalize ( based on parameters from user obj )
 window.user <- $.getJSON \/auth/user
+maybe-init-intercom!
 onload-personalize!
 
 # hash actions
