@@ -132,6 +132,8 @@ module.exports =
         if r.success
           $.fancybox.close!
           @after-login! if @after-login
+          # reload page XXX I know its not ideal but the alternative is painful >.<
+          window.location.reload!
         else
           $fancybox = $form.parents \.fancybox-wrap:first
           $fancybox.add-class \on-error

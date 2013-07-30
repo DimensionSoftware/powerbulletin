@@ -75,11 +75,6 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     p.parent!add-class \active
     w.$(last p.parents \li) .find \.title .add-class \active # get parent, too
 
-  # private sites remove info unless logged in
-  if @private
-    #XXX/TODO need to remove the elements from page which are sensitive in this case with .remove!
-    console.log \private!
-
 layout-on-personalize = (w, u) ->
   if u # guard
     set-online-user u.id
@@ -354,7 +349,6 @@ export profile =
           active-page: @page
 
         pnum-to-href = mk-post-pnum-to-href "/user/#{@profile.name}"
-        console.warn \pro, @profile
         window.marshal \uri, @uri
         paginator-component window, locals, pnum-to-href
       layout-static.call @, window, \profile
@@ -413,7 +407,7 @@ export profile =
   switch action
   | \domains  => win.render-mutant \main_content, \admin-domains
   | \invites  => win.render-mutant \main_content, \admin-invites
-  | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site-id: site.id}}
+  | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site: site}}
   | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
   | otherwise => win.render-mutant \main_content, \admin-general
 
@@ -432,6 +426,10 @@ export admin =
       window.marshal \action @action
       window.marshal \site @site
       layout-static.call @, window, \admin
+      next!
+  on-personalize:
+    (w, u, next) ->
+      layout-on-personalize w, u
       next!
   on-unload:
     (window, next-mutant, next) ->
@@ -620,5 +618,20 @@ export page =
     (window, next) ->
       scroll-to-top!
       next!
+
+# this mutant pre-empts any action for private sites where user is not logged in
+# it means the site owner has specified that the site is private therefore we show a skeleton
+# of the site and prompt for login (all sensitive details should be removed)
+export private-site =
+  static: (window, next) ->
+    #layout-static.call @ window, \privateSite
+    window.$ \header .remove!
+    window.$ \footer .remove!
+    window.$ \#left_content .remove!
+    window.$ \#main_content .remove!
+    next!
+  on-load: (window, next) ->
+    Auth.show-login-dialog!
+    next!
 
 # vim:fdm=indent

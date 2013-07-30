@@ -152,7 +152,7 @@ window.onload-resizable = ->
       hidecursordelay: 1000
       mousescrollstep: 6
       railoffset:      true
-      railpadding:     {bottom:50px}}
+      railpadding:     {bottom:150px}}
     $r.css \padding-left ($l.width!+left-offset) # snap
   else
     try

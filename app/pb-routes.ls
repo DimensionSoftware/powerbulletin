@@ -94,29 +94,37 @@ app.get '/u/:name', (req, res, next) ->
   res.redirect "/user/#{req.params.name}/", 301
 
 app.get '/user/:name',
+  personal-mw,
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
   handlers.profile
 
 app.get '/user/:name/page/:page',
+  personal-mw,
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
   handlers.profile
 #}}}
 
 app.get '/',
+  personal-mw,
   mw.geo,
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
   handlers.homepage
 
 app.get \/search,
+  personal-mw,
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
   handlers.search
 
 app.get '/hello', handlers.hello
@@ -128,17 +136,21 @@ app.get '/favicon.ico', (req, res, next) ->
   next 404, \404
 
 app.get '/:forum/most-active',
+  personal-mw,
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
   handlers.forum
 
 
 # page handler tries to match paths before forum handler
 app.get '*',
+  personal-mw,
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
   handlers.page
 
 # XXX: TODO, FURL needs to take into account these cases so i can get rid of dependent
@@ -161,13 +173,16 @@ app.all new RegExp('^(.+)/t/([^/]+/edit/[^/]+)$'),
     mw.add-css(common-css),
   ],
   mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
   handlers.forum
 
 # forum + post depersonalized
 app.all new RegExp('^(.+)/t/(.+)$'),
+  personal-mw,
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
   handlers.forum
 
 # personal-mw so we can create new posts
@@ -177,13 +192,16 @@ app.all new RegExp('^(.+)/new$'),
     mw.add-css(common-css),
   ],
   mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
   handlers.forum
 
 # bare forum (catch all / depersonalized)
 app.all new RegExp('^(.+)$'),
+  personal-mw,
   mw.add-js(common-js),
   mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
   handlers.forum
 
 #{{{ Development Debug

@@ -35,6 +35,7 @@ delete-unnecessary-surf-data = (res) ->
   locals = res.locals
   unnecessary =
      \siteName
+     \style
      \analytics
      \inviteOnly
      \cache2Url # keeping cacheUrl
@@ -77,7 +78,13 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
   # cache homepage for 60s
-  caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.vars.site), 60s
+  if res.locals.private
+    # make sure private sites aren't cached
+    caching-strategies.nocache res
+  else
+    # only cache if not a private site, private sites must never be cached
+    caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.vars.site), 60s
+
   res.content-type \html
   res.mutant \homepage
 
@@ -108,8 +115,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     res.locals adoc
 
     # indefinite / manual invalidation caching for forums threads and sub-post pages
-    caching-strategies.etag res, sha1(JSON.stringify(adoc)), 0s
-    res.header \x-varnish-ttl \24h
+    caching-strategies.nocache res # we never cache forum pages upstream because they are live
+    unless res.locals.private
+      # only cache if not a private site, private sites must never be cached
+      res.header \x-varnish-ttl \24h # we cache for a very long ttl in varnish because we control this cache
     res.mutant \forum
 
   if post_part # post

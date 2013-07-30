@@ -6,10 +6,20 @@ require! {
   sioa: \socket.io-announce
   auth: \./auth
   async
-  #\stylus # pull in stylus when accepting user's own stylesheets
+  fs
+  mkdirp
+  stylus
 }
 
+const base-css = \public/sites
+
 announce = sioa.create-client!
+
+ban-all-domains = (site-id) ->
+  # varnish ban site's domains
+  err, domains <- db.domains-by-site-id site-id
+  if err then return next err
+  for d in domains then v.ban-domain d.name
 
 @sites =
   update: (req, res, next) ->
@@ -23,23 +33,43 @@ announce = sioa.create-client!
     # save site
     switch req.body.action
     | \general =>
-      should-ban = false
+      should-ban = false # varnish
       for f in [\postsPerPage \inviteOnly \private \analytics]
         if site.config[f] isnt req.body[f] then should-ban = true
-      # save specific keys
-      site.config <<< { [k, val] for k, val of req.body when k in
-        [\postsPerPage \metaKeywords \inviteOnly \private \analytics] }
+
+      # update site
+      site.config <<< { [k, val] for k, val of req.body when k in # guard
+        [\postsPerPage \metaKeywords \inviteOnly \private \analytics \style] }
       for c in [\inviteOnly \private] # uncheck checkboxes?
         delete site.config[c] unless req.body[c]
-      for s in [\private \analytics] # tampering
+      for s in [\private \analytics] # subscription tampering
         delete site.config[s] unless s in site.subscriptions
-      console.log \updating:, site.config
       err, r <- db.site-update site
       if err then return next err
-      if should-ban # ban all site's domains in varnish
-        err, domains <- db.domains-by-site-id site.id
-        if err then return next err
-        for d in domains then v.ban-domain d.name
+
+      # save css to disk for site
+      err <- mkdirp base-css
+      if err then return next err
+      console.log \here
+      (err, css) <- stylus.render site.config.style, {compress:true}
+      console.log \after
+      if err then return res.json {success:false, msg:'CSS must be valid!'}
+      console.log \css:, css
+      err <- fs.write-file "#base-css/#{site.id}.css" css
+      if err then return next err
+      # varnish ban
+      ban-all-domains site.id if should-ban
+      res.json success:true
+
+    | \menu =>
+      # save site config
+      site.config.menu = req.body.menu
+      err, r <- db.site-update site
+      if err then return next err
+      # TODO sync live menu with config
+      # - forums
+      # - pages
+      ban-all-domains site.id # varnish ban
       res.json success:true
 
     | \domains =>
@@ -62,16 +92,21 @@ announce = sioa.create-client!
         \googleConsumerSecret]
       domain.config <<< { [k, v] for k, v of req.body when k in auths}
 
-      # generate domain-specific css
+      # save domain config
       const suffix = \Secret
-      domain.config.stylus = auths
+      domain.config.style = auths
         |> filter (-> it.index-of(suffix) isnt -1 and req.body[it])                # only auths with values
         |> map (-> ".has-#{take-while (-> it in [\a to \z]), it}{display:inline}") # make css selectors
         |> join ''
-      if domain.config.stylus.length then domain.config.stylus += '.has-auth{display:block}'
+      if domain.config.style.length then domain.config.style += '.has-auth{display:block}'
       err, r <- db.domain-update domain # save!
       if err then return next err
-      db.sites.save-stylus domain.name, domain.config.stylus
+
+      # save css to disk
+      err <- mkdirp base-css
+      if err then return next err
+      err <- fs.write-file "#base-css/#{domain.name}.css" domain.config.style
+
       res.json success:true
 @users =
   create : (req, res, next) ->
