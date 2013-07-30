@@ -35,6 +35,7 @@ delete-unnecessary-surf-data = (res) ->
   locals = res.locals
   unnecessary =
      \siteName
+     \style
      \analytics
      \inviteOnly
      \cache2Url # keeping cacheUrl

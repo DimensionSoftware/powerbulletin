@@ -354,7 +354,6 @@ export profile =
           active-page: @page
 
         pnum-to-href = mk-post-pnum-to-href "/user/#{@profile.name}"
-        console.warn \pro, @profile
         window.marshal \uri, @uri
         paginator-component window, locals, pnum-to-href
       layout-static.call @, window, \profile
@@ -413,7 +412,7 @@ export profile =
   switch action
   | \domains  => win.render-mutant \main_content, \admin-domains
   | \invites  => win.render-mutant \main_content, \admin-invites
-  | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site-id: site.id}}
+  | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site: site}}
   | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
   | otherwise => win.render-mutant \main_content, \admin-general
 
@@ -432,6 +431,10 @@ export admin =
       window.marshal \action @action
       window.marshal \site @site
       layout-static.call @, window, \admin
+      next!
+  on-personalize:
+    (w, u, next) ->
+      layout-on-personalize w, u
       next!
   on-unload:
     (window, next-mutant, next) ->

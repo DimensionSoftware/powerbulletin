@@ -200,7 +200,9 @@ export set-online-user = (id) ->
   $ "[data-user-id=#{id}] .profile.photo" .add-class \online
 
 export set-profile = (src) ->
-  $ \.photo .attr \href "/user/#{user.name}"
+  $ \.photo
+    ..attr \href "/user/#{user.name}"
+    ..add-class \online # set online!
   $ \#profile
     ..on   \load -> $ \.profile .show!
     ..attr \src, window.cache-url + src
