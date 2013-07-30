@@ -23,10 +23,17 @@ a
   //border-top-right-radius 2px
   border-radius 3px
   box-shadow inset 0 1px 0 rgba(255,255,255,0.35),0 0 1px rgba(0,0,0,0.75)
+  border 1px solid #aaa
+  opacity .85
+.photo:hover
+  border 1px solid highlight-color2
+  transition border .2s ease-out
 
 .online
-  box-shadow 0 0 3px 1px rgb(50,150,255)
-  transition box-shadow .3s ease-out
+  box-shadow 0 0 2px 1px green
+  border 1px solid #eee
+  opacity 1
+  transition box-shadow .3s ease-out, opacity .3s ease-out
 
 .saved
   box-shadow 0 0 2px rgba(50, 150, 50, .8), 0 1px 0 rgba(40, 140, 40, .9)
@@ -64,20 +71,22 @@ header
         .title.active:hover
           color #000
           border-bottom 1px solid highlight-color2
+          background-image linear-gradient(bottom, #fff 22px, #fed)
         .title.active
           position relative!important
           z-index 75!important
           color #333
           background-color #fafafa
           border-bottom 1px solid highlight-color2
+          background-image linear-gradient(bottom, #fff 22px, #eaeaea)
       > .row
         .title:hover, .title.hover
           border-bottom 1px solid #999
-          //background-image linear-gradient(bottom, #fff 25px, #fed)
           color #555
           background-color #fdfdfd
           animation-name tiny-grow!important
           animation-duration .1s
+          background-image linear-gradient(bottom, #fff 22px, #dfdfdf)
           transition border-bottom .4s, background-color .3s, color .4s
       > .row
         .title
@@ -90,15 +99,16 @@ header
           font-size .85em
           text-shadow 0 0 1px #fff
           background-color #fff
+          background-image linear-gradient(bottom, #fff 22px, #eaeaea)
         .submenu
           box-shadow 0 2px 4px 0px #ccc
           border-right 1px solid #aaa
-          border-bottom 1px solid #aaa
           border-bottom 1px solid #bbb
+          border-top 1px solid #cfcfcf
           border-bottom-right-radius 5px
           border-bottom-left-radius 5px
           background-color #fff
-          background radial-gradient(circle closest-corner at 50% 30%, #fff 20%, #f6f6f6 100%)
+          background radial-gradient(circle closest-corner at 50% 30%, #fff 60%, #f0f0f0 100%)
           color #333
           .row:hover
             font-size 15px
@@ -216,6 +226,7 @@ header
 //}}}
 //{{{ Main Content
 .main-content
+  background-color #fcfcfc
   a:hover
     color #000
     text-decoration underline
