@@ -77,7 +77,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
   # cache homepage for 60s
-  caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.vars.site), 60s
+  unless res.locals.private
+    # only cache if not a private site, private sites must never be cached
+    caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.vars.site), 60s
+
   res.content-type \html
   res.mutant \homepage
 
@@ -108,9 +111,9 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     res.locals adoc
 
     # indefinite / manual invalidation caching for forums threads and sub-post pages
-    caching-strategies.etag res, sha1(JSON.stringify(adoc)), 0s
+    caching-strategies.nocache etag
     unless res.locals.private
-      # only permacache if not a private site, private sites must never be cached
+      # only cache if not a private site, private sites must never be cached
       res.header \x-varnish-ttl \24h
     res.mutant \forum
 
