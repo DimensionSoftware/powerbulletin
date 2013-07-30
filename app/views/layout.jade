@@ -55,6 +55,7 @@ html
       script(type="text/javascript")
         window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.headjs=head.js;head.js.apply(head,!{JSON.stringify(cvars.baseJsUrls.concat(jsUrls))});
   body
+    #feedback
     header.header.toggler
       h1.logo
         a.mutant(href='/') Power
@@ -123,7 +124,6 @@ html
       #mocha
 
     footer
-      #feedback
       .onclick-scroll-top Top
       #pb_paginator
       h6
