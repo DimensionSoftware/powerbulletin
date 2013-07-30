@@ -180,6 +180,7 @@ export uri-for-post = (post-id, first-slug = null) ->
 
 export menu = (site-id) ->
   # XXX: forums should always list in the same order, get rid of top-forums, and list in static order
+  # TODO use site.config.menu to build!
   top-menu-fun = top-forums(null, 'id,title,slug,uri,description,media_url')
   [decorate-menu(f, top-menu-fun) for f in top-menu-fun(site-id)]
 

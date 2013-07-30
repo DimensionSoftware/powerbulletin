@@ -9,7 +9,7 @@ a.mutant:hover
 // Mutant-specific States
 //{{{ - homepage
 html.homepage
-  #main_content
+  .main-content
     .container
       width 90%
       margin 0 auto
@@ -69,7 +69,7 @@ html.homepage
 //}}}
 //{{{ - forum & profile
 html.forum, html.profile, html.search
-  #main_content
+  .main-content
     .forum, .threads .search
       .children + .post:nth-last-child(2)
           border-bottom 1px solid transparent
@@ -99,7 +99,7 @@ html.forum, html.profile, html.search
             color #555
       .actions a
         color highlight-color2
-  #left_content
+  .left-content
     .threads
       .thread:last-child
         border-bottom 1px solid transparent
@@ -154,7 +154,7 @@ html.forum, html.profile, html.search
 html.profile
   h1
     color #222
-  #main_content
+  .main-content
     .forum
       .heading
         .title
@@ -209,7 +209,8 @@ html.admin
         font-size 1.4em
         text-decoration none
 
-  #main_content
+  .main-content
+    background-color #fcfcfc
     .domains form fieldset
       border 1px solid #f9f9f9
     form

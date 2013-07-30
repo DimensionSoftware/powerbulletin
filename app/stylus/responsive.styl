@@ -1,7 +1,7 @@
 
 // RESPONSIVEness
 @media screen and (min-width: 1500px)
-  #main_content
+  .main-content
     .forum
       margin 0 80px
 @media screen and (max-width: 800px)
@@ -10,7 +10,7 @@
     margin-top 4px!important
   body.collapsed
     grid(100%,475px)
-    #main_content
+    .main-content
       .forum
         padding-left (grid*4)!important
   body
@@ -24,13 +24,13 @@
     display none
   body
     grid(100%,320px)
-    #main_content
+    .main-content
       margin-left 0!important
       padding 25px 15px!important
       .forum
         margin-bottom grid!important
   body.scrolled
-    #main_content
+    .main-content
       #breadcrumb
         top 0
     .container
@@ -38,7 +38,7 @@
     #left_chrome
       display none!important
 
-#left_content.wide
+.left-content.wide
   .threads
     .photo, .created, .username
       display inline-block
