@@ -44,7 +44,7 @@ module.exports = class ChatServer
     err, cs-json <~ @r.hvals @chats-by-connection!
     if err then return cb err
     cs = cs-json |> map (-> JSON.parse it)
-    async.each cs, ((c, cb) -> @leave c cb), cb
+    async.each cs, ((c, cb) ~> @leave c, cb), cb
 
   message: (message, cb) ~>
     ## if they're not currently online, there should be some way to notify them of new messages when they do get online
