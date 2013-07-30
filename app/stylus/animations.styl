@@ -1,19 +1,11 @@
 
 // Animations!
 
-@keyframes grow
-  0%
-    transform scale(1.0)
-  33%
-    transform scale(1.18)
-  100%
-    transform scale(1.0)
-
 @keyframes tiny-grow
   0%
     transform scale(1.0)
   25%
-    transform scale(1.03)
+    transform scale(1.02)
   45%
     transform scale(1.04)
   100%
@@ -21,35 +13,31 @@
 
 @keyframes shake
   0%
-    transform translateX(-35px), skew(1deg, 2deg)
-  25%
-    transform translateX(20px), skew(-4deg, -6deg)
-  50%
+    transform translateX(-50px), skew(1deg, 3deg)
+  40%
+    transform translateX(25px), skew(-4deg, -6deg)
+  65%
     transform translateX(-10px), skew(0, 3deg)
-  75%
+  85%
     transform translateX(5px), skew(0, 0)
   100%
     transform translateX(0)
 
 @keyframes post-animate-in
   0%
-    transform translateX(-25px), skew(1deg, 2deg)
-  25%
-    transform translateX(10px), skew(-1deg, -3deg)
-  50%
-    transform translateX(-5px), skew(0, 1deg)
-  75%
-    transform translateX(3px), skew(0, 0)
+    transform translateX(-4px), skew(1deg, 1deg)
+  45%
+    transform translateX(2px), skew(-1deg, -1deg)
   100%
     transform translateX(0)
 
 @keyframes slide
   0%
-    transform translateY(-90px), skew(0, -3deg)
-  35%
-    transform translateY(35px), skew(-1deg, 4deg)
+    transform translateY(-175px)
+  80%
+    transform translateY(35px)
   100%
-    transform translateY(0px), skew(0, 0)
+    transform translateY(0px)
 
 @keyframes fadein
   0%

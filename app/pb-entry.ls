@@ -83,7 +83,7 @@ censor = (ev) ->
 ##
 load-ui!
 set-timeout (-> $ \footer .add-class \active), 2500ms
-$ \#query .focus!
+$ \#query .focus!select!
 
 # Delegated Events
 #{{{ - search and ui delegated events
@@ -219,7 +219,7 @@ submit = Auth.require-login(
       # render updated post
       p.find \.title .html data.0?title
       p.find \.body  .html data.0?body
-      f.remove-class \fadein .hide 300s # & hide
+      f.remove-class \fadein .hide 200ms # & hide
       meta = furl.parse window.location.pathname
       window.last-statechange-was-user = false # flag that this was programmer, not user
       switch meta.type
@@ -299,7 +299,7 @@ $d.on \click 'html.admin .onclick-submit input[type="submit"]' (ev) ->
     inputs = # class to apply & which input
       saved: f.find 'input, textarea'
 
-    f.find \input:first .focus!
+    f.find \input:first .focus!select! unless f.has-class \no-focus
     if data?success
       # indicated saved
       show-tooltip t, (t.data(\msg) or \Saved!)
