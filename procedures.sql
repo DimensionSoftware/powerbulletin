@@ -760,6 +760,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- this should actually find-or-create a conversation by the set of users given
 CREATE FUNCTION procs.conversation_find_or_create(site_id JSON, users JSON) RETURNS JSON AS $$
+  plv8.elog WARNING, JSON.stringify(users)
   find-or-create = plv8.find_function \procs.find_or_create
   find-sql = '''
   SELECT c.*
@@ -782,10 +783,13 @@ CREATE FUNCTION procs.conversation_find_or_create(site_id JSON, users JSON) RETU
   c = find-or-create find-sql, find-params, ins-sql, ins-params
   if not c
     return null
+  plv8.elog WARNING,"c #{JSON.stringify(c)}"
 
-  usr = plv8.find_function \procs.usr
+  usr                    = plv8.find_function \procs.usr
+  messages-recent-by-cid = plv8.find_function \procs.messages_recent_by_cid
+
   c.participants   = [ usr({ name: u.name, site_id: site_id }) for u in users ]
-  c.messages       = []
+  c.messages       = messages-recent-by-cid c.id, site_id
   return c
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -844,6 +848,25 @@ CREATE FUNCTION procs.messages_by_cid(cid JSON, last JSON, lim JSON) RETURNS JSO
   params = [cid, last, lim]
   messages = plv8.execute sql, params
   return messages
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.messages_recent_by_cid(cid JSON, site_id JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT * FROM messages WHERE conversation_id = $1 AND id <= (SELECT MAX(id) FROM messages)
+  ORDER BY id DESC
+  LIMIT 10
+  '''
+  params = [cid]
+  messages = plv8.execute sql, params
+  map-users = plv8.find_function \procs.map_users
+  return map-users(site_id, messages)
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.map_users(site_id JSON, list JSON) RETURNS JSON AS $$
+  user-ids = Object.keys(list.map ((m, x) -> m[x.user_id] = 1; m), {})
+  usr = plv8.find_function \procs.usr
+  users-by-id = { [u, usr({id: u, site_id})] for u in user-ids }
+  return list.map (-> it.from = users-by-id[it.user_id]; it)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 
