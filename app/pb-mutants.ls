@@ -75,11 +75,6 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     p.parent!add-class \active
     w.$(last p.parents \li) .find \.title .add-class \active # get parent, too
 
-  # private sites remove info unless logged in
-  if @private
-    #XXX/TODO need to remove the elements from page which are sensitive in this case with .remove!
-    console.log \private!
-
 layout-on-personalize = (w, u) ->
   if u # guard
     set-online-user u.id
@@ -630,8 +625,13 @@ export page =
 export private-site =
   static: (window, next) ->
     #layout-static.call @ window, \privateSite
+    window.$ \header .remove!
+    window.$ \footer .remove!
+    window.$ \#left_content .remove!
+    window.$ \#main_content .remove!
     next!
   on-load: (window, next) ->
+    Auth.show-login-dialog!
     next!
 
 # vim:fdm=indent
