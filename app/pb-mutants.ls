@@ -405,11 +405,11 @@ export profile =
 # this function meant to be shared between static and on-initial
 !function render-admin-components action, site, win
   switch action
+  | \general  => win.render-mutant \main_content, \admin-general
   | \domains  => win.render-mutant \main_content, \admin-domains
   | \invites  => win.render-mutant \main_content, \admin-invites
   | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site: site}}
   | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
-  | otherwise => win.render-mutant \main_content, \admin-general
 
 export admin =
   static:
