@@ -38,6 +38,7 @@ ban-all-domains = (site-id) ->
         if site.config[f] isnt req.body[f] then should-ban = true
 
       # update site
+      site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
         [\postsPerPage \metaKeywords \inviteOnly \private \analytics \style] }
       for c in [\inviteOnly \private] # uncheck checkboxes?
