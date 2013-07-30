@@ -52,7 +52,11 @@ module.exports =
       console.warn \m, m
       $msg = @$.find('.container > .msg').clone!
       $msg.attr('data-message-id', m.id)
-      $msg.find('.body').attr('title', m.created_human.replace(/<.*?\/?>/g, '')).attr('data-time', m.created_iso).add-class('date-title').html(m.body)
+      if m.created_human
+        $msg.find('.body').attr('title', m.created_human.replace(/<.*?\/?>/g, '')).attr('data-time', m.created_iso).add-class('time-title').html(m.body)
+      else
+        console.warn "missing m.created_human", m
+        $msg.find('.body').html(m.body)
       $msg.find('a.from-name').attr('href', "/user/#{m.from.name}").html m.from.name
       my-name = @state.me?val?name
       if m.from.name is not my-name

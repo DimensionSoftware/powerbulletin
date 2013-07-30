@@ -262,7 +262,7 @@ time-updater = ->
       #console.log "human-readable time changed", {elapsed, lh, hr}
     $el.data(\last-human, hr)
 
-    if $el.has-class 'data-title'
+    if $el.has-class 'time-title'
       $el.attr \title, hr.replace(/<.*?\/?>/g, '')
     else
       $el.html hr
