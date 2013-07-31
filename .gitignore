@@ -1,3 +1,5 @@
+/public/master.css
+/public/sites
 /.vagrant
 /classes/
 /log/
@@ -18,3 +20,4 @@
 /elasticsearch-logs/
 /elasticsearch-data/
 /build/
+/pb.sql

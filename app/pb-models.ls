@@ -3,21 +3,15 @@ require! {
   pg
   debug
   \fs
-  \mkdirp
   orm: \thin-orm
   postgres: \./postgres
 }
 
-logger = debug 'thin-orm'
+logger = debug \thin-orm
 
 export orm    = orm
 export client = { connect: (cb) -> pg.connect postgres.conn-str, cb }
 export driver = orm.create-driver \pg, { pg: client, logger }
-#export schema = [
-#  [ \users,   <[id email photo created updated]> ]
-#  [ \aliases, <[user_id site_id name verify verified forgot rights created updated]> ]
-#  [ \sites,   <[id name config user_id created updated]> ]
-#]
 
 export-model = ([t, cs]) ->
   orm.table(t).columns(cs)
@@ -56,14 +50,7 @@ export init = (cb) ->
   # query db and create export-model
   each export-model, schema
 
-  ## add model-specific functions below 
-  @sites.save-stylus = (domain, stylus, cb=(->)) ->
-    base = "public/domains/#domain"
-    err <- mkdirp base
-    if err then console.error \mkdirp.rename, err; return cb err # guard
-    err <- fs.write-file "#base/site.css" stylus
-    if err then console.error \fs.write-file, err; return cb err # "
-    cb!
+  # XXX add model-specific functions below 
 
   cb null
 
