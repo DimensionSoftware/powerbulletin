@@ -6,7 +6,6 @@ module.exports =
   jquery                : "#{cvars.cache-url}/local/jquery-1.9.1.min.js"
   jquery-cookie         : "#{cvars.cache3-url}/local/jquery.cookie-1.3.1.min.js"
   jquery-history        : "#{cvars.cache5-url}/local/history.min.js"
-  jquery-history-native : "#{cvars.cache-url}/local/history.adapter.native.min.js"
   jquery-html5-uploader : "#{cvars.cache2-url}/local/jquery.html5uploader.js"
   jquery-masonry        : "#{cvars.cache4-url}/local/jquery.masonry.min.js"
   jquery-nicescroll     : "#{cvars.cache5-url}/local/jquery.nicescroll.min.js"
