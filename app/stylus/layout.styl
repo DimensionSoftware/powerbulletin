@@ -381,7 +381,6 @@ footer.active
   opacity 1
   bottom -(grid * 1.4)
   font-size .75em
-  transition all 1s ease-out
 footer
   text-align center
   position fixed
@@ -391,6 +390,26 @@ footer
   height footer-height
   z-index 9
   width auto
+  .reply
+    display none
+    cursor pointer
+    position absolute
+    padding-right 20px
+    left 12px
+  .reply:hover
+    color #222
+  .reply:hover::before
+    border-left 8px solid #aaa
+    left 40px
+    transition all .1s ease-out
+  .reply::before
+    position absolute
+    content ''
+    border 4px solid transparent
+    border-left 6px solid #ccc
+    top 8px
+    left 38px
+    transition all .2s ease-out
   .onclick-scroll-top:hover
     color #222
   .onclick-scroll-top:hover::before

@@ -37,6 +37,7 @@ export ck-submit-form = (e) ->
   else
     submit-form ev, (data) -> # ...and sumbit!
       post-success ev, data
+      if $ \footer .has-class \expanded then toggle-post ev # close drawer
 
 export submit-form = (ev, fn) ->
   $f = $ ev.target .closest(\form) # get event's form
@@ -81,13 +82,23 @@ render = (sel, locals, cb=(->)) ~>
   render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
     cb!
     focus $e
-export new-post = ->
+export toggle-post = (ev) ->
+  unless $ ev.target .has-class \onclick-footer-toggle then return # guard
   data =
     action: \/resources/posts
     method: \post
-  render \#post_new, data, ->
-    <- lazy-load-editor
-    CKEDITOR.replace ($ \#post_new .0)
+  # setup form
+  e = $ \footer
+  e.find 'form.post-new input[name="forum_id"]' .val window.active-forum-id
+  e.find 'form.post-new input[name="parent_id"]' .val window.active-thread-id
+  if e.has-class \expanded # close drawer & cleanup
+    e.remove-class \expanded
+    try CKEDITOR.instances.post_new.destroy true
+  else # bring out drawer & init+focus editor
+    e.add-class \expanded
+    render \#post_new, data, ->
+      <- lazy-load-editor
+      CKEDITOR.replace ($ \#post_new .0), {startup-focus:true}
 export edit-post = (id, data={}) ->
   if id is true # render new
     scroll-to-top!

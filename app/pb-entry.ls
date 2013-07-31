@@ -67,7 +67,8 @@ append-reply-ui = (ev) ->
       forum_id:   $p.data(\forum-id) or window.active-forum-id
       parent_id:  $p.data \post-id
       is_comment: true), ->
-        if ev.original-event then $p.find('textarea[name="body"]').focus! # user clicked
+        #if ev.original-event then $p.find('textarea[name="body"]').focus! # user clicked
+        $p.find('textarea[name="body"]').focus!
   else
     $p.find('.reply .cancel').click!
 

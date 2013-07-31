@@ -108,12 +108,20 @@ html
     if cvars.env != 'production'
       #mocha
 
-    footer
+    footer.onclick-footer-toggle
+      .reply.onclick-footer-toggle Reply
       .onclick-scroll-top Top
       #pb_paginator
-      h6
+      h6.onclick-footer-toggle
         small &copy; #{siteName} &nbsp;
         b= new Date().getFullYear()
+      .post-container
+        form.post-new(action='/resources/posts', method='put')
+          textarea#post_new
+          .tooltip
+          input(type='hidden', name='forum_id')
+          input(type='hidden', name='csrf')
+
     #chat_drawer
 
     //- css not required for initial page render -- performance mod.

@@ -661,6 +661,26 @@ html.admin
       input[type="checkbox"]:checked ~ span[class*="checked"]
         color #444
 //}}}
+html.forum
+  footer.expanded
+    height 290px
+    transition height .3s bounce
+    .post-container
+      opacity 1
+      transition opacity .3s ease-out .1s
+  footer
+    cursor n-resize
+    .tooltip
+      bottom auto
+      top 15px
+    .onclick-footer-toggle
+      display block
+    .post-container
+      opacity 0
+      margin 0 auto
+      width 80%
+      max-width 1100px
+      margin-top 10px
 
 #left_container
   height 100%
