@@ -2,6 +2,6 @@
 , "maxmind": "GeoIPCity.dat"
 , "port": "3000"
 , "tmp": "/tmp"
-, "tStep": 25
+, "tStep": 100
 , "intercom": { "secretKey": "EzR5nMM1DuuVNzCVY_exiJvbi54u1NsG4CLIaHm5" }
 }

@@ -1,3 +1,7 @@
+require! { ch: './client-helpers.ls' }
+
+<- ch.lazy-load-socketio
+
 window.socket = io.connect!
 window.r-socket = $R.state!
 
@@ -56,7 +60,7 @@ socket.on \new-hit, (hit) ->
   window.new-hits ||= 0
   window.new-hits++
   realtime-html = """
-  <div>#{window.new-hits} new search results!</div>
+  <div><a href="#" onclick="window.location.reload()">#{window.new-hits} new search results!</a></div>
   last: <strong>#{hit._source.title || hit._source.body}</strong>
   """
   $('#new_hits').html realtime-html

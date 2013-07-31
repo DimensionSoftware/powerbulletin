@@ -49,9 +49,14 @@ module.exports =
         body           : @$.find('textarea').val!
 
     message-node: (m) ~>
+      console.warn \m, m
       $msg = @$.find('.container > .msg').clone!
       $msg.attr('data-message-id', m.id)
-      $msg.find('.body').html m.body
+      if m.created_human
+        $msg.find('.body').attr('title', m.created_human.replace(/<.*?\/?>/g, '')).attr('data-time', m.created_iso).add-class('time-title').html(m.body)
+      else
+        console.warn "missing m.created_human", m
+        $msg.find('.body').html(m.body)
       $msg.find('a.from-name').attr('href', "/user/#{m.from.name}").html m.from.name
       my-name = @state.me?val?name
       if m.from.name is not my-name
@@ -110,29 +115,25 @@ module.exports =
         @$.find \textarea .focus!
 
     close: ~>
-      err, r <~ socket.emit \chat-leave, @conversation
       key = @key!
-      console.log \key, key
       Chat.stop(@key!)
+      err, r <~ socket.emit \chat-leave, @conversation
 
-Chat.start = ([me,...others]:users) ->
-  console.log \users, users
+Chat.start = ([me,...others]:users, messages=[]) ->
   # TODO setup profile here
   key = map (.name), users |> join '/'
   if c = @chats[key]
     return c
   c = @chats[key] = new Chat locals: { me, others }, $('<div/>').hide!
-#  $cs = $ '#chat_drawer .Chat'
-#  if $cs.length
-#    right = $cs.length * ($cs.first!width! + 8) + 8
-#    c.$.show!transition { right }, @duration, @easing
-#    $ \#chat_drawer .prepend c.$
-#  else
-#    right = 8
-#    c.$.show!css { right }
-#    $ \#chat_drawer .prepend c.$.show(@duration, @easing)
   $ \#chat_drawer .after c.$.show(@duration, @easing)
+  r <- $.post '/resources/conversations', { site_id: window.site-id, users }
+  console.log \r, r
+  if r.messages.length > 0 and messages.length == 0
+    messages := r.messages
+  for m in messages
+    c.prepend-message m
   c.$.find \textarea .focus!
+  c.conversation = r
   c
 
 Chat.stop = (key) ->
@@ -154,7 +155,7 @@ Chat.reorganize = ->
 Chat.client-socket-init = (socket) ->
 
   socket.on \chat-open, (conversation, cb) ->
-    console.warn "received request to open chat #{conversation.id}"
+    console.warn "received request to open chat #{conversation.id}", conversation
     err, c2 <- socket.emit \chat-join, conversation
     console.log \after-chat-join, err, c2
     me-first = (a, b) ->
@@ -163,10 +164,13 @@ Chat.client-socket-init = (socket) ->
     people = sort-with me-first, conversation.participants
     names  = map (.name), people
     key    = names.join '/'
+    console.log \kkk, key, Chat.chats[key]
     return if Chat.chats[key]
-    c = Chat.start people
+    c = Chat.start people, conversation.messages
+    console.warn \after-chat-start
     c.conversation = conversation
     c.room = c2.room
+    console.warn \end-of-chat-open, c == Chat.chats[key], c
 
   socket.on \chat-message, (msg, cb) ~>
     console.log \incoming-chat, msg

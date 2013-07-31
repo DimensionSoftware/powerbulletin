@@ -233,15 +233,32 @@ ban-all-domains = (site-id) ->
     else
       next 404
 @conversations =
+  create: (req, res, next) ->
+    console.warn \body, req.body
+    site-id = req.body?site_id
+    users   = req.body?users
+    if not site-id or not users
+      return next new Error "not enough info to find-or-create conversation"
+    user0 =
+      id   : users.0.id
+      name : users.0.name
+    user1 =
+      id   : users.1.id
+      name : users.1.name
+    err, c <~ db.conversation-find-or-create site-id, [user0, user1]
+    if err then return next err
+    res.json c
+
   show: (req, res, next) ->
     id = req.params.conversation
-    limit = 4
+    limit = 30
     err, c <~ db.conversation-by-id id
     if err
       console.error \conversations-show, req.path, err
       res.json success: false
       return
     if c
+      # TODO be sure to check participants too
       err, messages <- db.messages-by-cid c.id, (req.query.last || null), limit
       if err
         console.error \conversations-show, req.path, err

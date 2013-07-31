@@ -287,7 +287,7 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
   t  =
     id     : $p.data \user-id
     name   : $p.data \user-name
-    profile: $p.find \img .attr \src
+    photo  : $p.find \img .attr \src
   Chat.start [f, t]
 )
 #}}}

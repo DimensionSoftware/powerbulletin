@@ -58,6 +58,9 @@ site-by-domain = (domain, cb) ->
   io.set \store, redis-store
 
   io.set \authorization, (handshake, accept) ->
+    if not handshake
+      return accept("null handshake", false)
+    handshake.domain = handshake.headers.host
     if handshake.headers.cookie
       handshake.cookies = cookie.parse handshake.headers.cookie
       connect-cookie = handshake.cookies['connect.sess']
@@ -69,16 +72,20 @@ site-by-domain = (domain, cb) ->
         session = connect.utils.parse-JSON-cookie(unsigned) || {}
         #log \session, session
         handshake.session = session
-        handshake.domain  = handshake.headers.host
         return accept(null, true)
       else
         return accept("bad session?", false)
     else
-      return accept("no cookies", false)
+      log "no cookies found during socket.io authorization phase"
+      return accept(null, true)
 
   io.on \connection, (socket) ->
     var search-room
     var presence
+
+    if not socket.handshake
+      log "no socket.handshake; bailing to prevent crash"
+      return
 
     err, user <- user-from-session socket.handshake.session
     if err then log err
@@ -89,7 +96,8 @@ site-by-domain = (domain, cb) ->
     site-room = site.id
     user-room = "#site-room/users/#{user.id}"
 
-    err, presence <- new Presence site.id
+    log \new-presence, site.id, socket.id
+    err, presence <- new Presence site.id, socket.id
 
     err <- presence.enter site-room, socket.id
     if err then log \presence.enter, err
@@ -112,12 +120,18 @@ site-by-domain = (domain, cb) ->
 
     socket.on \disconnect, ->
       log \disconnected
+      err <- presence.leave-all socket.id
+      if err then log \presence.leave-all, err
       if search-room
         socket.leave search-room
       if user and site
-        err <- presence.leave-all socket.id
-        if err then log \presence.leave-all, err
-        io.sockets.in(site-room).emit \leave-site, user
+        err <- presence.users-client-remove socket.id, user
+        if err then return log \presence.users-client-remove, err
+        err, cids <- presence.cids-by-uid user.id
+        if err then return log \presence.cids-by-uid, err
+        log "#{user.name}'s cids", cids
+        if cids.length is 0
+          io.sockets.in(site-room).emit \leave-site, user
         chat-server.disconnect!
 
     socket.on \online-now, ->
