@@ -7,7 +7,7 @@ require! {
 
 module.exports =
   class PhotoCropper extends Component
-    ({aspect-ratio}) ->
+    ({aspect-ratio, @endpoint-url}) ->
       @aspect-ratio = parse-float aspect-ratio
       super ...
     template: templates.PhotoCropper
