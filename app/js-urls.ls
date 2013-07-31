@@ -15,6 +15,5 @@ module.exports =
   jquery-waypoints      : "#{cvars.cache4-url}/local/waypoints.min.js"
   raf                   : "#{cvars.cache5-url}/local/raf.js"
   reactivejs            : "#{cvars.cache-url}/local/reactive.js"
-  socketio              : "#{cvars.cache2-url}/socket.io/socket.io.js"
   powerbulletin         : "#{cvars.cache3-url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"
   powerbulletin-sales   : "#{cvars.cache4-url}/powerbulletin-sales#{if process.env.NODE_ENV is \production then '.min' else ''}.js"

@@ -123,5 +123,5 @@ module.exports = (grunt) ->
     grunt.registerTask "default", ["procs", "clientJade", "componentJade", "livescript", "browserify", "launch", "watch"]
 
 process.on 'SIGINT', ->
-  exec "killall -9 -r pb-worker"
+  exec "killall -s INT -r pb-worker"
   process.exit()

@@ -1,7 +1,10 @@
 .header
   .profile
     .minimize(title=others[0].name)
-      img(src=others[0].profile)
+      if others[0].photo.match(/^https?\:/) || others[0].photo.match(/\/\//)
+        img(src=others[0].photo)
+      else
+        img(src="#{cacheUrl}/#{others[0].photo}")
   h2 #{others[0].name}
   .close.onclick-close(title='Close') X
 .container
