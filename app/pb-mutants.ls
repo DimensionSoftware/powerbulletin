@@ -310,9 +310,15 @@ export forum =
       set-inline-editor u.id
     next!
   on-unload:
-    (window, next-mutant, next) ->
+    (win, next-mutant, next) ->
+      # cleanup paginator on exit
+      if win.component.paginator
+        win.component.paginator
+          ..local \qty 0
+          ..reload!
+
       try
-        window.$ \#left_container .resizable(\destroy)
+        win.$ \#left_container .resizable(\destroy)
       catch
         # do nothing
       next!
