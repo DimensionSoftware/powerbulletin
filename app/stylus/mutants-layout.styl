@@ -1,5 +1,6 @@
 
 // Structure applied to ...
+bounce = cubic-bezier(0,1.72,0,.75)
 
 // Mutant-specific States
 //{{{ - homepage
@@ -170,6 +171,10 @@ html.forum, html.profile, html.search
       .post:hover
         position relative
         z-index 4
+      #post_new
+        display none
+      #cke_post_new
+        width 80%
       #post_edit
         width 80%
         .photo
@@ -634,7 +639,7 @@ html.admin
         background #eee
         box-shadow inset 0 0 2px rgba(0, 0, 0,0.25), 0 0 5px #999
         border-radius 20px
-        transition all .4s cubic-bezier(0,1.72,0,.75)
+        transition all .4s bounce
       .switch::after 
         content ''
         display block

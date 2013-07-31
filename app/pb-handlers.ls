@@ -91,7 +91,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 @forum = (req, res, next) ->
   user = req.user
   uri  = req.path
-  cvars.t-step = 25 # thread list step size
 
   meta = furl.parse querystring.unescape(req.path)
   console.warn meta.type, meta.path
