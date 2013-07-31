@@ -1,8 +1,8 @@
 require! {
   async
+  redis
   elastic: './elastic'
   RedisStore: 'socket.io/lib/stores/redis'
-  redis: 'socket.io/node_modules/redis'
   s: \./search
   sio: 'socket.io'
   sioc: 'socket.io-client'
