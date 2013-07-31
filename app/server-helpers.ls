@@ -67,20 +67,31 @@ process-cached-data = {}
 
 # find all #hashtags in a string
 @hash-tags = (body) ->
-  unless body?length then return # guard
+  unless body?length then return '' # guard
   body.match(/#\w+/g)?map (tag) -> tag?replace(/^#/, '').toLowerCase!
+
+@hash-tags-replace = (body, fn) ->
+  unless body?length then return '' # guard
+  body.replace /#\w+/g, fn
 
 # find all @attags in a string
 @at-tags = (body) ->
-  unless body?length then return # guard
+  unless body?length then return '' # guard
   body.match(/@\w+/g)?map (tag) -> tag?replace(/^@/, '')
 
+@at-tags-replace = (body, fn) ->
+  unless body?length then return '' # guard
+  body.replace /@\w+/g, fn
+
 # take marked up text and turn it into html
-@html = (body) ->
+@html = (body) ~>
   unless body?length then return # guard
   # TODO - escape html before sending to bbcode parser
-  # TODO - add #hashtag and @attag support
-  bbcode.parse body
+  b0 = @hash-tags-replace body, (hash-tag) ->
+    """<a class="mutant hash-tag" href="/search?q=#{encode-URI-component hash-tag.to-lower-case!}">#hash-tag</a>"""
+  b1 = @at-tags-replace b0, (at-tag) ->
+    """<a class="mutant at-tag" href="/user/#{encode-URI-component at-tag.replace(/^@/, '')}">#at-tag</a>"""
+  bbcode.parse b1
 
 @expand-handlebars = (tmpl, vars) ->
   tmpl.replace /{{([\w-]+)}}/g, (m, p) ->
