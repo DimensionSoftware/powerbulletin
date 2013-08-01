@@ -41,8 +41,9 @@ export ck-submit-form = (e) ->
 
 export submit-form = (ev, fn) ->
   $f = $ ev.target .closest(\form) # get event's form
+  console.log $f
   $s = $ $f.find('[type=submit]:first')
-  $s.attr \disabled \disabled
+  if $s then $s.attr \disabled \disabled
 
   # is body in ckeditor?
   body = $f.find \textarea.body
