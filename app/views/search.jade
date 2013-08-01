@@ -1,12 +1,11 @@
 include _post
 
+.breadcrumb
+  em#hit_count
+    span #{elres.total} total hits
+    #new_hits
+
 .search.resizable
-  #new_hits
-
-  div
-    if elres.total
-      em#hit_count #{elres.total} total hits
-
   if elres.hits.length
     each hit in elres.hits
       - hit._source.title = hit._source.thread_title

@@ -601,6 +601,7 @@ export search =
       next!
   on-load:
     (w, next) ->
+      align-breadcrumb!
       pager-init w
       next!
   on-unload:
