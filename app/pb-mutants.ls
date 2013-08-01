@@ -263,7 +263,7 @@ export forum =
       # editing handler
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
-      $ \footer .on \click, toggle-post # expand & minimize drawer, re-init'ing sceditor for focus
+      $ \body .on \click, toggle-post # expand & minimize drawer, re-init'ing sceditor for focus
 
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
@@ -311,7 +311,7 @@ export forum =
     next!
   on-unload:
     (window, next-mutant, next) ->
-      $ \footer .off \click
+      $ \body .off \click
       try
         window.$ \#left_container .resizable(\destroy)
       catch
