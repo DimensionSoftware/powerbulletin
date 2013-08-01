@@ -40,7 +40,7 @@ html
     |    // TODO: The current logged in user's sign-up date as a Unix timestamp.
     |    created_at: 1234567890,
     |    widget: {
-    |      activator: "#feedback"
+    |      activator: "#IntercomDefaultWidget"
     |    },
     |    app_id: "db76ae29d759766f6563820623ec9b30b91993fa"
     |  };
@@ -55,7 +55,7 @@ html
       script(type="text/javascript")
         window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.headjs=head.js;head.js.apply(head,!{JSON.stringify(cvars.baseJsUrls.concat(jsUrls))});
   body
-    #feedback
+    #IntercomDefaultWidget
     header.header.toggler
       h1.logo
         a.mutant(href='/') Power
