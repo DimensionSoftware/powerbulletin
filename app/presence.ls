@@ -110,6 +110,6 @@ module.exports = class Presence
     cb null, JSON.parse(user-json)
 
 process.on "SIGINT", ->
-  console.error "SIGINT CAUGHT - cleaning up connections belonging to process #{process.id}"
+  console.error "SIGINT CAUGHT - cleaning up connections belonging to process #{process.pid}"
   err <- Presence.clean-up
   process.exit!
