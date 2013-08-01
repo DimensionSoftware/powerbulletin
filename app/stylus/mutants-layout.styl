@@ -189,6 +189,8 @@ html.forum, html.profile, html.search
           opacity 1
           transition opacity .2s ease-out .1s
       .reply
+        .fadein
+          margin-top 8px
         width 405px
         .post-edit form
           clear both
@@ -200,16 +202,16 @@ html.forum, html.profile, html.search
             vertical-align top
             display inline-block
             .photo
-              margin-top 5px
+              margin-top 3px
           textarea
-            height 30px
-            min-height 30px
+            height 22px
+            min-height 22px
             width 320px
             margin-top 0
             vertical-align top
             display inline-block
           .button
-            bottom 20px
+            bottom 17px
             right 12px
       .post-edit
         position relative
@@ -238,9 +240,9 @@ html.forum, html.profile, html.search
         .summary
           .profile.photo
             margin-left 3px
-            border-radius 1px
-            height 39px
-            width 49px
+            border-radius 5px / 1px
+            height 33px
+            width 43px
             margin-top (grid/2)
         .summary::before:hover
           margin-left 2px
@@ -328,10 +330,14 @@ html.forum, html.profile, html.search
           height 45px
         .children
           margin-left (grid*3)
+          .body
+            line-height 20px
+          .load-more
+            margin-left -28px
           .post
             padding-top grid
-            textarea.body
-              padding-top (grid/2)
+            .button
+              bottom 19px
             .user, .date
               display inline
               font-size .92em
@@ -340,7 +346,6 @@ html.forum, html.profile, html.search
             .date
               margin-left (grid/2)
             .profile
-              margin-top (grid/2)
               border-radius 2px
               width 46px
               height 37px

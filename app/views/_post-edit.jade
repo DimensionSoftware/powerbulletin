@@ -8,7 +8,7 @@ mixin _post-edit(u, p)
         img.profile.photo(src="#{cacheUrl}/#{u.photo || 'images/transient.png'}")
       if !p.is_comment
         input.title(name='title', type='text', placeholder='Title', value=p.title)
-      textarea.body.onshiftenter-submit(id="editor#{p.is_comment ? html_id : ''}", name='body', placeholder='Reply ...')= p.body
+      textarea.body.onshiftenter-submit(id="editor#{p.is_comment ? html_id : ''}", name='body', placeholder='Comment ...')= p.body
       input(type='hidden', name='id', value=p.id)
       input(type='hidden', name='forum_id', value=p.forum_id)
       input(type='hidden', name='parent_id', value=p.parent_id)

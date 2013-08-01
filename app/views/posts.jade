@@ -21,7 +21,11 @@ if typeof(post) !== 'undefined'
         if post.html
           .body!= post.html
         .reply
-        mixin _post-actions(post)
+        .actions
+          a.stylish.onclick-footer-toggle Reply
+          a.stylish.edit.mutant.no-surf(data-edit=post.id, href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
+          a.stylish.permalink.mutant(href=post.uri) Permalink
+          a.stylish.censor.onclick-censor-post Censor
     .children
       if post.posts.length
         div(data-page=page)

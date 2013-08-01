@@ -7,4 +7,3 @@ mixin _post-profile(p)
         img(title=p.user_name, src="#{p.user_photo}")
       else
         img(src="#{cacheUrl}/#{p.user_photo}")
-    span.username= p.user_name
