@@ -370,28 +370,6 @@ export profile =
   on-personalize: (w, u, next) ->
     if u # guard
       layout-on-personalize w, u
-      <- lazy-load-jcrop
-      path-parts = window.location.pathname.split '/'
-      jcrop = void
-      if path-parts.2 is u.name
-        $ '.avatar img' .Jcrop aspect-ratio: 1.25, ->
-          jcrop := this
-        <- lazy-load-html5-uploader
-        $ \.avatar .html5-uploader({
-          name     : \avatar
-          post-url : "/resources/users/#{u.id}/avatar"
-
-          on-success: (x, y, json) ->
-            r = JSON.parse json
-            if typeof r is \object
-              jcrop.destroy! if jcrop
-
-              $ '.avatar img'
-                .attr \src, "#{w.cache-url}/#{r.avatar}"
-                .attr \style, ''
-                .Jcrop aspect-ratio: 1.25, ->
-                  jcrop := this
-        })
     next!
   on-unload:
     (window, next-mutant, next) ->
