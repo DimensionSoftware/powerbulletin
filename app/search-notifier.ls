@@ -44,8 +44,7 @@ new-poller = (io, elc, poller) ->
   # but only but a small amount
   work-interval = 3000 + (Math.floor (Math.random! * 500)) # in ms
 
-  # step into my time machine, darling, this will require duplicate detection on client...
-  now = new Date - 10000
+  now = new Date
 
   cutoff = new Date(now - work-interval)
   busy = false
