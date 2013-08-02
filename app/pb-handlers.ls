@@ -22,7 +22,7 @@ global <<< require \./client-helpers
 
 {is-editing, is-admin, is-auth} = require \./path-regexps
 
-posts-per-page = 30
+const posts-per-page = 30
 
 @hello = (req, res, next) ->
   console.log req.headers
@@ -199,7 +199,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   site = res.vars.site
   name = req.params.name
   page = req.params.page or 1
-  ppp  = posts-per-page
+  ppp  = site.config?posts-per-page or posts-per-page
   usr  = { name: name, site_id: site.id }
 
   if req.params.page
@@ -367,7 +367,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     * id:1 name:'PowerBulletin Minimal'
     * id:0 name:\None
   defaults =
-    posts-per-page: posts-per-page
+    posts-per-page: site.config?posts-per-page or posts-per-page
     meta-keywords:  "#{site.name}, PowerBulletin"
   fdoc.site.config = defaults <<< fdoc.site.config
   fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')
