@@ -152,6 +152,8 @@ site-by-domain = (domain, cb) ->
 
     # client will get subscribed to said query room
     socket.on \search, (searchopts) ->
+      delete searchopts.page # page is irrelevant to realtime
+
       if search-room
         socket.emit \debug, "leaving room: #{search-room}"
         socket.leave search-room
