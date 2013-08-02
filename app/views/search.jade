@@ -1,11 +1,11 @@
 include _post
 
 #breadcrumb.breadcrumb
-  em#hit_count
-    #{elres.total} hit#{elres.total == 1 ? '' : 's'}
-    #new_hits
+  #new_hits
 
 .search.resizable
+  em#hit_count
+    b #{elres.total} hit#{elres.total == 1 ? '' : 's'}
   if elres.hits.length
     each hit in elres.hits
       - hit._source.title = hit._source.thread_title

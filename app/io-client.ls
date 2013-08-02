@@ -65,13 +65,13 @@ socket.on \new-hit, (hit) ->
   window.new-hits ||= 0
   window.new-hits++
   # FIXME move to jade, even if only for consistency and ajax instead of reloading
+  suffix = if window.new-hits is 1 then '' else \s
   realtime-html = """
-  <div><a href="#" onclick="window.location.reload()">#{window.new-hits} new search result#{window.new-hits == 1 ? '' : 's'}!</a></div>
-  <strong>#{hit._source.title || hit._source.body}</strong>
+  <a href="#" onclick="window.location.reload()">#{window.new-hits} new result#suffix!
+  <br/><strong>#{hit._source.title || hit._source.body}</strong></a>
   """
-  $ \#new_hits
-    ..html realtime-html
-    ..slide-down 300ms
+  $ \#new_hits .html realtime-html
+  $ \#breadcrumb .slide-down 300ms
 
 socket.on \debug, (message, cb) ->
   console?log \debug, message
