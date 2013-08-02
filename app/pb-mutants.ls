@@ -310,11 +310,10 @@ export forum =
       set-inline-editor u.id
     next!
   on-unload:
-    (window, next-mutant, next) ->
-      try
-        window.$ \#left_container .resizable(\destroy)
-      catch
-        # do nothing
+    (win, next-mutant, next) ->
+      $ \body .off \click
+      try win.$ \#left_container .resizable(\destroy)
+      reset-paginator win unless next-mutant is \forum
       next!
 
 same-profile = (hints) ->
@@ -389,6 +388,7 @@ export profile =
     next!
   on-unload:
     (window, next-mutant, next) ->
+      reset-paginator window unless next-mutant is \forum
       next!
   on-initial:
     (window, next) ->
@@ -461,11 +461,15 @@ join-search = (sock) ->
   #console.log 'joining search notifier channel', window.searchopts
   sock.emit \search window.searchopts
 
-end-search = (w) ->
-  if w.component.paginator
+reset-paginator = (w) ->
+  # cleanup paginator on exit
+  if w.component?paginator
     w.component.paginator
       ..local \qty 0
       ..reload!
+
+end-search = (w) ->
+  reset-paginator w
   socket.emit \search-end
 
 mk-search-pnum-to-href = (searchopts) ->
