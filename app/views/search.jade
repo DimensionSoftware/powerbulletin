@@ -1,8 +1,8 @@
 include _post
 
-.breadcrumb
+#breadcrumb.breadcrumb
   em#hit_count
-    span #{elres.total} total hits
+    #{elres.total} hit#{elres.total == 1 ? '' : 's'}
     #new_hits
 
 .search.resizable

@@ -64,12 +64,14 @@ socket.on \post-create (post, cb) ->
 socket.on \new-hit, (hit) ->
   window.new-hits ||= 0
   window.new-hits++
+  # FIXME move to jade, even if only for consistency and ajax instead of reloading
   realtime-html = """
-  <div><a href="#" onclick="window.location.reload()">#{window.new-hits} new search results!</a></div>
-  last: <strong>#{hit._source.title || hit._source.body}</strong>
+  <div><a href="#" onclick="window.location.reload()">#{window.new-hits} new search result#{window.new-hits == 1 ? '' : 's'}!</a></div>
+  <strong>#{hit._source.title || hit._source.body}</strong>
   """
-  $('#new_hits').html realtime-html
-  #console.log \new-hit, hit
+  $ \#new_hits
+    ..html realtime-html
+    ..slide-down 300ms
 
 socket.on \debug, (message, cb) ->
   console?log \debug, message

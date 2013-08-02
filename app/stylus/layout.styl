@@ -355,7 +355,7 @@ body.paginator
   padding forum-header-height 0 0 0
   padding-top (header-height+(grid*2))
   z-index 5
-  #breadcrumb
+  .breadcrumb
     position fixed
     top -100px
     text-align center
@@ -364,7 +364,6 @@ body.paginator
     border-bottom-right-radius 3px
     padding (grid/2+2) (grid*2.5) 3px (grid*2.5)
     font-size .9em
-  .breadcrumb
     margin-bottom (grid/2)
     text-transform capitalize
     a, em, span
@@ -475,7 +474,7 @@ body.scrolled
       a.page.next::before
         bottom 10px
   .main-content
-    #breadcrumb
+    .breadcrumb
       top (header-scrolled-height+3)
       transition top .2s bounce
   footer
