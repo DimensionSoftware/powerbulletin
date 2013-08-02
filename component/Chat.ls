@@ -39,6 +39,8 @@ module.exports =
 
     on-attach: ~>
       @$.draggable {
+        snap: \footer
+        snap-mode: \outer
         cursor: \move
         start: (ev) ->
           $ ev.target .find(\.minimize).add-class \no-click } .css {left:50, bottom:335}
