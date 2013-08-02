@@ -67,8 +67,8 @@ parseopts = ({
     filters.push {
       range:
         _timestamp:
-          gte: stream.cutoff.get-time!
-          lt: stream.now.get-time!
+          gt: stream.cutoff.to-ISO-string!
+          lte: stream.now.to-ISO-string!
     }
 
   # cleanup so elastic doesn't freak if query / filter are empty
