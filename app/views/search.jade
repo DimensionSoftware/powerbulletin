@@ -6,6 +6,12 @@ include _post
 .search.resizable
   em#hit_count
     b #{elres.total} hit#{elres.total == 1 ? '' : 's'}
+
+  span#new_hit_count
+    | (
+    span.count 0
+    | new)
+
   if elres.hits.length
     each hit in elres.hits
       - hit._source.title = hit._source.thread_title

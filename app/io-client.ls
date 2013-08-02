@@ -74,6 +74,13 @@ socket.on \new-hit, (hit) ->
     <strong>#{hs.title || hs.body}</strong>
   </a>
   """
+
+  # fills in top of search page with new hits total
+  $nhc = $ \#new_hit_count
+  $nhc.find \.count .html window.new-hits
+  $nhc.show!effect(\highlight)
+
+  # fills in breadcrumb (selectors are poorly named ATM)
   $ \#new_hits .html realtime-html
   $ \#breadcrumb .slide-down 300ms
 
