@@ -504,6 +504,7 @@ export search =
         window.marshal \page @page
         window.marshal \pagesCount @pages-count
         window.marshal \searchopts @searchopts
+        window.marshal \newHits 0 # reset new-hit count
 
         # only render left side on first time to search
         # filters can be dom-touched, no need to re-insert innerhtml, as that is awkward
