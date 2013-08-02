@@ -18,6 +18,25 @@ module.exports =
     conversation: null
     template: templates.Chat
 
+    remember-chat: ->
+      chats = JSON.parse( $.cookie('chats') || '[]' )
+      id = @conversation?id
+      if chats.index-of(id) == -1 and id
+        chats.push id
+        $.cookie 'chats', JSON.stringify(chats)
+      else
+        console.warn chats.index-of(id), id
+
+    forget-chat: ->
+      chats = JSON.parse( $.cookie('chats') || '[]' )
+      id = @conversation?id
+      i = chats.index-of(id)
+      if i != -1 and id
+        chats.splice i, 1
+        $.cookie 'chats', JSON.stringify(chats)
+      else
+        console.warn chats.index-of(id), id
+
     on-attach: ~>
       @$.draggable {
         cursor: \move
@@ -134,6 +153,7 @@ Chat.start = ([me,...others]:users, messages=[]) ->
     c.prepend-message m
   c.$.find \textarea .focus!
   c.conversation = r
+  c.remember-chat!
   c
 
 Chat.stop = (key) ->
@@ -142,6 +162,7 @@ Chat.stop = (key) ->
   <~ c.$.fade-out @duration
   c.$.empty!remove!
   @reorganize!
+  c.forget-chat!
   delete @chats[key]
 
 Chat.reorganize = ->
@@ -151,6 +172,22 @@ Chat.reorganize = ->
   $cs.each (i,e) ->
     right = (n - i - 1) * (width + 8) + 8
     $(e).transition({ right }, @duration, @easing)
+
+Chat.remember = ->
+  ids = JSON.parse( $.cookie('chats') || '[]' )
+  for id in ids
+    console.log \chat-join-and-open, id
+    do ->
+      c <- $.get "/resources/conversations/#id"
+      console.log \c, c
+      if c
+        me-first = (a, b) ->
+          | a.name is window.user?name => -1
+          | otherwise                  =>  1
+        people = sort-with me-first, c.participants
+        Chat.start people, c.messages
+      else
+        console.warn \no-chat, id
 
 Chat.client-socket-init = (socket) ->
 
@@ -183,3 +220,4 @@ Chat.client-socket-init = (socket) ->
     else
       console.warn \chat-message, 'c not found', msg
 
+  Chat.remember!

@@ -817,8 +817,10 @@ CREATE FUNCTION procs.conversation_by_id(cid JSON) RETURNS JSON AS $$
   if not c
     return null
   else
-    c.messages = [] # TODO - fill out
-    c.participants = [] # TODO - fill out
+    messages-recent-by-cid = plv8.find_function \procs.messages_recent_by_cid
+    c.messages = messages-recent-by-cid cid, c.site_id
+    conversation-participants = plv8.find_function \procs.conversation_participants
+    c.participants = conversation-participants cid, c.site_id
   return c
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -836,6 +838,15 @@ CREATE FUNCTION procs.conversations_by_user(u JSON, page JSON) RETURNS JSON AS $
   conversations = plv8.execute sql, [u.id, u.site_id]
   # TODO order by date of last message in conversation instead of id
   return conversations
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.conversation_participants(cid JSON, site_id JSON) RETURNS JSON AS $$
+  sql = 'SELECT user_id as id FROM users_conversations where conversation_id = $1'
+  uids = plv8.execute sql, [cid]
+  plv8.elog WARNING, JSON.stringify(uids)
+  usr = plv8.find_function \procs.usr
+  users = [ usr({u.id, site_id}) for u in uids ]
+  return users
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.messages_by_cid(cid JSON, last JSON, lim JSON) RETURNS JSON AS $$
