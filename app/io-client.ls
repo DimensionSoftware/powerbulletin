@@ -61,14 +61,33 @@ socket.on \post-create (post, cb) ->
         else
           animate-in new-post)
 
+# same thing as jquery's $.param
+param = (obj) -> ["#{k}=#{v}" for k,v of obj].join('&')
+
 socket.on \new-hit, (hit) ->
   window.new-hits ||= 0
   window.new-hits++
   # FIXME move to jade, even if only for consistency and ajax instead of reloading
   suffix = if window.new-hits is 1 then '' else \s
+
+  streamopts = {} <<< window.searchopts
+  delete streamopts.page # cleanup page from href which will link to top of search results
+
+  # FIXME: using a mutant href won't reload in the case where you are already on page 1 :\
+  # I have this hack here but I don't love it lol...
+  # the reason this branch is necessary is because history.js ignores push-state events to urls matching window.location
+  anchor-start =
+    if window.searchopts.page is void or parse-int(window.searchopts.page) is 1
+      """<a href="#" onclick="window.location.reload()">"""
+    else
+      """<a href="/search?q=#{param(streamopts)}" class="mutant">"""
+
   realtime-html = """
-  <a href="#" onclick="window.location.reload()">#{window.new-hits} new result#suffix!
-  <br/><strong>#{hit._source.title || hit._source.body}</strong></a>
+  #{anchor-start}
+    #{window.new-hits} new result#suffix!
+    <br>
+    <strong>#{hit._source.title || hit._source.body}</strong>
+  </a>
   """
   $ \#new_hits .html realtime-html
   $ \#breadcrumb .slide-down 300ms

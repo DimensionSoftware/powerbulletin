@@ -66,7 +66,7 @@ parseopts = ({
   if stream
     filters.push {
       range:
-        created:
+        _timestamp:
           from: stream.cutoff.to-ISO-string!
           to: stream.now.to-ISO-string!
           include_upper: false
