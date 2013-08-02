@@ -92,6 +92,7 @@ $ \#query .focus!select!
 window.$ui = $ {}
 
 window.r-searchopts = $R.state window.searchopts
+window.r-socket = $R.state! # do this early
 
 do ->
   # keys that aren't allowed to trigger the search
@@ -288,7 +289,7 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
   t  =
     id     : $p.data \user-id
     name   : $p.data \user-name
-    profile: $p.find \img .attr \src
+    photo  : $p.find \img .attr \src
   Chat.start [f, t]
 )
 #}}}

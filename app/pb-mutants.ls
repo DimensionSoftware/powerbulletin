@@ -310,7 +310,7 @@ export forum =
       set-inline-editor u.id
     next!
   on-unload:
-    (window, next-mutant, next) ->
+    (win, next-mutant, next) ->
       $ \body .off \click
       # cleanup paginator on exit
       if win.component.paginator

@@ -1,11 +1,20 @@
+require! { ch: './client-helpers.ls' }
+
+<- ch.lazy-load-socketio
+
 window.socket = io.connect!
-window.r-socket = $R.state!
 
 # https://github.com/LearnBoost/socket.io/wiki/Exposed-events
 # socket.on \event-name, (message, cb) ->
 
 socket.on \connect, ->
-  r-socket socket # set reactive state
+  # XXX: set-timeout is a work around for the fact that we need to join the room once
+  # socket.io is available and we probably need to think about all the code we are loading
+  # into the website to do this the proper way
+  # SINCE socket.io ops in general are lower priority than loading the actual page, I think the work-around
+  # is SAFE for now and will work in most cases but it _really_ _really_ smells so we should
+  # find a better way to ensure socket.io dependent stuff always kicks off at the right time
+  set-timeout (-> window.r-socket socket), 50 # set reactive state
   #console.log \connected
 
 socket.on \disconnect, ->
@@ -56,7 +65,7 @@ socket.on \new-hit, (hit) ->
   window.new-hits ||= 0
   window.new-hits++
   realtime-html = """
-  <div>#{window.new-hits} new search results!</div>
+  <div><a href="#" onclick="window.location.reload()">#{window.new-hits} new search results!</a></div>
   last: <strong>#{hit._source.title || hit._source.body}</strong>
   """
   $('#new_hits').html realtime-html

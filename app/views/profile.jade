@@ -6,7 +6,7 @@
     form(action="/resources/users/#{profile.id}/avatar", enctype="multipart/form-data", method="post")
       .avatar
         if profile.photo
-          if profile.photo.match(/^http/)
+          if profile.photo.match(/^https?:/)
             img(src="#{profile.photo}")
           else
             img(src="#{cacheUrl}/#{profile.photo}")

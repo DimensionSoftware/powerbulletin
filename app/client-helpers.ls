@@ -158,6 +158,11 @@ export lazy-load-fancybox = (cb) ->
     "#cache-url/fancybox/jquery.fancybox.pack.js",
     "#cache-url/fancybox/jquery.fancybox.css",
     cb
+export lazy-load-socketio = (cb) ->
+  lazy-load (-> window.io),
+    "/socket.io/socket.io.js",
+    null,
+    cb
 #}}}
 
 export fancybox-params =
