@@ -42,7 +42,7 @@ init-ioc = (port) ->
 new-poller = (io, elc, poller) ->
   # randomize work interval so we make better use of event architecture
   # but only but a small amount
-  work-interval = 5000 + (Math.floor (Math.random! * 500)) # in ms
+  work-interval = 10000 + (Math.floor (Math.random! * 500)) # in ms
 
   now = new Date
   cutoff = new Date(now - work-interval)
