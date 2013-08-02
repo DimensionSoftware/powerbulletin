@@ -8,8 +8,6 @@ if typeof(post) !== 'undefined'
     if page == 1
       .post.head(id="post_#{post.id}", class=post.reason ? 'censored' : '', data-user-id=post.user_id, data-post-id=post.id)
         h3.title= post.title
-        .breadcrumb
-          mixin _breadcrumb(post)
         a.user.mutant(href="/user/#{post.user_name}")
           .profile.photo
             img(src="#{cacheUrl}/#{post.user_photo}")
