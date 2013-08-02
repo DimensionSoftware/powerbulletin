@@ -42,9 +42,11 @@ init-ioc = (port) ->
 new-poller = (io, elc, poller) ->
   # randomize work interval so we make better use of event architecture
   # but only but a small amount
-  work-interval = 10000 + (Math.floor (Math.random! * 500)) # in ms
+  work-interval = 3000 + (Math.floor (Math.random! * 500)) # in ms
 
-  now = new Date
+  # step into my time machine, darling, this will require duplicate detection on client...
+  now = new Date - 10000
+
   cutoff = new Date(now - work-interval)
   busy = false
 
