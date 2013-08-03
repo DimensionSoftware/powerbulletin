@@ -90,7 +90,7 @@ html.forum, html.profile, html.search
         .created
           opacity 1
           display inline
-  .left-content
+  #left_content
     transform translateX(0)
     opacity 1
     transition opacity .3s cubic-bezier(1,.01,.69,1)
@@ -99,6 +99,8 @@ html.forum, html.profile, html.search
       text-align center
     .photo, .username
       display none
+    .photo
+      margin 5px 11px 7px 0
     .create
       margin (grid/2) (grid*3.5) (grid/2) (grid*2)
       .button
@@ -674,7 +676,7 @@ html.forum
     cursor s-resize
     height 290px
     transition height .3s bounce
-    text-align left
+    text-align center
     h6
       display none
     .post-container
