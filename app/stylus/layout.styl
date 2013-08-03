@@ -108,6 +108,8 @@ header
         height 0
         opacity 0
         overflow hidden
+    #warning
+      bottom 8px
     .menu
       padding 0
       margin -3px auto 0 auto
@@ -400,7 +402,8 @@ footer
   position fixed
   right 0
   left 0
-  bottom -(footer-height)
+  // bottom -(footer-height)
+  bottom -(grid)
   height footer-height
   z-index 9
   width auto
@@ -519,7 +522,6 @@ body.scrolled
   footer
     opacity 1
     font-size .85em
-    bottom -(grid)
 //}}}
 //{{{ Collapsed left nav
 body.collapsed
