@@ -37,7 +37,9 @@ export ck-submit-form = (e) ->
   else
     submit-form ev, (data) -> # ...and sumbit!
       post-success ev, data
-      if $ \footer .has-class \expanded then toggle-post ev # close drawer
+      # close & cleanup drawer
+      $ \footer .remove-class \expanded
+      $ '#post_new .fadein' .remove!
 
 export submit-form = (ev, fn) ->
   $f = $ ev.target .closest(\form) # get event's form
@@ -90,16 +92,18 @@ export toggle-post = (ev) ->
     method: \post
   # setup form
   e = $ \footer
-  e.find 'form.post-new input[name="forum_id"]' .val window.active-forum-id
-  e.find 'form.post-new input[name="parent_id"]' .val window.active-thread-id
   if e.has-class \expanded # close drawer & cleanup
     e.remove-class \expanded
-    try CKEDITOR.instances.post_new.destroy true
+    #try CKEDITOR.instances.post_new.destroy true
+    $ '#post_new .fadein' .remove!
   else # bring out drawer & init+focus editor
     e.add-class \expanded
-    render \#post_new, data, ->
+    render \#post_new, data, -> # init form
       <- lazy-load-editor
-      CKEDITOR.replace ($ \#post_new .0), {startup-focus:true}
+      unless CKEDITOR.instances.post_new
+        CKEDITOR.replace ($ '#post_new textarea' .0)#, {startup-focus:true}
+      e.find 'form.post-new input[name="forum_id"]' .val window.active-forum-id
+      e.find 'form.post-new input[name="parent_id"]' .val window.active-thread-id
 export edit-post = (id, data={}) ->
   if id is true # render new
     scroll-to-top!

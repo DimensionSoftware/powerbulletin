@@ -292,7 +292,7 @@ html.forum, html.profile, html.search
         img
           max-width 100%
         .title
-          margin 0 0 6px -1px
+          margin 0 0 8px -1px
           font-size 1.5em
         .user
           font-weight bold
@@ -302,7 +302,6 @@ html.forum, html.profile, html.search
           margin (grid/2) 0 grid 0
           clear both
           font-size 1.05em
-          line-height 1.5
         .actions
           opacity 0
           clear both
@@ -675,11 +674,16 @@ html.forum
     cursor s-resize
     height 290px
     transition height .3s bounce
+    text-align left
+    h6
+      display none
     .post-container
       opacity 1
       transition opacity .3s ease-out .1s
   footer
     cursor n-resize
+    .title
+      width 60%
     .tooltip
       bottom auto
       top 15px
@@ -691,6 +695,8 @@ html.forum
       width 80%
       max-width 1100px
       margin-top 10px
+      .summary
+        display none
 
 #left_container
   height 100%
