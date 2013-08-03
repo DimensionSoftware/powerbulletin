@@ -845,7 +845,7 @@ CREATE FUNCTION procs.conversation_participants(cid JSON, site_id JSON) RETURNS 
   uids = plv8.execute sql, [cid]
   plv8.elog WARNING, JSON.stringify(uids)
   usr = plv8.find_function \procs.usr
-  users = [ usr({u.id, site_id}) for u in uids ]
+  users = [ usr({id: u.id, site_id}) for u in uids ]
   return users
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -874,7 +874,7 @@ CREATE FUNCTION procs.messages_recent_by_cid(cid JSON, site_id JSON) RETURNS JSO
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.map_users(site_id JSON, list JSON) RETURNS JSON AS $$
-  user-ids = Object.keys(list.map ((m, x) -> m[x.user_id] = 1; m), {})
+  user-ids = Object.keys(list.reduce ((m, x) -> m[x.user_id] = 1; m), {})
   usr = plv8.find_function \procs.usr
   users-by-id = { [u, usr({id: u, site_id})] for u in user-ids }
   return list.map (-> it.from = users-by-id[it.user_id]; it)

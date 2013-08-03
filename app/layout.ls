@@ -108,7 +108,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
 
     # capture error
     jqxhr.fail (xhr, status, error) ->
-      # TODO - show message somehow
+      show-tooltip $(\#warning), "Page Not Found", 8000ms
       History.back!
       window.spin false
 #}}}

@@ -70,6 +70,7 @@ module.exports =
         body           : @$.find('textarea').val!
 
     message-node: (m) ~>
+      console.warn \m, m
       $msg = @$.find('.container > .msg').clone!
       $msg.attr('data-message-id', m.id)
       if m.created_human
@@ -149,10 +150,13 @@ Chat.start = ([me,...others]:users, messages=[], x=null, y=null) ->
   if (x or y)
     set-timeout (->
       $div
+        .show(@duration, @easing)
         .css({ top: '', left: '' })
         .transition({ bottom: y, right: x })
-    ), 100ms
-  $ \#chat_drawer .after c.$.show(@duration, @easing)
+    ), 2000ms
+  else
+    c.$.show!
+  $ \#chat_drawer .after c.$
   r <- $.post '/resources/conversations', { site_id: window.site-id, users }
   console.log \r, r
   if r.messages.length > 0 and messages.length == 0
@@ -184,7 +188,7 @@ Chat.reorganize = ->
 Chat.remember = ->
   ids = JSON.parse( $.cookie('chats') || '[]' )
   x = 0 + 8
-  y = $(\footer).height! - 16
+  y = $(\footer).height! - 14
 
   for id in ids
     console.log \chat-join-and-open, id
