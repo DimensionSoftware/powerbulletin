@@ -216,7 +216,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     profile        : db.usr usr, _
     posts-by-user  : db.posts-by-user usr, page, ppp, _
     qty            : [\profile, (cb, a) ->
-      db.posts-count-by-user(a.profile, cb)
+      if not a.profile
+        cb 404
+      else
+        db.posts-count-by-user(a.profile, cb)
     ]
     pages-count    : db.posts-by-user-pages-count usr, ppp, _
 
@@ -225,7 +228,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     delete-unnecessary-surf-data res
 
   err, fdoc <- async.auto tasks
-  if err then return next err
   unless fdoc.profile then return next 404 # guard
   fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
   fdoc.page  = parse-int page
