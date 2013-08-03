@@ -70,7 +70,6 @@ module.exports =
         body           : @$.find('textarea').val!
 
     message-node: (m) ~>
-      console.warn \m, m
       $msg = @$.find('.container > .msg').clone!
       $msg.attr('data-message-id', m.id)
       if m.created_human
@@ -140,12 +139,19 @@ module.exports =
       Chat.stop(@key!)
       err, r <~ socket.emit \chat-leave, @conversation
 
-Chat.start = ([me,...others]:users, messages=[]) ->
+Chat.start = ([me,...others]:users, messages=[], x=null, y=null) ->
   # TODO setup profile here
   key = map (.name), users |> join '/'
   if c = @chats[key]
     return c
-  c = @chats[key] = new Chat locals: { me, others }, $('<div/>').hide!
+  $div = $('<div/>').hide!
+  c = @chats[key] = new Chat locals: { me, others }, $div
+  if (x or y)
+    set-timeout (->
+      $div
+        .css({ top: '', left: '' })
+        .transition({ bottom: y, right: x })
+    ), 100ms
   $ \#chat_drawer .after c.$.show(@duration, @easing)
   r <- $.post '/resources/conversations', { site_id: window.site-id, users }
   console.log \r, r
@@ -177,6 +183,9 @@ Chat.reorganize = ->
 
 Chat.remember = ->
   ids = JSON.parse( $.cookie('chats') || '[]' )
+  x = 0 + 8
+  y = $(\footer).height! - 16
+
   for id in ids
     console.log \chat-join-and-open, id
     do ->
@@ -187,7 +196,9 @@ Chat.remember = ->
           | a.name is window.user?name => -1
           | otherwise                  =>  1
         people = sort-with me-first, c.participants
-        Chat.start people, c.messages
+        console.log \x-y, x, y
+        chat = Chat.start people, c.messages, x, y
+        x := x + 220 + 8
       else
         console.warn \no-chat, id
 
