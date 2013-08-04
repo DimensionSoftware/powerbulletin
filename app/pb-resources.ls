@@ -234,7 +234,6 @@ ban-all-domains = (site-id) ->
       next 404
 @conversations =
   create: (req, res, next) ->
-    console.warn \body, req.body
     site-id = req.body?site_id
     users   = req.body?users
     if not site-id or not users

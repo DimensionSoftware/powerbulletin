@@ -263,6 +263,7 @@ export forum =
       # editing handler
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
+      $ \body .on \click, toggle-post # expand & minimize drawer, re-init'ing sceditor for focus
 
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
@@ -273,8 +274,7 @@ export forum =
 
       # bring down first reply
       if user
-        $ \.onclick-append-reply-ui:first .click!
-        set-timeout (-> $ \textarea .focus!), 100ms
+        set-timeout (-> $ \.onclick-append-reply-ui:first .click!), 300ms
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
@@ -311,16 +311,9 @@ export forum =
     next!
   on-unload:
     (win, next-mutant, next) ->
-      # cleanup paginator on exit
-      if win.component.paginator
-        win.component.paginator
-          ..local \qty 0
-          ..reload!
-
-      try
-        win.$ \#left_container .resizable(\destroy)
-      catch
-        # do nothing
+      $ \body .off \click
+      try win.$ \#left_container .resizable(\destroy)
+      reset-paginator win unless next-mutant is \forum
       next!
 
 same-profile = (hints) ->
@@ -395,6 +388,7 @@ export profile =
     next!
   on-unload:
     (window, next-mutant, next) ->
+      reset-paginator window unless next-mutant is \forum
       next!
   on-initial:
     (window, next) ->
@@ -467,11 +461,15 @@ join-search = (sock) ->
   #console.log 'joining search notifier channel', window.searchopts
   sock.emit \search window.searchopts
 
-end-search = (w) ->
-  if w.component.paginator
+reset-paginator = (w) ->
+  # cleanup paginator on exit
+  if w.component?paginator
     w.component.paginator
       ..local \qty 0
       ..reload!
+
+end-search = (w) ->
+  reset-paginator w
   socket.emit \search-end
 
 mk-search-pnum-to-href = (searchopts) ->

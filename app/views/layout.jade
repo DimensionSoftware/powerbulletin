@@ -49,6 +49,7 @@ html
         .search
           input#query.query(type='text', placeholder='Search', autocomplete='off')
           .onclick-close.toggler(title='Close!') x
+        #warning.tooltip
         .menu-container
           menu#menu.menu
             each f,i in menu
@@ -108,12 +109,22 @@ html
     if cvars.env != 'production'
       #mocha
 
-    footer
+    footer.onclick-footer-toggle
+      .post-reply.onclick-footer-toggle
       .onclick-scroll-top Top
       #pb_paginator
-      h6
+      h6.onclick-footer-toggle
         small &copy; #{siteName} &nbsp;
         b= new Date().getFullYear()
+      .post-container
+        form.post.post-new(action='/resources/posts', method='post')
+          //-input.title(name='title', type='text', placeholder='Title')
+          //-textarea#post_new.body
+          #post_new
+          .tooltip
+          //-input(type='hidden', name='forum_id')
+          //-input(type='hidden', name='csrf')
+
     #chat_drawer
 
     //- css not required for initial page render -- performance mod.

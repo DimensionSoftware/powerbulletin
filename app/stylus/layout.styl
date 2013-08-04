@@ -37,6 +37,7 @@ body.scrolled .nicescroll-rails
   position fixed!important
   cursor s-resize!important
   top 190px!important
+  z-index 8!important
 
 .close, .onclick-close
   opacity 0
@@ -73,7 +74,7 @@ header
   position fixed
   height header-height
   top 0
-  z-index 9
+  z-index 10
   .container
     width 800px
     margin 0 auto
@@ -107,6 +108,8 @@ header
         height 0
         opacity 0
         overflow hidden
+    #warning
+      bottom 8px
     .menu
       padding 0
       margin -3px auto 0 auto
@@ -376,20 +379,58 @@ body.paginator
     clear both
 //}}}
 //{{{ Footer
+footer.expanded
+  .post-reply::after
+    content 'Close'
+  .post-reply:hover::before
+    border 4px solid transparent
+    border-top 8px solid #aaa
+    top 8px
+    left 38px
+  .post-reply::before
+    border 4px solid transparent
+    border-top 6px solid #ccc
+    top 9px
+    left 38px
 footer.active
   opacity 1
   bottom -(grid * 1.4)
   font-size .75em
-  transition all 1s ease-out
 footer
   text-align center
   position fixed
   right 0
   left 0
-  bottom -(footer-height)
+  // bottom -(footer-height)
+  bottom -(grid)
   height footer-height
   z-index 9
   width auto
+  .post-reply::after
+    position absolute
+    content 'Reply'
+    left 0
+    top 0
+  .post-reply
+    display none
+    cursor pointer
+    position absolute
+    padding-right 20px
+    left 12px
+  .post-reply:hover
+    color #222
+  .post-reply:hover::before
+    border-left 8px solid #aaa
+    left 40px
+    transition all .1s ease-out
+  .post-reply::before
+    position absolute
+    content ''
+    border 4px solid transparent
+    border-left 6px solid #ccc
+    top 8px
+    left 38px
+    transition all .2s ease-out
   .onclick-scroll-top:hover
     color #222
   .onclick-scroll-top:hover::before
@@ -480,7 +521,6 @@ body.scrolled
   footer
     opacity 1
     font-size .85em
-    bottom -(grid)
 //}}}
 //{{{ Collapsed left nav
 body.collapsed

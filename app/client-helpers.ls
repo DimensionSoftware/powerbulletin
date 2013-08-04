@@ -37,11 +37,15 @@ export ck-submit-form = (e) ->
   else
     submit-form ev, (data) -> # ...and sumbit!
       post-success ev, data
+      # close & cleanup drawer
+      $ \footer .remove-class \expanded
+      $ '#post_new .fadein' .remove!
 
 export submit-form = (ev, fn) ->
   $f = $ ev.target .closest(\form) # get event's form
+  console.log $f
   $s = $ $f.find('[type=submit]:first')
-  $s.attr \disabled \disabled
+  if $s then $s.attr \disabled \disabled
 
   # is body in ckeditor?
   body = $f.find \textarea.body
@@ -75,14 +79,32 @@ export set-inline-editor = (user-id) ->
   try CKEDITOR.inline-all!
 
 # handle in-line editing
+focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 10ms
+render = (sel, locals, cb=(->)) ~>
+  $e = $ sel
+  render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
+    cb!
+    focus $e
+export toggle-post = (ev) ->
+  unless $ ev.target .has-class \onclick-footer-toggle then return # guard
+  data =
+    action: \/resources/posts
+    method: \post
+  # setup form
+  e = $ \footer
+  if e.has-class \expanded # close drawer & cleanup
+    e.remove-class \expanded
+    #try CKEDITOR.instances.post_new.destroy true
+    $ '#post_new .fadein' .remove!
+  else # bring out drawer & init+focus editor
+    e.add-class \expanded
+    render \#post_new, data, -> # init form
+      <- lazy-load-editor
+      unless CKEDITOR.instances.post_new
+        CKEDITOR.replace ($ '#post_new textarea' .0)#, {startup-focus:true}
+      e.find 'form.post-new input[name="forum_id"]' .val window.active-forum-id
+      e.find 'form.post-new input[name="parent_id"]' .val window.active-thread-id
 export edit-post = (id, data={}) ->
-  focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 100ms
-  render = (sel, locals, cb=(->)) ~>
-    $e = $ sel
-    @render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
-      cb!
-      focus $e
-
   if id is true # render new
     scroll-to-top!
     data.action = \/resources/posts

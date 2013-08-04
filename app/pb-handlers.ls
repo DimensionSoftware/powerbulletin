@@ -22,7 +22,7 @@ global <<< require \./client-helpers
 
 {is-editing, is-admin, is-auth} = require \./path-regexps
 
-posts-per-page = 30
+const posts-per-page = 30
 
 @hello = (req, res, next) ->
   console.log req.headers
@@ -199,7 +199,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   site = res.vars.site
   name = req.params.name
   page = req.params.page or 1
-  ppp  = posts-per-page
+  ppp  = site.config?posts-per-page or posts-per-page
   usr  = { name: name, site_id: site.id }
 
   if req.params.page
@@ -216,7 +216,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     profile        : db.usr usr, _
     posts-by-user  : db.posts-by-user usr, page, ppp, _
     qty            : [\profile, (cb, a) ->
-      db.posts-count-by-user(a.profile, cb)
+      if not a.profile
+        cb 404
+      else
+        db.posts-count-by-user(a.profile, cb)
     ]
     pages-count    : db.posts-by-user-pages-count usr, ppp, _
 
@@ -225,7 +228,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     delete-unnecessary-surf-data res
 
   err, fdoc <- async.auto tasks
-  if err then return next err
   unless fdoc.profile then return next 404 # guard
   fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
   fdoc.page  = parse-int page
@@ -367,7 +369,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     * id:1 name:'PowerBulletin Minimal'
     * id:0 name:\None
   defaults =
-    posts-per-page: posts-per-page
+    posts-per-page: site.config?posts-per-page or posts-per-page
     meta-keywords:  "#{site.name}, PowerBulletin"
   fdoc.site.config = defaults <<< fdoc.site.config
   fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')

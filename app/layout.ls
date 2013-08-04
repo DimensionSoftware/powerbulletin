@@ -83,7 +83,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
       surf-params._surf-tasks = rc.keep.sort!map( (-> tasks.cc it) ).join ','
 
     req-id = ++last-req-id
-    $.get url, surf-params, (r) ->
+    jqxhr = $.get url, surf-params, (r) ->
       return if not r.mutant
       $d.attr \title, r.locals.title if r.locals?title # set title
       on-unload = mutants[window.mutator].on-unload or (w, next-mutant, cb) -> cb null
@@ -105,6 +105,12 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
             spin false
         #else
         #  console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
+
+    # capture error
+    jqxhr.fail (xhr, status, error) ->
+      show-tooltip $(\#warning), "Page Not Found", 8000ms
+      History.back!
+      window.spin false
 #}}}
 #{{{ Personalizing behaviors
 window.onload-personalize = ->
