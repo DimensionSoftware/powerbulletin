@@ -224,7 +224,9 @@ export switch-and-focus = (remove, add, focus-on) ->
     set-timeout (-> $ focus-on .focus!), 250ms), 50ms
 
 export set-online-user = (id) ->
-  $ "[data-user-id=#{id}] .profile.photo" .add-class \online
+  $ "[data-user-id=#{id}] .profile.photo"
+    ..add-class \online
+    ..attr \title, \Online!
 
 export set-profile = (src) ->
   $ \.photo

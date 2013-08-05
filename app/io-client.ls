@@ -64,21 +64,22 @@ socket.on \post-create (post, cb) ->
 socket.on \new-hit, (hit) ->
   hs = hit._source
   window.new-hits++
+
   # FIXME move to jade, even if only for consistency and ajax instead of reloading
   suffix = if window.new-hits is 1 then '' else \s
-
   realtime-html = """
   <a href="#{hs.uri}" class="mutant">
-    #{window.new-hits} new result#suffix!
-    <br>
-    <strong>#{hs.title || hs.body}</strong>
+    #{window.new-hits} new result#suffix &nbsp; &nbsp;
+    <small> Latest: 
+      <strong>#{hs.title || hs.body}</strong>
+    </small>
   </a>
   """
 
   # fills in top of search page with new hits total
-  $nhc = $ \#new_hit_count
-  $nhc.find \.count .html window.new-hits
-  $nhc.show!effect(\highlight)
+  $ \#new_hit_count
+    ..find \.count .html window.new-hits
+    ..show!effect \highlight
 
   # fills in breadcrumb (selectors are poorly named ATM)
   $ \#new_hits .html realtime-html

@@ -3,14 +3,14 @@ include _post
 #breadcrumb.breadcrumb
   #new_hits
 
+suffix = elres.total == 1 ? '' : 's'
 .search.resizable
   em#hit_count
-    b #{elres.total} hit#{elres.total == 1 ? '' : 's'}
-
+    b #{elres.total} hit#{suffix}
   span#new_hit_count
-    | (
-    span.count 0
-    | new)
+    p - 
+      span.count 0 
+      | new!
 
   if elres.hits.length
     each hit in elres.hits
