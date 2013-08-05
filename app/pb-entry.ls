@@ -67,7 +67,8 @@ append-reply-ui = (ev) ->
       forum_id:   $p.data(\forum-id) or window.active-forum-id
       parent_id:  $p.data \post-id
       is_comment: true), ->
-        if ev.original-event then $p.find('textarea[name="body"]').focus! # user clicked
+        #if ev.original-event then $p.find('textarea[name="body"]').focus! # user clicked
+        $p.find('textarea[name="body"]').focus!
   else
     $p.find('.reply .cancel').click!
 
@@ -91,6 +92,7 @@ $ \#query .focus!select!
 window.$ui = $ {}
 
 window.r-searchopts = $R.state window.searchopts
+window.r-socket = $R.state! # do this early
 
 do ->
   # keys that aren't allowed to trigger the search
@@ -287,7 +289,7 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
   t  =
     id     : $p.data \user-id
     name   : $p.data \user-name
-    profile: $p.find \img .attr \src
+    photo  : $p.find \img .attr \src
   Chat.start [f, t]
 )
 #}}}

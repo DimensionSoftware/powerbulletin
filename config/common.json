@@ -2,5 +2,5 @@
 , "maxmind": "GeoIPCity.dat"
 , "port": "3000"
 , "tmp": "/tmp"
-, "tStep": 25
+, "tStep": 100
 }

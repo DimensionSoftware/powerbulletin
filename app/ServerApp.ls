@@ -76,6 +76,7 @@ module.exports =
         timestamp = new Date
         console.warn 'timestamp', timestamp
         console.warn err.message
+        console.warn err.stack
         console.warn 'uncaught exception in worker, shutting down'
         graceful-shutdown!
 

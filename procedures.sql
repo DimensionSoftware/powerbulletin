@@ -760,7 +760,8 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- #''' getting around quoting bug
 
 -- this should actually find-or-create a conversation by the set of users given
-CREATE FUNCTION procs.conversation_find_or_create(users JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.conversation_find_or_create(site_id JSON, users JSON) RETURNS JSON AS $$
+  plv8.elog WARNING, JSON.stringify(users)
   find-or-create = plv8.find_function \procs.find_or_create
   find-sql = '''
   SELECT c.*
@@ -769,11 +770,12 @@ CREATE FUNCTION procs.conversation_find_or_create(users JSON) RETURNS JSON AS $$
   LEFT JOIN users_conversations uc1 on uc1.conversation_id = c.id
   WHERE uc0.user_id = $1
   AND   uc1.user_id = $2
+  AND   c.site_id = $3
   '''
-  find-params = ins-params = [ users.0?id, users.1?id ]
+  find-params = ins-params = [ users.0?id, users.1?id, site_id ]
   ins-sql = '''
   WITH c AS (
-      INSERT INTO conversations DEFAULT VALUES RETURNING *
+      INSERT INTO conversations (site_id) VALUES ($3) RETURNING *
     ), i AS (
       INSERT INTO users_conversations (user_id, conversation_id) SELECT $1, id FROM c
     )
@@ -782,10 +784,13 @@ CREATE FUNCTION procs.conversation_find_or_create(users JSON) RETURNS JSON AS $$
   c = find-or-create find-sql, find-params, ins-sql, ins-params
   if not c
     return null
+  plv8.elog WARNING,"c #{JSON.stringify(c)}"
 
-  c.participants   = users
-  # TODO resolve users for avatar
-  c.messages       = []
+  usr                    = plv8.find_function \procs.usr
+  messages-recent-by-cid = plv8.find_function \procs.messages_recent_by_cid
+
+  c.participants   = [ usr({ name: u.name, site_id: site_id }) for u in users ]
+  c.messages       = messages-recent-by-cid c.id, site_id
   return c
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -813,8 +818,10 @@ CREATE FUNCTION procs.conversation_by_id(cid JSON) RETURNS JSON AS $$
   if not c
     return null
   else
-    c.messages = [] # TODO - fill out
-    c.participants = [] # TODO - fill out
+    messages-recent-by-cid = plv8.find_function \procs.messages_recent_by_cid
+    c.messages = messages-recent-by-cid cid, c.site_id
+    conversation-participants = plv8.find_function \procs.conversation_participants
+    c.participants = conversation-participants cid, c.site_id
   return c
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -826,11 +833,21 @@ CREATE FUNCTION procs.conversations_by_user(u JSON, page JSON) RETURNS JSON AS $
   LEFT JOIN users_conversations uc ON uc.conversation_id = c.id
   LEFT JOIN users u ON u.id = uc.user_id
   WHERE u.id = $1
+  AND conversations.site_id = $2
   ORDER BY id DESC
   '''
-  conversations = plv8.execute sql, [u.id]
+  conversations = plv8.execute sql, [u.id, u.site_id]
   # TODO order by date of last message in conversation instead of id
   return conversations
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.conversation_participants(cid JSON, site_id JSON) RETURNS JSON AS $$
+  sql = 'SELECT user_id as id FROM users_conversations where conversation_id = $1'
+  uids = plv8.execute sql, [cid]
+  plv8.elog WARNING, JSON.stringify(uids)
+  usr = plv8.find_function \procs.usr
+  users = [ usr({id: u.id, site_id}) for u in uids ]
+  return users
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.messages_by_cid(cid JSON, last JSON, lim JSON) RETURNS JSON AS $$
@@ -843,6 +860,25 @@ CREATE FUNCTION procs.messages_by_cid(cid JSON, last JSON, lim JSON) RETURNS JSO
   params = [cid, last, lim]
   messages = plv8.execute sql, params
   return messages
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.messages_recent_by_cid(cid JSON, site_id JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT * FROM messages WHERE conversation_id = $1 AND id <= (SELECT MAX(id) FROM messages)
+  ORDER BY id DESC
+  LIMIT 10
+  '''
+  params = [cid]
+  messages = plv8.execute sql, params
+  map-users = plv8.find_function \procs.map_users
+  return map-users(site_id, messages)
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.map_users(site_id JSON, list JSON) RETURNS JSON AS $$
+  user-ids = Object.keys(list.reduce ((m, x) -> m[x.user_id] = 1; m), {})
+  usr = plv8.find_function \procs.usr
+  users-by-id = { [u, usr({id: u, site_id})] for u in user-ids }
+  return list.map (-> it.from = users-by-id[it.user_id]; it)
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 
