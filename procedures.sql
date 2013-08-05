@@ -34,7 +34,7 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
   sql = """
   SELECT
     p.*,
-    #{u.user-fields \p.user_id},
+    #{u.user-fields \p.user_id, usr.site_id},
     m.reason,
     (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count
   FROM posts p
