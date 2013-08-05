@@ -463,6 +463,7 @@ join-search = (sock) ->
 
 reset-paginator = (w) ->
   # cleanup paginator on exit
+  $ \#pb_paginator .hide!
   if w.component?paginator
     w.component.paginator
       ..local \qty 0
