@@ -14,13 +14,13 @@ CREATE FUNCTION procs.owns_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
   return plv8.execute('SELECT id FROM posts WHERE id=$1 AND user_id=$2', [post_id, user_id])
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION procs.post(id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.post(site_id JSON, id JSON) RETURNS JSON AS $$
   require! u
   return {} unless id # guard
   sql = """
   SELECT
     p.*,
-    #{u.user-fields \p.user_id},
+    #{u.user-fields \p.user_id, site_id},
   (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count,
   ARRAY(SELECT tags.name FROM tags JOIN tags_posts ON tags.id = tags_posts.tag_id WHERE tags_posts.post_id = p.id) AS tags
   FROM posts p

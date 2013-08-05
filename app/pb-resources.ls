@@ -150,6 +150,7 @@ ban-all-domains = (site-id) ->
     res.render \post-new
   create  : (req, res, next) ->
     return next 404 unless req.user
+    site = res.vars.site
     db = pg.procs
     post          = req.body
     post.user_id  = req.user.id
@@ -166,20 +167,21 @@ ban-all-domains = (site-id) ->
       c.invalidate-post post.id, req.user.name # blow cache!
 
     unless post.parent_id
-      err, new-post <- db.post post.id
+      err, new-post <- db.post site.id, post.id
       if err then return next err
       announce.emit \thread-create new-post
     else
-      err, new-post <- db.post post.id
+      err, new-post <- db.post site.id, post.id
       if err then return next err
       new-post.posts = []
       announce.emit \post-create new-post
 
     res.json ap-res
   show    : (req, res, next) ->
+    site = res.vars.site
     db = pg.procs
     if post-id = parse-int(req.params.post)
-      err, post <- db.post post-id
+      err, post <- db.post site.id, post-id
       if err then return next err
       res.json post
     else
