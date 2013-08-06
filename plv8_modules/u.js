@@ -45,7 +45,7 @@
       : "SELECT a.name FROM aliases a WHERE a.user_id=" + uField + " LIMIT 1";
     return "(" + aliasSql + ") AS user_name,\n(SELECT u.photo FROM users u WHERE u.id=" + uField + ") AS user_photo";
   };
-  topForums = function(limit, fields){
+  topForums = function(siteId, limit, fields){
     var sql;
     fields == null && (fields = '*');
     sql = "SELECT " + fields + " FROM forums\nWHERE parent_id IS NULL AND site_id=$1\nORDER BY created DESC, id ASC\nLIMIT $2";
