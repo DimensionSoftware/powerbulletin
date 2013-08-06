@@ -601,6 +601,8 @@ export search =
       next!
   on-load:
     (w, next) ->
+      window.$new-hits = w.$('<div/>')  # reset new-hit div
+
       align-breadcrumb!
       pager-init w
       next!
