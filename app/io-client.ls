@@ -21,11 +21,11 @@ socket.on \disconnect, ->
   #console.log \disconnected
 
 socket.on \enter-site, (message, cb) ->
-  console.warn \enter-site, message
+  #console.warn \enter-site, message
   set-online-user message?id
 
 socket.on \leave-site, (message, cb) ->
-  console.warn \leave-site, message
+  #console.warn \leave-site, message
   $ "[data-user-id=#{message.id}] .profile.photo" .remove-class \online
 
 socket.on \thread-impression (thread, cb) ->
@@ -62,14 +62,28 @@ socket.on \post-create (post, cb) ->
           animate-in new-post)
 
 socket.on \new-hit, (hit) ->
-  window.new-hits ||= 0
+  hs = hit._source
   window.new-hits++
+
+  # FIXME move to jade, even if only for consistency and ajax instead of reloading
+  suffix = if window.new-hits is 1 then '' else \s
   realtime-html = """
-  <div><a href="#" onclick="window.location.reload()">#{window.new-hits} new search results!</a></div>
-  last: <strong>#{hit._source.title || hit._source.body}</strong>
+  <a href="#{hs.uri}" class="mutant">
+    #{window.new-hits} new result#suffix &nbsp; &nbsp;
+    <small> Latest: 
+      <strong>#{hs.title || hs.body}</strong>
+    </small>
+  </a>
   """
-  $('#new_hits').html realtime-html
-  #console.log \new-hit, hit
+
+  # fills in top of search page with new hits total
+  $ \#new_hit_count
+    ..find \.count .html window.new-hits
+    ..show!effect \highlight
+
+  # fills in breadcrumb (selectors are poorly named ATM)
+  $ \#new_hits .html realtime-html
+  $ \#breadcrumb .slide-down 300ms
 
 socket.on \debug, (message, cb) ->
   console?log \debug, message

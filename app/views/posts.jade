@@ -4,14 +4,11 @@ include _breadcrumb
 
 //- posts tree
 if typeof(post) !== 'undefined'
-  - if (!post.user_name)  post.user_name  = 'Transient'
-  - if (!post.user_photo) post.user_photo = cacheUrl + 'images/transient.png'
+  - if (!post.user_photo) post.user_photo = cacheUrl + 'images/profile.jpg'
   .forum.resizable
     if page == 1
       .post.head(id="post_#{post.id}", class=post.reason ? 'censored' : '', data-user-id=post.user_id, data-post-id=post.id)
         h3.title= post.title
-        .breadcrumb
-          mixin _breadcrumb(post)
         a.user.mutant(href="/user/#{post.user_name}")
           .profile.photo
             img(src="#{cacheUrl}/#{post.user_photo}")
@@ -21,7 +18,11 @@ if typeof(post) !== 'undefined'
         if post.html
           .body!= post.html
         .reply
-        mixin _post-actions(post)
+        .actions
+          a.stylish.onclick-footer-toggle Reply
+          a.stylish.edit.mutant.no-surf(data-edit=post.id, href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
+          a.stylish.permalink.mutant(href=post.uri) Permalink
+          a.stylish.censor.onclick-censor-post Censor
     .children
       if post.posts.length
         div(data-page=page)

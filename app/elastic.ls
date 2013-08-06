@@ -37,5 +37,11 @@ export configure = (cb = (->)) ->
   #      forum_title:
   #        type: \string
   #        index: \not_analyzed
+  mappings =
+    _default_:
+      _timestamp: {+enabled, +store}
 
-  superagent.post('http://127.0.0.1:9200/pb').send({settings}).end(cb)
+  err <- superagent.post('http://127.0.0.1:9200/pb').send({settings, mappings}).end(_)
+  if err then return cb err
+
+  cb!

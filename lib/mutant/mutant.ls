@@ -87,7 +87,7 @@ else
             dur = end - beg
             if true#dur > 16ms
               info = "request-animation-frame took #{dur}ms in mutant static draw phase"
-              console.error info
+              console.warn info
   else
     draw = raw-draw
 

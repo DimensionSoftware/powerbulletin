@@ -72,7 +72,7 @@ process-cached-data = {}
 
 @hash-tags-replace = (body, fn) ->
   unless body?length then return '' # guard
-  body.replace /#\w+/g, fn
+  body?replace /#\w+/g, fn
 
 # find all @attags in a string
 @at-tags = (body) ->

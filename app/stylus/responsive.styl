@@ -2,7 +2,7 @@
 // RESPONSIVEness
 @media screen and (min-width: 1500px)
   .main-content
-    .forum
+    .forum, .search
       margin 0 80px
 @media screen and (max-width: 800px)
   .logo
@@ -11,7 +11,7 @@
   body.collapsed
     grid(100%,475px)
     .main-content
-      .forum
+      .forum, .search
         padding-left (grid*4)!important
   body
     grid(100%,475px)
@@ -27,7 +27,7 @@
     .main-content
       margin-left 0!important
       padding 25px 15px!important
-      .forum
+      .forum, .search
         margin-bottom grid!important
   body.scrolled
     .main-content

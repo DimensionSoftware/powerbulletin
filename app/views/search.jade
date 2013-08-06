@@ -1,11 +1,16 @@
 include _post
 
-.search.resizable
+#breadcrumb.breadcrumb
   #new_hits
 
-  div
-    if elres.total
-      em#hit_count #{elres.total} total hits
+suffix = elres.total == 1 ? '' : 's'
+.search.resizable
+  em#hit_count
+    b #{elres.total} hit#{suffix}
+  span#new_hit_count
+    p - 
+      span.count 0 
+      | new!
 
   if elres.hits.length
     each hit in elres.hits

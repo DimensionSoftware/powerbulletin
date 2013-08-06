@@ -70,6 +70,7 @@ module.exports =
         @state.pages = @@$R(calc-pages).bind-to ...bindings
     template: templates.Paginator
     on-attach: ->
+      @$.show!
       # attach optional click handlers
       if @on-page
         c = @

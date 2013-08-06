@@ -1,10 +1,8 @@
 mixin _post-profile(p)
-  - if (!p.user_name)  p.user_name  = 'Transient'
-  - if (!p.user_photo) p.user_photo = cacheUrl + 'images/transient.png'
+  - if (!p.user_photo) p.user_photo = cacheUrl + 'images/profile.jpg'
   a.user.mutant(href="/user/#{p.user_name}")
     .profile.photo
       if p.user_photo && p.user_photo.match(/^http/)
         img(title=p.user_name, src="#{p.user_photo}")
       else
         img(src="#{cacheUrl}/#{p.user_photo}")
-    span.username= p.user_name

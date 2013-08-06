@@ -42,7 +42,6 @@ CREATE TABLE sites (
   name    VARCHAR(256) NOT NULL,
   config  JSON NOT NULL DEFAULT '{}',
   user_id BIGINT references users(id),
-  transient_owner TEXT,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
   PRIMARY KEY (id)
