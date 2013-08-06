@@ -263,7 +263,7 @@ export forum =
       # editing handler
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
-      $ \body .on \click, toggle-post # expand & minimize drawer, re-init'ing sceditor for focus
+      $ \body .on \click, toggle-post # expand & minimize drawer
 
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
