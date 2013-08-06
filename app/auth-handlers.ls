@@ -43,7 +43,7 @@ announce = sioa.create-client!
   console.warn \authenticate-login-token, [err, r]
   if err then return next err
   if r
-    req.session?passport?user = "permanent:#{r.name}:#{site.id}"
+    req.session?passport?user = "#{r.name}:#{site.id}"
     res.json success: true
   else
     res.json success: false
@@ -89,32 +89,12 @@ announce = sioa.create-client!
         # default error situation
         return next err
 
-    done = (was-transient) ->
+    done = ->
       auth.send-registration-email u, site, (err, r) ->
         console.warn 'registration email', err, r
-      res.json success:true, errors:[], user-linked-need-reload: was-transient
+      res.json success:true, errors:[]
 
-    # TODO 
-    # - if transient_owner of this site, associate site with this user
-    # - delete transient_owner cookie
-    if tid = req.cookies.transient_owner
-      (err, authorized) <~ db.authorize-transient tid, site.id
-      if err then next err
-
-
-      if authorized
-        console.warn \authorized-u, u
-        # ex-transient user should own site
-        err <~ db.sites.update criteria: { id: site.id }, data: { user_id: u.id, transient_owner: null }
-        if err then next err
-        # ex-transient user should have super admin privileges
-        err <~ db.aliases.update criteria: { user_id: u.id, site_id: site.id }, data: { rights: JSON.stringify(super:1) }
-        if err then next err
-        done true
-      else
-        done!
-    else
-      done!
+    done!
 
 do-verify = (req, res, next) ~>
   v    = req.param \v
@@ -122,7 +102,7 @@ do-verify = (req, res, next) ~>
   err, r <- db.verify-user site.id, v
   if err then return next err
   if r
-    req.session?passport?user = "permanent:#{r.name}:#{site.id}" # XXX
+    req.session?passport?user = "#{r.name}:#{site.id}" # XXX
     res.redirect if res.vars.is-invite then \/#choose else \/#validate
   else
     res.redirect \/#invalid
@@ -309,7 +289,7 @@ auth-finisher = (req, res, next) ->
 
 @logout = (req, res, next) ->
   if req.user # guard
-    unless req.user.transient then req.logout!
+    req.logout!
     redirect-url = req.param(\redirect-url) or req.header(\Referer) or '/'
     res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '').replace(is-auth, '')
   else

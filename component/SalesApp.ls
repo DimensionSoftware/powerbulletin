@@ -6,8 +6,21 @@ require! \./Sales.ls
 module.exports =
   class SalesApp extends Component
     template: templates.SalesApp
+
     init: ->
       @children =
         sales: new Sales {} \.SalesApp-content @
+
     on-attach: ->
       @@$ \.Sales-subdomain:first .focus!
+
+    login: (user) ->
+      # use user later
+      console.warn \user, user
+      @$.find 'li.auth a.onclick-login' .hide!
+      @$.find 'li.auth a.onclick-logout' .show!
+
+    logout: ->
+      @$.find 'li.auth a.onclick-login' .show!
+      @$.find 'li.auth a.onclick-logout' .hide!
+

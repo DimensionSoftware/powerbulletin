@@ -1,6 +1,8 @@
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
 window.helpers = require \./shared-helpers.ls
 window.mutants = require \./pb-mutants.ls
+require! $R: reactivejs
+window.r-user = $R.state!
 
 mutant  = require \../lib/mutant/mutant.ls
 
@@ -115,15 +117,10 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
 #{{{ Personalizing behaviors
 window.onload-personalize = ->
   if window.user # logged in, so ...
-    if window.user.transient
-      $ \.onclick-login   .show!
-      $ \.onclick-logout  .hide!
-      $ \.onclick-profile .hide!
-    else
-      $ \.onclick-profile .each -> this.href = "/user/#{window.user.name}"
-      $ \.onclick-login   .hide!
-      $ \.onclick-logout  .show!
-      $ \.onclick-profile .show!
+    $ \.onclick-profile .each -> this.href = "/user/#{window.user.name}"
+    $ \.onclick-login   .hide!
+    $ \.onclick-logout  .show!
+    $ \.onclick-profile .show!
     # admin
     if user?rights?super or user?rights?admin then $ \.admin-only .show! else $ \.admin-only .hide!
   else
@@ -302,7 +299,7 @@ onload-resizable!
 
 # run initial mutant & personalize ( based on parameters from user obj )
 window.user <- $.getJSON \/auth/user
-onload-personalize!
+set-timeout (-> window.r-user window.user), 50
 
 # hash actions
 if window.location.hash.match /^\#recover=/ then Auth.show-reset-password-dialog!
@@ -313,5 +310,6 @@ switch window.location.hash
 | \#once     => Auth.login-with-token!
 
 if window.initial-mutant # XXX sales-app doesn't have a mutant
+  onload-personalize!
   <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
 # vim:fdm=marker
