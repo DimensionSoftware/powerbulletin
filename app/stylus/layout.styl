@@ -12,6 +12,7 @@ footer-height       = 32px
 left-content-width  = 310px
 
 @import './app/stylus/mutants-layout'
+@import './app/stylus/tooltip'
 
 section
   box-sizing border-box
@@ -566,51 +567,6 @@ img.bg.active
   //display block
 //}}}
 
-//{{{ Tooltip
-.tooltip-container:hover .tooltip, .tooltip.hover
-  opacity .9
-  transform scale(1) rotate(0) translate(0, 0)
-  transition all .3s ease-in-out
-.tooltip::before, .tooltip::after
-  content ''
-  position absolute
-  bottom -13px
-  left 50%
-  margin-left -9px
-  width 0
-  height 0
-  border-left 10px solid transparent
-  border-right 10px solid transparent
-  border-top 10px solid rgba(0,0,0,0.1)
-.tooltip::after
-  bottom -12px
-  margin-left -10px
-.tooltip
-  transition all .2s ease-in-out
-  transform scale(0) rotate(30deg) translate(120px, 200px)
-  display block
-  position absolute
-  z-index 99
-  padding 5px 13px
-  left 50%
-  bottom 25px
-  margin-left -117px
-  font-style italic
-  font-weight 400
-  letter-spacing 1px
-  font-size 1.2em
-  text-align center
-  cursor pointer
-.tooltip.right::before, .tooltip.right::after
-  border-right 10px solid rgba(0,0,0,0.1)
-  border 9px solid transparent
-  left -11px
-  top -2px
-.tooltip.right
-  top 35%
-  right -100px
-  width 65px
-//}}}
 //{{{ Masonry
 .masonry, .masonry .masonry-brick
   transition-duration 0.1s
