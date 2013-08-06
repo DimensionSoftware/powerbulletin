@@ -18,7 +18,9 @@ user-from-session = (s, cb) ->
   [name, site_id] = s?passport?user?split \:
   if name and site_id
     (err, user) <~ db.usr {name, site_id}
-    if err then return cb err
+    if err
+      log \user-from-session, \db.usr, err
+      return cb err
     delete user.auths
     cb null, user
   else
@@ -75,10 +77,14 @@ site-by-domain = (domain, cb) ->
       return
 
     err, user <- user-from-session socket.handshake.session
-    if err then log err
+    if err
+      log err
+      return
 
     err, site <- site-by-domain socket.handshake.domain
-    if err then log err
+    if err
+      log err
+      return
 
     site-room = site.id
     user-room = "#site-room/users/#{user.id}"
