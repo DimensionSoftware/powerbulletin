@@ -39,7 +39,7 @@ export user-fields = user-fields = (u-field, sid) ->
   """
 ## END PURE FUNCTIONS ##
 
-top-forums = (limit, fields='*') ->
+top-forums = (site-id, limit, fields='*') ->
   sql = """
   SELECT #{fields} FROM forums
   WHERE parent_id IS NULL AND site_id=$1

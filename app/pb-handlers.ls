@@ -74,8 +74,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   doc.active-forum-id = \homepage
   res.locals doc
 
-  announce.emit \debug, {testing: 'from homepage handler in express'}
-
   # XXX: this should be abstracted into a pattern, middleware or pure function
   # cache homepage for 60s
   if res.locals.private
