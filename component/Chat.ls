@@ -23,7 +23,7 @@ module.exports =
       id = @conversation?id
       if chats.index-of(id) == -1 and id
         chats.push id
-        $.cookie 'chats', JSON.stringify(chats)
+        $.cookie 'chats', JSON.stringify(chats), { path: '/' }
       else
         console.warn chats.index-of(id), id
 
@@ -33,7 +33,7 @@ module.exports =
       i = chats.index-of(id)
       if i != -1 and id
         chats.splice i, 1
-        $.cookie 'chats', JSON.stringify(chats)
+        $.cookie 'chats', JSON.stringify(chats), { path: '/' }
       else
         console.warn chats.index-of(id), id
 
