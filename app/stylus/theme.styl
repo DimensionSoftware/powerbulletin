@@ -9,8 +9,6 @@ highlight-color-translucent = rgba(255,100,50,.3)
 
 footer-height = 25px
 
-@import './app/stylus/mutants-theme'
-
 body
   font-family 'Source Sans Pro', 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue', sans-serif
 
@@ -284,6 +282,8 @@ footer:hover::before
   transition border-top .2s ease-out
 footer:hover
   color #666
+footer.expanded
+  background-image linear-gradient(bottom, #fff 125px, #eee)
 footer
   opacity 0
   background-color #f7f7f7
@@ -383,21 +383,6 @@ body.scrolled
     .fancybox-skin, .fancybox-inner
       background-color #f9f9f9
       background-image linear-gradient(to top, #fff 10px, #f2f2f2)
-//}}}
-//{{{ Tooltip
-tooltip-border-color = rgb(100, 100, 100)
-.tooltip
-  color #fff
-  background-color rgb(110, 110, 110)
-  border 2px solid tooltip-border-color
-  border-radius 6px / 2px
-  opacity 0
-  box-shadow 0 1px 0px 1px #333,0 3px 5px 1px tooltip-border-color
-  text-shadow 0 -1px 0 #000
-.tooltip::after
-  border-top 9px solid #444
-.tooltip.right::after
-  border-right 10px solid tooltip-border-color
 //}}}
 //{{{ jQuery UI
 .ui-widget-overlay

@@ -1,0 +1,42 @@
+.SiteRegister
+  ul.SiteRegister-errors
+    padding 0
+    margin 0
+    color #444
+    list-style none
+    background-color #FFC0CB
+
+  text-align center
+  h1
+    margin 0
+  em
+    color #555
+  fieldset
+    border 0
+    .hostname
+      font-size 20px
+      vertical-align middle
+    .SiteRegister-subdomain
+      font-size 25px
+      padding 10px
+    .SiteRegister-subdomain:focus
+      letter-spacing 0
+    .SiteRegister-available
+      font-weight bold
+      font-size 3em
+
+    .success
+      color green
+      display none
+    .error
+      color red
+      display none
+
+    .SiteRegister-available.success
+      display inline
+      .success
+        display inline
+    .SiteRegister-available.error
+      display inline
+      .error
+        display inline

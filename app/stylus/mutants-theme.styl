@@ -20,11 +20,6 @@ html.homepage
           border 1px solid #555
           font-weight bold
         .post-edit
-          .sceditor-container
-            border-top-left-radius 0
-            .sceditor-toolbar
-              background-color #fafafa
-              border-bottom 1px solid #eee
           .title
             border-bottom-left-radius 0
             border-bottom-right-radius 0
@@ -70,7 +65,7 @@ html.homepage
 //{{{ - forum & profile
 html.forum, html.profile, html.search
   .main-content
-    .forum, .threads .search
+    .forum, .threads, .search
       .children + .post:nth-last-child(2)
           border-bottom 1px solid transparent
       .post:hover
@@ -107,8 +102,19 @@ html.forum, html.profile, html.search
 
       .children
         .children
-          .body, .date, .user span
-            color #555
+          .body, .user span
+            color #666
+          .container
+            float left
+          .username
+            color #444
+          .post-content, .cke_editable
+            p
+              color #444
+              margin-top 0
+          .date
+            color #999
+            text-transform lowercase
       .actions a
         color highlight-color2
   .left-content
@@ -118,6 +124,7 @@ html.forum, html.profile, html.search
       .thread:last-child:hover, .thread
         border-bottom 1px solid rgba(100,100,100,.05)
       .thread
+        list-style-type none
         border-top 1px solid transparent
         border-left 2px solid transparent
         border-right 2px solid transparent

@@ -14,13 +14,13 @@ CREATE FUNCTION procs.owns_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
   return plv8.execute('SELECT id FROM posts WHERE id=$1 AND user_id=$2', [post_id, user_id])
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION procs.post(id JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.post(site_id JSON, id JSON) RETURNS JSON AS $$
   require! u
   return {} unless id # guard
   sql = """
   SELECT
     p.*,
-    #{u.user-fields \p.user_id},
+    #{u.user-fields \p.user_id, site_id},
   (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count,
   ARRAY(SELECT tags.name FROM tags JOIN tags_posts ON tags.id = tags_posts.tag_id WHERE tags_posts.post_id = p.id) AS tags
   FROM posts p
@@ -34,7 +34,7 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
   sql = """
   SELECT
     p.*,
-    #{u.user-fields \p.user_id},
+    #{u.user-fields \p.user_id, usr.site_id},
     m.reason,
     (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count
   FROM posts p
@@ -428,8 +428,15 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param Integer site_id    site id
 -- @returns Object user        user with all auth objects
 CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
+  site-id = parse-int usr.site_id
+  user-id = parse-int usr.id if usr.id
+  if is-NaN(site-id)
+    throw new Error("bad site-id #{usr.site_id}")
   [identifier-clause, params] =
     if usr.id
+      user-id = parse-int usr.id
+      if is-NaN(user-id)
+        throw new Error("bad user-id #{usr.id}")
       ["u.id = $1", [usr.id, usr.site_id]]
     else if usr.name
       ["a.name = $1", [usr.name, usr.site_id]]
@@ -624,7 +631,7 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
   sort-sql =
     switch sort or \recent
     | \recent   => 'p.created DESC, p.id ASC'
-    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC, p.created DESC'
+    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id) DESC, p.created DESC'
     | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
 
   # This query can be moved into its own proc and generalized so that it can
@@ -633,7 +640,7 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
   sql = """
   SELECT
     p.*,
-    #{u.user-fields \p.user_id}
+    #{u.user-fields \p.user_id, forum.site_id}
   FROM posts p
   LEFT JOIN moderations m ON m.post_id = p.id
   WHERE p.forum_id = $1
@@ -657,12 +664,11 @@ CREATE FUNCTION procs.site_summary(site_id JSON, thread_limit JSON, sort JSON) R
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 
-CREATE FUNCTION procs.top_threads(forum_id JSON, sort JSON, lim JSON, _off JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.top_threads(site_id JSON, forum_id JSON, sort JSON, lim JSON, _off JSON) RETURNS JSON AS $$
   require! u
   # default / work around bug in plv8 where 0 in json becomes false for some reason
   offset = _off or 0
-  plv8.elog WARNING, JSON.stringify({forum_id, sort, lim, offset})
-  return u.top-threads forum_id, sort, lim, offset
+  return u.top-threads site_id, forum_id, sort, lim, offset
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.uri_to_forum_id(site_id JSON, uri JSON) RETURNS JSON AS $$
@@ -682,7 +688,7 @@ CREATE FUNCTION procs.uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
   require! u
   try
     sql = """
-    SELECT p.*, #{u.user-fields \p.user_id}
+    SELECT p.*, #{u.user-fields \p.user_id, site_id}
     FROM posts p
     JOIN forums f ON p.forum_id=f.id
     LEFT JOIN moderations m ON m.post_id=p.id
@@ -734,7 +740,7 @@ CREATE FUNCTION procs.idx_posts(lim JSON) RETURNS JSON AS $$
   sql = """
   SELECT p.id, p.thread_id, p.forum_id, p.user_id, p.title, p.body, p.created,
          p.updated, p.uri, p.html, f.title forum_title, t.uri thread_uri,
-         t.title thread_title, #{u.user-fields \p.user_id}
+         t.title thread_title, #{u.user-fields \p.user_id, \f.site_id}
   FROM posts p
   JOIN forums f ON p.forum_id=f.id
   JOIN posts t ON p.thread_id=t.id
@@ -759,7 +765,8 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- #''' getting around quoting bug
 
 -- this should actually find-or-create a conversation by the set of users given
-CREATE FUNCTION procs.conversation_find_or_create(users JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.conversation_find_or_create(site_id JSON, users JSON) RETURNS JSON AS $$
+  plv8.elog WARNING, JSON.stringify(users)
   find-or-create = plv8.find_function \procs.find_or_create
   find-sql = '''
   SELECT c.*
@@ -768,11 +775,12 @@ CREATE FUNCTION procs.conversation_find_or_create(users JSON) RETURNS JSON AS $$
   LEFT JOIN users_conversations uc1 on uc1.conversation_id = c.id
   WHERE uc0.user_id = $1
   AND   uc1.user_id = $2
+  AND   c.site_id = $3
   '''
-  find-params = ins-params = [ users.0?id, users.1?id ]
+  find-params = ins-params = [ users.0?id, users.1?id, site_id ]
   ins-sql = '''
   WITH c AS (
-      INSERT INTO conversations DEFAULT VALUES RETURNING *
+      INSERT INTO conversations (site_id) VALUES ($3) RETURNING *
     ), i AS (
       INSERT INTO users_conversations (user_id, conversation_id) SELECT $1, id FROM c
     )
@@ -781,10 +789,13 @@ CREATE FUNCTION procs.conversation_find_or_create(users JSON) RETURNS JSON AS $$
   c = find-or-create find-sql, find-params, ins-sql, ins-params
   if not c
     return null
+  plv8.elog WARNING,"c #{JSON.stringify(c)}"
 
-  c.participants   = users
-  # TODO resolve users for avatar
-  c.messages       = []
+  usr                    = plv8.find_function \procs.usr
+  messages-recent-by-cid = plv8.find_function \procs.messages_recent_by_cid
+
+  c.participants   = [ usr({ name: u.name, site_id: site_id }) for u in users ]
+  c.messages       = messages-recent-by-cid c.id, site_id
   return c
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -812,8 +823,10 @@ CREATE FUNCTION procs.conversation_by_id(cid JSON) RETURNS JSON AS $$
   if not c
     return null
   else
-    c.messages = [] # TODO - fill out
-    c.participants = [] # TODO - fill out
+    messages-recent-by-cid = plv8.find_function \procs.messages_recent_by_cid
+    c.messages = messages-recent-by-cid cid, c.site_id
+    conversation-participants = plv8.find_function \procs.conversation_participants
+    c.participants = conversation-participants cid, c.site_id
   return c
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -825,11 +838,21 @@ CREATE FUNCTION procs.conversations_by_user(u JSON, page JSON) RETURNS JSON AS $
   LEFT JOIN users_conversations uc ON uc.conversation_id = c.id
   LEFT JOIN users u ON u.id = uc.user_id
   WHERE u.id = $1
+  AND conversations.site_id = $2
   ORDER BY id DESC
   '''
-  conversations = plv8.execute sql, [u.id]
+  conversations = plv8.execute sql, [u.id, u.site_id]
   # TODO order by date of last message in conversation instead of id
   return conversations
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.conversation_participants(cid JSON, site_id JSON) RETURNS JSON AS $$
+  sql = 'SELECT user_id as id FROM users_conversations where conversation_id = $1'
+  uids = plv8.execute sql, [cid]
+  plv8.elog WARNING, JSON.stringify(uids)
+  usr = plv8.find_function \procs.usr
+  users = [ usr({id: u.id, site_id}) for u in uids ]
+  return users
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.messages_by_cid(cid JSON, last JSON, lim JSON) RETURNS JSON AS $$
@@ -843,13 +866,32 @@ CREATE FUNCTION procs.messages_by_cid(cid JSON, last JSON, lim JSON) RETURNS JSO
   messages = plv8.execute sql, params
   return messages
 $$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.messages_recent_by_cid(cid JSON, site_id JSON) RETURNS JSON AS $$
+  sql = '''
+  SELECT * FROM messages WHERE conversation_id = $1 AND id <= (SELECT MAX(id) FROM messages)
+  ORDER BY id DESC
+  LIMIT 10
+  '''
+  params = [cid]
+  messages = plv8.execute sql, params
+  map-users = plv8.find_function \procs.map_users
+  return map-users(site_id, messages)
+$$ LANGUAGE plls IMMUTABLE STRICT;
+
+CREATE FUNCTION procs.map_users(site_id JSON, list JSON) RETURNS JSON AS $$
+  user-ids = Object.keys(list.reduce ((m, x) -> m[x.user_id] = 1; m), {})
+  usr = plv8.find_function \procs.usr
+  users-by-id = { [u, usr({id: u, site_id})] for u in user-ids }
+  return list.map (-> it.from = users-by-id[it.user_id]; it)
+$$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
 
 CREATE FUNCTION procs.domain_by_name_exists(name JSON) RETURNS JSON AS $$
   return !!plv8.execute("SELECT TRUE FROM domains WHERE name=$1 LIMIT 1", [name]).0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
--- site.user_id is optional (you will get back a transient_owner identifier)
+-- site.user_id is required
 -- site.domain is required
 CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
   require! u
@@ -860,12 +902,10 @@ CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
   unless site.domain.match /(\.pb\.com|\.powerbulletin\.com)$/
     return {errors: ["domain must end in .pb.com or .powerbulletin.com"]}
 
-  if site.user_id
-    site_id = plv8.execute('INSERT INTO sites (name, user_id) VALUES ($1, $2) RETURNING id', [site.domain, site.user_id]).0.id
-  else
-    # random string generated to identify transient_owner
-    transient_owner = (Math.random()*new Date).to-string!replace '.' ''
-    site_id = plv8.execute('INSERT INTO sites (name, transient_owner) VALUES ($1, $2) RETURNING id', [site.domain, transient_owner]).0.id
+  unless site.user_id
+    return {errors: ["user_id is required for creating a new site"]}
+
+  site_id = plv8.execute('INSERT INTO sites (name, user_id) VALUES ($1, $2) RETURNING id', [site.domain, site.user_id]).0.id
 
   try
     plv8.execute 'INSERT INTO domains (site_id, name) VALUES ($1, $2)', [site_id, site.domain]
@@ -893,16 +933,7 @@ CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
 
   rval = {site_id, errors: []}
   rval <<< {site.user_id} if site.user_id
-  rval <<< {transient_owner} if transient_owner
   return rval
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.authorize_transient(transient_owner JSON, site_id JSON) RETURNS JSON AS $$
-  sql = '''
-  SELECT TRUE FROM sites
-  WHERE transient_owner=$1 AND id=$2
-  '''
-  return !!plv8.execute(sql, [transient_owner, site_id]).0
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- add a subscription to a site

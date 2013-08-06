@@ -42,7 +42,7 @@ app.post \/resources/users/:id/avatar,     handlers.profile-avatar
 # common for all pages within a site
 #{{{ Common CSS - TODO be specific by site's theme (default, minimal, etc....)
 common-css = if process.env.NODE_ENV is \production
-  ["#{cvars.cache2-url}/master.styl"]
+  ["#{cvars.cache2-url}/master.css"]
 else
   [\/dynamic/css/master.styl] # refresh without building css
 #}}}

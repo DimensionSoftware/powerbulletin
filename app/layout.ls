@@ -1,6 +1,8 @@
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
 window.helpers = require \./shared-helpers.ls
 window.mutants = require \./pb-mutants.ls
+require! $R: reactivejs
+window.r-user = $R.state!
 
 mutant  = require \../lib/mutant/mutant.ls
 
@@ -83,7 +85,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
       surf-params._surf-tasks = rc.keep.sort!map( (-> tasks.cc it) ).join ','
 
     req-id = ++last-req-id
-    $.get url, surf-params, (r) ->
+    jqxhr = $.get url, surf-params, (r) ->
       return if not r.mutant
       $d.attr \title, r.locals.title if r.locals?title # set title
       on-unload = mutants[window.mutator].on-unload or (w, next-mutant, cb) -> cb null
@@ -105,19 +107,20 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
             spin false
         #else
         #  console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
+
+    # capture error
+    jqxhr.fail (xhr, status, error) ->
+      show-tooltip $(\#warning), "Page Not Found", 8000ms
+      History.back!
+      window.spin false
 #}}}
 #{{{ Personalizing behaviors
 window.onload-personalize = ->
   if window.user # logged in, so ...
-    if window.user.transient
-      $ \.onclick-login   .show!
-      $ \.onclick-logout  .hide!
-      $ \.onclick-profile .hide!
-    else
-      $ \.onclick-profile .each -> this.href = "/user/#{window.user.name}"
-      $ \.onclick-login   .hide!
-      $ \.onclick-logout  .show!
-      $ \.onclick-profile .show!
+    $ \.onclick-profile .each -> this.href = "/user/#{window.user.name}"
+    $ \.onclick-login   .hide!
+    $ \.onclick-logout  .show!
+    $ \.onclick-profile .show!
     # admin
     if user?rights?super or user?rights?admin then $ \.admin-only .show! else $ \.admin-only .hide!
   else
@@ -262,7 +265,10 @@ time-updater = ->
       #console.log "human-readable time changed", {elapsed, lh, hr}
     $el.data(\last-human, hr)
 
-    $el.html hr
+    if $el.has-class 'time-title'
+      $el.attr \title, hr.replace(/<.*?\/?>/g, '')
+    else
+      $el.html hr
 
 set-interval time-updater, 30000ms
 #}}}
@@ -293,7 +299,7 @@ onload-resizable!
 
 # run initial mutant & personalize ( based on parameters from user obj )
 window.user <- $.getJSON \/auth/user
-onload-personalize!
+set-timeout (-> window.r-user window.user), 50
 
 # hash actions
 if window.location.hash.match /^\#recover=/ then Auth.show-reset-password-dialog!
@@ -304,5 +310,6 @@ switch window.location.hash
 | \#once     => Auth.login-with-token!
 
 if window.initial-mutant # XXX sales-app doesn't have a mutant
+  onload-personalize!
   <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
 # vim:fdm=marker

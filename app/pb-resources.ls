@@ -151,6 +151,7 @@ ban-all-domains = (site-id) ->
     res.render \post-new
   create  : (req, res, next) ->
     return next 404 unless req.user
+    site = res.vars.site
     db = pg.procs
     post          = req.body
     post.user_id  = req.user.id
@@ -158,9 +159,6 @@ ban-all-domains = (site-id) ->
     post.ip       = res.vars.remote-ip
     post.tags     = h.hash-tags post.body
     post.forum_id = post.forum_id
-    unless post.user_id and req.user.transient
-      # if no user_id, try transient_owner
-      post.transient_owner = req.user.transient_id
 
     err, ap-res <- db.add-post post
     if err then return next err
@@ -170,20 +168,21 @@ ban-all-domains = (site-id) ->
       c.invalidate-post post.id, req.user.name # blow cache!
 
     unless post.parent_id
-      err, new-post <- db.post post.id
+      err, new-post <- db.post site.id, post.id
       if err then return next err
       announce.emit \thread-create new-post
     else
-      err, new-post <- db.post post.id
+      err, new-post <- db.post site.id, post.id
       if err then return next err
       new-post.posts = []
       announce.emit \post-create new-post
 
     res.json ap-res
   show    : (req, res, next) ->
+    site = res.vars.site
     db = pg.procs
     if post-id = parse-int(req.params.post)
-      err, post <- db.post post-id
+      err, post <- db.post site.id, post-id
       if err then return next err
       res.json post
     else
@@ -234,15 +233,31 @@ ban-all-domains = (site-id) ->
     else
       next 404
 @conversations =
+  create: (req, res, next) ->
+    site-id = req.body?site_id
+    users   = req.body?users
+    if not site-id or not users
+      return next new Error "not enough info to find-or-create conversation"
+    user0 =
+      id   : users.0.id
+      name : users.0.name
+    user1 =
+      id   : users.1.id
+      name : users.1.name
+    err, c <~ db.conversation-find-or-create site-id, [user0, user1]
+    if err then return next err
+    res.json c
+
   show: (req, res, next) ->
     id = req.params.conversation
-    limit = 4
+    limit = 30
     err, c <~ db.conversation-by-id id
     if err
       console.error \conversations-show, req.path, err
       res.json success: false
       return
     if c
+      # TODO be sure to check participants too
       err, messages <- db.messages-by-cid c.id, (req.query.last || null), limit
       if err
         console.error \conversations-show, req.path, err
@@ -258,10 +273,11 @@ ban-all-domains = (site-id) ->
 @threads =
   show: (req, res, next) ->
     return next 404 unless forum-id = req.params.thread
+    site = res.vars.site
     page = parse-int(req.query.page) or 1
     offset = (page - 1) * cvars.t-step
     limit = cvars.t-step
-    err, threads <- db.top-threads forum-id, \recent, limit, offset
+    err, threads <- db.top-threads site.id, forum-id, \recent, limit, offset
     if err then return next err
     res.json threads
 

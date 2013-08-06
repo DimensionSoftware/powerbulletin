@@ -26,22 +26,20 @@ export unique = (xs) -> # from prelude.ls
 export map = (f, xs) -->
   [f x for x in xs]
 
-default-u-name  = \Transient
-default-u-photo = \/images/transient.png
-export user-fields = user-fields = (uid) ->
+export user-fields = user-fields = (u-field, sid) ->
+  # XXX temporary fix for sid not being passed in
+  alias-sql = if sid
+    "SELECT a.name FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
+  else
+    "SELECT a.name FROM aliases a WHERE a.user_id=#u-field LIMIT 1"
+
   """
-  COALESCE(
-    (SELECT a.name FROM aliases a WHERE a.user_id=#uid),
-    '#default-u-name'
-  ) AS user_name,
-  COALESCE(
-    (SELECT u.photo FROM users u WHERE u.id=#uid),
-    '#default-u-photo'
-  ) AS user_photo
+  (#alias-sql) AS user_name,
+  (SELECT u.photo FROM users u WHERE u.id=#u-field) AS user_photo
   """
 ## END PURE FUNCTIONS ##
 
-top-forums = (limit, fields='*') ->
+top-forums = (site-id, limit, fields='*') ->
   sql = """
   SELECT #{fields} FROM forums
   WHERE parent_id IS NULL AND site_id=$1
@@ -59,7 +57,7 @@ sub-forums = (id, fields='*') ->
   """
   plv8.execute sql, [id]
 
-export top-posts = (sort, limit = void, offset = 0, fields='p.*') ->
+export top-posts = (site-id, sort, limit = void, offset = 0, fields='p.*') ->
   sort-expr =
     switch sort
     | \recent   => 'p.created DESC, p.id ASC'
@@ -89,7 +87,7 @@ sub-posts = (site-id, post-id, fields, limit, offset) ->
   sql = """
   SELECT
     #fields,
-    #{user-fields \p.user_id}
+    #{user-fields \p.user_id, site-id}
   FROM posts p
   JOIN forums f ON f.id=p.forum_id
   LEFT JOIN moderations m ON m.post_id=p.id
@@ -183,13 +181,12 @@ export uri-for-post = (post-id, first-slug = null) ->
 export menu = (site-id) ->
   # XXX: forums should always list in the same order, get rid of top-forums, and list in static order
   # TODO use site.config.menu to build!
-  top-menu-fun = top-forums(null, 'id,title,slug,uri,description,media_url')
+  top-menu-fun = top-forums(site-id, null, 'id,title,slug,uri,description,media_url')
   [decorate-menu(f, top-menu-fun) for f in top-menu-fun(site-id)]
 
-# this is really for a single forum even though its called 'forums'
-export forums = (forum-id, sort) ->
-  ft = forum-tree forum-id, top-posts(sort)
-  if ft then [ft] else []
-
-export top-threads = (forum-id, sort, limit, offset) ->
-  top-posts(sort, limit, offset) forum-id
+export top-threads = (site-id, forum-id, sort, limit, offset) ->
+  plv8.elog WARNING, JSON.stringify({forum-id, sort, limit, offset})
+  f = top-posts(site-id, sort, limit, offset)
+  plv8.elog WARNING, f + ' ' + typeof(f)
+  f forum-id
+  # top-posts(sort, limit, offset) forum-id

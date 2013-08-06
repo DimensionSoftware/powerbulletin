@@ -9,15 +9,17 @@ mixin _post(p, i)
     else
       h4.title= p.title
     mixin _post-profile(p)
-    .date(data-time=p.created_iso)!= p.created_human
-    .post-content
-      if p.html
-        p.body!= p.html
-    .reply
+    .container
+      span.username= p.user_name
+      .date(data-time=p.created_iso)!= p.created_human
+      .post-content
+        if p.html
+          p.body!= p.html
     mixin _post-actions(p)
+    .reply
   .children
     if p.posts && p.posts.length
       each pp, ii in p.posts
         mixin _post(pp, ii)
     else if p.morePosts
-      a(href='#') Load more posts ...
+      a.load-more(href='#') More Posts

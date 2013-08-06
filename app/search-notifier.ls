@@ -1,8 +1,8 @@
 require! {
   async
+  redis
   elastic: './elastic'
   RedisStore: 'socket.io/lib/stores/redis'
-  redis: 'socket.io/node_modules/redis'
   s: \./search
   sio: 'socket.io'
   sioc: 'socket.io-client'
@@ -42,9 +42,12 @@ init-ioc = (port) ->
 new-poller = (io, elc, poller) ->
   # randomize work interval so we make better use of event architecture
   # but only but a small amount
-  work-interval = 5000 + (Math.floor (Math.random! * 500)) # in ms
+  work-interval = 2000 + (Math.floor (Math.random! * 500)) # in ms
 
-  now = new Date
+  # el time machine -- give elastic time to index??
+  get-now = -> new Date(new Date - 1000)
+  now = get-now!
+
   cutoff = new Date(now - work-interval)
   busy = false
 
@@ -57,12 +60,12 @@ new-poller = (io, elc, poller) ->
 
       ch = io.sockets.in(poller.room)
       #console.log "work tick for room #{poller.room}"
-      now = new Date
       popts = ({} <<< poller.searchopts) <<< {stream: {cutoff, now}}
       console.log JSON.stringify({popts})
       err, res <- s.search popts
       if err then throw err
       cutoff := now
+      now := get-now!
       # XXX: replace this emit with a ch.emit \new-post
       for hit in res.hits
         ch.emit \new-hit, hit

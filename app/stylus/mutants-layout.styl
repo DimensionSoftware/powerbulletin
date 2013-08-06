@@ -90,12 +90,17 @@ html.forum, html.profile, html.search
         .created
           opacity 1
           display inline
-  .left-content
+  #left_content
     transform translateX(0)
     opacity 1
     transition opacity .3s cubic-bezier(1,.01,.69,1)
+    #thread-paginator
+      margin 12px 0 0 0
+      text-align center
     .photo, .username
       display none
+    .photo
+      margin 5px 11px 7px 0
     .create
       margin (grid/2) (grid*3.5) (grid/2) (grid*2)
       .button
@@ -189,6 +194,8 @@ html.forum, html.profile, html.search
           opacity 1
           transition opacity .2s ease-out .1s
       .reply
+        .fadein
+          margin-top 8px
         width 405px
         .post-edit form
           clear both
@@ -200,16 +207,16 @@ html.forum, html.profile, html.search
             vertical-align top
             display inline-block
             .photo
-              margin-top 5px
+              margin-top 3px
           textarea
-            height 30px
-            min-height 30px
+            height 22px
+            min-height 22px
             width 320px
             margin-top 0
             vertical-align top
             display inline-block
           .button
-            bottom 20px
+            bottom 17px
             right 12px
       .post-edit
         position relative
@@ -238,9 +245,9 @@ html.forum, html.profile, html.search
         .summary
           .profile.photo
             margin-left 3px
-            border-radius 1px
-            height 39px
-            width 49px
+            border-radius 5px / 1px
+            height 33px
+            width 43px
             margin-top (grid/2)
         .summary::before:hover
           margin-left 2px
@@ -287,7 +294,7 @@ html.forum, html.profile, html.search
         img
           max-width 100%
         .title
-          margin 0 0 6px -1px
+          margin 0 0 8px -1px
           font-size 1.5em
         .user
           font-weight bold
@@ -328,10 +335,14 @@ html.forum, html.profile, html.search
           height 45px
         .children
           margin-left (grid*3)
+          .body
+            line-height 20px
+          .load-more
+            margin-left -28px
           .post
             padding-top grid
-            textarea.body
-              padding-top (grid/2)
+            .button
+              bottom 19px
             .user, .date
               display inline
               font-size .92em
@@ -340,7 +351,6 @@ html.forum, html.profile, html.search
             .date
               margin-left (grid/2)
             .profile
-              margin-top (grid/2)
               border-radius 2px
               width 46px
               height 37px
@@ -373,14 +383,14 @@ html.profile
         a
           text-decoration none
         b
-          font-weight 300
+          font-weight 500
           text-transform capitalize
         .title
           margin 0 1px 0 -1px
           padding 1px 5px
           font-size 1.12em
         .by, .forum-link
-          margin-right 3px
+          margin-right 1px
           font-size .8em
           font-weight 200
           b
@@ -423,6 +433,8 @@ html.search body.scrolled
     .onclick-close
       top 5px
 html.search
+  .nicescroll-rails
+    display none
   #left_container 
     h1, h2, h3, h4
       margin 11px 0
@@ -438,6 +450,7 @@ html.search
         display block
     .facet
       a
+        animation-name none
         display block
     a.facet-hit
       display block
@@ -449,6 +462,10 @@ html.search
   .main-content
     #hit_count
       color #888
+      font-size .8em
+      border-bottom 1px solid #ccc
+    #breadcrumb
+      display none
   header
     .search
     .container
@@ -458,7 +475,7 @@ html.search
           z-index 9
         .onclick-close
           opacity 1!important
-          right 11px
+          top 9px
       .advanced
         right 80px
         top (header-height + 5)
@@ -661,6 +678,34 @@ html.admin
       input[type="checkbox"]:checked ~ span[class*="checked"]
         color #444
 //}}}
+html.forum
+  footer.expanded
+    cursor s-resize
+    height 290px
+    transition height .3s bounce
+    text-align center
+    h6
+      display none
+    .post-container
+      opacity 1
+      transition opacity .3s ease-out .1s
+  footer
+    cursor n-resize
+    .title
+      width 60%
+    .tooltip
+      bottom auto
+      top 15px
+    .onclick-footer-toggle
+      display block
+    .post-container
+      opacity 0
+      margin 0 auto
+      width 80%
+      max-width 1100px
+      margin-top 10px
+      .summary
+        display none
 
 #left_container
   height 100%
@@ -686,5 +731,27 @@ html.admin
   left 0
   width 140px
   height 1px
+
+// setup default
+#new_hit_count
+  display none
+  font-size 1.2em
+  font-weight 300
+  p
+    display inline
+    margin-left 8px
+    font-style italic
+    font-size .75em
+    .count
+      margin 0 3px
+
+// new posts look slightly different on search page
+#new_posts
+  .post
+    h4
+      padding 10px 5px
+      border-bottom 3px solid #F38437 !important
+    h4:after
+      content: " ( New! )"
 
 // vim:fdm=marker

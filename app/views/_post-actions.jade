@@ -1,6 +1,6 @@
 mixin _post_actions(p)
   .actions
-    a.stylish.onclick-append-reply-ui Reply
+    a.stylish.onclick-append-reply-ui Comment
     a.stylish.edit.mutant.no-surf(data-edit=p.id, href="#{p.uri.replace(/\/\d+$/, '')}/edit/#{p.id}") Edit
     a.stylish.permalink.mutant(href=p.uri) Permalink
     a.stylish.censor.onclick-censor-post Censor

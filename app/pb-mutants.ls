@@ -263,6 +263,7 @@ export forum =
       # editing handler
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
+      $ \body .on \click, toggle-post # expand & minimize drawer
 
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
@@ -273,8 +274,7 @@ export forum =
 
       # bring down first reply
       if user
-        $ \.onclick-append-reply-ui:first .click!
-        set-timeout (-> $ \textarea .focus!), 100ms
+        set-timeout (-> $ \.onclick-append-reply-ui:first .click!), 300ms
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
@@ -405,11 +405,11 @@ export profile =
 # this function meant to be shared between static and on-initial
 !function render-admin-components action, site, win
   switch action
-  | \general  => win.render-mutant \main_content, \admin-general
   | \domains  => win.render-mutant \main_content, \admin-domains
   | \invites  => win.render-mutant \main_content, \admin-invites
   | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site: site}}
   | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
+  | otherwise => try win.render-mutant \main_content, \admin-general
 
 export admin =
   static:
@@ -463,6 +463,7 @@ join-search = (sock) ->
 
 reset-paginator = (w) ->
   # cleanup paginator on exit
+  $ \#pb_paginator .hide!
   if w.component?paginator
     w.component.paginator
       ..local \qty 0
@@ -502,6 +503,7 @@ export search =
         window.marshal \page @page
         window.marshal \pagesCount @pages-count
         window.marshal \searchopts @searchopts
+        window.marshal \newHits 0 # reset new-hit count
 
         # only render left side on first time to search
         # filters can be dom-touched, no need to re-insert innerhtml, as that is awkward
@@ -599,6 +601,9 @@ export search =
       next!
   on-load:
     (w, next) ->
+      window.$new-hits = w.$('<div/>')  # reset new-hit div
+
+      align-breadcrumb!
       pager-init w
       next!
   on-unload:

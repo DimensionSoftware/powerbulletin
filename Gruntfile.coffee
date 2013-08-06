@@ -30,9 +30,16 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON("package.json")
     uglify:
+      options:
+        mangle:
+          except: # XXX don't mangle Components
+            fs.readdirSync('component', 'utf8')
+              .filter((f) -> f.match /\.ls$/)
+              .map((f) -> f.replace /\.ls$/, '')
       dist:
         files:
           "public/powerbulletin.min.js": "public/powerbulletin.js"
+          "public/powerbulletin-sales.min.js": "public/powerbulletin-sales.js"
 
     watch:
       procs:
@@ -115,13 +122,16 @@ module.exports = (grunt) ->
       silent: true
     daemon "bin/build-browser-bundle", config.tmp + "/browserify.pid"
 
-  
+  grunt.registerTask "cleanup", "cleanup disk", ->
+    exec "rm -f public/powerbulletin.js"
+    exec "rm -f public/powerbulletin-sales.js"
+
   # Default task(s).
   if process.NODE_ENV is "production"
-    grunt.registerTask "default", ["procs", "clientJade", "componentJade", "livescript", "browserify", "uglify", "launch"]
+    grunt.registerTask "default", ["procs", "clientJade", "componentJade", "livescript", "browserify", "uglify", "cleanup", "launch"]
   else
     grunt.registerTask "default", ["procs", "clientJade", "componentJade", "livescript", "browserify", "launch", "watch"]
 
 process.on 'SIGINT', ->
-  exec "killall -9 -r pb-worker"
+  exec "killall -s INT -r pb-worker"
   process.exit()

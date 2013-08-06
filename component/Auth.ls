@@ -80,6 +80,14 @@ module.exports =
           Auth.show-login-dialog!
           false
 
+    @require-registration = (fn) ->
+      ->
+        if window.user
+          fn.apply window, arguments
+        else
+          Auth.show-register-dialog!
+          false
+
     # constructor
     ->
       super ...
@@ -133,7 +141,7 @@ module.exports =
           $.fancybox.close!
           @after-login! if @after-login
           # reload page XXX I know its not ideal but the alternative is painful >.<
-          window.location.reload!
+          if initial-mutant is \privateSite then window.location.reload!
         else
           $fancybox = $form.parents \.fancybox-wrap:first
           $fancybox.add-class \on-error

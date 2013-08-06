@@ -15,26 +15,15 @@ log = debug 'io-server'
 user-from-session = (s, cb) ->
   unless s?passport?user
     return cb null, {id:0, name:\Anonymous, guest:true}
-  [type, name, site_id] = s?passport?user?split \:
-  switch type
-  | \transient =>
-    transient-user =
-      transient: true
-      transient_id: parse-int name
-      rights:
-        admin: true
-    (err, authorized) <~ db.authorize-transient name, site_id
-    if err then return cb err
-    if authorized
-      cb null, transient-user
-    else
-      cb null, null
-  | \permanent =>
+  [name, site_id] = s?passport?user?split \:
+  if name and site_id
     (err, user) <~ db.usr {name, site_id}
-    if err then return cb err
+    if err
+      log \user-from-session, \db.usr, err
+      return cb err
     delete user.auths
-    cb err, user
-  | otherwise =>
+    cb null, user
+  else
     cb new Error("bad cookie #{s.passport.user}")
 
 site-by-domain = (domain, cb) ->
@@ -58,6 +47,9 @@ site-by-domain = (domain, cb) ->
   io.set \store, redis-store
 
   io.set \authorization, (handshake, accept) ->
+    if not handshake
+      return accept("null handshake", false)
+    handshake.domain = handshake.headers.host
     if handshake.headers.cookie
       handshake.cookies = cookie.parse handshake.headers.cookie
       connect-cookie = handshake.cookies['connect.sess']
@@ -69,27 +61,36 @@ site-by-domain = (domain, cb) ->
         session = connect.utils.parse-JSON-cookie(unsigned) || {}
         #log \session, session
         handshake.session = session
-        handshake.domain  = handshake.headers.host
         return accept(null, true)
       else
         return accept("bad session?", false)
     else
-      return accept("no cookies", false)
+      log "no cookies found during socket.io authorization phase"
+      return accept(null, true)
 
   io.on \connection, (socket) ->
     var search-room
     var presence
 
+    if not socket.handshake
+      log "no socket.handshake; bailing to prevent crash"
+      return
+
     err, user <- user-from-session socket.handshake.session
-    if err then log err
+    if err
+      log err
+      return
 
     err, site <- site-by-domain socket.handshake.domain
-    if err then log err
+    if err
+      log err
+      return
 
     site-room = site.id
     user-room = "#site-room/users/#{user.id}"
 
-    err, presence <- new Presence site.id
+    log \new-presence, site.id, socket.id
+    err, presence <- new Presence site.id, socket.id
 
     err <- presence.enter site-room, socket.id
     if err then log \presence.enter, err
@@ -112,12 +113,18 @@ site-by-domain = (domain, cb) ->
 
     socket.on \disconnect, ->
       log \disconnected
+      err <- presence.leave-all socket.id
+      if err then log \presence.leave-all, err
       if search-room
         socket.leave search-room
       if user and site
-        err <- presence.leave-all socket.id
-        if err then log \presence.leave-all, err
-        io.sockets.in(site-room).emit \leave-site, user
+        err <- presence.users-client-remove socket.id, user
+        if err then return log \presence.users-client-remove, err
+        err, cids <- presence.cids-by-uid user.id
+        if err then return log \presence.cids-by-uid, err
+        log "#{user.name}'s cids", cids
+        if cids.length is 0
+          io.sockets.in(site-room).emit \leave-site, user
         chat-server.disconnect!
 
     socket.on \online-now, ->
@@ -138,6 +145,8 @@ site-by-domain = (domain, cb) ->
 
     # client will get subscribed to said query room
     socket.on \search, (searchopts) ->
+      delete searchopts.page # page is irrelevant to realtime
+
       if search-room
         socket.emit \debug, "leaving room: #{search-room}"
         socket.leave search-room

@@ -1,0 +1,13 @@
+ul.SiteRegister-errors
+form.site-register
+  fieldset
+    input.SiteRegister-subdomain(type='text', name='subdomain', value=typeof subdomain != 'undefined' ? subdomain : '')
+      t
+    span.hostname= hostname
+    span.SiteRegister-available
+      //- unicode checkmark
+      .success &#x2713;
+      //- unicode heavy ballot x
+      .error &#x2718;
+    .SiteRegister-create
+
