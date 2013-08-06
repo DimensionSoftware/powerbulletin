@@ -64,15 +64,23 @@ socket.on \post-create (post, cb) ->
 socket.on \new-hit, (hit) ->
   hs = hit._source
   window.new-hits++
+  window.$new-hits.prepend jade.templates.post({post: hs})
+
+  # XXX: find out better place to declare these?
+  # @beppusan, don't judge me for using onclick attributes ;)
+  window.show-new-hits = ->
+    <- window.awesome-scroll-to \#main_content, null
+    $('#new_posts').html('').append(window.$new-hits).effect(\flash)
+    return false # just in case its used in a click handler
+  window.hide-new-hits = ->
+    $('#new_posts').html('')
+    return false # just in case its used in a click handler
 
   # FIXME move to jade, even if only for consistency and ajax instead of reloading
   suffix = if window.new-hits is 1 then '' else \s
   realtime-html = """
-  <a href="#{hs.uri}" class="mutant">
-    #{window.new-hits} new result#suffix &nbsp; &nbsp;
-    <small> Latest: 
-      <strong>#{hs.title || hs.body}</strong>
-    </small>
+  <a href="#" onclick="showNewHits()">
+    #{window.new-hits} new result#suffix
   </a>
   """
 

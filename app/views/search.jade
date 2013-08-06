@@ -8,9 +8,10 @@ suffix = elres.total == 1 ? '' : 's'
   em#hit_count
     b #{elres.total} hit#{suffix}
   span#new_hit_count
-    p - 
+    a(href='#', onclick='showNewHits()') - 
       span.count 0 
       | new!
+  #new_posts
 
   if elres.hits.length
     each hit in elres.hits
