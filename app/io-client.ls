@@ -64,7 +64,7 @@ socket.on \post-create (post, cb) ->
 socket.on \new-hit, (hit) ->
   hs = hit._source
   window.new-hits++
-  window.$new-hits.append jade.templates.post({post: hs})
+  window.$new-hits.prepend jade.templates.post({post: hs})
 
   # XXX: find out better place to declare these?
   # @beppusan, don't judge me for using onclick attributes ;)
