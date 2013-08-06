@@ -409,7 +409,7 @@ export profile =
   | \invites  => win.render-mutant \main_content, \admin-invites
   | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site: site}}
   | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
-  | otherwise => win.render-mutant \main_content, \admin-general
+  | otherwise => try win.render-mutant \main_content, \admin-general
 
 export admin =
   static:
