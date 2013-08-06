@@ -428,8 +428,15 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 --   @param Integer site_id    site id
 -- @returns Object user        user with all auth objects
 CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
+  site-id = parse-int usr.site_id
+  user-id = parse-int usr.id if usr.id
+  if is-NaN(site-id)
+    throw new Error("bad site-id #{usr.site_id}")
   [identifier-clause, params] =
     if usr.id
+      user-id = parse-int usr.id
+      if is-NaN(user-id)
+        throw new Error("bad user-id #{usr.id}")
       ["u.id = $1", [usr.id, usr.site_id]]
     else if usr.name
       ["a.name = $1", [usr.name, usr.site_id]]
