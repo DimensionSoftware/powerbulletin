@@ -648,7 +648,6 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
   ORDER BY (LENGTH(p.media_url) > 1) DESC, #sort-sql
   LIMIT $2
   """
-  plv8.elog WARNING, sql
   forum.posts = plv8.execute(sql, [forum_id, thread_limit])
   return [forum]
 $$ LANGUAGE plls IMMUTABLE STRICT;
@@ -665,12 +664,11 @@ CREATE FUNCTION procs.site_summary(site_id JSON, thread_limit JSON, sort JSON) R
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 
-CREATE FUNCTION procs.top_threads(forum_id JSON, sort JSON, lim JSON, _off JSON) RETURNS JSON AS $$
+CREATE FUNCTION procs.top_threads(site_id JSON, forum_id JSON, sort JSON, lim JSON, _off JSON) RETURNS JSON AS $$
   require! u
   # default / work around bug in plv8 where 0 in json becomes false for some reason
   offset = _off or 0
-  plv8.elog WARNING, JSON.stringify({forum_id, sort, lim, offset})
-  return u.top-threads forum_id, sort, lim, offset
+  return u.top-threads site_id, forum_id, sort, lim, offset
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.uri_to_forum_id(site_id JSON, uri JSON) RETURNS JSON AS $$
@@ -690,7 +688,7 @@ CREATE FUNCTION procs.uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
   require! u
   try
     sql = """
-    SELECT p.*, #{u.user-fields \p.user_id}
+    SELECT p.*, #{u.user-fields \p.user_id, site_id}
     FROM posts p
     JOIN forums f ON p.forum_id=f.id
     LEFT JOIN moderations m ON m.post_id=p.id
@@ -742,7 +740,7 @@ CREATE FUNCTION procs.idx_posts(lim JSON) RETURNS JSON AS $$
   sql = """
   SELECT p.id, p.thread_id, p.forum_id, p.user_id, p.title, p.body, p.created,
          p.updated, p.uri, p.html, f.title forum_title, t.uri thread_uri,
-         t.title thread_title, #{u.user-fields \p.user_id}
+         t.title thread_title, #{u.user-fields \p.user_id, \f.site_id}
   FROM posts p
   JOIN forums f ON p.forum_id=f.id
   JOIN posts t ON p.thread_id=t.id

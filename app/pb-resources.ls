@@ -272,10 +272,11 @@ ban-all-domains = (site-id) ->
 @threads =
   show: (req, res, next) ->
     return next 404 unless forum-id = req.params.thread
+    site = res.vars.site
     page = parse-int(req.query.page) or 1
     offset = (page - 1) * cvars.t-step
     limit = cvars.t-step
-    err, threads <- db.top-threads forum-id, \recent, limit, offset
+    err, threads <- db.top-threads site.id, forum-id, \recent, limit, offset
     if err then return next err
     res.json threads
 

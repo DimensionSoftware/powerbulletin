@@ -135,7 +135,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       menu            : db.menu site.id, _
       sub-posts-tree  : db.sub-posts-tree site.id, post.id, 'p.*', limit, offset, _
       sub-posts-count : db.sub-posts-count post.id, _
-      top-threads     : db.top-threads post.forum_id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
+      top-threads     : db.top-threads site.id, post.forum_id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
       t-qty           : db.thread-qty post.forum_id, _
       forum           : db.forum post.forum_id, _
 
@@ -173,7 +173,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       menu        : db.menu res.vars.site.id, _
       forum       : db.forum forum-id, _
       forums      : db.forum-summary forum-id, 10threads, \recent, _
-      top-threads : db.top-threads forum-id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
+      top-threads : db.top-threads site.id, forum-id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
       t-qty       : db.thread-qty forum-id, _
 
     if req.surfing
