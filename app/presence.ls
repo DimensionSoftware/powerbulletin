@@ -112,4 +112,5 @@ module.exports = class Presence
 process.on "SIGINT", ->
   console.error "SIGINT CAUGHT - cleaning up connections belonging to process #{process.pid}"
   err <- Presence.clean-up
-  process.exit!
+  console.log err if err
+  process.exit 0
