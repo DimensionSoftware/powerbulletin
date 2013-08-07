@@ -44,6 +44,12 @@ module.exports =
         # using generic forum submit
         # TODO serialize nested sortable
         console.log(@$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!)
+        menu = @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!
+        f = @$.find \form
+        f.append(@@$ \<input> # append menu
+          .attr \type, \hidden
+          .attr \name, \menu
+          .val JSON.stringify menu)
         # TODO submit form details for active sortable + entire nested sortable
         submit-form ev, (data) ->
           f = $ this # form
