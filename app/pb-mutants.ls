@@ -363,13 +363,25 @@ export profile =
       next!
   on-personalize: (w, u, next) ->
     photocropper-start = (ev) -> PhotoCropper.start!
+
+    photocropper-enable = ->
+      window.$(\#left_content).add-class \editable
+      window.$(\body).on \click, '#left_content.editable .avatar', photocropper-start
+
+    photocropper-disable = ->
+      window.$(\#left_content).remove-class \editable
+      window.$(\body).off \click, '#left_content.editable .avatar', photocropper-start
+
     if u # guard
       layout-on-personalize w, u
-      window.$(\.left-content).add-class \editable
-      window.$(\body).on \click, '.left-content.editable .avatar', photocropper-start
+      profile-user-id = window.$('#left_content .profile').data \userId
+      console.warn \profile-user-id, profile-user-id
+      if profile-user-id is u.id
+        photocropper-enable!
+      else
+        photocropper-disable!
     else
-      window.$(\.left-content).remove-class \editable
-      window.$(\body).off \click, '.left-content.editable .avatar', photocropper-start
+      photocropper-disable!
     next!
   on-unload:
     (window, next-mutant, next) ->
