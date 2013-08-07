@@ -214,6 +214,10 @@ module.exports =
 
       sock = express!
 
+      # setup probe for varnish load balancer, really simple, doesn't need any middleware
+      # and this also avoids logging in dev mode :D
+      sock.get '/probe', (req, res) -> res.send 'OK'
+
       # bind shared cache domains
       for i in ['', 2, 3, 4, 5]
         #XXX: this is a hack but hey we are always using protocol-less urls so should never break :)

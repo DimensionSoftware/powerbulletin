@@ -1,11 +1,147 @@
 import std;
 
-backend default {
+backend b0 {
   .host = "127.0.0.1";
   .port = "3000";
-  .connect_timeout = 3s; 
-  .first_byte_timeout = 60s;
-  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend b1 {
+  .host = "127.0.0.1";
+  .port = "3001";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend b2 {
+  .host = "127.0.0.1";
+  .port = "3002";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend b3 {
+  .host = "127.0.0.1";
+  .port = "3003";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend b4 {
+  .host = "127.0.0.1";
+  .port = "3004";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend b5 {
+  .host = "127.0.0.1";
+  .port = "3005";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend b6 {
+  .host = "127.0.0.1";
+  .port = "3006";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend b7 {
+  .host = "127.0.0.1";
+  .port = "3007";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend b8 {
+  .host = "127.0.0.1";
+  .port = "3008";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend b9 {
+  .host = "127.0.0.1";
+  .port = "3009";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+
+director default round-robin {
+  {
+    .backend = b0;
+  }
+  {
+    .backend = b1;
+  }
+  {
+    .backend = b2;
+  }
+  {
+    .backend = b3;
+  }
+  {
+    .backend = b4;
+  }
+  {
+    .backend = b5;
+  }
+  {
+    .backend = b6;
+  }
+  {
+    .backend = b7;
+  }
+  {
+    .backend = b8;
+  }
+  {
+    .backend = b9;
+  }
 }
 
 sub depersonalize_response {
