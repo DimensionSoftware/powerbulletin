@@ -89,10 +89,23 @@ parseopts = ({
 
   filtered <<< {filter: {and: filters}} if filters.length
 
-  #XXX: step assumed to be fixed at 10 for now
-  step = 10
-  from = (page - 1) * step
-  {query: {filtered}, facets, from}
+  do ->
+    #XXX: step assumed to be fixed at 10 for now
+    step = 10
+    from = (page - 1) * step
+    now = new Date
+    one-year-ago = now - (365 * 24 * 60 * 60 * 1000)
+    div-by = 20000000000
+    {
+      query:
+        custom_score:
+          query: {filtered}
+          #script: "_score + pow((doc.created.value - #one-year-ago) / #div-by, 4)"
+          script: "_score * pow((doc.created.value - #one-year-ago) / #div-by, 4)"
+        from
+      facets
+    }
+
 
 # usage on repl:
 #   s.search q: \mma, console.log
