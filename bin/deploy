@@ -22,7 +22,7 @@ echo updating source...
 ssh root@$TARGET $REMOTE_GIT_COMMAND
 
 echo setting up NODE_ENV=production
-ssh root@TARGET 'echo "NODE_ENV=production" >> /etc/environment'
+ssh root@$TARGET 'echo "NODE_ENV=production" >> /etc/environment'
 
 # now provision before restarting appservers
 echo provisioning...
