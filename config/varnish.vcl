@@ -93,7 +93,17 @@ sub vcl_fetch {
     call depersonalize_response;
   }
 
-  # webapp has specified a varnish-specific ttl to override max-age
+  # if no-cache is set, do not cache (varnish is too stupid to do this by default)
+  # this can be hard-overridden by passing the header x-varnish-ttl (see below)
+  #
+  # and we DO use this trick to tell upstream servers to never cache our main forum pages
+  # but to keep it cached a very long time in varnish
+  if (beresp.http.cache-control ~ "(?i)no-cache")
+  {
+    set beresp.ttl = 0s;
+  }
+
+  # webapp has specified a varnish-specific ttl to override max-age (this is ultimate override)
   if (beresp.http.x-varnish-ttl)
   {
     set beresp.ttl = std.duration(beresp.http.x-varnish-ttl, 0s);
