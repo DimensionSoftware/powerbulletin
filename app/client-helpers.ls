@@ -43,7 +43,6 @@ export ck-submit-form = (e) ->
 
 export submit-form = (ev, fn) ->
   $f = $ ev.target .closest(\form) # get event's form
-  console.log $f
   $s = $ $f.find('[type=submit]:first')
   if $s then $s.attr \disabled \disabled
 

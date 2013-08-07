@@ -41,9 +41,6 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
   border-radius 8px / 3px
 textarea:focus, select:focus
   letter-spacing 0
-.button:hover::before
-  background-color rgba(100,100,100,.2)
-  border-radius 6px
 .button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
   background-image linear-gradient(bottom, #ffd467 12px, #ffce29 87%, #febe19 90%)
   background-color #ffca27
@@ -53,22 +50,18 @@ textarea:focus, select:focus
   border-bottom 1px solid #555
   box-shadow 0 0 5px #bbb,0 1px 5px 0 #c35407
   text-shadow 0px 1px 0 black,1px 1px 0 rgba(100,100,100,.5)
-.button:active::before
-  background-color rgba(0,0,0,.15)
-  border-radius 5px
-  left -4px
-  right -4px
-  bottom -4px
-  top -3px
+button:disabled:hover::before, input[type="submit"]:disabled:hover::before, input[type="button"]:disabled:hover::before
+  background-image linear-gradient(to bottom, rgba(255,255,255,.05) 0%, rgba(255,255,255,.1) 80%)
+button:disabled::before, input[type="submit"]:disabled::before, input[type="button"]:disabled::before
+  background-image linear-gradient(to bottom, rgba(255,255,255,.05) 0%, rgba(255,255,255,.1) 80%)
 button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   cursor wait
   color #fafafa
   opacity .85
   text-shadow 0 1px 0 rgba(0,0,0,.3),1px 1px 0 rgba(100,100,100,.1)
   transition opacity .2s ease-out, color .1s ease-out
-.button:enabled:active, button:enabled:active,
-  input[type='submit']:enabled:active,input[type='button']:enabled:active,button:enabled:focus,
-  input[type="submit"]:enabled:focus, input[type="button"]:enabled:focus
+.button:enabled:active, button:enabled:active, input[type='submit']:enabled:active,input[type='button']:enabled:active,button:enabled:focus, input[type="submit"]:enabled:focus, input[type="button"]:enabled:focus
+  top 1px
   border-top 1px solid #666
   text-indent 1px
   border-left 1px solid #666
@@ -78,16 +71,18 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   border-right 1px solid highlight-color2
   transform translateY(2px)
   border-radius 3px / 2px
-.button::before
+input[type="submit"]:hover::before, button:hover::before, .button:hover::before
+  background-image linear-gradient(to bottom, rgba(255,255,255,.15) 0%, rgba(255,255,255,.2) 100%)
+input[type="submit"]::before, button::before, .button::before
   position absolute
   content ''
-  background-color rgba(0,0,0,.1)
-  left -4px
-  top -4px
-  right -4px
-  bottom -4px
-  z-index -1
-  border-radius 4px
+  width 105%
+  height 50%
+  top 0
+  left -3px
+  //border-radius .5em .5em 1em 1em / .5em .5em 2em 2em
+  border-radius .5em .5em 6em 6em/.1em .1em 1em 1em
+  background-image linear-gradient(to bottom, rgba(255,255,255,.25) 0%, rgba(255,255,255,.2) 100%)
 .button, input[type="button"], input[type="submit"], button
   outline none
   white-space nowrap
