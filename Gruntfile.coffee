@@ -37,9 +37,9 @@ module.exports = (grunt) ->
               .filter((f) -> f.match /\.ls$/)
               .map((f) -> f.replace /\.ls$/, '')
       dist:
-        files:
-          "public/powerbulletin.min.js": "public/powerbulletin.js"
-          "public/powerbulletin-sales.min.js": "public/powerbulletin-sales.js"
+        files: []
+          #"public/powerbulletin.min.js": "public/powerbulletin.js"
+          #"public/powerbulletin-sales.min.js": "public/powerbulletin-sales.js"
 
     watch:
       procs:
@@ -123,8 +123,8 @@ module.exports = (grunt) ->
     daemon "bin/build-browser-bundle", config.tmp + "/browserify.pid"
 
   grunt.registerTask "cleanup", "cleanup disk", ->
-    exec "rm -f public/powerbulletin.js"
-    exec "rm -f public/powerbulletin-sales.js"
+    #exec "rm -f public/powerbulletin.js"
+    #exec "rm -f public/powerbulletin-sales.js"
 
   # Default task(s).
   if process.NODE_ENV is "production"

@@ -2,13 +2,13 @@
 mixin product(p, msg)
   if subscriptions.indexOf(p)==-1
     div(class="#{p}-available")
-      input.onclick-buy(type='button', data-product=p, value='Get It')
+      button.onclick-buy(type='button', data-product=p, value='Get It') Get It
     div(class="#{p}-purchased hidden")
       p.green= msg
         span &#x2713;
   else
     div(class="#{p}-available hidden")
-      input.onclick-buy(type='button', data-product=p, value='Get It')
+      button.onclick-buy(type='button', data-product=p, value='Get It') Get It
     div(class="#{p}-purchased")
       p.green= msg
         span &#x2713;

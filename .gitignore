@@ -1,6 +1,7 @@
 /public/master.css
 /public/sites
 /.vagrant
+/.config/
 /classes/
 /log/
 *.pid
@@ -14,10 +15,12 @@
 /public/powerbulletin.js
 /public/powerbulletin-sales.min.js
 /public/powerbulletin-sales.js
-/public/images/user
+/public/images/user/
+/public/domains/
 /app/views/templates.js
 /config/local.json
 /elasticsearch-logs/
 /elasticsearch-data/
 /build/
 /pb.sql
+/.bash_history

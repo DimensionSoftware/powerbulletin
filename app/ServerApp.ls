@@ -25,6 +25,7 @@ require! {
   \./auth
   \./io-server
   \./elastic
+  sh: \./server-helpers
   \express/node_modules/connect
   pg: \./postgres
   v: \./varnish
@@ -213,6 +214,12 @@ module.exports =
       cache-app.use(express.static \public {max-age})
 
       sock = express!
+
+      # setup probe for varnish load balancer, really simple, doesn't need any middleware
+      # and this also avoids logging in dev mode :D
+      sock.get '/probe', (req, res) ->
+        sh.caching-strategies.nocache res
+        res.send 'OK'
 
       # bind shared cache domains
       for i in ['', 2, 3, 4, 5]

@@ -237,9 +237,9 @@ ck-submit = Auth.require-login((ev) ->
 post-submit = Auth.require-login((ev) -> submit-form(ev, (data) -> post-success ev, data); false)
 
 submit-selectors =
-  * "html.profile .onclick-submit input[type='submit']"
-  * "html.forum .onclick-submit input[type='submit']"
-  * "html.search .onclick-submit input[type='submit']"
+  * "html.profile .onclick-submit button[type='submit']"
+  * "html.forum .onclick-submit button[type='submit']"
+  * "html.search .onclick-submit button[type='submit']"
 $d.on \click, submit-selectors.join(', '), post-submit
 $d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then post-submit it
 
@@ -294,7 +294,7 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
 )
 #}}}
 #{{{ - admin
-$d.on \click 'html.admin .onclick-submit input[type="submit"]' (ev) ->
+$d.on \click 'html.admin .onclick-submit button[type="submit"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form
     t = $(f.find \.tooltip)
