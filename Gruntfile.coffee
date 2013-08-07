@@ -39,7 +39,7 @@ module.exports = (grunt) ->
       dist:
         files:
           "public/powerbulletin.min.js": "public/powerbulletin.js"
-          "public/powerbulletin-sales.min.js": "public/powerbulletin-sales.js"
+          #"public/powerbulletin-sales.min.js": "public/powerbulletin-sales.js"
 
     watch:
       procs:
@@ -124,7 +124,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask "cleanup", "cleanup disk", ->
     exec "rm -f public/powerbulletin.js"
-    exec "rm -f public/powerbulletin-sales.js"
+    #exec "rm -f public/powerbulletin-sales.js"
 
   # Default task(s).
   if process.NODE_ENV is "production"

@@ -15,4 +15,5 @@ module.exports =
   raf                   : "#{cvars.cache5-url}/local/raf.js"
   reactivejs            : "#{cvars.cache-url}/local/reactive.js"
   powerbulletin         : "#{cvars.cache3-url}/powerbulletin#{if process.env.NODE_ENV is \production then '.min' else ''}.js"
-  powerbulletin-sales   : "#{cvars.cache4-url}/powerbulletin-sales#{if process.env.NODE_ENV is \production then '.min' else ''}.js"
+  #powerbulletin-sales   : "#{cvars.cache4-url}/powerbulletin-sales#{if process.env.NODE_ENV is \production then '.min' else ''}.js"
+  powerbulletin-sales   : "#{cvars.cache4-url}/powerbulletin-sales.js"
