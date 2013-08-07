@@ -17,7 +17,7 @@
       var ServerApp;
       isStarting = true;
       ServerApp = require('./ServerApp');
-      s = new ServerApp(parseInt(process.env.NODE_PORT) || 3000);
+      s = new ServerApp(process.argv[2] || parseInt(process.env.NODE_PORT) || 3000);
       return s.start(function(){
         return isStarting = false;
       });
