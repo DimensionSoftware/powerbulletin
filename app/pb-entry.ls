@@ -7,6 +7,8 @@ window.furl  = require \./forum-urls.ls
 window.tasks = require \./tasks.ls
 window.ioc   = require \./io-client.ls
 
+window.PhotoCropper = require \../component/PhotoCropper.ls
+
 global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
 global <<< require \./shared-helpers.ls
 global <<< require \./client-helpers.ls

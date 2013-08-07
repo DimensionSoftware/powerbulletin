@@ -6,6 +6,7 @@ require! {
   \../component/AdminUpgrade.ls
   \../component/AdminMenu.ls
   \../component/Paginator.ls
+  \../component/PhotoCropper.ls
 }
 
 !function bench subject-name, subject-body
@@ -361,8 +362,14 @@ export profile =
       scroll-to-top!
       next!
   on-personalize: (w, u, next) ->
+    photocropper-start = (ev) -> PhotoCropper.start!
     if u # guard
       layout-on-personalize w, u
+      window.$(\.left-content).add-class \editable
+      window.$(\body).on \click, '.left-content.editable .avatar', photocropper-start
+    else
+      window.$(\.left-content).remove-class \editable
+      window.$(\body).off \click, '.left-content.editable .avatar', photocropper-start
     next!
   on-unload:
     (window, next-mutant, next) ->
