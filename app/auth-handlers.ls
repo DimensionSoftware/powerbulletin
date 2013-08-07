@@ -302,7 +302,12 @@ auth-finisher = (req, res, next) ->
   else
     res.json null
 
+@no-cache = (req, res, next) ->
+  caching-strategies.nocache res
+  next!
+
 @apply-to = (app, mw) ->
+  app.all  /^\/auth\/.*$/,              @no-cache
   app.post '/auth/login',           mw, @login
   app.post '/auth/once',            mw, @once
   app.post '/auth/register',        mw, @register
