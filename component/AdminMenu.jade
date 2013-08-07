@@ -35,7 +35,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
               span.label.checked Yes
               .note Commentable forums are threaded like Reddit
             .break    
-            input.button(type='submit', value='Save')
+            button(type='submit', value='Save') Save
             .tooltip
         li
           label.header(for='page') Page
@@ -57,7 +57,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
             textarea(id='body', name='body')
             .note Paste the contents of the page above
             .break    
-            input.button(type='submit', value='Save')
+            button(type='submit', value='Save') Save
             .tooltip
         li
           label.header(for='link') External Link
@@ -74,5 +74,5 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
               span.label.checked Yes
               .note Open link in separate window
             .break    
-            input.button(type='submit', value='Save')
+            button(type='submit', value='Save') Save
             .tooltip

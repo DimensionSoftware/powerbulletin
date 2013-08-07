@@ -43,5 +43,5 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
     textarea(id='analytics', name='analytics')= analytics
     .note Paste Javascript code above, excluding &lt;script&gt; tags
   .tooltip
-  input.button(type='submit', value='Save')
+  button(type='submit', value='Save') Save
   input(type='hidden', name='action', value='general')
