@@ -375,7 +375,6 @@ export profile =
     if u # guard
       layout-on-personalize w, u
       profile-user-id = window.$('#left_content .profile').data \userId
-      console.warn \profile-user-id, profile-user-id
       if profile-user-id is u.id
         photocropper-enable!
       else

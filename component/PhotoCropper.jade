@@ -1,6 +1,13 @@
-form(method="POST", action="#{endpointUrl}")
-  h1= title
-  div
-    img(src="#{cacheUrl}/images/cropper-grid.png", width=197, height=197)
-  div
-    button Save
+.upload
+  form(method="POST", action="#{endpointUrl}", enctype="multipart/form-data")
+    h1= title
+    div
+      img(src="#{cacheUrl}#{photo}")
+    div
+      div.button 
+        span Change Profile Photo
+        input(type="file", name="avatar")
+
+.crop(style="display:none;")
+  h1 Crop Mode
+  p This is where
