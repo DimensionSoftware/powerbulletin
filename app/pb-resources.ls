@@ -65,6 +65,7 @@ ban-all-domains = (site-id) ->
     | \menu =>
       # save site config
       site.config.menu = req.body.menu
+      console.log \menu:, req.body.menu
       err, r <- db.site-update site
       if err then return next err
       # TODO sync live menu with config

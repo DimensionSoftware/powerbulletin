@@ -39,28 +39,26 @@ module.exports =
           ..nested-sortable opts
         false
 
-      # TODO save
-      @$.on \click 'input[type="submit"]' (ev) ~>
-        # using generic forum submit
-        # TODO serialize nested sortable
-        console.log(@$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!)
-        menu = @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!
+      # save menu
+      @$.on \click 'button[type="submit"]' (ev) ~>
+        menu = @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy! # extended to pull data attributes, too
         f = @$.find \form
-        f.append(@@$ \<input> # append menu
+        f.find 'input[name="menu"]' .remove! # prune last
+        console.log menu
+        f.append(@@$ \<input>                # append new
           .attr \type, \hidden
           .attr \name, \menu
           .val JSON.stringify menu)
-        # TODO submit form details for active sortable + entire nested sortable
         submit-form ev, (data) ->
           f = $ this # form
           t = $(f.find \.tooltip)
-          unless data.success
-            show-tooltip t, data?errors?join \<br>
-          else
-            show-tooltip t, \Saved!
+          show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
+
+      @$.on \blur \.row (ev) ~>
+        # TODO save current form on active row/input
 
       @$.on \click \.row (ev) ~>
-        # TODO load data for row
+        # TODO load data for active row
 
       # init
       @$.find \.sortable .nested-sortable opts
