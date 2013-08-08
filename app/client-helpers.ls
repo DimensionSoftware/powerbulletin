@@ -86,6 +86,7 @@ render = (sel, locals, cb=(->)) ~>
     focus $e
 export toggle-post = (ev) ->
   unless $ ev.target .has-class \onclick-footer-toggle then return # guard
+  unless user then Auth.show-login-dialog!; return # guard
   data =
     action: \/resources/posts
     method: \post
