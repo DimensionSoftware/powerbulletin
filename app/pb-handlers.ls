@@ -250,7 +250,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   db   = pg.procs
   user = req.user
   site = res.vars.site
+  console.warn \lookup-user, { id: req.params.id, site_id: site.id }
   err, usr <- db.usr { id: req.params.id, site_id: site.id }
+  console.warn \found-user, err, usr
+  console.warn \logged-in-as, user
   if err
     console.error \authentication
     return res.json { success: false }, 403
@@ -259,6 +262,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     return res.json { success: false }, 403
 
   avatar = req.files.avatar
+  console.warn \avatar, avatar
 
   ext = avatar.name.match(/\.(\w+)$/)?1 or ""
   avatar-file = if ext then "avatar.#ext" else "avatar"

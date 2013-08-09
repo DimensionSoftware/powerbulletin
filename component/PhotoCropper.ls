@@ -36,12 +36,19 @@ module.exports =
 
     #
     on-attach: ->
-      @$.find('.upload .button').click ~>
-        @$.find('.upload input[type=file]').click!
 
-      @$.find('.upload input[type=file]').change ~>
-        @crop-mode!
-      1 # stub
+      #@$.find('.upload input[type=file]').change ~>
+      #  @upload!
+
+      @$.find('.upload input[type=file]').html5-uploader name: \avatar, post-url: @endpoint-url
+
+    #
+    upload: ->
+      data = @$.find('form').serialize!
+      jqxhr = @@$.post @endpoint-url, data, (r) ~>
+        @crop-mode r
+      jqxhr.fail (r) ~>
+        console.warn 'upload failed', r
 
     # this is the default mode where new images can be uploaded
     upload-mode: ->
@@ -49,7 +56,8 @@ module.exports =
       @$.find \.upload .show!
 
     # this is the mode for cropping an uploaded image
-    crop-mode: ->
+    crop-mode: (r) ->
+      console.warn \r, r
       @$.find \.upload .hide!
       @$.find \.crop .show!
 

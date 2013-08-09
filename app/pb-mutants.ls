@@ -362,11 +362,14 @@ export profile =
       scroll-to-top!
       next!
   on-personalize: (w, u, next) ->
+    <- lazy-load-html5-uploader
+
     photocropper-start = (ev) -> PhotoCropper.start {}
 
     photocropper-enable = ->
       window.$(\#left_content).add-class \editable
       window.$(\body).on \click, '#left_content.editable .avatar', photocropper-start
+      window.$('#left_content .avatar').html5-uploader name: \avatar, post-url: "/resources/users/#{window.user.id}/avatar"
 
     photocropper-disable = ->
       window.$(\#left_content).remove-class \editable
