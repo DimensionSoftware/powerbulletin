@@ -100,7 +100,8 @@ parseopts = ({
       query:
         custom_score:
           query: {filtered}
-          # recency factor is weighted 100:1 to normal score
+          # recency factor is weighted 99:1 to elastic score and then the
+          # mean average is taken so we have a value in the range of 0..1
           # subtracting one-year-ago makes it so that only the last year
           # of recency counts...
           script: "(_score + (99 * ((doc.created.value - #one-year-ago) / #one-year-duration-ms))) / 100"
