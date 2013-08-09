@@ -94,14 +94,16 @@ parseopts = ({
     step = 10
     from = (page - 1) * step
     now = new Date
-    one-year-ago = now - (365 * 24 * 60 * 60 * 1000)
-    div-by = 20000000000
+    one-year-duration-ms = (365 * 24 * 60 * 60 * 1000)
+    one-year-ago = now - one-year-duration-ms
     {
       query:
         custom_score:
           query: {filtered}
-          #script: "_score + pow((doc.created.value - #one-year-ago) / #div-by, 4)"
-          script: "_score * pow((doc.created.value - #one-year-ago) / #div-by, 4)"
+          # recency factor is weighted 100:1 to normal score
+          # subtracting one-year-ago makes it so that only the last year
+          # of recency counts...
+          script: "(_score + (99 * ((doc.created.value - #one-year-ago) / #one-year-duration-ms))) / 100"
         from
       facets
     }
