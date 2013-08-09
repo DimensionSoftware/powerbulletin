@@ -15,7 +15,13 @@ suffix = elres.total == 1 ? '' : 's'
 
   if elres.hits.length
     each hit in elres.hits
+      // always use thread title
       - hit._source.title = hit._source.thread_title
+
+      if env != 'production'
+        // show score in dev mode
+        - hit._source.title = hit._source.title + ' (score: ' + hit._score + ' )'
+
       if hit._source.id == hit._source.thread_id
         .thread-hit
           mixin _post(hit._source, 0)
@@ -25,10 +31,4 @@ suffix = elres.total == 1 ? '' : 's'
   else
     h4 Try a more general search
       i !
-    //- div
-    //-   if env != 'production'
-    //-     strong #{hit._source.title} (score: #{hit._score})
-    //-   else
-    //-     strong #{hit._source.title}
-    //- p= hit._source.body
-    //- div= JSON.stringify(hit)
+

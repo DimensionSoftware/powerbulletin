@@ -89,10 +89,25 @@ parseopts = ({
 
   filtered <<< {filter: {and: filters}} if filters.length
 
-  #XXX: step assumed to be fixed at 10 for now
-  step = 10
-  from = (page - 1) * step
-  {query: {filtered}, facets, from}
+  do ->
+    #XXX: step assumed to be fixed at 10 for now
+    step = 10
+    from = (page - 1) * step
+    now = new Date
+    one-year-duration-ms = (365 * 24 * 60 * 60 * 1000)
+    one-year-ago = now - one-year-duration-ms
+    {
+      query:
+        custom_score:
+          query: {filtered}
+          # recency factor is weighted 100:1 to normal score
+          # subtracting one-year-ago makes it so that only the last year
+          # of recency counts...
+          script: "(_score + (99 * ((doc.created.value - #one-year-ago) / #one-year-duration-ms))) / 100"
+        from
+      facets
+    }
+
 
 # usage on repl:
 #   s.search q: \mma, console.log
