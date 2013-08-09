@@ -364,7 +364,7 @@ export profile =
   on-personalize: (w, u, next) ->
     <- lazy-load-html5-uploader
 
-    photocropper-start = (ev) -> PhotoCropper.start {}
+    photocropper-start = (ev) -> PhotoCropper.start!
 
     photocropper-enable = ->
       window.$(\#left_content).add-class \editable
