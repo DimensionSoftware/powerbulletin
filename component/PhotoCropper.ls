@@ -16,9 +16,7 @@ module.exports =
       endpoint-url = "/resources/users/#{user.id}/avatar" unless endpoint-url
 
       <~ lazy-load-fancybox
-      unless @pc
-        @pc = new PhotoCropper { aspect-ratio, endpoint-url, locals: { title, photo, endpoint-url } }, $('<div/>')
-        @pc.render!
+      @pc = new PhotoCropper { aspect-ratio, endpoint-url, locals: { title, photo, endpoint-url } }
       $.fancybox.open @pc.$, { after-load: cb }
 
     #
