@@ -40,3 +40,11 @@ Post-Modern, Realtime, FREE (as in freedom) Community
     ipfw add fwd 127.0.0.1,3000 tcp from any to me dst-port 80
 
 # IDEA: let people upvote or downvote moderation decisions
+
+# varnish how to watch health (and see backend health status)
+    # continuous watching of just first backend
+    watch 'varnishadm debug.health | head -n 9'
+
+    # one-shot health dump + all backends status
+    varnishadm debug.health
+
