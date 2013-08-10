@@ -143,11 +143,14 @@ module.exports =
           # reload page XXX I know its not ideal but the alternative is painful >.<
           if initial-mutant is \privateSite then window.location.reload!
         else
-          $fancybox = $form.parents \.fancybox-wrap:first
-          $fancybox.add-class \on-error
-          $fancybox.remove-class \shake
-          ch.show-tooltip $form.find(\.tooltip), 'Try again!' # display error
-          set-timeout (-> $fancybox.add-class(\shake); u.focus!), 10ms
+          if r.type is \unverified-user
+            ch.switch-and-focus \on-login \on-dialog
+          else
+            $fancybox = $form.parents \.fancybox-wrap:first
+            $fancybox.add-class \on-error
+            $fancybox.remove-class \shake
+            ch.show-tooltip $form.find(\.tooltip), 'Try again!' # display error
+            set-timeout (-> $fancybox.add-class(\shake); u.focus!), 10ms
         s.remove-attr \disabled
       false
 

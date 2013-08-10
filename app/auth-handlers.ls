@@ -23,8 +23,9 @@ announce = sioa.create-client!
     console.warn "domain", domain
 
     auth-response = (err, user, info) ->
+      console.warn \auth-response, err, user, info
       if err then return next(err)
-      if not user then return res.json { success: false }
+      if not user then return res.json { success: false } <<< info
       req.login user, (err) ->
         if err then return next(err)
         console.warn "emitting enter-site #{JSON.stringify(user)}"
