@@ -447,6 +447,7 @@ export admin =
       window.pages-count = 0
       pager-init window
       <~ lazy-load-nested-sortable
+      <~ lazy-load-deserialize
       next!
   on-initial:
     (win, next) ->

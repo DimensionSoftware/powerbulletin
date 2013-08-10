@@ -137,6 +137,11 @@ export lazy-load = (test, script, css, cb) ->
     cb!
   else
     cb!
+export lazy-load-deserialize = (cb) ->
+  lazy-load (-> window.$!deserialize?length),
+    "#cache-url/local/jquery.deserialize.min.js",
+    null,
+    cb
 export lazy-load-nested-sortable = (cb) ->
   lazy-load (-> window.$!nested-sortable?length),
     "#cache-url/local/jquery.mjs.nestedSortable.js",
