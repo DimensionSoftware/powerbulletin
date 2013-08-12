@@ -42,7 +42,7 @@ module.exports =
           else # error handling
             show-tooltip (@$.find \.tooltip), if r.errors?length then r.errors.join "\n" else 'Invalid payment!'
             card-number = @$.find \.Buy-card-number
-            for e in [card-number, @@$ \.Buy-card-code] then e.add-class \error
+            for e in [card-number, @@$ \.Buy-card-code] then e.add-class \has-error
 
             $fb = @@$ \.fancybox-wrap:first
             $fb.add-class \on-error

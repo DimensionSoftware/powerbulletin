@@ -19,8 +19,8 @@ module.exports =
 
       # init children
       @children =
-        register-top: new SiteRegister {locals: {subdomain: @state.subdomain}}, \#register-top, @
-        register-bottom: new SiteRegister {locals: {subdomain: @state.subdomain}}, \#register-bottom, @
+        register-top: new SiteRegister {locals: {subdomain: @state.subdomain}}, \#register_top, @
+        register-bottom: new SiteRegister {locals: {subdomain: @state.subdomain}}, \#register_bottom, @
 
     on-attach: ->
       @@$R((subdomain) ~>

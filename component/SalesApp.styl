@@ -1,6 +1,11 @@
 body
   margin 5em
+  height 3700px
 
+body.scrolled
+  header
+    border-bottom 0
+    background #eee
 header
   position fixed
   top 0
@@ -10,12 +15,26 @@ header
   background #000
   opacity 0.75
   text-align right
-  z-index 10
-
+  z-index 20!important
+  background-image linear-gradient(bottom, #000 16px, #333)
   ul
     list-style none
+    margin 0 12px
     li
       display inline-block
-      margin-top 4px
+      margin-top 6px
+      font-style italic
+      letter-spacing 1px
+      font-weight bold
       color #fff
       cursor pointer
+section
+  background white
+  position fixed
+  display block
+  top 0
+  left 0
+  width 100%
+  min-height 100%
+  overflow hidden
+  transform translate3d(0,0,0)
