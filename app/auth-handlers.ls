@@ -187,10 +187,20 @@ do-verify = (req, res, next) ~>
 @resend = (req, res, next) ->
   site  = res.vars.site
   email = req.body.email
+
   err, user <- db.usr { email, site_id: site.id }
-  if err then return res.json success: false
+  if err then return res.json success: false, when: \db.usr
+
+  err, verify <- auth.unique-hash \verify, site.id
+  if err then return res.json success: false, when: \auth.unique-hash
+  user.verify = verify
+
+  err <- db.aliases.update criteria: { user_id: user.id, site_id: site.id }, data: { verify }
+  if err then return res.json success: false, when: \db.aliases.update
+
   err <- auth.send-registration-email user, site
-  if err then return res.json success: false
+  if err then return res.json success: false, when: \auth.send-registration-email
+
   res.json success: true
 
 # XXX users may change user names any amount of times by avoiding the ui
