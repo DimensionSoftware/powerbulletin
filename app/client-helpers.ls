@@ -131,11 +131,15 @@ load-css = (href) ->
   load-css-cache[href] = true
 
 export lazy-load = (test, script, css, cb) ->
+  b = $ \body
+  b.add-class \waiting
   unless test!
     if css then load-css css
     <- headjs script
+    b .remove-class \waiting
     cb!
   else
+    b .remove-class \waiting
     cb!
 export lazy-load-deserialize = (cb) ->
   lazy-load (-> window.$!deserialize?length),
