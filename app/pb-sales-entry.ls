@@ -24,7 +24,7 @@ $R((user) ->
 # parallax
 $ window .on \scroll, ->
   offset = $ window .scroll-top!
-  $ \.SiteRegister |> each -> $ it .css \top, "#{0-(offset*1.7)}px"
+  $ \#register_top |> each -> $ it .css \top, "#{0-(offset*1.7)}px"
   $ \.stick        |> each -> $ it .css \top, "#{0-(offset*0.75)}px"
 
 # focus!
