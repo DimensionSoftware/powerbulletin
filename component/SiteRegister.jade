@@ -1,7 +1,7 @@
-ul.SiteRegister-errors
+.tooltip.SiteRegister-errors
 form.site-register
   fieldset
-    input.SiteRegister-subdomain(type='text', name='subdomain', value=typeof subdomain != 'undefined' ? subdomain : '')
+    input.SiteRegister-subdomain(type='text', name='subdomain', value=typeof subdomain != 'undefined' ? subdomain : '', autocomplete="off")
       t
     span.hostname= hostname
     span.SiteRegister-available

@@ -227,7 +227,7 @@ module.exports =
         #  removing leading //
         sock.use(express.vhost cvars["cache#{i}Url"].slice(2), cache-app)
 
-      sock.use(express.vhost 'pb.com', sales-app)
+      sock.use(express.vhost (if process.env.NODE_ENV is \production then \powerbulletin.com else \pb.com), sales-app)
 
       # dynamic app can automatically check req.host
       sock.use(app)

@@ -15,11 +15,18 @@ window.do-buy = ->
   $.fancybox(window.component.buy.$)
 
 $R((user) ->
-  console.log \user, user
   if user
     component.sales-app.login user
   else
     component.sales-app.logout!
 ).bind-to window.r-user
 
+# parallax
+$ window .on \scroll, ->
+  offset = $ window .scroll-top!
+  $ \.SiteRegister |> each -> $ it .css \top, "#{0-(offset*1.7)}px"
+  $ \.stick        |> each -> $ it .css \top, "#{0-(offset*0.75)}px"
+
+# focus!
+set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 100ms
 # vim:fdm=marker
