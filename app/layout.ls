@@ -309,7 +309,7 @@ switch window.location.hash
 | \#validate => Auth.after-login! # email activation
 | \#once     => Auth.login-with-token!
 
+onload-personalize!
 if window.initial-mutant # XXX sales-app doesn't have a mutant
-  onload-personalize!
   <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
 # vim:fdm=marker
