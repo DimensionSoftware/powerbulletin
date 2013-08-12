@@ -31,10 +31,11 @@ module.exports =
         e.find \.strength .css(height:parse-int(percent)+\%))
       cb window._auth.$
 
-    @show-info-dialog = (msg, remove='', cb=(->)) ->
+    @show-info-dialog = (msg, msg2='', remove='', cb=(->)) ->
       <- Auth.show-login-dialog
       fb = $ \.fancybox-wrap:first
       fb.find \#msg .html msg
+      fb.find '.dialog .msg2' .html msg2
       ch.switch-and-focus remove, \on-dialog, ''
       cb window._auth.$
 
@@ -100,6 +101,7 @@ module.exports =
       @$.on \submit '.reset form' @reset-password
       @$.on \click '.toggle-password' @toggle-password
       @$.on \submit '.choose form' @choose
+      @$.on \click '.dialog a.resend' @resend
 
       @$.on \click \.onclick-close-fancybox ->
         $.fancybox.close!
@@ -143,11 +145,17 @@ module.exports =
           # reload page XXX I know its not ideal but the alternative is painful >.<
           if initial-mutant is \privateSite then window.location.reload!
         else
-          $fancybox = $form.parents \.fancybox-wrap:first
-          $fancybox.add-class \on-error
-          $fancybox.remove-class \shake
-          ch.show-tooltip $form.find(\.tooltip), 'Try again!' # display error
-          set-timeout (-> $fancybox.add-class(\shake); u.focus!), 10ms
+          if r.type is \unverified-user
+            resend = """
+            To resend your verification email, <a class="resend" data-email="#{r.email}">click here</a>.
+            """
+            @@show-info-dialog 'Please verify your account first.', resend, \on-login
+          else
+            $fancybox = $form.parents \.fancybox-wrap:first
+            $fancybox.add-class \on-error
+            $fancybox.remove-class \shake
+            ch.show-tooltip $form.find(\.tooltip), 'Try again!' # display error
+            set-timeout (-> $fancybox.add-class(\shake); u.focus!), 10ms
         s.remove-attr \disabled
       false
 
@@ -186,7 +194,7 @@ module.exports =
       s.attr \disabled \disabled
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
-          Auth.show-info-dialog 'Check your inbox for reset link!', \on-forgot
+          Auth.show-info-dialog 'Check your inbox for reset link!', '', \on-forgot
         else
           $form.find \input:first .focus!
           msg = r.errors?0?name or r.errors?0?msg or 'Unable to find you'
@@ -218,6 +226,15 @@ module.exports =
           ch.show-tooltip $form.find(\.tooltip), "Choose a better password"
         s.remove-attr \disabled
       false
+
+    # resend verification email
+    resend: (ev) ~>
+      email = $('.dialog a.resend').data \email
+      r <- $.post '/auth/resend', { email }
+      if r.success
+        @@show-info-dialog 'Verification email sent again.', 'Please check your email.  It might be in your spam.'
+      else
+        @@show-info-dialog 'There was a problem sending the email', 'Please try again.'
 
     # this toggles the visibility of the password field in case people want to see
     # their password as they type it

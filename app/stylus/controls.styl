@@ -1,6 +1,16 @@
 
+// NOTE base theme on <form> elements
+
+// error classes for inputs
+.has-error:focus, .has-error:active
+  border-color red!important
+.has-error
+  border-bottom-color red!important
+  background-image linear-gradient(to bottom, #fff 80%, #ffe0e0 100%)!important
+
 select
   height 40px
+
 input[type="password"], select, textarea, input[type="text"]
   //box-shadow 0 0 9px #cba inset, 0 0 0 #888
   border-radius 3px
@@ -42,6 +52,8 @@ input[type="password"]:focus, input[type="password"]:focus, select:focus, textar
 textarea:focus, select:focus
   letter-spacing 0
 .button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
+  animation-name tiny-grow
+  animation-duration .03s
   background-image linear-gradient(bottom, #ffd467 12px, #ffce29 87%, #febe19 90%)
   background-color #ffca27
   border-color #777
@@ -73,7 +85,8 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
 input[type="submit"]:hover::before, button:hover::before, .button:hover::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.33) 0%, rgba(255,255,255,.28) 100%)
   opacity 1
-  transition opacity .1s ease-out
+  height 53%
+  transition opacity .1s ease-out, height .05s ease-out
 input[type="submit"]::before, button::before, .button::before
   position absolute
   content ''
