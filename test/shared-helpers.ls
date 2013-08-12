@@ -7,7 +7,7 @@ _it = it
 
 e2hr-should-equal = (text, ...durations) ->
   for dur in durations
-      _it "elapsed-to-human-readable(#{dur}ms) => #{JSON.stringify text}" ->
+      _it "elapsed-to-human-readable(#{dur}s) => #{JSON.stringify text}" ->
         assert.equal sh.elapsed-to-human-readable(dur), text
 
 describe 'function elapsed-to-human-readable' ->
