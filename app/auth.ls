@@ -204,7 +204,7 @@ export create-passport = (domain, cb) ->
       return done(null, false, { type: \incorrect-password, message: 'Incorrect password' })
     if not user.verified
       log 'unverified user', user
-      return done(null, false, { type: \unverified-user, message: 'Unverified user' })
+      return done(null, false, { type: \unverified-user, message: 'Unverified user', email: user.email })
     log 'ok'
     done(null, user)
 

@@ -183,6 +183,16 @@ do-verify = (req, res, next) ~>
     console.warn \usr, "User not found"
     res.json success: false, errors: [ "User not found" ]
 
+# resend verification email
+@resend = (req, res, next) ->
+  site  = res.vars.site
+  email = req.body.email
+  err, user <- db.usr { email, site_id: site.id }
+  if err then return res.json success: false
+  err <- auth.send-registration-email user, site
+  if err then return res.json success: false
+  res.json success: true
+
 # XXX users may change user names any amount of times by avoiding the ui
 # - in the future, consider adding field to aliases to count # of changes,
 # - then build a setting in general admin to user-specify
@@ -319,6 +329,7 @@ auth-finisher = (req, res, next) ->
   app.post '/auth/forgot',          mw, @forgot
   app.post '/auth/forgot-user'      mw, @forgot-user
   app.post '/auth/reset-password'   mw, @reset-password
+  app.post '/auth/resend'           mw, @resend
 
   app.get  '/auth/facebook',        mw, @login-facebook
   app.get  '/auth/facebook/return', mw, @login-facebook-return
