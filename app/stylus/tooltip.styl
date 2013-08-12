@@ -4,7 +4,7 @@ tooltip-border-color = rgb(100, 100, 100)
   opacity .9
   transform scale(1) rotate(0) translate(0, 0)
   transition all .3s ease-in-out
-.tooltip::before, .tooltip::after
+.tooltip::after
   content ''
   position absolute
   bottom -13px
@@ -19,6 +19,15 @@ tooltip-border-color = rgb(100, 100, 100)
   bottom -12px
   margin-left -10px
   border-top 9px solid #444
+.tooltip::before
+  position absolute
+  content ''
+  left -3px
+  right -3px
+  top -3px
+  height 54%
+  background rgba(255,255,255,.15)
+  border-radius .5em .1em 5em 4em/.1em .1em 1em 3em
 .tooltip
   transition all .2s ease-in-out
   transform scale(0) rotate(30deg) translate(120px, 200px)
@@ -42,7 +51,7 @@ tooltip-border-color = rgb(100, 100, 100)
   opacity 0
   box-shadow 0 1px 0px 1px #333,0 3px 5px 1px tooltip-border-color
   text-shadow 0 -1px 0 #000
-.tooltip.right::before, .tooltip.right::after
+.tooltip.right::after
   border-right 10px solid rgba(0,0,0,0.1)
   border 9px solid transparent
   left -11px
