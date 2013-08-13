@@ -40,11 +40,11 @@ s-app.get '/' (req, res, next) ->
     * jsu.jquery
     * jsu.jquery-cookie
     * jsu.jquery-history
-    * jsu.jquery-history-native
     * jsu.jquery-nicescroll
     * jsu.jquery-ui
     * jsu.raf
     * jsu.powerbulletin-sales
+  scripts = ["#s?#{CHANGESET}" for s in scripts]
 
   stylesheets = [
     csu.master-sales
