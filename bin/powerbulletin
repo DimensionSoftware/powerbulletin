@@ -14,11 +14,13 @@ if [ "$NODE_ENV" = 'production' ] ; then
   killall mon # make sure daemons are monitored for launched processes also
   for port in {3000..3002}
   do
+    set +e
     # XXX: it is assumed that the previous mon has been killed by the time you get here
     echo "killing pb-worker-$port..."
     killall "pb-worker-$port"
     sleep 2 # give 2 seconds for graceful death
     killall -9 "pb-worker-$port"
+    set -e
     mon -d \
         -l logs/powerbulletin.log \
         -m /tmp/pb.pid \
