@@ -1,6 +1,6 @@
 require! {
   assert
-  \../component/Paginator
+  \../../component/Paginator
 }
 
 _it = it
