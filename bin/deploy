@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 # new prod server
-TARGET=165.225.139.183:3733
+TARGET=165.225.139.183
 
 echo deploying to $TARGET...
 
