@@ -9,6 +9,7 @@ require! {
   \./pb-handlers
   \./auth-handlers
   \./auth
+  sh: \./server-helpers
 }
 
 # would like to just call it app, but global 'app' is reserved
@@ -40,11 +41,11 @@ s-app.get '/' (req, res, next) ->
     * jsu.jquery
     * jsu.jquery-cookie
     * jsu.jquery-history
-    * jsu.jquery-history-native
     * jsu.jquery-nicescroll
     * jsu.jquery-ui
     * jsu.raf
     * jsu.powerbulletin-sales
+  scripts = ["#s?#{CHANGESET}" for s in scripts]
 
   stylesheets = [
     csu.master-sales
@@ -53,12 +54,18 @@ s-app.get '/' (req, res, next) ->
   locals = {scripts, stylesheets} <<< cvars
   sl = new SalesLoader {locals}
   res.content-type \html
-  res.send sl.html(false)
+  body = sl.html(false)
+
+  # cache 1 hour with strong etag validation
+  sh.caching-strategies.etag res, sh.sha1(body), 60*60
+
+  res.send body
 
 s-app.get '/ajax/check-domain-availability', (req, res, next) ->
   domain = req.query.domain
   err, domain-exists <- db.domain-by-name-exists domain
   if err then return next err
+  sh.caching-strategies.nocache res
   res.json {available: !domain-exists}
 
 s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->

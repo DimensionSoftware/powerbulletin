@@ -1,6 +1,12 @@
+
+require!  shelljs
+
 function get-CHANGESET
   {code, output} = shelljs.exec('git rev-parse HEAD', silent: true)
   output.trim!
+
+# do this as early as possible so it exists for js-urls and css-urls
+global.CHANGESET = get-CHANGESET!
 
 global <<< require \prelude-ls
 
@@ -31,7 +37,6 @@ require! {
   v: \./varnish
   m: \./pb-models
   \./sales-app
-  shelljs
   _: \lodash
 }
 
@@ -56,7 +61,6 @@ require! {
 # }}}
 
 global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
-global.CHANGESET = get-CHANGESET!
 
 require \./load-cvars
 
