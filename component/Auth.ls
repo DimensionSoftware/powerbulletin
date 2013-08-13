@@ -176,6 +176,11 @@ module.exports =
         if r.success
           $form.find("input:text,input:password").remove-class(\validation-error).val ''
           ch.switch-and-focus \on-register \on-dialog ''
+
+          # autologin
+          Auth.after-login!
+          Auth.show-info-dialog "Welcome to #siteName"
+
         else
           msgs = []
           r.errors?for-each (e) ->
