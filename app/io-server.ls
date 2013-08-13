@@ -145,6 +145,7 @@ site-by-domain = (domain, cb) ->
 
     # client will get subscribed to said query room
     socket.on \search, (searchopts) ->
+      searchopts = {} <<< searchopts # clone
       delete searchopts.page # page is irrelevant to realtime
 
       if search-room
