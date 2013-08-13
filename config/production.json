@@ -3,11 +3,11 @@
   [ "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
   , "//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"
   ]
-, "cacheUrl"  : "//muscache-stage.powerbulletin.com"
-, "cache2Url" : "//muscache2-stage.powerbulletin.com"
-, "cache3Url" : "//muscache3-stage.powerbulletin.com"
-, "cache4Url" : "//muscache4-stage.powerbulletin.com"
-, "cache5Url" : "//muscache5-stage.powerbulletin.com"
+, "cacheUrl"  : "//muscache.powerbulletin.com"
+, "cache2Url" : "//muscache2.powerbulletin.com"
+, "cache3Url" : "//muscache3.powerbulletin.com"
+, "cache4Url" : "//muscache4.powerbulletin.com"
+, "cache5Url" : "//muscache5.powerbulletin.com"
 , "stripe":
   { "privateKey": "sk_test_Zn4dz9SjDQ4viJ4j5Th5VfU7"
   , "publicKey": "pk_test_pLmrPdctjhzQWGSFjZqiAa9w"
