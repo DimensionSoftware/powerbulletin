@@ -11,6 +11,8 @@ if [ "$NODE_ENV" = 'production' ] ; then
   # 1 have 1 vCPU so this isn't necessarily performant
   # but its nice to have backup app processes if one crashes
 
+  #XXX: look into soft reload for haproxy and varnish to avoid even more downtime!
+
   killall mon # make sure daemons are monitored for launched processes also
   for port in {3000..3002}
   do
