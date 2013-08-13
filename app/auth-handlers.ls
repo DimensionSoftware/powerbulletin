@@ -79,21 +79,23 @@ announce = sioa.create-client!
     username = req.body.username
     password = req.body.password
     email    = req.body.email
-    (err, u) <- register-local-user site, username, password, email
+    (err, u) <~ register-local-user site, username, password, email
     if err
       # FIXME possible email abuse if if attacker is able to create accounts
       if err?verify # err is existing user, so ...
         console.warn 'user exists:', err, site
-        <- auth.send-registration-email err, site # resend!
+        <~ auth.send-registration-email err, site # resend!
         res.json success:false, errors:[msg:'Resent verification email!']
       else
         # default error situation
         return next err
 
-    done = ->
+    done = ~>
       auth.send-registration-email u, site, (err, r) ->
         console.warn 'registration email', err, r
-      res.json success:true, errors:[]
+      #res.json success:true, errors:[]   # <- just register
+      @login req, res, next               # <- autologin
+                                          # pick one
 
     done!
 
