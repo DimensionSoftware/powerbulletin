@@ -39,6 +39,14 @@ get-cols = (dbname, tname, cb) ->
   if err then return cb(err)
   cb null, rows.map (.column_name)
 
+# This is for queries that don't need to be stored procedures.
+# Base the top-level key for the table name from the FROM clause of the SQL query.
+query-dictionary =
+  # db.users.all cb
+  users:
+    all: postgres.query 'SELECT * FROM users', [], _
+
+
 # assumed postgres is initialized
 export init = (cb) ->
   err, tables <~ get-tables \pb, _
@@ -51,6 +59,8 @@ export init = (cb) ->
   each export-model, schema
 
   # XXX add model-specific functions below 
+  for t in tables
+    @[t] <<< query-dictionary[t]
 
   cb null
 
