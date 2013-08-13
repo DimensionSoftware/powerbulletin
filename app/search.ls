@@ -105,7 +105,7 @@ parseopts = ({
           # subtracting one-year-ago makes it so that only the last year
           # of recency counts...
           script: "(_score + (99 * ((doc.created.value - #one-year-ago) / #one-year-duration-ms))) / 100"
-        from
+      from
       facets
     }
 

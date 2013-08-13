@@ -24,8 +24,10 @@ $R((user) ->
 # parallax
 $ window .on \scroll, ->
   offset = $ window .scroll-top!
-  $ \#register_top |> each -> $ it .css \top, "#{0-(offset*1.7)}px"
-  $ \.stick        |> each -> $ it .css \top, "#{0-(offset*0.75)}px"
+  $ \.logo         .css(\top, "#{0-(offset*0.06)}px")
+  $ \#register_top .css(\top, "#{0-(offset*2.7)}px")
+  $ \.stick:odd  |> each -> $ it .css \top, "#{0-(offset*0.8)}px"
+  $ \.stick:even |> each -> $ it .css \top, "#{0-(offset*0.75)}px"
 
 # focus!
 set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 100ms

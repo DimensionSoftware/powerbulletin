@@ -1,6 +1,9 @@
 analytics = unescape(site.config.analytics)
 form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
   fieldset
+    label(for='name') Title
+    input(id='name', class='name', name='name', type='text', value=site.name)
+    .break
     label(for='posts_per_page') Posts per Page
     input(id='posts_per_page', class='posts-per-page', name='postsPerPage', type='text', value=site.config.postsPerPage, maxlength=4)
     .break

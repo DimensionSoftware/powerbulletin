@@ -7,7 +7,7 @@ require! {
 
 module.exports =
   class AdminMenu extends Component
-    opts =
+    const opts =
       handle: \div
       items:  \li
       max-levels: 2
@@ -16,45 +16,83 @@ module.exports =
       placeholder: \placeholder
 
     template: templates.AdminMenu
+    current:  null # active "selected" menu item
+
+    show:       ~> set-timeout (~> @$.find \.col2 .show 300ms), 300ms
+    clone: (id) ~> # clone a templated defined as class="default"
+      @$.find \.default .clone!remove-class(\default).attr \id, id
+    current-store: !~>
+      if @current # store
+        f = @$.find \form
+        f.find 'input[name="menu"]' .remove!  # prune old form data
+        @$.data @current, \menu, f.serialize! # create & store new
+        console.log \current:, @current
+        console.log \stored:, f.serialize!
+        console.log \val:, @current.val!
+    current-restore: !~>
+      m = @$.data @current, \menu
+      f = @$.find \form
+      if m?length # restore current's menu
+        f.deserialize m
+        console.log \restored:, m
+      else
+        console.log \defaulted
+        f.get 0 .reset! # default
 
     init: !~>
-     # TODO pre-load nested sortable list + initial active sortable
-     # - safely assume 2 levels max for now)
-     #for item in site.menu
-     #  for sub-item in item.menu
 
     on-attach: !~>
+      # pre-load nested sortable list + initial active
+      # - safely assume 2 levels max for now)
+      s = @$.find \.sortable
+      site = @state.site!
+      for item in JSON.parse site.config.menu # render parent menu
+        s.append(@clone item.id) if item.id
+        if item.menu # ... & siblings
+          for sub-item in JSON.parse item?menu
+            item.append(@clone sub-item.id)
+      if site.config.menu # init ui
+        s.nested-sortable opts
+        set-timeout (-> s.find \input:first .focus!), 200ms
+        @show!
+
       @$.on \click \.onclick-add (ev) ~>
-        @$.find \.col2 .show 300ms # display options
+        @show!
 
         const prefix = \list_
-        s   = @$.find \.sortable
-
         # generate id & add new menu item!
         max = parse-int maximum(s.find \li |> map (-> it.id.replace prefix, ''))
         id  = unless max then 1 else max+1
         s
-          ..append(@$.find \.default .clone!remove-class(\default).attr \id, "#prefix#id") # clone
-          ..find 'li:last input' .focus!
+          ..append(@clone "#prefix#id")
+          ..find \input .focus!
           ..nested-sortable opts
+        @current-restore!
         false
 
-      # TODO save
-      @$.on \click 'input[type="submit"]' (ev) ~>
-        # using generic forum submit
-        # TODO serialize nested sortable
-        console.log(@$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!)
-        # TODO submit form details for active sortable + entire nested sortable
+      # save menu
+      @$.on \click 'button[type="submit"]' (ev) ~>
+        @current-store!
+
+        # get entire menu
+        menu = @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy! # extended to pull data attributes, too
+        f = @$.find \form
+        f.append(@@$ \<input>                # append new menu
+          .attr \type, \hidden
+          .attr \name, \menu
+          .val JSON.stringify menu)
         submit-form ev, (data) ->
           f = $ this # form
           t = $(f.find \.tooltip)
-          unless data.success
-            show-tooltip t, data?errors?join \<br>
-          else
-            show-tooltip t, \Saved!
+          show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
+
+      # save current form on active row/input
+      @$.on \blur \.row (ev) ~> @current-store!
 
       @$.on \click \.row (ev) ~>
-        # TODO load data for row
+        # TODO load data for active row
+        @current = $ ev.target# .closest \li
+        @current-restore!
 
       # init
       @$.find \.sortable .nested-sortable opts

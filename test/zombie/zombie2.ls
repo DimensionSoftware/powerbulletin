@@ -1,7 +1,6 @@
 require! {
   assert
   Browser: zombie
-  \../component/Paginator
 }
 
 _it = it

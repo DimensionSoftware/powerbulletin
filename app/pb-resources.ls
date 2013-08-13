@@ -38,6 +38,7 @@ ban-all-domains = (site-id) ->
         if site.config[f] isnt req.body[f] then should-ban = true
 
       # update site
+      site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
         [\postsPerPage \metaKeywords \inviteOnly \private \analytics \style] }
       for c in [\inviteOnly \private] # uncheck checkboxes?
@@ -64,6 +65,7 @@ ban-all-domains = (site-id) ->
     | \menu =>
       # save site config
       site.config.menu = req.body.menu
+      console.log \menu:, req.body.menu
       err, r <- db.site-update site
       if err then return next err
       # TODO sync live menu with config
