@@ -1,36 +1,48 @@
 body
   margin 5em
-  height 3700px
+  height 3600px
   position relative
 
 body.scrolled
   header
     border-bottom 0
     background #eee
+  footer::before, footer:hover::before
+    border-top none
+    box-shadow none
+  footer
+    opacity 1
+    bottom -20px
+    box-shadow none
+    transition all .4s ease-out
 header
   position fixed
   top 0
   left 0
   width 100%
-  height 32px
-  background #000
+  height 45px
   opacity 0.75
   text-align right
   z-index 20!important
-  background-image linear-gradient(bottom, #000 16px, #333)
+  background #fff
   ul
     list-style none
-    margin 0 12px
+    margin 0 50px
     li
       display inline-block
-      margin-top 6px
-      font-style italic
-      letter-spacing 1px
-      font-weight bold
-      color #fff
+      margin-top 12px
+      margin-right 18px
+      font-weight 200
       cursor pointer
+      a:hover
+        color #111
+        transition color .2s ease-out
+      a
+        color #555
+section.translucent
+  background-color rgba(255,255,255,.8)!important
 section
-  background white
+  background #fff
   position fixed
   display block
   top 0
@@ -39,3 +51,39 @@ section
   min-height 100%
   overflow hidden
   transform translate3d(0,0,0)
+
+footer
+  z-index 101
+  opacity 0
+  position fixed
+  top auto
+  bottom -45px
+  height 40px
+  left auto
+  right -20px
+  width 100px
+  background #fafafa
+  border-radius 30px / 20px
+  border 1px solid #eee
+  .onclick-scroll-top:hover
+    color #222
+  .onclick-scroll-top:hover::before
+    border-bottom 8px solid #aaa
+    top 2px
+    transition all .1s ease-out
+  .onclick-scroll-top::before
+    position absolute
+    content ''
+    border 4px solid transparent
+    border-bottom 6px solid #ccc
+    top 4px
+    right 49px
+    transition all .2s ease-out
+  .onclick-scroll-top
+    cursor pointer
+    position absolute
+    top 0
+    right 20px
+    font-size .8em
+    letter-spacing 2px
+    padding 0 15px 0 30px

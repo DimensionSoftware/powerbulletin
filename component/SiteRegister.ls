@@ -30,7 +30,7 @@ module.exports =
               console.error errors
             else
               window.location = "http://#subdomain#hostname\#once"
-        locals = {title: \Create!}
+        locals = {title: \Create}
         @children =
           buy: new ParallaxButton {on-click, locals} \.SiteRegister-create @
 
