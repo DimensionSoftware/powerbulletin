@@ -18,3 +18,4 @@ module.exports =
   #powerbulletin-sales   : "#{cvars.cache4-url}/powerbulletin-sales#{if process.env.NODE_ENV is \production then '.min' else ''}.js"
   powerbulletin         : "#{cvars.cache3-url}/powerbulletin.js"
   powerbulletin-sales   : "#{cvars.cache4-url}/powerbulletin-sales.js"
+  fse                   : "#{cvars.cache2-url}/local/fse.js"

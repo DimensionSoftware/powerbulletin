@@ -183,7 +183,7 @@ html.forum, html.profile, html.search
       #post_edit
         width 80%
         .photo
-          margin 1px 9px 1px 1px
+          margin 4px 9px 1px 1px
         .title
           margin-bottom 8px
         .button
@@ -215,15 +215,20 @@ html.forum, html.profile, html.search
             margin-top 0
             vertical-align top
             display inline-block
-          .button
-            bottom 17px
-            right 12px
+          button
+            bottom 44px
+            right 8px
+            height 27px
+            font-size 15px
+            padding 0 6px
+            z-index 100
+            position relative
       .post-edit
         position relative
         margin-bottom (grid*2)
         margin-top (grid/2)
         .tooltip
-          bottom 63px
+          bottom 85px
         form
           position relative
           text-align right
@@ -241,7 +246,7 @@ html.forum, html.profile, html.search
           right -7px
           top 34px
           position absolute
-          z-index 10
+          z-index 100
         .summary
           .profile.photo
             margin-left 3px
@@ -679,23 +684,26 @@ html.admin
         color #444
 //}}}
 html.forum
+  .main-content
+    p.onclick-footer-toggle
+      color #bbb
+      cursor pointer
+      letter-spacing 1px
+      margin (grid*2) 0
+      text-align center
+      font-size 1.1em
   footer.expanded
     cursor s-resize
-    height 290px
+    height 320px
     transition height .3s bounce
-    text-align center
     h6
       display none
     .post-container
       opacity 1
-      transition opacity .3s ease-out .1s
+      margin-top 10px
+      transition margin-top .3s ease-out .1s, opacity .4s ease-out .1s
   footer
     cursor n-resize
-    .title
-      width 60%
-    .tooltip
-      bottom auto
-      top 15px
     .onclick-footer-toggle
       display block
     .post-container
@@ -703,9 +711,23 @@ html.forum
       margin 0 auto
       width 80%
       max-width 1100px
-      margin-top 10px
-      .summary
-        display none
+      margin-top 30px
+      form
+        position relative
+        text-align left
+        .title
+          width 60%
+        .title:focus
+          transform none
+        .tooltip
+          bottom auto
+          top 15px
+        button
+          position absolute
+          right 12px
+          bottom 32px
+        .summary
+          display none
 
 #left_container
   height 100%

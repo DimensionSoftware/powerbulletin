@@ -198,10 +198,14 @@ export create-passport = (domain, cb) ->
     if err then return done(err)
     if not user
       log 'no user'
-      return done(null, false, { message: 'User not found' })
+      return done(null, false, { type: \user-not-found, message: 'User not found' })
     if not valid-password(user, password)
       log 'invalid password', password, user
-      return done(null, false, { message: 'Incorrect password' })
+      return done(null, false, { type: \incorrect-password, message: 'Incorrect password' })
+    # XXX the following lines force verification
+    #if not user.verified
+    #  log 'unverified user', user
+    #  return done(null, false, { type: \unverified-user, message: 'Unverified user', email: user.email })
     log 'ok'
     done(null, user)
 

@@ -369,7 +369,13 @@ export profile =
     photocropper-enable = ->
       window.$(\#left_content).add-class \editable
       window.$(\body).on \click, '#left_content.editable .avatar', photocropper-start
-      window.$('#left_content .avatar').html5-uploader name: \avatar, post-url: "/resources/users/#{window.user.id}/avatar"
+      options =
+        name: \avatar
+        post-url: "/resources/users/#{window.user.id}/avatar"
+        on-success: (r) ->
+          console.log \success, r
+          PhotoCropper.start mode: \crop
+      window.$('#left_content .avatar').html5-uploader options
 
     photocropper-disable = ->
       window.$(\#left_content).remove-class \editable
@@ -446,6 +452,7 @@ export admin =
       window.pages-count = 0
       pager-init window
       <~ lazy-load-nested-sortable
+      <~ lazy-load-deserialize
       next!
   on-initial:
     (win, next) ->

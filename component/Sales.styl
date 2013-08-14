@@ -1,9 +1,33 @@
 .Sales
   text-align center
-  h1
-    margin 0
-  em
-    color #555
+  .logo
+    position fixed
+    margin-top 100px
+    top 0
+    left 100px
+    text-align left
+    h1
+      font-size 3em
+      font-style italic
+      font-weight 200
+      margin 0
+      color #666
+      letter-spacing -1px
+      b
+        letter-spacing 0
+        font-style normal
+        margin-left 6px
+        font-weight 600
+        color #444
+    em
+      display block
+      margin-top 13px
+      text-transform uppercase
+      font-weight 200
+      font-style normal
+      font-size 1em
+      letter-spacing 3px
+      color #999
   fieldset
     border 0
     .hostname
@@ -33,3 +57,61 @@
       display inline
       .error
         display inline
+  #register_top
+    margin-top 70px
+  h2
+    font-size 1.45em
+    font-weight 400
+    color #888
+  section.last
+    position absolute
+    bottom 195px
+    top auto
+    min-height 100px
+    height 150px
+    article
+      width 530px
+      #register_bottom
+        position absolute
+        bottom 20px
+  section.faq
+    position absolute
+    bottom 0
+    top auto
+    min-height 100px
+    height 175px
+    background #ccc
+    background-image linear-gradient(top, #ccc 10px, #eee 100%)
+    margin 0
+    padding 0
+    border-top 1px solid #aaa
+    box-shadow 0 1px 5px 1px #777 inset
+    article
+      width 530px
+      margin 40px auto 0 auto
+  section:nth-child(odd)
+    background-color #fcfcfc
+  section
+    border-top 1px solid #f4f4f4
+    article
+      width 600px
+      margin 160px auto 0 auto
+      h3
+        position relative
+        text-transform uppercase
+        letter-spacing 2px
+        text-shadow 0 1px 0 rgba(0,0,0,.4)
+      h3::after
+        content ''
+        position absolute
+        top 30px
+        left 31%
+        width 200px
+        height 1px
+        background #ccc
+        border-bottom 1px solid #eee
+        border-radius 100px / 1px
+      p
+        margin auto
+        color #555
+        font-size 1.1em

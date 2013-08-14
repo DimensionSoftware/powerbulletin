@@ -86,6 +86,7 @@ render = (sel, locals, cb=(->)) ~>
     focus $e
 export toggle-post = (ev) ->
   unless $ ev.target .has-class \onclick-footer-toggle then return # guard
+  unless user then Auth.show-login-dialog!; return # guard
   data =
     action: \/resources/posts
     method: \post
@@ -130,12 +131,21 @@ load-css = (href) ->
   load-css-cache[href] = true
 
 export lazy-load = (test, script, css, cb) ->
+  b = $ \body
+  b.add-class \waiting
   unless test!
     if css then load-css css
     <- headjs script
+    b .remove-class \waiting
     cb!
   else
+    b .remove-class \waiting
     cb!
+export lazy-load-deserialize = (cb) ->
+  lazy-load (-> window.$!deserialize?length),
+    "#cache-url/local/jquery.deserialize.min.js",
+    null,
+    cb
 export lazy-load-nested-sortable = (cb) ->
   lazy-load (-> window.$!nested-sortable?length),
     "#cache-url/local/jquery.mjs.nestedSortable.js",

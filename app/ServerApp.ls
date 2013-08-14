@@ -1,6 +1,12 @@
+
+require!  shelljs
+
 function get-CHANGESET
   {code, output} = shelljs.exec('git rev-parse HEAD', silent: true)
   output.trim!
+
+# do this as early as possible so it exists for js-urls and css-urls
+global.CHANGESET = get-CHANGESET!
 
 global <<< require \prelude-ls
 
@@ -25,12 +31,12 @@ require! {
   \./auth
   \./io-server
   \./elastic
+  sh: \./server-helpers
   \express/node_modules/connect
   pg: \./postgres
   v: \./varnish
   m: \./pb-models
   \./sales-app
-  shelljs
   _: \lodash
 }
 
@@ -55,7 +61,6 @@ require! {
 # }}}
 
 global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
-global.CHANGESET = get-CHANGESET!
 
 require \./load-cvars
 
@@ -214,13 +219,19 @@ module.exports =
 
       sock = express!
 
+      # setup probe for varnish load balancer, really simple, doesn't need any middleware
+      # and this also avoids logging in dev mode :D
+      sock.get '/probe', (req, res) ->
+        sh.caching-strategies.nocache res
+        res.send 'OK'
+
       # bind shared cache domains
       for i in ['', 2, 3, 4, 5]
         #XXX: this is a hack but hey we are always using protocol-less urls so should never break :)
         #  removing leading //
         sock.use(express.vhost cvars["cache#{i}Url"].slice(2), cache-app)
 
-      sock.use(express.vhost 'pb.com', sales-app)
+      sock.use(express.vhost (if process.env.NODE_ENV is \production then \powerbulletin.com else \pb.com), sales-app)
 
       # dynamic app can automatically check req.host
       sock.use(app)

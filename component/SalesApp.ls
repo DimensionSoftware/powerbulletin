@@ -16,7 +16,6 @@ module.exports =
 
     login: (user) ->
       # use user later
-      console.warn \user, user
       @$.find 'li.auth a.onclick-login' .hide!
       @$.find 'li.auth a.onclick-logout' .show!
 

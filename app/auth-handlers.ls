@@ -23,8 +23,9 @@ announce = sioa.create-client!
     console.warn "domain", domain
 
     auth-response = (err, user, info) ->
+      console.warn \auth-response, err, user, info
       if err then return next(err)
-      if not user then return res.json { success: false }
+      if not user then return res.json { success: false } <<< info
       req.login user, (err) ->
         if err then return next(err)
         console.warn "emitting enter-site #{JSON.stringify(user)}"
@@ -78,21 +79,23 @@ announce = sioa.create-client!
     username = req.body.username
     password = req.body.password
     email    = req.body.email
-    (err, u) <- register-local-user site, username, password, email
+    (err, u) <~ register-local-user site, username, password, email
     if err
       # FIXME possible email abuse if if attacker is able to create accounts
       if err?verify # err is existing user, so ...
         console.warn 'user exists:', err, site
-        <- auth.send-registration-email err, site # resend!
+        <~ auth.send-registration-email err, site # resend!
         res.json success:false, errors:[msg:'Resent verification email!']
       else
         # default error situation
         return next err
 
-    done = ->
+    done = ~>
       auth.send-registration-email u, site, (err, r) ->
         console.warn 'registration email', err, r
-      res.json success:true, errors:[]
+      #res.json success:true, errors:[]   # <- just register
+      @login req, res, next               # <- autologin
+                                          # pick one
 
     done!
 
@@ -181,6 +184,26 @@ do-verify = (req, res, next) ~>
   else
     console.warn \usr, "User not found"
     res.json success: false, errors: [ "User not found" ]
+
+# resend verification email
+@resend = (req, res, next) ->
+  site  = res.vars.site
+  email = req.body.email
+
+  err, user <- db.usr { email, site_id: site.id }
+  if err then return res.json success: false, when: \db.usr
+
+  err, verify <- auth.unique-hash \verify, site.id
+  if err then return res.json success: false, when: \auth.unique-hash
+  user.verify = verify
+
+  err <- db.aliases.update criteria: { user_id: user.id, site_id: site.id }, data: { verify }
+  if err then return res.json success: false, when: \db.aliases.update
+
+  err <- auth.send-registration-email user, site
+  if err then return res.json success: false, when: \auth.send-registration-email
+
+  res.json success: true
 
 # XXX users may change user names any amount of times by avoiding the ui
 # - in the future, consider adding field to aliases to count # of changes,
@@ -318,6 +341,7 @@ auth-finisher = (req, res, next) ->
   app.post '/auth/forgot',          mw, @forgot
   app.post '/auth/forgot-user'      mw, @forgot-user
   app.post '/auth/reset-password'   mw, @reset-password
+  app.post '/auth/resend'           mw, @resend
 
   app.get  '/auth/facebook',        mw, @login-facebook
   app.get  '/auth/facebook/return', mw, @login-facebook-return

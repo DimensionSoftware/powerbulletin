@@ -22,8 +22,10 @@ body
   .scroll-to, .onclick-scroll-top
     cursor pointer
 
-body.waiting, body.waiting a
+body.waiting
   cursor wait!important
+  a, input, button, textarea
+    cursor wait!important
 
 .onclick-logout, .onclick-profile, .admin-only, .has-facebook, .has-google, .has-twitter, .has-auth
   display none
@@ -129,7 +131,7 @@ header
           max-height 450px
           height auto
           min-width 850px
-          transition opacity .5s ease-out .2s, min-width .2s cubic-bezier(1.000, -0.010, 0.800, 1.530) .25s, max-height .25s cubic-bezier(1, -0.01, 1, .08) .3s, top .2s ease-out .1s
+          transition opacity .5s ease-out .3s, min-width .2s cubic-bezier(1.000, -0.010, 0.800, 1.530) .35s, max-height .35s cubic-bezier(1, -0.01, 1, .08) .4s, top .2s ease-out .15s
           .row:hover
             text-indent 1px
       .row:nth-last-child(3)
@@ -395,7 +397,6 @@ footer.active
   bottom -(grid * 1.4)
   font-size .75em
 footer
-  text-align center
   position fixed
   right 0
   left 0
@@ -414,6 +415,8 @@ footer
     cursor pointer
     position absolute
     padding-right 20px
+    font-size .95em
+    letter-spacing 1px
     left 12px
   .post-reply:hover
     color #222

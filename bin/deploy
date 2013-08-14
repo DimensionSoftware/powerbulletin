@@ -6,8 +6,8 @@ TARGET=165.225.139.183
 echo deploying to $TARGET...
 
 echo installing git...
-ssh root@$TARGET apt-get update -y
-ssh root@$TARGET apt-get install git -y
+ssh root@$TARGET -p 3733 apt-get update -y
+ssh root@$TARGET -p 3733 apt-get install git -y
 
 # get deployed source
 REMOTE_GIT_COMMAND="
@@ -19,7 +19,7 @@ git clone \
 || (cd /pb; git checkout $CI_BRANCH; git pull)
 "
 echo updating source...
-ssh root@$TARGET $REMOTE_GIT_COMMAND
+ssh root@$TARGET -p 3733 $REMOTE_GIT_COMMAND
 
 #echo setting up NODE_ENV=production
 # below line doesn't check to see if its there already...
@@ -27,4 +27,4 @@ ssh root@$TARGET $REMOTE_GIT_COMMAND
 
 # XXX/TODO: bounce appservers with killall (mon will restart)
 echo restarting appservers...
-ssh root@$TARGET 'cd /pb; killall -9 mon; bin/diediedie; bin/launch; bin/powerbulletin'
+ssh root@$TARGET -p 3733 'cd /pb; killall -9 mon; bin/diediedie; bin/launch; bin/powerbulletin'
