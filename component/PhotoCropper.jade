@@ -1,9 +1,9 @@
 .upload
-  form(method="POST", action="#{endpointUrl}", enctype="multipart/form-data")
-    h1= title
-    div
-      img(src="#{cacheUrl}#{photo}")
-    div
+  h1= title
+  div
+    img(src="#{cacheUrl}#{photo}")
+  div
+    form(method="POST", action="#{endpointUrl}", enctype="multipart/form-data")
       div.button 
         span Upload Image
         input(type="file", name="avatar")
@@ -12,4 +12,5 @@
   h1= title + " (crop)"
   div
     img(src="#{cacheUrl}#{photo}")
-  div.button Crop Image
+  div.button
+    span Crop Image

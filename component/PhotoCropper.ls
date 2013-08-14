@@ -11,7 +11,7 @@ module.exports =
     @pc = null
 
     # helper function to put photocropper in a fancybox
-    @start = ({title="Profile Photo", mode=\upload, photo=null, aspect-ratio=1, endpoint-url=null}={}, cb=(->)) ~>
+    @start = ({title="Profile Photo", mode=\upload, photo=null, aspect-ratio=16/9, endpoint-url=null}={}, cb=(->)) ~>
       photo        = user.photo                           unless photo
       endpoint-url = "/resources/users/#{user.id}/avatar" unless endpoint-url
 
@@ -70,6 +70,19 @@ module.exports =
       @$.find \.crop .show!
       <~ lazy-load-jcrop
       @jcrop.destroy! if @jcrop
-      @$.find '.crop img' .Jcrop aspect-ratio: 1.25, ~>
+      options =
+        aspect-ratio: @aspect-ratio
+      options <<< @box-dimensions!
+      console.warn \options, options
+      @$.find '.crop img' .Jcrop options, ~>
         @jcrop := this
+        @@$.fancybox.update!
 
+    # constrain image size in case we have to crop an image bigger than the window
+    box-dimensions: ->
+      fancybox-side-margin = 35
+      resize = 0.95
+      {
+        box-width  : parse-int( @@$(window).width!  - (fancybox-side-margin * 2) )
+        box-height : parse-int( @@$(window).height! * resize )
+      }
