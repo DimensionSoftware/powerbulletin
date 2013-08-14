@@ -4,6 +4,7 @@ require! {
   jade
   mkdirp
   querystring
+  gm
   s: \./search
   c: \./cache
   __:   \lodash
@@ -246,6 +247,16 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   res.mutant \profile
 
+function profile-paths user, uploaded-file
+  ext = uploaded-file.name.match(/\.(\w+)$/)?1 or ""
+  r = {}
+  r.avatar-file = if ext then "avatar.#ext" else "avatar"
+  r.url-dir-path = "/images/user/#{user.id}"
+  r.url-path = "#{r.url-dir-path}/#{r.avatar-file}"
+  r.fs-dir-path = "public#{r.url-dir-path}"
+  r.fs-path = "#{r.fs-dir-path}/#{r.avatar-file}"
+  r
+
 @profile-avatar = (req, res, next) ->
   db   = pg.procs
   user = req.user
@@ -264,14 +275,8 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   avatar = req.files.avatar
   console.warn \avatar, avatar
 
-  ext = avatar.name.match(/\.(\w+)$/)?1 or ""
-  avatar-file = if ext then "avatar.#ext" else "avatar"
-
   # mkdirp public/images/user/:user_id
-  url-dir-path = "/images/user/#{user.id}"
-  fs-dir-path  = "public#url-dir-path"
-  url-path     = "#url-dir-path/#{avatar-file}"
-  fs-path      = "#fs-dir-path/#{avatar-file}"
+  {avatar-file, url-dir-path, fs-dir-path, url-path, fs-path} = profile-paths user, avatar
   err <- mkdirp fs-dir-path
   if err
     console.error \mkdirp.rename, err
@@ -297,6 +302,12 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     console.error \change-avatar, err
     return res.json { success: false }, 403
   res.json success: true, avatar: url-path
+
+@profile-avatar-crop = (req, res, next) ->
+  photo = req.user.photo
+  # use profile-paths here
+  # gm is graphicsmagick (already required)
+  res.send 'STUB'
 
 @stylus = (req, res, next) ->
   r = req.route.params
