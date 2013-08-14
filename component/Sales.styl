@@ -58,6 +58,9 @@
       .error
         display inline
   #register_top
+    margin-top 195px
+    opacity 0
+  #features
     margin-top 70px
   h2
     font-size 1.45em
@@ -65,7 +68,7 @@
     color #888
   section.last
     position absolute
-    bottom 195px
+    bottom 400px
     top auto
     min-height 100px
     height 150px
@@ -73,22 +76,31 @@
       width 530px
       #register_bottom
         position absolute
-        bottom 20px
+        bottom 10px
   section.faq
     position absolute
     bottom 0
     top auto
     min-height 100px
-    height 175px
+    height 350px
     background #ccc
-    background-image linear-gradient(top, #ccc 10px, #eee 100%)
+    background-image linear-gradient(top, #ccc 10%, #fafafa 100%)
     margin 0
     padding 0
     border-top 1px solid #aaa
     box-shadow 0 1px 5px 1px #777 inset
     article
-      width 530px
-      margin 40px auto 0 auto
+      width 800px
+      margin 55px auto 0 auto
+      menu
+        text-align left
+        float left
+        list-style none
+        font-size .8em
+        width 45%
+        h4
+          margin 15px 0
+
   section:nth-child(odd)
     background-color #fcfcfc
   section
@@ -105,7 +117,7 @@
         content ''
         position absolute
         top 30px
-        left 31%
+        left 36%
         width 200px
         height 1px
         background #ccc
@@ -115,3 +127,6 @@
         margin auto
         color #555
         font-size 1.1em
+        a
+          color #222
+          margin 0 9px

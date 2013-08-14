@@ -81,7 +81,9 @@ module.exports = (grunt) ->
     done = this.async()
     h.renderCss('master.styl', (err, blocks) ->
       fs.writeFileSync 'public/master.css', blocks
-      done(true))
+      h.renderCss('master-sales.styl', (err, blocks) ->
+        fs.writeFileSync 'public/master-sales.css', blocks
+        done(true)))
 
   grunt.loadNpmTasks "grunt-contrib-uglify"
   grunt.loadNpmTasks "grunt-contrib-watch"
