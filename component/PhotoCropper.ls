@@ -30,6 +30,9 @@ module.exports =
     template: templates.PhotoCropper
 
     #
+    jcrop: null
+
+    #
     init: ->
       if @aspect-ratio
         1 # stub
@@ -62,8 +65,11 @@ module.exports =
       @$.find \.upload .show!
 
     # this is the mode for cropping an uploaded image
-    crop-mode: (r) ->
-      console.warn \r, r
+    crop-mode: ->
       @$.find \.upload .hide!
       @$.find \.crop .show!
+      <~ lazy-load-jcrop
+      @jcrop.destroy! if @jcrop
+      @$.find '.crop img' .Jcrop aspect-ratio: 1.25, ~>
+        @jcrop := this
 

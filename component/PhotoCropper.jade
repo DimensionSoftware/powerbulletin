@@ -5,10 +5,11 @@
       img(src="#{cacheUrl}#{photo}")
     div
       div.button 
-        span Change Profile Photo
+        span Upload Image
         input(type="file", name="avatar")
 
 .crop(style="display:none;")
   h1= title + " (crop)"
   div
     img(src="#{cacheUrl}#{photo}")
+  div.button Crop Image
