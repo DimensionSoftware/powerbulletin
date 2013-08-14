@@ -24,11 +24,13 @@ $R((user) ->
 # parallax
 $ window .on \scroll, ->
   offset = $ window .scroll-top!
-  $ \.logo         .css(\top, "#{0-(offset*0.06)}px")
-  $ \#register_top .css(\top, "#{0-(offset*2.7)}px")
-  $ \.stick:odd  |> each -> $ it .css \top, "#{0-(offset*0.8)}px"
-  $ \.stick:even |> each -> $ it .css \top, "#{0-(offset*0.75)}px"
+  $ \.logo         .css(\y, "#{0-(offset*0.06)}px")
+  $ \#register_top .css(\y, "#{0-(offset*2.7)}px")
+  $ \.stick:odd  |> each -> $ it .css \y, "#{0-(offset*0.8)}px"
+  $ \.stick:even |> each -> $ it .css \y, "#{0-(offset*0.73)}px"
 
 # focus!
-set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 100ms
+set-timeout (->
+  $ \#register_top .transition {x:25px, opacity:1}, 1000ms, \easeOutExpo
+  $ \.SiteRegister-subdomain:first .focus!), 300ms
 # vim:fdm=marker

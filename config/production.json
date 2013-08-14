@@ -8,6 +8,7 @@
 , "cache3Url" : "//muscache3.powerbulletin.com"
 , "cache4Url" : "//muscache4.powerbulletin.com"
 , "cache5Url" : "//muscache5.powerbulletin.com"
+, "authDomain" : "//powerbulletin.com"
 , "stripe":
   { "privateKey": "sk_test_Zn4dz9SjDQ4viJ4j5Th5VfU7"
   , "publicKey": "pk_test_pLmrPdctjhzQWGSFjZqiAa9w"

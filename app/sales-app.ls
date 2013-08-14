@@ -42,6 +42,7 @@ s-app.get '/' (req, res, next) ->
     * jsu.jquery-cookie
     * jsu.jquery-history
     * jsu.jquery-nicescroll
+    * jsu.jquery-transit
     * jsu.jquery-ui
     * jsu.raf
     * jsu.powerbulletin-sales

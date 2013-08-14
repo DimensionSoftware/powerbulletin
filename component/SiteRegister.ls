@@ -58,12 +58,13 @@ module.exports =
       @$.on \keydown, \input.SiteRegister-subdomain, -> $ \.hostname .css \opacity, 0
       @$.on \keyup, \input.SiteRegister-subdomain, debounce ->
         new-input = $(@).val!
-        $ \.hostname .animate {opacity:1, left:new-input.length * 27px + 32px}, 150ms # assume fixed-width font
-        unless new-input is last-val
-          # only signal changes on _different_ input
-          component.state.subdomain new-input
+        if new-input.length
+          $ \.hostname .animate {opacity:1, left:new-input.length * 27px + 32px}, 150ms # assume fixed-width font
+          unless new-input is last-val
+            # only signal changes on _different_ input
+            component.state.subdomain new-input
 
-        last-val := new-input
+          last-val := new-input
 
     on-detach: ->
       sh.r-unbind @check-subdomain-availability
