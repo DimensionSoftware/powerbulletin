@@ -11,12 +11,14 @@ module.exports =
     @pc = null
 
     # helper function to put photocropper in a fancybox
-    @start = ({title="Profile Photo", photo=null, aspect-ratio=1, endpoint-url=null}={}, cb=(->)) ~>
+    @start = ({title="Profile Photo", mode=\upload, photo=null, aspect-ratio=1, endpoint-url=null}={}, cb=(->)) ~>
       photo        = user.photo                           unless photo
       endpoint-url = "/resources/users/#{user.id}/avatar" unless endpoint-url
 
       <~ lazy-load-fancybox
       @pc = new PhotoCropper { aspect-ratio, endpoint-url, locals: { title, photo, endpoint-url } }
+      if mode is \crop
+        @pc.crop-mode!
       $.fancybox.open @pc.$, { after-load: cb }
 
     #
