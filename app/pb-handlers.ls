@@ -301,7 +301,7 @@ function profile-paths user, uploaded-file
   if err
     console.error \change-avatar, err
     return res.json { success: false }, 403
-  res.json success: true, avatar: url-path
+  res.json success: true, url: url-path
 
 @profile-avatar-crop = (req, res, next) ->
   photo = req.user.photo

@@ -42,12 +42,16 @@ module.exports =
       #@$.find('.upload input[type=file]').change ~>
       #  @upload!
 
-      @$.find('.upload input[type=file]').html5-uploader name: \avatar, post-url: @endpoint-url
+      @$.find('.upload input[type=file]').html5-uploader name: \avatar, post-url: @endpoint-url, on-success: (xhr, file, r-json) ~>
+        r = JSON.parse(r-json)
+        @$.find \img .attr \src, "#{cacheUrl}#{r.url}"
+        @crop-mode!
 
     #
     upload: ->
       data = @$.find('form').serialize!
-      jqxhr = @@$.post @endpoint-url, data, (r) ~>
+      jqxhr = @@$.post @endpoint-url, data
+      jqxhr.done (r) ~>
         @crop-mode r
       jqxhr.fail (r) ~>
         console.warn 'upload failed', r

@@ -373,7 +373,6 @@ export profile =
         name: \avatar
         post-url: "/resources/users/#{window.user.id}/avatar"
         on-success: (r) ->
-          console.log \success, r
           PhotoCropper.start mode: \crop
       window.$('#left_content .avatar').html5-uploader options
 

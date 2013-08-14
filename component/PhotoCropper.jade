@@ -9,5 +9,6 @@
         input(type="file", name="avatar")
 
 .crop(style="display:none;")
-  h1 Crop Mode
-  p This is where
+  h1= title + " (crop)"
+  div
+    img(src="#{cacheUrl}#{photo}")
