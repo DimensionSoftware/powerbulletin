@@ -25,21 +25,23 @@ module.exports =
       if @current # store
         f = @$.find \form
         f.find 'input[name="menu"]' .remove!  # prune old form data
-        @$.data @current, \menu, f.serialize! # create & store new
+        #@$.data @current, \menu, f.serialize! # create & store new
+        @current.data \menu, f.serialize!
         console.log \current:, @current
-        console.log \stored:, f.serialize!
+        console.log \stored:, @current.data \menu
         console.log \val:, @current.val!
     current-restore: !~>
-      m = @$.data @current, \menu
-      f = @$.find \form
-      if m?length # restore current's menu
-        f.deserialize m
-        console.log \restored:, m
+      f     = @$.find \form
+      reset = -> f.get 0 .reset! # default
+      if @current
+        m = @current.data \menu
+        if m # restore current's menu
+          f.deserialize m
+          console.log \restored:, m
+        else
+          reset!
       else
-        console.log \defaulted
-        f.get 0 .reset! # default
-
-    init: !~>
+        reset!
 
     on-attach: !~>
       # pre-load nested sortable list + initial active
@@ -47,10 +49,11 @@ module.exports =
       s = @$.find \.sortable
       site = @state.site!
       for item in JSON.parse site.config.menu # render parent menu
-        s.append(@clone item.id) if item.id
-        if item.menu # ... & siblings
+        console.log item
+        s.append(@clone item.id) if item?id
+        if item?menu # ... & siblings
           for sub-item in JSON.parse item?menu
-            item.append(@clone sub-item.id)
+            item.append(@clone sub-item.id) if sub-item?id
       if site.config.menu # init ui
         s.nested-sortable opts
         set-timeout (-> s.find \input:first .focus!), 200ms
