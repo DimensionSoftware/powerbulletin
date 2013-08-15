@@ -1,6 +1,7 @@
 (function(){
   var LiveScript, isStarting, s;
   LiveScript = require('LiveScript');
+  global.env = process.env.NODE_ENV || 'development';
   function cleanRequireCache(){
     var k, ref$, v;
     for (k in ref$ = require.cache) {
