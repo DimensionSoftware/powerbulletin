@@ -24,8 +24,9 @@ module.exports =
       # init children
       do ~>
         on-click = Auth.require-registration ~>
-          subdomain   = @local \subdomain
-          @@$.post '/ajax/can-has-site-plz', {domain: subdomain+hostname}, ({errors}:r) ->
+          subdomain = @local \subdomain
+          domain = window.auth-domain.replace /^\/\//, '.' # client-side doesn't have process.env.NODE_ENV
+          @@$.post '/ajax/can-has-site-plz', {domain: subdomain+domain}, ({errors}:r) ->
             if errors.length
               console.error errors
             else
