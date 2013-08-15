@@ -220,6 +220,7 @@ export mutate = ->
 
 timers = {}
 export show-tooltip = ($tooltip, msg, duration=4000ms) ->
+  unless msg?length then return # guard
   timer = timers[msg]
   if timer then clear-timeout timer
   $tooltip.html msg .add-class \hover # show
