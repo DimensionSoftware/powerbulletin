@@ -29,6 +29,7 @@ parseopts = ({
   q = void
   forum_id = void
   within = void
+  site_id = void
   stream = void
   page = 1
 } = {}) ->
@@ -43,6 +44,11 @@ parseopts = ({
   if q
     query.query_string =
       query: q
+
+  if site_id
+    filters.push {
+      term: {site_id}
+    }
 
   if forum_id
     filters.push {

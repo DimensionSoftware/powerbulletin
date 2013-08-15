@@ -382,6 +382,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       * \_surf
       * \_surfData
       * \_surfTasks
+      * \site_id
 
     opts = {} <<< opts
 
@@ -392,17 +393,19 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
 
   site = res.vars.site
+  searchopts = {} <<< req.query <<< {site_id: site.id}
+  console.warn searchopts
 
   err, menu <- db.menu res.vars.site.id
   if err then return next err
 
-  err, elres, elres2 <- s.search req.query
+  err, elres, elres2 <- s.search searchopts
   if err then return next(err)
 
   err, forum-dict <- db.forum-dict site.id
   if err then return next(err)
 
-  res.locals.searchopts = cleanup-searchopts req.query
+  res.locals <<< {searchopts: cleanup-searchopts(searchopts)}
 
   for h in elres.hits
     h._source.posts = [] # stub object for non-existent sub-posts in search view
