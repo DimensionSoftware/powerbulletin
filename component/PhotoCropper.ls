@@ -11,7 +11,7 @@ module.exports =
     @pc = null
 
     # helper function to put photocropper in a fancybox
-    @start = ({title="Profile Photo", mode=\upload, photo=null, aspect-ratio=16/9, endpoint-url=null}={}, cb=(->)) ~>
+    @start = ({title="Profile Photo", mode=\upload, photo=null, aspect-ratio=5/4, endpoint-url=null}={}, cb=(->)) ~>
       photo        = user.photo                           unless photo
       endpoint-url = "/resources/users/#{user.id}/avatar" unless endpoint-url
 
@@ -29,7 +29,7 @@ module.exports =
     #
     template: templates.PhotoCropper
 
-    #
+    # jcrop object
     jcrop: null
 
     #
@@ -73,10 +73,11 @@ module.exports =
       options =
         aspect-ratio: @aspect-ratio
       options <<< @box-dimensions!
-      console.warn \options, options
-      @$.find '.crop img' .Jcrop options, ~>
-        @jcrop := this
-        @@$.fancybox.update!
+      fb = @@$.fancybox
+      save-jcrop = (j) ~> @jcrop = j
+      @$.find '.crop img' .Jcrop options, ->
+        save-jcrop this
+        fb.update!
 
     # constrain image size in case we have to crop an image bigger than the window
     box-dimensions: ->
@@ -86,3 +87,15 @@ module.exports =
         box-width  : parse-int( @@$(window).width!  - (fancybox-side-margin * 2) )
         box-height : parse-int( @@$(window).height! * resize )
       }
+
+    #
+    crop: ->
+      data = jcrop.tell-select!
+      if data.height is 0 or data.width is 0
+        # TODO - warn that a crop selection has not been made
+        return
+      jqxhr = @@$.put @endpoint-url, data
+      jqxhr.done (r) ~>
+        @@$.fancybox.close!
+      jqxhr.fail (r) ~>
+        console.warn 'upload failed', r
