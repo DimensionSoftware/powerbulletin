@@ -59,7 +59,7 @@ module.exports =
           $form .find 'h2:first' .html "Couldn't find you. :("
 
     @login-with-token = ->
-      r <- cors.get 'https://pb.com/auth/once', { site_id: window.site-id }
+      r <- cors.get "#{auth-domain}/auth/once", { site_id: window.site-id }
       #console.warn \cors, r
       if r
         rr <- $.post '/auth/once', { token: r.token }
