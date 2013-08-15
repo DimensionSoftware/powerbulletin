@@ -7,9 +7,10 @@ html
     script(type='text/javascript', src="#{cacheUrl}/local/head-0.99.load.min.js")
     |<script type="text/javascript">
     |  window.headjs = head.js
-    |  head.js.apply(head, !{JSON.stringify(scripts)});
+    |  window.env = '!{env}'
     |  window.cacheUrl = '!{cacheUrl}';
     |  window.siteName = 'PowerBulletin';
     |  window.authDomain = '!{authDomain}';
+    |  head.js.apply(head, !{JSON.stringify(scripts)});
     |</script>
   body
