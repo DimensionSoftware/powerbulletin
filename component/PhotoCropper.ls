@@ -50,6 +50,8 @@ module.exports =
         @$.find \img .attr \src, "#{cacheUrl}#{r.url}"
         @crop-mode!
 
+      @$.find('.crop .button').click @crop
+
     #
     upload: ->
       data = @$.find('form').serialize!
@@ -89,12 +91,16 @@ module.exports =
       }
 
     #
-    crop: ->
-      data = jcrop.tell-select!
+    crop: (ev) ~>
+      data = @jcrop.tell-select!
       if data.height is 0 or data.width is 0
         # TODO - warn that a crop selection has not been made
         return
-      jqxhr = @@$.put @endpoint-url, data
+      jqxhr = @@$.ajax {
+        type : \PUT
+        data : data
+        url  : @endpoint-url
+      }
       jqxhr.done (r) ~>
         @@$.fancybox.close!
       jqxhr.fail (r) ~>

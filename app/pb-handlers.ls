@@ -304,10 +304,21 @@ function profile-paths user, uploaded-file
   res.json success: true, url: url-path
 
 @profile-avatar-crop = (req, res, next) ->
-  photo = req.user.photo
-  # use profile-paths here
-  # gm is graphicsmagick (already required)
-  res.send 'STUB'
+  mock-photo = { name: req.user.photo }
+  paths = profile-paths req.user, mock-photo
+  console.warn \crop, req.body, req.user, mock-photo, paths
+  {x,y,x1,y1,w,h} = req.body
+  gm(paths.fs-path)
+    .crop w, h, x, y
+    .resize 255, 204
+    .write paths.fs-path, (err) ->
+      if err
+        console.warn \crop-and-resize-err, err
+        res.json success: false
+      else
+        res.json success: true
+        # also send a user update event
+  res.json success: false
 
 @stylus = (req, res, next) ->
   r = req.route.params
