@@ -6,6 +6,7 @@ require! {
   \../component/AdminUpgrade.ls
   \../component/AdminMenu.ls
   \../component/Paginator.ls
+  \../component/PhotoCropper.ls
 }
 
 !function bench subject-name, subject-body
@@ -361,30 +362,33 @@ export profile =
       scroll-to-top!
       next!
   on-personalize: (w, u, next) ->
+    <- lazy-load-html5-uploader
+
+    photocropper-start = (ev) -> PhotoCropper.start!
+
+    photocropper-enable = ->
+      window.$(\#left_content).add-class \editable
+      window.$(\body).on \click, '#left_content.editable .avatar', photocropper-start
+      options =
+        name: \avatar
+        post-url: "/resources/users/#{window.user.id}/avatar"
+        on-success: (r) ->
+          PhotoCropper.start mode: \crop
+      window.$('#left_content .avatar').html5-uploader options
+
+    photocropper-disable = ->
+      window.$(\#left_content).remove-class \editable
+      window.$(\body).off \click, '#left_content.editable .avatar', photocropper-start
+
     if u # guard
       layout-on-personalize w, u
-      <- lazy-load-jcrop
-      path-parts = window.location.pathname.split '/'
-      jcrop = void
-      if path-parts.2 is u.name
-        $ '.avatar img' .Jcrop aspect-ratio: 1.25, ->
-          jcrop := this
-        <- lazy-load-html5-uploader
-        $ \.avatar .html5-uploader({
-          name     : \avatar
-          post-url : "/resources/users/#{u.id}/avatar"
-
-          on-success: (x, y, json) ->
-            r = JSON.parse json
-            if typeof r is \object
-              jcrop.destroy! if jcrop
-
-              $ '.avatar img'
-                .attr \src, "#{w.cache-url}/#{r.avatar}"
-                .attr \style, ''
-                .Jcrop aspect-ratio: 1.25, ->
-                  jcrop := this
-        })
+      profile-user-id = window.$('#left_content .profile').data \userId
+      if profile-user-id is u.id
+        photocropper-enable!
+      else
+        photocropper-disable!
+    else
+      photocropper-disable!
     next!
   on-unload:
     (window, next-mutant, next) ->
