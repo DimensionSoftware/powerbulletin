@@ -266,11 +266,11 @@ function profile-paths user, uploaded-file
   console.warn \found-user, err, usr
   console.warn \logged-in-as, user
   if err
-    console.error \authentication
-    return res.json { success: false }, 403
+    console.error \db.usr
+    return res.json { success: false, type: \db.usr }
   if usr.name != user.name
-    console.error \authorization
-    return res.json { success: false }, 403
+    console.error \authorization, "#{usr.name} != #{user.name}"
+    return res.json { success: false, type: \authorization }
 
   avatar = req.files.avatar
   console.warn \avatar, avatar
@@ -280,7 +280,7 @@ function profile-paths user, uploaded-file
   err <- mkdirp fs-dir-path
   if err
     console.error \mkdirp.rename, err
-    return res.json { success: false }, 403
+    return res.json { success: false, type: \mkdirp }
 
   # move image to public/images/user/:user_id/
   move = (src, dst, cb) ->
@@ -294,13 +294,13 @@ function profile-paths user, uploaded-file
   err <- move avatar.path, fs-path
   if err
     console.error \move, err
-    return res.json { success: false }, 403
+    return res.json { success: false, type: \move }
 
   # update user avatar
   err, success <- db.change-avatar user, url-path
   if err
     console.error \change-avatar, err
-    return res.json { success: false }, 403
+    return res.json { success: false, type: \db.change-avatar }
   res.json success: true, url: url-path
 
 @profile-avatar-crop = (req, res, next) ->
