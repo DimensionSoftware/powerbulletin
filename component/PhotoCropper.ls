@@ -11,7 +11,7 @@ module.exports =
     @pc = null
 
     # helper function to put photocropper in a fancybox
-    @start = ({title="Profile Photo", mode=\upload, photo=null, aspect-ratio=5/4, endpoint-url=null}={}, cb=(->)) ~>
+    @start = ({title="Profile Photo", mode=\upload, photo=null, aspect-ratio=1/1, endpoint-url=null}={}, cb=(->)) ~>
       photo        = user.photo                           unless photo
       endpoint-url = "/resources/users/#{user.id}/avatar" unless endpoint-url
 
