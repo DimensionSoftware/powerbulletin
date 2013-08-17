@@ -310,7 +310,7 @@ function profile-paths user, uploaded-file
   {x,y,x1,y1,w,h} = req.body
   gm(paths.fs-path)
     .crop w, h, x, y
-    .resize 255, 204
+    .resize 255, 255
     .write paths.fs-path, (err) ->
       if err
         console.warn \crop-and-resize-err, err
