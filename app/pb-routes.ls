@@ -37,6 +37,7 @@ app.get  \/resources/posts/:id/sub-posts,  handlers.sub-posts
 app.post \/resources/posts/:id/impression, handlers.add-impression
 app.post \/resources/posts/:id/censor,     handlers.censor
 app.post \/resources/users/:id/avatar,     handlers.profile-avatar
+app.put \/resources/users/:id/avatar,      handlers.profile-avatar-crop
 #}}}
 
 # common for all pages within a site

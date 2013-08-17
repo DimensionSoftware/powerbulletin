@@ -1,0 +1,16 @@
+.upload
+  h1= title
+  div
+    img(src="#{cacheUrl}#{photo}")
+  div
+    form(method="POST", action="#{endpointUrl}", enctype="multipart/form-data")
+      div.button 
+        span Upload Image
+        input(type="file", name="avatar")
+
+.crop(style="display:none;")
+  h1= title + " (crop)"
+  div
+    img(src="#{cacheUrl}#{photo}")
+  div.button
+    span Crop Image

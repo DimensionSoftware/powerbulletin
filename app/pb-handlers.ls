@@ -4,6 +4,7 @@ require! {
   jade
   mkdirp
   querystring
+  gm
   s: \./search
   c: \./cache
   __:   \lodash
@@ -246,11 +247,24 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   res.mutant \profile
 
+function profile-paths user, uploaded-file
+  ext = uploaded-file.name.match(/\.(\w+)$/)?1 or ""
+  r = {}
+  r.avatar-file = if ext then "avatar.#ext" else "avatar"
+  r.url-dir-path = "/images/user/#{user.id}"
+  r.url-path = "#{r.url-dir-path}/#{r.avatar-file}"
+  r.fs-dir-path = "public#{r.url-dir-path}"
+  r.fs-path = "#{r.fs-dir-path}/#{r.avatar-file}"
+  r
+
 @profile-avatar = (req, res, next) ->
   db   = pg.procs
   user = req.user
   site = res.vars.site
+  console.warn \lookup-user, { id: req.params.id, site_id: site.id }
   err, usr <- db.usr { id: req.params.id, site_id: site.id }
+  console.warn \found-user, err, usr
+  console.warn \logged-in-as, user
   if err
     console.error \authentication
     return res.json { success: false }, 403
@@ -259,15 +273,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     return res.json { success: false }, 403
 
   avatar = req.files.avatar
-
-  ext = avatar.name.match(/\.(\w+)$/)?1 or ""
-  avatar-file = if ext then "avatar.#ext" else "avatar"
+  console.warn \avatar, avatar
 
   # mkdirp public/images/user/:user_id
-  url-dir-path = "/images/user/#{user.id}"
-  fs-dir-path  = "public#url-dir-path"
-  url-path     = "#url-dir-path/#{avatar-file}"
-  fs-path      = "#fs-dir-path/#{avatar-file}"
+  {avatar-file, url-dir-path, fs-dir-path, url-path, fs-path} = profile-paths user, avatar
   err <- mkdirp fs-dir-path
   if err
     console.error \mkdirp.rename, err
@@ -292,7 +301,24 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   if err
     console.error \change-avatar, err
     return res.json { success: false }, 403
-  res.json success: true, avatar: url-path
+  res.json success: true, url: url-path
+
+@profile-avatar-crop = (req, res, next) ->
+  mock-photo = { name: req.user.photo }
+  paths = profile-paths req.user, mock-photo
+  console.warn \crop, req.body, req.user, mock-photo, paths
+  {x,y,x1,y1,w,h} = req.body
+  gm(paths.fs-path)
+    .crop w, h, x, y
+    .resize 255, 204
+    .write paths.fs-path, (err) ->
+      if err
+        console.warn \crop-and-resize-err, err
+        res.json success: false
+      else
+        res.json success: true
+        # also send a user update event
+  res.json success: false
 
 @stylus = (req, res, next) ->
   r = req.route.params
@@ -382,6 +408,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       * \_surf
       * \_surfData
       * \_surfTasks
+      * \site_id
 
     opts = {} <<< opts
 
@@ -392,17 +419,19 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
 
   site = res.vars.site
+  searchopts = {} <<< req.query <<< {site_id: site.id}
+  console.warn searchopts
 
   err, menu <- db.menu res.vars.site.id
   if err then return next err
 
-  err, elres, elres2 <- s.search req.query
+  err, elres, elres2 <- s.search searchopts
   if err then return next(err)
 
   err, forum-dict <- db.forum-dict site.id
   if err then return next(err)
 
-  res.locals.searchopts = cleanup-searchopts req.query
+  res.locals <<< {searchopts: cleanup-searchopts(searchopts)}
 
   for h in elres.hits
     h._source.posts = [] # stub object for non-existent sub-posts in search view

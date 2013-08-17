@@ -1,6 +1,7 @@
 require! {
   redis
   async
+  \./sig
 }
 
 # Important Redis Keys
@@ -109,7 +110,7 @@ module.exports = class Presence
     if err then return cb err
     cb null, JSON.parse(user-json)
 
-process.on "SIGINT", ->
+sig.int ->
   console.error "SIGINT CAUGHT - cleaning up connections belonging to process #{process.pid}"
   err <- Presence.clean-up
   console.log err if err

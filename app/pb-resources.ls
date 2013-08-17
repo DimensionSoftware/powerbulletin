@@ -34,7 +34,7 @@ ban-all-domains = (site-id) ->
     switch req.body.action
     | \general =>
       should-ban = false # varnish
-      for f in [\postsPerPage \inviteOnly \private \analytics]
+      for f in [\style \postsPerPage \inviteOnly \private \analytics]
         if site.config[f] isnt req.body[f] then should-ban = true
 
       # update site
@@ -51,11 +51,8 @@ ban-all-domains = (site-id) ->
       # save css to disk for site
       err <- mkdirp base-css
       if err then return next err
-      console.log \here
       (err, css) <- stylus.render site.config.style, {compress:true}
-      console.log \after
       if err then return res.json {success:false, msg:'CSS must be valid!'}
-      console.log \css:, css
       err <- fs.write-file "#base-css/#{site.id}.css" css
       if err then return next err
       # varnish ban
