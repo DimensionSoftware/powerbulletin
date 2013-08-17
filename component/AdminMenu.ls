@@ -7,6 +7,7 @@ require! {
 
 module.exports =
   class AdminMenu extends Component
+    const prefix = \list_
     const opts =
       handle: \div
       items:  \li
@@ -18,40 +19,53 @@ module.exports =
     template: templates.AdminMenu
     current:  null # active "selected" menu item
 
-    show:       ~> set-timeout (~> @$.find \.col2 .show 300ms), 300ms
-    clone: (id) ~> # clone a templated defined as class="default"
-      @$.find \.default .clone!remove-class(\default).attr \id, id
+    show:         ~> set-timeout (~> @$.find \.col2 .show 300ms), 300ms
+    clone: (item) ~> # clone a templated defined as class="default"
+      console.log \clone:, item
+      e = @$.find \.default .clone!remove-class(\default).attr \id, item.id
+      e.find \input # add metadata to input
+        ..data \menu,  item.data?menu
+        ..data \title, item.data?title
+        ..val item.data?title
+      e
     current-store: !~>
-      if @current # store
-        f = @$.find \form
-        f.find 'input[name="menu"]' .remove!  # prune old form data
-        @$.data @current, \menu, f.serialize! # create & store new
-        console.log \current:, @current
-        console.log \stored:, f.serialize!
-        console.log \val:, @current.val!
+      unless e = @current then return # guard
+      console.log \here
+      form = @$.find \form
+      if form
+        form.find 'input[name="menu"]' ?remove! # prune old form data
+        e # store
+          ..data \form, form.serialize!
+          ..data \title, @current.val!
+        console.log \store-menu:, e.data \menu
+        console.log \store-title:, e.data \title
     current-restore: !~>
-      m = @$.data @current, \menu
-      f = @$.find \form
-      if m?length # restore current's menu
-        f.deserialize m
-        console.log \restored:, m
-      else
-        console.log \defaulted
-        f.get 0 .reset! # default
-
-    init: !~>
+      unless e = @current then return # guard
+      if form  = @$.find \form
+        reset = -> form.get 0 .reset! # default
+        {form, title} = @current.data
+        e.val title
+        if menu # restore current's menu + title
+          form.deserialize form
+          @current.val title
+          console.log \restored:, form
+        else
+          reset!
 
     on-attach: !~>
       # pre-load nested sortable list + initial active
       # - safely assume 2 levels max for now)
-      s = @$.find \.sortable
       site = @state.site!
-      for item in JSON.parse site.config.menu # render parent menu
-        s.append(@clone item.id) if item.id
-        if item.menu # ... & siblings
-          for sub-item in JSON.parse item?menu
-            item.append(@clone sub-item.id)
       if site.config.menu # init ui
+        s = @$.find \.sortable
+        for item in JSON.parse site.config.menu # render parent menu
+          console.log \parsed:, item
+          if item.id # save!
+            item.id = "#prefix#{item.id}"
+            s.append(@clone item)
+            #if item.data?menu # ... & siblings
+            #  for sub-item in JSON.parse item?menu
+            #    item.append(@clone sub-item) if sub-item?id
         s.nested-sortable opts
         set-timeout (-> s.find \input:first .focus!), 200ms
         @show!
@@ -59,15 +73,17 @@ module.exports =
       @$.on \click \.onclick-add (ev) ~>
         @show!
 
-        const prefix = \list_
+        s = @$.find \.sortable
         # generate id & add new menu item!
         max = parse-int maximum(s.find \li |> map (-> it.id.replace prefix, ''))
         id  = unless max then 1 else max+1
-        s
-          ..append(@clone "#prefix#id")
-          ..find \input .focus!
+        e   = @clone {id:"#prefix#id"}
+        console.log \created:, e
+        @$.find \.sortable
+          ..append e
           ..nested-sortable opts
-        @current-restore!
+          ..find \input .focus!
+        @current-restore
         false
 
       # save menu
@@ -76,23 +92,26 @@ module.exports =
 
         # get entire menu
         menu = @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy! # extended to pull data attributes, too
-        f = @$.find \form
-        f.append(@@$ \<input>                # append new menu
+        unless menu.length then menu = [menu] # box
+        console.log \saving-nested-sortable:, menu
+        form = @$.find \form
+        form.append(@@$ \<input> # append new menu
           .attr \type, \hidden
           .attr \name, \menu
           .val JSON.stringify menu)
         submit-form ev, (data) ->
           f = $ this # form
-          t = $(f.find \.tooltip)
+          t = $(form.find \.tooltip)
           show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
 
       # save current form on active row/input
-      @$.on \blur \.row (ev) ~> @current-store!
+      @$.on \blur \.row   (ev) ~> @current-store!
+      @$.on \change \form (ev) ~> @current-store!
 
       @$.on \click \.row (ev) ~>
-        # TODO load data for active row
-        @current = $ ev.target# .closest \li
-        @current-restore!
+        # load data for active row
+        @current = $ ev.target
+        @current-restore
 
       # init
       @$.find \.sortable .nested-sortable opts

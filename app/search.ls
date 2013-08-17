@@ -1,5 +1,6 @@
 require! {
   el: \./elastic
+  sh: \./shared-helpers
 }
 
 const day-ms = 24h * 60m * 60s * 1000ms
@@ -29,6 +30,7 @@ parseopts = ({
   q = void
   forum_id = void
   within = void
+  site_id = void
   stream = void
   page = 1
 } = {}) ->
@@ -43,6 +45,11 @@ parseopts = ({
   if q
     query.query_string =
       query: q
+
+  if site_id
+    filters.push {
+      term: {site_id}
+    }
 
   if forum_id
     filters.push {
@@ -115,5 +122,12 @@ parseopts = ({
 @search = (searchopts, cb) ->
   elc = el.client # XXX: argh..... lol
 
-  elc.search parseopts(searchopts), cb
+  err, res, res2 <- elc.search parseopts(searchopts)
+  if err then return cb err
+
+  for h in res.hits
+    sh.add-dates h._source
+
+  cb null, res, res2
+
 

@@ -1,5 +1,7 @@
 require! LiveScript
 
+global.env = process.env.NODE_ENV or 'development'
+
 !function clean-require-cache
   for k,v of require.cache when (k.index-of(process.cwd! + '/build') is not -1) or (k.index-of(process.cwd! + "/app") is not -1) or (k.index-of(process.cwd! + "/component") is not -1)
     console.log('unrequiring: ' + k)

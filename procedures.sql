@@ -741,7 +741,7 @@ CREATE FUNCTION procs.idx_posts(lim JSON) RETURNS JSON AS $$
   sql = """
   SELECT p.id, p.thread_id, p.forum_id, p.user_id, p.title, p.body, p.created,
          p.updated, p.uri, p.html, f.title forum_title, t.uri thread_uri,
-         t.title thread_title, #{u.user-fields \p.user_id, \f.site_id}
+         t.title thread_title, f.site_id, #{u.user-fields \p.user_id, \f.site_id}
   FROM posts p
   JOIN forums f ON p.forum_id=f.id
   JOIN posts t ON p.thread_id=t.id

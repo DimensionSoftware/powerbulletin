@@ -14,23 +14,22 @@ debounce = lodash.debounce _, 250ms
 
 module.exports =
   class SiteRegister extends Component
-    hostname = if process.env.NODE_ENV is \production then \.powerbulletin.com else \.pb.com
     template: templates.SiteRegister
     init: ->
       # mandatory state
-      @local \hostname, hostname
+      console.warn \env, global.env
+      @local \hostname, if global.env is \production then \.powerbulletin.com else \.pb.com
       @local \subdomain '' unless @local \subdomain
 
       # init children
       do ~>
         on-click = Auth.require-registration ~>
           subdomain = @local \subdomain
-          domain = window.auth-domain.replace /^\/\//, '.' # client-side doesn't have process.env.NODE_ENV
-          @@$.post '/ajax/can-has-site-plz', {domain: subdomain+domain}, ({errors}:r) ->
+          @@$.post '/ajax/can-has-site-plz', {domain: subdomain+@local(\hostname)}, ({errors}:r) ~>
             if errors.length
               console.error errors
             else
-              window.location = "http://#subdomain#hostname\#once"
+              window.location = "http://#subdomain#{@local \hostname}\#once"
         locals = {title: \Create}
         @children =
           buy: new ParallaxButton {on-click, locals} \.SiteRegister-create @
@@ -40,9 +39,9 @@ module.exports =
       $sa = @$.find \.SiteRegister-available
       $errors = @@$ \.SiteRegister-errors
 
-      @check-subdomain-availability = @@$R((subdomain) ->
+      @check-subdomain-availability = @@$R((subdomain) ~>
         errors = pure-validations.subdomain subdomain
-        @@$.get \/ajax/check-domain-availability {domain: subdomain+hostname} (res) ->
+        @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ->
           $sa.remove-class 'success error'
           if res.available
             component.children.buy.enable!

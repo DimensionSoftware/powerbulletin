@@ -101,6 +101,7 @@ html.forum, html.profile, html.search
       display none
     .photo
       margin 5px 11px 7px 0
+      border-radius 45px
     .create
       margin (grid/2) (grid*3.5) (grid/2) (grid*2)
       .button
@@ -212,11 +213,11 @@ html.forum, html.profile, html.search
             height 22px
             min-height 22px
             width 320px
-            margin-top 0
+            margin-top 7px
             vertical-align top
             display inline-block
           button
-            bottom 44px
+            bottom 47px
             right 8px
             height 27px
             font-size 15px
@@ -250,9 +251,9 @@ html.forum, html.profile, html.search
         .summary
           .profile.photo
             margin-left 3px
-            border-radius 5px / 1px
-            height 33px
-            width 43px
+            border-radius 45px
+            height 45px
+            width 45px
             margin-top (grid/2)
         .summary::before:hover
           margin-left 2px
@@ -260,7 +261,7 @@ html.forum, html.profile, html.search
           position absolute
           z-index 1
           content ''
-          top 13px
+          top 19px
           height 0
           width 0
           border-bottom 7px solid transparent
@@ -293,8 +294,9 @@ html.forum, html.profile, html.search
           span, em
             display none
         .profile
-          width 75px
-          height 60px
+          width 70px
+          height 70px
+          border-radius 70px
           margin-bottom (grid)
         img
           max-width 100%
@@ -336,8 +338,8 @@ html.forum, html.profile, html.search
       .children
         font-size .95em
         .profile.photo
-          width 60px
-          height 45px
+          width 55px
+          height 55px
         .children
           margin-left (grid*3)
           .body
@@ -356,9 +358,9 @@ html.forum, html.profile, html.search
             .date
               margin-left (grid/2)
             .profile
-              border-radius 2px
-              width 46px
-              height 37px
+              border-radius 45px
+              width 45px
+              height 45px
 //}}}
 //{{{ - profile
 html.profile
@@ -471,6 +473,9 @@ html.search
       border-bottom 1px solid #ccc
     #breadcrumb
       display none
+    .search
+      h4
+        margin 12px 0
   header
     .search
     .container

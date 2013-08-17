@@ -62,6 +62,7 @@ export submit-form = (ev, fn) ->
     data-type: \json
     success:   (data) ->
       $s.remove-attr \disabled
+      if $ \footer .has-class \expanded then $ '.onclick-footer-toggle:first' .click! # close drower
       if fn then fn.call $f, data
     error: (data) ->
       $s.remove-attr \disabled
@@ -85,7 +86,7 @@ render = (sel, locals, cb=(->)) ~>
     cb!
     focus $e
 export toggle-post = (ev) ->
-  unless $ ev.target .has-class \onclick-footer-toggle then return # guard
+  unless $ ev?target .has-class \onclick-footer-toggle then return # guard
   unless user then Auth.show-login-dialog!; return # guard
   data =
     action: \/resources/posts
@@ -187,7 +188,8 @@ export fancybox-params =
 
 export respond-resize = ->
   w = $ window
-  if w.width! <= 800px then $ \body .add-class \collapsed
+  unless window.mutator is \admin # FIXME improve responsive.styl
+    if w.width! <= 800px then $ \body .add-class \collapsed
 
 export set-wide = ->
   l = $ \#left_content
