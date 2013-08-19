@@ -1,7 +1,7 @@
 require! $R:reactivejs
 require! {
-  \../component/SalesApp.ls
-  \../component/Buy.ls
+  \../component/SalesApp
+  \../component/Buy
 }
 global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
 

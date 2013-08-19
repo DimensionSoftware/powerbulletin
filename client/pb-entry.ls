@@ -1,28 +1,30 @@
 define = window?define or require(\amdefine) module
 
 require.config {
-  packages:
-    * {name: \yacomponent}
+  paths: '../packages'
+  #packages:
+  #  * {name: \yacomponent}
+  #  * {name: \mutant}
 }
 
 define (require) ->
   window.__    = require \lodash
-  window.Chat  = require \../component/Chat.ls
-  window.Auth  = require \../component/Auth.ls
-  window.Pager = require \./pager.ls
-  window.furl  = require \./forum-urls.ls
-  window.tasks = require \./tasks.ls
-  window.ioc   = require \./io-client.ls
+  window.Chat  = require \../component/Chat
+  window.Auth  = require \../component/Auth
+  window.Pager = require \./pager
+  window.furl  = require \./forum-urls
+  window.tasks = require \./tasks
+  window.ioc   = require \./io-client
 
-  window.PhotoCropper = require \../component/PhotoCropper.ls
+  window.PhotoCropper = require \../component/PhotoCropper
 
   global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
-  global <<< require \./shared-helpers.ls
-  global <<< require \./client-helpers.ls
+  global <<< require \./shared-helpers
+  global <<< require \./client-helpers
 
   # components
-  require! \../component/Buy.ls
-  require! \../component/Paginator.ls
+  require! \../component/Buy
+  require! \../component/Paginator
 
   # XXX client-side entry
   # shortcuts

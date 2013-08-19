@@ -1,13 +1,13 @@
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
-window.helpers = require \./shared-helpers.ls
-window.mutants = require \./pb-mutants.ls
+window.helpers = require \./shared-helpers
+window.mutants = require \./pb-mutants
 require! $R: reactivejs
 window.r-user = $R.state!
 
-mutant  = require \../lib/mutant/mutant.ls
+mutant  = require \../lib/mutant/mutant
 
-require! ch: \./client-helpers.ls
-window.Auth  = require \../component/Auth.ls
+require! ch: \./client-helpers
+window.Auth  = require \../component/Auth
 
 window.cors =
   ajax-params:

@@ -32,7 +32,7 @@ html
     if style
       link(href="/sites/#{siteId}.css", rel='stylesheet', type='text/css')
 
-    script(data-main='app/pb-entry.js', src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
+    script(data-main="#{cacheUrl}/client/pb-entry.js", src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
     //- the only .js in our <head> 
     //-XXX if cvars.env != 'production'
     //-XXX   script(type='text/javascript', src="#{cache5Url}/local/head-0.99.load.min.js") //- offline

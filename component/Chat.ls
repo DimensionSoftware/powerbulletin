@@ -1,6 +1,6 @@
 require! Component: yacomponent
 
-{templates} = require \../build/component-jade.js
+{templates} = require \../build/component-jade
 
 add-message = (fn, m) -->
   $msg = @message-node m

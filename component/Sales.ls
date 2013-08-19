@@ -1,12 +1,12 @@
 require! {
   lodash
   Component: yacomponent
-  \./ParallaxButton.ls
-  \./SiteRegister.ls
-  sh: \../app/shared-helpers.ls
+  \./ParallaxButton
+  \./SiteRegister
+  sh: \../app/shared-helpers
 }
 
-{templates} = require \../build/component-jade.js
+{templates} = require \../build/component-jade
 
 debounce = lodash.debounce _, 250
 

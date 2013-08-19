@@ -1,9 +1,9 @@
 require! {
   Component: yacomponent
-  sh: \../app/shared-helpers.ls
+  sh: \../app/shared-helpers
 }
 
-{templates} = require \../build/component-jade.js
+{templates} = require \../build/component-jade
 
 module.exports =
   class PhotoCropper extends Component

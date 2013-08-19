@@ -1,6 +1,6 @@
 require! Component: yacomponent
 
-{templates} = require \../build/component-jade.js
+{templates} = require \../build/component-jade
 
 module.exports =
   class AdminUpgrade extends Component

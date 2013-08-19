@@ -1,4 +1,4 @@
-require! { ch: './client-helpers.ls' }
+require! { ch: './client-helpers' }
 
 <- ch.lazy-load-socketio
 

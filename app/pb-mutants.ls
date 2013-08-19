@@ -1,12 +1,12 @@
-global.furl = require \./forum-urls.ls
+global.furl = require \./forum-urls
 
-global <<< require \./shared-helpers.ls
+global <<< require \./shared-helpers
 
 require! {
-  \../component/AdminUpgrade.ls
-  \../component/AdminMenu.ls
-  \../component/Paginator.ls
-  \../component/PhotoCropper.ls
+  \../component/AdminUpgrade
+  \../component/AdminMenu
+  \../component/Paginator
+  \../component/PhotoCropper
 }
 
 !function bench subject-name, subject-body

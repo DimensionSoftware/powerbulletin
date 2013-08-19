@@ -1,9 +1,9 @@
 require! {
   Component: yacomponent
-  ch: \../app/client-helpers.ls
+  ch: \../app/client-helpers
 }
 
-{templates} = require \../build/component-jade.js
+{templates} = require \../build/component-jade
 
 module.exports =
   class Auth extends Component

@@ -1,14 +1,14 @@
 require! {
   lodash
   Component: yacomponent
-  \./ParallaxButton.ls
-  \./Auth.ls
-  sh: \../app/shared-helpers.ls
-  ch: \../app/client-helpers.ls
-  \../plv8_modules/pure-validations.js
+  \./ParallaxButton
+  \./Auth
+  sh: \../app/shared-helpers
+  ch: \../app/client-helpers
+  \../plv8_modules/pure-validations
 }
 
-{templates} = require \../build/component-jade.js
+{templates} = require \../build/component-jade
 
 debounce = lodash.debounce _, 250ms
 

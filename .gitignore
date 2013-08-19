@@ -25,5 +25,11 @@
 /build/
 /pb.sql
 /.bash_history
+# precompile ignores
 /app/*.js
+/client/*.js
 /component/*.js
+/lib/mutant/*.js
+/lib/mutant/**/*.js
+/lib/mutant/**/**/*.js
+/lib/mutant/**/**/**/*.js

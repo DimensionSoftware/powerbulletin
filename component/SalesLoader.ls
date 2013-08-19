@@ -1,8 +1,8 @@
 require! Component: yacomponent
-require! \./SalesApp.ls
-require! \./Auth.ls
+require! \./SalesApp
+require! \./Auth
 
-{templates} = require \../build/component-jade.js
+{templates} = require \../build/component-jade
 
 module.exports =
   class SalesLoader extends Component
