@@ -17,7 +17,6 @@ module.exports =
     template: templates.SiteRegister
     init: ->
       # mandatory state
-      console.warn \env, global.env
       @local \hostname, if global.env is \production then \.powerbulletin.com else \.pb.com
       @local \subdomain '' unless @local \subdomain
 
@@ -27,7 +26,7 @@ module.exports =
           subdomain = @local \subdomain
           @@$.post '/ajax/can-has-site-plz', {domain: subdomain+@local(\hostname)}, ({errors}:r) ~>
             if errors.length
-              console.error errors
+              ch.show-tooltip (@@$ \.SiteRegister-errors), errors.join \<br> if errors.length
             else
               window.location = "http://#subdomain#{@local \hostname}\#once"
         locals = {title: \Create}

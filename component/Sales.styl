@@ -1,5 +1,6 @@
 .Sales
   text-align center
+  margin-top 235px
   .logo
     position fixed
     margin-top 100px
@@ -13,6 +14,7 @@
       margin 0
       color #666
       letter-spacing -1px
+      text-shadow 1px 1px 1px #ddd
       b
         letter-spacing 0
         font-style normal
@@ -21,7 +23,7 @@
         color #444
     em
       display block
-      margin-top 13px
+      margin-top 23px
       text-transform uppercase
       font-weight 200
       font-style normal
@@ -31,7 +33,6 @@
   fieldset
     border 0
     .hostname
-      font-size 20px
       vertical-align middle
     .Sales-subdomain
       font-size 25px
@@ -57,23 +58,39 @@
       display inline
       .error
         display inline
+  #imagine
+    font-size 1.65em
+    letter-spacing 1px
+    font-weight 300
   #register_top
-    margin-top 195px
+    margin-top 115px
     opacity 0
   #features
-    margin-top 70px
+    font-weight 300
+    color #aaa
+    margin 70px 0 0 -70px
   h2
     font-size 1.45em
     font-weight 400
     color #888
+  section.bg
+    height 500px
+    background-color #ddd
+    border-top 1px solid #ccc
+    border-bottom 1px solid #eee
+    z-index 1
   section.last
     position absolute
     bottom 400px
     top auto
     min-height 100px
-    height 150px
+    height 210px
     article
       width 530px
+      h3
+        left 40px
+      h3::after
+        display none
       #register_bottom
         position absolute
         bottom 10px
@@ -81,14 +98,15 @@
     position absolute
     bottom 0
     top auto
+    z-index 0
     min-height 100px
     height 350px
     background #ccc
     background-image linear-gradient(top, #ccc 10%, #fafafa 100%)
     margin 0
     padding 0
-    border-top 1px solid #aaa
-    box-shadow 0 1px 5px 1px #777 inset
+    border-top 1px solid #ddd
+    box-shadow 0 -1px 0px 0px #666 inset,0 6px 12px 3px #eee inset
     article
       width 800px
       margin 55px auto 0 auto
@@ -102,27 +120,27 @@
           margin 15px 0
 
   section:nth-child(odd)
-    background-color #fcfcfc
+    background-color #fbfbfb
   section
     border-top 1px solid #f4f4f4
     article
       width 600px
-      margin 160px auto 0 auto
+      margin 50px auto 0 auto
       h3
         position relative
-        text-transform uppercase
         letter-spacing 2px
         text-shadow 0 1px 0 rgba(0,0,0,.4)
       h3::after
         content ''
         position absolute
-        top 30px
+        top 38px
         left 36%
         width 200px
         height 1px
-        background #ccc
-        border-bottom 1px solid #eee
+        background #ddd
+        border-bottom 1px solid #ccc
         border-radius 100px / 1px
+        box-shadow 0 0 6px 1px #ddd
       p
         margin auto
         color #555

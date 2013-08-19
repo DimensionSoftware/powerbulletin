@@ -1,6 +1,6 @@
 body
   margin 0
-  height 3900px
+  height 2800px
   position relative
 
 body.scrolled
@@ -31,7 +31,7 @@ header
     li
       display inline-block
       margin-top 12px
-      margin-right 25px
+      margin-right 45px
       font-weight 200
       cursor pointer
       a:hover
@@ -41,15 +41,35 @@ header
       a
         color #666
 section.translucent
-  background-color rgba(255,255,255,.8)!important
+  margin-top 450px
+  background-color rgba(255,255,255,.7)!important
+section.stick
+  z-index 3
+  height 210px
+  box-shadow 0 0 8px 0 #eee inset
+section.first
+  margin-top 600px
+section.first + section
+  margin-top 1050px
+section.second
+  margin-top 2200px
+section.second + section
+  margin-top 2500px
+section.third
+  margin-top 2800px
+section.third + section
+  margin-top 2900px
+section.fourth
+  margin-top 3200px
+section.fourth + section
+  margin-top 3500px
 section
+  position absolute
   background #fff
-  position fixed
   display block
   top 0
   left 0
   width 100%
-  min-height 100%
   overflow hidden
   transform translate3d(0,0,0)
 
