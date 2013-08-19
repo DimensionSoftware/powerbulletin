@@ -22,13 +22,16 @@ module.exports =
 
       # init children
       do ~>
-        on-click = Auth.require-registration ~>
+        create-site = ~>
           subdomain = @local \subdomain
           @@$.post '/ajax/can-has-site-plz', {domain: subdomain+@local(\hostname)}, ({errors}:r) ~>
             if errors.length
               ch.show-tooltip (@@$ \.SiteRegister-errors), errors.join \<br> if errors.length
             else
               window.location = "http://#subdomain#{@local \hostname}\#once"
+        after-registration = ~>
+          set-timeout create-site, 2000
+        on-click = Auth.require-registration create-site, after-registration
         locals = {title: \Create}
         @children =
           buy: new ParallaxButton {on-click, locals} \.SiteRegister-create @
