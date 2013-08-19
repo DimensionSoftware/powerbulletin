@@ -25,3 +25,5 @@
 /build/
 /pb.sql
 /.bash_history
+/app/*.js
+/component/*.js

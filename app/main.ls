@@ -1,5 +1,3 @@
-require! LiveScript
-
 global.env = process.env.NODE_ENV or 'development'
 
 !function clean-require-cache

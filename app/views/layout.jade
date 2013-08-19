@@ -32,15 +32,17 @@ html
     if style
       link(href="/sites/#{siteId}.css", rel='stylesheet', type='text/css')
 
+    script(data-main='app/pb-entry.js', src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
     //- the only .js in our <head> 
-    if cvars.env != 'production'
-      script(type='text/javascript', src="#{cache5Url}/local/head-0.99.load.min.js") //- offline
-    else
-      script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
-    if jsUrls
-      script(type="text/javascript")
-        window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.authDomain="!{cvars.authDomain}";window.headjs=head.js;head.js.apply(head,!{JSON.stringify(cvars.baseJsUrls.concat(jsUrls))});
+    //-XXX if cvars.env != 'production'
+    //-XXX   script(type='text/javascript', src="#{cache5Url}/local/head-0.99.load.min.js") //- offline
+    //-XXX else
+    //-XXX   script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
+    //-XXX if jsUrls
+    //-XXX   script(type="text/javascript")
+    //-XXX     window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.authDomain="!{cvars.authDomain}";window.headjs=head.js;head.js.apply(head,!{JSON.stringify(cvars.baseJsUrls.concat(jsUrls))});
   body
+
     header.header.toggler
       h1.logo
         a.mutant(href='/') Power

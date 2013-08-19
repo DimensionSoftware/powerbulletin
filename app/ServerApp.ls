@@ -1,4 +1,3 @@
-
 require!  shelljs
 
 function get-CHANGESET
@@ -13,7 +12,6 @@ global <<< require \prelude-ls
 # this file is compiled to js so this is so we can load .ls files
 # it is compiled to js to work around a bug in cluster where child processes
 # receive incorrect arguments (in particular with --prof when passed with lsc's -n flag)
-require \LiveScript
 require \./load-cvars
 
 # dependencies
