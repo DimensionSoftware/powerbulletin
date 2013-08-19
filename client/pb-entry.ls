@@ -1,14 +1,25 @@
 define = window?define or require(\amdefine) module
 
 require.config {
-  paths: '../packages'
-  #packages:
-  #  * {name: \yacomponent}
-  #  * {name: \mutant}
+  paths:
+    lodash: \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min
+    jquery: \//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min
+  shim:
+    lodash: {exports: \_}
+    jquery: {exports: \jQuery}
+  map:
+    '*': {cheerio: \jquery}
+  packages:
+    * name: \yacomponent
+      location: \../packages/yacomponent
+    * name: \mutant
+      location: \../packages/mutant
 }
 
 define (require) ->
-  window.__    = require \lodash
+  require \jquery     # do this in the beginning, until all scripts are converted to lazy-style
+  window.__ = require \lodash # same... not sure where we use window.__ but whatever, legacy...
+
   window.Chat  = require \../component/Chat
   window.Auth  = require \../component/Auth
   window.Pager = require \./pager
