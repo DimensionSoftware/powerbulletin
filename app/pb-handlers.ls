@@ -10,7 +10,7 @@ require! {
   __:   \lodash
   pg:   \./postgres
   auth: \./auth
-  furl: \./forum-urls
+  furl: \../shared/forum-urls
   pay: \./payments
   url
 }
@@ -18,8 +18,8 @@ require! {
 announce = require(\socket.io-announce).create-client!
 
 global <<< require \./server-helpers
-global <<< require \./shared-helpers
-global <<< require \./client-helpers
+global <<< require \../shared/shared-helpers
+global <<< require \../client/client-helpers
 
 {is-editing, is-admin, is-auth} = require \./path-regexps
 

@@ -10,10 +10,16 @@ require.config {
   map:
     '*': {cheerio: \jquery}
   packages:
-    * name: \yacomponent
-      location: \../packages/yacomponent
     * name: \mutant
       location: \../packages/mutant
+    * name: \prelude-ls
+      location: \../packages/prelude-ls/lib
+      main: \index.js
+    * name: \reactivejs
+      location: \../packages/reactivejs
+      main: \src/reactive.js
+    * name: \yacomponent
+      location: \../packages/yacomponent
 }
 
 define (require) ->
@@ -23,15 +29,15 @@ define (require) ->
   window.Chat  = require \../component/Chat
   window.Auth  = require \../component/Auth
   window.Pager = require \./pager
-  window.furl  = require \./forum-urls
+  window.furl  = require \../shared/forum-urls
   window.tasks = require \./tasks
   window.ioc   = require \./io-client
 
   window.PhotoCropper = require \../component/PhotoCropper
 
-  global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
-  global <<< require \./shared-helpers
-  global <<< require \./client-helpers
+  global <<< require \prelude-ls
+  global <<< require \../shared/shared-helpers
+  global <<< require \../client/client-helpers
 
   # components
   require! \../component/Buy

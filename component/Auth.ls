@@ -3,7 +3,7 @@ define = window?define or require(\amdefine) module
 define (require, exports, module) ->
   require! {
     Component: yacomponent
-    ch: \../app/client-helpers
+    ch: \../client/client-helpers
   }
   {templates} = require \../build/component-jade
 

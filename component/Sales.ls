@@ -6,7 +6,7 @@ define (require, exports, module) ->
     Component: yacomponent
     \./ParallaxButton
     \./SiteRegister
-    sh: \../app/shared-helpers
+    sh: \../shared/shared-helpers
   }
   {templates} = require \../build/component-jade
 

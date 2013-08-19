@@ -112,6 +112,7 @@ module.exports = class Presence
 
 sig.int ->
   console.error "SIGINT CAUGHT - cleaning up connections belonging to process #{process.pid}"
+  set-timeout (-> console.error('DEADLINE hit, forcing process exit (status 1)'); process.exit(1)), 3000 # deadline
   err <- Presence.clean-up
   console.log err if err
   process.exit 0

@@ -6,8 +6,8 @@ define (require, exports, module) ->
     Component: yacomponent
     \./ParallaxButton
     \./Auth
-    sh: \../app/shared-helpers
-    ch: \../app/client-helpers
+    sh: \../shared/shared-helpers
+    ch: \../client/client-helpers
     \../plv8_modules/pure-validations
   }
   {templates} = require \../build/component-jade

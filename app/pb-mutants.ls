@@ -1,6 +1,6 @@
-global.furl = require \./forum-urls
+global.furl = require \../shared/forum-urls
 
-global <<< require \./shared-helpers
+global <<< require \../shared/shared-helpers
 
 require! {
   \../component/AdminUpgrade
