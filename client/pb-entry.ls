@@ -2,11 +2,26 @@ define = window?define or require(\amdefine) module
 
 require.config {
   paths:
-    lodash: \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min
-    jquery: \//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min
+    fse                   : "#{window.cache-url}/local/fse.js"
+    #jquery                : \//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min
+    jquery                : "#{window.cache-url}/local/jquery-1.9.1.min"
+    jquery-cookie         : "#{window.cache-url}/local/jquery.cookie-1.3.1.min"
+    jquery-history        : "#{window.cache-url}/local/history.min"
+    jquery-html5-uploader : "#{window.cache-url}/local/jquery.html5uploader"
+    jquery-masonry        : "#{window.cache-url}/local/jquery.masonry.min"
+    jquery-nicescroll     : "#{window.cache-url}/local/jquery.nicescroll.min"
+    jquery-transit        : "#{window.cache-url}/local/jquery.transit-0.9.9.min"
+    jquery-ui             : "#{window.cache-url}/local/jquery-ui.min"
+    jquery-waypoints      : "#{window.cache-url}/local/waypoints.min"
+    lodash                : \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min
+    raf                   : "#{window.cache-url}/local/raf"
+    powerbulletin         : "#{window.cache-url}/powerbulletin"
+    powerbulletin-sales   : "#{window.cache-url}/powerbulletin-sales"
   shim:
     lodash: {exports: \_}
     jquery: {exports: \jQuery}
+    jquery-cookie: {exports: \jQuery.cookie}
+    jquery-history: {exports: \History}
   map:
     '*': {cheerio: \jquery}
   packages:
@@ -25,6 +40,21 @@ require.config {
 define (require) ->
   require \jquery     # do this in the beginning, until all scripts are converted to lazy-style
   window.__ = require \lodash # same... not sure where we use window.__ but whatever, legacy...
+
+  #XXX : more legacy, assumed to be globally present always, should be
+  # refactored so that each jquery plugin is only required where needed
+  # in the future... as opposed to using global-ness
+  <[
+    jqueryCookie
+    jqueryHistory
+    jqueryMasonry
+    jqueryNicescroll
+    jqueryTransit
+    jqueryUi
+    jqueryWaypoints
+    raf
+  ]>.map require
+  #XXX: end legacy
 
   window.Chat  = require \../component/Chat
   window.Auth  = require \../component/Auth

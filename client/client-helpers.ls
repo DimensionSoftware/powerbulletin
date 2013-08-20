@@ -249,4 +249,6 @@ define (require, exports, module) ->
     $ \#profile
       ..on   \load -> $ \.profile .show!
       ..attr \src, window.cache-url + src
+
+  @ <<< module.exports # workaround for requirejs / amdefine
 # vim:fdm=marker
