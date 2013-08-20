@@ -60,6 +60,8 @@ require! {
 
 global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
 
+max-age = if DISABLE_HTTP_CACHE then 0 else (60 * 60 * 24 * 365) * 1000
+
 require \./load-cvars
 
 require! mw: './middleware'
@@ -213,7 +215,14 @@ module.exports =
       sales-app.use err-or-notfound
 
       # all domain-based catch-alls & redirects, # cache 1 year in production, (cache will get blown on deploy due to changeset tagging)
-      max-age = if DISABLE_HTTP_CACHE then 0 else (60 * 60 * 24 * 365) * 1000
+      cache-app.use((req, res, next) ->
+        if req.url.match /\.ls$/i
+          # trying to match express response exactly so attacker doesn't know we are trying to hide .ls
+          res.content-type \text
+          res.send "Cannot GET #{req.url}", 404
+        else
+          next!
+      )
       cache-app.use(express.static \public {max-age})
 
       sock = express!
