@@ -27,11 +27,12 @@ $ window .on \scroll, ->
   inverse = 8/Math.abs(offset+0.01)
   if inverse < 0 then 0 else inverse
   $ \#imagine      .css \opacity, inverse
-  $ \.logo         .css \y, "#{0-(offset*0.1)}px"
+  $ \.logo         .css {opacity:50/Math.abs(offset), y:"#{0-(offset*0.3)}px"}
   $ \#register_top .css {opacity:inverse, y:"#{0-(offset*2.7)}px"}
-  $ \.bg         |> each -> $ it .css \y, "#{0-(offset*0.68)}px"
-  $ \.stick:odd  |> each -> $ it .css \y, "#{0-(offset*0.82)}px"
-  $ \.stick:even |> each -> $ it .css \y, "#{0-(offset*0.77)}px"
+  $ \.bg         |> each -> $ it .css \y, "#{0-(offset*0.4)}px"
+  $ \.stick  |> each -> $ it .css \y, "#{0-(offset*1.3)}px"
+  #$ \.stick:even |> each -> $ it .css \y, "#{0-(offset*0.75)}px"
+  #$ \.bg:first .css \opacity, 300/Math.abs(offset+0.01)
 
 # animate focus
 set-timeout (->   # bring in register

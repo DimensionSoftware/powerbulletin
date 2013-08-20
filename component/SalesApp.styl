@@ -1,6 +1,6 @@
 body
   margin 0
-  height 2800px
+  height 3300px
   position relative
 
 body.scrolled
@@ -15,6 +15,8 @@ body.scrolled
     bottom -20px
     box-shadow none
     transition all .4s ease-out
+
+//{{{ Header
 header
   position fixed
   top 0
@@ -40,29 +42,36 @@ header
         transition color .2s ease-out
       a
         color #666
+//}}}
+//{{{ Sections
 section.translucent
-  margin-top 450px
-  background-color rgba(255,255,255,.7)!important
+  margin-top 600px
+  //background-color rgba(255,255,255,.7)!important
 section.stick
   z-index 3
-  height 210px
-  box-shadow 0 0 8px 0 #eee inset
+  height 300px
+  //box-shadow 0 0 8px 0 #eee inset
 section.first
-  margin-top 600px
+  margin-top 700px
+  background-image url(cache-url + '/images/navigation.jpg')
+  background-repeat none
 section.first + section
-  margin-top 1050px
+  margin-top 1900px
 section.second
-  margin-top 2200px
+  margin-top 1300px
+  background-image url(cache-url + '/images/responsiveness.jpg')
 section.second + section
-  margin-top 2500px
+  margin-top 4000px
 section.third
-  margin-top 2800px
+  margin-top 2000px
+  background-image url(cache-url + '/images/real_time_flow.jpg')
 section.third + section
   margin-top 2900px
 section.fourth
-  margin-top 3200px
+  margin-top 2700px
+  background-image url(cache-url + '/images/live_support.jpg')
 section.fourth + section
-  margin-top 3500px
+  margin-top 5300px
 section
   position absolute
   background #fff
@@ -71,8 +80,9 @@ section
   left 0
   width 100%
   overflow hidden
-  transform translate3d(0,0,0)
-
+  //transform translate3d(0,0,0)
+//}}}
+//{{{ Footer
 footer:hover
   bottom -43px
   height 42px
@@ -112,3 +122,6 @@ footer
     font-size .8em
     letter-spacing 2px
     padding 0 15px 0 30px
+    //}}}
+
+// vim:fdm=marker

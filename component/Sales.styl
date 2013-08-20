@@ -1,11 +1,13 @@
 .Sales
   text-align center
   margin-top 235px
+  //{{{ Logo
   .logo
     position fixed
-    margin-top 100px
     top 0
     left 100px
+    z-index 0
+    margin-top 100px
     text-align left
     h1
       font-size 3em
@@ -30,6 +32,7 @@
       font-size 1em
       letter-spacing 3px
       color #999
+  //}}}
   fieldset
     border 0
     .hostname
@@ -58,6 +61,7 @@
       display inline
       .error
         display inline
+  //{{{ Sections -- TODO move to SalesApp?
   #imagine
     font-size 1.65em
     letter-spacing 1px
@@ -75,9 +79,6 @@
     color #888
   section.bg
     height 500px
-    background-color #ddd
-    border-top 1px solid #ccc
-    border-bottom 1px solid #eee
     z-index 1
   section.last
     position absolute
@@ -94,6 +95,8 @@
       #register_bottom
         position absolute
         bottom 10px
+  //}}}
+  //{{{ FAQ
   section.faq
     position absolute
     bottom 0
@@ -119,13 +122,10 @@
         h4
           margin 15px 0
 
-  section:nth-child(odd)
-    background-color #fbfbfb
   section
-    border-top 1px solid #f4f4f4
     article
       width 600px
-      margin 50px auto 0 auto
+      margin 100px auto 0 auto
       h3
         position relative
         letter-spacing 2px
@@ -148,3 +148,6 @@
         a
           color #222
           margin 0 9px
+  //}}}
+
+// vim:fdm=marker
