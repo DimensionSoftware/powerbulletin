@@ -30,7 +30,6 @@ module.exports =
       e
     current-store: !~>
       unless e = @current then return # guard
-      console.log \here
       form = @$.find \form
       if form
         form.find 'input[name="menu"]' ?remove! # prune old form data
@@ -41,12 +40,14 @@ module.exports =
         console.log \store-title:, e.data \title
     current-restore: !~>
       unless e = @current then return # guard
-      if form  = @$.find \form
-        reset = -> form.get 0 .reset! # default
-        {form, title} = @current.data
+      if html-form = @$.find \form
+        reset = -> html-form.get 0 .reset! # default
+        console.log \data:, @current.data!
+        {form, title} = @current.data!
         e.val title
-        if menu # restore current's menu + title
-          form.deserialize form
+        console.log \data-to-restore:, title, form
+        if form # restore current's menu + title
+          html-form.deserialize form
           @current.val title
           console.log \restored:, form
         else
@@ -83,7 +84,7 @@ module.exports =
           ..append e
           ..nested-sortable opts
           ..find \input .focus!
-        @current-restore
+        @current-restore!
         false
 
       # save menu
@@ -92,7 +93,7 @@ module.exports =
 
         # get entire menu
         menu = @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy! # extended to pull data attributes, too
-        unless menu.length then menu = [menu] # box
+        #unless menu.length then menu = [menu] # box
         console.log \saving-nested-sortable:, menu
         form = @$.find \form
         form.append(@@$ \<input> # append new menu
@@ -111,7 +112,7 @@ module.exports =
       @$.on \click \.row (ev) ~>
         # load data for active row
         @current = $ ev.target
-        @current-restore
+        @current-restore!
 
       # init
       @$.find \.sortable .nested-sortable opts
