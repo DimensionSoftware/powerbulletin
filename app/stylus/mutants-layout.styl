@@ -627,6 +627,7 @@ html.admin
         display block
         width 420px
         height 40px
+        margin-top 45px
         margin-left 85px
       .tooltip
         left 350px
@@ -690,10 +691,13 @@ html.admin
 //}}}
 html.forum
   .main-content
+    p.onclick-footer-toggle:hover
+      color #999
+      transition all .1s ease-out
     p.onclick-footer-toggle
       color #bbb
       cursor pointer
-      letter-spacing 1px
+      font-weight 100
       margin (grid*2) 0
       text-align center
       font-size 1.1em

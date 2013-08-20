@@ -32,7 +32,8 @@ module.exports =
       unless e = @current then return # guard
       form = @$.find \form
       if form
-        form.find 'input[name="menu"]' ?remove! # prune old form data
+        #form.find 'input[name="menu"]' ?remove! # prune old form data
+        # TODO form values -> json
         e # store
           ..data \form, form.serialize!
           ..data \title, @current.val!
@@ -47,7 +48,8 @@ module.exports =
         e.val title
         console.log \data-to-restore:, title, form
         if form # restore current's menu + title
-          html-form.deserialize form
+          #html-form.deserialize form
+          # TODO form json -> form state & values
           @current.val title
           console.log \restored:, form
         else

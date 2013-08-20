@@ -2,13 +2,14 @@ require! {
   url
 }
 
-export decode-menu-data = (o) ->
-  path = "/?#{o.data.form}"
-  o.data = url.parse path, true
-
-export read = (json) ->
-  menu0 = JSON.parse(json)
-  menu1 = [ decode-menu-data m for m in menu0 ]
+# XXX moving to client
+#export decode-menu-data = (o) ->
+#  path = "/?#{o.data.form}"
+#  o.data = url.parse path, true
+#
+#export read = (json) ->
+#  menu0 = JSON.parse(json)
+#  menu1 = [ decode-menu-data m for m in menu0 ]
 
 export type-of = (object) ->
   \forum
