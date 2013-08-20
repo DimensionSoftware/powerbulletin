@@ -450,6 +450,7 @@ export admin =
       # no pager (for now)
       window.pages-count = 0
       pager-init window
+      <~ lazy-load-fancybox
       <~ lazy-load-nested-sortable
       <~ lazy-load-deserialize
       next!
