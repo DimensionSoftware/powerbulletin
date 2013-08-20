@@ -15,6 +15,9 @@ export post-success = (ev, data) ->
     switch meta.type
     | \new-thread => History.replace-state {} '' data.uri
     | \edit       => remove-editing-url meta
+    # close drawer & cleanup
+    $ \footer .remove-class \expanded
+    $ '#post_new .fadein' .remove!
   false
 
 export ck-submit-form = (e) ->
@@ -37,9 +40,6 @@ export ck-submit-form = (e) ->
   else
     submit-form ev, (data) -> # ...and sumbit!
       post-success ev, data
-      # close & cleanup drawer
-      $ \footer .remove-class \expanded
-      $ '#post_new .fadein' .remove!
 
 export submit-form = (ev, fn) ->
   $f = $ ev.target .closest(\form) # get event's form
@@ -62,12 +62,12 @@ export submit-form = (ev, fn) ->
     data-type: \json
     success:   (data) ->
       $s.remove-attr \disabled
-      if $ \footer .has-class \expanded then $ '.onclick-footer-toggle:first' .click! # close drower
       if fn then fn.call $f, data
     error: (data) ->
       $s.remove-attr \disabled
       show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
   }
+  set-timeout (-> $f.find \input.title .focus!), 100ms # focus!
   false
 
 # makes entire page inline-editable for user-id

@@ -264,6 +264,7 @@ export forum =
       # editing handler
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
+      # FIXME will do something smarter -k
       $ \body .on \click, toggle-post # expand & minimize drawer
 
       # add impression
