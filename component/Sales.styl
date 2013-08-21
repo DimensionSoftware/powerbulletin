@@ -63,21 +63,33 @@
         display inline
   //{{{ Sections -- TODO move to SalesApp?
   #imagine
-    font-size 1.65em
+    position relative
+    font-size 1.75em
     letter-spacing 1px
     font-weight 300
+    .logo-icon
+      background-image url(cache-url + '/images/pb_icon_logo.png')
+      background-repeat no-repeat
+      margin 55px auto 0 auto
+      width 81px
+      height 96px
+      opacity 0
+      transform rotate(90deg)
   #register_top
-    margin-top 115px
+    margin-top 55px
     opacity 0
   #features
-    font-weight 300
+    font-style italic
+    font-weight 200
     color #aaa
-    margin 70px 0 0 -70px
+    margin 70px 0 0 -30px
+    font-size 1.25em
   h2
     font-size 1.45em
     font-weight 400
     color #888
   section.bg
+    position absolute
     height 500px
     z-index 1
   section.last
@@ -89,7 +101,7 @@
     article
       width 530px
       h3
-        left 40px
+        left 85px
       h3::after
         display none
       #register_bottom
@@ -97,6 +109,12 @@
         bottom 10px
   //}}}
   //{{{ FAQ
+  section.faq:hover
+    box-shadow 0 -1px 0px 0px #777 inset,0 6px 12px 5px #eee inset
+    transition all .2s ease-out
+    h3
+      color #222
+      transition all .1s ease-out
   section.faq
     position absolute
     bottom 0
@@ -113,6 +131,8 @@
     article
       width 800px
       margin 55px auto 0 auto
+      h3
+        color #555
       menu
         text-align left
         float left
@@ -129,7 +149,6 @@
       h3
         position relative
         letter-spacing 2px
-        text-shadow 0 1px 0 rgba(0,0,0,.4)
       h3::after
         content ''
         position absolute
