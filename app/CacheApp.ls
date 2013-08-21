@@ -1,6 +1,7 @@
 require! {
   express
   http
+  sh: \./server-helpers
 }
 
 # deny access to .ls files
@@ -26,6 +27,10 @@ module.exports =
       app = express!
         ..use deny-ls
         ..use express.static(\public, {max-age})
+        # probe for haproxy
+        ..get \/probe, (req, res) ->
+          sh.caching-strategies.nocache res
+          res.send 'OK'
 
       server = http.create-server app
         ..listen @port
