@@ -296,15 +296,18 @@ function profile-paths user, uploaded-file
     console.error \move, err
     return res.json { success: false, type: \move }
 
+  cache-buster = require(\crypto).create-hash(\sha1).update(Math.floor((new Date).get-time! * Math.random!).to-string!).digest('hex')
+
   # update user avatar
-  err, success <- db.change-avatar user, url-path
+  err, success <- db.change-avatar user, "#url-path?#cache-buster"
   if err
     console.error \change-avatar, err
     return res.json { success: false, type: \db.change-avatar }
   res.json success: true, url: url-path
 
 @profile-avatar-crop = (req, res, next) ->
-  mock-photo = { name: req.user.photo }
+  photo-path = req.user.photo.split('?')?0
+  mock-photo = { name: photo-path }
   paths = profile-paths req.user, mock-photo
   console.warn \crop, req.body, req.user, mock-photo, paths
   {x,y,x1,y1,w,h} = req.body

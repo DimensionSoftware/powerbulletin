@@ -1,6 +1,6 @@
 body
   margin 0
-  height 3300px
+  height 3700px
   position relative
 
 body.scrolled
@@ -44,43 +44,42 @@ header
         color #666
 //}}}
 //{{{ Sections
-section.translucent
-  margin-top 600px
-  //background-color rgba(255,255,255,.7)!important
 section.stick
   z-index 3
   height 300px
   //box-shadow 0 0 8px 0 #eee inset
 section.first
-  margin-top 700px
+  margin-top 900px
   background-image url(cache-url + '/images/navigation.jpg')
   background-repeat none
 section.first + section
-  margin-top 1900px
+  margin-top 300px
 section.second
-  margin-top 1300px
+  margin-top 1700px
   background-image url(cache-url + '/images/responsiveness.jpg')
 section.second + section
-  margin-top 4000px
+  margin-top 300px
 section.third
-  margin-top 2000px
+  //margin-top 2000px
+  margin-top 2400px
   background-image url(cache-url + '/images/real_time_flow.jpg')
 section.third + section
-  margin-top 2900px
+  margin-top 300px
 section.fourth
-  margin-top 2700px
+  margin-top 3200px
   background-image url(cache-url + '/images/live_support.jpg')
 section.fourth + section
-  margin-top 5300px
+  margin-top 300px
 section
-  position absolute
-  background #fff
+  position relative
+  z-index 2
   display block
   top 0
   left 0
+  height 300px
   width 100%
   overflow hidden
-  //transform translate3d(0,0,0)
+  background #fff
 //}}}
 //{{{ Footer
 footer:hover
