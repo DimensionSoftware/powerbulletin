@@ -27,6 +27,7 @@ require.config {
   packages:
     * name: \mutant
       location: \../packages/mutant
+      main: \index.js
     * name: \prelude-ls
       location: \../packages/prelude-ls/lib
       main: \index.js
