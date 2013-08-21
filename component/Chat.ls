@@ -2,6 +2,7 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! Component: yacomponent
+require jquery-cookie if window? # client-only require
 {templates} = require \../build/component-jade
 
 add-message = (fn, m) -->

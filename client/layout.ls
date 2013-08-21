@@ -6,6 +6,7 @@ window.helpers = require \../shared/shared-helpers
 window.mutants = require \./pb-mutants
 require! $R: reactivejs
 window.r-user = $R.state!
+window.r-socket = $R.state! # do this early
 
 mutant  = require \mutant
 

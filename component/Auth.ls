@@ -3,8 +3,8 @@ require, exports, module <- define
 
 require! {
   Component: yacomponent
-  ch: \../client/client-helpers
 }
+ch = require \../client/client-helpers if window?
 {templates} = require \../build/component-jade
 
 module.exports =

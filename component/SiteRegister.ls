@@ -7,9 +7,11 @@ require! {
   \./ParallaxButton
   \./Auth
   sh: \../shared/shared-helpers
-  ch: \../client/client-helpers
   \../plv8_modules/pure-validations
 }
+
+ch = require \../client/client-helpers if window?
+
 {templates} = require \../build/component-jade
 
 debounce = lodash.debounce _, 250ms

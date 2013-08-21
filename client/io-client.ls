@@ -1,7 +1,10 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! { ch: './client-helpers' }
+require! {
+  ch: './client-helpers'
+  Chat: '../component/Chat'
+}
 
 <- ch.lazy-load-socketio
 
@@ -25,7 +28,7 @@ socket.on \disconnect, ->
 
 socket.on \enter-site, (message, cb) ->
   #console.warn \enter-site, message
-  set-online-user message?id
+  ch.set-online-user message?id
 
 socket.on \leave-site, (message, cb) ->
   #console.warn \leave-site, message

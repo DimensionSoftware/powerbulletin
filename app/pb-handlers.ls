@@ -19,7 +19,6 @@ announce = require(\socket.io-announce).create-client!
 
 global <<< require \./server-helpers
 global <<< require \../shared/shared-helpers
-global <<< require \../client/client-helpers
 
 {is-editing, is-admin, is-auth} = require \./path-regexps
 

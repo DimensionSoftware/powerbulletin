@@ -154,7 +154,6 @@ $ \#query .focus!select!
 window.$ui = $ {}
 
 window.r-searchopts = $R.state window.searchopts
-window.r-socket = $R.state! # do this early
 
 do ->
   # keys that aren't allowed to trigger the search
