@@ -2,12 +2,12 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
-window.helpers = require \./shared-helpers
+window.helpers = require \../shared/shared-helpers
 window.mutants = require \./pb-mutants
 require! $R: reactivejs
 window.r-user = $R.state!
 
-mutant  = require \../lib/mutant/mutant
+mutant  = require \mutant
 
 require! ch: \./client-helpers
 window.Auth  = require \../component/Auth

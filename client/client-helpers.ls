@@ -1,6 +1,8 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
+require! { $: \jquery }
+
 #{{{ Editing Posts
 @post-success = (ev, data) ->
   f = $ ev.target .closest \.post-edit # form
