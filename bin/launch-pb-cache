@@ -2,8 +2,9 @@
 
 for port in {4000..4001}
 do
+  set +e
   killall "pb-cache-$port"
-  sleep 3
+  sleep 2
   killall -9 "pb-cache-$port"
   set -e
   mon -d \
