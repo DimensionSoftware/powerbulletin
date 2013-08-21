@@ -1,6 +1,6 @@
 import std;
 
-backend b0 {
+backend a0 {
   .host = "127.0.0.1";
   .port = "3000";
   .probe = {
@@ -11,7 +11,7 @@ backend b0 {
     .threshold = 1;
   }
 }
-backend b1 {
+backend a1 {
   .host = "127.0.0.1";
   .port = "3001";
   .probe = {
@@ -22,7 +22,7 @@ backend b1 {
     .threshold = 1;
   }
 }
-backend b2 {
+backend a2 {
   .host = "127.0.0.1";
   .port = "3002";
   .probe = {
@@ -33,7 +33,7 @@ backend b2 {
     .threshold = 1;
   }
 }
-backend b3 {
+backend a3 {
   .host = "127.0.0.1";
   .port = "3003";
   .probe = {
@@ -44,7 +44,7 @@ backend b3 {
     .threshold = 1;
   }
 }
-backend b4 {
+backend a4 {
   .host = "127.0.0.1";
   .port = "3004";
   .probe = {
@@ -55,7 +55,7 @@ backend b4 {
     .threshold = 1;
   }
 }
-backend b5 {
+backend a5 {
   .host = "127.0.0.1";
   .port = "3005";
   .probe = {
@@ -66,7 +66,7 @@ backend b5 {
     .threshold = 1;
   }
 }
-backend b6 {
+backend a6 {
   .host = "127.0.0.1";
   .port = "3006";
   .probe = {
@@ -77,7 +77,7 @@ backend b6 {
     .threshold = 1;
   }
 }
-backend b7 {
+backend a7 {
   .host = "127.0.0.1";
   .port = "3007";
   .probe = {
@@ -88,7 +88,7 @@ backend b7 {
     .threshold = 1;
   }
 }
-backend b8 {
+backend a8 {
   .host = "127.0.0.1";
   .port = "3008";
   .probe = {
@@ -99,7 +99,7 @@ backend b8 {
     .threshold = 1;
   }
 }
-backend b9 {
+backend a9 {
   .host = "127.0.0.1";
   .port = "3009";
   .probe = {
@@ -110,37 +110,183 @@ backend b9 {
     .threshold = 1;
   }
 }
+backend c0 {
+  .host = "127.0.0.1";
+  .port = "4000";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c1 {
+  .host = "127.0.0.1";
+  .port = "4001";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c2 {
+  .host = "127.0.0.1";
+  .port = "4002";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c3 {
+  .host = "127.0.0.1";
+  .port = "4003";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c4 {
+  .host = "127.0.0.1";
+  .port = "4004";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c5 {
+  .host = "127.0.0.1";
+  .port = "4005";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c6 {
+  .host = "127.0.0.1";
+  .port = "4006";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c7 {
+  .host = "127.0.0.1";
+  .port = "4007";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c8 {
+  .host = "127.0.0.1";
+  .port = "4008";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c9 {
+  .host = "127.0.0.1";
+  .port = "4009";
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
 
+
+# main app backends
 director default round-robin {
   {
-    .backend = b0;
+    .backend = a0;
   }
   {
-    .backend = b1;
+    .backend = a1;
   }
   {
-    .backend = b2;
+    .backend = a2;
   }
   {
-    .backend = b3;
+    .backend = a3;
   }
   {
-    .backend = b4;
+    .backend = a4;
   }
   {
-    .backend = b5;
+    .backend = a5;
   }
   {
-    .backend = b6;
+    .backend = a6;
   }
   {
-    .backend = b7;
+    .backend = a7;
   }
   {
-    .backend = b8;
+    .backend = a8;
   }
   {
-    .backend = b9;
+    .backend = a9;
+  }
+}
+
+# for muscache.* cache backends
+director cache round-robin {
+  {
+    .backend = c0;
+  }
+  {
+    .backend = c1;
+  }
+  {
+    .backend = c2;
+  }
+  {
+    .backend = c3;
+  }
+  {
+    .backend = c4;
+  }
+  {
+    .backend = c5;
+  }
+  {
+    .backend = c6;
+  }
+  {
+    .backend = c7;
+  }
+  {
+    .backend = c8;
+  }
+  {
+    .backend = c9;
   }
 }
 
@@ -193,6 +339,12 @@ sub vcl_recv {
   {
     set req.http.Location = "https://" + req.http.host + req.url; 
     error 302 "Found"; 
+  }
+
+  # decide whether or not this request is headed towards the cache backend, rather than normal app backend
+  # the static file cache server is isolated since it is a much higher reliability factor than the main app
+  if (req.http.host ~ "(?i)^muscache\d?\.(pb|powerbulletin)\.com$") {
+    set req.backend = cache;
   }
 
   # pipe any socket.io requests

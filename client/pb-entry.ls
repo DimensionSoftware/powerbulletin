@@ -56,6 +56,8 @@ window.__ = require \lodash # same... not sure where we use window.__ but whatev
   jqueryWaypoints
   raf
 ]>.map require
+
+require \layout
 #XXX: end legacy
 
 window.Chat  = require \../component/Chat

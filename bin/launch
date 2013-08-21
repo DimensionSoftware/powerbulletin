@@ -1,4 +1,5 @@
 #!/bin/sh
+bin/launch-pb-cache
 sudo NODE_ENV=$NODE_ENV bin/launch-elasticsearch && \
 sudo NODE_ENV=$NODE_ENV bin/launch-haproxy && \
 sudo NODE_ENV=$NODE_ENV bin/launch-varnish && \

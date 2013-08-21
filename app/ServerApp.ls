@@ -86,7 +86,6 @@ module.exports =
         graceful-shutdown!
 
       app = global.app = express!
-      cache-app        = express!
 
       server = null
 
@@ -214,17 +213,6 @@ module.exports =
       app.use err-or-notfound
       sales-app.use err-or-notfound
 
-      # all domain-based catch-alls & redirects, # cache 1 year in production, (cache will get blown on deploy due to changeset tagging)
-      cache-app.use((req, res, next) ->
-        if req.url.match /\.ls$/i
-          # trying to match express response exactly so attacker doesn't know we are trying to hide .ls
-          res.content-type \text
-          res.send "Cannot GET #{req.url}", 404
-        else
-          next!
-      )
-      cache-app.use(express.static \public {max-age})
-
       sock = express!
 
       # setup probe for varnish load balancer, really simple, doesn't need any middleware
@@ -232,12 +220,6 @@ module.exports =
       sock.get '/probe', (req, res) ->
         sh.caching-strategies.nocache res
         res.send 'OK'
-
-      # bind shared cache domains
-      for i in ['', 2, 3, 4, 5]
-        #XXX: this is a hack but hey we are always using protocol-less urls so should never break :)
-        #  removing leading //
-        sock.use(express.vhost cvars["cache#{i}Url"].slice(2), cache-app)
 
       sock.use(express.vhost (if process.env.NODE_ENV is \production then \powerbulletin.com else \pb.com), sales-app)
 
