@@ -296,10 +296,8 @@ function profile-paths user, uploaded-file
     console.error \move, err
     return res.json { success: false, type: \move }
 
-  cache-buster = require(\crypto).create-hash(\sha1).update(Math.floor((new Date).get-time! * Math.random!).to-string!).digest('hex')
-
   # update user avatar
-  err, success <- db.change-avatar user, "#url-path?#cache-buster"
+  err, success <- db.change-avatar user, "#url-path?#{cache-buster!}"
   if err
     console.error \change-avatar, err
     return res.json { success: false, type: \db.change-avatar }
