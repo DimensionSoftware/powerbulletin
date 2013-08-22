@@ -3,6 +3,9 @@ import std;
 backend a0 {
   .host = "127.0.0.1";
   .port = "3000";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -14,6 +17,9 @@ backend a0 {
 backend a1 {
   .host = "127.0.0.1";
   .port = "3001";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -25,6 +31,9 @@ backend a1 {
 backend a2 {
   .host = "127.0.0.1";
   .port = "3002";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -36,6 +45,9 @@ backend a2 {
 backend a3 {
   .host = "127.0.0.1";
   .port = "3003";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -47,6 +59,9 @@ backend a3 {
 backend a4 {
   .host = "127.0.0.1";
   .port = "3004";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -58,6 +73,9 @@ backend a4 {
 backend a5 {
   .host = "127.0.0.1";
   .port = "3005";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -69,6 +87,9 @@ backend a5 {
 backend a6 {
   .host = "127.0.0.1";
   .port = "3006";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -80,6 +101,9 @@ backend a6 {
 backend a7 {
   .host = "127.0.0.1";
   .port = "3007";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -91,6 +115,9 @@ backend a7 {
 backend a8 {
   .host = "127.0.0.1";
   .port = "3008";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -102,6 +129,9 @@ backend a8 {
 backend a9 {
   .host = "127.0.0.1";
   .port = "3009";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -113,6 +143,9 @@ backend a9 {
 backend c0 {
   .host = "127.0.0.1";
   .port = "4000";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -124,6 +157,9 @@ backend c0 {
 backend c1 {
   .host = "127.0.0.1";
   .port = "4001";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -135,6 +171,9 @@ backend c1 {
 backend c2 {
   .host = "127.0.0.1";
   .port = "4002";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -146,6 +185,9 @@ backend c2 {
 backend c3 {
   .host = "127.0.0.1";
   .port = "4003";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -157,6 +199,9 @@ backend c3 {
 backend c4 {
   .host = "127.0.0.1";
   .port = "4004";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -168,6 +213,9 @@ backend c4 {
 backend c5 {
   .host = "127.0.0.1";
   .port = "4005";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -179,6 +227,9 @@ backend c5 {
 backend c6 {
   .host = "127.0.0.1";
   .port = "4006";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -190,6 +241,9 @@ backend c6 {
 backend c7 {
   .host = "127.0.0.1";
   .port = "4007";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -201,6 +255,9 @@ backend c7 {
 backend c8 {
   .host = "127.0.0.1";
   .port = "4008";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -212,6 +269,9 @@ backend c8 {
 backend c9 {
   .host = "127.0.0.1";
   .port = "4009";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
