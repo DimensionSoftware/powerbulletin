@@ -27,7 +27,7 @@ html
       for obj in cssUrls
         link(rel='stylesheet',type='text/css',href=obj.url)
     if style
-      link(href="#{cache2Url}/sites/#{siteId}.css", rel='stylesheet', type='text/css')
+      link(href="#{cache2Url}/sites/#{siteId}.css?#{cacheBuster}", rel='stylesheet', type='text/css')
 
     //- the only .js in our <head> 
     if cvars.env != 'production'
