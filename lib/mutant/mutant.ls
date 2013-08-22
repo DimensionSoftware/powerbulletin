@@ -1,3 +1,6 @@
+define = window?define or require(\amdefine) module
+require, exports, module <- define
+
 if window?
   true
 else
@@ -97,7 +100,10 @@ else
   on-mutate       = template.on-mutate       || ((w, cb) -> cb!)
   on-personalize  = template.on-personalize  || ((w, u, cb) -> cb!)
 
-  require \../../build/client-jade.js # pre-built clientjade templates
+  # XXX: this sucks, it breaks encapsulation of mutant, we shouldn't need this 
+  # app-specific code here...
+  # working around it for now
+  {templates} = require \../../build/client-jade # pre-built clientjade templates
 
   # like inner html, except super rice
   # mutant has lots of entropy so we can avoid the teardown performance hit
@@ -112,9 +118,9 @@ else
       $el.html html
 
   render-mutant = (id, tmpl) ->
-    replace-html $("\##id"), jade.templates[tmpl](params)
+    replace-html $("\##id"), templates[tmpl](params)
 
-  render = (t) -> jade.templates[t](params)
+  render = (t) -> templates[t](params)
 
   if window?
     window <<< {render, replace-html}
@@ -198,3 +204,5 @@ is-surfable = (r) ->
   r.callbacks.some( (m) -> m.surfable )
 @surfable-routes = (app) ->
   [r.regexp.to-string! for r in app.routes.get when is-surfable r]
+
+@

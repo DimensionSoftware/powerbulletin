@@ -8,6 +8,7 @@ mutants = require \../shared/pb-mutants
 mutant  = require \mutant
 
 require! ch: \./client-helpers
+require! globals
 window.Auth  = require \../component/Auth
 
 window.cors =
@@ -300,7 +301,7 @@ onload-resizable!
 
 # run initial mutant & personalize ( based on parameters from user obj )
 window.user <- $.getJSON \/auth/user
-set-timeout (-> window.r-user window.user), 50
+globals.r-user window.user
 
 # hash actions
 if window.location.hash.match /^\#recover=/ then Auth.show-reset-password-dialog!
