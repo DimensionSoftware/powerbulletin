@@ -5,6 +5,7 @@ require! {
   h: \./server-helpers
   sioa: \socket.io-announce
   auth: \./auth
+  menu: \./menu
   async
   fs
   mkdirp
@@ -37,6 +38,16 @@ ban-all-domains = (site-id) ->
       for f in [\style \postsPerPage \inviteOnly \private \analytics]
         if site.config[f] isnt req.body[f] then should-ban = true
 
+      # save css to disk for site
+      if site.config.style isnt req.body.style # only on change
+        site.config.cache-buster = h.cache-buster!
+        err <- mkdirp base-css
+        if err then return next err
+        (err, css) <- stylus.render site.config.style, {compress:true}
+        if err then return res.json {success:false, msg:'CSS must be valid!'}
+        err <- fs.write-file "#base-css/#{site.id}.css" css
+        if err then return next err
+
       # update site
       site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
@@ -45,23 +56,17 @@ ban-all-domains = (site-id) ->
         delete site.config[c] unless req.body[c]
       for s in [\private \analytics] # subscription tampering
         delete site.config[s] unless s in site.subscriptions
-      err, r <- db.site-update site
+      err, r <- db.site-update site # save!
       if err then return next err
 
-      # save css to disk for site
-      err <- mkdirp base-css
-      if err then return next err
-      (err, css) <- stylus.render site.config.style, {compress:true}
-      if err then return res.json {success:false, msg:'CSS must be valid!'}
-      err <- fs.write-file "#base-css/#{site.id}.css" css
-      if err then return next err
       # varnish ban
       ban-all-domains site.id if should-ban
       res.json success:true
 
     | \menu =>
       # save site config
-      site.config.menu = req.body.menu
+      # XXX site.config.menu is json here
+      #site.config.menu = menu.parse req.body.menu
       console.log \menu:, req.body.menu
       err, r <- db.site-update site
       if err then return next err

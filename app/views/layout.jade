@@ -11,8 +11,6 @@ html
       meta(name='description',content=meta_description) 
     if typeof(meta_keywords) !== 'undefined'
       meta(name='keywords',content=meta_keywords.join(', '))
-    if typeof(meta_zipcode) !== 'undefined'
-      meta(name='zipcode',content=meta_zipcode)
     meta(http-equiv='X-UA-Compatible',content='IE=EmulateIE9,chrome=1')
     meta(name='robots',content='index, follow')
     meta(name='apple-mobile-web-app-capable', content='yes')
@@ -28,9 +26,8 @@ html
     if cssUrls
       for obj in cssUrls
         link(rel='stylesheet',type='text/css',href=obj.url)
-    link(href="#{cache5Url}/sites/#{currentDomain}.css", rel='stylesheet', type='text/css')
     if style
-      link(href="/sites/#{siteId}.css", rel='stylesheet', type='text/css')
+      link(href="#{cache2Url}/sites/#{siteId}.css?#{cacheBuster}", rel='stylesheet', type='text/css')
 
     //- the only .js in our <head> 
     if cvars.env != 'production'

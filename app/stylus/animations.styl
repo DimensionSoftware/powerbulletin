@@ -1,14 +1,14 @@
 
 // Animations!
 @keyframes hover-around
-  10%
-    transform skew(-6deg)
-  40%
-    transform skew(-4deg)
-  60%
-    transform skew(2deg)
-  90%
-    transform skew(5deg)
+  0%
+    transform rotate3d(1, -1, 0, 0deg)
+  35%
+    transform rotate3d(9, -15, 0, -21deg)
+  70%
+    transform rotate3d(-28, 6, 0, 8deg)
+  100%
+    transform rotate3d(1, 0, 0, 18deg)
 
 @keyframes tiny-grow
   0%
@@ -19,6 +19,9 @@
     transform scale(1.03)
   100%
     transform scale(1.0)
+.tiny-grow
+  animation-name tiny-grow
+  animation-duration .2s
 
 @keyframes shake
   0%

@@ -11,6 +11,9 @@ require! {
 }
 sanitize = require('express-validator/node_modules/validator').sanitize
 
+@cache-buster = ->
+  crypto.create-hash \sha1 .update(Math.floor((new Date).get-time! * Math.random!).to-string!).digest \hex
+
 @caching-strategies =
   nocache: (res) ->
     # upstream caches and clients should not cache

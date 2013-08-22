@@ -174,7 +174,6 @@ module.exports =
         a.set \views \app/views
         a.enable 'json callback'
         a.enable 'trust proxy' # parse x-forwarded-for in req.ip, etc...
-        a.use(\/sites, express.static(\public/sites {max-age}))
 
       # give us some context in error_log when exceptions happen
       err-handler = (responder) ~>

@@ -8,9 +8,9 @@ unless File.file? '/usr/local/bin/node'
     cwd '/tmp'
     code <<-EOH
       set -e
-      wget http://nodejs.org/dist/v0.10.3/node-v0.10.3.tar.gz
-      tar -xzf node-v0.10.3.tar.gz
-      cd node-v0.10.3
+      wget http://nodejs.org/dist/v0.10.16/node-v0.10.16.tar.gz
+      tar -xzf node-v0.10.16.tar.gz
+      cd node-v0.10.16
       ./configure --with-dtrace
       make
       make install

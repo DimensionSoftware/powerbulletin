@@ -17,19 +17,21 @@ module.exports =
     template: templates.SiteRegister
     init: ->
       # mandatory state
-      console.warn \env, global.env
       @local \hostname, if global.env is \production then \.powerbulletin.com else \.pb.com
       @local \subdomain '' unless @local \subdomain
 
       # init children
       do ~>
-        on-click = Auth.require-registration ~>
+        create-site = ~>
           subdomain = @local \subdomain
           @@$.post '/ajax/can-has-site-plz', {domain: subdomain+@local(\hostname)}, ({errors}:r) ~>
             if errors.length
-              console.error errors
+              ch.show-tooltip (@@$ \.SiteRegister-errors), errors.join \<br> if errors.length
             else
               window.location = "http://#subdomain#{@local \hostname}\#once"
+        after-registration = ~>
+          set-timeout create-site, 2000
+        on-click = Auth.require-registration create-site, after-registration
         locals = {title: \Create}
         @children =
           buy: new ParallaxButton {on-click, locals} \.SiteRegister-create @

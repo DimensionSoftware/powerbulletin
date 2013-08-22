@@ -50,7 +50,7 @@ is-touchable = do ->
   catch
     false
 
-const threshold = 20px # snap
+const threshold = 15px # snap
 
 #.
 #### main   ###############>======-- -   -
@@ -166,13 +166,13 @@ window.scroll-to-top = (cb=->) ->
   return if ($ window).scroll-top! is 0 # guard
   $e = $ 'html,body'
   do
-    <- $e .animate { scroll-top:0 }, 300ms
-    <- $e .animate { scroll-top:(threshold/2)}, 110ms
-    <- $e .animate { scroll-top:0 }, 75ms
+    <- $e .animate { scroll-top:0 }, 250ms
+    <- $e .animate { scroll-top:(threshold/2)}, 70ms
+    <- $e .animate { scroll-top:0 }, 55ms
   cb!
 window.awesome-scroll-to = (e, duration, cb=->) ->
   e      = $ e
-  ms     = duration or 500ms
+  ms     = duration or 250ms
   offset = 10px
 
   return unless e.length # guard
@@ -182,10 +182,10 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
   else # animate
     dst-scroll = Math.round(e.position!top) - offset
     cur-scroll = window.scroll-y
-    if Math.abs(dst-scroll - cur-scroll) > 30px
+    if Math.abs(dst-scroll - cur-scroll) > (threshold*2)
       <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms
-      <- $ 'html,body' .animate { scroll-top:dst-scroll+threshold }, 110ms
-      <- $ 'html,body' .animate { scroll-top:dst-scroll }, 75ms
+      <- $ 'html,body' .animate { scroll-top:dst-scroll+(threshold/2) }, 70ms
+      <- $ 'html,body' .animate { scroll-top:dst-scroll }, 50ms
       cb!
     else
       cb!
