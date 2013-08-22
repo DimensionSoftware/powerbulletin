@@ -5,7 +5,7 @@ require! {
   fsm: \./fsm
 }
 
-{join, map, reject, scan, take, take-while} = require \prelude-ls
+{join, map, reject, scan, split-at, take, take-while} = require \prelude-ls
 #
 # making sense of our forum urls
 #
