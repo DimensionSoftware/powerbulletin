@@ -4,6 +4,7 @@ require, exports, module <- define
 require! {
   ch: './client-helpers'
   Chat: '../component/Chat'
+  \./globals
 }
 
 <- ch.lazy-load-socketio
@@ -14,13 +15,7 @@ window.socket = io.connect!
 # socket.on \event-name, (message, cb) ->
 
 socket.on \connect, ->
-  # XXX: set-timeout is a work around for the fact that we need to join the room once
-  # socket.io is available and we probably need to think about all the code we are loading
-  # into the website to do this the proper way
-  # SINCE socket.io ops in general are lower priority than loading the actual page, I think the work-around
-  # is SAFE for now and will work in most cases but it _really_ _really_ smells so we should
-  # find a better way to ensure socket.io dependent stuff always kicks off at the right time
-  set-timeout (-> window.r-socket socket), 50 # set reactive state
+  globals.r-socket socket
   #console.log \connected
 
 socket.on \disconnect, ->

@@ -2,11 +2,8 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
-window.helpers = require \../shared/shared-helpers
-window.mutants = require \./pb-mutants
-require! $R: reactivejs
-window.r-user = $R.state!
-window.r-socket = $R.state! # do this early
+helpers = require \../shared/shared-helpers
+mutants = require \../shared/pb-mutants
 
 mutant  = require \mutant
 
@@ -260,7 +257,7 @@ time-updater = ->
     d = new Date $el.data(\time)
 
     elapsed = (now - d) / 1000s
-    hr = window.helpers.elapsed-to-human-readable elapsed
+    hr = helpers.elapsed-to-human-readable elapsed
 
     # debug crap XXX: to figure out what is going on with time
     # TODO: remove me

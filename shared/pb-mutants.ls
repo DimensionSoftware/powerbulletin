@@ -1,12 +1,16 @@
-global.furl = require \../shared/forum-urls
+define = window?define or require(\amdefine) module
+require, exports, module <- define
 
-global <<< require \../shared/shared-helpers
+#XXX: this code is smelly, global-ness, bad
+(window? || global?).furl = require \../shared/forum-urls
+(window? || global?) <<< require \../shared/shared-helpers
 
 require! {
   \../component/AdminUpgrade
   \../component/AdminMenu
   \../component/Paginator
   \../component/PhotoCropper
+  \../client/globals
 }
 
 !function bench subject-name, subject-body
@@ -101,7 +105,7 @@ pager-init = (w) ->
     w.pager = new w.Pager \#paginator pager-opts
   w.pager.set-page(w.page, false) if w.page
 
-export homepage =
+@homepage =
   static:
     (window, next) ->
       window.render-mutant \main_content \homepage
@@ -193,18 +197,20 @@ export homepage =
 
 # this function meant to be shared between static and on-initial
 !function render-thread-paginator-component win, qty, step
+  {templates} = require \../build/client-jade
+
   on-page = (page) ->
     # XXX: this is sort of a stopgap I know we need pretty ui
     # TODO: This is stub, we need actual real views
     # !!!!!!!!!!!!!!!!!!!!!!!!!! ^_^
     $.get "/resources/threads/#{window.active-forum-id}" {page} (top-threads, status) ->
       container = win.$('#left_container .scrollable')
-      container.html win.jade.templates.__threads({top-threads})
+      container.html templates.__threads({top-threads})
       #container.html "#{JSON.stringify threads}"
   locals = {qty, step, active-page: 1}
   render-component win, \#thread-paginator, \threadPaginator, Paginator, {locals, on-page}
 
-export forum =
+@forum =
   static:
     (window, next) ->
       const prev-mutant = window.mutator
@@ -327,7 +333,7 @@ same-profile = (hints) ->
       return p1[2]
   false
 
-export profile =
+@profile =
   static:
     (window, next) ->
       # conditionally render left_container
@@ -415,7 +421,7 @@ export profile =
   | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
   | otherwise => try win.render-mutant \main_content, \admin-general
 
-export admin =
+@admin =
   static:
     (window, next) ->
       window.render-mutant \left_container \admin-nav
@@ -496,7 +502,7 @@ mk-search-pnum-to-href = (searchopts) ->
 mk-post-pnum-to-href = (post-uri) ->
   (pnum) -> if pnum > 1 then "#{post-uri}/page/#{pnum}" else post-uri
 
-export search =
+@search =
   static:
     prepare:
       (window, next) ->
@@ -598,7 +604,7 @@ export search =
       # chrome had different timing than FF
       # i.e. on-load was happening way before socket was
       # ready in chrome
-      $R(join-search).bind-to w.r-socket
+      $R(join-search).bind-to globals.r-socket
       next!
   on-mutate:
     (w, next) ->
@@ -617,7 +623,7 @@ export search =
       delete w.searchopts # reset filter state so it doesn't come back to haunt us
       next!
 
-export page =
+@page =
   static:
     (window, next) ->
       window.replace-html window.$(\#left_container), ''
@@ -636,7 +642,7 @@ export page =
 # this mutant pre-empts any action for private sites where user is not logged in
 # it means the site owner has specified that the site is private therefore we show a skeleton
 # of the site and prompt for login (all sensitive details should be removed)
-export private-site =
+@private-site =
   static: (window, next) ->
     #layout-static.call @ window, \privateSite
     window.$ \header .remove!
@@ -653,4 +659,5 @@ export private-site =
     Auth.show-login-dialog! # show!
     next!
 
+@
 # vim:fdm=indent

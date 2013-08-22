@@ -23,7 +23,8 @@ require.config {
     jquery-cookie: {exports: \jQuery.cookie}
     jquery-history: {exports: \History}
   map:
-    '*': {cheerio: \jquery}
+    '*':
+      cheerio: \jquery
   packages:
     * name: \mutant
       location: \../packages/mutant
@@ -44,19 +45,19 @@ require, exports, module <- define
 require \jquery     # do this in the beginning, until all scripts are converted to lazy-style
 window.__ = require \lodash # same... not sure where we use window.__ but whatever, legacy...
 
+require! \./globals
+
 #XXX : more legacy, assumed to be globally present always, should be
 # refactored so that each jquery plugin is only required where needed
 # in the future... as opposed to using global-ness
-<[
-  jqueryCookie
-  jqueryHistory
-  jqueryMasonry
-  jqueryNicescroll
-  jqueryTransit
-  jqueryUi
-  jqueryWaypoints
-  raf
-]>.map require
+require \jqueryCookie
+require \jqueryHistory
+require \jqueryMasonry
+require \jqueryNicescroll
+require \jqueryTransit
+require \jqueryUi
+require \jqueryWaypoints
+require \raf
 
 require \layout
 #XXX: end legacy
