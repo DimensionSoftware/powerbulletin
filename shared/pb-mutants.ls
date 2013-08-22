@@ -2,8 +2,12 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 #XXX: this code is smelly, global-ness, bad
-(window? || global?).furl = require \../shared/forum-urls
-(window? || global?) <<< require \../shared/shared-helpers
+furl = require \../shared/forum-urls
+
+# only required if on client-side
+{align-breadcrumb, set-wide, toggle-post} = require \../client/client-helpers if window?
+
+{flip-background, is-forum-homepage, is-editing} = require \./shared-helpers
 
 require! {
   \../component/AdminUpgrade
@@ -11,6 +15,7 @@ require! {
   \../component/Paginator
   \../component/PhotoCropper
   \../client/globals
+  __: lodash
 }
 
 !function bench subject-name, subject-body

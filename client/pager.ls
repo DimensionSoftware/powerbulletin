@@ -1,6 +1,8 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
+{show-tooltip} = require \./client-helpers
+
 /*
 
 ## An Experiment in Pagination

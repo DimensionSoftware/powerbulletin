@@ -5,6 +5,7 @@ require! {
   fsm: \./fsm
 }
 
+{join, map, reject, scan, take, take-while} = require \prelude-ls
 #
 # making sense of our forum urls
 #
@@ -193,7 +194,7 @@ inputs =
 @forum-uri = (path) ->
   parts  = path.split '/' |> reject (-> it is '')
   inputs = map @type-of-part, parts
-  t = (state, input) ->
+  t = (state, input) ~>
     fsm.new-state @machine, state, [input]
   forum-states = scan t, \initial, inputs |> take-while (-> it is \initial or it is \forum)
   '/' + (parts |> take (forum-states.length - 1) |> join '/')

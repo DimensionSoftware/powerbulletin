@@ -5,6 +5,7 @@ require! {
   furl: \../shared/forum-urls
 }
 
+{join, keys, map} = require \prelude-ls
 @for-mutant =
   forum:
     "menu"                  : 1 # db.menu res.vars.site.id, _
@@ -65,8 +66,8 @@ require! {
       last-meta-vars.post-id = 1
       last-meta-vars.limit   = 10
       last-meta-vars.offset  = 0
-    src = for-mutant[mutant]
-    dst = for-mutant[last-mutant]
+    src = @for-mutant[mutant]
+    dst = @for-mutant[last-mutant]
     #console.warn [mutant, meta-vars, meta], [last-mutant, last-meta-vars, last-meta]
     keep = @required-tasks [src,meta-vars], [dst,last-meta-vars]
     { keep }

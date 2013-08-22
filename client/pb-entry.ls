@@ -18,8 +18,11 @@ require.config {
     powerbulletin         : "#{window.cache-url}/powerbulletin"
     powerbulletin-sales   : "#{window.cache-url}/powerbulletin-sales"
   shim:
-    lodash: {exports: \_}
-    jquery: {exports: \jQuery}
+    lodash:
+      exports: \_
+      init: -> window._
+    jquery:
+      exports: \jQuery
     jquery-cookie:
       exports: \jQuery.cookie
       deps: [\jquery]
@@ -65,7 +68,7 @@ require.config {
 require, exports, module <- define
 
 require \jquery     # do this in the beginning, until all scripts are converted to lazy-style
-window.__ = require \lodash # same... not sure where we use window.__ but whatever, legacy...
+__ = require \lodash # same... not sure where we use window.__ but whatever, legacy...
 
 require! {
   \./globals
@@ -85,6 +88,10 @@ require \jqueryWaypoints
 require \raf
 
 require \layout
+
+{align-breadcrumb, mutate, set-wide} = require \./client-helpers
+{is-editing} = require \../shared/shared-helpers
+
 #XXX: end legacy
 
 window.Chat  = require \../component/Chat
