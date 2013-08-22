@@ -273,7 +273,7 @@ function profile-paths user, uploaded-file, base=\avatar
     return res.json { success: false, type: \authorization }
 
   avatar = req.files.avatar
-  console.warn \avatar, avatar
+  #console.warn \avatar, avatar
 
   # mkdirp public/images/user/:user_id
   {avatar-file, url-dir-path, fs-dir-path, url-path, fs-path} = profile-paths user, avatar, \avatar-to-crop
