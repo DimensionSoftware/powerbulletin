@@ -214,7 +214,7 @@ $d.on \change, '#search_filters [name=forum_id]', ->
 
   newopts = {} <<< window.searchopts <<< {forum_id, submit-type}
   delete newopts.page # remove page from new filtered results
-  r-searchopts newopts
+  globals.r-searchopts newopts
 
   return false
 
@@ -225,7 +225,7 @@ $d.on \change, '#search_filters [name=within]', ->
 
   newopts = {} <<< window.searchopts <<< {within, submit-type}
   delete newopts.page # remove page from new filtered results
-  r-searchopts newopts
+  globals.r-searchopts newopts
 
   return false
 
@@ -265,7 +265,7 @@ $R((sopts) ->
     else
       History.push-state {}, '', uri
 
-).bind-to(r-searchopts)
+).bind-to(globals.r-searchopts)
 
 $ui.on \thread-create, (e, thread) ->
   console.info 'thread-create', thread
