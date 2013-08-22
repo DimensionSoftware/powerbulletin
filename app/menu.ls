@@ -1,5 +1,6 @@
 require! {
   url
+  path
 }
 
 # XXX moving to client
@@ -11,19 +12,31 @@ require! {
 #  menu0 = JSON.parse(json)
 #  menu1 = [ decode-menu-data m for m in menu0 ]
 
-export type-of = (object) ->
+@type-of = (object) ->
   \forum
 
-export add = (object, cb) ->
+@add = (object, cb) ->
   type = type-of object
   switch type
-  | \form          => add-forum object, cb
-  | \page          => add-page object, cb
-  | \external-link => add-external-link object, cb
+  | \forum         => @add-forum object, cb
+  | \page          => @add-page object, cb
+  | \external-link => @add-external-link object, cb
 
-export add-forum = (forum, cb) ->
+@add-forum = (forum, cb) ->
+  # site_id
+  # parent_id
+  # title
+  # uri
+  # slug
+  # description
+  forum.slug ?= path.basename forum.uri
+  db.forums.create forum, cb
 
-export add-page = (page, cb) ->
+@add-page = (page, cb) ->
+  # site_id
+  # path
+  # title
+  db.pages.create page, cb
 
-export add-external-link = (external-link, cb) ->
-
+@add-external-link = (external-link, cb) ->
+  cb new Error "not implemented"
