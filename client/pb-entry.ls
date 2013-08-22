@@ -67,7 +67,10 @@ require, exports, module <- define
 require \jquery     # do this in the beginning, until all scripts are converted to lazy-style
 window.__ = require \lodash # same... not sure where we use window.__ but whatever, legacy...
 
-require! \./globals
+require! {
+  \./globals
+  $R: \./reactivejs
+}
 
 #XXX : more legacy, assumed to be globally present always, should be
 # refactored so that each jquery plugin is only required where needed
@@ -92,10 +95,6 @@ window.tasks = require \./tasks
 window.ioc   = require \./io-client
 
 window.PhotoCropper = require \../component/PhotoCropper
-
-global <<< require \prelude-ls
-global <<< require \../shared/shared-helpers
-global <<< require \../client/client-helpers
 
 # components
 require! \../component/Buy
@@ -177,8 +176,6 @@ $ \#query .focus!select!
 # window.ui is the object which will receive events and have events triggered on it
 window.$ui = $ {}
 
-window.r-searchopts = $R.state window.searchopts
-
 do ->
   # keys that aren't allowed to trigger the search
   # use hashmap so its O(1)
@@ -208,7 +205,7 @@ do ->
       #console.log "keyup:#{it.which} triggered a #{submit-type} search"
       newopts = {} <<< window.searchopts <<< {q, submit-type}
       delete newopts.page # remove page from new term searches
-      r-searchopts newopts
+      globals.r-searchopts newopts
   ), 500ms
 
 $d.on \change, '#search_filters [name=forum_id]', ->
