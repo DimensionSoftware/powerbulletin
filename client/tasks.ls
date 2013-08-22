@@ -5,7 +5,7 @@ require! {
   furl: \../shared/forum-urls
 }
 
-export for-mutant =
+@for-mutant =
   forum:
     "menu"                  : 1 # db.menu res.vars.site.id, _
     "forum :forum-id"       : 1 # db.forum forum-id, _
@@ -18,19 +18,19 @@ export for-mutant =
     "top-threads :forum-id"                   : 1 # db.top-threads post.forum_id, \recent, _
     "forum :forum-id"                         : 1 # db.forum post.forum_id, _
 
-export required-tasks = ([src,src-vars], [dst,dst-vars]) ->
-  keys difference(expand-keys(src, src-vars), expand-keys(dst, dst-vars)) |> map (-> it.replace(/ .*$/, ''))
+@required-tasks = ([src,src-vars], [dst,dst-vars]) ->
+  keys @difference(@expand-keys(src, src-vars), @expand-keys(dst, dst-vars)) |> map (-> it.replace(/ .*$/, ''))
 
-export difference = (a, b) ->
+@difference = (a, b) ->
   { [k, v] for k, v of a when not b.has-own-property k  }
 
-export expand-keys = (a, vars) ->
-  { [expand-string(k, vars), v] for k, v of a }
+@expand-keys = (a, vars) ->
+  { [@expand-string(k, vars), v] for k, v of a }
 
-export expand-string = (s, vars) ->
-  s.replace /(:[\w-]+)/g, (m, p) -> vars[cc(p)]
+@expand-string = (s, vars) ->
+  s.replace /(:[\w-]+)/g, (m, p) ~> vars[@cc(p)]
 
-export cc = (s) ->
+@cc = (s) ->
   [first, ...rest] = s.split '-'
   first.replace(/^:/, '') + (rest |> map (-> it.char-at(0).to-upper-case! + it.slice(1)) |> join '')
 
@@ -41,8 +41,7 @@ export cc = (s) ->
 # @returns Object
 #   @param Array keep
 #   @param Array remove
-#export recommendation = (mutant, req) ->
-export recommendation = (path, last-path) ->
+@recommendation = (path, last-path) ->
   meta      = furl.parse path
   last-meta = furl.parse last-path
 
@@ -69,7 +68,7 @@ export recommendation = (path, last-path) ->
     src = for-mutant[mutant]
     dst = for-mutant[last-mutant]
     #console.warn [mutant, meta-vars, meta], [last-mutant, last-meta-vars, last-meta]
-    keep = required-tasks [src,meta-vars], [dst,last-meta-vars]
+    keep = @required-tasks [src,meta-vars], [dst,last-meta-vars]
     { keep }
   | \thread =>
     meta-vars =
@@ -83,9 +82,11 @@ export recommendation = (path, last-path) ->
       last-meta-vars.post-id = if meta.thread-uri is last-meta.thread-uri then 1 else 2
       last-meta-vars.limit  = 10
       last-meta-vars.offset = ((last-meta.page || 1) - 1) * 10
-    src = for-mutant[mutant]
-    dst = for-mutant[last-mutant]
+    src = @for-mutant[mutant]
+    dst = @for-mutant[last-mutant]
     #console.warn [mutant, meta-vars, meta], [last-mutant, last-meta-vars, last-meta]
-    keep = required-tasks [src,meta-vars], [dst,last-meta-vars]
+    keep = @required-tasks [src,meta-vars], [dst,last-meta-vars]
     { keep }
   | otherwise => default-recommendation
+
+@
