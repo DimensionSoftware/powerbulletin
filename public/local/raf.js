@@ -29,4 +29,7 @@
         window.cancelAnimationFrame = function(id) {
             clearTimeout(id);
         };
+    // XXX added small exports we know this file has been loaded
+    window.caf = window.cancelAnimationFrame;
+    window.raf = window.requestAnimationFrame; // do this last for requirejs shim
 }());

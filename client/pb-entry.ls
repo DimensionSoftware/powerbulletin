@@ -20,8 +20,30 @@ require.config {
   shim:
     lodash: {exports: \_}
     jquery: {exports: \jQuery}
-    jquery-cookie: {exports: \jQuery.cookie}
-    jquery-history: {exports: \History}
+    jquery-cookie:
+      exports: \jQuery.cookie
+      deps: [\jquery]
+    jquery-history:
+      exports: \History.adapter
+      deps: [\jquery]
+    jquery-masonry:
+      # no exports property needed since masonry is native AMD
+      deps: [\jquery]
+    jquery-nicescroll:
+      exports: \jQuery.nicescroll
+      deps: [\jquery]
+    jquery-transit:
+      exports: \jQuery.transit
+      deps: [\jquery]
+    jquery-ui:
+      exports: \jQuery.ui
+      deps: [\jquery]
+    jquery-waypoints:
+      exports: \jQuery.waypoints
+      deps: [\jquery]
+    raf:
+      exports: \raf
+
   map:
     '*':
       cheerio: \jquery
