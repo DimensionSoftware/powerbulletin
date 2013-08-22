@@ -186,5 +186,5 @@ date-fields =
   for d in rf.dependencies
     d.remove-dependent!
 
-module.exports <<< @ # requirejs / amdefine workaround
+@
 # vim:fdm=marker
