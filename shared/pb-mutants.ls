@@ -9,7 +9,8 @@ if window?
   {align-breadcrumb, edit-post, lazy-load-deserialize, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
-{flip-background, is-forum-homepage, is-editing} = require \./shared-helpers
+{flip-background, is-editing, is-email, is-forum-homepage} = require \./shared-helpers
+{last} = require \prelude-ls
 
 require! {
   \../component/AdminUpgrade
