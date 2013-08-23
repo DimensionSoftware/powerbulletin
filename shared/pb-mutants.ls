@@ -19,10 +19,11 @@ require! {
   \../component/PhotoCropper
   \../client/globals
   __: lodash
+  $R: reactivejs
 }
 
 !function bench subject-name, subject-body
-  if process.env.NODE_ENV is \production
+  if env is \production
     subject-body! # run only
   else
     bef = new Date

@@ -36,7 +36,7 @@ html
     else
       script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
     script(type="text/javascript")
-      window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.authDomain="!{cvars.authDomain}";window.headjs=head.js;
+      window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.authDomain="!{cvars.authDomain}";window.headjs=head.js;window.env=!{JSON.stringify(env)};
   body
 
     header.header.toggler
