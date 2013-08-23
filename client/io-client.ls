@@ -7,6 +7,8 @@ require! {
   \./globals
 }
 
+{render-and-append} = require \../shared/shared-helpers
+
 <- ch.lazy-load-socketio
 
 window.socket = io.connect!
