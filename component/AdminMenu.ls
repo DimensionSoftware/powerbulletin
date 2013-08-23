@@ -7,6 +7,7 @@ require! {
 ch = require \../client/client-helpers if window?
 
 {templates} = require \../build/component-jade
+{map, maximum} = require \prelude-ls
 
 module.exports =
   class AdminMenu extends Component
@@ -105,10 +106,10 @@ module.exports =
           .attr \type, \hidden
           .attr \name, \menu
           .val JSON.stringify menu)
-        submit-form ev, (data) ->
+        ch.submit-form ev, (data) ->
           f = $ this # form
           t = $(form.find \.tooltip)
-          show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
+          ch.show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
 
       # save current form on active row/input
       @$.on \blur \.row   (ev) ~> @current-store!

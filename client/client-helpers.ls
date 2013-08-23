@@ -70,7 +70,7 @@ require! { $: \jquery }
     success:   (data) ~>
       $s.remove-attr \disabled
       if fn then fn.call $f, data
-    error: (data) ->
+    error: (data) ~>
       $s.remove-attr \disabled
       @show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
   }

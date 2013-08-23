@@ -6,7 +6,7 @@ furl = require \../shared/forum-urls
 
 # only required if on client-side
 if window?
-  {align-breadcrumb, edit-post, lazy-load-deserialize, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
+  {align-breadcrumb, edit-post, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {flip-background, is-editing, is-email, is-forum-homepage} = require \./shared-helpers
