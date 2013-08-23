@@ -91,7 +91,7 @@ require \raf
 
 require \layout
 
-{align-breadcrumb, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
+{align-breadcrumb, ck-submit-form, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
 {render-and-append, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
@@ -102,6 +102,7 @@ window.Pager = require \./pager
 window.furl  = require \../shared/forum-urls
 window.tasks = require \./tasks
 window.ioc   = require \./io-client
+window <<< {ck-submit-form}
 
 window.PhotoCropper = require \../component/PhotoCropper
 
