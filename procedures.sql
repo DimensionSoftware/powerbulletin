@@ -39,7 +39,7 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
     (SELECT COUNT(*) FROM posts WHERE parent_id = p.id) AS post_count
   FROM posts p
   JOIN users u ON p.user_id = u.id
-  JOIN aliases a ON u.id = a.user_id
+  JOIN aliases a ON (u.id = a.user_id AND a.site_id = $1)
   LEFT JOIN moderations m ON p.id=m.post_id
   WHERE p.forum_id IN (SELECT id FROM forums WHERE site_id = $1)
   AND a.name = $2
