@@ -45,6 +45,10 @@ query-dictionary =
   # db.users.all cb
   users:
     all: postgres.query 'SELECT * FROM users', [], _
+    email-in-use: ({email}, cb) ->
+      err, r <- postgres.query 'SELECT COUNT(*) AS c FROM users WHERE email = $1', [email]
+      if err then return cb err
+      cb null, !!r.0.c
 
 
 # assumed postgres is initialized

@@ -278,6 +278,7 @@ pager-init = (w) ->
       # editing handler
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
+      # FIXME will do something smarter -k
       $ \body .on \click, toggle-post # expand & minimize drawer
 
       # add impression
@@ -464,6 +465,7 @@ same-profile = (hints) ->
       # no pager (for now)
       window.pages-count = 0
       pager-init window
+      <~ lazy-load-fancybox
       <~ lazy-load-nested-sortable
       <~ lazy-load-deserialize
       next!

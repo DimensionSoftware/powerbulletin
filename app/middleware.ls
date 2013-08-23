@@ -29,6 +29,7 @@ require! {
     res.locals.invite-only    = config.invite-only
     res.locals.private        = config.private
     res.locals.style          = config.style
+    res.locals.cache-buster   = config.cache-buster or '' # default
     for i in ['', 2, 3, 4, 5]
       res.locals["cache#{i}Url"] = cvars["cache#{i}Url"]
     next!

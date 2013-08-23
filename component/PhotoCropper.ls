@@ -50,7 +50,7 @@ module.exports =
       @$.find('.upload input[type=file]').html5-uploader name: \avatar, post-url: @endpoint-url, on-success: (xhr, file, r-json) ~>
         r = JSON.parse(r-json)
         @$.find \img .attr \src, "#{cacheUrl}#{r.url}"
-        @crop-mode!
+        @crop-mode r
 
       @$.find('.crop .button').click @crop
 
@@ -69,7 +69,9 @@ module.exports =
       @$.find \.upload .show!
 
     # this is the mode for cropping an uploaded image
-    crop-mode: ->
+    crop-mode: (r) ->
+      if r
+        @$.data \path, r.url
       @$.find \.upload .hide!
       @$.find \.crop .show!
       <~ lazy-load-jcrop
@@ -95,6 +97,7 @@ module.exports =
     #
     crop: (ev) ~>
       data = @jcrop.tell-select!
+      data.path = @$.data \path
       if data.height is 0 or data.width is 0
         # TODO - warn that a crop selection has not been made
         return

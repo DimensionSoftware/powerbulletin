@@ -75,7 +75,9 @@ module.exports =
         #console.error 'remote /auth/once failed'
 
     # helper for wrapping event handlers in a function that requires authentication first
-    @require-login = (fn) ->
+    @require-login = (fn, cb) ->
+      if cb
+        @@require-login-cb = cb
       ->
         if window.user
           fn.apply window, arguments
@@ -83,7 +85,9 @@ module.exports =
           Auth.show-login-dialog!
           false
 
-    @require-registration = (fn) ->
+    @require-registration = (fn, cb) ->
+      if cb
+        @@require-registration-cb = cb
       ->
         if window.user
           fn.apply window, arguments
@@ -144,6 +148,9 @@ module.exports =
         if r.success
           $.fancybox.close!
           @after-login! if @after-login
+          if Auth.require-login-cb
+            Auth.require-login-cb!
+            Auth.require-login-cb = null
           # reload page XXX I know its not ideal but the alternative is painful >.<
           if initial-mutant is \privateSite then window.location.reload!
         else
@@ -181,6 +188,9 @@ module.exports =
 
           # autologin
           Auth.after-login!
+          if Auth.require-registration-cb
+            Auth.require-registration-cb!
+            Auth.require-registration-cb = null
           Auth.show-info-dialog "Welcome to #siteName"
 
         else

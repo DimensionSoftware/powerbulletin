@@ -72,6 +72,13 @@ announce = sioa.create-client!
   req.assert \password .not-empty!  # .len(min, max) .regex(/pattern/)
   req.assert \email .is-email!
 
+  err, user <~ db.users.email-in-use email:req.body.email
+  if err
+    return res.json success:false, errors:[err]
+  if user
+    return res.json success:false, errors:["This email address has already been registered."]
+  console.log \name-exists, \aka, \email-exists, err, user, req.body.email, site.id
+
   if errors = req.validation-errors!
     console.warn errors
     res.json {errors}

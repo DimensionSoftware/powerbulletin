@@ -230,8 +230,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
   fdoc.page  = parse-int page
   fdoc.title = name
-  with fdoc.profile # transform
-    ..human_post_count = add-commas(..post_count)
+  fdoc.profile.human_post_count = add-commas(fdoc.qty)
 
   res.locals fdoc
   res.locals.step = ppp
@@ -246,10 +245,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   res.mutant \profile
 
-function profile-paths user, uploaded-file
+function profile-paths user, uploaded-file, base=\avatar
   ext = uploaded-file.name.match(/\.(\w+)$/)?1 or ""
   r = {}
-  r.avatar-file = if ext then "avatar.#ext" else "avatar"
+  r.avatar-file = if ext then "#base.#ext" else base
   r.url-dir-path = "/images/user/#{user.id}"
   r.url-path = "#{r.url-dir-path}/#{r.avatar-file}"
   r.fs-dir-path = "public#{r.url-dir-path}"
@@ -272,10 +271,10 @@ function profile-paths user, uploaded-file
     return res.json { success: false, type: \authorization }
 
   avatar = req.files.avatar
-  console.warn \avatar, avatar
+  #console.warn \avatar, avatar
 
   # mkdirp public/images/user/:user_id
-  {avatar-file, url-dir-path, fs-dir-path, url-path, fs-path} = profile-paths user, avatar
+  {avatar-file, url-dir-path, fs-dir-path, url-path, fs-path} = profile-paths user, avatar, \avatar-to-crop
   err <- mkdirp fs-dir-path
   if err
     console.error \mkdirp.rename, err
@@ -296,27 +295,43 @@ function profile-paths user, uploaded-file
     return res.json { success: false, type: \move }
 
   # update user avatar
-  err, success <- db.change-avatar user, url-path
-  if err
-    console.error \change-avatar, err
-    return res.json { success: false, type: \db.change-avatar }
+  #err, success <- db.change-avatar user, "#url-path?#{cache-buster!}"
+  #if err
+  #  console.error \change-avatar, err
+  #  return res.json { success: false, type: \db.change-avatar }
   res.json success: true, url: url-path
 
 @profile-avatar-crop = (req, res, next) ->
-  mock-photo = { name: req.user.photo }
-  paths = profile-paths req.user, mock-photo
-  console.warn \crop, req.body, req.user, mock-photo, paths
-  {x,y,x1,y1,w,h} = req.body
-  gm(paths.fs-path)
+  user = req.user
+  site = res.vars.site
+  {x,y,x1,y1,w,h,path} = req.body
+  # TODO - sanity check on path to prevent pwnage
+  if not path
+    return res.json success: false, type: \no-path
+  if path.match /\.\./
+    return res.json success: false, type: \no-relative-paths-allowed
+  r = path.match /^\/images\/user\/(\d+)/
+  # sanity check on r, too
+  _crop   = name: path
+  _avatar = name: path.replace /-to-crop/, ''
+  cropped-photo = profile-paths req.user, _crop, \avatar-to-crop
+  avatar-photo  = profile-paths req.user, _avatar
+  console.warn \crop, { cropped-photo, avatar-photo }
+  gm(cropped-photo.fs-path)
     .crop w, h, x, y
     .resize 255, 255
-    .write paths.fs-path, (err) ->
+    .write avatar-photo.fs-path, (err) ->
       if err
         console.warn \crop-and-resize-err, err
         res.json success: false
       else
-        res.json success: true
-        # also send a user update event
+        new-photo = "#{avatar-photo.url-path}?#{cache-buster!}"
+        err <- db.change-avatar user, new-photo
+        if err
+          console.error \change-avatar, err
+          return res.json success: false, type: \db.change-avatar
+        announce.in(site.id).emit \new-profile-photo, { id: user.id, photo: new-photo }
+        return res.json success: true
   res.json success: false
 
 @stylus = (req, res, next) ->
