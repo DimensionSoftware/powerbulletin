@@ -89,8 +89,8 @@ require \raf
 
 require \layout
 
-{align-breadcrumb, mutate, set-wide} = require \./client-helpers
-{is-editing} = require \../shared/shared-helpers
+{align-breadcrumb, edit-post, mutate, post-success, set-wide, submit-form} = require \./client-helpers
+{is-editing, render-and-append, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
 

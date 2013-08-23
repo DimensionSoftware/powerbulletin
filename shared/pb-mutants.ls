@@ -5,7 +5,9 @@ require, exports, module <- define
 furl = require \../shared/forum-urls
 
 # only required if on client-side
-{align-breadcrumb, set-wide, toggle-post} = require \../client/client-helpers if window?
+if window?
+  {align-breadcrumb, edit-post, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
+  ch = require \../client/client-helpers
 
 {flip-background, is-forum-homepage, is-editing} = require \./shared-helpers
 
@@ -319,7 +321,7 @@ pager-init = (w) ->
       if u.rights?super
         $ \.censor .css \display \inline
       # - post editing
-      set-inline-editor u.id
+      set-inline-editor.call ch, u.id
     next!
   on-unload:
     (win, next-mutant, next) ->

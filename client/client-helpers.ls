@@ -3,6 +3,8 @@ require, exports, module <- define
 
 require! { $: \jquery }
 
+{render-and-append} = require \../shared/shared-helpers
+
 #{{{ Editing Posts
 @post-success = (ev, data) ->
   f = $ ev.target .closest \.post-edit # form
@@ -79,7 +81,7 @@ require! { $: \jquery }
 @set-inline-editor = (user-id) ->
   $ ".post[data-user-id=#user-id] .post-content"
     .attr \contentEditable true
-  <- lazy-load-editor
+  <- @lazy-load-editor
   for e in CKEDITOR.instances then e.destroy true # cleanup
   try CKEDITOR.inline-all!
 
@@ -104,19 +106,20 @@ render = (sel, locals, cb=(->)) ~>
     $ '#post_new .fadein' .remove!
   else # bring out drawer & init+focus editor
     e.add-class \expanded
-    render \#post_new, data, -> # init form
-      <- lazy-load-editor
+    render \#post_new, data, ~> # init form
+      <- @lazy-load-editor
       unless CKEDITOR.instances.post_new
         CKEDITOR.replace ($ '#post_new textarea' .0)#, {startup-focus:true}
       e.find 'form.post-new input[name="forum_id"]' .val window.active-forum-id
       e.find 'form.post-new input[name="parent_id"]' .val window.active-thread-id
-@edit-post = (id, data={}) ->
+
+@edit-post = (id, data={}) ~>
   if id is true # render new
     scroll-to-top!
     data.action = \/resources/posts
     data.method = \post
-    render \.forum, data, -> # init editor on post
-      <- lazy-load-editor
+    render \.forum, data, ~> # init editor on post
+      <- @lazy-load-editor
       CKEDITOR.replace($ \#editor .0)
   else # fetch existing & edit
     sel = "\#post_#{id}"
