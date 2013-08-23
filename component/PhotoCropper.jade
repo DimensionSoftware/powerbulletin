@@ -11,6 +11,7 @@
 .crop(style="display:none;")
   h1= title + " (crop)"
   div
-    img(src="#{cacheUrl}#{photo}")
+    - var cacheBuster = Math.random().toString().replace(/\\./, '')
+    img(src="#{cacheUrl}#{photo}?#{cacheBuster}")
   div.button
     span Crop Image
