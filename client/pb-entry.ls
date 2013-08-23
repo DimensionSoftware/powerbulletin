@@ -278,12 +278,12 @@ $R((sopts) ->
 ).bind-to(globals.r-searchopts)
 
 $ui.on \thread-create, (e, thread) ->
-  console.info 'thread-create', thread
+  #console.info 'thread-create', thread
   <- render-and-prepend window,  $('#left_container .threads'), \thread, thread:thread
   $ '#left_container .threads div.fadein li' .unwrap!
 
 $ui.on \nav-top-posts, (e, threads) ->
-  console.info \stub, threads
+  #console.info \stub, threads
 
 #}}}
 # {{{ - generic form-handling ui
@@ -411,9 +411,9 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"]' (ev) ->
   )
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
-  console.log \parsed_id, id
+  #console.log \parsed_id, id
   domain = find (->
-    console.log \actual_id, it.id
+    #console.log \actual_id, it.id
     it.id == id
   ), site.domains
   #domain = find (.id is id), site.domains
