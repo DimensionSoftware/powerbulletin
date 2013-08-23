@@ -75,6 +75,8 @@ require! {
   $R: \./reactivejs
 }
 
+{find} = require \prelude-ls
+
 #XXX : more legacy, assumed to be globally present always, should be
 # refactored so that each jquery plugin is only required where needed
 # in the future... as opposed to using global-ness
@@ -408,7 +410,12 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"]' (ev) ->
   )
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
-  domain = find (.id is id), site.domains
+  console.log \parsed_id, id
+  domain = find (->
+    console.log \actual_id, it.id
+    it.id == id
+  ), site.domains
+  #domain = find (.id is id), site.domains
   for k in [
     \facebookClientId
     \facebookClientSecret
