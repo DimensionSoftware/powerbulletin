@@ -1,0 +1,7 @@
+#!/bin/sh
+bin/diediedie
+set -e
+node_modules/.bin/lsc -wc app client shared component lib/mutant &
+sleep 2
+bin/powerbulletin
+
