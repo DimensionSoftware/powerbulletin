@@ -5,6 +5,7 @@ require! {
   ch: './client-helpers'
   Chat: '../component/Chat'
   \./globals
+  mutants: \../shared/pb-mutants
 }
 
 {render-and-append} = require \../shared/shared-helpers

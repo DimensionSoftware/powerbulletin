@@ -6,7 +6,7 @@ require! { $: \jquery }
 {render-and-append} = require \../shared/shared-helpers
 
 #{{{ Editing Posts
-@post-success = (ev, data) ->
+@post-success = (ev, data) ~>
   f = $ ev.target .closest \.post-edit # form
   p = f.closest \.editing # post being edited
   t = $(f.find \.tooltip)
@@ -24,7 +24,7 @@ require! { $: \jquery }
     | \edit       => @remove-editing-url meta
   false
 
-@ck-submit-form = (e) ->
+@ck-submit-form = (e) ~>
   editor = e?element?$
   ev = {target:editor} # mock event
   unless editor?id # editing, so--build post
@@ -48,7 +48,7 @@ require! { $: \jquery }
       $ \footer .remove-class \expanded
       $ '#post_new .fadein' .remove!
 
-@submit-form = (ev, fn) ->
+@submit-form = (ev, fn) ~>
   $f = $ ev.target .closest(\form) # get event's form
   $s = $ $f.find('[type=submit]:first')
   if $s then $s.attr \disabled \disabled
@@ -78,7 +78,7 @@ require! { $: \jquery }
   false
 
 # makes entire page inline-editable for user-id
-@set-inline-editor = (user-id) ->
+@set-inline-editor = (user-id) ~>
   $ ".post[data-user-id=#user-id] .post-content"
     .attr \contentEditable true
   <- @lazy-load-editor
@@ -92,7 +92,7 @@ render = (sel, locals, cb=(->)) ~>
   render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
     cb!
     focus $e
-@toggle-post = (ev) ->
+@toggle-post = (ev) ~>
   unless $ ev?target .has-class \onclick-footer-toggle then return # guard
   unless user then Auth.show-login-dialog!; return # guard
   data =
@@ -139,7 +139,7 @@ load-css = (href) ->
   $ \head .append($ '<link rel="stylesheet" type="text/css">' .attr(\href, href))
   load-css-cache[href] = true
 
-@lazy-load = (test, script, css, cb) ->
+@lazy-load = (test, script, css, cb) ~>
   b = $ \body
   b.add-class \waiting
   unless test!
@@ -160,27 +160,27 @@ load-css = (href) ->
     "#cache-url/local/jquery.mjs.nestedSortable.js",
     null,
     cb
-@lazy-load-html5-uploader = (cb) ->
+@lazy-load-html5-uploader = (cb) ~>
   @lazy-load (-> window.$!html5-uploader?length),
     "#cache-url/local/jquery.html5uploader.js",
     "#cache-url/local/editor/skins/moono/editor.css",
     cb
-@lazy-load-jcrop = (cb) ->
+@lazy-load-jcrop = (cb) ~>
   @lazy-load (-> window.$!Jcrop?length),
     "#cache-url/jcrop/js/jquery.Jcrop.min.js",
     "#cache-url/jcrop/css/jquery.Jcrop.min.css",
     cb
-@lazy-load-editor = (cb) ->
+@lazy-load-editor = (cb) ~>
   @lazy-load (-> CKEDITOR?version),
     "#cache-url/local/editor/ckeditor.js",
     null,
     cb
-@lazy-load-fancybox = (cb) ->
+@lazy-load-fancybox = (cb) ~>
   @lazy-load (-> window.$!fancybox?length),
     "#cache-url/fancybox/jquery.fancybox.pack.js",
     "#cache-url/fancybox/jquery.fancybox.css",
     cb
-@lazy-load-socketio = (cb) ->
+@lazy-load-socketio = (cb) ~>
   @lazy-load (-> window.io),
     "/socket.io/socket.io.js",
     null,
@@ -194,12 +194,12 @@ load-css = (href) ->
   open-effect:  \fade
   open-speed:   450ms
 
-@respond-resize = ->
+@respond-resize = ~>
   w = $ window
   unless window.mutator is \admin # FIXME improve responsive.styl
     if w.width! <= 800px then $ \body .add-class \collapsed
 
-@set-wide = ->
+@set-wide = ~>
   l = $ \#left_content
   l.toggle-class \wide (l.width! > 300px)
 
@@ -210,7 +210,7 @@ load-css = (href) ->
   pos = (m.width!-b.width!)/2
   b.transition {left:(if pos < l.width! then l.width! else pos)}, 300ms \easeOutExpo
 
-@remove-editing-url = (meta) ->
+@remove-editing-url = (meta) ~>
   History.replace-state {no-surf:true} '' meta.thread-uri
 
 @mutate = ->
@@ -229,26 +229,26 @@ load-css = (href) ->
   false
 
 timers = {}
-@show-tooltip = ($tooltip, msg, duration=4000ms) ->
+@show-tooltip = ($tooltip, msg, duration=4000ms) ~>
   unless msg?length then return # guard
   timer = timers[msg]
   if timer then clear-timeout timer
   $tooltip.html msg .add-class \hover # show
   timers[msg] = set-timeout (-> timers[msg]=void; $tooltip.remove-class \hover), duration # remove
 
-@switch-and-focus = (remove, add, focus-on) ->
+@switch-and-focus = (remove, add, focus-on) ~>
   $e = $ \.fancybox-wrap
   $e.remove-class("#remove shake slide").add-class(add)
   set-timeout (-> # animate & yield before focus, so smooth!
     $e.add-class \slide
     set-timeout (-> $ focus-on .focus!), 250ms), 50ms
 
-@set-online-user = (id) ->
+@set-online-user = (id) ~>
   $ "[data-user-id=#{id}] .profile.photo"
     ..add-class \online
     ..attr \title, \Online!
 
-@set-profile = (src) ->
+@set-profile = (src) ~>
   $ \.photo
     ..attr \href "/user/#{user.name}"
     ..add-class \online # set online!

@@ -82,7 +82,7 @@ seconds-to-human-readable = (secs) ->
       timestring = "#{secs} seconds"
   timestring
 
-@elapsed-to-human-readable = (secs-ago) ->
+@elapsed-to-human-readable = (secs-ago) ~>
   suffix = \ago
   human  = if secs-ago < 30s then 'Just now!'
   else if secs-ago < 60s then "A moment #{suffix}"
@@ -120,7 +120,7 @@ date-fields =
   * \updated
 
 # recursively turn date-fields into Date objects
-@add-dates = (o) ->
+@add-dates = (o) ~>
   now = Date.now!
   return o unless o
   switch typeof o

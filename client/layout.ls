@@ -229,7 +229,7 @@ Auth.after-login = ->
   window.user <- $.getJSON \/auth/user
   onload-personalize!
   if user and mutants?[window.mutator]?on-personalize
-    set-profile user.photo
+    ch.set-profile user.photo
     mutants?[window.mutator]?on-personalize window, user, ->
       socket?disconnect!
       socket?socket?connect!
