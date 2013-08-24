@@ -32,12 +32,24 @@ module.exports =
       unless e = @current then return # guard
       form = @$.find \form
       if form
-        #form.find 'input[name="menu"]' ?remove! # prune old form data
-        # TODO form values -> json
+        # form values -> json data
+        data = {}
+        form.find \input |> each (input) ->
+          $i = @$ input
+          n = $i?attr \name
+          v = $i?val!
+          if n and n isnt \menu
+            console.log $i.attr \type
+            data[n] = switch $i.attr \type
+              | \checkbox \radio # value if checked
+                if $i.is \:checked then v else null
+              | \text \hidden # always value
+                v
+
         e # store
-          ..data \form, form.serialize!
+          ..data \form, data
           ..data \title, @current.val!
-        console.log \store-menu:, e.data \menu
+        console.log \store-form:, data
         console.log \store-title:, e.data \title
     current-restore: !~>
       unless e = @current then return # guard
