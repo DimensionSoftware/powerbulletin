@@ -12,6 +12,11 @@ require! {
 #  menu0 = JSON.parse(json)
 #  menu1 = [ decode-menu-data m for m in menu0 ]
 
+# Add nodes to a hierarchical menu object
+#
+# @param String path      '/'-separated string representing slug paths.  No leading slashes, please.
+# @param Array  config    sites.config.menu (where the top-level is an array)
+# @param Object object    object to add or merge at the given path
 @mkpath = (path='', config=[], object={}) ->
   [first, ...rest]:parts = path.split '/' |> reject (-> it is '')
   #console.log { first, rest, parts }
@@ -22,29 +27,30 @@ require! {
 
   # Create menu-item if non-existent.
   if not menu-item
-    console.log \not-menu-item
-    config.push new-item = { slug: first }
+    console.log \slug, \not-menu-item, first
+    new-item = { slug: first }
     if rest.length
       console.log \--rest
       rest-path = rest.join '/'
       new-item.children = @mkpath rest-path, [], object
-      return config
+      return [ ...config, new-item ]
     else
       console.log \--leaf
       new-item <<< object
-      return config
-  #
+      return [ ...config, new-item ]
+  # If menu-item exists...
   else
-    console.log \menu-item
+    console.log \slug, \menu-item, first
+    # ...and there's more to the path, add children
     if rest.length
       console.log \--rest
       menu-item.children ?= []
       rest-path = rest.join '/'
       menu-item.children = @mkpath rest-path, menu-item.children, object
       return config
+    # ...there's nothing left, merge the object into menu-item
     else
-      console.log \--leaf
-      config.push object
+      menu-item <<< object
       return config
 
 @type-of = (object) ->
