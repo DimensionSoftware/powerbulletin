@@ -17,7 +17,7 @@ require! {
 # @param String path      '/'-separated string representing slug paths.  No leading slashes, please.
 # @param Array  config    sites.config.menu (where the top-level is an array)
 # @param Object object    object to add or merge at the given path
-@mkpath = (path='', config=[], object={}) ->
+@mkpath = (path='', config=[], object={}, uri-prefix='/') ->
   [first, ...rest]:parts = path.split '/' |> reject (-> it is '')
   #console.log { first, rest, parts }
 
@@ -28,11 +28,11 @@ require! {
   # Create menu-item if non-existent.
   if not menu-item
     console.log \slug, \not-menu-item, first
-    new-item = { slug: first }
+    new-item = { slug: first, uri: "#uri-prefix#first" }
     if rest.length
       console.log \--rest
       rest-path = rest.join '/'
-      new-item.children = @mkpath rest-path, [], object
+      new-item.children = @mkpath rest-path, [], object, "#{new-item.uri}/"
       return [ ...config, new-item ]
     else
       console.log \--leaf
@@ -46,7 +46,7 @@ require! {
       console.log \--rest
       menu-item.children ?= []
       rest-path = rest.join '/'
-      menu-item.children = @mkpath rest-path, menu-item.children, object
+      menu-item.children = @mkpath rest-path, menu-item.children, object, "#{menu-item.uri}/"
       return config
     # ...there's nothing left, merge the object into menu-item
     else
