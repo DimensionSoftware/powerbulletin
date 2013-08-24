@@ -14,11 +14,11 @@ require! {
 
 # Add nodes to a hierarchical menu object
 #
-# @param String path      '/'-separated string representing slug paths.  No leading slashes, please.
+# @param String p         path; slugs separated by '/'
 # @param Array  config    sites.config.menu (where the top-level is an array)
 # @param Object object    object to add or merge at the given path
-@mkpath = (path='', config=[], object={}, uri-prefix='/') ->
-  [first, ...rest]:parts = path.split '/' |> reject (-> it is '')
+@mkpath = (p='', config=[], object={}, uri-prefix='/') ->
+  [first, ...rest] = p.split '/' |> reject (-> it is '')
   #console.log { first, rest, parts }
 
   # Do I have a menu item with it.slug part in config?
