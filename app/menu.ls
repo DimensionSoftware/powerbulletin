@@ -12,6 +12,41 @@ require! {
 #  menu0 = JSON.parse(json)
 #  menu1 = [ decode-menu-data m for m in menu0 ]
 
+@mkpath = (path='', config=[], object={}) ->
+  [first, ...rest]:parts = path.split '/' |> reject (-> it is '')
+  #console.log { first, rest, parts }
+
+  # Do I have a menu item with it.slug part in config?
+  menu-item = find (.slug is first), config
+  console.log \menu-item, menu-item
+
+  # Create menu-item if non-existent.
+  if not menu-item
+    console.log \not-menu-item
+    config.push new-item = { slug: first }
+    if rest.length
+      console.log \--rest
+      rest-path = rest.join '/'
+      new-item.children = @mkpath rest-path, [], object
+      return config
+    else
+      console.log \--leaf
+      new-item <<< object
+      return config
+  #
+  else
+    console.log \menu-item
+    if rest.length
+      console.log \--rest
+      menu-item.children ?= []
+      rest-path = rest.join '/'
+      menu-item.children = @mkpath rest-path, menu-item.children, object
+      return config
+    else
+      console.log \--leaf
+      config.push object
+      return config
+
 @type-of = (object) ->
   \forum
 
