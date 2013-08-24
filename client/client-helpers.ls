@@ -1,7 +1,8 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! { $: \jquery }
+if window?
+  require! { $: \jquery }
 
 {render-and-append} = require \../shared/shared-helpers
 

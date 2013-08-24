@@ -6,6 +6,7 @@ require! {
   sh: \../shared/shared-helpers
 }
 {templates} = require \../build/component-jade
+{lazy-load-fancybox, lazy-load-jcrop} = require \../client/client-helpers
 
 module.exports =
   class PhotoCropper extends Component
