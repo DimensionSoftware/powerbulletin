@@ -422,7 +422,6 @@ function profile-paths user, uploaded-file, base=\avatar
       * \_surf
       * \_surfData
       * \_surfTasks
-      * \site_id
 
     opts = {} <<< opts
 

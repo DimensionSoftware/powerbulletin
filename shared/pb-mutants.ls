@@ -506,6 +506,8 @@ mk-search-pnum-to-href = (searchopts) ->
       else
         {} <<< searchopts <<< {page: pnum}
 
+      delete query.site_id # don't put this in url, it's implied by domain, for uber pretty-ness
+
     if Object.keys(query).length
       \/search? + ["#k=#v" for k,v of query].join('&')
     else

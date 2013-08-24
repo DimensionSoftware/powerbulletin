@@ -1,6 +1,10 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
+# XXX: hack hack hack!, this is to make sure that client-jade rather than component-jade gets loaded last
+# this will not be necessary once we stop messing around with global/window state
+require \../build/component-jade
+
 require \jquery     # do this in the beginning, until all scripts are converted to lazy-style
 __ = require \lodash # same... not sure where we use window.__ but whatever, legacy...
 
