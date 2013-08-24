@@ -65,8 +65,7 @@ ban-all-domains = (site-id) ->
 
     | \menu =>
       # save site config
-      # XXX site.config.menu is json here
-      #site.config.menu = menu.parse req.body.menu
+      site.config.menu = req.body.menu
       console.log \menu:, req.body.menu
       err, r <- db.site-update site
       if err then return next err

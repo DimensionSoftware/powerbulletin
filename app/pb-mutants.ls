@@ -454,7 +454,6 @@ export admin =
       pager-init window
       <~ lazy-load-fancybox
       <~ lazy-load-nested-sortable
-      <~ lazy-load-deserialize
       next!
   on-initial:
     (win, next) ->
