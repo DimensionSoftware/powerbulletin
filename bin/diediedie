@@ -1,4 +1,5 @@
 #!/bin/sh
 killall -9 mon
 sleep 1
-killall -9 -r pb-worker pb-supervisor powerbulletin pb-indexer pb-search
+killall -9 -r pb-worker-3000 pb-worker-3001 pb-worker-3002 pb-worker-3003 pb-worker-3004 pb-worker-3005 pb-worker-3006 pb-worker-3007 pb-worker-3008 pb-worker-3009
+killall -9 powerbulletin
