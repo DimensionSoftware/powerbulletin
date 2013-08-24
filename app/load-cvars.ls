@@ -15,4 +15,3 @@ try # load config.json
 catch e
   console.error "Inspect config.json: #{e}"
   process.exit!
- 

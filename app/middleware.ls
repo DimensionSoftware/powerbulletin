@@ -3,6 +3,7 @@ require! {
   fs
   geoip
   pg: \./postgres
+  \../client/requirejs-config
 }
 
 # XXX vars is an alternative to locals that isn't used in templates (not sent to client)
@@ -13,6 +14,7 @@ require! {
 @cvars = (req, res, next) ->
   # copy over any wanted cvars into vars land
   res.locals.env = global.env
+  res.locals.rjs-config = requirejs-config
   next!
 
 @multi-domain = (req, res, next) ->
