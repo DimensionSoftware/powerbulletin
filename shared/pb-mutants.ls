@@ -388,8 +388,9 @@ same-profile = (hints) ->
       options =
         name: \avatar
         post-url: "/resources/users/#{window.user.id}/avatar"
-        on-success: (r) ->
-          PhotoCropper.start mode: \crop
+        on-success: (xhr, file, r-json) ->
+          r = JSON.parse r-json
+          PhotoCropper.start mode: \crop, photo: r.url
       window.$('#left_content .avatar').html5-uploader options
 
     photocropper-disable = ->

@@ -101,6 +101,8 @@ socket.on \new-profile-photo, (user) ->
   $("div.post[data-user-id=#{user.id}]").find('div.profile img').attr(\src, "#{cache-url}#{user.photo}")
   $("li.thread[data-user-id=#{user.id}]").find('div.profile img').attr(\src, "#{cache-url}#{user.photo}")
   $("div.profile[data-user-id=#{user.id}]").find('div.avatar img').attr(\src, "#{cache-url}#{user.photo}")
+  if window?user?id is user.id
+    $('#profile').attr(\src, "#{cache-url}#{user.photo}")
 
   # TODO
   # add data-user-id to posts on the homepage

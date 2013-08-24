@@ -20,7 +20,7 @@ module.exports =
       <~ lazy-load-fancybox
       @pc = new PhotoCropper { aspect-ratio, endpoint-url, locals: { title, photo, endpoint-url } }
       if mode is \crop
-        @pc.crop-mode!
+        @pc.crop-mode { url: photo }
       $.fancybox.open @pc.$, { after-load: cb }
 
     #
@@ -47,10 +47,15 @@ module.exports =
       #@$.find('.upload input[type=file]').change ~>
       #  @upload!
 
-      @$.find('.upload input[type=file]').html5-uploader name: \avatar, post-url: @endpoint-url, on-success: (xhr, file, r-json) ~>
-        r = JSON.parse(r-json)
-        @$.find \img .attr \src, "#{cacheUrl}#{r.url}"
-        @crop-mode r
+      @$.find('.upload input[type=file]').html5-uploader {
+        name: \avatar
+        post-url: @endpoint-url
+        on-success: (xhr, file, r-json) ~>
+          r = JSON.parse(r-json)
+          cache-buster = Math.random!to-string!replace \\. ''
+          @$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
+          @crop-mode r
+      }
 
       @$.find('.crop .button').click @crop
 

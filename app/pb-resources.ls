@@ -237,6 +237,10 @@ ban-all-domains = (site-id) ->
       next 404
 @conversations =
   create: (req, res, next) ->
+    user = req.user
+    if not user
+      return res.json success: false # not allowed to chat without a user
+
     site-id = req.body?site_id
     users   = req.body?users
     if not site-id or not users
@@ -252,8 +256,13 @@ ban-all-domains = (site-id) ->
     res.json c
 
   show: (req, res, next) ->
-    id = req.params.conversation
+    user = req.user
+    if not user
+      return res.json success: false # not allowed to chat without a user
+
+    id    = req.params.conversation
     limit = 30
+
     err, c <~ db.conversation-by-id id
     if err
       console.error \conversations-show, req.path, err
@@ -261,6 +270,9 @@ ban-all-domains = (site-id) ->
       return
     if c
       # TODO be sure to check participants too
+      may-participate = c?particpants?some (-> it.id is user.id)
+      unless may-participate
+        return res.json success: false, type: \non-particant
       err, messages <- db.messages-by-cid c.id, (req.query.last || null), limit
       if err
         console.error \conversations-show, req.path, err
