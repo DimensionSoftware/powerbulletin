@@ -22,6 +22,8 @@ module.exports =
       @pc = new PhotoCropper { aspect-ratio, endpoint-url, locals: { title, photo, endpoint-url } }
       if mode is \crop
         @pc.crop-mode { url: photo }
+      else
+        @pc.upload-mode!
       $.fancybox.open @pc.$, { after-load: cb }
 
     #

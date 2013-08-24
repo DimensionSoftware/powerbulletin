@@ -151,11 +151,6 @@ load-css = (href) ->
   else
     b .remove-class \waiting
     cb!
-@lazy-load-deserialize = (cb) ~>
-  @lazy-load (-> window.$!deserialize?length),
-    "#cache-url/local/jquery.deserialize.min.js",
-    null,
-    cb
 @lazy-load-nested-sortable = (cb) ~>
   @lazy-load (-> window.$!nested-sortable?length),
     "#cache-url/local/jquery.mjs.nestedSortable.js",

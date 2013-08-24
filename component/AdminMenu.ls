@@ -36,28 +36,54 @@ module.exports =
       unless e = @current then return # guard
       form = @$.find \form
       if form
-        #form.find 'input[name="menu"]' ?remove! # prune old form data
-        # TODO form values -> json
+        # form values -> json data
+        data = {}
+        form.find \input |> each (input) ->
+          $i = @$ input
+          n = $i?attr \name
+          v = $i?val!
+          if n and n isnt \menu
+            data[n] = switch $i.attr \type
+              | \radio # must always have a value
+                if $i.is \:checked
+                  $i.val! # value if checked
+                else
+                  data[n] # keep last value
+              | \checkbox
+                !!$i.is \:checked
+              | \text \hidden # always value
+                v
+
         e # store
-          ..data \form, form.serialize!
+          ..data \form, data
           ..data \title, @current.val!
-        console.log \store-menu:, e.data \menu
+        console.log \store-form:, data
         console.log \store-title:, e.data \title
     current-restore: !~>
       unless e = @current then return # guard
       if html-form = @$.find \form
-        reset = -> html-form.get 0 .reset! # default
         console.log \data:, @current.data!
         {form, title} = @current.data!
         e.val title
         console.log \data-to-restore:, title, form
+        html-form.get 0 .reset! # default
         if form # restore current's menu + title
-          #html-form.deserialize form
-          # TODO form json -> form state & values
           @current.val title
+          @$.find 'form input' |> each (input) ->
+            $i = @$ input
+            n = $i?attr \name
+            v = $i?val!
+            if n and n isnt \menu
+              switch $i.attr \type
+                | \radio
+                  console.log \radio:, form[n], v, form[n] is v
+                  if form[n] is v then $i.attr \checked, \checked
+                | \checkbox
+                  console.log \checkbox:, form[n]
+                  if form[n] then $i.attr \checked, \checked
+                | \text \hidden # always value
+                  $i.val form[n]
           console.log \restored:, form
-        else
-          reset!
 
     on-attach: !~>
       # pre-load nested sortable list + initial active

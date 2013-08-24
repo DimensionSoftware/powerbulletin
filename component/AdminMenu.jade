@@ -13,7 +13,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
       ul.options
         li
           label.header(for='forum') Forum
-          input.option(id='forum', type='radio', name='dialog', checked='checked')
+          input.option(id='forum', type='radio', name='dialog', checked='checked', value='forum')
           .dialog
             label(for='forum_slug') Slug
             input#forum_slug(type='text', name='forumSlug')
@@ -39,7 +39,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
             .tooltip
         li
           label.header(for='page') Page
-          input.option(id='page', type='radio', name='dialog')
+          input.option(id='page', type='radio', name='dialog', value='page')
           .dialog
             label(for='page_slug') Slug
             input#page_slug(type='text', name='pageSlug')
@@ -61,7 +61,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
             .tooltip
         li
           label.header(for='link') External Link
-          input.option(id='link', type='radio', name='dialog')
+          input.option(id='link', type='radio', name='dialog', value='link')
           .dialog
             label(for='url') Url
             input(id='url', type='text', name='url', placeholder='http://')
