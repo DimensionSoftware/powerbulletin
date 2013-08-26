@@ -126,9 +126,10 @@ module.exports =
       # - safely assume 2 levels max for now)
       s    = @$.find \.sortable
       site = @state.site!
+      menu = site.config.menu
 
-      if site.config.menu # init ui
-        data = JSON.parse site.config.menu
+      if menu # init ui
+        data = JSON.parse if typeof menu is \object then menu.0 else menu
         for item in data
           if item.id
             item.id = "#prefix#{item.id}"
