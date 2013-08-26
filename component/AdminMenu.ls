@@ -52,7 +52,6 @@ module.exports =
         e # store
           ..data \form, data
           ..data \title, @current.val!
-        console.log \store-title:, e.data \title
     current-restore: !~>
       unless e = @current then return # guard
       # set visually active
@@ -60,16 +59,15 @@ module.exports =
       e.add-class \active
 
       # restore title + form
-      if html-form = @$.find \form
+      if html-form = @$.find \form.menus
         {form, title} = @current.data!
         e.val title
-        console.log \data-to-restore:, title, form
-        html-form # reset & default form
-          ..get 0 .reset!
+        html-form # default form
+          #..get 0 .reset!
           ..find 'input[type="radio"]' .prop \checked, null
         if form # restore current's menu + title
-          @current.val title
-          @$.find 'form input' |> each (input) ->
+          e.val title
+          html-form.find \input |> each (input) ->
             $i = @$ input
             n = $i?attr \name
             v = $i?val!
