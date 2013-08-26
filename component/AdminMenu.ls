@@ -21,10 +21,9 @@ module.exports =
 
     show:         ~> set-timeout (~> @$.find \.col2 .show 300ms), 300ms
     clone: (item) ~> # clone a templated defined as class="default"
-      console.log \clone:, item
       e = @$.find \.default .clone!remove-class(\default).attr \id, item.id
       e.find \input # add metadata to input
-        ..data \menu,  item.data?menu
+        ..data \form,  item.data?form
         ..data \title, item.data?title
         ..val item.data?title
       e
@@ -60,12 +59,16 @@ module.exports =
       # set visually active
       $ \.col1 .find \.active .remove-class \active
       e.add-class \active
+
+      # restore title + form
       if html-form = @$.find \form
-        console.log \data:, @current.data!
+        #console.log \data:, @current.data!
         {form, title} = @current.data!
         e.val title
         console.log \data-to-restore:, title, form
-        html-form.get 0 .reset! # default
+        html-form # reset & default form
+          ..get 0 .reset!
+          ..find 'input[type="radio"]' .prop \checked, null
         if form # restore current's menu + title
           @current.val title
           @$.find 'form input' |> each (input) ->
@@ -76,31 +79,39 @@ module.exports =
               switch $i.attr \type
                 | \radio
                   console.log \radio:, form[n], v, form[n] is v
-                  if form[n] is v then $i.attr \checked, \checked
+                  if form[n] is v then $i.prop \checked, \checked
+                  #$i.attr \checked (if form[n] then \checked else false)
                 | \checkbox
-                  console.log \checkbox:, form[n]
-                  if form[n] then $i.attr \checked, \checked
+                  $i.attr \checked (if form[n] then \checked else false)
                 | \text \hidden # always value
                   $i.val form[n]
-          console.log \restored:, form
 
     on-attach: !~>
       # pre-load nested sortable list + initial active
       # - safely assume 2 levels max for now)
+      append = (item) ~>
+        if item.id
+          item.id = "#prefix#{item.id}"
+          s.append(@clone item)
+
+      s    = @$.find \.sortable
       site = @state.site!
+
       if site.config.menu # init ui
-        s = @$.find \.sortable
-        for item in JSON.parse site.config.menu # render parent menu
-          console.log \parsed:, item
-          if item.id # save!
-            item.id = "#prefix#{item.id}"
-            s.append(@clone item)
-            #if item.data?menu # ... & siblings
-            #  for sub-item in JSON.parse item?menu
-            #    item.append(@clone sub-item) if sub-item?id
+        data = JSON.parse site.config.menu
+        #if data.length
+        for item in data # array
+          append item
+        #else # single item
+        #  append data
         s.nested-sortable opts
-        set-timeout (-> s.find \input:first .focus!), 200ms
-        @show!
+
+      @show! # bring in ui
+      set-timeout (-> # activate first
+        unless s.find \input:first .length then @$ \.onclick-add .click! # add first/default
+        s.find \input:first
+          ..click!
+          ..focus!), 200ms
 
       @$.on \click \.onclick-add (ev) ~>
         @show!
@@ -110,12 +121,12 @@ module.exports =
         max = parse-int maximum(s.find \li |> map (-> it.id.replace prefix, ''))
         id  = unless max then 1 else max+1
         e   = @clone {id:"#prefix#id"}
-        console.log \created:, e
         @$.find \.sortable
           ..append e
           ..nested-sortable opts
-          ..find \input .focus!
-        @current-restore!
+          ..find \input # select & focus
+            ..click!
+            ..focus!
         false
 
       # save menu
