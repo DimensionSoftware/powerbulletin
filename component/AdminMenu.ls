@@ -52,7 +52,6 @@ module.exports =
         e # store
           ..data \form, data
           ..data \title, @current.val!
-        console.log \store-form:, data
         console.log \store-title:, e.data \title
     current-restore: !~>
       unless e = @current then return # guard
@@ -62,7 +61,6 @@ module.exports =
 
       # restore title + form
       if html-form = @$.find \form
-        #console.log \data:, @current.data!
         {form, title} = @current.data!
         e.val title
         console.log \data-to-restore:, title, form
@@ -78,41 +76,14 @@ module.exports =
             if n and n isnt \menu
               switch $i.attr \type
                 | \radio
-                  console.log \radio:, form[n], v, form[n] is v
                   if form[n] is v then $i.prop \checked, \checked
-                  #$i.attr \checked (if form[n] then \checked else false)
                 | \checkbox
                   $i.attr \checked (if form[n] then \checked else false)
                 | \text \hidden # always value
                   $i.val form[n]
 
     on-attach: !~>
-      # pre-load nested sortable list + initial active
-      # - safely assume 2 levels max for now)
-      append = (item) ~>
-        if item.id
-          item.id = "#prefix#{item.id}"
-          s.append(@clone item)
-
-      s    = @$.find \.sortable
-      site = @state.site!
-
-      if site.config.menu # init ui
-        data = JSON.parse site.config.menu
-        #if data.length
-        for item in data # array
-          append item
-        #else # single item
-        #  append data
-        s.nested-sortable opts
-
-      @show! # bring in ui
-      set-timeout (-> # activate first
-        unless s.find \input:first .length then @$ \.onclick-add .click! # add first/default
-        s.find \input:first
-          ..click!
-          ..focus!), 200ms
-
+      #{{{ Event Delegates
       @$.on \click \.onclick-add (ev) ~>
         @show!
 
@@ -125,7 +96,6 @@ module.exports =
           ..append e
           ..nested-sortable opts
           ..find \input # select & focus
-            ..click!
             ..focus!
         false
 
@@ -147,16 +117,29 @@ module.exports =
           t = $(form.find \.tooltip)
           show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
 
-      # save current form on active row/input
-      @$.on \blur \.row   (ev) ~> @current-store!
-      @$.on \change \form (ev) ~> @current-store!
-
-      @$.on \click \.row (ev) ~>
-        # load data for active row
+      @$.on \change \form (ev) ~> @current-store!  # save active title & form
+      @$.on \focus  \.row (ev) ~> # load data for active row
         @current = $ ev.target
         @current-restore!
+      #}}}
+      # pre-load nested sortable list + initial active
+      # - safely assume 2 levels max for now)
+      s    = @$.find \.sortable
+      site = @state.site!
 
-      # init
-      @$.find \.sortable .nested-sortable opts
+      if site.config.menu # init ui
+        data = JSON.parse site.config.menu
+        for item in data
+          if item.id
+            item.id = "#prefix#{item.id}"
+            s.append(@clone item)
+
+      @show! # bring in ui
+      set-timeout (-> # activate first
+        unless s.find \input:first .length then @$ \.onclick-add .click! # add unless exists
+        s.find \input:first .focus!), 200ms
+      s.nested-sortable opts # init
 
     on-detach: -> @$.off!
+
+# vim:fdm=marker
