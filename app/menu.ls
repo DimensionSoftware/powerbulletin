@@ -12,8 +12,13 @@ require! {
 #  menu0 = JSON.parse(json)
 #  menu1 = [ decode-menu-data m for m in menu0 ]
 
-@mkpath = (path='', config=[], object={}) ->
-  [first, ...rest]:parts = path.split '/' |> reject (-> it is '')
+# Add nodes to a hierarchical menu object
+#
+# @param String p         path; slugs separated by '/'
+# @param Array  config    sites.config.menu (where the top-level is an array)
+# @param Object object    object to add or merge at the given path
+@mkpath = (p='', config=[], object={}, uri-prefix='/') ->
+  [first, ...rest] = p.split '/' |> reject (-> it is '')
   #console.log { first, rest, parts }
 
   # Do I have a menu item with it.slug part in config?
@@ -22,29 +27,30 @@ require! {
 
   # Create menu-item if non-existent.
   if not menu-item
-    console.log \not-menu-item
-    config.push new-item = { slug: first }
+    console.log \slug, \not-menu-item, first
+    new-item = { slug: first, uri: "#uri-prefix#first" }
     if rest.length
       console.log \--rest
       rest-path = rest.join '/'
-      new-item.children = @mkpath rest-path, [], object
-      return config
+      new-item.children = @mkpath rest-path, [], object, "#{new-item.uri}/"
+      return [ ...config, new-item ]
     else
       console.log \--leaf
       new-item <<< object
-      return config
-  #
+      return [ ...config, new-item ]
+  # If menu-item exists...
   else
-    console.log \menu-item
+    console.log \slug, \menu-item, first
+    # ...and there's more to the path, add children
     if rest.length
       console.log \--rest
       menu-item.children ?= []
       rest-path = rest.join '/'
-      menu-item.children = @mkpath rest-path, menu-item.children, object
+      menu-item.children = @mkpath rest-path, menu-item.children, object, "#{menu-item.uri}/"
       return config
+    # ...there's nothing left, merge the object into menu-item
     else
-      console.log \--leaf
-      config.push object
+      menu-item <<< object
       return config
 
 @type-of = (object) ->
