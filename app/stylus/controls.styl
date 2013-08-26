@@ -8,6 +8,11 @@
   border-bottom-color red!important
   background-image linear-gradient(to bottom, #fff 80%, #ffe0e0 100%)!important
 
+// indicate active ui beyond user-caused :focus & :active
+input[type="password"].active, select.active, textarea.active, input[type="text"].active
+  border-color highlight-color2!important
+  color #000!important
+
 select
   height 40px
 

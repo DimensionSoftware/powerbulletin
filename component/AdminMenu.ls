@@ -57,6 +57,9 @@ module.exports =
         console.log \store-title:, e.data \title
     current-restore: !~>
       unless e = @current then return # guard
+      # set visually active
+      $ \.col1 .find \.active .remove-class \active
+      e.add-class \active
       if html-form = @$.find \form
         console.log \data:, @current.data!
         {form, title} = @current.data!
