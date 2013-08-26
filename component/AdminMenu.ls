@@ -29,26 +29,25 @@ module.exports =
       e
     current-store: !~>
       unless e = @current then return # guard
-      form = @$.find \form
-      if form
+      html-form = @$.find \form.menus
+      if html-form
         # form values -> json data
         data = {}
-        form.find \input |> each (input) ->
+        html-form.find 'input,textarea' |> each (input) ->
           $i = @$ input
           n = $i?attr \name
           v = $i?val!
           if n and n isnt \menu
             data[n] = switch $i.attr \type
               | \radio # must always have a value
-                if $i.is \:checked
-                  $i.val! # value if checked
-                else
-                  data[n] # keep last value
+                if $i.is \:checked then v else data[n] # current or use last
               | \checkbox
                 !!$i.is \:checked
               | \text \hidden # always value
                 v
-
+              | otherwise
+                if $i.is \textarea
+                  v
         e # store
           ..data \form, data
           ..data \title, @current.val!
@@ -67,7 +66,7 @@ module.exports =
           ..find 'input[type="radio"]' .prop \checked, null
         if form # restore current's menu + title
           e.val title
-          html-form.find \input |> each (input) ->
+          html-form.find 'input,textarea' |> each (input) ->
             $i = @$ input
             n = $i?attr \name
             v = $i?val!
@@ -76,9 +75,12 @@ module.exports =
                 | \radio
                   if form[n] is v then $i.prop \checked, \checked
                 | \checkbox
-                  $i.attr \checked (if form[n] then \checked else false)
+                  $i.prop \checked (if form[n] then \checked else false)
                 | \text \hidden # always value
                   $i.val form[n]
+                | otherwise
+                  if $i.is \textarea
+                    $i.val form[n]
 
     on-attach: !~>
       #{{{ Event Delegates
