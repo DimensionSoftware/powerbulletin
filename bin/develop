@@ -11,8 +11,7 @@ echo compiling/watching...
 # launch this in the background async to pick up file changes
 node_modules/.bin/lsc -cw app client shared component lib/mutant client/requirejs-config public/app &
 
-sleep 1
+sleep 2
 
 echo launching...
 bin/powerbulletin
-

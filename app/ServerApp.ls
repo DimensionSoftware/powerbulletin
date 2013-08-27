@@ -125,6 +125,7 @@ module.exports =
 
       proc.title = "pb-worker-#{@port}"
       console.log "[1;30;30m  `+ worker #{proc.pid}[0;m"
+      console.log "[1;30;30m  `+ Testing HTTP Cache!!![0;m" if process.env.TEST_HTTP_CACHE
 
       err <~ pg.init
       if err then throw err
