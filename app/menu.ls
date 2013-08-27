@@ -14,15 +14,15 @@ require! {
 
 # Add nodes to a hierarchical menu object
 #
+# @param Array  menu      sites.config.menu (where the top-level is an array)
 # @param String p         path; slugs separated by '/'
-# @param Array  config    sites.config.menu (where the top-level is an array)
 # @param Object object    object to add or merge at the given path
-@mkpath = (p='', config=[], object={}, uri-prefix='/') ->
+@mkpath = (menu=[], p='', object={}, uri-prefix='/') ->
   [first, ...rest] = p.split '/' |> reject (-> it is '')
   #console.log { first, rest, parts }
 
-  # Do I have a menu item with it.slug part in config?
-  menu-item = find (.slug is first), config
+  # Do I have a menu item with it.slug part in menu?
+  menu-item = find (.slug is first), menu
   console.log \menu-item, menu-item
 
   # Create menu-item if non-existent.
@@ -33,11 +33,11 @@ require! {
       console.log \--rest
       rest-path = rest.join '/'
       new-item.children = @mkpath rest-path, [], object, "#{new-item.uri}/"
-      return [ ...config, new-item ]
+      return [ ...menu, new-item ]
     else
       console.log \--leaf
       new-item <<< object
-      return [ ...config, new-item ]
+      return [ ...menu, new-item ]
   # If menu-item exists...
   else
     console.log \slug, \menu-item, first
@@ -47,21 +47,52 @@ require! {
       menu-item.children ?= []
       rest-path = rest.join '/'
       menu-item.children = @mkpath rest-path, menu-item.children, object, "#{menu-item.uri}/"
-      return config
+      return menu
     # ...there's nothing left, merge the object into menu-item
     else
       menu-item <<< object
-      return config
+      return menu
 
-@type-of = (object) ->
-  \forum
+@extract = (object) ->
+  if object.type
+    return [object.type, object]
+  if object?data?form?forum-slug
+    type = \forum
+    data =
+      site_id: null
+      parent_id: null
+      title: \title
+      uri: object.data.form.forum-slug
+      slug: object.data.form.forum-slug
+      description: ''
+  else if object?data?form?page-slug
+    type = \page
+    data =
+      site_id: null
+      path: object.data.form.page-slug
+      title: ''
+      config: JSON.stringify(main_content: object.data.form.body)
+  else if object?data?form?uri
+    type = \external-link
+    data = null
+  return [type, data]
 
-@add = (object, cb) ->
-  type = type-of object
+@add = (site, p, object, cb) ->
+  menu = JSON.parse site.config.menu
+  #new-menu = @mkpath(menu, p, object)
+  [type, data] = @extract object
+  data.site_id = site.id
+
+  finish = (err, ...args) ->
+    if err
+      return cb err
+    else
+      return cb null, menu
+
   switch type
-  | \forum         => @add-forum object, cb
-  | \page          => @add-page object, cb
-  | \external-link => @add-external-link object, cb
+  | \forum         => @add-forum data, finish
+  | \page          => @add-page data, finish
+  | \external-link => cb null, new-menu
 
 @add-forum = (forum, cb) ->
   # site_id
@@ -71,13 +102,17 @@ require! {
   # slug
   # description
   forum.slug ?= path.basename forum.uri
-  db.forums.create forum, cb
+  db.forums.create data: forum, cb
 
 @add-page = (page, cb) ->
   # site_id
   # path
   # title
-  db.pages.create page, cb
+  criteria = site_id: page.site_id, path: page.path
+  err, existing-page <- db.pages.find-one { criteria }
+  if err then return cb err
+  if existing-page
+    db.pages.update { criteria}, { data: page }, cb
+  else
+    db.pages.create { data: page }, cb
 
-@add-external-link = (external-link, cb) ->
-  cb new Error "not implemented"
