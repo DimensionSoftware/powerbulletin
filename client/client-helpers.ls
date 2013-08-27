@@ -178,7 +178,7 @@ load-css = (href) ->
     cb
 @lazy-load-socketio = (cb) ~>
   @lazy-load (-> window.io),
-    "/socket.io/socket.io.js",
+    "/socket.io/socket.io.js?#{window.CHANGESET}",
     null,
     cb
 #}}}

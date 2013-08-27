@@ -408,7 +408,7 @@ sub vcl_recv {
   }
 
   # pipe any socket.io requests
-  if (req.url ~ "(?i)^/socket\.io/") {
+  if (req.url !~ "(?i)^/socket.io/socket.io.js" && req.url ~ "(?i)^/socket\.io/") {
     return (pipe);
   }
 
@@ -439,6 +439,13 @@ sub vcl_fetch {
   # remove set-cookie on all buth /auth (/auth is the only thing that sets cookies)
   if (req.url !~ "(?i)^/(auth)") {
     call depersonalize_response;
+  }
+
+  # cache socket.io js client library for 1 year
+  if (req.url ~ "(?i)^/socket.io/socket.io.js") {
+    # 365 * 24 * 60 * 60 = 31536000
+    # AKA 1 Year
+    set beresp.http.Cache-Control = "max-age=31536000; must-revalidate";
   }
 
   # if no-cache is set, do not cache (varnish is too stupid to do this by default)
