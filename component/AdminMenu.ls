@@ -20,7 +20,7 @@ module.exports =
     current:  null # active "selected" menu item
 
     show:         ~> set-timeout (~> @$.find \.col2 .show 300ms), 300ms
-    clone: (item) ~> # clone a templated defined as class="default"
+    clone: (item) ~> # clone a template defined as class="default"
       e = @$.find \.default .clone!remove-class(\default).attr \id, item.id
       e.find \input # add metadata to input
         ..data \form,  item.data?form
@@ -62,8 +62,9 @@ module.exports =
         {form, title} = @current.data!
         e.val title
         html-form # default form
-          #..get 0 .reset!
-          ..find 'input[type="radio"]' .prop \checked, null
+          ..find \fieldset .toggle-class \has-dialog (!!form?dialog)
+          ..find '.forumSlug, .pageSlug, #url, textarea' .val ''
+          ..find 'input[type="checkbox"], input[type="radio"]' .prop \checked, false
         if form # restore current's menu + title
           e.val title
           html-form.find 'input,textarea' |> each (input) ->
@@ -84,6 +85,9 @@ module.exports =
 
     on-attach: !~>
       #{{{ Event Delegates
+      @$.on \change 'input[name="dialog"]' ~> # type was selected
+        @$.find \fieldset .add-class \has-dialog
+
       @$.on \click \.onclick-add (ev) ~>
         @show!
 
@@ -105,9 +109,9 @@ module.exports =
 
         # get entire menu
         menu = @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy! # extended to pull data attributes, too
-        #unless menu.length then menu = [menu] # box
         console.log \saving-nested-sortable:, menu
         form = @$.find \form
+        form.find '[name="menu"]' .remove! # prune old
         form.append(@@$ \<input> # append new menu
           .attr \type, \hidden
           .attr \name, \menu

@@ -8,11 +8,11 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
     button.onclick-add Add
     ol.sortable
   .col2
-    fieldset.has-type
-      label.type Type
+    fieldset
+      label.type Select a Type
       ul.options
         li
-          input.option(id='forum', type='radio', name='type', checked='checked', value='forum')
+          input.option(id='forum', type='radio', name='dialog', checked='checked', value='forum')
           label.header(for='forum') Forum
           .dialog
             label(for='forum_slug') Slug
@@ -38,7 +38,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
             button(type='submit', value='Save') Save
             .tooltip
         li
-          input.option(id='page', type='radio', name='type', value='page')
+          input.option(id='page', type='radio', name='dialog', value='page')
           label.header(for='page') Page
           .dialog
             label(for='page_slug') Slug
@@ -60,7 +60,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
             button(type='submit', value='Save') Save
             .tooltip
         li
-          input.option(id='link', type='radio', name='type', value='link')
+          input.option(id='link', type='radio', name='dialog', value='link')
           label.header(for='link') External Link
           .dialog
             label(for='url') Url
