@@ -22,9 +22,9 @@ describe 'new PhotoCropper {locals}' ->
 
   pc = new PhotoCropper {locals}
 
-  _it "should be in upload mode" ->
-    assert(pc.html!.index-of('<div style="display:none;" class="crop">') isnt -1)
-    assert(pc.html!.index-of('<div class="upload">') isnt -1)
+  #_it "should be in upload mode" ->
+  #  assert(pc.html!.index-of('<div style="display:none;" class="crop">') isnt -1)
+  #  assert(pc.html!.index-of('<div class="upload">') isnt -1)
 
   _it ".html! should return some html ... (pretty fuzzy)" ->
     assert pc.html!match(/^<div class="PhotoCropper">/)
