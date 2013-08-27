@@ -2,12 +2,5 @@
 
 for port in {4000..4001}
 do
-  set +e
-  killall "pb-cache-$port"
-  sleep 2
-  killall -9 "pb-cache-$port"
-  set -e
-  mon -d \
-      -l logs/pb-cache.log \
-      "node app/cache-main.js $port"
+  bin/daemonize "pb-cache-$port" "logs/pb-cache.log" "node app/cache-main.js $port"
 done

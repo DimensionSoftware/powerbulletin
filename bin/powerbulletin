@@ -13,20 +13,9 @@ if [ "$NODE_ENV" = 'production' ] ; then
 
   #XXX: look into soft reload for haproxy and varnish to avoid even more downtime!
 
-  killall mon # make sure daemons are monitored for launched processes also
   for port in {3000..3002}
   do
-    set +e
-    # XXX: it is assumed that the previous mon has been killed by the time you get here
-    echo "killing pb-worker-$port..."
-    killall "pb-worker-$port"
-    sleep 10 # give 10 seconds for graceful death
-    killall -9 "pb-worker-$port"
-    set -e
-    mon -d \
-        -l logs/powerbulletin.log \
-        -m /tmp/pb.pid \
-        "node app/main.js $port"
+    bin/daemonize "pb-worker-$port" "logs/powerbulletin.log" "node app/main.js $port"
     sleep 5 # give 5 seconds for process to start up before moving on to next one
   done
 else

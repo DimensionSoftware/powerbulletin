@@ -1,10 +1,5 @@
 #!/bin/bash
-kill -9 `cat /tmp/pb-indexer-mon.pid` &> /dev/null
-killall -9 pb-indexer &> /dev/null
-
-set -e
-mkdir -p logs
-mon -d \
-    -l logs/indexer.log \
-    -m /tmp/pb-indexer-mon.pid \
-    "node_modules/.bin/lsc app/indexer-main.ls"
+NAME="pb-indexer"
+LOG="logs/pb-indexer.log"
+CMD="node_modules/.bin/lsc app/indexer-main.ls"
+bin/daemonize "$NAME" "$LOG" "$CMD"
