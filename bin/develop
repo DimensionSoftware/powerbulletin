@@ -1,7 +1,18 @@
-#!/bin/sh
+#!/bin/bash
+
+# kill any old lsc watchers
+killall -9 node &> /dev/null
+
+echo killing old processes...
 bin/diediedie
+
 set -e
-node_modules/.bin/lsc -wc app client shared component lib/mutant client/requirejs-config public/app &
-sleep 2
+echo compiling/watching...
+# launch this in the background async to pick up file changes
+node_modules/.bin/lsc -cw app client shared component lib/mutant client/requirejs-config public/app &
+
+sleep 1
+
+echo launching...
 bin/powerbulletin
 
