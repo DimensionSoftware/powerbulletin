@@ -48,3 +48,21 @@ unless File.file? '/etc/NPM_GLOBAL_PACKAGES_COMPLETED'
     EOH
   end
 end
+
+
+# SYMLINK CITY! these settings differ between prod and dev
+if ENV['NODE_ENV'] == 'production'
+  project_dir = '/pb'
+else
+  project_dir = '/vagrant'
+end
+
+# setup symlinks for plv8
+link "/usr/local/plv8/plv8_modules" do
+  to "#{project_dir}/plv8_modules"
+end
+
+# setup symlinks for elasticsearch
+link "/opt/elasticsearch/config" do
+  to "#{project_dir}/config/elasticsearch"
+end
