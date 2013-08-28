@@ -143,6 +143,7 @@ window.onload-resizable = ->
       resize: (e, ui) ->
         $l.toggle-class \wide ($l.width! > 300px)        # resize left nav
         $r.css \padding-left (ui.size.width+left-offset) # " resizable
+        $ \footer .css \left (ui.size.width+1)
         $l.find \.scrollable .get-nice-scroll!resize!
         window.save-ui!)
     # TODO
