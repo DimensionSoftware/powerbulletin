@@ -53,6 +53,7 @@ require! {
       menu-item <<< object
       return menu
 
+# Make sense of the data given to us from the client side.
 @extract = (object) ->
   if object.type
     return [object.type, object]
@@ -116,3 +117,4 @@ require! {
   else
     db.pages.create { data: page }, cb
 
+# vim:fdm=indent

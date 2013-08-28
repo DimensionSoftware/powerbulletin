@@ -5,6 +5,7 @@ require! {
   Component: yacomponent
 }
 ch = require \../client/client-helpers if window?
+{unique} = require \prelude-ls
 {templates} = require \../build/component-jade
 
 module.exports =

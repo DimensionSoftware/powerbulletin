@@ -4,7 +4,7 @@ require, exports, module <- define
 require! Component: yacomponent
 require \jqueryCookie if window? # client-only require
 {templates} = require \../build/component-jade
-{join, map} = require \prelude-ls
+{join, map, sort-with, Obj} = require \prelude-ls
 
 add-message = (fn, m) -->
   $msg = @message-node m

@@ -4,6 +4,8 @@ require! {
   \./sig
 }
 
+{map} = require \prelude-ls
+
 # Important Redis Keys
 #
 # users - a cid to user mapping; contains JSON strings
