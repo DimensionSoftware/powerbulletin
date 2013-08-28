@@ -7,7 +7,7 @@ require! {
 ch = require \../client/client-helpers if window?
 
 {templates} = require \../build/component-jade
-{map, maximum} = require \prelude-ls
+{each, map, maximum} = require \prelude-ls
 
 module.exports =
   class AdminMenu extends Component
