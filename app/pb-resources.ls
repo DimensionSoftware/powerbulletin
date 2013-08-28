@@ -51,10 +51,10 @@ ban-all-domains = (site-id) ->
       # update site
       site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
-        [\postsPerPage \metaKeywords \inviteOnly \private \analytics \style] }
-      for c in [\inviteOnly \private] # uncheck checkboxes?
+        <[ postsPerPage metaKeywords inviteOnly private analytics style ]> }
+      for c in <[ inviteOnly  private ]> # uncheck checkboxes?
         delete site.config[c] unless req.body[c]
-      for s in [\private \analytics] # subscription tampering
+      for s in <[ private analytics ]> # subscription tampering
         delete site.config[s] unless s in site.subscriptions
       err, r <- db.site-update site # save!
       if err then return next err
@@ -65,12 +65,14 @@ ban-all-domains = (site-id) ->
 
     | \menu =>
       # save site config
-      site.config.menu = req.body.menu
+      site.config.menu = req.body.menu # menu
+      if id = req.body.id              # active
+        site.config.forms     ||= {}
+        site.config.forms[id] ||= {}
+        site.config.forms[id] <<< { [k, v] for k,v of req.body when k in
+          <[ id title dialog forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
       err, r <- db.site-update site
       if err then return next err
-      # TODO sync live menu with config
-      # - forums
-      # - pages
       ban-all-domains site.id # varnish ban
       res.json success:true
 

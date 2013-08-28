@@ -4,6 +4,8 @@ li.default
 
 form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
   input(type='hidden', name='action', value='menu')
+  input(type='hidden', name='id')    //- active id
+  input(type='hidden', name='title') //- active title
   .col1
     button.onclick-add Add
     ol.sortable
