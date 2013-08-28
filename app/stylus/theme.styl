@@ -3,17 +3,13 @@
 
 // XXX default theme containing all color decoration & embellishments
 
-highlight-color             = #ffeedd
-highlight-color2            = #ff9225
-highlight-color-translucent = rgba(255,100,50,.3)
-
 footer-height = 25px
 
 body
   font-family 'Source Sans Pro', 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue', sans-serif
 
 a
-  color highlight-color2
+  color dark
   text-decoration none
 
 .photo
@@ -24,7 +20,7 @@ a
   border 1px solid #aaa
   opacity .85
 .photo:hover
-  border 1px solid highlight-color2
+  border 1px solid dark
   transition border .2s ease-out
 
 .online
@@ -68,14 +64,14 @@ header
       > .row
         .title.active:hover
           color #000
-          border-bottom 1px solid highlight-color2
+          border-bottom 1px solid dark
           background-image linear-gradient(bottom, #fff 25px, #fed)
         .title.active
           position relative!important
           z-index 75!important
           color #333
           background-color #fafafa
-          border-bottom 1px solid highlight-color2
+          border-bottom 1px solid dark
           background-image linear-gradient(bottom, #fff 25px, #eaeaea)
       > .row
         .title:hover, .title.hover
@@ -248,7 +244,7 @@ header
     color #eee
 
   a.page:hover, a.active
-    background-color highlight-color2
+    background-color dark
     color #eee
 
   blockquote
