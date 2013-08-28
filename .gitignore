@@ -35,3 +35,4 @@
 /lib/mutant/**/*.js
 /lib/mutant/**/**/*.js
 /lib/mutant/**/**/**/*.js
+/elastic-logs/
