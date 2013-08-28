@@ -24,9 +24,10 @@ module.exports =
     current:  null # active "selected" menu item
 
     show:         ~> set-timeout (~> @$.find \.col2 .show 300ms), 300ms
-    clone: (item) ~> # clone a templated defined as class="default"
+    clone: (item) ~> # clone a template defined as class="default"
       e = @$.find \.default .clone!remove-class(\default).attr \id, item.id
       e.find \input # add metadata to input
+        ..data \id,    item.id.replace /list_/ ''
         ..data \form,  item.data?form
         ..data \title, item.data?title
         ..val item.data?title
@@ -53,8 +54,9 @@ module.exports =
                 if $i.is \textarea
                   v
         e # store
-          ..data \form, data
-          ..data \title, @current.val!
+          ..data \id,    e.data!id.replace /list_/ ''
+          ..data \form,  data
+          ..data \title, e.val!
     current-restore: !~>
       unless e = @current then return # guard
       # set visually active
@@ -63,18 +65,20 @@ module.exports =
 
       # restore title + form
       if html-form = @$.find \form.menus
-        {form, title} = @current.data!
+        {id, form, title} = @current.data!
         e.val title
         html-form # default form
-          #..get 0 .reset!
-          ..find 'input[type="radio"]' .prop \checked, null
-        if form # restore current's menu + title
+          ..find \fieldset .toggle-class \has-dialog (!!form?dialog)
+          ..find '#forum_slug, #page_slug, #url, textarea' .val ''
+          ..find 'input[type="checkbox"], input[type="radio"]' .prop \checked, false
+        if form # restore current's id + menu + title
           e.val title
+          form{id, title} = {id, title}
           html-form.find 'input,textarea' |> each (input) ->
             $i = @$ input
             n = $i?attr \name
             v = $i?val!
-            if n and n isnt \menu
+            if n and n isnt \menu and n isnt \action
               switch $i.attr \type
                 | \radio
                   if form[n] is v then $i.prop \checked, \checked
@@ -88,6 +92,9 @@ module.exports =
 
     on-attach: !~>
       #{{{ Event Delegates
+      @$.on \change 'input[name="dialog"]' ~> # type was selected
+        @$.find \fieldset .add-class \has-dialog
+
       @$.on \click \.onclick-add (ev) ~>
         @show!
 
@@ -109,9 +116,8 @@ module.exports =
 
         # get entire menu
         menu = @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy! # extended to pull data attributes, too
-        #unless menu.length then menu = [menu] # box
-        console.log \saving-nested-sortable:, menu
         form = @$.find \form
+        form.find '[name="active"], [name="menu"]' .remove! # prune old
         form.append(@@$ \<input> # append new menu
           .attr \type, \hidden
           .attr \name, \menu
@@ -121,11 +127,11 @@ module.exports =
           t = $(form.find \.tooltip)
           ch.show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
 
-      @$.on \change \form (ev) ~> @current-store!  # save active title & form
-      @$.on \focus  \.row (ev) ~> # load data for active row
-        @current = $ ev.target
-        @current-restore!
+      @$.on \change \form (ev) ~> @current-store! # save active title & form
+      @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore!  # load active row
       #}}}
+
+      ####  main  ;,.. ___  _
       # pre-load nested sortable list + initial active
       # - safely assume 2 levels max for now)
       s    = @$.find \.sortable
@@ -135,8 +141,12 @@ module.exports =
       if menu # init ui
         data = JSON.parse if typeof menu is \object then menu.0 else menu
         for item in data
-          if item.id
-            item.id = "#prefix#{item.id}"
+          if id = item.id
+            form = site.config.forms["#id"]
+            item.data ||= {}
+              ..form  = form
+              ..title = form?title
+            item.id = "#prefix#id"
             s.append(@clone item)
 
       @show! # bring in ui

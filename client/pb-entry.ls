@@ -116,7 +116,10 @@ censor = (ev) ->
 #### main   ###############>======-- -   -
 ##
 load-ui!
-set-timeout (-> $ \footer .add-class \active), 2500ms
+set-timeout (->
+  $ \footer
+    ..css \left $(\#left_content).width!+1
+    ..add-class \active), 2500ms
 $ \#query .focus!select!
 
 # Delegated Events

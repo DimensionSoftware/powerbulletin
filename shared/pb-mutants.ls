@@ -103,16 +103,16 @@ layout-on-personalize = (w, u) ->
 
 # initialize pager
 pager-init = (w) ->
-  pager-opts =
-    current  : parse-int w.page
-    last     : parse-int w.pages-count
-    forum-id : parse-int w.active-forum-id
-  if w.pager
-    w.pager <<< pager-opts
-    w.pager.init!
-  else
-    w.pager = new w.Pager \#paginator pager-opts
-  w.pager.set-page(w.page, false) if w.page
+#  pager-opts =
+#    current  : parse-int w.page
+#    last     : parse-int w.pages-count
+#    forum-id : parse-int w.active-forum-id
+#  if w.pager
+#    w.pager <<< pager-opts
+#    w.pager.init!
+#  else
+#    w.pager = new w.Pager \#paginator pager-opts
+#  w.pager.set-page(w.page, false) if w.page
 
 @homepage =
   static:

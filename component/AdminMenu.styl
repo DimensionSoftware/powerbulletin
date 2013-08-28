@@ -19,11 +19,22 @@
       border-radius 3px
   .col2
     display none
+    .has-dialog
+      margin-top -45px
+      transition margin-top .15s ease-out
+      label.type, .option, .header
+        display none!important
+      .dialog
+        visibility visible
+        opacity 1
     fieldset
       padding-top 17px!important
       min-width 500px
       position relative
-      .type
+      .dialog
+        visibility hidden
+        opacity 0
+      .type, .dialog
         position absolute
         left 0
       .options

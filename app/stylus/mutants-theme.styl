@@ -72,7 +72,7 @@ html.forum, html.profile, html.search
         color #111
         .post-edit:hover
           .summary::before
-            border-left 5px solid highlight-color2
+            border-left 5px solid dark
             transition border-right .2s ease-out .1s
       .post.censored
         .body, blockquote, p
@@ -121,13 +121,18 @@ html.forum, html.profile, html.search
             color #999
             text-transform lowercase
       .actions a
-        color highlight-color2
+        color dark
   .left-content
+    border-right 1px solid #eaeaea
     .threads
-      .thread:last-child
-        border-bottom 1px solid transparent
-      .thread:last-child:hover, .thread
-        border-bottom 1px solid rgba(100,100,100,.05)
+      .thread::after
+        position absolute
+        content ''
+        border-bottom 1px solid rgba(0,0,0,.05)
+        background-color #fff
+        height 1px
+        margin-top 8px
+        width 80%
       .thread
         list-style-type none
         border-top 1px solid transparent
@@ -135,21 +140,23 @@ html.forum, html.profile, html.search
         border-right 2px solid transparent
         .title
           text-shadow none
-          color highlight-color2
+          color dark
           display inline-block
           border-bottom 1px solid transparent
         .created
           color #444
           opacity 0
         a
-          color #555
+          color #333
           text-decoration none
       .thread:first-child
         border-top 1px solid transparent
       .thread:first-child:hover
         border-top 1px solid rgba(250,250,250,.2)
+      .thread:hover::after
+        border-bottom 1px solid rgba(0,0,0,.1)
       .thread:hover
-        border-bottom 1px solid rgba(90,90,90,.2)
+        //border-bottom 1px solid rgba(90,90,90,.2)
         background-color rgba(255,255,255,.2)
         transition border-bottom .5s ease-out, background-color .3s ease-out
         .created
@@ -157,19 +164,33 @@ html.forum, html.profile, html.search
           transition opacity .3s ease-out
         a
           color #222
+      .thread.active::after
+        height 0
+        border none
+      .thread.active::before
+        position absolute
+        top -1px
+        bottom -1px
+        left 0
+        width 5px
+        content ''
+        background-image linear-gradient(to top, dark 0, light 100%)
       .thread.active:hover
         a #fff
       .thread.active:last-child, .thread.active
+        position relative
+        z-index 9
         background-color #fff
-        border-radius 5px / 10px
-        border-right 2px solid #ddd
-        border-bottom 1px solid #ddd
+        border-right 1px solid #aaa
+        border-bottom 1px solid #c8c8c8
         border-top 1px solid #fff
-        border-left 3px solid highlight-color2
-        background-image linear-gradient(to top, #f5f5f5 54px, #fafafa 58px, #fff 100%)
-        transition background-color .5s cubic-bezier(0, 0, 0.17, 1)
+        border-left 0
+        background-image linear-gradient(to top, #e2e2e2 0, #fff 100%)
+        box-shadow 0 1px 3px 0 light
+        .title
+          text-shadow 1px 1px 0 rgba(0,0,0,.4)
         a
-          color #111
+          color #000
         .created
           opacity 1
           display block
@@ -185,7 +206,7 @@ html.profile
     .forum
       .heading
         .title
-          color highlight-color2
+          color dark
 //}}}
 //{{{ - admin
 html.admin
@@ -198,9 +219,9 @@ html.admin
       border-left 1px solid transparent
       height 23px
     li.feature.upgrade.active::after
-      border-left-color highlight-color2
+      border-left-color dark
     li.feature.upgrade.active
-      background-color highlight-color2
+      background-color dark
       border-left 1px solid #666
       border-bottom 1px solid #666
       a
@@ -260,30 +281,30 @@ html.admin
       input[type="checkbox"]:checked + label .switch::after
         background-color #ffa500
       label[for="hide_menu"]:hover, label[for="private"]:hover, label[for="invite_only"]:hover
-        box-shadow inset 0 2px 10px #666, 0 2px 5px #eee, 0px 0px 0px 1px highlight-color2
+        box-shadow inset 0 2px 10px #666, 0 2px 5px #eee, 0px 0px 0px 1px dark
         transition box-shadow .1s ease-out
     .notes
       font-weight 300
       a
-        color highlight-color2
+        color dark
   //}}}
 html.search
   header
     .onclick-close
-      box-shadow 0 0 0 1px highlight-color2
+      box-shadow 0 0 0 1px dark
     .search
       #query.query, #query.query:focus, #query.query:hover
-        border-bottom 1px solid highlight-color2
+        border-bottom 1px solid dark
 
 // hover fx for links
 .stylish:hover
-   //background-color highlight-color2
+   //background-color dark
    //color #fff!important
    //color #000!important
    text-decoration none!important
    border-radius 4px / 2px
-   background-image linear-gradient(bottom, transparent 99%, highlight-color2)
-   border-bottom 1px solid highlight-color2!important
+   background-image linear-gradient(bottom, transparent 99%, dark)
+   border-bottom 1px solid dark!important
    transform scale(1.04)
    text-indent -1px
    transition all .1s ease-out .05s
