@@ -27,7 +27,6 @@ require! {
   stylus
   fluidity
   \./auth
-  \./io-server
   \./elastic
   sh: \./server-helpers
   \express/node_modules/connect
@@ -228,7 +227,6 @@ module.exports =
 
       # need this for socket.io
       server := http.create-server sock
-      io-server.init server
 
       console.log {@port}
       server.listen @port

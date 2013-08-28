@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for port in {5000..5001}
+do
+  bin/daemonize "pb-rt-$port" "logs/pb-rt.log" "node app/socket-main.js $port"
+done

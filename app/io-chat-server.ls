@@ -4,6 +4,8 @@ require! {
   redis
 }
 
+{map} = require \prelude-ls
+
 log = debug 'io-chat-server'
 
 # Redis Keys
