@@ -4,5 +4,6 @@ pgrep java || sudo NODE_ENV=$NODE_ENV bin/launch-elasticsearch
 pgrep redis-server || bin/launch-redis
 pgrep haproxy || sudo NODE_ENV=$NODE_ENV bin/launch-haproxy
 (pgrep varnishd && bin/purge-varnish) || sudo NODE_ENV=$NODE_ENV bin/launch-varnish
+bin/launch-pb-rt
 bin/launch-indexer
 bin/launch-search-notifier
