@@ -21,7 +21,6 @@
     .last
 
 */
-return # XXX temporarily disabled
 
 indicator-height = (pages, height) -> Math.floor(height / pages)
 
