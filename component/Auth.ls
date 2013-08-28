@@ -152,7 +152,7 @@ module.exports =
             Auth.require-login-cb!
             Auth.require-login-cb = null
           # reload page XXX I know its not ideal but the alternative is painful >.<
-          if initial-mutant is \privateSite then window.location.reload!
+          if window.initial-mutant is \privateSite then window.location.reload!
         else
           if r.type is \unverified-user
             resend = """
