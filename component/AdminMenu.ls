@@ -135,10 +135,11 @@ module.exports =
       menu = site.config.menu
 
       if menu # init ui
-        data = JSON.parse if typeof menu is \object then menu.0 else menu
-        for item in data
+        menu = JSON.parse menu if typeof menu is \string
+        #menu = menu.0 if typeof menu is \object
+        for item in menu
           if id = item.id
-            form = site.config.forms["#id"]
+            form = item.form
             item.data ||= {}
               ..form  = form
               ..title = form?title

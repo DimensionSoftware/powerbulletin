@@ -12,6 +12,16 @@ require! {
 #  menu0 = JSON.parse(json)
 #  menu1 = [ decode-menu-data m for m in menu0 ]
 
+# Add form to a hierarchical menu object
+@save-form-to-menu = (menu=[], id, form={}) ->
+  item = find (.id is id), menu
+  if item # base case -- found!
+    item.form = form
+  else
+    for m in menu
+      if m.children then @save-form-to-menu m.children, id, form
+  menu
+
 # Add nodes to a hierarchical menu object
 #
 # @param Array  menu      sites.config.menu (where the top-level is an array)
