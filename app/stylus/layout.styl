@@ -5,10 +5,10 @@
 bounce = cubic-bezier(0,1.72,0,.75)
 
 header-height           = 100px
-header-scrolled-height  = 30px
+header-scrolled-height  = 35px
 
 forum-header-height = 0
-footer-height       = 32px
+footer-height       = 36px
 left-content-width  = 310px
 
 section
@@ -58,15 +58,19 @@ body.scrolled .nicescroll-rails
   margin 0
   padding 0
   a
-    margin-top 20px
+    background-image url(cache-url + '/images/pb_icon_logo_sm.png')
+    background-repeat no-repeat
+    padding-left 32px
+    padding-top 3px
     vertical-align top
     font-size .75em
     text-decoration none
     font-weight 200
     letter-spacing -2px
     position fixed
-    top 1px
+    top 18px
     left 35px
+    height 30px
     z-index 10
     strong
       letter-spacing -1px
@@ -187,7 +191,7 @@ header
       border-radius 75px
     .search
       top 10px
-      left 220px
+      left 380px
       position absolute 
       z-index 8
       .query
@@ -394,12 +398,12 @@ footer.expanded
     border 4px solid transparent
     border-top 8px solid #aaa
     top 8px
-    left 38px
+    left 36px
   .post-reply::before
     border 4px solid transparent
     border-top 6px solid #ccc
     top 9px
-    left 38px
+    left 36px
 footer.active
   opacity 1
   bottom -(grid * 1.4)
@@ -430,7 +434,7 @@ footer
     color #222
   .post-reply:hover::before
     border-left 8px solid #aaa
-    left 40px
+    left 39px
     transition all .1s ease-out
   .post-reply::before
     position absolute
@@ -474,17 +478,17 @@ footer
 body.scrolled
   .logo
     a
-      margin-top 5px
+      top 4px
       font-size .68em
       transition margin-top .3s bounce
   header
     height header-scrolled-height
     .container
       .menu
-        bottom -2px
+        bottom -1px
         > .row:hover
           .submenu
-            top 28px
+            top 30px
         .row
           top 1px
           line-height header-scrolled-height + 1
@@ -507,8 +511,8 @@ body.scrolled
           font-size 1em
           height 18px
       .profile
-        height 25px
-        width 31px
+        height 30px
+        width 30px
         top -14px
         right 35px
         transition all .2s bounce
