@@ -20,71 +20,85 @@ require! {
   else
     for m in menu
       if m.children then @save-form-to-menu m.children, id, form
-  menu
+  if menu.length
+    menu
+  else
+    [ form ]
+
+# Given a menu and an id, return the path needed to get to the node with that id
+@path-in-menu = (menu=[], id) ->
+  []
 
 # Add nodes to a hierarchical menu object
 #
 # @param Array  menu      sites.config.menu (where the top-level is an array)
 # @param String p         path; slugs separated by '/'
 # @param Object object    object to add or merge at the given path
-@mkpath = (menu=[], p='', object={}, uri-prefix='/') ->
-  [first, ...rest] = p.split '/' |> reject (-> it is '')
-  #console.log { first, rest, parts }
+@mkpath = (p=[], menu=[], object={}) ->
+  #[first, ...rest] = p.split '/' |> reject (-> it is '')
+  [first, ...rest] = p
+  console.log { first, rest }
 
   # Do I have a menu item with it.slug part in menu?
-  menu-item = find (.slug is first), menu
+  #menu-item = find (.slug is first), menu
+  menu-item = menu[first]
   console.log \menu-item, menu-item
 
   # Create menu-item if non-existent.
   if not menu-item
     console.log \slug, \not-menu-item, first
-    new-item = { slug: first, uri: "#uri-prefix#first" }
+    new-item = { object.id, object.title, object.form }
     if rest.length
+      throw new Error "path could not be created"
       console.log \--rest
-      rest-path = rest.join '/'
-      new-item.children = @mkpath rest-path, [], object, "#{new-item.uri}/"
+      new-item.children = @mkpath rest, [], object
       return [ ...menu, new-item ]
     else
       console.log \--leaf
       new-item <<< object
       return [ ...menu, new-item ]
-  # If menu-item exists...
+  # If menu-item exists... update
   else
     console.log \slug, \menu-item, first
     # ...and there's more to the path, add children
     if rest.length
       console.log \--rest
       menu-item.children ?= []
-      rest-path = rest.join '/'
-      menu-item.children = @mkpath rest-path, menu-item.children, object, "#{menu-item.uri}/"
+      menu-item.children = @mkpath rest, menu-item.children, object
       return menu
     # ...there's nothing left, merge the object into menu-item
     else
       menu-item <<< object
       return menu
 
-@extract = (object) ->
+# Given a form submission, figure out what kind of data we have.
+@extract = ({id,form,title}:object) ->
   if object.type
     return [object.type, object]
-  if object?data?form?forum-slug
+  switch form?dialog
+  | \forum =>
     type = \forum
     data =
-      site_id: null
-      parent_id: null
-      title: \title
-      uri: object.data.form.forum-slug
-      slug: object.data.form.forum-slug
-      description: ''
-  else if object?data?form?page-slug
+      site_id     : null
+      parent_id   : null
+      title       : title
+      uri         : form.forum-slug
+      slug        : forum-slug
+      description : ''
+  | \page =>
     type = \page
     data =
-      site_id: null
-      path: object.data.form.page-slug
-      title: ''
-      config: JSON.stringify(main_content: object.data.form.body)
-  else if object?data?form?uri
+      site_id     : null
+      path        : form.page-slug
+      title       : title
+      config      : JSON.stringify(main_content: object.data.form.body)
+  | \external-link =>
     type = \external-link
     data = null
+  | otherwise =>
+    type = null
+    data = null
+  if form.id then data.id = form.id
   return [type, data]
 
 @add = (site, p, object, cb) ->
