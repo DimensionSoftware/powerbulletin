@@ -89,7 +89,7 @@ module.exports =
     on-attach: !~>
       #{{{ Event Delegates
       @$.on \change 'input[name="dialog"]' ~> # type was selected
-        @$.find \fieldset .add-class \has-dialog
+        @$.find \fieldset .add-class \has-dialog .find \input:visible .focus!
 
       @$.on \click \.onclick-add (ev) ~>
         @show!
