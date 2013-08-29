@@ -41,13 +41,13 @@ get-cols = (dbname, tname, cb) ->
   if err then return cb(err)
   cb null, rows.map (.column_name)
 
-export insert-statement = (table, obj) ->
+insert-statement = (table, obj) ->
   columns   = keys obj
   value-set = [ "$#{i+1}" for k,i in columns ].join ', '
   vals      = values obj
   return ["INSERT INTO #table (#columns) VALUES (#value-set) RETURNING *", vals]
 
-export update-statement = (table, obj, wh) ->
+update-statement = (table, obj, wh) ->
   wh       ?= "WHERE id = $1"
   ks        = keys obj |> filter (-> it isnt \id)
   obj-vals  = [ obj[k] for k in ks ]
@@ -58,7 +58,7 @@ export update-statement = (table, obj, wh) ->
 # generate an upsert function for the given table name
 # @param String table   name of table
 # @returns Function     an upsert function for the table
-export upsert-fn = (table) ->
+upsert-fn = (table) ->
   (object, cb) ->
     do-insert = (cb) ->
       [insert-sql, vals] = insert-statement table, object
