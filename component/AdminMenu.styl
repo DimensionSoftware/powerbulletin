@@ -19,11 +19,22 @@
       border-radius 3px
   .col2
     display none
+    .has-dialog
+      margin-top -45px
+      transition margin-top .15s ease-out
+      label.type, .option, .header
+        display none!important
+      .dialog
+        visibility visible
+        opacity 1
     fieldset
       padding-top 17px!important
       min-width 500px
       position relative
-      .type
+      .dialog
+        visibility hidden
+        opacity 0
+      .type, .dialog
         position absolute
         left 0
       .options
@@ -35,14 +46,16 @@
         li
           float left
           > label
-            font-size .9em!important
-            font-weight bold!important
-            width 80px
+            width 95px
             cursor pointer
         li, input[type='radio']:checked + label
           font-weight bold
+          font-size 1.05em
+          color #000
         li, input[type='radio'] + label
+          font-weight 400
           display inline-block
+          font-size .98em
         li > div, input[type='radio']
           position absolute
           left 0

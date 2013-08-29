@@ -89,17 +89,17 @@ layout-on-personalize = (w, u) ->
         switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
 
 # initialize pager
-pager-init = (w) ->
-  pager-opts =
-    current  : parse-int w.page
-    last     : parse-int w.pages-count
-    forum-id : parse-int w.active-forum-id
-  if w.pager
-    w.pager <<< pager-opts
-    w.pager.init!
-  else
-    w.pager = new w.Pager \#paginator pager-opts
-  w.pager.set-page(w.page, false) if w.page
+#pager-init = (w) ->
+#  pager-opts =
+#    current  : parse-int w.page
+#    last     : parse-int w.pages-count
+#    forum-id : parse-int w.active-forum-id
+#  if w.pager
+#    w.pager <<< pager-opts
+#    w.pager.init!
+#  else
+#    w.pager = new w.Pager \#paginator pager-opts
+#  w.pager.set-page(w.page, false) if w.page
 
 export homepage =
   static:
@@ -272,7 +272,7 @@ export forum =
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
       # pager
-      pager-init window
+      #pager-init window
 
       # bring down first reply
       if user
@@ -356,7 +356,7 @@ export profile =
       next!
   on-load:
     (window, next) ->
-      pager-init window
+      #pager-init window
       next!
   on-mutate:
     (window, next) ->
@@ -373,8 +373,9 @@ export profile =
       options =
         name: \avatar
         post-url: "/resources/users/#{window.user.id}/avatar"
-        on-success: (r) ->
-          PhotoCropper.start mode: \crop
+        on-success: (xhr, file, r-json) ->
+          r = JSON.parse r-json
+          PhotoCropper.start mode: \crop, photo: r.url
       window.$('#left_content .avatar').html5-uploader options
 
     photocropper-disable = ->
@@ -450,10 +451,9 @@ export admin =
       $ \.domain .trigger \change # fill-in authorization
       # no pager (for now)
       window.pages-count = 0
-      pager-init window
+      #pager-init window
       <~ lazy-load-fancybox
       <~ lazy-load-nested-sortable
-      <~ lazy-load-deserialize
       next!
   on-initial:
     (win, next) ->
@@ -611,7 +611,7 @@ export search =
       window.$new-hits = w.$('<div/>')  # reset new-hit div
 
       align-breadcrumb!
-      pager-init w
+      #pager-init w
       next!
   on-unload:
     (w, next-mutant, next) ->
@@ -628,7 +628,7 @@ export page =
       next!
   on-load:
     (window, next) ->
-      pager-init window
+      #pager-init window
       next!
   on-mutate:
     (window, next) ->

@@ -20,58 +20,76 @@ module.exports =
     current:  null # active "selected" menu item
 
     show:         ~> set-timeout (~> @$.find \.col2 .show 300ms), 300ms
-    clone: (item) ~> # clone a templated defined as class="default"
-      console.log \clone:, item
+    clone: (item) ~> # clone a template defined as class="default"
       e = @$.find \.default .clone!remove-class(\default).attr \id, item.id
       e.find \input # add metadata to input
-        ..data \menu,  item.data?menu
+        ..data \id,    item.id.replace /list_/ ''
+        ..data \form,  item.data?form
         ..data \title, item.data?title
         ..val item.data?title
       e
     current-store: !~>
       unless e = @current then return # guard
-      form = @$.find \form
-      if form
-        #form.find 'input[name="menu"]' ?remove! # prune old form data
-        # TODO form values -> json
+      html-form = @$.find \form.menus
+      if html-form
+        # form values -> json data
+        data = {}
+        html-form.find 'input,textarea' |> each (input) ->
+          $i = @$ input
+          n = $i?attr \name
+          v = $i?val!
+          if n and n isnt \menu
+            data[n] = switch $i.attr \type
+              | \radio # must always have a value
+                if $i.is \:checked then v else data[n] # current or use last
+              | \checkbox
+                !!$i.is \:checked
+              | \text \hidden # always value
+                v
+              | otherwise
+                if $i.is \textarea
+                  v
         e # store
-          ..data \form, form.serialize!
-          ..data \title, @current.val!
-        console.log \store-menu:, e.data \menu
-        console.log \store-title:, e.data \title
+          ..data \id,    e.data!id.replace /list_/ ''
+          ..data \form,  data
+          ..data \title, e.val!
     current-restore: !~>
       unless e = @current then return # guard
-      if html-form = @$.find \form
-        reset = -> html-form.get 0 .reset! # default
-        console.log \data:, @current.data!
-        {form, title} = @current.data!
+      # set visually active
+      $ \.col1 .find \.active .remove-class \active
+      e.add-class \active
+
+      # restore title + form
+      if html-form = @$.find \form.menus
+        {id, form, title} = @current.data!
         e.val title
-        console.log \data-to-restore:, title, form
-        if form # restore current's menu + title
-          #html-form.deserialize form
-          # TODO form json -> form state & values
-          @current.val title
-          console.log \restored:, form
-        else
-          reset!
+        html-form # default form
+          ..find \fieldset .toggle-class \has-dialog (!!form?dialog)
+          ..find '#forum_slug, #page_slug, #url, textarea' .val ''
+          ..find 'input[type="checkbox"], input[type="radio"]' .prop \checked, false
+        if form # restore current's id + menu + title
+          e.val title
+          form{id, title} = {id, title}
+          html-form.find 'input,textarea' |> each (input) ->
+            $i = @$ input
+            n = $i?attr \name
+            v = $i?val!
+            if n and n isnt \menu and n isnt \action
+              switch $i.attr \type
+                | \radio
+                  if form[n] is v then $i.prop \checked, \checked
+                | \checkbox
+                  $i.prop \checked (if form[n] then \checked else false)
+                | \text \hidden # always value
+                  $i.val form[n]
+                | otherwise
+                  if $i.is \textarea
+                    $i.val form[n]
 
     on-attach: !~>
-      # pre-load nested sortable list + initial active
-      # - safely assume 2 levels max for now)
-      site = @state.site!
-      if site.config.menu # init ui
-        s = @$.find \.sortable
-        for item in JSON.parse site.config.menu # render parent menu
-          console.log \parsed:, item
-          if item.id # save!
-            item.id = "#prefix#{item.id}"
-            s.append(@clone item)
-            #if item.data?menu # ... & siblings
-            #  for sub-item in JSON.parse item?menu
-            #    item.append(@clone sub-item) if sub-item?id
-        s.nested-sortable opts
-        set-timeout (-> s.find \input:first .focus!), 200ms
-        @show!
+      #{{{ Event Delegates
+      @$.on \change 'input[name="dialog"]' ~> # type was selected
+        @$.find \fieldset .add-class \has-dialog .find \input:visible .focus!
 
       @$.on \click \.onclick-add (ev) ~>
         @show!
@@ -81,12 +99,11 @@ module.exports =
         max = parse-int maximum(s.find \li |> map (-> it.id.replace prefix, ''))
         id  = unless max then 1 else max+1
         e   = @clone {id:"#prefix#id"}
-        console.log \created:, e
         @$.find \.sortable
           ..append e
           ..nested-sortable opts
-          ..find \input .focus!
-        @current-restore!
+          ..find \input # select & focus
+            ..focus!
         false
 
       # save menu
@@ -95,9 +112,8 @@ module.exports =
 
         # get entire menu
         menu = @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy! # extended to pull data attributes, too
-        #unless menu.length then menu = [menu] # box
-        console.log \saving-nested-sortable:, menu
         form = @$.find \form
+        form.find '[name="active"], [name="menu"]' .remove! # prune old
         form.append(@@$ \<input> # append new menu
           .attr \type, \hidden
           .attr \name, \menu
@@ -107,16 +123,35 @@ module.exports =
           t = $(form.find \.tooltip)
           show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
 
-      # save current form on active row/input
-      @$.on \blur \.row   (ev) ~> @current-store!
-      @$.on \change \form (ev) ~> @current-store!
+      @$.on \change \form (ev) ~> @current-store! # save active title & form
+      @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore!  # load active row
+      #}}}
 
-      @$.on \click \.row (ev) ~>
-        # load data for active row
-        @current = $ ev.target
-        @current-restore!
+      ####  main  ;,.. ___  _
+      # pre-load nested sortable list + initial active
+      # - safely assume 2 levels max for now)
+      s    = @$.find \.sortable
+      site = @state.site!
+      menu = site.config.menu
 
-      # init
-      @$.find \.sortable .nested-sortable opts
+      if menu # init ui
+        menu = JSON.parse menu if typeof menu is \string
+        #menu = menu.0 if typeof menu is \object
+        for item in menu
+          if id = item.id
+            form = item.form
+            item.data ||= {}
+              ..form  = form
+              ..title = form?title
+            item.id = "#prefix#id"
+            s.append(@clone item)
+
+      @show! # bring in ui
+      set-timeout (-> # activate first
+        unless s.find \input:first .length then @$ \.onclick-add .click! # add unless exists
+        s.find \input:first .focus!), 200ms
+      s.nested-sortable opts # init
 
     on-detach: -> @$.off!
+
+# vim:fdm=marker

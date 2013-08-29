@@ -7,6 +7,8 @@ require! {
   postgres: \./postgres
 }
 
+{filter, join, keys, values} = require \prelude-ls
+
 logger = debug \thin-orm
 
 export orm    = orm
@@ -39,6 +41,41 @@ get-cols = (dbname, tname, cb) ->
   if err then return cb(err)
   cb null, rows.map (.column_name)
 
+insert-statement = (table, obj) ->
+  columns   = keys obj
+  value-set = [ "$#{i+1}" for k,i in columns ].join ', '
+  vals      = values obj
+  return ["INSERT INTO #table (#columns) VALUES (#value-set) RETURNING *", vals]
+
+update-statement = (table, obj, wh) ->
+  wh       ?= "WHERE id = $1"
+  ks        = keys obj |> filter (-> it isnt \id)
+  obj-vals  = [ obj[k] for k in ks ]
+  value-set = [ "#k = $#{i + 2}" for k,i in ks].join ', '
+  vals      = [obj.id, ...obj-vals]
+  return ["UPDATE #table SET #value-set #wh RETURNING *", vals]
+
+# generate an upsert function for the given table name
+# @param String table   name of table
+# @returns Function     an upsert function for the table
+upsert-fn = (table) ->
+  (object, cb) ->
+    do-insert = (cb) ->
+      [insert-sql, vals] = insert-statement table, object
+      postgres.query insert-sql, vals, cb
+    do-update = (cb) ->
+      [update-sql, vals] = update-statement table, object
+      postgres.query update-sql, vals, cb
+
+    if not object.id
+      return do-insert cb
+
+    err, r <- postgres.query "SELECT * FROM #table WHERE id = $1", [ object.id ]
+    if r.length
+      do-update cb
+    else
+      do-insert cb
+
 # This is for queries that don't need to be stored procedures.
 # Base the top-level key for the table name from the FROM clause of the SQL query.
 query-dictionary =
@@ -49,6 +86,12 @@ query-dictionary =
       err, r <- postgres.query 'SELECT COUNT(*) AS c FROM users WHERE email = $1', [email]
       if err then return cb err
       cb null, !!r.0.c
+
+  pages:
+    upsert: upsert-fn \pages
+
+  forums:
+    upsert: upsert-fn \forums
 
 
 # assumed postgres is initialized

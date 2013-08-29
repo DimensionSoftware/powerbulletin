@@ -3,17 +3,13 @@
 
 // XXX default theme containing all color decoration & embellishments
 
-highlight-color             = #ffeedd
-highlight-color2            = #ff9225
-highlight-color-translucent = rgba(255,100,50,.3)
-
 footer-height = 25px
 
 body
   font-family 'Source Sans Pro', 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue', sans-serif
 
 a
-  color highlight-color2
+  color dark
   text-decoration none
 
 .photo
@@ -21,14 +17,13 @@ a
   //border-top-right-radius 2px
   border-radius 3px
   box-shadow inset 0 1px 0 rgba(255,255,255,0.35),0 0 1px rgba(0,0,0,0.75)
-  border 1px solid #aaa
+  //border 1px solid #aaa
   opacity .85
 .photo:hover
-  border 1px solid highlight-color2
-  transition border .2s ease-out
+  box-shadow inset 0 1px 0 rgba(255,255,255,0.35),0 0 2px 1px dark
 
 .online
-  box-shadow 0 0 2px 1px green
+  box-shadow 0 0 2px 1px dark
   border 1px solid #eee
   opacity 1
   transition box-shadow .3s ease-out, opacity .3s ease-out
@@ -52,52 +47,57 @@ a
 //{{{ Header
 .logo
   a
+    text-shadow 0 0 1px #ccc
     font-style italic
-    color #bbb
+    color #888
     strong
+      margin-left 1px
       font-style normal
-      color #ccc
+      color #555
 header
-  //background-color rgba(255,255,255,0.1)
-  background-color #fff
+  background-color #fefefe
+  background rgba(0,0,0,0.01)
   border-top 1px solid #aaa
-  border-bottom 1px solid rgba(180,180,180,0.4)
+  border-bottom 1px solid rgba(180,180,180,0.15)
   color #555
   .container
     .menu
       > .row
         .title.active:hover
           color #000
-          border-bottom 1px solid highlight-color2
-          background-image linear-gradient(bottom, #fff 25px, #fed)
+          border-bottom 1px solid dark
         .title.active
           position relative!important
           z-index 75!important
           color #333
-          background-color #fafafa
-          border-bottom 1px solid highlight-color2
-          background-image linear-gradient(bottom, #fff 25px, #eaeaea)
+          border-bottom 1px solid dark
+        .title.active::after
+          box-shadow 0 -1px 6px 1px #40bfdb
       > .row
         .title:hover, .title.hover
-          border-bottom 1px solid #999
+          border-bottom 1px solid dark
           color #555
-          background-color #fdfdfd
           animation-name tiny-grow!important
           animation-duration .1s
-          background-image linear-gradient(bottom, #fff 26px, #dfdfdf)
-          transition border-bottom .4s, background-color .3s, color .4s
+          transition border-bottom .4s, color .3s, color .4s
       > .row
         .title
           text-decoration none
-          border-bottom 1px solid #ccc
-          color #999
+          border-bottom 1px solid transparent
+          color #777
           text-transform uppercase
           font-weight bold
           letter-spacing -1px
           font-size .85em
           text-shadow 0 0 1px #fff
-          background-color #fff
-          background-image linear-gradient(bottom, #fff 28px, #efefef)
+        .title::after
+          position absolute
+          content ''
+          left 20%
+          width 60%
+          bottom 0
+          height 0
+          box-shadow 0
         .submenu
           box-shadow 0 2px 4px 0px #ccc
           border-right 1px solid #aaa
@@ -170,23 +170,25 @@ header
   background-color #f7f7f7
   width 1px
 #left_content
-  background-color rgba(200,200,200,0.12)
+  background-color rgba(200,200,200,0.02)
   .handle:hover::before
-    border-right 14px solid #777
-    left -6px
+    border-right 14px solid dark
+    left -5px
   .handle::before
-    border-right 12px solid #999
+    border-right 10px solid #fff
     transition all .1s ease-out
   .handle:hover
-    background-color #eee
+    background-color #ddd
+    background radial-gradient(circle closest-corner at 50% 45%, #e9e9e9 66%, #999 100%)
     color #444
     border-color #eee
     box-shadow 0 0 3px 1px #fff
   .handle
     //box-shadow 0 0 1px 1px #999
     transition all .2s ease-out
-    background-color #f0f0f0
-    border 3px solid #fff
+    background-color #ddd
+    background radial-gradient(circle closest-corner at 50% 45%, #e9e9e9 66%, #bbb 100%)
+    border 1px solid #ddd
     color #888
   .title
     letter-spacing -1px
@@ -248,7 +250,7 @@ header
     color #eee
 
   a.page:hover, a.active
-    background-color highlight-color2
+    background-color dark
     color #eee
 
   blockquote
@@ -283,11 +285,13 @@ footer:hover::before
 footer:hover
   color #666
 footer.expanded
-  background-image linear-gradient(bottom, #fff 125px, #eee)
+  //background-image linear-gradient(bottom, #fff 125px, #eee)
+  background-color #f0f0f0
 footer
   opacity 0
   background-color #f7f7f7
-  background-image linear-gradient(bottom, #fff 13px, #ccc)
+  //background-image linear-gradient(bottom, #fff 13px, #ccc)
+  box-shadow 1px 0px 2px 0 dark
   text-align center
   color #777
   h6

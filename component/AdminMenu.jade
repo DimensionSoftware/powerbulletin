@@ -4,16 +4,18 @@ li.default
 
 form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
   input(type='hidden', name='action', value='menu')
+  input(type='hidden', name='id')    //- active id
+  input(type='hidden', name='title') //- active title
   .col1
     button.onclick-add Add
     ol.sortable
   .col2
     fieldset
-      label.type Type
+      label.type Select a Type
       ul.options
         li
+          input.option(id='forum', type='radio', name='dialog', checked='checked', value='forum')
           label.header(for='forum') Forum
-          input.option(id='forum', type='radio', name='dialog', checked='checked')
           .dialog
             label(for='forum_slug') Slug
             input#forum_slug(type='text', name='forumSlug')
@@ -38,30 +40,30 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
             button(type='submit', value='Save') Save
             .tooltip
         li
+          input.option(id='page', type='radio', name='dialog', value='page')
           label.header(for='page') Page
-          input.option(id='page', type='radio', name='dialog')
           .dialog
             label(for='page_slug') Slug
             input#page_slug(type='text', name='pageSlug')
             .note URL suffix for this page
             .break
-            label Main Menu
+            label Content Only
             .box
-              input#hide_menu(type='checkbox', value='checked', name='hideMenu')
-              label.switch-control(for='hide_menu')
+              input#content_only(type='checkbox', value='checked', name='contentOnly')
+              label.switch-control(for='content_only')
                 .switch
               span.label.checked On
-              .note Shows &amp; hides the main menu for this page
+              .note Hide the header, side-bar &amp; footer for this page
             .break
-            label(for='body') Body
-            textarea(id='body', name='body')
-            .note Paste the contents of the page above
+            label(for='content') Content
+            textarea(id='content', name='content')
+            .note Paste the HTML contents of the page above
             .break    
             button(type='submit', value='Save') Save
             .tooltip
         li
+          input.option(id='link', type='radio', name='dialog', value='link')
           label.header(for='link') External Link
-          input.option(id='link', type='radio', name='dialog')
           .dialog
             label(for='url') Url
             input(id='url', type='text', name='url', placeholder='http://')

@@ -16,7 +16,7 @@ if typeof(post) !== 'undefined'
         .date(data-time=post.created_iso)!= post.created_human
         .edit-container
         if post.html
-          .body!= post.html
+          p.body!= post.html
         .reply
         .actions
           a.stylish.onclick-footer-toggle Reply

@@ -231,8 +231,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
   fdoc.page  = parse-int page
   fdoc.title = name
-  with fdoc.profile # transform
-    ..human_post_count = add-commas(..post_count)
+  fdoc.profile.human_post_count = add-commas(fdoc.qty)
 
   res.locals fdoc
   res.locals.step = ppp

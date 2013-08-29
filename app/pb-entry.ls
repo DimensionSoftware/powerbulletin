@@ -2,7 +2,7 @@
 window.__    = require \lodash
 window.Chat  = require \../component/Chat.ls
 window.Auth  = require \../component/Auth.ls
-window.Pager = require \./pager.ls
+#window.Pager = require \./pager.ls
 window.furl  = require \./forum-urls.ls
 window.tasks = require \./tasks.ls
 window.ioc   = require \./io-client.ls
@@ -85,7 +85,10 @@ censor = (ev) ->
 #### main   ###############>======-- -   -
 ##
 load-ui!
-set-timeout (-> $ \footer .add-class \active), 2500ms
+set-timeout (->
+  $ \footer
+    ..css \left $(\#left_content).width!+1
+    ..add-class \active), 2500ms
 $ \#query .focus!select!
 
 # Delegated Events

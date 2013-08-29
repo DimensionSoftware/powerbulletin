@@ -80,7 +80,7 @@ html.forum, html.profile, html.search
   body.paginator
     .left-content
       .create
-        margin (grid/2) (grid*2.5) (grid/2) (grid*2)
+        margin (grid/2) (grid*2.5) (grid/2) (grid*3.5)
   .left-content.wide
     #left_container
       .create
@@ -103,7 +103,7 @@ html.forum, html.profile, html.search
       margin 5px 11px 7px 0
       border-radius 45px
     .create
-      margin (grid/2) (grid*3.5) (grid/2) (grid*2)
+      margin (grid/2) (grid*3.5) (grid/2) (grid*3.5)
       .button
         text-overflow ellipsis
         animation-name none
@@ -120,7 +120,7 @@ html.forum, html.profile, html.search
       padding-top grid
       .thread
         position relative
-        padding 0 (grid*1.5) grid (grid*2)
+        padding 0 (grid*1.5) grid (grid*3.5)
         .mutant
           display block
           border none
@@ -219,7 +219,7 @@ html.forum, html.profile, html.search
             vertical-align top
             display inline-block
           button
-            bottom 47px
+            bottom 45px
             right 8px
             height 27px
             font-size 15px
@@ -310,6 +310,7 @@ html.forum, html.profile, html.search
         .title, .user
           text-transform capitalize
         .body
+          line-height 1.5em
           margin (grid/2) 0 grid 0
           clear both
           font-size 1.05em
@@ -690,6 +691,8 @@ html.admin
 
       input[type="checkbox"]:checked ~ span[class*="checked"]
         color #444
+  footer
+    left 150px!important
 //}}}
 html.forum
   .main-content
