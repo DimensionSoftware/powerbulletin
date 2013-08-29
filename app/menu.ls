@@ -3,10 +3,10 @@ require! {
   path
 }
 
-# Given a menu and an id, return the path of the menu-item or false if not found
+# Find the path to the menu-item or return false.
 #
 # @param  Array   menu
-# @param  Scalar  id
+# @param  Scalar  id      id of nested sortable item
 # @param  Array   p
 # @return Array   path for menu-item or false
 @find = (menu=[], id, p=[]) ->
@@ -32,18 +32,19 @@ require! {
       #console.log \no-children, p
       return false
 
-# Given a menu and an id, return the path needed to insert or update that node correctly.
+# Return the path needed to insert or update a node with the given id.
 #
 # @param  Array   menu
-# @param  Scalar  id
+# @param  Scalar  id      id of nested sortable item
 # @return Array   path for menu-item
 @path = (menu=[], id) -> @find(menu, id) or [menu.length]
 
-# Add nodes to a hierarchical menu object
+# Insert or update a menu-item in a hierarchichal menu and return the new menu.
 #
-# @param Array  menu      sites.config.menu (where the top-level is an array)
-# @param Array  p         path made of array indices (like [0, 1, 0, 5])
-# @param Object object    object to add or merge at the given path
+# @param  Array   menu    sites.config.menu (where the top-level is an array)
+# @param  Array   p       path made of array indices (like [0, 1, 0, 5])
+# @param  Object  object  object to add or merge at the given path
+# @return Array   new menu
 @mkpath = (menu=[], p=[], object={}) ->
   #[first, ...rest] = p.split '/' |> reject (-> it is '')
   [first, ...rest] = p
