@@ -3,29 +3,8 @@ require! {
   path
 }
 
-# XXX moving to client
-#export decode-menu-data = (o) ->
-#  path = "/?#{o.data.form}"
-#  o.data = url.parse path, true
-#
-#export read = (json) ->
-#  menu0 = JSON.parse(json)
-#  menu1 = [ decode-menu-data m for m in menu0 ]
-
-# Add form to a hierarchical menu object
-@save-form-to-menu = (menu=[], id, form={}) ->
-  item = find (.id is id), menu
-  if item # base case -- found!
-    item.form = form
-  else
-    for m in menu
-      if m.children then @save-form-to-menu m.children, id, form
-  if menu.length
-    menu
-  else
-    [ form ]
-
 # Given a menu and an id, return the path of the menu-item or false if not found
+#
 # @param  Array   menu
 # @param  Scalar  id
 # @param  Array   p
@@ -54,18 +33,18 @@ require! {
       return false
 
 # Given a menu and an id, return the path needed to insert or update that node correctly.
+#
 # @param  Array   menu
 # @param  Scalar  id
 # @return Array   path for menu-item
-@path = (menu=[], id) ->
-  @find(menu, id) or [menu.length]
+@path = (menu=[], id) -> @find(menu, id) or [menu.length]
 
 # Add nodes to a hierarchical menu object
 #
-# @param Array  p         path made of array indices (like [0, 1, 0, 5])
 # @param Array  menu      sites.config.menu (where the top-level is an array)
+# @param Array  p         path made of array indices (like [0, 1, 0, 5])
 # @param Object object    object to add or merge at the given path
-@mkpath = (p=[], menu=[], object={}) ->
+@mkpath = (menu=[], p=[], object={}) ->
   #[first, ...rest] = p.split '/' |> reject (-> it is '')
   [first, ...rest] = p
   #console.log { first, rest }
@@ -95,7 +74,7 @@ require! {
     if rest.length
       #console.log \--rest
       menu-item.children ?= []
-      menu-item.children = @mkpath rest, menu-item.children, object
+      menu-item.children = @mkpath menu-item.children, rest, object
       return menu
     # ...there's nothing left, merge the object into menu-item
     else
@@ -106,68 +85,29 @@ require! {
 @extract = ({id,form,title}:object) ->
   if object.type
     return [object.type, object]
-  switch form?dialog
+  switch object?dialog
   | \forum =>
     type = \forum
     data =
       site_id     : null
       parent_id   : null
       title       : title
-      uri         : form.forum-slug
+      uri         : object.forum-slug
       slug        : forum-slug
       description : ''
   | \page =>
     type = \page
     data =
       site_id     : null
-      path        : form.page-slug
+      path        : object.page-slug
       title       : title
-      config      : JSON.stringify(main_content: object.data.form.body)
+      config      : JSON.stringify(main_content: object.content)
   | \external-link =>
     type = \external-link
     data = null
   | otherwise =>
     type = null
     data = null
-  if form.id then data.id = form.id
   return [type, data]
 
-@add = (site, p, object, cb) ->
-  menu = JSON.parse site.config.menu
-  #new-menu = @mkpath(menu, p, object)
-  [type, data] = @extract object
-  data.site_id = site.id
-
-  finish = (err, ...args) ->
-    if err
-      return cb err
-    else
-      return cb null, menu
-
-  switch type
-  | \forum         => @add-forum data, finish
-  | \page          => @add-page data, finish
-  | \external-link => cb null, new-menu
-
-@add-forum = (forum, cb) ->
-  # site_id
-  # parent_id
-  # title
-  # uri
-  # slug
-  # description
-  forum.slug ?= path.basename forum.uri
-  db.forums.create data: forum, cb
-
-@add-page = (page, cb) ->
-  # site_id
-  # path
-  # title
-  criteria = site_id: page.site_id, path: page.path
-  err, existing-page <- db.pages.find-one { criteria }
-  if err then return cb err
-  if existing-page
-    db.pages.update { criteria}, { data: page }, cb
-  else
-    db.pages.create { data: page }, cb
-
+# vim:fdm=indent
