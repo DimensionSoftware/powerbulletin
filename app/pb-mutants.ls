@@ -89,7 +89,7 @@ layout-on-personalize = (w, u) ->
         switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
 
 # initialize pager
-pager-init = (w) ->
+#pager-init = (w) ->
 #  pager-opts =
 #    current  : parse-int w.page
 #    last     : parse-int w.pages-count
@@ -272,7 +272,7 @@ export forum =
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
       # pager
-      pager-init window
+      #pager-init window
 
       # bring down first reply
       if user
@@ -356,7 +356,7 @@ export profile =
       next!
   on-load:
     (window, next) ->
-      pager-init window
+      #pager-init window
       next!
   on-mutate:
     (window, next) ->
@@ -451,7 +451,7 @@ export admin =
       $ \.domain .trigger \change # fill-in authorization
       # no pager (for now)
       window.pages-count = 0
-      pager-init window
+      #pager-init window
       <~ lazy-load-fancybox
       <~ lazy-load-nested-sortable
       next!
@@ -611,7 +611,7 @@ export search =
       window.$new-hits = w.$('<div/>')  # reset new-hit div
 
       align-breadcrumb!
-      pager-init w
+      #pager-init w
       next!
   on-unload:
     (w, next-mutant, next) ->
@@ -628,7 +628,7 @@ export page =
       next!
   on-load:
     (window, next) ->
-      pager-init window
+      #pager-init window
       next!
   on-mutate:
     (window, next) ->
