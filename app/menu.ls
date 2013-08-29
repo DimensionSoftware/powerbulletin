@@ -83,26 +83,29 @@ require! {
       return menu
 
 # Given a form submission, figure out what kind of data we have.
-@extract = ({id,form,title}:object) ->
+#
+# @param  Object object   form data from menu admin
+# @return Array  [type, data] should give you database-friendly info about the object
+@extract = ({id,title,form}:object) ->
   if object.type
     return [object.type, object]
-  switch object?dialog
+  switch form?dialog
   | \forum =>
     type = \forum
     data =
       site_id     : null
       parent_id   : null
       title       : title
-      uri         : object.forum-slug
+      uri         : form.forum-slug
       slug        : forum-slug
       description : ''
   | \page =>
     type = \page
     data =
       site_id     : null
-      path        : object.page-slug
+      path        : form.page-slug
       title       : title
-      config      : JSON.stringify(main_content: object.content)
+      config      : JSON.stringify(main_content: form.content)
   | \external-link =>
     type = \external-link
     data = null
