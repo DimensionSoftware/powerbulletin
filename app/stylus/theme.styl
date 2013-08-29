@@ -71,9 +71,11 @@ header
           z-index 75!important
           color #333
           border-bottom 1px solid dark
+        .title.active::after
+          box-shadow 0 -1px 6px 1px #40bfdb
       > .row
         .title:hover, .title.hover
-          border-bottom 1px solid #999
+          border-bottom 1px solid dark
           color #555
           animation-name tiny-grow!important
           animation-duration .1s
@@ -81,13 +83,21 @@ header
       > .row
         .title
           text-decoration none
-          border-bottom 1px solid #ccc
-          color #999
+          border-bottom 1px solid transparent
+          color #777
           text-transform uppercase
           font-weight bold
           letter-spacing -1px
           font-size .85em
           text-shadow 0 0 1px #fff
+        .title::after
+          position absolute
+          content ''
+          left 20%
+          width 60%
+          bottom 0
+          height 0
+          box-shadow 0
         .submenu
           box-shadow 0 2px 4px 0px #ccc
           border-right 1px solid #aaa
@@ -275,11 +285,13 @@ footer:hover::before
 footer:hover
   color #666
 footer.expanded
-  background-image linear-gradient(bottom, #fff 125px, #eee)
+  //background-image linear-gradient(bottom, #fff 125px, #eee)
+  background-color #f0f0f0
 footer
   opacity 0
   background-color #f7f7f7
-  background-image linear-gradient(bottom, #fff 13px, #ccc)
+  //background-image linear-gradient(bottom, #fff 13px, #ccc)
+  box-shadow 1px 0px 2px 0 dark
   text-align center
   color #777
   h6

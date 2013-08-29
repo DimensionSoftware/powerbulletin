@@ -261,10 +261,11 @@ auth-finisher = (req, res, next) ->
     </script>
     """
   else
+    # XXX - $ and Auth need to be global so the child window can talk to the parent window.
     res.send """
     <script type="text/javascript">
       window.opener.$.fancybox.close();
-      window.opener.afterLogin();
+      window.opener.Auth.afterLogin();
       window.close();
     </script>
     """

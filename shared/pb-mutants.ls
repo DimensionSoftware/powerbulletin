@@ -102,7 +102,7 @@ layout-on-personalize = (w, u) ->
         switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
 
 # initialize pager
-pager-init = (w) ->
+#pager-init = (w) ->
 #  pager-opts =
 #    current  : parse-int w.page
 #    last     : parse-int w.pages-count
@@ -287,7 +287,7 @@ pager-init = (w) ->
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
       # pager
-      pager-init window
+      #pager-init window
 
       # bring down first reply
       if user
@@ -371,7 +371,7 @@ same-profile = (hints) ->
       next!
   on-load:
     (window, next) ->
-      pager-init window
+      #pager-init window
       next!
   on-mutate:
     (window, next) ->
@@ -466,7 +466,7 @@ same-profile = (hints) ->
       $ \.domain .trigger \change # fill-in authorization
       # no pager (for now)
       window.pages-count = 0
-      pager-init window
+      #pager-init window
       <~ lazy-load-fancybox
       <~ lazy-load-nested-sortable
       next!
@@ -628,7 +628,7 @@ mk-post-pnum-to-href = (post-uri) ->
       window.$new-hits = w.$('<div/>')  # reset new-hit div
 
       align-breadcrumb!
-      pager-init w
+      #pager-init w
       next!
   on-unload:
     (w, next-mutant, next) ->
@@ -645,7 +645,7 @@ mk-post-pnum-to-href = (post-uri) ->
       next!
   on-load:
     (window, next) ->
-      pager-init window
+      #pager-init window
       next!
   on-mutate:
     (window, next) ->
