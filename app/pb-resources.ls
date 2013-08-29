@@ -65,12 +65,13 @@ ban-all-domains = (site-id) ->
 
     | \menu =>
       # save site config
-      site.config.menu = req.body.menu # menu
-      if id = req.body.id              # active
-        site.config.forms     ||= {}
-        site.config.forms[id] ||= {}
-        site.config.forms[id] <<< { [k, v] for k,v of req.body when k in
+      site.config.menu = JSON.parse req.body.menu # menu
+
+      if id = req.body.id # active form
+        form = { [k, v] for k,v of req.body when k in
           <[ id title dialog forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
+        site.config.menu = JSON.stringify menu.save-form-to-menu site.config.menu, id.to-string!, form
+
       err, r <- db.site-update site
       if err then return next err
       ban-all-domains site.id # varnish ban

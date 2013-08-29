@@ -10,7 +10,6 @@
 
 // indicate active ui beyond user-caused :focus & :active
 input[type="password"].active, select.active, textarea.active, input[type="text"].active
-  border-color dark!important
   color #000!important
 
 select
@@ -40,7 +39,7 @@ input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:h
   border-right 1px solid #aaa
   box-shadow 0 0 1px dark,0 0 2px light
   transition color .5s ease-out
-input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
+input.active, input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #111
   position relative
   z-index 10
