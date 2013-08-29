@@ -114,4 +114,24 @@ require! {
     data = null
   return [type, data]
 
-# vim:fdm=indent
+# given an old and new menu hierarchy, move the menu-items that have moved
+@move = (old-menu, new-menu) -> new-menu
+
+# given and old and new menu hierarchy, reorder the menu-items that have been reordered at the same level
+@reorder = (old-menu, new-menu) -> new-menu
+
+# upsert a menu-item
+@upsert = (site, object, cb) ->
+  [type, data] = @extract object
+  data.site_id = site.id
+
+  do-upsert = (cb) ->
+    switch type
+    | \page          => db.pages.upsert data, cb
+    | \forum         => db.forums.upsert data, cb # TODO - forum case is not so simple and will need to be expanded upon
+    | \external-link => cb null, null
+    | otherwise      => cb new Error("menu.upsert unknown type #type"), data
+
+  do-upsert cb
+
+#vim:fdm=indent
