@@ -67,7 +67,7 @@ export top-posts = (site-id, sort, limit = void, offset = 0, fields='p.*') ->
   sql = """
   SELECT
     #fields,
-    #{user-fields \p.user_id},
+    #{user-fields \p.user_id, site-id},
     COUNT(p.id) post_count
   FROM posts p
   LEFT JOIN posts p2 ON p2.thread_id=p.id
