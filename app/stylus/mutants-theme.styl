@@ -130,8 +130,9 @@ html.forum, html.profile, html.search
         border-bottom 1px solid rgba(0,0,0,.05)
         background-color #fff
         height 1px
-        margin-top 8px
-        width 50%
+        margin-top 10px
+        left 10%
+        width 80%
       .thread
         list-style-type none
         border-top 1px solid transparent
@@ -171,7 +172,7 @@ html.forum, html.profile, html.search
         top -1px
         bottom -1px
         left 0
-        width 5px
+        width 9px
         content ''
         background-image linear-gradient(to top, dark 0, light 100%)
       .thread.active:hover
@@ -226,7 +227,7 @@ html.admin
       a
         color #333
     li.active
-      background-color #666
+      background-color dark
       text-shadow 0 1px 0 #000
       border-radius 8px / 4px
       border-top-right-radius 0
@@ -234,6 +235,8 @@ html.admin
       position relative
       border-left 1px solid #333
       border-bottom 1px solid #333
+      a
+        color #fff
     li::after
       position absolute
       content ''
@@ -248,7 +251,7 @@ html.admin
       opacity 1
       right -34px
       border 17px solid transparent
-      border-left 17px solid #666
+      border-left 17px solid dark
       transition all .1s ease-out
     li
       a
