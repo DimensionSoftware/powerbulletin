@@ -1,6 +1,8 @@
-require! Component: yacomponent
+define = window?define or require(\amdefine) module
+require, exports, module <- define
 
-{templates} = require \../build/component-jade.js
+require! Component: yacomponent
+{templates} = require \../build/component-jade
 
 function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-href
   active-page = parse-int active-page

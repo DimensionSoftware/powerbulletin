@@ -4,13 +4,19 @@ html
     title PowerBulletin
     for stylesheet in stylesheets
       link(rel='stylesheet', type='text/css', href=stylesheet)
-    script(type='text/javascript', src="#{cacheUrl}/local/head-0.99.load.min.js")
+    script(src="#{cacheUrl}/local/head-0.99.load.min.js")
+    script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
+    //-if env == 'production'
+    //-  //- in this case we preload most libraries, as opposed to fetching them all separately
+    //-  script(src="#{cacheUrl}/pb-sales-optimized.js")
+
     |<script type="text/javascript">
     |  window.headjs = head.js
     |  window.env = '!{env}'
     |  window.cacheUrl = '!{cacheUrl}';
     |  window.siteName = 'PowerBulletin';
     |  window.authDomain = '!{authDomain}';
-    |  head.js.apply(head, !{JSON.stringify(scripts)});
+    |  require.config({baseUrl:window.cacheUrl+'/client', urlArgs:!{JSON.stringify(CHANGESET)}});
+    |  require(['requirejs-config'], function(cfg){ require.config(cfg); require.call(window,['pb-sales-entry']); });
     |</script>
   body

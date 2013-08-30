@@ -1,12 +1,14 @@
+define = window?define or require(\amdefine) module
+require, exports, module <- define
+
 require! {
   lodash
   Component: yacomponent
-  \./ParallaxButton.ls
-  \./SiteRegister.ls
-  sh: \../app/shared-helpers.ls
+  \./ParallaxButton
+  \./SiteRegister
+  sh: \../shared/shared-helpers
 }
-
-{templates} = require \../build/component-jade.js
+{templates} = require \../build/component-jade
 
 debounce = lodash.debounce _, 250
 

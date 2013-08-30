@@ -1,7 +1,9 @@
-require! Component: yacomponent
-require! \./Sales.ls
+define = window?define or require(\amdefine) module
+require, exports, module <- define
 
-{templates} = require \../build/component-jade.js
+require! Component: yacomponent
+require! \./Sales
+{templates} = require \../build/component-jade
 
 module.exports =
   class SalesApp extends Component

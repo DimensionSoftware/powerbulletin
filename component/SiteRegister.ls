@@ -1,14 +1,18 @@
+define = window?define or require(\amdefine) module
+require, exports, module <- define
+
 require! {
   lodash
   Component: yacomponent
-  \./ParallaxButton.ls
-  \./Auth.ls
-  sh: \../app/shared-helpers.ls
-  ch: \../app/client-helpers.ls
-  \../plv8_modules/pure-validations.js
+  \./ParallaxButton
+  \./Auth
+  sh: \../shared/shared-helpers
+  \../plv8_modules/pure-validations
 }
 
-{templates} = require \../build/component-jade.js
+ch = require \../client/client-helpers if window?
+
+{templates} = require \../build/component-jade
 
 debounce = lodash.debounce _, 250ms
 
@@ -17,7 +21,7 @@ module.exports =
     template: templates.SiteRegister
     init: ->
       # mandatory state
-      @local \hostname, if global.env is \production then \.powerbulletin.com else \.pb.com
+      @local \hostname, if env is \production then \.powerbulletin.com else \.pb.com
       @local \subdomain '' unless @local \subdomain
 
       # init children

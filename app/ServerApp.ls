@@ -1,4 +1,3 @@
-
 require!  shelljs
 
 function get-CHANGESET
@@ -13,7 +12,6 @@ global <<< require \prelude-ls
 # this file is compiled to js so this is so we can load .ls files
 # it is compiled to js to work around a bug in cluster where child processes
 # receive incorrect arguments (in particular with --prof when passed with lsc's -n flag)
-require \LiveScript
 require \./load-cvars
 
 # dependencies
@@ -29,7 +27,6 @@ require! {
   stylus
   fluidity
   \./auth
-  \./io-server
   \./elastic
   sh: \./server-helpers
   \express/node_modules/connect
@@ -62,6 +59,8 @@ require! {
 
 global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
 
+max-age = if DISABLE_HTTP_CACHE then 0 else (60 * 60 * 24 * 365) * 1000
+
 require \./load-cvars
 
 require! mw: './middleware'
@@ -86,7 +85,6 @@ module.exports =
         graceful-shutdown!
 
       app = global.app = express!
-      cache-app        = express!
 
       server = null
 
@@ -126,6 +124,7 @@ module.exports =
 
       proc.title = "pb-worker-#{@port}"
       console.log "[1;30;30m  `+ worker #{proc.pid}[0;m"
+      console.log "[1;30;30m  `+ Testing HTTP Cache!!![0;m" if process.env.TEST_HTTP_CACHE
 
       err <~ pg.init
       if err then throw err
@@ -213,10 +212,6 @@ module.exports =
       app.use err-or-notfound
       sales-app.use err-or-notfound
 
-      # all domain-based catch-alls & redirects, # cache 1 year in production, (cache will get blown on deploy due to changeset tagging)
-      max-age = if DISABLE_HTTP_CACHE then 0 else (60 * 60 * 24 * 365) * 1000
-      cache-app.use(express.static \public {max-age})
-
       sock = express!
 
       # setup probe for varnish load balancer, really simple, doesn't need any middleware
@@ -225,12 +220,6 @@ module.exports =
         sh.caching-strategies.nocache res
         res.send 'OK'
 
-      # bind shared cache domains
-      for i in ['', 2, 3, 4, 5]
-        #XXX: this is a hack but hey we are always using protocol-less urls so should never break :)
-        #  removing leading //
-        sock.use(express.vhost cvars["cache#{i}Url"].slice(2), cache-app)
-
       sock.use(express.vhost (if process.env.NODE_ENV is \production then \powerbulletin.com else \pb.com), sales-app)
 
       # dynamic app can automatically check req.host
@@ -238,7 +227,6 @@ module.exports =
 
       # need this for socket.io
       server := http.create-server sock
-      io-server.init server
 
       console.log {@port}
       server.listen @port

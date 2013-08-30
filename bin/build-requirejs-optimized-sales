@@ -1,0 +1,4 @@
+#!/bin/sh -e
+node_modules/.bin/lsc -e 'console.log JSON.stringify(require("./client/requirejs-config"))' > build/requirejs-build.json
+node_modules/.bin/r.js -o build/requirejs-build.json baseUrl=public/client out=public/pb-sales-optimized.js
+

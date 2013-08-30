@@ -3,8 +3,4 @@ killall haproxy
 sleep 1
 killall -9 haproxy
 set -e
-if [ "$NODE_ENV" = 'production' ]; then
-  haproxy -f config/haproxy-prod.conf
-else # dev
-  haproxy -f config/haproxy.conf
-fi
+haproxy -f config/haproxy.conf

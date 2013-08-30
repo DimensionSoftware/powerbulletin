@@ -1,6 +1,6 @@
 require! {
   assert
-  sh: \../../app/shared-helpers
+  sh: \../../shared/shared-helpers
 }
 
 _it = it

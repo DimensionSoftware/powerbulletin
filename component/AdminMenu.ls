@@ -1,9 +1,13 @@
+define = window?define or require(\amdefine) module
+require, exports, module <- define
+
 require! {
   Component: yacomponent
-  ch: \../app/client-helpers.ls
 }
+ch = require \../client/client-helpers if window?
 
-{templates} = require \../build/component-jade.js
+{templates} = require \../build/component-jade
+{each, map, maximum} = require \prelude-ls
 
 module.exports =
   class AdminMenu extends Component
@@ -118,10 +122,10 @@ module.exports =
           .attr \type, \hidden
           .attr \name, \menu
           .val JSON.stringify menu)
-        submit-form ev, (data) ->
+        ch.submit-form ev, (data) ->
           f = $ this # form
           t = $(form.find \.tooltip)
-          show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
+          ch.show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
 
       @$.on \change \form (ev) ~> @current-store! # save active title & form
       @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore!  # load active row

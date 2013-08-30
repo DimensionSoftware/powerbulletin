@@ -11,12 +11,19 @@ OUTFILE=$1
 shift
 CLIENTJADE_ARGS=$@
 
+HEADER="if (typeof define !== 'function') { var define = require('amdefine')(module) };define(function(){"
+FOOTER=";return jade;});"
+
 if [ "$NODE_ENV" = 'production' ]; then
   # compress in production
+  echo $HEADER > $OUTFILE
   echo "building jade compressed [production mode]"
-  node_modules/.bin/clientjade -c $CLIENTJADE_ARGS | sed "1,/jade/s/jade/module.exports = jade/" > $OUTFILE
+  node_modules/.bin/clientjade -c $CLIENTJADE_ARGS >> $OUTFILE
 else
   # don't compress in dev
   echo "building jade with debugging [development mode]"
-  node_modules/.bin/clientjade $CLIENTJADE_ARGS | sed "1,/jade/s/jade/module.exports = jade/" > $OUTFILE
+  echo $HEADER > $OUTFILE
+  node_modules/.bin/clientjade $CLIENTJADE_ARGS >> $OUTFILE
 fi
+
+echo $FOOTER >> $OUTFILE

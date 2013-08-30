@@ -65,15 +65,31 @@ ban-all-domains = (site-id) ->
 
     | \menu =>
       # save site config
-      site.config.menu = JSON.parse req.body.menu # menu
+      m = site.config?menu or []
 
       if id = req.body.id # active form
         form = { [k, v] for k,v of req.body when k in
           <[ id title dialog forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
-        site.config.menu = JSON.stringify menu.save-form-to-menu site.config.menu, id.to-string!, form
+        menu-item = { id, form.title, form }
+        m-path = menu.path(m, id.to-string!)
+        site.config.menu = menu.mkpath m, m-path, menu-item
+
+      /*
+      # XXX - the upsert can only insert unless database id is propagated here
+      console.warn \form, form
+      console.warn \menu-item, menu-item
+      console.warn \extracted, menu.extract menu-item
+      err, r <- menu.upsert site, menu-item
+      if err then return res.json success: false, hint: \menu.upsert, err: err
+      if r.length
+        menu-item.form.id = r.0.id
+        m2 = site.config.menu
+        site.config.menu = menu.mkpath m2, m-path, menu-item
+      */
 
       err, r <- db.site-update site
-      if err then return next err
+      if err then return res.json success: false, hint: \db.site-update
+
       ban-all-domains site.id # varnish ban
       res.json success:true
 

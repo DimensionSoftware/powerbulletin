@@ -1,7 +1,9 @@
 require! pg
-require! h: \./shared-helpers
+require! h: \../shared/shared-helpers
 
 export conn-str = "tcp://postgres@localhost/pb"
+
+{map} = require \prelude-ls
 
 # underscore foo_bar_car to camelcase fooBarCar
 under2camel = (s) ->

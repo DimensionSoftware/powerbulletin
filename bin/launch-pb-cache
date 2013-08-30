@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for port in {4000..4001}
+do
+  bin/daemonize "pb-cache-$port" "logs/pb-cache.log" "node app/cache-main.js $port"
+done

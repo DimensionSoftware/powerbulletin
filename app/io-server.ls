@@ -8,7 +8,10 @@ require! {
   ChatServer: './io-chat-server'
   Presence: './presence'
   '../component/Chat'
+  sio: \socket.io
+  pg: \./postgres
 }
+
 
 log = debug 'io-server'
 
@@ -33,9 +36,9 @@ site-by-domain = (domain, cb) ->
     db.site-by-domain domain, cb
 
 @init = (server) ->
-  # manually reload socket.io
-  keys require.cache |> filter (-> it.match /node_modules\/socket.io\//) |> each (-> delete require.cache[it])
-  sio = require \socket.io
+  err <- pg.init
+  if err then throw err
+  global.db = pg.procs
 
   io  = sio.listen server
   io.set 'log level', 1

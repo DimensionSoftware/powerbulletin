@@ -1,6 +1,8 @@
-require! Component: yacomponent
+define = window?define or require(\amdefine) module
+require, exports, module <- define
 
-{templates} = require \../build/component-jade.js
+require! Component: yacomponent
+{templates} = require \../build/component-jade
 
 module.exports =
   class AdminUpgrade extends Component

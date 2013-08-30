@@ -1,9 +1,12 @@
+define = window?define or require(\amdefine) module
+require, exports, module <- define
+
 require! {
   Component: yacomponent
-  sh: \../app/shared-helpers.ls
+  sh: \../shared/shared-helpers
 }
-
-{templates} = require \../build/component-jade.js
+{templates} = require \../build/component-jade
+{lazy-load-fancybox, lazy-load-jcrop} = require \../client/client-helpers
 
 module.exports =
   class PhotoCropper extends Component

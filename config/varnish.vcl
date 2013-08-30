@@ -1,8 +1,11 @@
 import std;
 
-backend b0 {
+backend a0 {
   .host = "127.0.0.1";
   .port = "3000";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -11,9 +14,12 @@ backend b0 {
     .threshold = 1;
   }
 }
-backend b1 {
+backend a1 {
   .host = "127.0.0.1";
   .port = "3001";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -22,9 +28,12 @@ backend b1 {
     .threshold = 1;
   }
 }
-backend b2 {
+backend a2 {
   .host = "127.0.0.1";
   .port = "3002";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -33,9 +42,12 @@ backend b2 {
     .threshold = 1;
   }
 }
-backend b3 {
+backend a3 {
   .host = "127.0.0.1";
   .port = "3003";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -44,9 +56,12 @@ backend b3 {
     .threshold = 1;
   }
 }
-backend b4 {
+backend a4 {
   .host = "127.0.0.1";
   .port = "3004";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -55,9 +70,12 @@ backend b4 {
     .threshold = 1;
   }
 }
-backend b5 {
+backend a5 {
   .host = "127.0.0.1";
   .port = "3005";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -66,9 +84,12 @@ backend b5 {
     .threshold = 1;
   }
 }
-backend b6 {
+backend a6 {
   .host = "127.0.0.1";
   .port = "3006";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -77,9 +98,12 @@ backend b6 {
     .threshold = 1;
   }
 }
-backend b7 {
+backend a7 {
   .host = "127.0.0.1";
   .port = "3007";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -88,9 +112,12 @@ backend b7 {
     .threshold = 1;
   }
 }
-backend b8 {
+backend a8 {
   .host = "127.0.0.1";
   .port = "3008";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -99,9 +126,152 @@ backend b8 {
     .threshold = 1;
   }
 }
-backend b9 {
+backend a9 {
   .host = "127.0.0.1";
   .port = "3009";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c0 {
+  .host = "127.0.0.1";
+  .port = "4000";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c1 {
+  .host = "127.0.0.1";
+  .port = "4001";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c2 {
+  .host = "127.0.0.1";
+  .port = "4002";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c3 {
+  .host = "127.0.0.1";
+  .port = "4003";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c4 {
+  .host = "127.0.0.1";
+  .port = "4004";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c5 {
+  .host = "127.0.0.1";
+  .port = "4005";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c6 {
+  .host = "127.0.0.1";
+  .port = "4006";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c7 {
+  .host = "127.0.0.1";
+  .port = "4007";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c8 {
+  .host = "127.0.0.1";
+  .port = "4008";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend c9 {
+  .host = "127.0.0.1";
+  .port = "4009";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
   .probe = {
     .url = "/probe";
     .interval = 3s;
@@ -111,36 +281,246 @@ backend b9 {
   }
 }
 
+# socket io backends
+backend s0 {
+  .host = "127.0.0.1";
+  .port = "5000";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend s1 {
+  .host = "127.0.0.1";
+  .port = "5001";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend s2 {
+  .host = "127.0.0.1";
+  .port = "5002";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend s3 {
+  .host = "127.0.0.1";
+  .port = "5003";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend s4 {
+  .host = "127.0.0.1";
+  .port = "5004";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend s5 {
+  .host = "127.0.0.1";
+  .port = "5005";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend s6 {
+  .host = "127.0.0.1";
+  .port = "5006";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend s7 {
+  .host = "127.0.0.1";
+  .port = "5007";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend s8 {
+  .host = "127.0.0.1";
+  .port = "5008";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+backend s9 {
+  .host = "127.0.0.1";
+  .port = "5009";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
+
+# main app backends
 director default round-robin {
   {
-    .backend = b0;
+    .backend = a0;
   }
   {
-    .backend = b1;
+    .backend = a1;
   }
   {
-    .backend = b2;
+    .backend = a2;
   }
   {
-    .backend = b3;
+    .backend = a3;
   }
   {
-    .backend = b4;
+    .backend = a4;
   }
   {
-    .backend = b5;
+    .backend = a5;
   }
   {
-    .backend = b6;
+    .backend = a6;
   }
   {
-    .backend = b7;
+    .backend = a7;
   }
   {
-    .backend = b8;
+    .backend = a8;
   }
   {
-    .backend = b9;
+    .backend = a9;
+  }
+}
+
+# for muscache.* cache backends
+director cache round-robin {
+  {
+    .backend = c0;
+  }
+  {
+    .backend = c1;
+  }
+  {
+    .backend = c2;
+  }
+  {
+    .backend = c3;
+  }
+  {
+    .backend = c4;
+  }
+  {
+    .backend = c5;
+  }
+  {
+    .backend = c6;
+  }
+  {
+    .backend = c7;
+  }
+  {
+    .backend = c8;
+  }
+  {
+    .backend = c9;
+  }
+}
+
+director socket round-robin {
+  {
+    .backend = s0;
+  }
+  {
+    .backend = s1;
+  }
+  {
+    .backend = s2;
+  }
+  {
+    .backend = s3;
+  }
+  {
+    .backend = s4;
+  }
+  {
+    .backend = s5;
+  }
+  {
+    .backend = s6;
+  }
+  {
+    .backend = s7;
+  }
+  {
+    .backend = s8;
+  }
+  {
+    .backend = s9;
   }
 }
 
@@ -195,9 +575,19 @@ sub vcl_recv {
     error 302 "Found"; 
   }
 
-  # pipe any socket.io requests
-  if (req.url ~ "(?i)^/socket\.io/") {
-    return (pipe);
+  # decide whether or not this request is headed towards the cache backend, rather than normal app backend
+  # the static file cache server is isolated since it is a much higher reliability factor than the main app
+  if (req.http.host ~ "(?i)^muscache\d?\.(pb|powerbulletin)\.com$") {
+    set req.backend = cache;
+  }
+  # if it starts with /socket.io then send to socket backend
+  else if (req.url ~ "(?i)^/socket\.io/") {
+    set req.backend = socket;
+
+    # pipe any socket.io requests which aren't headed to the client js library
+    if (req.url !~ "(?i)^/socket.io/socket.io.js") {
+      return (pipe);
+    }
   }
 
   # REDIRECT: force no trailing slash (except for homepage)
@@ -227,6 +617,13 @@ sub vcl_fetch {
   # remove set-cookie on all buth /auth (/auth is the only thing that sets cookies)
   if (req.url !~ "(?i)^/(auth)") {
     call depersonalize_response;
+  }
+
+  # cache socket.io js client library for 1 year
+  if (req.url ~ "(?i)^/socket.io/socket.io.js") {
+    # 365 * 24 * 60 * 60 = 31536000
+    # AKA 1 Year
+    set beresp.http.Cache-Control = "max-age=31536000; must-revalidate";
   }
 
   # if no-cache is set, do not cache (varnish is too stupid to do this by default)

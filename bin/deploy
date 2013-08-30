@@ -27,4 +27,5 @@ ssh root@$TARGET -p 3733 $REMOTE_GIT_COMMAND
 
 # XXX/TODO: bounce appservers with killall (mon will restart)
 echo restarting appservers...
-ssh root@$TARGET -p 3733 'cd /pb; killall -9 mon; bin/diediedie; bin/launch; bin/powerbulletin'
+# re-launch daemons + haproxy & varnish after app-servers are restarted
+ssh root@$TARGET -p 3733 'cd /pb; bin/launch; bin/powerbulletin'

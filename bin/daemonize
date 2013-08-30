@@ -1,0 +1,27 @@
+#!/bin/bash
+#NAME="pb-indexer"
+#CMD="node_modules/.bin/lsc app/indexer-main.ls"
+#LOG="logs/pb-indexer.log"
+NAME=$1
+LOG=$2
+CMD=$3
+
+MON="mon -d -l '$LOG' '$CMD'"
+
+# internal linux process strips the quotes from the description??
+# so we hand 'pkill -f' a different string with the quotes stripped
+MONDESC=`echo $MON | sed "s/[']//g"`
+
+# use description aka command line arguments to kill just this mon
+pkill -9 -f "$MONDESC"
+
+# kill DAEMON based on name
+pkill "$NAME"
+# give DAEMON 2 seconds to finish business gracefully
+sleep 2
+pkill -9 "$NAME"
+
+# launch daemon under mon wrapper, oh and don't forget to make logs folder
+set -e
+mkdir -p logs
+eval $MON

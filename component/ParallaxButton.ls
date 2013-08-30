@@ -1,3 +1,6 @@
+define = window?define or require(\amdefine) module
+require, exports, module <- define
+
 require! {
   Component: yacomponent
   $R:reactivejs

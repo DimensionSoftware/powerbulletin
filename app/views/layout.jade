@@ -29,15 +29,21 @@ html
     if style
       link(href="#{cache2Url}/sites/#{siteId}.css?#{cacheBuster}", rel='stylesheet', type='text/css')
 
+    script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
+
+    if env == 'production'
+      //- in this case we preload most libraries, as opposed to fetching them all separately
+      script(src="#{cacheUrl}/pb-optimized.js")
+
     //- the only .js in our <head> 
     if cvars.env != 'production'
       script(type='text/javascript', src="#{cache5Url}/local/head-0.99.load.min.js") //- offline
     else
       script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
-    if jsUrls
-      script(type="text/javascript")
-        window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.authDomain="!{cvars.authDomain}";window.headjs=head.js;head.js.apply(head,!{JSON.stringify(cvars.baseJsUrls.concat(jsUrls))});
+    script(type="text/javascript")
+      window.CHANGESET=!{JSON.stringify(CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.authDomain="!{cvars.authDomain}";window.headjs=head.js;window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cacheUrl+'/client',urlArgs:!{JSON.stringify(CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
   body
+
     header.header.toggler
       h1.logo
         a.mutant(href='/') Power

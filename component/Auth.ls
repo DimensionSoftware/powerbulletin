@@ -1,9 +1,12 @@
+define = window?define or require(\amdefine) module
+require, exports, module <- define
+
 require! {
   Component: yacomponent
-  ch: \../app/client-helpers.ls
 }
-
-{templates} = require \../build/component-jade.js
+ch = require \../client/client-helpers if window?
+{unique} = require \prelude-ls
+{templates} = require \../build/component-jade
 
 module.exports =
   class Auth extends Component
@@ -150,7 +153,7 @@ module.exports =
             Auth.require-login-cb!
             Auth.require-login-cb = null
           # reload page XXX I know its not ideal but the alternative is painful >.<
-          if initial-mutant is \privateSite then window.location.reload!
+          if window.initial-mutant is \privateSite then window.location.reload!
         else
           if r.type is \unverified-user
             resend = """

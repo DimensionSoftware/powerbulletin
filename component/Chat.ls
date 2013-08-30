@@ -1,6 +1,10 @@
-require! Component: yacomponent
+define = window?define or require(\amdefine) module
+require, exports, module <- define
 
-{templates} = require \../build/component-jade.js
+require! Component: yacomponent
+require \jqueryCookie if window? # client-only require
+{templates} = require \../build/component-jade
+{join, map, sort-with, Obj} = require \prelude-ls
 
 add-message = (fn, m) -->
   $msg = @message-node m

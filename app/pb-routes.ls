@@ -10,7 +10,7 @@ require! {
   mw:  \./middleware
   jsu: \./js-urls
 
-  mutants:   \./pb-mutants
+  mutants:   \../shared/pb-mutants
   handlers:  \./pb-handlers
   resources: \./pb-resources
 }

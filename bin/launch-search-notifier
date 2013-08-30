@@ -1,10 +1,5 @@
 #!/bin/bash
-kill -9 `cat /tmp/pb-search-mon.pid` &> /dev/null
-killall -9 pb-search &> /dev/null
-
-set -e
-mkdir -p logs
-mon -d \
-    -l logs/search-notifier.log \
-    -m /tmp/pb-search-mon.pid \
-    "node_modules/.bin/lsc app/search-notifier-main.ls"
+NAME="pb-search"
+LOG="logs/pb-search.log"
+CMD="node_modules/.bin/lsc app/search-notifier-main.ls"
+bin/daemonize "$NAME" "$LOG" "$CMD"
