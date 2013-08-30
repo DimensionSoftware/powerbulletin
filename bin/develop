@@ -9,7 +9,7 @@ bin/diediedie
 set -e
 echo compiling/watching...
 # launch this in the background async to pick up file changes
-node_modules/.bin/lsc -cw app client shared component lib/mutant client/requirejs-config public/app &
+node_modules/.bin/lsc -cw app client shared component lib/mutant client/requirejs-config public/app plv8_modules &
 
 sleep 2
 

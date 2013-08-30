@@ -21,7 +21,7 @@ module.exports =
     template: templates.SiteRegister
     init: ->
       # mandatory state
-      @local \hostname, if global.env is \production then \.powerbulletin.com else \.pb.com
+      @local \hostname, if env is \production then \.powerbulletin.com else \.pb.com
       @local \subdomain '' unless @local \subdomain
 
       # init children

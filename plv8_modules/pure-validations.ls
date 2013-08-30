@@ -1,4 +1,7 @@
-export post = (post) ->
+define = window?define or require(\amdefine) module
+require, exports, module <- define
+
+@post = (post) ->
   errors = []
   unless post.user_id
     errors.push 'Must specify a user'
@@ -10,7 +13,7 @@ export post = (post) ->
     errors.push 'Write something!'
   errors
 
-export censor = (c) ->
+@censor = (c) ->
   errors = []
   unless c.user_id
     errors.push 'User cannot be blank'
@@ -20,10 +23,12 @@ export censor = (c) ->
     errors.push 'Reason cannot be blank'
   errors
 
-export subdomain = (subdomain) ->
+@subdomain = (subdomain) ->
   allowed-chars = /^[a-z0-9\-]+$/i
 
   errors = []
   unless subdomain.match allowed-chars
     errors.push 'Invalid Subdomain'
   errors
+
+@

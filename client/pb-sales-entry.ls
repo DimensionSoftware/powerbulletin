@@ -1,9 +1,18 @@
+define = window?define or require(\amdefine) module
+require, exports, module <- define
+
 require! $R:reactivejs
 require! {
   \../component/SalesApp
   \../component/Buy
 }
-global <<< require(\prelude-ls/prelude-browser-min) \prelude-ls
+
+# legacy
+require \jqueryHistory
+require \jqueryTransit
+require \jqueryUi
+require \./layout
+{each} = require \prelude-ls
 
 # components
 window.component =
