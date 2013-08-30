@@ -1,7 +1,7 @@
-define = window?define or require(\amdefine) module
+define = window?define or if plv8? then (-> it!) else require(\amdefine)
 require, exports, module <- define
 
-@post = (post) ->
+export post = @post = (post) ->
   errors = []
   unless post.user_id
     errors.push 'Must specify a user'
@@ -13,7 +13,7 @@ require, exports, module <- define
     errors.push 'Write something!'
   errors
 
-@censor = (c) ->
+export censor = @censor = (c) ->
   errors = []
   unless c.user_id
     errors.push 'User cannot be blank'
@@ -23,7 +23,7 @@ require, exports, module <- define
     errors.push 'Reason cannot be blank'
   errors
 
-@subdomain = (subdomain) ->
+export subdomain = @subdomain = (subdomain) ->
   allowed-chars = /^[a-z0-9\-]+$/i
 
   errors = []
