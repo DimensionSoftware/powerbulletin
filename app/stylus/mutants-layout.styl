@@ -107,7 +107,7 @@ html.forum, html.profile, html.search
       .button
         text-overflow ellipsis
         animation-name none
-        font-size 1em
+        font-size .9em
         display block
         padding 8px 10px
     .scrollable
@@ -120,44 +120,51 @@ html.forum, html.profile, html.search
       padding-top grid
       .thread
         position relative
-        padding 0 (grid*1.5) grid (grid*3.5)
-        .mutant
-          display block
-          border none
-          outline none
-          animation-name none
+        padding 0 38px 10px 38px
         .title
-          overflow hidden
-          max-height 65px
-          text-transform capitalize
-          margin grid grid 0 -5px
-          padding 1px 5px 0 3px
-        .username
-          margin-right 5px
-          font-size .7em
-          em
+          margin 7px 0 0 0
+        .container
+          margin 0
+          padding 0
+          .mutant
+            display block
+            border none
+            outline none
+            animation-name none
+          .title
+            overflow hidden
+            max-height 65px
             text-transform capitalize
-            font-weight 600
-            margin-left (grid/2)
-            font-size 1.1em
-        .created
-          font-size .8em
-          font-weight 200
-          display none
-        .clear
-          margin-top -5px
-        .created, .username, .post-count
-          white-space nowrap
-          text-overflow ellipsis
-          margin-bottom -6px
-        .post-count, .views
-          font-weight bold
-          font-size .8em
-        .post-count, .views
-          i
-            font-weight 100
-            font-size .9em
-            margin 0 grid 0 (grid/2)
+            margin grid grid 0 -5px
+            padding 1px 5px 0 3px
+          .username
+            margin-right 5px
+            font-size .7em
+            em
+              text-transform capitalize
+              font-weight 600
+              margin-left (grid/2)
+              font-size 1.1em
+          .created
+            font-size .8em
+            font-weight 200
+            display none
+          .clear
+            margin-top -5px
+          .created, .username, .post-count
+            white-space nowrap
+            text-overflow ellipsis
+            margin-bottom -6px
+          .username
+            margin-left -5px
+          .post-count, .views
+            font-weight bold
+            font-size .8em
+          .post-count, .views
+            i
+              font-weight 100
+              font-size .9em
+              margin 0 grid 0 (grid/2)
   #left_chrome
     display none
   .main-content

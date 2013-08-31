@@ -89,15 +89,15 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   //border-right 1px solid dark
   border-bottom-color #888
   border-bottom-color #888
-  transform translateY(3px)
+  transform translateY(2px)
   border-radius 8px / 2px
   opacity .9
 // bottom "darken" fx
 input[type="submit"]:active::after, button:active::after, .button:active::after
   height 2px!important
 input[type="submit"]:hover::after, button:hover::after, .button:hover::after
-  opacity .8!important
-  height 6px
+  opacity .65!important
+  height 3px
   background-image linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.3) 100%)
   transition opacity .08s ease-out, height .05s ease-out
 input[type="submit"]::after, button::after, .button::after
@@ -108,7 +108,7 @@ input[type="submit"]::after, button::after, .button::after
   left -1px
   background-image linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.25) 100%)
   opacity .75
-  height 5px
+  height 4px
 //- top gloss fx
 input[type="submit"]:active::before, button:active::before, .button:active::before
   height 53%!important

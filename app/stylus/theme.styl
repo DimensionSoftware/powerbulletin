@@ -16,12 +16,12 @@ a
   background-color #fff
   //border-top-right-radius 2px
   border-radius 3px
-  box-shadow inset 0 1px 0 rgba(255,255,255,0.35),1px 1px 9px -2px light
+  box-shadow inset 0 1px 0 rgba(255,255,255,0.35),1px 1px 8px -2px light
   //border 1px solid #aaa
   opacity .85
 
 .online
-  box-shadow 1px 1px 15px -1px light
+  box-shadow 0 0 2px 0 dark, 1px 1px 10px -1px light
   border 1px solid #eee
   opacity 1
   transition box-shadow .3s ease-out, opacity .3s ease-out
@@ -296,9 +296,15 @@ footer:hover::before
   transition border-top .2s ease-out
 footer:hover
   color #666
+footer.expanded::before
+  position fixed
+  left 0
+  right 0
+  bottom 0
+  top 0
 footer.expanded
   //background-image linear-gradient(bottom, #fff 125px, #eee)
-  background-color #f0f0f0
+  background-color #fafafa
 footer
   opacity 0
   background-color #f7f7f7

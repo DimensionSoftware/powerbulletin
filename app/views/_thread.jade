@@ -7,7 +7,7 @@ mixin _thread(t)
       .profile.photo
         img(src="#{cacheUrl}#{t.user_photo}")
       .container
-        span.username by
+        span.username
           em= t.user_name // XXX weird things happened when I tried to turn this into an anchor
         span.created(data-time=t.created_iso)!= t.created_human
         .clear
