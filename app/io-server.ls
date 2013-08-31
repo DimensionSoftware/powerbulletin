@@ -132,8 +132,9 @@ site-by-domain = (domain, cb) ->
 
     socket.on \online-now, ->
       err, users <- presence.in "#{site.id}"
-      users |> filter (-> it) |> each (u) ->
-        socket.in("#{site.id}").emit \enter-site, u # not braoadcast
+      unless err then try # guard
+        users |> filter (-> it) |> each (u) ->
+          socket.in("#{site.id}").emit \enter-site, u # not braoadcast
 
     socket.on \debug, ->
       socket.emit \debug, socket.manager.rooms
