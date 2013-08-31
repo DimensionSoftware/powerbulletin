@@ -2,7 +2,6 @@ require "shelljs/global"
 async      = require('async')
 cp         = require('child_process')
 fs         = require('fs')
-livescript = require('LiveScript')
 h          = require('./app/server-helpers')
 config     = require('./config/common')
 module.exports = (grunt) ->
@@ -11,25 +10,12 @@ module.exports = (grunt) ->
   # for all our js minification needs
   
   # Load the plugins
-  
-  # daemonize a command
-  daemon = (command, pidFile, logFile) ->
-    pid = false
-    try # kill running proc
-      pid = fs.readFileSync(pidFile, "utf8")
-      process.kill -pid  if pid # the minus kills the entire process group
-    opts =
-      detached: true
-      stdio: "inherit"
+  grunt.loadNpmTasks "grunt-contrib-uglify"
+  grunt.loadNpmTasks "grunt-contrib-watch"
 
-    if logFile
-      log = fs.openSync(logFile, "a")
-      opts.stdio = ["ignore", log, log]
-    proc = cp.spawn(command, [], opts)
-    fs.writeFileSync pidFile, proc.pid
   grunt.initConfig
     pkg: grunt.file.readJSON("package.json")
-    uglify:
+    uglify: # TODO try uglify2 against components with --no-mangle
       options:
         mangle:
           except: # XXX don't mangle Components
@@ -44,96 +30,92 @@ module.exports = (grunt) ->
     watch:
       procs:
         files: ["plv8_modules/*.ls", "procedures.sql"]
-        tasks: ["procs", "browserify", "launch"]
-        options:
-          debounceDelay: 50
-          interrupt: true
-
-      livescript:
-        files: ["app/main.ls"]
-        tasks: ["livescript", "browserify", "launch"]
+        tasks: ["procs", "launch"]
         options:
           debounceDelay: 50
           interrupt: true
 
       clientJade:
         files: ["app/views/*.jade"]
-        tasks: ["clientJade", "browserify", "launch"]
+        tasks: ["clientJade", "launch"]
         options:
           debounceDelay: 50
           interrupt: true
 
       componentJade:
         files: ["component/*.jade"]
-        tasks: ["componentJade", "browserify", "launch"]
+        tasks: ["componentJade", "launch"]
         options:
           debounceDelay: 50
           interrupt: true
 
       app:
         files: ["component/*.ls", "app/*.ls", "config/*", "lib/**/*.ls"]
-        tasks: ["browserify", "launch"]
+        tasks: ["launch"]
         options:
           debounceDelay: 50
           interrupt: true
+  
+  #{{{ daemonize a command
+  # - possibly not needed anymore, bin/powerbulletin wipes :)
+  daemon = (command, pidFile, logFile) ->
+    pid = false
+    try # kill running proc
+      pid = fs.readFileSync(pidFile, "utf8")
+      process.kill -pid  if pid # the minus kills the entire process group
+    opts =
+      detached: true
+      stdio: "inherit"
 
-  grunt.registerTask 'css', 'Build css for all themes', ->
+    if logFile
+      log = fs.openSync(logFile, "a")
+      opts.stdio = ["ignore", log, log]
+    proc = cp.spawn(command, [], opts)
+    fs.writeFileSync pidFile, proc.pid
+  #}}}
+#{{{ Backend tasks
+  grunt.registerTask "launch", "Launch PowerBulletin!", launch = ->
+    if process.NODE_ENV is "production"
+      daemon "./bin/powerbulletin", config.tmp + "/pb.pid"
+    else
+      #exec "bin/develop &", async:true
+      daemon "./bin/develop", config.tmp + "/develop.pid"
+
+  grunt.registerTask "procs", "Compile stored procedures to JS", ->
+    done = this.async()
+    exec "node_modules/.bin/lsc -c plv8_modules/*.ls"
+    exec "bin/psql pb < procedures.sql",
+      silent: true
+    done()
+#}}}
+  #{{{ Frontend tasks
+  grunt.registerTask "clientJade", "compile regular jade", ->
+    done = this.async()
+    exec "bin/build-client-jade"
+    done()
+
+  grunt.registerTask "componentJade", "compile component Jade", ->
+    done = this.async()
+    exec "bin/build-component-jade"
+    done()
+
+  grunt.registerTask 'css', 'Build master.css for all themes', ->
     done = this.async()
     h.renderCss('master.styl', (err, blocks) ->
       fs.writeFileSync 'public/master.css', blocks
       h.renderCss('master-sales.styl', (err, blocks) ->
         fs.writeFileSync 'public/master-sales.css', blocks
         done(true)))
-
-  grunt.loadNpmTasks "grunt-contrib-uglify"
-  grunt.loadNpmTasks "grunt-contrib-watch"
-  launch = undefined
-  isLaunched = false
-  grunt.registerTask "launch", "Launch PowerBulletin!", launch = ->
-    isLaunched = ! exec('ps aux | grep pb-worker | grep -v grep', {silent: true}).code
-
-    if isLaunched
-      # soft reload
-      console.log 'soft reload'
-      exec "killall -HUP -r pb-worker"
-    else
-      # initial load
-      console.log 'initial load'
-      exec "killall -9 -r pb-worker powerbulletin",
-        silent: true
-    
-      # XXX surely there's a more automatic way to manage this?
-      daemon "./bin/powerbulletin", config.tmp + "/pb.pid"
-
-  grunt.registerTask "livescript", "compile ls -> js", ->
-    exec "node_modules/.bin/lsc -c app/main.ls"
-
-  grunt.registerTask "procs", "Compile stored procedures to JS", ->
-    exec "node_modules/.bin/lsc -c plv8_modules/*.ls"
-    exec "bin/psql pb < procedures.sql",
-      silent: true
-
-  grunt.registerTask "clientJade", "compile regular jade", ->
-    exec "bin/build-client-jade"
-
-  grunt.registerTask "componentJade", "compile component Jade", ->
-    exec "bin/build-component-jade"
-
-  grunt.registerTask "browserify", "generate browser bundle", ->
-    exec "killall -9 build-browser-bundle",
-      silent: true
-    daemon "bin/build-browser-bundle", config.tmp + "/browserify.pid"
-
-  grunt.registerTask "cleanup", "cleanup disk", ->
-    #exec "rm -f public/powerbulletin.js"
-    #exec "rm -f public/powerbulletin-sales.js"
+  #}}}
 
   # Default task(s).
   if process.NODE_ENV is "production"
-    grunt.registerTask "default", ["procs", "clientJade", "componentJade", "livescript", "browserify", "uglify", "cleanup", "launch"]
+    grunt.registerTask "default", ["procs", "clientJade", "componentJade", "uglify", "launch"]
   else
-    grunt.registerTask "default", ["procs", "clientJade", "componentJade", "livescript", "browserify", "launch", "watch"]
+    grunt.registerTask "default", ["procs", "clientJade", "componentJade", "launch", "watch"]
 
 process.on 'SIGINT', ->
   exec "killall -s INT -r pb-worker"
   process.exit()
+
+# vim:fdm=marker

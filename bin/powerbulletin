@@ -3,7 +3,7 @@
 # main
 # ---------
 if [ "$NODE_ENV" = 'production' ] ; then
-  grunt css procs clientJade componentJade livescript browserify uglify cleanup
+  grunt css procs clientJade componentJade uglify
   mkdir -p logs
 
   # varnish setup to handle 3000-3009 for now
