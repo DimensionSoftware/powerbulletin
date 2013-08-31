@@ -1,11 +1,11 @@
 #!/bin/bash
 
-echo killing old processes...
-bin/diediedie
-
 # kill any old lsc watchers (spare grunt's life)
 echo "Killing node processes..."
-ps ax|grep node|grep -v grunt|awk '{print $1}'|xargs killall -9
+ps ax|grep node|grep -v grunt|awk '{print $1}'|xargs kill -9
+
+echo killing old processes...
+bin/diediedie
 
 set -e
 echo compiling/watching...

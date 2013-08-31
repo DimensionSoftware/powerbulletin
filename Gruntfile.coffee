@@ -9,9 +9,10 @@ module.exports = (grunt) ->
   # Project configuration.
   # for all our js minification needs
   
-  # Load the plugins
+  #{{{ Load the plugins
   grunt.loadNpmTasks "grunt-contrib-uglify"
   grunt.loadNpmTasks "grunt-contrib-watch"
+  #}}}
 
   grunt.initConfig
     pkg: grunt.file.readJSON("package.json")
@@ -45,13 +46,6 @@ module.exports = (grunt) ->
       componentJade:
         files: ["component/*.jade"]
         tasks: ["componentJade", "launch"]
-        options:
-          debounceDelay: 50
-          interrupt: true
-
-      app:
-        files: ["component/*.ls", "app/*.ls", "config/*", "lib/**/*.ls"]
-        tasks: ["launch"]
         options:
           debounceDelay: 50
           interrupt: true
