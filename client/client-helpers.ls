@@ -94,8 +94,11 @@ render = (sel, locals, cb=(->)) ~>
     cb!
     focus $e
 @toggle-post = (ev) ~>
-  unless $ ev?target .has-class \onclick-footer-toggle then return # guard
-  unless user then Auth.show-login-dialog!; return # guard
+  # guards
+  unless $ ev?target .has-class \onclick-footer-toggle then return
+  if $ \html .has-class \new then return
+  unless user then Auth.show-login-dialog!; return
+
   data =
     action: \/resources/posts
     method: \post
@@ -117,6 +120,7 @@ render = (sel, locals, cb=(->)) ~>
 @edit-post = (id, data={}) ~>
   if id is true # render new
     scroll-to-top!
+    $ \html .add-class \new # for stylus
     data.action = \/resources/posts
     data.method = \post
     render \.forum, data, ~> # init editor on post
