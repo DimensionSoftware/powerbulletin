@@ -8,6 +8,7 @@
   border-bottom-color red!important
   background-image linear-gradient(to bottom, #fff 80%, #ffe0e0 100%)!important
 
+//{{{ Textual Inputs
 // indicate active ui beyond user-caused :focus & :active
 input[type="password"].active, select.active, textarea.active, input[type="text"].active
   color #000!important
@@ -58,14 +59,16 @@ textarea:focus, select:focus
 .button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
   animation-name tiny-grow
   animation-duration .03s
-  background-image linear-gradient(bottom, dark 12px, light 87%, dark 90%)
-  background-color #dark
+  //background-image linear-gradient(bottom, dark 12px, light 87%, dark 90%)
+  background-color light
   border-color #777
   border-top 1px solid light
   border-left 1px solid light
   border-bottom 1px solid #555
   box-shadow 0 0 5px #bbb,0 1px 5px 0 light
   text-shadow 0px 1px 0 black,1px 1px 0 rgba(100,100,100,.5)
+//}}}
+//{{{ Buttons
 button:disabled:hover::before, input[type="submit"]:disabled:hover::before, input[type="button"]:disabled:hover::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.05) 0%, rgba(255,255,255,.1) 80%)
 button:disabled::before, input[type="submit"]:disabled::before, input[type="button"]:disabled::before
@@ -88,18 +91,40 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   border-bottom-color #888
   transform translateY(3px)
   border-radius 8px / 2px
+  opacity .9
+// bottom "darken" fx
+input[type="submit"]:active::after, button:active::after, .button:active::after
+  height 2px!important
+input[type="submit"]:hover::after, button:hover::after, .button:hover::after
+  opacity .8!important
+  height 6px
+  background-image linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.3) 100%)
+  transition opacity .08s ease-out, height .05s ease-out
+input[type="submit"]::after, button::after, .button::after
+  position absolute
+  content ''
+  bottom 0
+  right -1px
+  left -1px
+  background-image linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.25) 100%)
+  opacity .75
+  height 5px
+//- top gloss fx
+input[type="submit"]:active::before, button:active::before, .button:active::before
+  height 53%!important
+  opacity .7
 input[type="submit"]:hover::before, button:hover::before, .button:hover::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.33) 0%, rgba(255,255,255,.28) 100%)
   opacity .9
   height 48%
-  transition opacity .08s ease-out, height .05s ease-out
+  transition opacity .08s ease-out, height .02s ease-out
 input[type="submit"]::before, button::before, .button::before
   position absolute
   content ''
-  width 103%
   height 50%
   top -1px
   left -3px
+  right -1px
   border-radius .5em .5em 6em 6em/.1em .1em 1em 1em
   background-image linear-gradient(to bottom, rgba(255,255,255,.3) 0%, rgba(255,255,255,.25) 100%)
   opacity .75
@@ -122,3 +147,5 @@ input[type="submit"]::before, button::before, .button::before
   padding 6px 15px
   text-align center
   border-radius 5px / 1px
+
+// vim: fdm=marker

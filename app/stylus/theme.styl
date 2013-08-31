@@ -54,7 +54,6 @@ a
       color #555
 header
   background-color #fefefe
-  background rgba(0,0,0,0.01)
   border-top 1px solid #aaa
   border-bottom 1px solid rgba(180,180,180,0.15)
   color #555
@@ -68,9 +67,13 @@ header
           position relative!important
           z-index 75!important
           color #333
-          border-bottom 1px solid dark
+          //border-bottom 1px solid dark
         .title.active::after
-          box-shadow 0 -1px 6px 1px #40bfdb
+          //box-shadow 0 -1px 6px 1px light
+          background radial-gradient(ellipse farthest-corner at 50% 300%, light 50%, rgba(255,255,255,0) 90%)
+          height 8px
+          opacity 1
+          transition opacity .3s ease-out
       > .row
         .title:hover, .title.hover
           border-bottom 1px solid dark
@@ -95,7 +98,7 @@ header
           width 60%
           bottom 0
           height 0
-          box-shadow 0
+          opacity 0
         .submenu
           box-shadow 0 2px 4px 0px #ccc
           border-right 1px solid #aaa
@@ -132,6 +135,17 @@ header
               white-space nowrap
               text-overflow ellipsis
     .search
+      .query:focus
+        text-indent 3px
+        border-radius 5px
+        box-shadow 1px 1px -3px 10px light inset
+        border 1px solid dark
+        color #000
+      .query
+        box-shadow 1px 1px 3px light inset
+        border 0
+        background none
+        border-radius 6px
       .query::-webkit-input-placeholder
           color #ccc
       .query:-moz-placeholder
@@ -308,7 +322,7 @@ body.scrolled
     border-top 1px solid #ccc
     transition border-top .2s ease-out
   header::after
-    border-bottom 1px solid #ccc
+    border-bottom 1px solid #ddd
     box-shadow 0 2px 6px 0px #ddd
     bottom -3px
     left 0
@@ -320,18 +334,11 @@ body.scrolled
     background-color rgba(255,255,255,0.95)
     box-shadow 0 -1px 12px 2px #eee
     border-bottom 1px solid #fff
+    height -2px
     transition height .2s ease-out, background-color .5s ease-out
     .container
       menu.menu
         > .row
-          a.title.active:hover
-            background-image linear-gradient(bottom, #fff 22px, #eaeaea)
-          a.title.active
-            background-image linear-gradient(bottom, #fff 22px, #eaeaea)
-          a.title:hover, a.title.hover
-            background-image linear-gradient(bottom, #fff 22px, #fafafa)
-          a.title
-            background-image linear-gradient(bottom, #fff 25px, #fafafa)
         .row
           transition line-height .2s ease-out
           .submenu
