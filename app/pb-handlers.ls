@@ -472,6 +472,14 @@ function profile-paths user, uploaded-file, base=\avatar
     title: "Search#{if res.locals.searchopts.q then (' : ' + res.locals.searchopts.q) else ''}"
   }
 
+  # NOTE: not sure if caching is possible given the dynamicness of
+  # search queries
+  # how do we know when to blow the cache? it is difficult...
+  #
+  # try to rely instead on the internal elastic caching mechanisms
+  # which allow you to cache certain fragments of the query ??
+  caching-strategies.nocache res # updates happen in realtime
+
   res.mutant \search
 
 @page = (req, res, next) ->
