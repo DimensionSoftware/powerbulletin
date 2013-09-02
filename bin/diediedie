@@ -1,3 +1,27 @@
 #!/bin/bash
-killall -9 -r pb-worker-3000 pb-worker-3001 pb-worker-3002 pb-worker-3003 pb-worker-3004 pb-worker-3005 pb-worker-3006 pb-worker-3007 pb-worker-3008 pb-worker-3009 &> /dev/null
-killall -9 powerbulletin &> /dev/null
+
+# don't run this unless you really want to sink our battleship
+# there are five exceptions to the bin/diediedie scythe of death:
+#   * data sensitive (we don't wanna nuke these because they are data-sensitive
+#     - postgres
+#     - elasticsearch
+#   * stateless conduits (they rarely need to be touched)
+#     - haproxy
+#     - varnishd
+#     - redis-server
+# 
+# so basically it mainly targets our node-based processes and their supervisors
+ENEMIES='(^pb-)|(^(mon|node|powerbulletin)$)'
+
+pkill "$ENEMIES" # attempt gracefully first
+if [ $? = 0 ]; then
+  echo processes sent SIGTERM: "$ENEMIES"
+  sleep 1
+  pkill -9 "$ENEMIES" # bring out the big hammer
+  if [ $? = 0 ]; then
+    echo some processes were still not dead...
+    echo processes sent SIGKILL: "$ENEMIES"
+  fi
+else
+  echo nothing to kill
+fi

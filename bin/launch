@@ -1,9 +1,15 @@
 #!/bin/sh -e
-bin/launch-pb-cache
 pgrep java || sudo NODE_ENV=$NODE_ENV bin/launch-elasticsearch
 pgrep redis-server || bin/launch-redis
-pgrep haproxy || sudo NODE_ENV=$NODE_ENV bin/launch-haproxy
+
+# while these are launching, hopefully elastic and redis are finishing their startup...
+(pgrep pb-cache-4000 && pgrep pb-cache-4001) || bin/launch-pb-cache
 (pgrep varnishd && bin/purge-varnish) || sudo NODE_ENV=$NODE_ENV bin/launch-varnish
-bin/launch-pb-rt
-bin/launch-indexer
-bin/launch-search-notifier
+pgrep haproxy || sudo NODE_ENV=$NODE_ENV bin/launch-haproxy
+
+# extra pause just in case to allow for redis/elastic startup
+sleep 2
+
+bin/launch-indexer # requires elastic and postgres
+bin/launch-pb-rt # requires redis
+bin/launch-search-notifier # requires elastic and redis

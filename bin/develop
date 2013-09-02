@@ -1,18 +1,19 @@
 #!/bin/bash
 
-# kill any old lsc watchers (spare grunt's life)
-echo "Killing node processes..."
-ps ax|grep node|grep -v grunt|awk '{print $1}'|xargs kill -9
-
-echo killing old processes...
-bin/diediedie
+echo killing old watchers and workers
+# watchers
+pkill -9 -f '^node node_modules/.bin/lsc -cw'
+# workers
+pkill -9 '^pb-worker'
 
 set -e
 echo compiling/watching...
+bin/build-client-jade
+bin/build-component-jade
 # launch this in the background async to pick up file changes
 node_modules/.bin/lsc -cw app client shared component lib/mutant client/requirejs-config public/app plv8_modules &
 
-sleep 2
+sleep 3
 
 echo launching...
 bin/powerbulletin
