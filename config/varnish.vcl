@@ -575,19 +575,20 @@ sub vcl_recv {
     error 302 "Found"; 
   }
 
-  # decide whether or not this request is headed towards the cache backend, rather than normal app backend
-  # the static file cache server is isolated since it is a much higher reliability factor than the main app
-  if (req.http.host ~ "(?i)^muscache\d?\.(pb|powerbulletin)\.com$") {
-    set req.backend = cache;
-  }
   # if it starts with /socket.io then send to socket backend
-  else if (req.url ~ "(?i)^/socket\.io/") {
+  # this also allows us to serve files from socket.io in our cache domains
+  if (req.url ~ "(?i)^/socket\.io/") {
     set req.backend = socket;
 
     # pipe any socket.io requests which aren't headed to the client js library
     if (req.url !~ "(?i)^/socket.io/socket.io.js") {
       return (pipe);
     }
+  }
+  # decide whether or not this request is headed towards the cache backend, rather than normal app backend
+  # the static file cache server is isolated since it is a much higher reliability factor than the main app
+  else if (req.http.host ~ "(?i)^muscache\d?\.(pb|powerbulletin)\.com$") {
+    set req.backend = cache;
   }
 
   # REDIRECT: force no trailing slash (except for homepage)
