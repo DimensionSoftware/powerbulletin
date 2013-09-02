@@ -1,12 +1,15 @@
 body
   margin 0
-  height 3700px
+  height 9200px
   position relative
 
 body.scrolled
   header
     border-bottom 0
     background #eee
+  header::after
+    bottom -1px
+    border-bottom-color #ccc
   footer::before, footer:hover::before
     border-top none
     box-shadow none
