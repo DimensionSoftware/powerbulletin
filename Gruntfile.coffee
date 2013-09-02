@@ -1,4 +1,5 @@
 require "shelljs/global"
+require 'LiveScript'
 async      = require('async')
 cp         = require('child_process')
 fs         = require('fs')
