@@ -46,11 +46,13 @@ $ window .on \scroll, ->
 
 # animate focus
 set-timeout (->   # bring in register
-  $ \.logo-icon    .transition {opacity:1, x:\-25px, y:\-25px, rotate:\0deg}, 700ms, \easeOutExpo
+  icon = $ \.logo-icon
+  icon.transition {opacity:1, x:\0px, y:\0px, rotate:\0deg}, 700ms, \easeOutExpo
   $ \#register_top .transition {x:25px, opacity:1}, 1000ms, \easeOutExpo
   $ \.SiteRegister-subdomain:first .focus!
   set-timeout (-> # ...and action!
-    $ '.SiteRegister h3' .transition {opacity:1, y:30px}, 400ms), 100ms), 300ms
+    $ '.SiteRegister h3' .transition {opacity:1, y:30px}, 400ms
+    icon.add-class \hover-around), 100ms), 300ms
 
 unless $ window .scroll-top is 0 # scroll to top
   $ 'html,body' .animate {scroll-top:0}, 500ms, \easeOutExpo
