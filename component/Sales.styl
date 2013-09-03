@@ -1,3 +1,4 @@
+blend = rgba(0,0,0,.5)
 .Sales
   text-align center
   margin-top 235px
@@ -11,13 +12,13 @@
     .logo-icon
       background-image url(cache-url + '/images/pb_icon_logo.png')
       background-repeat no-repeat
-      margin 55px auto 0 auto
+      margin 40px auto 0 auto
       width 81px
       height 96px
       opacity 0
-      transform rotate(90deg)
+      transform rotate(90deg) translate(15px, 35px)
   #register_top
-    margin-top 55px
+    margin-top 65px
     opacity 0
   #features
     font-style italic
@@ -63,34 +64,37 @@
       color #999
   //}}}
   //{{{ Sections
-  img.bg
-    position absolute
-    left 0
-    right 0
+  .container
+    position relative
+    height 1300px
     width 100%
-    z-index 1
-  img.first
+    overflow hidden
+    img.bg
+      position absolute
+      left 0
+      top 0
+      right 0
+      width 100%
+  .container.first
     margin-top 100px
-  img.first + section
-    margin-top 1500px
-  img.second
-    margin-top 1200px
-  img.second + section
-    margin-top 700px
-  img.third
-    margin-top 1900px
-  img.third + section
-    margin-top 1400px
-  img.fourth
-    margin-top 3200px
-  img.fourth + section
-    margin-top 1450px
-  img.fifth
-    margin-top 4600px
-  img.fifth + section
-    margin-top 1600px
+    border-top 1px solid #999
+  .container.fifth + section
+    border-top 1px solid #777
+  //section.feature:hover
+  //  border-color #555
+  //  box-shadow 0 0 30px 0 blend
+  //  transition all .1s ease-out
+  //  article
+  //    transform scale(1.02)
+  //    transition all .1s ease-out
+  section.feature
+    border-top 1px solid #777
+    border-bottom 1px solid #777
+    box-shadow 0 0 28px -2px blend
+    background-image linear-gradient(to top, #eee 20px, #fff 100px, #fff 100%)
   section
     position relative
+    background-color #fff
     z-index 2
     display block
     top 0
@@ -98,13 +102,13 @@
     height 300px
     width 100%
     overflow hidden
-    background #fff
   section.last
     position absolute
     bottom 400px
     top auto
     min-height 100px
     height 210px
+    border-top 1px solid #f5f5f5
     article
       width 530px
       h3

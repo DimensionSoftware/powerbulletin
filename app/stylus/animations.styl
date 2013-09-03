@@ -2,13 +2,26 @@
 // Animations!
 @keyframes hover-around
   0%
-    transform rotate3d(1, -1, 0, 0deg)
+    transform rotateZ(0deg)
+    transform rotateY(10deg)
   35%
-    transform rotate3d(9, -15, 0, -21deg)
-  70%
-    transform rotate3d(-28, 6, 0, 8deg)
+    transform rotateY(-20deg)
+  75%
+    transform scale(1.05)
+    transform rotateZ(8deg)
+    transform rotateY(-28px)
   100%
-    transform rotate3d(1, 0, 0, 18deg)
+    transform rotateY(85px)
+    transform rotateZ(0deg)
+    transform scale(.95)
+
+.hover-around
+  perspective 800
+  transformation-style preserve-3d
+  animation-name hover-around
+  animation-duration 4s
+  animation-iteration-count infinite
+  animation-direction alternate
 
 @keyframes tiny-grow
   0%
