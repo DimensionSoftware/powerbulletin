@@ -35,16 +35,17 @@ $ window .on \scroll, ->
   offset  = $ window .scroll-top!
   # top animations
   if offset < 500px # save cpu for top pieces
-    inverse = 8/Math.abs(offset+0.01)
-    $ \#imagine      .css \opacity, inverse
-    $ \#logo         .css {opacity:50/Math.abs(offset), y:"#{0-(offset*0.3)}px"}
+    inverse = 25/Math.abs(offset/0.18)
+    $ '#imagine p'   .css \opacity, inverse
+    $ \#imagine      .css {opacity:80/Math.abs(offset), y:"#{0-(offset*0.75)}px"}
+    $ \#logo         .css {opacity:80/Math.abs(offset), y:"#{0-(offset*0.5)}px"}
     $ \#register_top .css {opacity:inverse, y:"#{0-(offset*2.7)}px"}
 
   # backgrounds
   # - FIXME optimize by pre-computing & only moving imgs in view
   for e in <[.first .second .third .fourth .fifth]>
     dy = -($ e .offset!top)
-    $ "#e .bg" .css \y, "#{0+((dy+offset)*0.35)}px"
+    $ "#e .bg" .css \y, "#{0+((dy+offset)*0.45)}px"
 
 # animate focus
 set-timeout (->   # bring in register
