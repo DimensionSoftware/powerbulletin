@@ -5,18 +5,18 @@ global.cw    = console.warn
 global.async = require \async
 global.auth  = require \./auth
 global.c     = require \./cache
-global.fsm   = require \./fsm
-global.furl  = require \./forum-urls
+global.fsm   = require \../shared/fsm
+global.furl  = require \../shared/forum-urls
 global.pg    = require \./postgres
 global.v     = require \./varnish
-global.t     = require \./tasks
+global.t     = require \../client/tasks
 global.s     = require \./search
 
 global.Presence = require \./presence
 
 global <<< require \prelude-ls
 global <<< require \./server-helpers
-global <<< require \./shared-helpers
+global <<< require \../shared/shared-helpers
 
 global.el  = require \./elastic
 global.elc = -> el.client
