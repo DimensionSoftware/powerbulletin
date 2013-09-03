@@ -1,6 +1,10 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
+require \jqueryHistory
+require \jqueryNicescroll
+require \jqueryUi
+
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
 helpers = require \../shared/shared-helpers
 mutants = require \../shared/pb-mutants
