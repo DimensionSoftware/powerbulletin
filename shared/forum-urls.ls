@@ -48,6 +48,7 @@ inputs =
 @type-of-part = (i) ->
   switch i
   | \page     => \page
+  | \m        => \m
   | \t        => \t
   | \edit     => \edit
   | \new      => \new
@@ -61,6 +62,7 @@ inputs =
     number : \forum
     new    : \forum
     edit   : \forum
+    m      : \forum
     t      : \forum
     page   : \forum
     fbdn   : \error
@@ -69,8 +71,18 @@ inputs =
     number : \forum
     new    : \new-thread
     edit   : \forum
+    m      : \moderation
     t      : \-thread-marker
     page   : \forum
+    fbdn   : \error
+  moderation:
+    string : \error
+    number : \error
+    new    : \error
+    edit   : \error
+    m      : \error
+    t      : \error
+    page   : \error
     fbdn   : \error
   'new-thread':
     string : \error
@@ -172,6 +184,7 @@ inputs =
   meta   = switch type
   | \initial               => { incomplete: true }
   | \forum                 => { forum-uri: "/#{parts.join '/'}" }
+  | \moderation            => { forum-uri: "/#{parts[0 til parts.length - 1].join '/'}" }
   | \new-thread            => { forum-uri: "/#{parts[0 til parts.length - 1].join '/'}" }
   | \thread                => { forum-uri: @forum-uri(path), thread-uri: "/#{parts.join '/'}" }
   | \thread-page           =>
