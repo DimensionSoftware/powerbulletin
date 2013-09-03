@@ -613,15 +613,9 @@ mk-post-pnum-to-href = (post-uri) ->
         next!
   on-initial:
     (w, next) ->
-      # work around race condition! thx reactive ; )
-      # chrome had different timing than FF
-      # i.e. on-load was happening way before socket was
-      # ready in chrome
-      $R(join-search).bind-to globals.r-socket
       next!
   on-mutate:
     (w, next) ->
-      join-search(w.socket)
       next!
   on-load:
     (w, next) ->
@@ -629,6 +623,18 @@ mk-post-pnum-to-href = (post-uri) ->
 
       align-breadcrumb!
       #pager-init w
+
+      # avoid stacking up search join requests
+      # only pay attention to last one
+      clear-timeout window.join-search-timeout
+
+      # I do despise this, but it does work in most cases
+      # XXX: hack... figure out a better way???!!?
+      # we need to know when socket.io is connected
+      window.join-search-timeout = set-timeout (->
+        join-search(w.socket)
+      ), 3000
+
       next!
   on-unload:
     (w, next-mutant, next) ->
