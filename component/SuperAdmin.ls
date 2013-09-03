@@ -8,22 +8,31 @@ require! {
 }
 {templates} = require \../build/component-jade
 
+mod-info =
+  mod-users: {klass: SuperAdminUsers}
+  mod-sites: {klass: SuperAdminSites}
+
+for mname, mi of mod-info
+  mi.css-class = "SuperAdmin-#mname"
+
 module.exports =
   class SuperAdmin extends Component
     template: templates.SuperAdmin
     init: ->
-      # @mods are special components designed to work
-      # within this component
-      @mods = {
-        mod-users: new SuperAdminUsers {} \.SuperAdmin-modUsers @
-        mod-sites: new SuperAdminSites {} \.SuperAdmin-modSites @
-      }
+      # default locals
+      @local \activeMod, \modUsers unless @local(\activeMod)
 
-      @children = {} # paginator will go here soon
-      @children <<< @mods # mods are a subset of children
+      # @mods are special children
+      # set them up based on mod-info above
+      @mods = {}
+      for mname, mi of mod-info
+        m = @mods[mname] = new mi.klass {}, ".#{mi.css-class}", @
 
       @state.mods = @@$R ~> @mods # expose mods to jade
+
+      @children = {}
+      @children <<< @mods # mods are a subset of children
     mutate: ($dom) ->
       # setup anchor points for mods based on inference
-      for mname, m of @mods
-        $dom.find('.SuperAdmin-content').append("<div class=\"SuperAdmin-#mname\">")
+      for mname, mi of mod-info
+        $dom.find('.SuperAdmin-content').append("<div class=\"#{mi.css-class}\">")
