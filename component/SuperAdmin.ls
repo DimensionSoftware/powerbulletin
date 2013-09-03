@@ -4,6 +4,7 @@ require, exports, module <- define
 require! {
   Component: yacomponent
   \./SuperAdminUsers
+  \./SuperAdminSites
 }
 {templates} = require \../build/component-jade
 
@@ -15,6 +16,7 @@ module.exports =
       # within this component
       @mods = {
         mod-users: new SuperAdminUsers {} \.SuperAdmin-modUsers @
+        mod-sites: new SuperAdminSites {} \.SuperAdmin-modSites @
       }
 
       @children = {} # paginator will go here soon
