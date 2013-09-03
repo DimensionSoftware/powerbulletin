@@ -89,6 +89,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \error
+    m      : \error
     t      : \error
     page   : \error
     fbdn   : \error
@@ -97,6 +98,7 @@ inputs =
     number : \thread
     new    : \thread
     edit   : \thread
+    m      : \thread
     t      : \thread
     page   : \thread
     fbdn   : \error
@@ -105,6 +107,7 @@ inputs =
     number : \thread-permalink
     new    : \error
     edit   : \-edit-marker
+    m      : \thread-permalink
     t      : \error
     page   : \-page-marker
     fbdn   : \error
@@ -113,6 +116,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \-edit-marker
+    m      : \error
     t      : \error
     page   : \-permalink-page-marker
     fbdn   : \error
@@ -121,6 +125,7 @@ inputs =
     number : \edit
     new    : \error
     edit   : \error
+    m      : \error
     t      : \error
     page   : \error
     fbdn   : \error
@@ -129,6 +134,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \error
+    m      : \error
     t      : \error
     page   : \error
     fbdn   : \error
@@ -137,6 +143,7 @@ inputs =
     number : \thread-permalink-page
     new    : \error
     edit   : \error
+    m      : \error
     t      : \error
     page   : \error
     fbdn   : \error
@@ -145,6 +152,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \error
+    m      : \error
     t      : \error
     page   : \error
     fbdn   : \error
@@ -153,6 +161,7 @@ inputs =
     number : \thread-page
     new    : \error
     edit   : \error
+    m      : \error
     t      : \error
     page   : \error
     fbdn   : \error
@@ -161,6 +170,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \error
+    m      : \error
     t      : \error
     page   : \error
     fbdn   : \error
@@ -169,6 +179,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \error
+    m      : \error
     t      : \error
     page   : \error
     fbdn   : \error
