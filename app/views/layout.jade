@@ -41,7 +41,7 @@ html
     else
       script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
     script(type="text/javascript")
-      window.CHANGESET=!{JSON.stringify(CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.authDomain="!{cvars.authDomain}";window.headjs=head.js;window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cacheUrl+'/client',urlArgs:!{JSON.stringify(CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
+      window.CHANGESET=!{JSON.stringify(CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.cache2Url=!{JSON.stringify(cvars.cache2Url)};window.cache3Url=!{JSON.stringify(cvars.cache3Url)};window.cache4Url=!{JSON.stringify(cvars.cache4Url)};window.cache5Url=!{JSON.stringify(cvars.cache5Url)};window.authDomain="!{cvars.authDomain}";window.headjs=head.js;window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cacheUrl+'/client',urlArgs:!{JSON.stringify(CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
   body
 
     header.header.toggler
