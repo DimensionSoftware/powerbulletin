@@ -41,8 +41,10 @@ $ window .on \scroll, ->
     $ \#register_top .css {opacity:inverse, y:"#{0-(offset*2.7)}px"}
 
   # backgrounds
-  $ \.bg    |> each -> $ it .css \y, "#{0+(offset*0.25)}px"
-  #$ \.stick |> each -> $ it .css \y, "#{0-(offset*1.4)}px"
+  # - FIXME optimize by pre-computing & only moving imgs in view
+  for e in <[.first .second .third .fourth .fifth]>
+    dy = -($ e .offset!top)
+    $ "#e .bg" .css \y, "#{0+((dy+offset)*0.35)}px"
 
 # animate focus
 set-timeout (->   # bring in register
