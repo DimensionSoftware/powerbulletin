@@ -30,17 +30,19 @@ a
   box-shadow 0 0 2px rgba(50,150,50,.8), 1px 1px 1px rgba(50,150,50,.8),0 1px 0 rgba(40,140,40, .9)
   transition box-shadow .3s ease-in-out
 
-.cancel, .onclick-close:hover
-  background-color #666
-  color #fff
-  transition all .1s ease-out
+.cancel:hover, .onclick-close:hover
+  background-color #999
+  background radial-gradient(ellipse closest-corner at 50% 50%, #fff 47%, #555 100%)
+  color red
+  transition all .06s ease-out
 .cancel, .onclick-close
   font-weight 600
   transform rotate(10deg)
-  height 10px
-  width 10px
-  color #fafafa
-  background-color #777
+  height 9px
+  width 8px
+  color #333
+  background-color #aaa
+  background radial-gradient(ellipse closest-corner at 50% 50%, #fff 47%, #777 100%)
 
 //{{{ Header
 .logo
@@ -62,11 +64,12 @@ header
       > .row
         .title.active:hover
           color #000
-          border-bottom 1px solid dark
+          //border-bottom 1px solid dark
         .title.active
           position relative!important
           z-index 75!important
-          color #333
+          color dark_text
+          font-style italic
           //border-bottom 1px solid dark
         .title.active::after
           //box-shadow 0 -1px 6px 1px light
@@ -76,7 +79,7 @@ header
           transition opacity .3s ease-out
       > .row
         .title:hover, .title.hover
-          border-bottom 1px solid dark
+          //border-bottom 1px solid dark
           color #555
           animation-name tiny-grow!important
           animation-duration .1s
@@ -100,21 +103,23 @@ header
           height 0
           opacity 0
         .submenu
-          box-shadow 0 2px 4px 0px #ccc
-          border-right 1px solid #aaa
-          border-bottom 1px solid #bbb
-          border-top 1px solid #cfcfcf
-          border-bottom-right-radius 5px
-          border-bottom-left-radius 5px
+          box-shadow 0 0 8px 0 light
+          border-right 1px solid #ccc
+          border-bottom 1px solid #ddd
+          border-top 1px solid #efefef
+          border-radius 45px
           background-color #fff
-          background radial-gradient(circle closest-corner at 50% 30%, #fff 60%, #f0f0f0 100%)
+          //background radial-gradient(circle closest-corner at 50% 30%, #fff 60%, #f0f0f0 100%)
+          background-image linear-gradient(bottom, #fff 50%, #f0f0f0)
           color #333
           .row:hover
+            background-color light
+            border-radius 20px
             font-size 15px
             transform scale(1.05)
             a
-              color #000
-              //animation-name none
+              color #fff
+              animation-name none
           .row.active
             font-weight bold
             border-bottom 1px solid #eee
@@ -128,9 +133,9 @@ header
             line-height (grid*4)
             border-right 1px solid transparent
             border-left 1px solid transparent
-            border-bottom 1px solid #fafafa
+            //border-bottom 1px solid #fafafa
             a
-              color #444
+              color #222
               text-decoration none
               white-space nowrap
               text-overflow ellipsis
