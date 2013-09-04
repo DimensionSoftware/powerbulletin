@@ -117,8 +117,18 @@ require! {
 # given an old and new menu hierarchy, move the menu-items that have moved
 @move = (old-menu, new-menu) -> new-menu
 
-# given and old and new menu hierarchy, reorder the menu-items that have been reordered at the same level
-@reorder = (old-menu, new-menu) -> new-menu
+# Given a list of items, move an item from offset old-n to offset n.
+#
+# @param  Array   list    list of items
+# @param  Number  old-n   offset of item to move
+# @param  Number  n       offset the item should be moved to
+# @return Array           new reordered list
+@reorder = (list, old-n, n) ->
+  new-list = [] <<< list
+  [item] = new-list.splice old-n, 1, null
+  new-list.splice n+1, 0, item
+  new-list.splice old-n, 1
+  new-list
 
 # upsert a menu-item
 @upsert = (site, object, cb) ->

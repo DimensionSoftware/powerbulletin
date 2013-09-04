@@ -74,7 +74,6 @@ ban-all-domains = (site-id) ->
         m-path = menu.path(m, id.to-string!)
         site.config.menu = menu.mkpath m, m-path, menu-item
 
-      /*
       # XXX - the upsert can only insert unless database id is propagated here
       console.warn \form, form
       console.warn \menu-item, menu-item
@@ -85,7 +84,6 @@ ban-all-domains = (site-id) ->
         menu-item.form.id = r.0.id
         m2 = site.config.menu
         site.config.menu = menu.mkpath m2, m-path, menu-item
-      */
 
       err, r <- db.site-update site
       if err then return res.json success: false, hint: \db.site-update
