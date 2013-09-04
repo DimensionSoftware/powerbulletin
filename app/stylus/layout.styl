@@ -137,15 +137,17 @@ header
           max-height 450px
           height auto
           min-width 850px
-          transition opacity .5s ease-out .3s, min-width .2s cubic-bezier(1.000, -0.010, 0.800, 1.530) .35s, max-height .35s cubic-bezier(1, -0.01, 1, .08) .4s, top .2s ease-out .15s
-          .row:hover
-            text-indent 1px
+          padding 10px 0 35px 0
+          transition opacity .5s ease-out .3s, min-width .2s cubic-bezier(1.000, -0.010, 0.800, 1.530) .3s, max-height .25s cubic-bezier(1, -0.01, 1, .08) .35s, top .2s ease-out .15s
       .row:nth-last-child(3)
         .submenu
-          margin-left -100px
+          margin-left -130px
       .row:nth-last-child(2)
         .submenu
-          margin-left -270px
+          margin-left -300px
+      .row:nth-child(2)
+        .submenu
+          margin-left -42px
       .row:first-child
         .submenu
           margin-left -50px
@@ -163,6 +165,7 @@ header
         .submenu
           z-index 65
           top -600px
+          padding 0 15px
           overflow-y scroll
           opacity 0
           position absolute
@@ -171,19 +174,18 @@ header
           max-height 50px
           min-width 600px
           menu
-            margin-top grid
+            margin 10px 0
             .row
-              width 200px
+              width 250px
               height 35px
-              margin-top 8px
               display inline-block
               float left
               font-size 14px
-              text-indent 4px
-              line-height 35px
-              padding 0 10px
+              text-indent 2px
               a
-                display block
+                line-height 28px
+                padding 0 20px
+                display inline-block
     .profile
       position absolute
       display none
