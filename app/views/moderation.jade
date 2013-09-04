@@ -1,0 +1,11 @@
+include _post
+
+h1 Moderation Log
+.moderations
+  if posts.length
+    each p in posts
+      mixin _post(p, 0, true)
+  else
+    p These are not the droids you're looking for. Move along...
+
+//- vim:fdm=marker

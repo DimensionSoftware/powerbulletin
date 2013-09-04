@@ -118,7 +118,20 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
       res.header \x-varnish-ttl \24h # we cache for a very long ttl in varnish because we control this cache
     res.mutant \forum
 
-  if post_part # post
+  if meta.type is \moderation
+    tasks =
+      forum-id: db.uri-to-forum-id res.vars.site.id, meta.forum-uri, _
+      menu: db.menu site.id, _
+      posts: [\forumId, (cb, a) -> db.posts.moderated(a.forum-id, cb)]
+
+    err, fdoc <- async.auto tasks
+    if err then return next err
+
+    res.locals fdoc
+    caching-strategies.nocache res
+    res.mutant \moderation
+    return
+  else if post_part # post
     err, post <- db.uri-to-post site.id, meta.thread-uri
     if err then return next err
     if !post then return next 404

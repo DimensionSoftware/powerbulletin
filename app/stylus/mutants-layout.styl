@@ -5,7 +5,7 @@ bounce = cubic-bezier(0,1.72,0,.75)
 // Mutant-specific States
 //{{{ - homepage
 // XXX add html. selector here for any single-column layout & the leftnav will animate out, etc...
-html.homepage, html.page
+html.homepage, html.page, html.moderation
   .nicescroll-rails
     display none
   .left-content
@@ -755,6 +755,9 @@ html.forum
           bottom 32px
         .summary
           display none
+html.moderation
+  .moderations
+    padding-left: 40px
 
 #left_container
   height 100%

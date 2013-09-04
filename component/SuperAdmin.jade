@@ -1,6 +1,8 @@
 h1 Super Admin
 .SuperAdmin-nav
   h2 Nav
-  each mod in mods
-    a(href='#')= mod.title
+  ul
+    each mod in mods
+      li
+        a(href='#')= mod.title
 .SuperAdmin-content

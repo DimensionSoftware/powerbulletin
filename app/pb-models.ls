@@ -90,6 +90,21 @@ query-dictionary =
   pages:
     upsert: upsert-fn \pages
 
+  posts:
+    moderated: (forum-id, cb) ->
+      postgres.query '''
+      SELECT
+        p.*,
+        a.name AS user_name,
+        u.photo AS user_photo
+      FROM posts p
+      JOIN forums f ON f.id=p.forum_id
+      JOIN users u ON u.id=p.user_id
+      JOIN aliases a ON a.user_id=u.id AND a.site_id=f.site_id
+      JOIN moderations m ON m.post_id=p.id
+      WHERE p.forum_id=$1
+      ''', [forum-id], cb
+
   forums:
     upsert: upsert-fn \forums
 

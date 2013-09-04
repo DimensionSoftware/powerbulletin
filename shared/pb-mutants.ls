@@ -678,5 +678,12 @@ mk-post-pnum-to-href = (post-uri) ->
     Auth.show-login-dialog! # show!
     next!
 
+@moderation =
+  static: (w, next) ->
+    layout-static.call @, w, \moderation
+    w.render-mutant \main_content \moderation
+    next!
+  on-load: (window, next) ->
+    next!
 @
 # vim:fdm=indent
