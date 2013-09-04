@@ -1,7 +1,7 @@
 include _post-actions
 include _post-profile
 
-mixin _post(p, i)
+mixin _post(p, i, moderatorMode)
   .post(id="post_#{p.id}", class=p.reason ? 'censored' : '', data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id, data-forum-id=p.forum_id)
     if p.thread_uri
       h4.title
@@ -15,8 +15,9 @@ mixin _post(p, i)
       .post-content
         if p.html
           p.body!= p.html
-    mixin _post-actions(p)
-    .reply
+    if !moderatorMode
+      mixin _post-actions(p)
+      .reply
   .children
     if p.posts && p.posts.length
       each pp, ii in p.posts

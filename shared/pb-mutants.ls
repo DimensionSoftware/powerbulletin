@@ -681,7 +681,7 @@ mk-post-pnum-to-href = (post-uri) ->
 @moderation =
   static: (w, next) ->
     layout-static.call @, w, \moderation
-    w.$(\#main_content).append JSON.stringify(@posts)
+    w.render-mutant \main_content \moderation
     next!
   on-load: (window, next) ->
     next!
