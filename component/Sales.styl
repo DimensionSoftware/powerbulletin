@@ -91,7 +91,18 @@ blend = rgba(0,0,0,.5)
     border-top 1px solid #777
     border-bottom 1px solid #777
     box-shadow 0 0 28px -2px blend
-    background-image linear-gradient(to top, #eee 20px, #fff 100px, #fff 100%)
+    background-image radial-gradient(ellipse closest-corner at 45% 50%, #fff 50%, rgba(0,0,0,.1) 370%)
+    h4
+      text-transform uppercase
+      color dark_text
+      font-weight 600
+      font-size 2em
+      letter-spacing 1px
+      font-style italic
+      text-shadow 1px 1px 0 #666
+    article
+      p
+        padding 0 105px
   section
     position relative
     background-color #fff
@@ -156,8 +167,8 @@ blend = rgba(0,0,0,.5)
 
   section
     article
-      width 600px
-      margin 100px auto 0 auto
+      width 800px
+      margin 70px auto 0 auto
       h3
         position relative
         letter-spacing 2px
@@ -172,12 +183,12 @@ blend = rgba(0,0,0,.5)
         border-bottom 1px solid #ccc
         border-radius 100px / 1px
         box-shadow 0 0 3px 0px #ddd
-      h4
-        text-transform uppercase
       p
         margin auto
         color #555
         font-size 1.1em
+        padding 0 10px
+        line-height 1.5em
         a
           color #222
           margin 0 4px
