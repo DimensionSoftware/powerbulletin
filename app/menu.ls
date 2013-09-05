@@ -125,9 +125,15 @@ require! {
 # @return Array           new reordered list
 @reorder = (list, old-n, n) ->
   new-list = [] <<< list
+  if old-n == n
+    return new-list
   [item] = new-list.splice old-n, 1, null
-  new-list.splice n+1, 0, item
-  new-list.splice old-n, 1
+  if old-n < n
+    new-list.splice n+1, 0, item
+    new-list.splice old-n, 1
+  else
+    new-list.splice n, 0, item
+    new-list.splice old-n+1, 1
   new-list
 
 # upsert a menu-item
