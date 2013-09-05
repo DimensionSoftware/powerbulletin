@@ -19,10 +19,10 @@ if typeof(post) !== 'undefined'
           p.body!= post.html
         .reply
         .actions
-          a.stylish.onclick-footer-toggle Reply
-          a.stylish.edit.mutant.no-surf(data-edit=post.id, href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
-          a.stylish.permalink.mutant(href=post.uri) Permalink
-          a.stylish.censor.onclick-censor-post Censor
+          a.s-reply.onclick-footer-toggle(title='Reply')
+          a.edit.mutant.no-surf(data-edit=post.id, href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
+          a.s-permalink.permalink.mutant(href=post.uri, title='Permalink')
+          a.s-censor.censor.onclick-censor-post(title='Censor')
     .children
       if post.posts.length
         div(data-page=page)
