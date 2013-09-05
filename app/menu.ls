@@ -36,8 +36,33 @@ require! {
 #
 # @param  Array   menu
 # @param  Scalar  id      id of nested sortable item
-# @return Array   path for menu-item
-@path = (menu=[], id) -> @find(menu, id) or [menu.length]
+# @return Array           path for menu-item
+@path-for-upsert = (menu=[], id) -> @path(menu, id) or [menu.length]
+
+# Return the item at the given path
+#
+# @param  Array   menu    site menu
+# @param  Array   path    path to item
+# @return Object          menu item
+@item = (menu, path) ->
+  [first, ...rest] = path
+  if rest.length
+    return @item menu.children[first], rest
+  else
+    return menu[first]
+
+# Return a menu with the given path deleted
+# @param  Array   menu    site menu
+# @param  Array   path    path to item
+# @return Array           menu without deleted path
+@delete = (menu, path) ->
+  [first, ...rest] = path
+  new-menu = [] <<< menu
+  if rest.length
+    return @item menu.children[first], rest
+  else
+    new-menu.children.splice first, 1
+    return new-menu
 
 # Insert or update a menu-item in a hierarchichal menu and return the new menu.
 #
