@@ -15,7 +15,7 @@ paths:
   fse                   : "../local/fse"
   # FIXME update local jquery to 1.10.2
   jquery                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min else \../local/jquery-1.9.1.min
-  jquery-cookie         : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.3.1/jquery.cookie.min else \../local/jquery.cookie-1.3.1.min.js"
+  jquery-cookie         : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.3.1/jquery.cookie.min else \../local/jquery.cookie-1.3.1.min
   jquery-history        : "../local/history.min"
   jquery-html5-uploader : "../local/jquery.html5uploader"
   #jquery-masonry        : \//cdnjs.cloudflare.com/ajax/libs/masonry/3.1.1/masonry.pkgd.min
