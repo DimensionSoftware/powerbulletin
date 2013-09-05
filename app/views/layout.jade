@@ -22,18 +22,20 @@ html
     link(href="#{cache2Url}/images/apple-touch-icon.png", rel='apple-touch-icon')
     link(href="#{cache3Url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
     link(href="#{cache4Url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
-    link(href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400', rel='stylesheet', type='text/css')
+    //-link(href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400', rel='stylesheet', type='text/css')
     if cssUrls
       for obj in cssUrls
         link(rel='stylesheet',type='text/css',href=obj.url)
     if style
       link(href="#{cache2Url}/sites/#{siteId}.css?#{cacheBuster}", rel='stylesheet', type='text/css')
 
-    script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
-
     if env == 'production'
       //- in this case we preload most libraries, as opposed to fetching them all separately
+      //- FIXME move all of this to head.js
+      script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
       script(src="#{cacheUrl}/pb-optimized.js")
+    else
+      script(type='text/javascript', src="#{cache4Url}/local/require.js") //- offline
 
     //- the only .js in our <head> 
     if cvars.env != 'production'
