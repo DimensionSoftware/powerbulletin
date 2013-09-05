@@ -119,8 +119,24 @@ html.forum, html.profile, html.search
           .date
             color #999
             text-transform lowercase
-      .actions a
-        color dark
+      .actions
+        a
+          color dark
+        .s-reply::after, .s-permalink::after, .s-censor::after
+          position absolute
+          content ''
+          top 1px
+          left 1px
+          height 24px
+          width 24px
+          border-radius 24px
+          background-color rgba(255,255,255,.4)
+        .s-reply, .s-permalink, .s-censor
+          position relative
+          height 27px
+          width 27px
+          background-color light2
+          border-radius 27px
   .left-content
     border-right 1px solid #eaeaea
     .threads

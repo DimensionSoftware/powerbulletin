@@ -320,9 +320,9 @@ layout-on-personalize = (w, u) ->
       # enable edit actions
       # - censor
       $ ".post[data-user-id=#{u.id}] .censor"
-        .css \display \inline
+        .css \display \inline-block
       if u.rights?super
-        $ \.censor .css \display \inline
+        $ \.censor .css \display \inline-block
       # - post editing
       set-inline-editor.call ch, u.id
     next!
