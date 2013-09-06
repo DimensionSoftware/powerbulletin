@@ -122,7 +122,7 @@ require! {
       parent_id   : null
       title       : title
       uri         : form.forum-slug
-      slug        : forum-slug
+      slug        : form.forum-slug
       description : ''
   | \page =>
     type = \page

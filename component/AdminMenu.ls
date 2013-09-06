@@ -15,7 +15,7 @@ module.exports =
     const opts =
       handle: \div
       items:  \li
-      max-levels: 2
+      max-levels: 3
       tolerance: \pointer
       tolerance-element: '> div'
       placeholder: \placeholder
