@@ -1,8 +1,3 @@
-require! {
-  url
-  path
-}
-
 # Find the path to the menu-item or return false.
 #
 # @param  Array   menu
