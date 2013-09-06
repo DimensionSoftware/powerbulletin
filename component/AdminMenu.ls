@@ -15,7 +15,7 @@ module.exports =
     const opts =
       handle: \div
       items:  \li
-      max-levels: 2
+      max-levels: 3
       tolerance: \pointer
       tolerance-element: '> div'
       placeholder: \placeholder
@@ -90,6 +90,22 @@ module.exports =
                   if $i.is \textarea
                     $i.val form[n]
 
+    to-hierarchy: ~>
+      @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!
+
+    resort: (ev, ui) !~>
+      id    = ui.item.attr \id .replace /^list_/ ''
+      $form = @$.find \form
+      url   = $form.attr \action
+      req =
+        method : \PUT
+        url    : url
+        data:
+          action : \menu-resort
+          id     : id
+          tree   : JSON.stringify @to-hierarchy!
+      jqxhr = @@$.ajax req
+
     on-attach: !~>
       #{{{ Event Delegates
       @$.on \change 'input[name="dialog"]' ~> # type was selected
@@ -115,7 +131,7 @@ module.exports =
         @current-store!
 
         # get entire menu
-        menu = @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy! # extended to pull data attributes, too
+        menu = @to-hierarchy! # extended to pull data attributes, too
         form = @$.find \form
         form.find '[name="active"], [name="menu"]' .remove! # prune old
         form.append(@@$ \<input> # append new menu
@@ -154,7 +170,7 @@ module.exports =
       set-timeout (-> # activate first
         unless s.find \input:first .length then @$ \.onclick-add .click! # add unless exists
         s.find \input:first .focus!), 200ms
-      s.nested-sortable opts # init
+      s.nested-sortable { stop: @resort } <<< opts # init
 
     on-detach: -> @$.off!
 

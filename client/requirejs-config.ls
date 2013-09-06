@@ -10,26 +10,22 @@ cache-url =
     cvars.cache-url
 
 base-url: "#{cache-url}/client" # override for optimized builds
-wait-seconds: 14 # give a single module this long to load til timeout
+wait-seconds: 8 # give a single module this long to load til timeout
 paths:
   fse                   : "../local/fse"
-  #jquery                : "../local/jquery-1.9.1.min"
-  #jquery                : \//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min
-  jquery                : \//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min
-  #jquery-cookie         : "../local/jquery.cookie-1.3.1.min"
-  jquery-cookie         : \//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.3.1/jquery.cookie.min
+  # FIXME update local jquery to 1.10.2
+  jquery                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min else \../local/jquery-1.9.1.min
+  jquery-cookie         : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.3.1/jquery.cookie.min else \../local/jquery.cookie-1.3.1.min
   jquery-history        : "../local/history.min"
   jquery-html5-uploader : "../local/jquery.html5uploader"
   #jquery-masonry        : \//cdnjs.cloudflare.com/ajax/libs/masonry/3.1.1/masonry.pkgd.min
   # above didn't work because amd tried to resolve sub-modules ^^
   jquery-masonry        : "../local/jquery.masonry.min"
   jquery-nicescroll     : "../local/jquery.nicescroll.min"
-  #jquery-transit        : "../local/jquery.transit-0.9.9.min"
-  jquery-transit        : \//cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.9/jquery.transit.min
-  #jquery-ui             : "../local/jquery-ui.min"
-  jquery-ui             : \//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min
+  jquery-transit        : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.9/jquery.transit.min else \../local/jquery.transit-0.9.9.min
+  jquery-ui             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min else \../local/jquery-ui.min
   jquery-waypoints      : "../local/waypoints.min"
-  lodash                : \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min
+  lodash                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min else \../local/lodash.min
   raf                   : "../local/raf"
   powerbulletin         : "../powerbulletin"
   powerbulletin-sales   : "../powerbulletin-sales"

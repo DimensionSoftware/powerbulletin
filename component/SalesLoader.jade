@@ -2,6 +2,19 @@
 html
   head
     title PowerBulletin
+    meta(name='description',content='Build a real-time PowerBulletin Community at the click of a button!') 
+    meta(http-equiv='X-UA-Compatible',content='IE=EmulateIE9,chrome=1')
+    meta(name='robots',content='index, follow')
+    meta(name='apple-mobile-web-app-capable', content='yes')
+    meta(name='apple-mobile-web-app-status-bar-style', content='black')
+    meta(name='viewport', content='user-scalable=0, initial-scale=1, maximum-scale=1, width=device-width')
+
+    //- links first
+    link(href="#{cacheUrl}/images/favicon.ico",rel='shortcut icon',type='image/x-icon')
+    link(href="#{cache2Url}/images/apple-touch-icon.png", rel='apple-touch-icon')
+    link(href="#{cache3Url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
+    link(href="#{cache4Url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
+    link(href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400', rel='stylesheet', type='text/css')
     for stylesheet in stylesheets
       link(rel='stylesheet', type='text/css', href=stylesheet)
     script(src="#{cacheUrl}/local/head-0.99.load.min.js")
