@@ -97,10 +97,11 @@ require! {
   #[first, ...rest] = p.split '/' |> reject (-> it is '')
   [first, ...rest] = p
   #console.log { first, rest }
+  new-menu = [] <<< menu
 
   # Do I have a menu item with it.slug part in menu?
   #menu-item = find (.slug is first), menu
-  menu-item = menu[first]
+  menu-item = {} <<< new-menu[first]
   #console.log \menu-item, menu-item
 
   # Create menu-item if non-existent.
@@ -115,21 +116,22 @@ require! {
     else
       #console.log \--leaf
       new-item <<< object
-      return [ ...menu, new-item ]
+      return [ ...new-menu, new-item ]
   # If menu-item exists... update
   else
     #console.log \slug, \menu-item, first
     # ...and there's more to the path, add children
-    # FIXME - mutations
     if rest.length
       #console.log \--rest
-      menu-item.children ?= []
-      menu-item.children = @struct-upsert menu-item.children, rest, object
-      return menu
+      menu-item.children = @struct-upsert [], rest, object
+      new-menu[first] = menu-item
+      return new-menu
     # ...there's nothing left, merge the object into menu-item
     else
+      #console.log \merge
       menu-item <<< object
-      return menu
+      new-menu[first] = menu-item
+      return new-menu
 
 # Given a form submission, figure out what kind of data we have.
 #
@@ -165,27 +167,29 @@ require! {
 
 # Given a menu, and 2 paths, the first path will swap positions with the second path
 #
-# @param  Array   menu    sites.config.menu
-# @param  Array   old-path
-# @param  Array   path
-# @return Array           new menu with 2 paths swapped
+# @param  Array   menu      sites.config.menu
+# @param  Array   old-path  path of item to move
+# @param  Array   path      path to move item to
+# @return Array             new menu with 2 paths swapped
 @move = (menu, old-path, path) ->
   item = @item menu, old-path
   d-menu = @delete menu, @path(menu, item.id)
   i-menu = @insert d-menu, path, item
 
-# upsert a menu-item
+# Upsert a menu-item into the database
+#
+# @param  Object    site    site
+# @param  Object    object  raw menu item
+# @param  Function  cb      function to run after database upsert
 @db-upsert = (site, object, cb) ->
   [type, data] = @extract object
   data.site_id = site.id
 
-  do-upsert = (cb) ->
-    switch type
-    | \page          => db.pages.upsert data, cb
-    | \forum         => db.forums.upsert data, cb # TODO - forum case is not so simple and will need to be expanded upon
-    | \external-link => cb null, null
-    | otherwise      => cb new Error("menu.upsert unknown type #type"), data
+  switch type
+  | \page          => db.pages.upsert data, cb
+  | \forum         => db.forums.upsert data, cb # TODO - forum case is not so simple and will need to be expanded upon
+  | \external-link => cb null, null
+  | otherwise      => cb new Error("menu.upsert unknown type #type"), data
 
-  do-upsert cb
 
 # vim:fdm=indent
