@@ -165,9 +165,9 @@ require! {
 
 # given an old and new menu hierarchy, move the menu-items that have moved
 @move = (menu, old-path, path) ->
-  item = @item old-path
-  d-menu = @delete menu, old-path
-  new-menu = @struct-upsert d-menu, path, item
+  item = @item menu, old-path
+  d-menu = @delete menu, @path(menu, item.id)
+  i-menu = @insert d-menu, path, item
 
 # Given a list of items, move an item from offset old-n to offset n.
 #
