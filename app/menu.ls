@@ -6,9 +6,9 @@ require! {
 # Find the path to the menu-item or return false.
 #
 # @param  Array   menu
-# @param  Scalar  id      id of nested sortable item
+# @param  Scalar  id        id of nested sortable item
 # @param  Array   p
-# @return Array           path for menu-item or false
+# @return Array             path for menu-item or false
 @path = (menu=[], id, p=[]) ->
   menu-item = find (.id is id), menu
   if menu-item
@@ -34,15 +34,15 @@ require! {
 # Return the path needed to insert or update a node with the given id.
 #
 # @param  Array   menu
-# @param  Scalar  id      id of nested sortable item
-# @return Array           path for menu-item
+# @param  Scalar  id        id of nested sortable item
+# @return Array             path for menu-item
 @path-for-upsert = (menu=[], id) -> @path(menu, id) or [menu.length]
 
 # Return the item at the given path
 #
-# @param  Array   menu    site menu
-# @param  Array   path    path to item
-# @return Object          menu item
+# @param  Array   menu      site menu
+# @param  Array   path      path to item
+# @return Object            menu item
 @item = (menu, path) ->
   [first, ...rest] = path
   if rest.length
@@ -51,9 +51,10 @@ require! {
     return menu[first]
 
 # Return a menu with the given path deleted
-# @param  Array   menu    site menu
-# @param  Array   path    path to item
-# @return Array           menu without deleted path
+# 
+# @param  Array   menu      site menu
+# @param  Array   path      path to item
+# @return Array             menu without deleted path
 @delete = (menu, path) ->
   [first, ...rest] = path
   new-menu = [] <<< menu
@@ -71,10 +72,11 @@ require! {
     return new-menu
 
 # Return a menu with the given object inserted in the given path
-# @param  Array   menu    site menu
-# @param  Array   path    path for new-item
-# @param  Object  item    item to be inserted
-# @return Array           new site menu with item inserted in path
+#
+# @param  Array   menu      site menu
+# @param  Array   path      path for new-item
+# @param  Object  item      item to be inserted
+# @return Array             new site menu with item inserted in path
 @insert = (menu, path, item) ->
   [first, ...rest] = path
   new-menu = [] <<< menu
@@ -89,9 +91,9 @@ require! {
 
 # Insert or update a menu-item in a hierarchichal menu and return the new menu.
 #
-# @param  Array   menu    sites.config.menu (where the top-level is an array)
-# @param  Array   p       path made of array indices (like [0, 1, 0, 5])
-# @param  Object  object  object to add or merge at the given path
+# @param  Array   menu      sites.config.menu (where the top-level is an array)
+# @param  Array   p         path made of array indices (like [0, 1, 0, 5])
+# @param  Object  object    object to add or merge at the given path
 # @return Array   new menu
 @struct-upsert = (menu=[], p=[], object={}) ->
   #[first, ...rest] = p.split '/' |> reject (-> it is '')
@@ -135,8 +137,8 @@ require! {
 
 # Given a form submission, figure out what kind of data we have.
 #
-# @param  Object object   form data from menu admin
-# @return Array  [type, data] should give you database-friendly info about the object
+# @param  Object  object    form data from menu admin
+# @return Array             [type, data] should give you database-friendly info about the object
 @extract = ({id,title,form}:object) ->
   if object.type
     return [object.type, object]
