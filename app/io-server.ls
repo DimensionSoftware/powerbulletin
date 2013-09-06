@@ -41,6 +41,11 @@ site-by-domain = (domain, cb) ->
   global.db = pg.procs
 
   io  = sio.listen server
+  io.set \transports, [
+    * \websocket
+    * \xhr-polling
+    * \jsonp-polling
+  ]
   io.set 'log level', 1
 
   redis-pub    = redis.create-client!
