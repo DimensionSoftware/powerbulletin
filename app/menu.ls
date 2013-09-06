@@ -70,13 +70,21 @@ require! {
     new-menu.splice first, 1
     return new-menu
 
-@insert = (menu, path) ->
+# Return a menu with the given object inserted in the given path
+# @param  Array   menu    site menu
+# @param  Array   path    path for new-item
+# @param  Object  item    item to be inserted
+# @return Array           new site menu with item inserted in path
+@insert = (menu, path, item) ->
   [first, ...rest] = path
   new-menu = [] <<< menu
   if rest.length
-    return @insert menu[first].children, rest
+    first-child = {} <<< new-menu[first]
+    first-child.children = @insert new-menu[first].children, rest, item
+    new-menu[first] = first-child
+    return new-menu
   else
-    new-menu.children.splice first, 1
+    new-menu.splice first, 0, item
     return new-menu
 
 # Insert or update a menu-item in a hierarchichal menu and return the new menu.
