@@ -89,6 +89,10 @@ module.exports =
                 | otherwise
                   if $i.is \textarea
                     $i.val form[n]
+
+    to-hierarchy: ~>
+      @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!
+
     resort: (ev, ui) !~>
       id    = ui.item.attr \id .replace /^list_/ ''
       $form = @$.find \form
@@ -99,7 +103,7 @@ module.exports =
         data:
           action : \menu-resort
           id     : id
-          path   : \need-to-send-new-path-somehow
+          tree   : JSON.stringify @to-hierarchy!
       jqxhr = @@$.ajax req
 
     on-attach: !~>
@@ -127,7 +131,7 @@ module.exports =
         @current-store!
 
         # get entire menu
-        menu = @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy! # extended to pull data attributes, too
+        menu = @to-hierarchy! # extended to pull data attributes, too
         form = @$.find \form
         form.find '[name="active"], [name="menu"]' .remove! # prune old
         form.append(@@$ \<input> # append new menu

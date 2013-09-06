@@ -93,7 +93,20 @@ ban-all-domains = (site-id) ->
 
     # resort a menu
     | \menu-resort =>
-      res.json success:false
+      id   = req.body.id
+      tree = JSON.parse req.body.tree
+      src  = menu.path site.config.menu, id
+      dst  = menu.path tree, id
+      if dst is false or src is false
+        return res.json success:false
+
+      new-menu = menu.move site.config.menu, src, dst
+      site.config.menu = new-menu
+      err, r <- db.site-update site
+      if err then return res.json success: false, hint: \menu-resort
+
+      ban-all-domains site.id # varnish ban
+      res.json success:true
 
     | \domains =>
       # find domain
