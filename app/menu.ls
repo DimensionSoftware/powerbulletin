@@ -163,30 +163,16 @@ require! {
     data = null
   return [type, data]
 
-# given an old and new menu hierarchy, move the menu-items that have moved
+# Given a menu, and 2 paths, the first path will swap positions with the second path
+#
+# @param  Array   menu    sites.config.menu
+# @param  Array   old-path
+# @param  Array   path
+# @return Array           new menu with 2 paths swapped
 @move = (menu, old-path, path) ->
   item = @item menu, old-path
   d-menu = @delete menu, @path(menu, item.id)
   i-menu = @insert d-menu, path, item
-
-# Given a list of items, move an item from offset old-n to offset n.
-#
-# @param  Array   list    list of items
-# @param  Number  old-n   offset of item to move
-# @param  Number  n       offset the item should be moved to
-# @return Array           new reordered list
-@reorder = (list, old-n, n) ->
-  new-list = [] <<< list
-  if old-n == n
-    return new-list
-  [item] = new-list.splice old-n, 1, null
-  if old-n < n
-    new-list.splice n+1, 0, item
-    new-list.splice old-n, 1
-  else
-    new-list.splice n, 0, item
-    new-list.splice old-n+1, 1
-  new-list
 
 # upsert a menu-item
 @db-upsert = (site, object, cb) ->
