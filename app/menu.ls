@@ -8,9 +8,8 @@ require! {
 # @param  Array   menu
 # @param  Scalar  id      id of nested sortable item
 # @param  Array   p
-# @return Array   path for menu-item or false
-@find = (menu=[], id, p=[]) ->
-  #console.log "start", menu, p
+# @return Array           path for menu-item or false
+@path = (menu=[], id, p=[]) ->
   menu-item = find (.id is id), menu
   if menu-item
     #console.log [...p, menu.index-of menu-item]
@@ -21,7 +20,7 @@ require! {
     if ndx-menu-pairs.length
       #console.log \child-menus
       f = null
-      found = find (([ndx, child-menu]) ~> f := @find child-menu, id, [...p, ndx]), ndx-menu-pairs
+      found = find (([ndx, child-menu]) ~> f := @path child-menu, id, [...p, ndx]), ndx-menu-pairs
       if found
         #console.log \found-in-ndx-menu-pairs, found
         return f
@@ -47,7 +46,7 @@ require! {
 @item = (menu, path) ->
   [first, ...rest] = path
   if rest.length
-    return @item menu.children[first], rest
+    return @item menu[first].children, rest
   else
     return menu[first]
 
@@ -59,7 +58,23 @@ require! {
   [first, ...rest] = path
   new-menu = [] <<< menu
   if rest.length
-    return @item menu.children[first], rest
+    new-children = @delete new-menu[first].children, rest
+    if new-children.length
+      new-menu[first].children = new-children
+    else
+      first-child = {} <<< new-menu[first]
+      delete first-child.children
+      new-menu[first] = first-child
+    return new-menu
+  else
+    new-menu.splice first, 1
+    return new-menu
+
+@insert = (menu, path) ->
+  [first, ...rest] = path
+  new-menu = [] <<< menu
+  if rest.length
+    return @insert menu[first].children, rest
   else
     new-menu.children.splice first, 1
     return new-menu
@@ -70,7 +85,7 @@ require! {
 # @param  Array   p       path made of array indices (like [0, 1, 0, 5])
 # @param  Object  object  object to add or merge at the given path
 # @return Array   new menu
-@mkpath = (menu=[], p=[], object={}) ->
+@struct-upsert = (menu=[], p=[], object={}) ->
   #[first, ...rest] = p.split '/' |> reject (-> it is '')
   [first, ...rest] = p
   #console.log { first, rest }
@@ -87,7 +102,7 @@ require! {
     if rest.length
       throw new Error "path could not be created", p
       #console.log \--rest
-      #new-item.children = @mkpath rest, [], object
+      #new-item.children = @struct-upsert rest, [], object
       #return [ ...menu, new-item ]
     else
       #console.log \--leaf
@@ -97,10 +112,11 @@ require! {
   else
     #console.log \slug, \menu-item, first
     # ...and there's more to the path, add children
+    # FIXME - mutations
     if rest.length
       #console.log \--rest
       menu-item.children ?= []
-      menu-item.children = @mkpath menu-item.children, rest, object
+      menu-item.children = @struct-upsert menu-item.children, rest, object
       return menu
     # ...there's nothing left, merge the object into menu-item
     else
@@ -140,7 +156,10 @@ require! {
   return [type, data]
 
 # given an old and new menu hierarchy, move the menu-items that have moved
-@move = (old-menu, new-menu) -> new-menu
+@move = (menu, old-path, path) ->
+  item = @item old-path
+  d-menu = @delete menu, old-path
+  new-menu = @struct-upsert d-menu, path, item
 
 # Given a list of items, move an item from offset old-n to offset n.
 #
@@ -162,7 +181,7 @@ require! {
   new-list
 
 # upsert a menu-item
-@upsert = (site, object, cb) ->
+@db-upsert = (site, object, cb) ->
   [type, data] = @extract object
   data.site_id = site.id
 
