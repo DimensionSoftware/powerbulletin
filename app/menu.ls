@@ -178,6 +178,44 @@ require! {
   d-menu = @delete menu, @path(menu, item.id)
   i-menu = @insert d-menu, path, item
 
+# Return a nested-sortable-id generation function
+# @param  Number    initial   initial value
+# @return Function            function that returns incrementing values on every call
+@id-fn = (initial) ->
+  i = initial
+  ->
+    i++
+
+# Given a menu tree from db.menu(site-id, cb), return a tree suitable for site.config.menu
+#
+# @param  Array   old-menu  original-style menu of hierarchical forums
+# @return Array             new-style menu
+@upconvert = (old-menu, id-fn) ->
+  if not id-fn
+    id-fn = @id-fn 1
+
+  _item = (old-item) ->
+    id    : id-fn!
+    title : old-item.title
+    form  :
+      dialog     : \forum
+      id         : old-item.id
+      title      : old-item.title
+      forum-slug : old-item.uri
+      page-slug  : ''
+      content    : ''
+      uri        : ''
+
+  _convert = (old-item) ~>
+    if old-item?forums?length
+      item = _item old-item
+      item.children = @upconvert old-item.forums, id-fn
+      return item
+    else
+      return _item old-item
+
+  old-menu.map _convert
+
 #### ^^^^ Everything above this line can be shared with the client if necessary. ^^^^ ####
 
 # Upsert a menu-item into the database
