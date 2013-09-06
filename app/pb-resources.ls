@@ -91,6 +91,10 @@ ban-all-domains = (site-id) ->
       ban-all-domains site.id # varnish ban
       res.json success:true
 
+    # resort a menu
+    | \menu-resort =>
+      res.json success:false
+
     | \domains =>
       # find domain
       err, domain <- db.domain-by-id req.body.domain

@@ -176,6 +176,8 @@ require! {
   d-menu = @delete menu, @path(menu, item.id)
   i-menu = @insert d-menu, path, item
 
+#### ^^^^ Everything above this line can be shared with the client if necessary. ^^^^ ####
+
 # Upsert a menu-item into the database
 #
 # @param  Object    site    site

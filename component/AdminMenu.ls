@@ -89,6 +89,18 @@ module.exports =
                 | otherwise
                   if $i.is \textarea
                     $i.val form[n]
+    resort: (ev, ui) !~>
+      id    = ui.item.attr \id .replace /^list_/ ''
+      $form = @$.find \form
+      url   = $form.attr \action
+      req =
+        method : \PUT
+        url    : url
+        data:
+          action : \menu-resort
+          id     : id
+          path   : \need-to-send-new-path-somehow
+      jqxhr = @@$.ajax req
 
     on-attach: !~>
       #{{{ Event Delegates
@@ -154,7 +166,7 @@ module.exports =
       set-timeout (-> # activate first
         unless s.find \input:first .length then @$ \.onclick-add .click! # add unless exists
         s.find \input:first .focus!), 200ms
-      s.nested-sortable opts # init
+      s.nested-sortable { stop: @resort } <<< opts # init
 
     on-detach: -> @$.off!
 
