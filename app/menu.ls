@@ -174,6 +174,7 @@
   i-menu = @insert d-menu, path, item
 
 # Return a nested-sortable-id generation function
+#
 # @param  Number    initial   initial value
 # @return Function            function that returns incrementing values on every call
 @id-fn = (initial) ->
@@ -190,7 +191,7 @@
     id-fn = @id-fn 1
 
   _item = (old-item) ->
-    id    : id-fn!
+    id    : id-fn!to-string!
     title : old-item.title
     form  :
       dialog     : \forum
@@ -227,6 +228,5 @@
   | \forum         => db.forums.upsert data, cb # TODO - forum case is not so simple and will need to be expanded upon
   | \external-link => cb null, null
   | otherwise      => cb new Error("menu.upsert unknown type #type"), data
-
 
 # vim:fdm=indent
