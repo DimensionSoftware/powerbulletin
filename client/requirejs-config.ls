@@ -39,7 +39,7 @@ shim:
     exports: \jQuery.cookie
     deps: [\jquery]
   jquery-history:
-    exports: \History.adapter
+    exports: \History.Adapter
     deps: [\jquery]
   jquery-masonry:
     # no exports property needed since masonry is native AMD
