@@ -3,20 +3,18 @@
 @keyframes hover-around
   0%
     transform rotateZ(0deg)
-  25%
+  15%
+    transform rotateZ(4deg)
+  60%
     transform rotateY(-30deg)
-  55%
-    transform scale(.95)
-    transform rotateZ(8deg)
   100%
-    transform rotateZ(-5deg)
-    transform scale(1.05)
+    transform rotateY(10deg)
 
 .hover-around
-  perspective 800
+  perspective 300
   transformation-style preserve-3d
   animation-name hover-around
-  animation-duration 5s
+  animation-duration 3s
   animation-iteration-count infinite
   animation-direction alternate
 
