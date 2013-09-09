@@ -69,7 +69,7 @@ ban-all-domains = (site-id) ->
 
       if id = req.body.id # active form
         form = { [k, v] for k,v of req.body when k in
-          <[ id title dialog forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
+          <[ id dbid title dialog forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
         menu-item = { id, form.title, form }
         m-path = menu.path-for-upsert(m, id.to-string!)
         site.config.menu = menu.struct-upsert m, m-path, menu-item

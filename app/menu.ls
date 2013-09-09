@@ -160,6 +160,7 @@
   | otherwise =>
     type = null
     data = null
+  data.id = form.dbid if form.dbid
   return [type, data]
 
 # Given a menu, and 2 paths, the first path will swap positions with the second path
@@ -195,7 +196,7 @@
     title : old-item.title
     form  :
       dialog     : \forum
-      id         : old-item.id
+      dbid       : old-item.id
       title      : old-item.title
       forum-slug : old-item.uri
       page-slug  : ''
