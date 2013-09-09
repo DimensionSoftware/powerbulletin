@@ -91,7 +91,7 @@ blend = rgba(0,0,0,.5)
     border-top 1px solid #777
     border-bottom 1px solid #777
     box-shadow 0 0 28px -2px blend
-    background-image radial-gradient(ellipse closest-corner at 45% 50%, #fff 50%, rgba(0,0,0,.1) 370%)
+    background-image radial-gradient(ellipse closest-corner at 50% 50%, #fff 70%, rgba(0,0,0,.1) 150%)
     h4
       text-transform uppercase
       color dark_text
@@ -103,6 +103,32 @@ blend = rgba(0,0,0,.5)
     article
       p
         padding 0 105px
+      .onclick-scroll-to:hover
+        letter-spacing 4px
+        color #999
+        transition all .1s ease-out
+      .onclick-scroll-to
+        cursor pointer
+        display block
+        position relative
+        width 150px
+        height 30px
+        font-size .7em
+        letter-spacing 3px
+        margin 35px auto 0 auto
+        text-transform uppercase
+        color #bbb
+      .onclick-scroll-to::after
+        border 9px solid transparent
+        border-top 9px solid #ccc
+        content ''
+        position absolute
+        bottom -10px
+        left 64px
+      .onclick-scroll-to:hover::after
+        border-top 12px solid #aaa
+        bottom -12px
+        transition all .1s ease-out
   section
     position relative
     background-color #fff

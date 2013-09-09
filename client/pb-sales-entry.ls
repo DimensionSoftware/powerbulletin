@@ -45,7 +45,7 @@ $ window .on \scroll, ->
   # - FIXME optimize by pre-computing & only moving imgs in view
   for e in <[.first .second .third .fourth .fifth]>
     dy = -($ e .offset!top)
-    $ "#e .bg" .css \y, "#{0+((dy+offset)*0.45)}px"
+    $ "#e .bg" .css \y, "#{0+((dy+offset)*0.6)}px"
 
 # animate focus
 set-timeout (-> # bring in register
