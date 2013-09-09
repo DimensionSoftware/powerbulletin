@@ -106,6 +106,22 @@ module.exports =
           tree   : JSON.stringify @to-hierarchy!
       jqxhr = @@$.ajax req
 
+    build-nested-sortable: ($ol, menu) ~>
+      for item in menu
+        # add item to $ol
+        if id = item.id
+          form = item.form
+          item.data ||= {}
+            ..form  = form
+            ..title = form?title
+          item.id = "#prefix#id"
+          $ol.append(@clone item)
+        # if item has children, create a sub $ol and recurse
+        if item.children?length
+          $sub-ol = $('<ol/>')
+          $ol.append $sub-ol
+          @build-nested-sortable $sub-ol, item.children
+
     on-attach: !~>
       #{{{ Event Delegates
       @$.on \change 'input[name="dialog"]' ~> # type was selected
@@ -156,15 +172,7 @@ module.exports =
 
       if menu # init ui
         menu = JSON.parse menu if typeof menu is \string
-        #menu = menu.0 if typeof menu is \object
-        for item in menu
-          if id = item.id
-            form = item.form
-            item.data ||= {}
-              ..form  = form
-              ..title = form?title
-            item.id = "#prefix#id"
-            s.append(@clone item)
+        @build-nested-sortable s, menu
 
       @show! # bring in ui
       set-timeout (-> # activate first
