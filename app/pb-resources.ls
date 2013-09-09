@@ -79,7 +79,8 @@ ban-all-domains = (site-id) ->
       console.warn \menu-item, menu-item
       console.warn \extracted, menu.extract menu-item
       err, r <- menu.db-upsert site, menu-item
-      if err then return res.json success: false, hint: \menu.upsert, err: err
+      console.log \r, r
+      if err then return res.json success: false, hint: \menu.upsert, err: err, errors: [ err.message ]
       if r.length
         menu-item.form.id = r.0.id
         m2 = site.config.menu
