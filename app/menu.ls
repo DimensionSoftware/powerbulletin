@@ -160,7 +160,10 @@
   | otherwise =>
     type = null
     data = null
-  data.id = form.dbid if form.dbid
+  if form.dbid
+    data.id = form.dbid
+  else
+    delete data.id
   return [type, data]
 
 # Given a menu, and 2 paths, the first path will swap positions with the second path
