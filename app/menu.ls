@@ -1,3 +1,7 @@
+require! {
+  p: path
+}
+
 # Find the path to the menu-item or return false.
 #
 # @param  Array   menu
@@ -150,7 +154,7 @@
       parent_id   : null
       title       : title
       uri         : form.forum-slug
-      slug        : form.forum-slug
+      slug        : p.basename form.forum-slug
       description : ''
   | \page =>
     type = \page
