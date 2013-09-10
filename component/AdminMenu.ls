@@ -115,8 +115,10 @@ module.exports =
             action : \menu-delete
             id     : row.parents \li .attr \id .replace /^list_/ ''
         @@$.ajax req
-          .always (data) ->
-            console.log \always:, data
+          .done (data) ~>
+            row.parents('li').remove()
+          .fail (jqxhr, status, err) ~>
+            console.warn status, err
 
     build-nested-sortable: ($ol, menu) ~>
       for item in menu
