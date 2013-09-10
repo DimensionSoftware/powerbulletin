@@ -34,6 +34,9 @@ sales-personal-mw =
   * auth.mw.initialize
   * auth.mw.session
 
+# authorization for dreamcodez' blitz.io account
+s-app.get \/mu-d81b9b5a-572eee60-bc2ce3f6-e3fc404b (req, res) -> res.send \42
+
 s-app.get '/dynamic/css/:file' pb-handlers.stylus
 
 s-app.get '/' (req, res, next) ->
