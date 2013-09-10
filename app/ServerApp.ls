@@ -160,7 +160,7 @@ module.exports =
           colors: true
         })
 
-      app.use connect.logger(immediate: false, format: \dev) if (app.env is \development or app.env is void)
+      app.use connect.logger(immediate: false, format: \dev) if (env is \development or env is void)
 
       for a in [app] # apply app defaults
         a.use mw.vars
