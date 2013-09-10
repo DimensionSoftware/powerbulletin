@@ -13,6 +13,7 @@ require! {
 # /forum                                forum
 # /forum/sub-forum                      forum
 # /forum/sub-forum/sub-sub-forum        forum
+# /forum/m                              moderation log
 # /forum/new                            new-thread
 # /forum/t/thread                       thread (with implicit page 1)
 # /forum/t/thread/2345                  thread-permalink (permalink into subtree)
@@ -24,6 +25,7 @@ require! {
 states =
   * \initial
   * \forum
+  * \moderation
   * \new-thread
   * \-thread-marker
   * \thread
@@ -41,6 +43,7 @@ inputs =
   * \number
   * \new
   * \edit
+  * \m
   * \t
   * \page
 */

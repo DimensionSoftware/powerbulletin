@@ -24,6 +24,11 @@ if [ "$NODE_ENV" = 'production' ] ; then
     bin/daemonize "pb-worker-$port" "logs/powerbulletin.log" "node app/main.js $port"
     sleep 5 # give 5 seconds for process to start up before moving on to next one
   done
+
+  # reap /tmp files (for express.bodyParser)
+  pkill -9 -f '^node node_modules/.bin/reap'
+  node_modules/.bin/reap /tmp -t 1800000 &
+
 else
   export NODE_WORKERS=${NODE_WORKERS:=1}
   # XXX: may want to limit --prof to child process, but don't know api

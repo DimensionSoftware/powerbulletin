@@ -34,29 +34,35 @@ module.exports =
             else
               window.location = "http://#subdomain#{@local \hostname}\#once"
         after-registration = ~>
-          set-timeout create-site, 2000
-        on-click = Auth.require-registration create-site, after-registration
+          set-timeout create-site, 2000ms
+        on-click = ~>
+          @$.find \.SiteRegister-subdomain:first .focus!
+          (Auth.require-registration create-site, after-registration)!
         locals = {title: \Create}
         @children =
           buy: new ParallaxButton {on-click, locals} \.SiteRegister-create @
 
+    disable-ui: ~>
+      @$.find \.SiteRegister-available
+        ..remove-class 'success error'
+        ..add-class \error
+      @children.buy.disable!
+
+    enable-ui: ~>
+      @children.buy.enable!
+      @$.find \.SiteRegister-available
+        ..remove-class 'success error'
+        ..add-class \success
+
     on-attach: ->
-      component = @
-      $sa = @$.find \.SiteRegister-available
-      $errors = @@$ \.SiteRegister-errors
+      $errors   = @@$ \.SiteRegister-errors
+      component = @ # save
 
       @check-subdomain-availability = @@$R((subdomain) ~>
         errors = pure-validations.subdomain subdomain
         @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ->
-          $sa.remove-class 'success error'
-          if res.available
-            component.children.buy.enable!
-            $sa.add-class \success
-          else
-            component.children.buy.disable!
-            $sa.add-class \error
-            errors.push 'Domain is unavailable, try again!'
-
+          unless res.available then errors.push 'Domain is unavailable, try again!'
+          if errors.length then component.disable-ui! else component.enable-ui!
           ch.show-tooltip $errors, errors.join \<br> if errors.length
       ).bind-to @state.subdomain
 
@@ -69,8 +75,9 @@ module.exports =
           unless new-input is last-val
             # only signal changes on _different_ input
             component.state.subdomain new-input
-
           last-val := new-input
+        else # disable if empty
+          component.disable-ui!
 
     on-detach: ->
       sh.r-unbind @check-subdomain-availability

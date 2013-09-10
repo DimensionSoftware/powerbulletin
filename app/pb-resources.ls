@@ -69,7 +69,7 @@ ban-all-domains = (site-id) ->
 
       if id = req.body.id # active form
         form = { [k, v] for k,v of req.body when k in
-          <[ id title dialog forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
+          <[ id dbid title dialog forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
         menu-item = { id, form.title, form }
         m-path = menu.path-for-upsert(m, id.to-string!)
         site.config.menu = menu.struct-upsert m, m-path, menu-item
@@ -79,9 +79,10 @@ ban-all-domains = (site-id) ->
       console.warn \menu-item, menu-item
       console.warn \extracted, menu.extract menu-item
       err, r <- menu.db-upsert site, menu-item
-      if err then return res.json success: false, hint: \menu.upsert, err: err
+      console.log \r, r
+      if err then return res.json success: false, hint: \menu.upsert, err: err, errors: [ err.message ]
       if r.length
-        menu-item.form.id = r.0.id
+        menu-item.form.dbid = r.0.id
         m2 = site.config.menu
         site.config.menu = menu.struct-upsert m2, m-path, menu-item
 
@@ -90,6 +91,13 @@ ban-all-domains = (site-id) ->
 
       ban-all-domains site.id # varnish ban
       res.json success:true
+
+    # delete a menu
+    | \menu-delete =>
+      id = req.body.id
+      console.log \deleting, id
+      res.json true
+      # TODO take difference of client tree & server tree to know which deleted
 
     # resort a menu
     | \menu-resort =>

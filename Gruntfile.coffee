@@ -70,7 +70,7 @@ module.exports = (grunt) ->
   #}}}
 #{{{ Backend tasks
   grunt.registerTask "launch", "Launch PowerBulletin!", launch = ->
-    if process.NODE_ENV is "production"
+    if process.env.NODE_ENV is "production"
       daemon "./bin/powerbulletin", config.tmp + "/pb.pid"
     else
       #exec "bin/develop &", async:true
@@ -104,8 +104,8 @@ module.exports = (grunt) ->
   #}}}
 
   # Default task(s).
-  if process.NODE_ENV is "production"
-    grunt.registerTask "default", ["procs", "clientJade", "componentJade", "uglify", "launch"]
+  if process.env.NODE_ENV is "production"
+    grunt.registerTask "default", ["launch"] # launch handles everything
   else
     grunt.registerTask "default", ["procs", "clientJade", "componentJade", "launch", "watch"]
 

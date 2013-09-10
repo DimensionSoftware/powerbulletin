@@ -106,10 +106,43 @@ module.exports =
           tree   : JSON.stringify @to-hierarchy!
       jqxhr = @@$.ajax req
 
+    delete: (row) !~>
+      if confirm "Permanently Delete #{row.val!}?"
+        req =
+          method : \PUT
+          url    : @$.find \form.menus .attr \action
+          data:
+            action : \menu-delete
+            id     : row.parents \li .attr \id .replace /^list_/ ''
+        @@$.ajax req
+          .always (data) ->
+            console.log \always:, data
+
+    build-nested-sortable: ($ol, menu) ~>
+      for item in menu
+        # add item to $ol
+        if id = item.id
+          form = item.form
+          item.data ||= {}
+            ..form  = form
+            ..title = form?title
+          item.id = "#prefix#id"
+          $ol.append(@clone item)
+        # if item has children, create a sub $ol and recurse
+        if item.children?length
+          $sub-ol = $('<ol/>')
+          $ol.append $sub-ol
+          @build-nested-sortable $sub-ol, item.children
+
     on-attach: !~>
       #{{{ Event Delegates
       @$.on \change 'input[name="dialog"]' ~> # type was selected
+        # TODO - make sure current-restore has the right data to restore; when adding a new item, it often does not.
+        # TODO - create slug out of title
         @$.find \fieldset .add-class \has-dialog .find \input:visible .focus!
+
+      @$.on \click \.onclick-close (ev) ~>
+        @delete ($ ev.target .prev \.row) # extract row
 
       @$.on \click \.onclick-add (ev) ~>
         @show!
@@ -119,11 +152,30 @@ module.exports =
         max = parse-int maximum(s.find \li |> map (-> it.id.replace prefix, ''))
         id  = unless max then 1 else max+1
         e   = @clone {id:"#prefix#id"}
+
+        default-data =
+          id    : id.to-string!
+          title : ""
+          form  :
+            action       : \menu
+            content      : ""
+            content-only : false
+            dbid         : ""
+            dialog       : ""
+            forum-slug   : ""
+            id           : id.to-string!
+            locked       : false
+            page-slug    : ""
+            seperate-tab : false
+            title        : ""
+            url          : ""
+
         @$.find \.sortable
           ..append e
           ..nested-sortable opts
-          ..find \input # select & focus
-            ..focus!
+
+        e.find \input .data default-data
+        e.find \input .focus!
         false
 
       # save menu
@@ -144,7 +196,7 @@ module.exports =
           ch.show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
 
       @$.on \change \form (ev) ~> @current-store! # save active title & form
-      @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore!  # load active row
+      @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore! # load active row
       #}}}
 
       ####  main  ;,.. ___  _
@@ -156,15 +208,7 @@ module.exports =
 
       if menu # init ui
         menu = JSON.parse menu if typeof menu is \string
-        #menu = menu.0 if typeof menu is \object
-        for item in menu
-          if id = item.id
-            form = item.form
-            item.data ||= {}
-              ..form  = form
-              ..title = form?title
-            item.id = "#prefix#id"
-            s.append(@clone item)
+        @build-nested-sortable s, menu
 
       @show! # bring in ui
       set-timeout (-> # activate first
