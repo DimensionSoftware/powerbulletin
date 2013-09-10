@@ -165,6 +165,7 @@
   | otherwise =>
     type = null
     data = null
+  data.id = form.dbid if form.dbid
   return [type, data]
 
 # Given a menu, and 2 paths, the first path will swap positions with the second path
@@ -200,7 +201,7 @@
     title : old-item.title
     form  :
       dialog     : \forum
-      id         : old-item.id
+      dbid       : old-item.id
       title      : old-item.title
       forum-slug : old-item.uri
       page-slug  : ''
@@ -229,8 +230,15 @@
   data.site_id = site.id
 
   switch type
-  | \page          => db.pages.upsert data, cb
-  | \forum         => db.forums.upsert data, cb # TODO - forum case is not so simple and will need to be expanded upon
+  | \page          => db.pages.upsert data, (err, data) ->
+    if err and err.routine.match /unique/
+      err.message = "Slug is already taken"
+    cb err, data
+  | \forum         => db.forums.upsert data, (err, data) ->
+    # TODO - forum case is not so simple and will need to be expanded upon
+    if err and err.routine.match /unique/
+      err.message = "Slug is already taken."
+    cb err, data
   | \external-link => cb null, null
   | otherwise      => cb new Error("menu.upsert unknown type #type"), data
 
