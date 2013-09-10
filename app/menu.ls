@@ -45,6 +45,11 @@
   else
     return menu[first]
 
+@difference = (src-menu, dst-menu) ->
+  # TODO what doesn't dst have that src did
+  # recurse over both, grabbing keys (flatten)
+  # use prelude difference
+
 # Return a menu with the given path deleted
 # 
 # @param  Array   menu      site menu

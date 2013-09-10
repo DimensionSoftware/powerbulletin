@@ -106,10 +106,25 @@ module.exports =
           tree   : JSON.stringify @to-hierarchy!
       jqxhr = @@$.ajax req
 
+    delete: (row) !~>
+      if confirm "Permanently Delete #{row.val!}?"
+        req =
+          method : \PUT
+          url    : @$.find \form.menus .attr \action
+          data:
+            action : \menu-delete
+            id     : row.parents \li .attr \id .replace /^list_/ ''
+        @@$.ajax req
+          .always (data) ->
+            console.log \always:, data
+
     on-attach: !~>
       #{{{ Event Delegates
       @$.on \change 'input[name="dialog"]' ~> # type was selected
         @$.find \fieldset .add-class \has-dialog .find \input:visible .focus!
+
+      @$.on \click \.onclick-close (ev) ~>
+        @delete ($ ev.target .prev \.row) # extract row
 
       @$.on \click \.onclick-add (ev) ~>
         @show!
@@ -144,7 +159,7 @@ module.exports =
           ch.show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
 
       @$.on \change \form (ev) ~> @current-store! # save active title & form
-      @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore!  # load active row
+      @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore! # load active row
       #}}}
 
       ####  main  ;,.. ___  _

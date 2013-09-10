@@ -6,10 +6,19 @@
     width 325px
     .sortable
       margin 20px 0
+      li:hover
+        .cancel
+          opacity 1
       li
         cursor move
+        position relative
         input
           width 200px
+        .cancel
+          position absolute
+          z-index 10
+          left -11px
+          top -9px
     .onclick-add
       margin-left 0
       width 120px

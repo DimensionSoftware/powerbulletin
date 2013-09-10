@@ -91,6 +91,13 @@ ban-all-domains = (site-id) ->
       ban-all-domains site.id # varnish ban
       res.json success:true
 
+    # delete a menu
+    | \menu-delete =>
+      id = req.body.id
+      console.log \deleting, id
+      res.json true
+      # TODO take difference of client tree & server tree to know which deleted
+
     # resort a menu
     | \menu-resort =>
       id   = req.body.id
