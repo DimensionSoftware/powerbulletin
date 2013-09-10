@@ -1,0 +1,6 @@
+#!/bin/sh -e
+# this sends app logs to papertrail, rsyslogd is already sending system logs directly
+
+# remote_syslog is a ruby gem that papertrail provides
+# NOTE: only intended to be ran on production
+remote_syslog -p 19281 logs/*.log
