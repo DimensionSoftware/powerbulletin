@@ -82,7 +82,7 @@ ban-all-domains = (site-id) ->
       console.log \r, r
       if err then return res.json success: false, hint: \menu.upsert, err: err, errors: [ err.message ]
       if r.length
-        menu-item.form.id = r.0.id
+        menu-item.form.dbid = r.0.id
         m2 = site.config.menu
         site.config.menu = menu.struct-upsert m2, m-path, menu-item
 

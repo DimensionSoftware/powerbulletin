@@ -137,6 +137,8 @@ module.exports =
     on-attach: !~>
       #{{{ Event Delegates
       @$.on \change 'input[name="dialog"]' ~> # type was selected
+        # TODO - make sure current-restore has the right data to restore; when adding a new item, it often does not.
+        # TODO - create slug out of title
         @$.find \fieldset .add-class \has-dialog .find \input:visible .focus!
 
       @$.on \click \.onclick-close (ev) ~>
@@ -150,11 +152,30 @@ module.exports =
         max = parse-int maximum(s.find \li |> map (-> it.id.replace prefix, ''))
         id  = unless max then 1 else max+1
         e   = @clone {id:"#prefix#id"}
+
+        default-data =
+          id    : id.to-string!
+          title : ""
+          form  :
+            action       : \menu
+            content      : ""
+            content-only : false
+            dbid         : ""
+            dialog       : ""
+            forum-slug   : ""
+            id           : id.to-string!
+            locked       : false
+            page-slug    : ""
+            seperate-tab : false
+            title        : ""
+            url          : ""
+
         @$.find \.sortable
           ..append e
           ..nested-sortable opts
-          ..find \input # select & focus
-            ..focus!
+
+        e.find \input .data default-data
+        e.find \input .focus!
         false
 
       # save menu
