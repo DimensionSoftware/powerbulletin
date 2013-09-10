@@ -20,15 +20,16 @@ announce = sioa.create-client!
   err, passport <- auth.passport-for-domain domain
   if err then return next(err)
   if passport
-    console.warn "domain", domain
+    console.warn "domain", domain unless env is \production
 
     auth-response = (err, user, info) ->
-      console.warn \auth-response, err, user, info
+      # can't be showing passwords in production logs :D
+      console.warn \auth-response, err, user, info unless env is \production
       if err then return next(err)
       if not user then return res.json { success: false } <<< info
       req.login user, (err) ->
         if err then return next(err)
-        console.warn "emitting enter-site #{JSON.stringify(user)}"
+        console.warn "emitting enter-site #{JSON.stringify(user)}" unless env is \production
         announce.in(site-room).emit \enter-site, user
         res.json { success: true }
 
