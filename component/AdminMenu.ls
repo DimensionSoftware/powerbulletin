@@ -129,11 +129,12 @@ module.exports =
             ..form  = form
             ..title = form?title
           item.id = "#prefix#id"
-          $ol.append(@clone item)
+          $item = @clone item
+          $ol.append($item)
         # if item has children, create a sub $ol and recurse
         if item.children?length
           $sub-ol = $('<ol/>')
-          $ol.append $sub-ol
+          $item.append $sub-ol
           @build-nested-sortable $sub-ol, item.children
 
     on-attach: !~>
