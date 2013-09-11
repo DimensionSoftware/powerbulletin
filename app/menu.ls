@@ -134,6 +134,22 @@ require! {
       new-menu[first] = menu-item
       return new-menu
 
+# Flatten a menu into a list of menu items
+#
+# @param  Array   menu      site menu
+# @return Array             flattened list of menu items
+@flatten = (menu) ->
+  list = []
+  for item in menu
+    if item.children?length
+      console.log \recurse
+      list = list.concat item, @flatten(item.children)
+    else
+      console.log "concating #{item.id}"
+      list = list.concat item
+  console.log \ids list.map (.id)
+  list
+
 # Given a form submission, figure out what kind of data we have.
 #
 # @param  Object  object    form data from menu admin
