@@ -24,7 +24,7 @@ paths:
   jquery-nicescroll     : "../local/jquery.nicescroll.min"
   jquery-transit        : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.9/jquery.transit.min else \../local/jquery.transit-0.9.9.min
   jquery-ui             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min else \../local/jquery-ui.min
-  jquery-waypoints      : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.2/waypoints.min.js else \../local/waypoints.min"
+  jquery-waypoints      : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.2/waypoints.min else \../local/waypoints.min
   lodash                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min else \../local/lodash.min
   raf                   : "../local/raf"
   powerbulletin         : "../powerbulletin"
