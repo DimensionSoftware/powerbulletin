@@ -116,7 +116,10 @@ module.exports =
             id     : row.parents \li .attr \id .replace /^list_/ ''
         @@$.ajax req
           .done (data) ~>
-            row.parents('li').remove()
+            $container = row.parents('li')
+            $cursor = @$.find 'ol.sortable li:first'
+            $container.remove!
+            $cursor.focus!
           .fail (jqxhr, status, err) ~>
             console.warn status, err
 
