@@ -55,9 +55,10 @@ update-statement = (table, obj, wh) ->
   vals      = [obj.id, ...obj-vals]
   return ["UPDATE #table SET #value-set #wh RETURNING *", vals]
 
-# generate an upsert function for the given table name
-# @param String table   name of table
-# @returns Function     an upsert function for the table
+# Generate an upsert function for the given table name
+# 
+# @param  String    table   name of table
+# @return Function          an upsert function for the table
 upsert-fn = (table) ->
   (object, cb) ->
     do-insert = (cb) ->
@@ -76,6 +77,14 @@ upsert-fn = (table) ->
     else
       do-insert cb
 
+# Generate a dlete function for the given table name
+#
+# @param  String    table   name of table
+# @return Function          a delete function for the table
+delete-fn = (table) ->
+  (object, cb) ->
+    postgres.query "DELETE FROM #table WHERE id = $1", [ object.id ], cb
+
 # This is for queries that don't need to be stored procedures.
 # Base the top-level key for the table name from the FROM clause of the SQL query.
 query-dictionary =
@@ -89,6 +98,7 @@ query-dictionary =
 
   pages:
     upsert: upsert-fn \pages
+    delete: delete-fn \pages
 
   posts:
     moderated: (forum-id, cb) ->
@@ -107,6 +117,7 @@ query-dictionary =
 
   forums:
     upsert: upsert-fn \forums
+    delete: delete-fn \forums
 
 
 # assumed postgres is initialized
