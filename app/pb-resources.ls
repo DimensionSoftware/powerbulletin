@@ -94,10 +94,21 @@ ban-all-domains = (site-id) ->
 
     # delete a menu
     | \menu-delete =>
-      id = req.body.id
-      console.log \deleting, id
-      res.json true
-      # TODO take difference of client tree & server tree to know which deleted
+      id  = req.body.id
+      m   = site.config.menu
+      src = menu.path m, id
+      if src is false
+        return res.json success: false
+
+      item     = menu.item m, src
+      new-menu = menu.delete m, src
+      err, r <- menu.db-delete item
+      if err then return res.json success: false, hint: \menu-db-delete, err: err, errors: [ "Item could not be deleted." ]
+      site.config.menu = new-menu
+      err, r <- db.site-update site
+      if err then return res.json success: false, hint: \db-site-update, err: err, errors: [ "Item could not be deleted." ]
+      ban-all-domains site.id # varnish ban
+      res.json success: true
 
     # resort a menu
     | \menu-resort =>
