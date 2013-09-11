@@ -76,15 +76,12 @@ module.exports =
           console.warn \WHEE r1,r2,r3
           # locals from ajax
           locals = {}
-          locals <<< cvars
           c.detach!
           c.locals locals
           c.render! unless only-attach
           c.attach!
           cb!
         else
-          console.warn "trying to attach #klass-name on server-side"
-          locals <<< cvars
           c.detach!
           c.locals locals
           c.render! unless only-attach

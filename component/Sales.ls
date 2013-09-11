@@ -4,7 +4,6 @@ require, exports, module <- define
 require! {
   lodash
   Component: yacomponent
-  \./ParallaxButton
   \./SiteRegister
   sh: \../shared/shared-helpers
 }
