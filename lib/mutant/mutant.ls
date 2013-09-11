@@ -13,7 +13,7 @@ else
 
   dom-window = (html, cb) ->
     scripts =
-      \../../public/local/jquery-1.9.1.min.js
+      \../../public/local/jquery-1.10.2.min.js
       \../../node_modules/reactivejs/src/reactive.js
 
     jsdom_opts = {html, scripts}
