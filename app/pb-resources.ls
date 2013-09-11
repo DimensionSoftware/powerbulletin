@@ -106,7 +106,7 @@ ban-all-domains = (site-id) ->
 
       # delete menu item and its children from database
       del = (item, cb) -> menu.db-delete item, cb
-      err <- async.each menu.flatten([item]).reverse, del
+      err <- async.each menu.flatten([item]).reverse!, del
       if err then return res.json success: false, hint: \menu-db-delete, err: err, errors: [ "Item could not be deleted." ]
 
       site.config.menu = new-menu
