@@ -102,7 +102,7 @@ ban-all-domains = (site-id) ->
 
       item     = menu.item m, src
       new-menu = menu.delete m, src
-      err, r <- menu.db-delete site, item
+      err, r <- menu.db-delete item
       if err then return res.json success: false, hint: \menu-db-delete, err: err, errors: [ "Item could not be deleted." ]
       site.config.menu = new-menu
       err, r <- db.site-update site
