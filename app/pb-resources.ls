@@ -66,6 +66,7 @@ ban-all-domains = (site-id) ->
     | \menu =>
       # save site config
       m = site.config?menu or []
+      dbid = null
 
       if id = req.body.id # active form
         form = { [k, v] for k,v of req.body when k in
@@ -82,7 +83,7 @@ ban-all-domains = (site-id) ->
       console.log \r, r
       if err then return res.json success: false, hint: \menu.upsert, err: err, errors: [ err.message ]
       if r.length
-        menu-item.form.dbid = r.0.id
+        menu-item.form.dbid = dbid = r.0.id
         m2 = site.config.menu
         site.config.menu = menu.struct-upsert m2, m-path, menu-item
 
@@ -90,7 +91,7 @@ ban-all-domains = (site-id) ->
       if err then return res.json success: false, hint: \db.site-update
 
       ban-all-domains site.id # varnish ban
-      res.json success:true
+      res.json success:true, id: dbid
 
     # delete a menu
     | \menu-delete =>
