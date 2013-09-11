@@ -15,7 +15,9 @@ module.exports =
     @middleware = (req, res, next) ->
       {incomplete, type} = surl.parse req.url
       return next! if incomplete
-      handlers = require \../app/sales-component-handlers unless window?
+
+      # this little hack hides this dependency from require.js static analysis tehehe
+      handlers = [\../app/sales-component-handlers].map(require).0 unless window?
 
       # run component handler first
       # which should populate locals
@@ -27,7 +29,6 @@ module.exports =
         # json render
         res.json {res.locals}
       else
-        console.log cvars
         sr = new SalesRouter {locals: cvars}
 
         # html render
@@ -41,7 +42,6 @@ module.exports =
     template: templates.SalesRouter # shared with forum app
     init: ->
       @local \stylesheets, ["/dynamic/css/master-sales.styl?#{CHANGESET}"]
-      @$body = @@$('#body')
 
       # top components
       @top-components = {}
@@ -52,7 +52,7 @@ module.exports =
       {type} = surl.parse url
       klass-name = surl-mapping[type]
       css-class = "#{klass-name}-root"
-      css-sel   = "body > .#css-class"
+      css-sel   = ".#css-class"
       only-attach = false
 
       finish = (klass) ~>
@@ -63,13 +63,16 @@ module.exports =
             if @@$(css-sel).length
               only-attach := true # component is on page from a server-side html render, only attach
             else
-              @$body.append "<div class=\"#css-class\"/>" # root for component, never been on page before
-            @top-components[klass-name] = new klass {-auto-render, -auto-attach}, css-sel
+              b = if @is-client then @@$('body') else @$.find('body')
+              root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
+              b.append root-el
+            @top-components[klass-name] = new klass {-auto-render, -auto-attach}, root-el
 
         if @is-client and not locals
           # fetch from server
           r1,r2,r3 <- @@$.get url, {+_surf}
           # given locals instantiate with locals here
+          # XXX: do something real with the response
           console.warn \WHEE r1,r2,r3
           # locals from ajax
           locals = {}
@@ -80,6 +83,7 @@ module.exports =
           c.attach!
           cb!
         else
+          console.warn "trying to attach #klass-name on server-side"
           locals <<< cvars
           c.detach!
           c.locals locals

@@ -4,6 +4,7 @@ require, exports, module <- define
 require! $R:reactivejs
 require! {
   \../component/SalesApp
+  \../component/SalesRouter
   \../component/Buy
 }
 
@@ -17,6 +18,7 @@ require \./layout
 # components
 window.component =
   sales-app: (new SalesApp {-auto-render} \body).attach!
+  sales-router: new SalesRouter
 
 window.do-buy = ->
   window.component.buy ||= (new Buy).attach!
