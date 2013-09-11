@@ -77,5 +77,5 @@ name: \pb-entry
 # excludeShallow items which we do not want uglified...
 # right now I am doing it to all components, since we don't want class name mangled
 # this is undefined on client-side, this option is only needed when creating an optimized build
-exclude-shallow: ["../component/#{f.slice(0, -3)}" for f in fs.readdir-sync('component') when f.match /.ls$/i] unless window?
+#exclude-shallow: ["../component/#{f.slice(0, -3)}" for f in fs.readdir-sync('component') when f.match /.ls$/i] unless window?
 optimize: \uglify # can be 'none', 'uglify', 'uglify2', or 'closure'
