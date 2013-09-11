@@ -13,7 +13,7 @@ require! {
 # /forum                                forum
 # /forum/sub-forum                      forum
 # /forum/sub-forum/sub-sub-forum        forum
-# /forum/m                              moderation log
+# /forum/censored                       moderation log
 # /forum/new                            new-thread
 # /forum/t/thread                       thread (with implicit page 1)
 # /forum/t/thread/2345                  thread-permalink (permalink into subtree)
@@ -43,7 +43,7 @@ inputs =
   * \number
   * \new
   * \edit
-  * \m
+  * \censored
   * \t
   * \page
 */
@@ -51,7 +51,7 @@ inputs =
 @type-of-part = (i) ->
   switch i
   | \page     => \page
-  | \m        => \m
+  | \censored => \censored
   | \t        => \t
   | \edit     => \edit
   | \new      => \new
@@ -70,14 +70,14 @@ inputs =
     page   : \forum
     fbdn   : \error
   forum:
-    string : \forum
-    number : \forum
-    new    : \new-thread
-    edit   : \forum
-    m      : \moderation
-    t      : \-thread-marker
-    page   : \forum
-    fbdn   : \error
+    string   : \forum
+    number   : \forum
+    new      : \new-thread
+    edit     : \forum
+    censored : \moderation
+    t        : \-thread-marker
+    page     : \forum
+    fbdn     : \error
   moderation:
     string : \error
     number : \error
