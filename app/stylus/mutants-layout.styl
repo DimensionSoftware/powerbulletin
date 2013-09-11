@@ -123,6 +123,7 @@ html.forum, html.profile, html.search, html.moderation
         padding 0 38px 10px 38px
         .title
           margin 7px 0 0 0
+          text-transform capitalize
         .container
           margin 0
           padding 0
@@ -289,7 +290,7 @@ html.forum, html.profile, html.search, html.moderation
       .post.head
         padding-top (grid/2)
       .post:first-child
-        padding-top grid
+        padding-top (grid*1.5)
       .post.censored
         .onclick-censor-post
           display none!important
@@ -310,22 +311,25 @@ html.forum, html.profile, html.search, html.moderation
         img
           max-width 100%
         .title
-          margin 0 0 8px -1px
+          margin 0 0 15px -1px
           font-size 1.5em
         .user
           font-weight bold
         .title, .user
+          font-weight 400
           text-transform capitalize
         .body
           line-height 1.5em
-          margin (grid/2) 0 grid 0
+          margin (grid/2) 0 grid -17px
+          border-bottom-right-radius 20px
+          border-bottom-left-radius 20px
+          padding 10px 15px 50px 15px
           clear both
           font-size 1.05em
         .actions
           opacity 0
           clear both
-          //letter-spacing -10px
-          margin-top (grid+2)
+          margin-top -25px
           margin-bottom 2px
           line-height 15px
           margin-left -6px
