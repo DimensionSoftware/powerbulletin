@@ -1,6 +1,7 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
+require! \./Auth
 require! Component: yacomponent
 require! \./Sales
 {templates} = require \../build/component-jade

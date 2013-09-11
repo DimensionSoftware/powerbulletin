@@ -169,10 +169,22 @@ ban-all-domains = (site-id) ->
       err <- fs.write-file "#base-css/#{domain.name}.css" domain.config.style
 
       res.json success:true
+
+function parse-datatable-info query
+  console.warn \BOOM, query
+
+  # sort first then infer based on iSortCol_0 and sSortDir_0
+  # can support future sort columns in future?!?!
+  columns = [[k, v] for k,v of query when k.match /^mDataProp_/]
+  {columns}
+
+
 @users =
   index: (req, res, next) ->
     #XXX: fixme needs rights
     if not req.user?rights?super then return next 404
+
+    console.warn \dt-info, parse-datatable-info(req.query)
 
     site_id = res.vars.site.id # this will need to be passed in later instead of inferred (on sales site)
     limit = req.query.i-display-length
