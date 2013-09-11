@@ -5,9 +5,14 @@
   .col1
     width 325px
     .sortable
+      color #ccc
+      font-size .8em
+      font-weight 100
       margin 20px 0
       li:hover
         .cancel
+          opacity .6
+        .cancel:hover
           opacity 1
       li
         cursor move
@@ -19,6 +24,13 @@
           z-index 10
           left -11px
           top -9px
+      .row
+        font-size 1.1em
+        padding 8px
+        border 1px solid #ddd
+        border-top 0
+        border-left 0
+        color #333
     .onclick-add
       margin-left 0
       width 120px
@@ -28,6 +40,10 @@
       border-radius 3px
   .col2
     display none
+    #forum_slug, #page_slug, #url
+      font-size .8em
+      padding 12px
+      width 330px
     .has-dialog
       margin-top -45px
       transition margin-top .15s ease-out
