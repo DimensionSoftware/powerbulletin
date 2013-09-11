@@ -84,19 +84,28 @@ header
   .container
     width 800px
     margin 0 auto
-    .tools:hover::before
-      top 6px
-      border-top 8px solid #888
-      transition border .2s ease-out
-    .tools::before
+    .tools:hover::after
+      top 32px
+      border-top-width 8px
+    .tools::after
       border 4px solid transparent
-      border-top 6px solid #aaa
+      border-top 6px solid #fff
       content ''
       position absolute
-      top 7px
-      right 29px
+      top 33px
+      right 51px
       z-index 13
       height 20px
+    .tools::before
+      content ''
+      position absolute
+      background-color light
+      top 25px
+      right 45px
+      z-index 12
+      height 20px
+      width 20px
+      border-radius 20px
     .tools:hover
       li
         height 23px
@@ -138,7 +147,7 @@ header
           height auto
           min-width 850px
           padding 10px 0 35px 0
-          transition opacity .5s ease-out .3s, min-width .15s cubic-bezier(1.000, -0.010, 0.800, 1.530) .3s, max-height .25s cubic-bezier(1, -0.01, 1, .08) .35s, top .2s ease-out .15s
+          transition opacity .5s ease-out .3s, max-height .25s cubic-bezier(1, -0.01, 1, .08) .35s, top .2s ease-out .15s
       .row:nth-last-child(3)
         .submenu
           margin-left -130px
@@ -205,6 +214,7 @@ header
         padding-right 45px
         padding-top grid
         font-size 1.3em
+        text-indent 8px
       .onclick-close
         cursor pointer
         position absolute
@@ -505,8 +515,12 @@ body.scrolled
         width 50px
         li
           margin-left -27px
+      .tools::after
+        top 0
+        right 28px
+        border-top-color light
       .tools::before
-        top -3px
+        display none
       .search
         top -200px!important
         opacity 0
@@ -544,9 +558,6 @@ body.scrolled
 body.collapsed
   .nicescroll-rails
     display none
-  .logo a
-    left 53px
-    transition left .2s ease-out
   #left_content
     width 0!important
     transition width .1s
@@ -563,6 +574,8 @@ body.collapsed
     .resizable
       padding-left (grid*5)!important
       transition padding-left .2s ease-out
+  footer
+    left 0!important
 //}}}
 
 //{{{ Background layer
