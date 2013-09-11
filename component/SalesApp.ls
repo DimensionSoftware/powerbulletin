@@ -11,8 +11,9 @@ module.exports =
     template: templates.SalesApp
 
     init: ->
+      s = @state
       @children =
-        sales: new Sales {} \.SalesApp-content @
+        sales: new Sales {locals: {s.cache-url}} \.SalesApp-content @
 
     on-attach: ->
       @@$ \.Sales-subdomain:first .focus!

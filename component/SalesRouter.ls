@@ -32,7 +32,7 @@ module.exports =
         sr = new SalesRouter {locals: cvars}
 
         # html render
-        err <- sr.navigate(req.url, res.locals)
+        err <- sr.navigate(req.url, {} <<< res.locals)
         if err then return next err
 
         body = sr.html(false)
@@ -66,7 +66,7 @@ module.exports =
               b = if @is-client then @@$('body') else @$.find('body')
               root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
               b.append root-el
-            @top-components[klass-name] = new klass {-auto-render, -auto-attach}, root-el
+            @top-components[klass-name] = new klass {-auto-render, -auto-attach, locals}, root-el
 
         if @is-client and not locals
           # fetch from server
