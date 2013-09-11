@@ -72,8 +72,8 @@ html.homepage, html.forum
       .username
         display none
 //}}}
-//{{{ - forum, profile & search
-html.forum, html.profile, html.search
+//{{{ - forum, profile, search & moderation
+html.forum, html.profile, html.search, html.moderation
   body.scrolled
     .left-content
       bottom 0
@@ -706,6 +706,11 @@ html.admin
   footer
     left 150px!important
 //}}}
+html.moderation
+  #left_content
+    display none
+  footer
+    left 0!important
 html.forum.new
   footer
     cursor default
