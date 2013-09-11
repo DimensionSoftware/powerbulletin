@@ -90,6 +90,10 @@ module.exports =
                   if $i.is \textarea
                     $i.val form[n]
 
+    store-title: (ev) !~>
+      $input = $ ev.target
+      $input.data \title, $input.val!
+
     to-hierarchy: ~>
       @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!
 
@@ -146,6 +150,8 @@ module.exports =
         # TODO - make sure current-restore has the right data to restore; when adding a new item, it often does not.
         # TODO - create slug out of title
         @$.find \fieldset .add-class \has-dialog .find \input:visible .focus!
+
+      @$.on \keyup, 'input.active', @store-title
 
       @$.on \click \.onclick-close (ev) ~>
         @delete ($ ev.target .prev \.row) # extract row
