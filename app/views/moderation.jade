@@ -1,11 +1,11 @@
 include _post
 
-h1 Moderation Log
+h1 Censorship Log
 .moderations
   if posts.length
     each p in posts
       mixin _post(p, 0, true)
   else
-    p These are not the droids you're looking for. Move along...
+    p Nothing to see here, move along ...
 
 //- vim:fdm=marker

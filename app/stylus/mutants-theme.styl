@@ -61,8 +61,8 @@ html.homepage
           animation-name tiny-grow
           animation-duration .25s
 //}}}
-//{{{ - forum & profile
-html.forum, html.profile, html.search
+//{{{ - forum, profile, search & moderation
+html.forum, html.profile, html.search, html.moderation
   .main-content
     .forum, .threads, .search
       .children + .post:nth-last-child(2)
@@ -192,7 +192,7 @@ html.forum, html.profile, html.search
         content ''
       .thread.active::before
         background-image linear-gradient(to top, dark 10%, light 100%)
-        width 8px
+        width 6px
         transition all .2s ease-out
       .thread.active:hover
         a #fff

@@ -75,6 +75,7 @@ blend = rgba(0,0,0,.5)
       top 0
       right 0
       width 100%
+      min-width 1200px
   .container.first
     margin-top 100px
     border-top 1px solid #999
@@ -271,5 +272,37 @@ footer
     letter-spacing 2px
     padding 0 15px 0 30px
     //}}}
+
+//{{{ Responsive (mobile)
+@media screen and (max-width: 800px)
+  .SalesApp
+    font-size .85em
+    height 2300px
+    .logo
+      left 115px!important
+    #imagine
+      display none
+    .SiteRegister
+      h3
+        left 149px!important
+    .container
+      height auto
+      .bg
+        display none
+    section
+      article
+        width 85%!important
+    .feature
+      h4
+        font-size 1.5em!important
+    section.faq
+      article
+        h3::after
+          left 29%
+        p
+          padding 0
+        menu
+          width 80%
+//}}}
 
 // vim:fdm=marker

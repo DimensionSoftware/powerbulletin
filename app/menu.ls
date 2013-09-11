@@ -49,11 +49,6 @@ require! {
   else
     return menu[first]
 
-@difference = (src-menu, dst-menu) ->
-  # TODO what doesn't dst have that src did
-  # recurse over both, grabbing keys (flatten)
-  # use prelude difference
-
 # Return a menu with the given path deleted
 # 
 # @param  Array   menu      site menu
@@ -138,6 +133,22 @@ require! {
       menu-item <<< object
       new-menu[first] = menu-item
       return new-menu
+
+# Flatten a menu into a list of menu items
+#
+# @param  Array   menu      site menu
+# @return Array             flattened list of menu items
+@flatten = (menu) ->
+  list = []
+  for item in menu
+    if item.children?length
+      console.log \recurse
+      list = list.concat item, @flatten(item.children)
+    else
+      console.log "concating #{item.id}"
+      list = list.concat item
+  console.log \ids list.map (.id)
+  list
 
 # Given a form submission, figure out what kind of data we have.
 #
@@ -248,5 +259,20 @@ require! {
     cb err, data
   | \external-link => cb null, null
   | otherwise      => cb new Error("menu.upsert unknown type #type"), data
+
+# Delete a menu item (recursively if necessary) from the database
+#
+# @param  Object    object  menu item to delete; may have children
+# @param  Function  cb      function to run after deletions have completed
+@db-delete = (object, cb) ->
+  [type, data] = @extract object
+  if not data.id
+    cb new Error("no id in data")
+
+  switch type
+  | \page          => db.pages.delete data, cb
+  | \forum         => db.forums.delete data, cb
+  | \external-link => cb null
+  | otherwise      => cb null
 
 # vim:fdm=indent
