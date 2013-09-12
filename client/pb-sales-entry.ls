@@ -16,14 +16,10 @@ require \./layout
 {each} = require \prelude-ls
 
 # components
-window.component =
-  sales-app: (new SalesApp {-auto-render} \body).attach!
-  sales-router: new SalesRouter
+window.router = new SalesRouter
 
-window.do-buy = ->
-  window.component.buy ||= (new Buy).attach!
-  <- lazy-load-fancybox
-  $.fancybox(window.component.buy.$)
+# attach to existing dom if available on page load
+router.navigate(window.location.pathname)
 
 $R((user) ->
   if user
