@@ -97,6 +97,7 @@ module.exports =
             @top-components[klass-name]
           else
             if @@$(css-sel).length
+              console.log "#klass-name: skipping render (already in DOM, only attaching)"
               only-attach := true # component is on page from a server-side html render, only attach
             else
               root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
