@@ -33,8 +33,7 @@ html
       //- in this case we preload most libraries, as opposed to fetching them all separately
       //- FIXME move all of this to head.js
       script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
-      //- disable because optimized build is fucking up loading order right now, needs some work
-      //- script(src="#{cacheUrl}/pb-optimized.js")
+      script(src="#{cacheUrl}/pb-optimized.js")
     else
       script(type='text/javascript', src="#{cache4Url}/local/require.js") //- offline
 

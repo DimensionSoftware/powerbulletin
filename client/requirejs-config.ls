@@ -13,7 +13,7 @@ base-url: "#{cache-url}/client" # override for optimized builds
 wait-seconds: 8 # give a single module this long to load til timeout
 paths:
   fse                   : "../local/fse"
-  jquery                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min else \../local/jquery-1.10.2.min
+  jquery                : \../local/jquery-1.10.2.min
   jquery-cookie         : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.3.1/jquery.cookie.min else \../local/jquery.cookie-1.3.1.min
   jquery-datatables     : \//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min
   jquery-history        : "../local/history.min"
@@ -40,8 +40,8 @@ shim:
     exports: \History.Adapter
     deps: [\jquery]
   jquery-masonry:
-    # no exports property needed since masonry is native AMD
     deps: [\jquery]
+    exports: \jQuery.Mason
   jquery-nicescroll:
     exports: \jQuery.nicescroll
     deps: [\jquery]
