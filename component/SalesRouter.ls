@@ -3,9 +3,12 @@ require, exports, module <- define
 
 require! {
   Component: yacomponent
+  sh: \../shared/shared-helpers
   surl: \../shared/sales-urls
   surl-mapping: \../shared/sales-url-mappings
 }
+
+require \jqueryHistory if window?
 
 {templates} = require \../build/component-jade
 
@@ -13,7 +16,8 @@ module.exports =
   class SalesRouter extends Component
     # only intended to be used in express
     @middleware = (req, res, next) ->
-      {incomplete, type} = surl.parse req.url
+      path = sh.parse-url(req.url).pathname
+      {incomplete, type} = surl.parse path
       return next! if incomplete
 
       # this little hack hides this dependency from require.js static analysis tehehe
@@ -45,11 +49,21 @@ module.exports =
 
       # top components
       @top-components = {}
+    on-attach: ->
+      function parse-path url
+        parser = sh.parse-url url
+        path = parser.pathname
+        if path is \/ then \/ else path.slice(0, -1) # remove trailing slash unless homepage
+
+      History.Adapter.bind window, \statechange, ~>
+        # surf to retrieve locals and navigate (second argument means surf instead of passing locals directly)
+        @navigate parse-path(History.get-page-url!), null
 
     # client: load any dependencies and navigate to url in component and navigate window history
     # server: load any dependencies and navigate to url in component
-    navigate: (url, locals, cb) ->
-      {type} = surl.parse url
+    navigate: (url, locals, cb = (->)) ->
+      path = sh.parse-url(url).pathname
+      {type} = surl.parse path
       b = if @is-client then @@$('body') else @$.find('body')
 
       # put url type in body class
@@ -74,12 +88,8 @@ module.exports =
 
         if @is-client and not locals
           # fetch from server
-          r1,r2,r3 <- @@$.get url, {+_surf}
-          # given locals instantiate with locals here
-          # XXX: do something real with the response
-          console.warn \WHEE r1,r2,r3
-          # locals from ajax
-          locals = {}
+          locals <- @@$.get url, {_surf:1}
+
           c.detach!
           c.locals locals
           c.render! unless only-attach

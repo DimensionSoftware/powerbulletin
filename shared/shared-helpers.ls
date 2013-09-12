@@ -186,5 +186,14 @@ date-fields =
   for d in rf.dependencies
     d.remove-dependent!
 
+@parse-url = (url) ->
+  if document?
+    a = document.create-element \a
+    a.href = url
+    {a.search, a.pathname}
+  else
+    p = require(\url).parse url
+    {p.search, p.pathname}
+
 @
 # vim:fdm=marker

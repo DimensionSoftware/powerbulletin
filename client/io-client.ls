@@ -46,7 +46,7 @@ socket.on \post-create (post, cb) ->
   # - currently active thread
   # - own posts on profile pages
   window.active-thread-id ||= -1
-  if post.thread_id is window.active-thread-id or (post.user_id is user.id and mutator is \profile)
+  if post.thread_id is window.active-thread-id or (post.user_id is user.id and window.mutator is \profile)
     return if $ "post_#{post.id}" .length # guard (exists)
 
     # update post count
@@ -61,7 +61,7 @@ socket.on \post-create (post, cb) ->
         if post.user_id is user?id # & scroll-to
           mutants.forum.on-personalize window, user, (->) # enable edit, etc...
           set-timeout (-> animate-in new-post), 250ms
-          if mutator is \forum then awesome-scroll-to new-post, 300ms
+          if window.mutator is \forum then awesome-scroll-to new-post, 300ms
         else
           animate-in new-post)
 

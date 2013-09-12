@@ -85,7 +85,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
     spin true
 
     surf-params =
-      _surf      : mutator
+      _surf      : window.mutator
       _surf-data : params?surf-data
     if rc?keep?length
       surf-params._surf-tasks = rc.keep.sort!map( (-> tasks.cc it) ).join ','
