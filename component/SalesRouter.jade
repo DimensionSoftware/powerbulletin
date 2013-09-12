@@ -19,9 +19,9 @@ html
       link(rel='stylesheet', type='text/css', href=stylesheet)
     script(src="#{cacheUrl}/local/head-0.99.load.min.js")
     script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
-    //-if env == 'production'
-    //-  //- in this case we preload most libraries, as opposed to fetching them all separately
-    //-  script(src="#{cacheUrl}/pb-sales-optimized.js")
+    if env == 'production'
+      //- in this case we preload most libraries, as opposed to fetching them all separately
+      script(src="#{cacheUrl}/pb-sales-optimized.js")
 
     |<script type="text/javascript">
     |  window.headjs = head.js
