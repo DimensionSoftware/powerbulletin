@@ -207,6 +207,7 @@ module.exports =
         ch.submit-form ev, (data) ~>
           data-form = @current.data \form   # FIXME - Even though I try to set a new dbid, it gets blasted away somewhere.
           data-form.dbid = data.id
+          @$.find 'input[name=dbid]' .val data.id
           @current.data \form, data-form
           f = $ this # form
           t = $(form.find \.tooltip)
