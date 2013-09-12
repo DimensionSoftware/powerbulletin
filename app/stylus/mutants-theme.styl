@@ -71,7 +71,7 @@ html.forum, html.profile, html.search, html.moderation
           .summary::before
             border-left 5px solid dark
             transition border-right .2s ease-out .1s
-        .body
+        p.body
           border-bottom 1px solid rgba(0,0,0,.05)
       .post.censored
         .body, blockquote, p
@@ -92,7 +92,8 @@ html.forum, html.profile, html.search, html.moderation
         .username
           font-weight 500
           color dark_text
-        .body
+          text-transform capitalize
+        p.body
           background-color rgba(0,0,0,.015)
           border-bottom 1px solid transparent
         .post-edit
@@ -108,14 +109,20 @@ html.forum, html.profile, html.search, html.moderation
         .at-tag
           color dark
 
+      // 2nd children and thereafter are comments
       .children
         .children
-          .body, .user span
+          p.body, .user span
             color #666
           .container
-            float left
+            max-width 450px
+          .container, .actions
+            margin-left 52px
           .username
             color #444
+          .user
+            .profile.photo
+              position absolute
           .post-content, .cke_editable
             p
               color #444
@@ -123,6 +130,7 @@ html.forum, html.profile, html.search, html.moderation
           .date
             color #999
             text-transform lowercase
+            padding-right (grid*2.5)
       .actions
         a:active, a:focus
           background radial-gradient(circle closest-corner at 55% 65%, light2 85%, dark2 100%)

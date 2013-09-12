@@ -20,7 +20,7 @@ if typeof(post) !== 'undefined'
         .reply
         .actions
           a.onclick-footer-toggle(title='Reply')
-            .s-reply
+            .s-reply.onclick-footer-toggle
           a.edit.mutant.no-surf(data-edit=post.id, href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
           a.permalink.mutant(href=post.uri, title='Permalink')
             .s-permalink
