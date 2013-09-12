@@ -7,6 +7,7 @@ global.auth  = require \./auth
 global.c     = require \./cache
 global.fsm   = require \../shared/fsm
 global.furl  = require \../shared/forum-urls
+global.surl  = require \../shared/sales-urls
 global.pg    = require \./postgres
 global.v     = require \./varnish
 global.t     = require \../client/tasks

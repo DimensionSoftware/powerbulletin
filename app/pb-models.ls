@@ -90,7 +90,26 @@ delete-fn = (table) ->
 query-dictionary =
   # db.users.all cb
   users:
-    all: postgres.query 'SELECT * FROM users', [], _
+    # used by SuperAdminUsers
+    all: ({site_id, limit, offset}, cb) ->
+      postgres.query '''
+      SELECT
+        u.id, u.email, u.photo,
+        a.name, a.rights, a.verified, a.created, a.site_id
+      FROM users u
+      JOIN aliases a ON a.user_id=u.id
+      WHERE a.site_id=$1
+      LIMIT $2 OFFSET $3
+      ''', [site_id, limit, offset], cb
+    all-count: ({site_id}, cb) ->
+      err, [{count}] <- postgres.query '''
+                  SELECT COUNT(*)
+                  FROM users u
+                  JOIN aliases a ON a.user_id=u.id
+                  WHERE a.site_id=$1
+                  ''', [site_id]
+      if err then return cb err
+      cb null, count
     email-in-use: ({email}, cb) ->
       err, r <- postgres.query 'SELECT COUNT(*) AS c FROM users WHERE email = $1', [email]
       if err then return cb err

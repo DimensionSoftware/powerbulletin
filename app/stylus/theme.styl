@@ -32,7 +32,7 @@ a
 
 .cancel:hover, .onclick-close:hover
   background-color #999
-  background radial-gradient(ellipse closest-corner at 50% 50%, #fff 47%, #555 100%)
+  background radial-gradient(circle closest-corner at 45% 35%, #eee 45%, #aaa 100%)
   color red
   transition all .06s ease-out
 .cancel, .onclick-close
@@ -42,7 +42,7 @@ a
   width 8px
   color #333
   background-color #aaa
-  background radial-gradient(ellipse closest-corner at 50% 50%, #fff 47%, #777 100%)
+  background radial-gradient(circle closest-corner at 45% 35%, #eee 40%, #bbb 100%)
 
 //{{{ Header
 .logo
@@ -154,16 +154,19 @@ header
         .s-search
           margin-left 2px
       .query:focus
-        text-indent 11px
+        margin-top -1px
+        height 21px
+        text-indent 13px
         border-radius 5px
-        box-shadow 1px 1px -3px 10px light inset
-        border 1px solid dark
-        color #000
+        box-shadow 1px 1px 3px 1px light
+        color #111
       .query
         box-shadow 1px 1px 3px light inset
         border 0
         background none
         border-radius 6px
+        font-size 1.15em
+        height 20px
       .query::-webkit-input-placeholder
           color #ccc
       .query:-moz-placeholder
@@ -172,20 +175,18 @@ header
           color #ccc
       .query:-ms-input-placeholder
           color #ccc
-      .query:focus
-        margin-top -1px
-        height 21px
-      .query:hover, .query:focus
-        //border none!important
-        //box-shadow none!important
+      .query:hover
         color #444
       #query.query
         font-style italic
         letter-spacing 1px
         font-weight 400
-      .query
-        font-size 1.15em
-        height 20px
+    .tools::before
+      background-color light
+    .tools
+      .container
+        menu
+          box-shadow 1px 1px 4px light
 //}}}
 //{{{ Left side
 #left_content:hover::after
@@ -202,19 +203,19 @@ header
 #left_content
   background-color rgba(200,200,200,0.02)
   .handle:hover::before
-    border-right 13px solid dark
+    border-right 12px solid #fff
     left -5px
   .handle::before
     border-right 10px solid #fff
     transition all .1s ease-out
   .handle:hover
     background-color #ddd
-    background radial-gradient(circle closest-corner at 50% 50%, #ccc 40%, #aaa 75%)
+    background radial-gradient(circle closest-corner at 45% 35%, #e0e0e0 40%, #a0a0a0 100%)
     color #444
   .handle
     transition all .2s ease-out
     background-color #ddd
-    background radial-gradient(circle closest-corner at 50% 50%, #ccc 40%, #eee 83%)
+    background radial-gradient(circle closest-corner at 45% 35%, #e0e0e0 40%, #bbb 100%)
     border 1px solid #ddd
     color #888
   .title

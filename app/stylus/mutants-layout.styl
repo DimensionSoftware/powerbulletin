@@ -445,10 +445,6 @@ html.profile
     margin grid 0 0 0
 //}}}
 //{{{ - search
-html.search body.scrolled
-  header
-    .onclick-close
-      top 5px
 html.search
   .nicescroll-rails
     display none
@@ -495,7 +491,10 @@ html.search
           z-index 9
         .onclick-close
           opacity 1!important
-          top 9px
+          top 6px
+          height 12px
+          width 12px
+          border-radius 12px
       .advanced
         right 80px
         top (header-height + 5)
@@ -706,16 +705,7 @@ html.admin
   footer
     left 150px!important
 //}}}
-html.moderation
-  #left_content
-    display none
-  footer
-    left 0!important
-html.forum.new
-  footer
-    cursor default
-    .onclick-footer-toggle
-      display none
+//{{{ - forum
 html.forum
   .main-content
     p.onclick-footer-toggle:hover
@@ -765,9 +755,19 @@ html.forum
           bottom 32px
         .summary
           display none
+//}}}
+html.forum.new
+  footer
+    cursor default
+    .onclick-footer-toggle
+      display none
 html.moderation
   .moderations
     padding-left: 40px
+  #left_content
+    display none
+  footer
+    left 0!important
 
 #left_container
   height 100%
