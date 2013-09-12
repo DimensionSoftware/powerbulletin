@@ -50,6 +50,11 @@ module.exports =
     # server: load any dependencies and navigate to url in component
     navigate: (url, locals, cb) ->
       {type} = surl.parse url
+      b = if @is-client then @@$('body') else @$.find('body')
+
+      # put url type in body class
+      b.attr(\class, null).add-class(type)
+
       klass-name = surl-mapping[type]
       css-class = "#{klass-name}-root"
       css-sel   = ".#css-class"
@@ -63,7 +68,6 @@ module.exports =
             if @@$(css-sel).length
               only-attach := true # component is on page from a server-side html render, only attach
             else
-              b = if @is-client then @@$('body') else @$.find('body')
               root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
               b.append root-el
             @top-components[klass-name] = new klass {-auto-render, -auto-attach, locals}, root-el
