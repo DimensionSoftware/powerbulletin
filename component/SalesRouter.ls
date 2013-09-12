@@ -86,25 +86,34 @@ module.exports =
       # put url type in body class
       b.attr(\class, null).add-class(type)
 
-      klass-name = surl-mapping[type]
+      [klass-name, layout-klass-name, layout-root-sel] = surl-mapping[type]
       css-class = "#{klass-name}-root"
       css-sel   = ".#css-class"
       only-attach = false
 
-      finish = (klass) ~>
-        c =
-          if @top-components[klass-name] # component is already on page
-            @top-components[klass-name]
+      finish = (klass, layout-klass) ~>
+        if @top-components[klass-name] # component is already on page
+          c = @top-components[klass-name]
+        else
+          existing-root-el = @@$(css-sel)
+          if existing-root-el.length
+            console.log "#klass-name: skipping render (already in DOM, only attaching)"
+            only-attach := true # component is on page from a server-side html render, only attach
+            root-el = existing-root-el
           else
-            existing-root-el = @@$(css-sel)
-            if existing-root-el.length
-              console.log "#klass-name: skipping render (already in DOM, only attaching)"
-              only-attach := true # component is on page from a server-side html render, only attach
-              root-el = existing-root-el
-            else
-              root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
-              b.append root-el
-            @top-components[klass-name] = new klass {-auto-render, -auto-attach, locals}, root-el
+            root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
+
+        make-component = (elr) ->
+          new klass {-auto-render, -auto-attach, locals}, elr
+
+        if layout-klass
+          layout-component = new layout-klass {-auto-render, -auto-attach, locals}, root-el
+          layout-component.children = { content: make-component layout-root-sel }
+          c = layout-component
+        else
+          c ||= @top-components[klass-name] = make-component root-el
+
+        b.append root-el
 
         custom-reload = (l) ->
           c.detach!
@@ -122,7 +131,11 @@ module.exports =
           cb!
 
       if @is-client
-        require ["../component/#klass-name"], finish
+        if layout-klass-name
+          require ["../component/#klass-name", "../component/#layout-klass-name"], finish
+        else
+          require ["../component/#klass-name"], finish
       else
         klass = require "./#klass-name"
-        finish klass
+        layout-klass = require "./#layout-klass-name" if layout-klass-name
+        finish klass, layout-klass
