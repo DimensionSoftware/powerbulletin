@@ -219,7 +219,7 @@ load-css = (href) ->
 @mutate = ->
   $e = $ this
   return if $e.has-class \require-login and !user # guard
-  href = $e .attr \href
+  href = $e .data \href or $e .attr \href
   return false unless href # guard
   return true if href?match /#/
   params = {}
