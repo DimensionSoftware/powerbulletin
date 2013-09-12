@@ -92,7 +92,9 @@ module.exports =
 
     store-title: (ev) !~>
       $input = $ ev.target
-      $input.data \title, $input.val!
+      data   = $input.data!
+      data.title = data.form.title = $input.val!
+      $input.data data
 
     to-hierarchy: ~>
       @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!
@@ -202,7 +204,10 @@ module.exports =
           .attr \type, \hidden
           .attr \name, \menu
           .val JSON.stringify menu)
-        ch.submit-form ev, (data) ->
+        ch.submit-form ev, (data) ~>
+          data-form = @current.data \form   # FIXME - Even though I try to set a new dbid, it gets blasted away somewhere.
+          data-form.dbid = data.id
+          @current.data \form, data-form
           f = $ this # form
           t = $(form.find \.tooltip)
           ch.show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
