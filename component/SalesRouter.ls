@@ -64,7 +64,12 @@ module.exports =
     on-attach: ->
       History.Adapter.bind window, \statechange, ~>
         # surf to retrieve locals and navigate (second argument means surf instead of passing locals directly)
-        @navigate parse-path(History.get-page-url!), null
+        {data} = History.get-state!
+
+        # marking locals as null tells @navigate to fetch with surf instead
+        locals = if Object.keys(data).length then data else null
+
+        @navigate parse-path(History.get-page-url!), locals
 
     # client: load any dependencies and navigate to url in component and navigate window history
     # server: load any dependencies and navigate to url in component
