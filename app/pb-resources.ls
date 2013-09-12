@@ -166,7 +166,7 @@ ban-all-domains = (site-id) ->
       # save css to disk
       err <- mkdirp base-css
       if err then return next err
-      err <- fs.write-file "#base-css/#{domain.name}.css" domain.config.style
+      err <- fs.write-file "#base-css/#{domain.site_id}.auth.css" domain.config.style
 
       res.json success:true
 @users =
