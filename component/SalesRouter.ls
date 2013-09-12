@@ -96,9 +96,11 @@ module.exports =
           if @top-components[klass-name] # component is already on page
             @top-components[klass-name]
           else
-            if @@$(css-sel).length
+            existing-root-el = @@$(css-sel)
+            if existing-root-el.length
               console.log "#klass-name: skipping render (already in DOM, only attaching)"
               only-attach := true # component is on page from a server-side html render, only attach
+              root-el = existing-root-el
             else
               root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
               b.append root-el

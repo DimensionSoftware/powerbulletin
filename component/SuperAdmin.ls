@@ -39,8 +39,8 @@ module.exports =
       for mname, mi of mod-info
         $dom.find('.SuperAdmin-content').append("<div class=\"#{mi.css-class}\">")
     on-attach: ->
-      for m in @mods
-        console.warn \WANK, ".SuperAdmin-content > div.#{m.css-class}"
-        @$.on \click, ".SuperAdmin-nav > a.#{m.css-class}", ~>
+      for k,m of @mods
+        @$.on \click, ".SuperAdmin-nav a.#{m.css-class}", ~>
           @$.find('.SuperAdmin-content > div').hide!
           @$.find(".SuperAdmin-content > div.#{m.css-class}").show!
+          return false
