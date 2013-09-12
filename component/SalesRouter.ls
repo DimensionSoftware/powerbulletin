@@ -12,6 +12,18 @@ require \jqueryHistory if window?
 
 {templates} = require \../build/component-jade
 
+function parse-path url
+  parser = sh.parse-url url
+  path = parser.pathname
+  if path is \/
+    \/
+  else if path.match /\/$/
+    # remove trailing slash if it exists
+    path.slice(0, -1)
+  else
+    # no trailing slash to remove
+    path
+
 module.exports =
   class SalesRouter extends Component
     # only intended to be used in express
@@ -50,11 +62,6 @@ module.exports =
       # top components
       @top-components = {}
     on-attach: ->
-      function parse-path url
-        parser = sh.parse-url url
-        path = parser.pathname
-        if path is \/ then \/ else path.slice(0, -1) # remove trailing slash unless homepage
-
       History.Adapter.bind window, \statechange, ~>
         # surf to retrieve locals and navigate (second argument means surf instead of passing locals directly)
         @navigate parse-path(History.get-page-url!), null
@@ -62,8 +69,13 @@ module.exports =
     # client: load any dependencies and navigate to url in component and navigate window history
     # server: load any dependencies and navigate to url in component
     navigate: (url, locals, cb = (->)) ->
-      path = sh.parse-url(url).pathname
-      {type} = surl.parse path
+      path = parse-path(url)
+      {incomplete, type} = surl.parse path
+
+      if incomplete
+        console.warn "cannot navigate to invalid path: #path"
+        return cb!
+
       b = if @is-client then @@$('body') else @$.find('body')
 
       # put url type in body class
