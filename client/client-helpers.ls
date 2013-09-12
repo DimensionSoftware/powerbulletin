@@ -25,6 +25,7 @@ if window?
     | \edit       => @remove-editing-url meta
     # close drawer & cleanup
     $ \footer .remove-class \expanded
+    $ \body   .remove-class \disabled
     $ '#post_new .fadein' .remove!
   false
 
@@ -106,10 +107,12 @@ render = (sel, locals, cb=(->)) ~>
   e = $ \footer
   if e.has-class \expanded # close drawer & cleanup
     e.remove-class \expanded
+    $ \body .remove-class \disabled
     #try CKEDITOR.instances.post_new.destroy true
     $ '#post_new .fadein' .remove!
   else # bring out drawer & init+focus editor
     e.add-class \expanded
+    $ \body .add-class \disabled
     render \#post_new, data, ~> # init form
       <- @lazy-load-editor
       unless CKEDITOR.instances.post_new
