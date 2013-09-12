@@ -11,6 +11,8 @@ module.exports =
     template: templates.SalesApp
 
     init: ->
+      @local \cacheUrl, null # define early, since it is passed to child
+
       s = @state
       @children =
         sales: new Sales {locals: {s.cache-url}} \.SalesApp-content @

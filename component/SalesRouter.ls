@@ -43,7 +43,7 @@ module.exports =
       if req.query._surf
 
         # json render
-        res.json {res.locals}
+        res.json({} <<< res.locals)
       else
         sr = new SalesRouter {locals: cvars}
 
@@ -103,20 +103,19 @@ module.exports =
               b.append root-el
             @top-components[klass-name] = new klass {-auto-render, -auto-attach, locals}, root-el
 
-        if @is-client and not locals
-          # fetch from server
-          locals <- @@$.get url, {_surf:1}
-
+        custom-reload = (l) ->
           c.detach!
-          c.locals locals
+          c.locals l
           c.render! unless only-attach
           c.attach!
+
+        if @is-client and not locals
+          # fetch from server remotely
+          remote-locals <- @@$.get url, {_surf:1}
+          custom-reload remote-locals
           cb!
         else
-          c.detach!
-          c.locals locals
-          c.render! unless only-attach
-          c.attach!
+          custom-reload locals
           cb!
 
       if @is-client
