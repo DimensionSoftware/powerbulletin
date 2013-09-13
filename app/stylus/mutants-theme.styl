@@ -65,15 +65,14 @@ html.homepage
 html.forum, html.profile, html.search, html.moderation
   .main-content
     .forum, .threads, .search
-      .children + .post:nth-last-child(2)
-          border-bottom 1px solid transparent
       .post:hover
-        border-bottom 1px solid rgba(200,200,200,.3)
         color #111
         .post-edit:hover
           .summary::before
             border-left 5px solid dark
             transition border-right .2s ease-out .1s
+        p.body
+          border-bottom 1px solid rgba(0,0,0,.05)
       .post.censored
         .body, blockquote, p
           text-decoration line-through
@@ -90,7 +89,13 @@ html.forum, html.profile, html.search, html.moderation
       .post
         overflow visible
         color #333
-        border-bottom 1px solid rgba(200,200,200,.15)
+        .username
+          font-weight 500
+          color dark_text
+          text-transform capitalize
+        p.body
+          background-color rgba(0,0,0,.015)
+          border-bottom 1px solid transparent
         .post-edit
           .summary::before
             border-left 4px solid #ccc
@@ -104,14 +109,20 @@ html.forum, html.profile, html.search, html.moderation
         .at-tag
           color dark
 
+      // 2nd children and thereafter are comments
       .children
         .children
-          .body, .user span
+          p.body, .user span
             color #666
           .container
-            float left
+            max-width 450px
+          .container, .actions
+            margin-left 52px
           .username
             color #444
+          .user
+            .profile.photo
+              position absolute
           .post-content, .cke_editable
             p
               color #444
@@ -119,24 +130,30 @@ html.forum, html.profile, html.search, html.moderation
           .date
             color #999
             text-transform lowercase
+            padding-right (grid*2.5)
       .actions
+        a:active, a:focus
+          background radial-gradient(circle closest-corner at 55% 65%, light2 85%, dark2 100%)
+        a:hover
+          background radial-gradient(circle closest-corner at 45% 35%, light2 75%, dark2 100%)
         a
           color dark
-        .s-reply::after, .s-permalink::after, .s-censor::after
-          position absolute
-          content ''
-          top 1px
-          left 1px
-          height 24px
-          width 24px
-          border-radius 24px
-          background-color rgba(255,255,255,.4)
-        .s-reply, .s-permalink, .s-censor
-          position relative
-          height 27px
-          width 27px
           background-color light2
+          background radial-gradient(circle closest-corner at 45% 35%, light2 75%, dark2 115%)
           border-radius 27px
+          .s-reply::after, .s-permalink::after, .s-censor::after
+            position absolute
+            content ''
+            top 1px
+            left 1px
+            height 24px
+            width 24px
+            border-radius 24px
+            background-color rgba(255,255,255,.4)
+          .s-reply, .s-permalink, .s-censor
+            position relative
+            height 27px
+            width 27px
   .left-content
     border-right 1px solid #eaeaea
     .threads
@@ -311,13 +328,6 @@ html.admin
       a
         color dark
   //}}}
-html.search
-  header
-    .onclick-close
-      box-shadow 0 0 0 1px dark
-    .search
-      #query.query, #query.query:focus, #query.query:hover
-        border-bottom 1px solid dark
 
 // hover fx for links
 .stylish:hover

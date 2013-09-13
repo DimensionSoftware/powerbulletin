@@ -12,17 +12,20 @@ if typeof(post) !== 'undefined'
         a.user.mutant(href="/user/#{post.user_name}")
           .profile.photo
             img(src="#{cacheUrl}/#{post.user_photo}")
-          span=post.user_name
+          span.username=post.user_name
         .date(data-time=post.created_iso)!= post.created_human
         .edit-container
         if post.html
           p.body!= post.html
         .reply
         .actions
-          a.s-reply.onclick-footer-toggle(title='Reply')
+          a.onclick-footer-toggle(title='Reply')
+            .s-reply.onclick-footer-toggle
           a.edit.mutant.no-surf(data-edit=post.id, href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
-          a.s-permalink.permalink.mutant(href=post.uri, title='Permalink')
-          a.s-censor.censor.onclick-censor-post(title='Censor')
+          a.permalink.mutant(href=post.uri, title='Permalink')
+            .s-permalink
+          a.censor.onclick-censor-post(title='Censor')
+            .s-censor
     .children
       if post.posts.length
         div(data-page=page)

@@ -579,7 +579,9 @@ mk-post-pnum-to-href = (post-uri) ->
         if History?
           # only perform on client-side
           if document.active-element is q-el
-            $q.blur! # don't draw until we are blurred, this gave me back like 6ms!
+            # XXX 6ms is a huge win but it causes the ui to flicker
+            # let's put this back when we have the need for speed  -k
+            #$q.blur! # don't draw until we are blurred, this gave me back like 6ms!
             after.push ->
               bench \re-focus ->
                 set-timeout(_, 1) ->

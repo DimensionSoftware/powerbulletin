@@ -63,6 +63,7 @@ const threshold = 15px # snap
 ##
 #{{{ Bootstrap Mutant Common
 $d.on \click \a.mutant ch.mutate # hijack urls
+$d.on \click \button.mutant ch.mutate # hijack urls
 
 window.last-statechange-was-user = true # default state
 last-req-id = 0

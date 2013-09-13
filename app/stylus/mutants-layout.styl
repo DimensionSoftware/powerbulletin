@@ -105,8 +105,8 @@ html.forum, html.profile, html.search, html.moderation
     .create
       margin (grid/2) (grid*3.5) (grid/2) (grid*3.5)
       .button
+        width 100%
         text-overflow ellipsis
-        animation-name none
         font-size .9em
         display block
         padding 8px 10px
@@ -123,6 +123,7 @@ html.forum, html.profile, html.search, html.moderation
         padding 0 38px 10px 38px
         .title
           margin 7px 0 0 0
+          text-transform capitalize
         .container
           margin 0
           padding 0
@@ -289,7 +290,7 @@ html.forum, html.profile, html.search, html.moderation
       .post.head
         padding-top (grid/2)
       .post:first-child
-        padding-top grid
+        padding-top (grid*1.5)
       .post.censored
         .onclick-censor-post
           display none!important
@@ -310,22 +311,27 @@ html.forum, html.profile, html.search, html.moderation
         img
           max-width 100%
         .title
-          margin 0 0 8px -1px
+          margin 0 0 15px -1px
           font-size 1.5em
         .user
           font-weight bold
         .title, .user
+          font-weight 400
           text-transform capitalize
-        .body
+        textarea.body
+          font-size 1.1em
+        p.body
           line-height 1.5em
-          margin (grid/2) 0 grid 0
+          margin (grid/2) 0 grid -17px
+          border-bottom-right-radius 20px
+          border-bottom-left-radius 20px
+          padding 10px 15px 50px 15px
           clear both
           font-size 1.05em
         .actions
           opacity 0
           clear both
-          //letter-spacing -10px
-          margin-top (grid+2)
+          margin-top -25px
           margin-bottom 2px
           line-height 15px
           margin-left -6px
@@ -445,10 +451,6 @@ html.profile
     margin grid 0 0 0
 //}}}
 //{{{ - search
-html.search body.scrolled
-  header
-    .onclick-close
-      top 5px
 html.search
   .nicescroll-rails
     display none
@@ -495,7 +497,10 @@ html.search
           z-index 9
         .onclick-close
           opacity 1!important
-          top 9px
+          top 6px
+          height 12px
+          width 12px
+          border-radius 12px
       .advanced
         right 80px
         top (header-height + 5)
@@ -706,16 +711,7 @@ html.admin
   footer
     left 150px!important
 //}}}
-html.moderation
-  #left_content
-    display none
-  footer
-    left 0!important
-html.forum.new
-  footer
-    cursor default
-    .onclick-footer-toggle
-      display none
+//{{{ - forum
 html.forum
   .main-content
     p.onclick-footer-toggle:hover
@@ -724,7 +720,7 @@ html.forum
     p.onclick-footer-toggle
       color #bbb
       cursor pointer
-      font-weight 100
+      font-weight 200
       margin (grid*2) 0
       text-align center
       font-size 1.1em
@@ -765,9 +761,19 @@ html.forum
           bottom 32px
         .summary
           display none
+//}}}
+html.forum.new
+  footer
+    cursor default
+    .onclick-footer-toggle
+      display none
 html.moderation
   .moderations
     padding-left: 40px
+  #left_content
+    display none
+  footer
+    left 0!important
 
 #left_container
   height 100%
