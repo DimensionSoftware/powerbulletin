@@ -38,7 +38,7 @@ module.exports =
         on-click = ~>
           @$.find \.SiteRegister-subdomain:first .focus!
           (Auth.require-registration create-site, after-registration)!
-        locals = {title: \Create}
+        locals = {title: \Start}
         @children =
           buy: new ParallaxButton {on-click, locals} \.SiteRegister-create @
 
