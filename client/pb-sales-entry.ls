@@ -18,9 +18,6 @@ require \./layout
 # components
 window.router = new SalesRouter
 
-# attach to existing dom if available on page load
-router.navigate(window.location.pathname)
-
 $R((user) ->
   if user
     component.sales-app.login user

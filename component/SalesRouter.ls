@@ -62,6 +62,7 @@ module.exports =
       # top components
       @top-components = {}
     on-attach: ->
+      # bind history adapter
       History.Adapter.bind window, \statechange, ~>
         # surf to retrieve locals and navigate (second argument means surf instead of passing locals directly)
         {data} = History.get-state!
@@ -70,6 +71,10 @@ module.exports =
         locals = if Object.keys(data).length then data else null
 
         @navigate parse-path(History.get-page-url!), locals
+
+      # attach to existing dom if available on  attach/page-load
+      # SalesRouter is intended to only be attached once, so this is fine!
+      @navigate(window.location.pathname)
 
     # client: load any dependencies and navigate to url in component and navigate window history
     # server: load any dependencies and navigate to url in component
