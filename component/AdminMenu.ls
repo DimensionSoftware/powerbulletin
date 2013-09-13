@@ -143,7 +143,7 @@ module.exports =
         # if item has children, create a sub $ol and recurse
         if item.children?length
           $sub-ol = $('<ol/>')
-          $item.append $sub-ol
+          $item?append $sub-ol
           @build-nested-sortable $sub-ol, item.children
 
     on-attach: !~>

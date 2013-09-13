@@ -425,6 +425,8 @@ function profile-paths user, uploaded-file, base=\avatar
   fdoc.site.config = defaults <<< fdoc.site.config
   fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')
   fdoc.title = \Admin
+  console.log \menu:, site.config.menu
+  fdoc.menu = site.config.menu
   res.locals fdoc
 
   res.mutant \admin # out!
