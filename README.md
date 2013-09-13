@@ -48,3 +48,10 @@ Post-Modern, Realtime, FREE (as in freedom) Community
     # one-shot health dump + all backends status
     varnishadm debug.health
 
+# Notes on how to rebuild postgresql with en_US.UTF8 locale forced :\
+    sudo service postgres stop
+    sudo su - postgres
+    rm -rf /var/lib/postgresql/9.2/main/*
+    /usr/lib/postgresql/9.2/bin/initdb --locale=en_US.utf8 --encoding=UTF8 /var/lib/postgresql/9.2/main
+    exit
+    sudo service postgres start
