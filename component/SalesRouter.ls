@@ -83,43 +83,46 @@ module.exports =
 
       b = if @is-client then @@$('body') else @$.find('body')
 
-      # put url type in body class
-      b.attr(\class, null).add-class(type)
-
       [klass-name, layout-klass-name, layout-root-sel] = surl-mapping[type]
       css-class = "#{klass-name}-root"
       css-sel   = ".#css-class"
-      only-attach = false
 
       finish = (klass, layout-klass) ~>
-        if @top-components[klass-name] # component is already on page
-          c = @top-components[klass-name]
-        else
+        only-attach = false
+        c = @top-components[klass-name]
+        unless c
+          # instantiate since there is no instance yet...
           existing-root-el = @@$(css-sel)
           if existing-root-el.length
             console.log "#klass-name: skipping render (already in DOM, only attaching)"
-            only-attach := true # component is on page from a server-side html render, only attach
+            only-attach = true # component is on page from a server-side html render, only attach
             root-el = existing-root-el
           else
             root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
+            b.append root-el
 
-        make-component = (elr) ->
-          new klass {-auto-render, -auto-attach, locals}, elr
+          make-component = (elr, parent) ->
+            new klass {-auto-render, -auto-attach, locals}, elr, parent
 
-        if layout-klass
-          layout-component = new layout-klass {-auto-render, -auto-attach, locals}, root-el
-          layout-component.children = { content: make-component layout-root-sel }
-          c = layout-component
-        else
-          c ||= @top-components[klass-name] = make-component root-el
-
-        b.append root-el
+          if layout-klass
+            # nest a component in a parent layout without coupling them together
+            layout-c = new layout-klass {-auto-render, -auto-attach, locals}, root-el
+            nested-c = @top-components[klass-name] = make-component layout-root-sel, layout-c # layout-c is the parent of nested-c
+            layout-c.children ||= {} # just in case there are other children in layout, we want to be nice
+            layout-c.children <<< {content: nested-c} # mix our special child in (top-level component nested in layout)
+            c = layout-c
+          else
+            c = @top-components[klass-name] = make-component root-el
 
         custom-reload = (l) ->
           c.detach!
           c.locals l
           c.render! unless only-attach
           c.attach!
+
+          # put url type in body class to trigger css transition
+          b.attr(\class, null).add-class(type)
+
 
         if @is-client and not locals
           # fetch from server remotely
