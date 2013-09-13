@@ -2,7 +2,7 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 module.exports =
-  homepage : [\SalesApp, \SalesLayout, \.SalesLayout-content]
+  homepage : [\Sales, \SalesLayout, \.SalesLayout-content]
   super    : [\SuperAdmin, \SalesLayout, \.SalesLayout-content]
   # page oriented ^^
   # o
