@@ -91,9 +91,10 @@ module.exports =
                     $i.val form[n]
 
     store-title: (ev) !~>
-      $input = $ ev.target
-      data   = $input.data!
+      $input     = $ ev.target
+      data       = $input.data!
       data.title = data.form.title = $input.val!
+      @$.find 'input[name=title]' .val $input.val!
       $input.data data
 
     to-hierarchy: ~>
