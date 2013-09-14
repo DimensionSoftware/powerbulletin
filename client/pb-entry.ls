@@ -170,7 +170,6 @@ $d.on \change, '#search_filters [name=forum_id]', ->
   return false
 
 $d.on \change, '#search_filters [name=within]', ->
-  console.log it
   submit-type = \soft
   within = $(@).val!
 

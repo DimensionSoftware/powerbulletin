@@ -95,7 +95,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
     jqxhr = $.get url, surf-params, (r) ->
       return if not r.mutant
       $d.attr \title, r.locals.title if r.locals?title # set title
-      on-unload = mutants[window.mutator].on-unload or (w, next-mutant, cb) -> cb null
+      on-unload = mutants[window.mutator]?on-unload or (w, next-mutant, cb) -> cb null
       on-unload window, r.mutant, -> # cleanup & run next mutant
         # this branch will prevent queue pileups if someone hits the back/forward button very quickly
         # yeah we already requested the data but lets not needlessly update the dom when the user has
