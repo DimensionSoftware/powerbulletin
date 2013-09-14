@@ -320,4 +320,5 @@ switch window.location.hash
 onload-personalize!
 if window.initial-mutant # XXX sales-app doesn't have a mutant
   <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
+$ '.tools .profile' .show! # show default avatar
 # vim:fdm=marker
