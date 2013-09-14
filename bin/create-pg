@@ -14,3 +14,4 @@ for i in 1 2 3 4 5 6 7; do
   bin/psql pb -c "SELECT procs.build_all_uris('$i')"
   done
 
+bin/site-config-menu-default --all
