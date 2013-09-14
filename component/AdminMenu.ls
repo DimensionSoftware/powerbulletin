@@ -123,7 +123,7 @@ module.exports =
             id     : row.parents \li .attr \id .replace /^list_/ ''
         @@$.ajax req
           .done (data) ~>
-            $container = row.parents('li')
+            $container = row.parents('li:first')
             $cursor = @$.find 'ol.sortable li:first'
             $container.remove!
             $cursor.focus!
