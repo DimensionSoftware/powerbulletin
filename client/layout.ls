@@ -67,6 +67,7 @@ $d.on \click \button.mutant ch.mutate # hijack urls
 
 window.last-statechange-was-user = true # default state
 last-req-id = 0
+# FIXME there's a bug here where statechange binds to external links and causes a security exception!
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   statechange-was-user = window.last-statechange-was-user
   window.last-statechange-was-user = true # reset default state
