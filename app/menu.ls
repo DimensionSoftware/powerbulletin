@@ -174,12 +174,12 @@ require! {
       path        : form.page-slug
       title       : title
       config      : JSON.stringify(main_content: form.content)
-  | \external-link =>
-    type = \external-link
-    data = null
+  | \link =>
+    type = \link
+    data = {}
   | otherwise =>
     type = null
-    data = null
+    data = {}
   if form.dbid
     data.id = form.dbid
   else
@@ -257,7 +257,7 @@ require! {
     if err and err.routine.match /unique/
       err.message = "Slug is already taken."
     cb err, data
-  | \external-link => cb null, null
+  | \link          => cb null, []
   | otherwise      => cb new Error("menu.upsert unknown type #type"), data
 
 # Delete a menu item (recursively if necessary) from the database
@@ -272,7 +272,7 @@ require! {
   switch type
   | \page          => db.pages.delete data, cb
   | \forum         => db.forums.delete data, cb
-  | \external-link => cb null
-  | otherwise      => cb null
+  | \link          => cb null, []
+  | otherwise      => cb null, []
 
 # vim:fdm=indent
