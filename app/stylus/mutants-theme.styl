@@ -250,37 +250,37 @@ html.profile
 html.admin
   #left_container
     li.feature
-      font-size .7em
+      font-size .75em
     li:hover
       border-radius 5px / 3px
     li
       border-left 1px solid transparent
       height 23px
     li.feature.upgrade.active::after
-      border-left-color dark
+      border-left-color dark2
     li.feature.upgrade.active
-      background-color dark
-      border-left 1px solid #666
-      border-bottom 1px solid #666
+      background-color dark2
+    li.feature.upgrade
       a
-        color #333
+        font-style italic
     li.active
       background-color dark
       text-shadow 0 1px 0 #000
-      border-radius 8px / 4px
+      border-radius 9px / 2px
       border-top-right-radius 0
       border-bottom-right-radius 0
       position relative
       border-left 1px solid #333
-      border-bottom 1px solid #333
+      border-bottom 2px solid #333
       a
+        font-style italic
         color #fff
     li::after
       position absolute
       content ''
       top 10px
       opacity 0
-      right -5px
+      right -6px
       border 10px solid transparent
     li.active::after
       position absolute
@@ -294,7 +294,7 @@ html.admin
     li
       a
         padding 2px 8px
-        font-size 1.4em
+        font-size 1.2em!important
         text-decoration none
 
   .main-content
