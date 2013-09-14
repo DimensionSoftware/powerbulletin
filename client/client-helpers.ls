@@ -206,12 +206,15 @@ load-css = (href) ->
   l = $ \#left_content
   l.toggle-class \wide (l.width! > 300px)
 
-@align-breadcrumb = ->
+@align-ui = ->
+  # breadcrumb to width
   b = $ \#breadcrumb
   m = $ \#main_content
   l = $ \#left_content
   pos = (m.width!-b.width!)/2
   b.transition {left:(if pos < l.width! then l.width! else pos)}, 300ms \easeOutExpo
+  # footer to left-nav
+  $ \footer .css \left, ($ \#left_container .width!+1+\px)
 
 @remove-editing-url = (meta) ~>
   History.replace-state {no-surf:true} '' meta.thread-uri

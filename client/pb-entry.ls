@@ -29,7 +29,7 @@ require \raf
 
 require \layout
 
-{align-breadcrumb, ck-submit-form, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
+{align-ui, ck-submit-form, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
 {render-and-append, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
@@ -83,10 +83,10 @@ window.load-ui = -> # restore ui state from cookie
     $l.transition({width: w} 500ms \easeOutExpo -> set-wide!)
     set-timeout (-> # ... & snap
       $ '#main_content .resizable' .transition({padding-left: w+left-offset} 450ms \snap)), 300ms
-  set-timeout (-> set-wide!; align-breadcrumb!), 500ms
+  set-timeout (-> set-wide!; align-ui!), 500ms
 
 # waypoints
-$w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-breadcrumb!), 800ms)
+$w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 800ms)
 
 # show reply ui
 append-reply-ui = (ev) ->
