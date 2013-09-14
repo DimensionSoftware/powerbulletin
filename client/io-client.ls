@@ -32,6 +32,9 @@ socket.on \leave-site, (message, cb) ->
   #console.warn \leave-site, message
   $ "[data-user-id=#{message.id}] .profile.photo" .remove-class \online
 
+socket.on \menu-update, (menu, cb) ->
+  $ \#menu .html jade.templates.menu {menu}
+
 socket.on \thread-impression (thread, cb) ->
   if thread.forum_id is window.active-forum-id
     $ "\#left_container ul.threads li[data-id=#{thread.id}] span.views"
