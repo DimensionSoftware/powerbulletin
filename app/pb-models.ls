@@ -94,8 +94,8 @@ query-dictionary =
     all: ({site_id, limit, offset}, cb) ->
       postgres.query '''
       SELECT
-        u.id, u.email, u.photo,
-        a.name, a.rights, a.verified, a.created, a.site_id
+        u.id, u.email
+        a.name, a.photo, a.rights, a.verified, a.created, a.site_id
       FROM users u
       JOIN aliases a ON a.user_id=u.id
       WHERE a.site_id=$1
@@ -125,7 +125,7 @@ query-dictionary =
       SELECT
         p.*,
         a.name AS user_name,
-        u.photo AS user_photo
+        a.photo AS user_photo
       FROM posts p
       JOIN forums f ON f.id=p.forum_id
       JOIN users u ON u.id=p.user_id

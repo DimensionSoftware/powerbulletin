@@ -377,10 +377,10 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- change avatar
 CREATE FUNCTION procs.change_avatar(usr JSON, path JSON) RETURNS JSON AS $$
   sql = '''
-  UPDATE users SET photo = $1 WHERE id = $2
+  UPDATE aliases SET photo = $1 WHERE user_id = $2 AND site_id = $3
     RETURNING *
   '''
-  return plv8.execute(sql, [path, usr.id])
+  return plv8.execute(sql, [path, usr.id, usr.site_id])
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 -- find an alias by site_id and verify string
@@ -447,8 +447,8 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
 
   sql = """
   SELECT
-    u.id, u.photo, u.email,
-    a.verified, a.rights, a.name, a.created, a.site_id,
+    u.id, u.email,
+    a.photo, a.verified, a.rights, a.name, a.created, a.site_id,
     (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2) AS post_count,
     auths.type, auths.profile 
   FROM users u

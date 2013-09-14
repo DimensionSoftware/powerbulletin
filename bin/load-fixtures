@@ -8,7 +8,7 @@ for f in fixtures/{users,sites,domains,aliases,auths,forums,posts,moderations,pa
     bin/psql -d pb -c "SELECT setval('${table}_id_seq', (SELECT MAX(id) FROM $table));"
 done
 
-for site_id in 1 2 3 4 ; do
+for site_id in 1 2 3 4 5 6 7 ; do
   bin/site-config -i $site_id postsPerPage 20
 done
 
@@ -17,3 +17,5 @@ bin/domain-config  -i 2 facebookClientId    454403507966007                     
                         googleConsumerKey   1080671069650.apps.googleusercontent.com     googleConsumerSecret   LGm-Ese6MyORRlfjH1i3Jgdl
 
 bin/domain-config  -i 5 facebookClientId    482385075166196                              facebookClientSecret   14966ecfc55f9091e8033e1310549359
+
+bin/site-config-menu-default --all

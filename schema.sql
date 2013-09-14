@@ -24,7 +24,6 @@ $$;
 CREATE TABLE users (
   id      BIGSERIAL NOT NULL,
   email   VARCHAR(256),
-  photo   VARCHAR(256),
   stripe_id TEXT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated TIMESTAMP,
@@ -66,6 +65,7 @@ CREATE TABLE aliases (
   user_id     BIGINT NOT NULL references users(id),
   site_id     BIGINT NOT NULL references sites(id),
   name        VARCHAR(64) NOT NULL,
+  photo       VARCHAR(256),
   verify      VARCHAR(32),
   verified    BOOLEAN NOT NULL DEFAULT FALSE,
   forgot      VARCHAR(32),
