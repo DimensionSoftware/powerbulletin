@@ -18,4 +18,3 @@ bin/domain-config  -i 2 facebookClientId    454403507966007                     
 
 bin/domain-config  -i 5 facebookClientId    482385075166196                              facebookClientSecret   14966ecfc55f9091e8033e1310549359
 
-bin/site-config-menu-default --all
