@@ -256,7 +256,7 @@ timers = {}
     ..attr \href "/user/#{user.name}"
     ..add-class \online # set online!
   $ \#profile
-    ..on   \load -> $ 'header .profile' .show!
+    ..on   \load -> $ 'header .profile' .show!css \opacity, 1
     ..attr \src, window.cache-url + src
 
 @
