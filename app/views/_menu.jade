@@ -1,18 +1,11 @@
 //- main menu
 mixin _menu(menu)
-  each f,i in menu
-      if f.title && f.form
+  each item,i in menu
+      if item.title && item.form
         li.row
-          - url = f.form.forumSlug || f.form.pageSlug || f.form.url
-          a.title(data-surf=f.id, data-scroll-to="#forum_#{f.id}", class="forum-#{f.id}", href=url)= f.title
-          if f.children
+          url = item.form.forumSlug || item.form.pageSlug || item.form.url
+          a.title(data-surf=item.id, data-scroll-to="#forum_#{item.id}", class="forum-#{item.id}", href=url)= item.title
+          if item.children
             .submenu
               menu
-                mixin _menu(f.children)
-//-      a.title(data-surf=f.id, data-scroll-to="#forum_#{f.id}", class="forum-#{f.id}", href="/#{f.slug}")= f.title
-//-      if f.forums.length
-//-        .submenu
-//-          menu
-//-            each sf,i in f.forums
-//-              li.row
-//-                a.mutant(class="forum-#{sf.id}", href=sf.uri)= sf.title
+                mixin _menu(item.children)
