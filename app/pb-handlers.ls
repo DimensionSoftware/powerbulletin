@@ -59,6 +59,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
 @homepage = (req, res, next) ->
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
+  site = res.vars.site
   site-id = res.vars.site.id
   tasks =
     forums: db.site-summary site-id, 6threads, (req.query?order or \recent), _
