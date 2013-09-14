@@ -91,6 +91,7 @@ ban-all-domains = (site-id) ->
       if err then return res.json success: false, hint: \db.site-update
 
       ban-all-domains site.id # varnish ban
+      announce.emit \menu-update, site.config.menu
       res.json success:true, id: dbid
 
     # delete a menu
@@ -114,6 +115,7 @@ ban-all-domains = (site-id) ->
       if err then return res.json success: false, hint: \db-site-update, err: err, errors: [ "Item could not be deleted." ]
 
       ban-all-domains site.id # varnish ban
+      announce.emit \menu-update, site.config.menu
       res.json success: true
 
     # resort a menu
@@ -131,6 +133,7 @@ ban-all-domains = (site-id) ->
       if err then return res.json success: false, hint: \menu-resort
 
       ban-all-domains site.id # varnish ban
+      announce.emit \menu-update, site.config.menu
       res.json success:true
 
     | \domains =>
