@@ -72,7 +72,7 @@ function default-pnum-to-href-fun uri
       parsed.pathname
 
 # Common
-layout-static = (w, next-mutant, active-forum-id=-1) ->
+layout-static = (w, next-mutant, active-forum-id=0) ->
   # XXX to be run last in mutant static
   # indicate current
   forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
@@ -649,7 +649,8 @@ mk-post-pnum-to-href = (post-uri) ->
     (window, next) ->
       window.replace-html window.$(\#left_container), ''
       window.replace-html window.$(\#main_content), @page.config.main_content
-      layout-static.call @, window, \page
+      window.marshal \activeForumId, @active-forum-id
+      layout-static.call @, window, @active-forum-id
       next!
   on-load:
     (window, next) ->

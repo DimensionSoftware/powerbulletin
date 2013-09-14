@@ -499,6 +499,7 @@ function profile-paths user, uploaded-file, base=\avatar
     fdoc ||= {}
     fdoc.menu = site.config.menu
     fdoc.page = page
+    fdoc.active-forum-id = page.id
     res.locals fdoc
     res.mutant \page
   else
