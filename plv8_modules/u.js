@@ -40,11 +40,10 @@
     return results$;
   });
   out$.userFields = userFields = userFields = function(uField, sid){
-    var aliasSql;
-    aliasSql = sid
-      ? "SELECT a.name FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid
-      : "SELECT a.name FROM aliases a WHERE a.user_id=" + uField + " LIMIT 1";
-    return "(" + aliasSql + ") AS user_name,\n(SELECT u.photo FROM users u WHERE u.id=" + uField + ") AS user_photo";
+    var aliasSql, photoSql;
+    aliasSql = "SELECT a.name FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid;
+    photoSql = "SELECT a.photo FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid;
+    return "(" + aliasSql + ") AS user_name,\n(" + photoSql + ") AS user_photo";
   };
   topForums = function(siteId, limit, fields){
     var sql;

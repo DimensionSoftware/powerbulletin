@@ -91,9 +91,10 @@ module.exports =
                     $i.val form[n]
 
     store-title: (ev) !~>
-      $input = $ ev.target
-      data   = $input.data!
+      $input     = $ ev.target
+      data       = $input.data!
       data.title = data.form.title = $input.val!
+      @$.find 'input[name=title]' .val $input.val!
       $input.data data
 
     to-hierarchy: ~>
@@ -122,7 +123,7 @@ module.exports =
             id     : row.parents \li .attr \id .replace /^list_/ ''
         @@$.ajax req
           .done (data) ~>
-            $container = row.parents('li')
+            $container = row.parents('li:first')
             $cursor = @$.find 'ol.sortable li:first'
             $container.remove!
             $cursor.focus!
@@ -143,7 +144,7 @@ module.exports =
         # if item has children, create a sub $ol and recurse
         if item.children?length
           $sub-ol = $('<ol/>')
-          $item.append $sub-ol
+          $item?append $sub-ol
           @build-nested-sortable $sub-ol, item.children
 
     on-attach: !~>

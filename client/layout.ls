@@ -67,6 +67,7 @@ $d.on \click \button.mutant ch.mutate # hijack urls
 
 window.last-statechange-was-user = true # default state
 last-req-id = 0
+# FIXME there's a bug here where statechange binds to external links and causes a security exception!
 History.Adapter.bind window, \statechange, (e) -> # history manipulaton
   statechange-was-user = window.last-statechange-was-user
   window.last-statechange-was-user = true # reset default state
@@ -95,7 +96,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
     jqxhr = $.get url, surf-params, (r) ->
       return if not r.mutant
       $d.attr \title, r.locals.title if r.locals?title # set title
-      on-unload = mutants[window.mutator].on-unload or (w, next-mutant, cb) -> cb null
+      on-unload = mutants[window.mutator]?on-unload or (w, next-mutant, cb) -> cb null
       on-unload window, r.mutant, -> # cleanup & run next mutant
         # this branch will prevent queue pileups if someone hits the back/forward button very quickly
         # yeah we already requested the data but lets not needlessly update the dom when the user has
@@ -320,4 +321,5 @@ switch window.location.hash
 onload-personalize!
 if window.initial-mutant # XXX sales-app doesn't have a mutant
   <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
+$ '.tools .profile' .show! # show default avatar
 # vim:fdm=marker

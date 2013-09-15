@@ -59,16 +59,15 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
 @homepage = (req, res, next) ->
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
+  site = res.vars.site
   site-id = res.vars.site.id
   tasks =
-    menu:   db.menu site-id, _
     forums: db.site-summary site-id, 6threads, (req.query?order or \recent), _
 
-  if req.surfing
-    delete tasks.menu
-    delete-unnecessary-surf-data res
+  if req.surfing then delete-unnecessary-surf-data res
 
   err, doc <- async.auto tasks
+  doc.menu            = site.config.menu
   doc.forums          = filter (.posts.length), doc.forums
   doc.title           = res.vars.site.name
   doc.active-forum-id = \homepage
@@ -121,11 +120,11 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   if meta.type is \moderation
     tasks =
       forum-id: db.uri-to-forum-id res.vars.site.id, meta.forum-uri, _
-      menu: db.menu site.id, _
       posts: [\forumId, (cb, a) -> db.posts.moderated(a.forum-id, cb)]
 
     err, fdoc <- async.auto tasks
     if err then return next err
+    fdoc.menu = site.config.menu
 
     res.locals fdoc
     caching-strategies.nocache res
@@ -143,7 +142,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     offset = (page - 1) * limit
 
     tasks =
-      menu            : db.menu site.id, _
       sub-posts-tree  : db.sub-posts-tree site.id, post.id, 'p.*', limit, offset, _
       sub-posts-count : db.sub-posts-count post.id, _
       top-threads     : db.top-threads site.id, post.forum_id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
@@ -165,6 +163,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
     # attach sub-post to fdoc, among other things
     fdoc <<< {post, forum-id:post.forum_id, page, cvars.t-step}
+    fdoc.menu  = site.config.menu
     fdoc.title = post.title
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.post.posts = delete fdoc.sub-posts-tree
@@ -181,7 +180,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     if err then return next err
     if !forum-id then return next 404
     tasks =
-      menu        : db.menu res.vars.site.id, _
       forum       : db.forum forum-id, _
       forums      : db.forum-summary forum-id, 10threads, \recent, _
       top-threads : db.top-threads site.id, forum-id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
@@ -199,6 +197,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     if !fdoc then return next 404
 
     fdoc <<< {forum-id, cvars.t-step}
+    fdoc.menu = site.config.menu
     fdoc.active-forum-id = fdoc.forum-id
     fdoc.title = fdoc?forum?title
 
@@ -223,7 +222,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     return next err
 
   tasks =
-    menu           : db.menu site.id, _
     profile        : db.usr usr, _
     posts-by-user  : db.posts-by-user usr, page, ppp, _
     qty            : [\profile, (cb, a) ->
@@ -234,13 +232,12 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     ]
     pages-count    : db.posts-by-user-pages-count usr, ppp, _
 
-  if req.surfing
-    delete tasks.menu
-    delete-unnecessary-surf-data res
+  if req.surfing then delete-unnecessary-surf-data res
 
   err, fdoc <- async.auto tasks
   unless fdoc.profile then return next 404 # guard
   fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
+  fdoc.menu  = site.config.menu
   fdoc.page  = parse-int page
   fdoc.title = name
   fdoc.profile.human_post_count = add-commas(fdoc.qty)
@@ -405,11 +402,9 @@ function profile-paths user, uploaded-file, base=\avatar
   res.locals.action = req.param \action
 
   tasks =
-    menu: db.menu site.id, _
     site: db.site-by-id site.id, _
 
   if req.surfing
-    delete tasks.menu
     delete-unnecessary-surf-data res
 
   err, fdoc <- async.auto tasks
@@ -425,6 +420,7 @@ function profile-paths user, uploaded-file, base=\avatar
   fdoc.site.config = defaults <<< fdoc.site.config
   fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')
   fdoc.title = \Admin
+  fdoc.menu = site.config.menu
   res.locals fdoc
 
   res.mutant \admin # out!
@@ -447,9 +443,6 @@ function profile-paths user, uploaded-file, base=\avatar
   site = res.vars.site
   searchopts = {} <<< req.query <<< {site_id: site.id}
   console.warn searchopts
-
-  err, menu <- db.menu res.vars.site.id
-  if err then return next err
 
   err, elres, elres2 <- s.search searchopts
   if err then return next(err)
@@ -480,9 +473,10 @@ function profile-paths user, uploaded-file, base=\avatar
   res.locals {
     elres
     facets
-    menu
     page: (req.query.page or '1')
     title: "Search#{if res.locals.searchopts.q then (' : ' + res.locals.searchopts.q) else ''}"
+    menu:  site.config.menu
+
   }
 
   # NOTE: not sure if caching is possible given the dynamicness of
@@ -501,15 +495,11 @@ function profile-paths user, uploaded-file, base=\avatar
   if err then return next err
   if page
     page.config = JSON.parse page.config
-    tasks =
-      menu: db.menu site.id, _
-    if req.surfing
-      delete tasks.menu
-      delete-unnecessary-surf-data res
-    err, fdoc <- async.auto tasks
-    if err then return next err
+    if req.surfing then delete-unnecessary-surf-data res
     fdoc ||= {}
+    fdoc.menu = site.config.menu
     fdoc.page = page
+    fdoc.active-forum-id = page.id
     res.locals fdoc
     res.mutant \page
   else

@@ -1,3 +1,4 @@
+include _menu
 - var invite = (inviteOnly) ? "window.inviteOnly='true';" : ''
 |<!DOCTYPE html><!--
 ░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
@@ -33,7 +34,6 @@ html
 
     if env == 'production'
       //- in this case we preload most libraries, as opposed to fetching them all separately
-      //- FIXME move all of this to head.js
       script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
       script(src="#{cacheUrl}/pb-optimized.js")
     else
@@ -61,18 +61,10 @@ html
         #warning.tooltip
         .menu-container
           menu#menu.menu
-            each f,i in menu
-              li.row
-                a.title(data-surf=f.id, data-scroll-to="#forum_#{f.id}", class="forum-#{f.id}", href="/#{f.slug}")= f.title
-                if f.forums.length
-                  .submenu
-                    menu
-                      each sf,i in f.forums
-                        li.row
-                          a.mutant(class="forum-#{sf.id}", href=sf.uri)= sf.title
+            mixin _menu(menu)
         .tools
           a.profile.photo.mutant
-            img#profile
+            img#profile(src="#{cacheUrl}/images/profile.jpg")
           .container
             menu
               li.onclick-login

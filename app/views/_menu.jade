@@ -1,0 +1,11 @@
+//- main menu
+mixin _menu(menu)
+  each item,i in menu
+      if item.title && item.form
+        li.row
+          url = item.form.forumSlug || item.form.pageSlug || item.form.url
+          a.title(data-surf=item.form.dbid, data-scroll-to="#forum_#{item.form.dbid}", class="forum-#{item.form.dbid}", href=url, target=(item.form.separateTab ? '_blank' : '_self'))= item.title
+          if item.children
+            .submenu
+              menu
+                mixin _menu(item.children)

@@ -1,0 +1,54 @@
+#!./node_modules/.bin/lsc
+
+require! {
+  \fs
+  \async
+  program: \commander
+  pg: '../app/postgres'
+  m: '../app/menu'
+}
+global <<< require \prelude-ls
+
+<- pg.init!
+db = pg.procs
+
+defaults =
+  id  : 2
+
+program
+  .usage '[OPTION]...'
+  .option  '-i, --id <id>',            "site id  (default: #{defaults.id})",        parse-int, defaults.id
+  .option  '-a, --all',                "all sites"
+  .parse process.argv
+
+all-site-ids = (cb) ->
+  err, r <- pg.query "SELECT id FROM sites ORDER BY id", []
+  if err then return cb err
+  cb null, r.map (.id)
+
+site-config-menu = (id, cb) ->
+  err, site <- db.site-by-id id
+  if err then return cb err
+  console.log "[menu] #{site.name}"
+  err, menu <- db.menu id
+  if err then return cb err
+  new-menu = m.upconvert menu
+  site.config.menu = new-menu
+  db.site-update site, cb
+
+main = ->
+  if program.all
+    err, ids <- all-site-ids
+    if err then throw err
+    err <- async.each ids, site-config-menu
+    process.exit 0
+  else if program.id
+    <- site-config-menu program.id
+    process.exit 0
+  else
+    console.warn program.usage!
+    process.exit 1
+
+main!
+
+# vim:ft=ls

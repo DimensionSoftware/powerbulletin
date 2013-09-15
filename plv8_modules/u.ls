@@ -27,15 +27,11 @@ export map = (f, xs) -->
   [f x for x in xs]
 
 export user-fields = user-fields = (u-field, sid) ->
-  # XXX temporary fix for sid not being passed in
-  alias-sql = if sid
-    "SELECT a.name FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
-  else
-    "SELECT a.name FROM aliases a WHERE a.user_id=#u-field LIMIT 1"
-
+  alias-sql = "SELECT a.name FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
+  photo-sql = "SELECT a.photo FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
   """
   (#alias-sql) AS user_name,
-  (SELECT u.photo FROM users u WHERE u.id=#u-field) AS user_photo
+  (#photo-sql) AS user_photo
   """
 ## END PURE FUNCTIONS ##
 

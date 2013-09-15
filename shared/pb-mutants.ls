@@ -9,7 +9,7 @@ furl = require \../shared/forum-urls
 
 # only required if on client-side
 if window?
-  {align-breadcrumb, edit-post, fancybox-params, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
+  {align-ui, edit-post, fancybox-params, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {flip-background, is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -273,7 +273,7 @@ layout-on-personalize = (w, u) ->
       flip-background window, cur
       $ = window.$
 
-      align-breadcrumb!
+      align-ui!
 
       $l = $ \#left_container
       $l.find \.active .remove-class \active # set active post
@@ -626,7 +626,7 @@ mk-post-pnum-to-href = (post-uri) ->
     (w, next) ->
       window.$new-hits = w.$('<div/>')  # reset new-hit div
 
-      align-breadcrumb!
+      align-ui!
       #pager-init w
 
       # avoid stacking up search join requests
@@ -652,7 +652,8 @@ mk-post-pnum-to-href = (post-uri) ->
     (window, next) ->
       window.replace-html window.$(\#left_container), ''
       window.replace-html window.$(\#main_content), @page.config.main_content
-      layout-static.call @, window, \page
+      window.marshal \activeForumId, @active-forum-id
+      layout-static.call @, window, \page, @active-forum-id
       next!
   on-load:
     (window, next) ->
