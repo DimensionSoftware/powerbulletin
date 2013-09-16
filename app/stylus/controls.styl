@@ -42,24 +42,29 @@ input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:h
   z-index 1
   color #444
   border-bottom 1px solid #999
-  box-shadow 1px 0 1px dark,0 0 1px light
+  box-shadow 0 1px 1px dark,0 0 1px light
   transition color .5s ease-out, border .05s ease-out, box-shadow .1s ease-out
 input.active, input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #111
   position relative
   z-index 10
   background-color #fffcfc
-  border 1px solid dark
-  border-bottom 1px solid dark
-  border-top 1px solid #ddd
-  border-left 1px solid #ddd
-  box-shadow -1px 0px 2px #aaa inset,0 0 1px light,0 1px 0 #aaa
+  //border 1px solid dark
+  border-bottom 1px solid #777
+  border-right 1px solid #888
+  //border-top 1px solid #ddd
+  //border-left 1px solid #ddd
+  border-top 1px solid #fff!important
+  box-shadow -1px 0 2px -1px #888 inset,0 1px 2px 0 light
   //letter-spacing .06em
   transform scale(1.015)
   transition box-shadow .1s ease-out, letter-spacing .1s ease-out, border-radius .8s ease-out
   border-radius 8px / 3px
 textarea:focus, select:focus
   letter-spacing 0
+//}}}
+
+//{{{ Buttons
 .button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
   animation-name tiny-grow
   animation-duration .03s
@@ -71,8 +76,6 @@ textarea:focus, select:focus
   border-bottom 1px solid #555
   box-shadow 0 0 5px #bbb,0 1px 5px 0 light
   text-shadow 0px 1px 0 black,1px 1px 0 rgba(100,100,100,.5)
-//}}}
-//{{{ Buttons
 button:disabled:hover::before, input[type="submit"]:disabled:hover::before, input[type="button"]:disabled:hover::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.05) 0%, rgba(255,255,255,.1) 80%)
 button:disabled::before, input[type="submit"]:disabled::before, input[type="button"]:disabled::before
