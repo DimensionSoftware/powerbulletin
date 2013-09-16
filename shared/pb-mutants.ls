@@ -291,7 +291,10 @@ layout-on-personalize = (w, u) ->
 
       # bring down first reply
       if user
-        set-timeout (-> $ \.onclick-append-reply-ui:first .click!), 300ms
+        e = $ \.onclick-append-reply-ui:first
+          ..data \no-focus, true # not the neatest, needed to not steal ui focus
+          ..click!
+          ..data \no-focus, false
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id

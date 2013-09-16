@@ -13,6 +13,7 @@ if window?
   t = $(f.find \.tooltip)
   unless data.success
     @show-tooltip t, data?errors?join \<br>
+    f.find \textarea:first .focus!
   else
     # render updated post
     p.find \.title .html data.0?title
