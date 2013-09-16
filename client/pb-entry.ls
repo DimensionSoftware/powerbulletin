@@ -101,7 +101,7 @@ append-reply-ui = (ev) ->
       parent_id:  $p.data \post-id
       is_comment: true), ->
         #if ev.original-event then $p.find('textarea[name="body"]').focus! # user clicked
-        $p.find('textarea[name="body"]').focus!
+        #$p.find('textarea[name="body"]').focus! # XXX let's not steal focus
   else
     $p.find('.reply .cancel').click!
 
