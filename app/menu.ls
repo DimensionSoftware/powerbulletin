@@ -221,10 +221,10 @@ require! {
       dialog     : \forum
       dbid       : old-item.id
       title      : old-item.title
-      forum-slug : old-item.uri
+      forum-slug : old-item.slug
       page-slug  : ''
       content    : ''
-      uri        : ''
+      uri        : old-item.uri
 
   _convert = (old-item) ~>
     if old-item?forums?length
