@@ -109,6 +109,9 @@ header
       width 20px
       border-radius 20px
     .tools:hover
+      .profile
+        transform rotate(15deg)
+        transition all .05s ease-out
       .container
         width 100px
         height auto
@@ -129,15 +132,16 @@ header
       z-index 50
       .profile
         animation-name none
-        position absolute
+        position relative
         cursor pointer
         display none
         opacity .6
-        right 40px
+        right -35px
         top -8px
         height 75px
         width 75px
         border-radius 75px
+        transition all .4s ease-out
       .container
         height 0
         width 0
@@ -563,7 +567,7 @@ body.scrolled
         height 30px
         width 30px
         top -14px
-        right 35px
+        right -85px
         transition all .2s bounce
   #left_content
     top (header-scrolled-height+5)

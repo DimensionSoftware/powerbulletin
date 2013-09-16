@@ -2,10 +2,13 @@
 // NOTE base theme on <form> elements
 
 // error classes for inputs
-.has-error:focus, .has-error:active
+.has-error:focus, .has-error:active, .validation-error:focus, .validation-error:active
   border-color red!important
-.has-error
+.has-error:hover, .validation-error:hover
+  box-shadow 0 0 1px red!important
+.has-error, .validation-error:hover
   border-bottom-color red!important
+  border-right 1px solid #ffe0e0!important
   background-image linear-gradient(to bottom, #fff 80%, #ffe0e0 100%)!important
 
 //{{{ Textual Inputs
@@ -24,7 +27,8 @@ input[type="password"], select, textarea, input[type="text"]
   outline none
   margin-bottom 4px
   padding 8px
-  border 1px solid #e6e6e6
+  border 1px solid #fafafa
+  border-left 1px solid #f6f6f6
   border-right 1px solid #bbb
   border-bottom 1px solid #aaa
   font-size 18px
@@ -34,12 +38,12 @@ input[type="password"], select, textarea, input[type="text"]
   transition-duration .3s
   transition-property transform
 input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:hover
-  color #333
-  border-color #e2e2e2
+  position relative
+  z-index 1
+  color #444
   border-bottom 1px solid #999
-  border-right 1px solid #aaa
-  box-shadow 0 0 1px dark,0 0 2px light
-  transition color .5s ease-out
+  box-shadow 1px 0 1px dark,0 0 1px light
+  transition color .5s ease-out, border .05s ease-out, box-shadow .1s ease-out
 input.active, input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #111
   position relative
