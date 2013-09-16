@@ -19,6 +19,11 @@ module.exports =
       tolerance: \pointer
       tolerance-element: '> div'
       placeholder: \placeholder
+      is-tree: true
+      expand-on-hover: 800ms
+      start-collapsed: true
+      opacity: 0.8
+      force-placeholder-size: true
 
     template: templates.AdminMenu
     current:  null # active "selected" menu item
@@ -62,6 +67,7 @@ module.exports =
       # set visually active
       $ \.col1 .find \.active .remove-class \active
       e.add-class \active
+      e.parents \li:first .add-class \active
 
       # restore title + form
       if html-form = @$.find \form.menus
@@ -132,20 +138,21 @@ module.exports =
 
     build-nested-sortable: ($ol, menu) ~>
       for item in menu
-        # add item to $ol
-        if id = item.id
-          form = item.form
-          item.data ||= {}
-            ..form  = form
-            ..title = form?title
-          item.id = "#prefix#id"
-          $item = @clone item
-          $ol.append($item)
-        # if item has children, create a sub $ol and recurse
-        if item.children?length
-          $sub-ol = $('<ol/>')
-          $item?append $sub-ol
-          @build-nested-sortable $sub-ol, item.children
+        if item
+          # add item to $ol
+          if id = item.id
+            form = item.form
+            item.data ||= {}
+              ..form  = form
+              ..title = form?title
+            item.id = "#prefix#id"
+            $item = @clone item
+            $ol.append($item)
+          # if item has children, create a sub $ol and recurse
+          if item.children?length
+            $sub-ol = $('<ol/>')
+            $item?append $sub-ol
+            @build-nested-sortable $sub-ol, item.children
 
     on-attach: !~>
       #{{{ Event Delegates
@@ -188,6 +195,11 @@ module.exports =
         @$.find \.sortable
           ..append e
           ..nested-sortable opts
+
+        @$.find \.disclose .on \click, ->
+          $ @ .closest \li
+            ..toggle-class \mjs-nestedSortable-collapsed
+            ..toggle-class \mjs-nestedSortable-expanded
 
         e.find \input .data default-data
         e.find \input .focus!
