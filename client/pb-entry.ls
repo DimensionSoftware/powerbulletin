@@ -90,8 +90,9 @@ $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 80
 
 # show reply ui
 append-reply-ui = (ev) ->
-  # find post div
-  $p = $ ev.target .parents \.post:first
+  focus = !($ ev.target .data \no-focus) # take focus?
+
+  $p = $ ev.target .parents \.post:first # post div
 
   # append dom for reply ui
   unless $p.find('.reply .post-edit:visible').length
@@ -101,7 +102,7 @@ append-reply-ui = (ev) ->
       parent_id:  $p.data \post-id
       is_comment: true), ->
         #if ev.original-event then $p.find('textarea[name="body"]').focus! # user clicked
-        $p.find('textarea[name="body"]').focus!
+        if focus then $p.find('textarea[name="body"]').focus!
   else
     $p.find('.reply .cancel').click!
 
