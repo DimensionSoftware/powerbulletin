@@ -67,6 +67,7 @@ module.exports =
       ).bind-to @state.subdomain
 
       var last-val
+      @$.on \click, \.hostname (ev) -> $ ev.target .prev \.SiteRegister-subdomain .focus!
       @$.on \keydown, \input.SiteRegister-subdomain, -> $ \.hostname .css \opacity, 0
       @$.on \keyup, \input.SiteRegister-subdomain, debounce ->
         new-input = $(@).val!

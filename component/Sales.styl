@@ -15,7 +15,10 @@ blend = rgba(0,0,0,.5)
     li:hover::before
       background-color transparent
       border 1px solid #333
-      right -1px
+      right -2px
+      height 7px
+      width 7px
+      border-radius 7px
     li:hover
       .name
         opacity 1
@@ -28,21 +31,22 @@ blend = rgba(0,0,0,.5)
         cursor pointer
         padding 1px 5px
         border-radius 3px
-        color #222
+        color #444
         position relative
         margin-right 0
         letter-spacing -5px
         opacity 0
         background rgba(255,255,255,.2)
+        font-size .8em
     li::before
       content ''
       position absolute
       right 0
       top 8px
-      height 5px
-      width 5px
+      height 4px
+      width 4px
       border-radius 5px
-      background-color #333
+      background-color #666
 
   //{{{ Intro (below header)
   #imagine
