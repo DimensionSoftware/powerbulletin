@@ -38,23 +38,29 @@
           opacity .6
         .cancel:hover
           opacity 1
-      li.active::after
+      li::after
         content ''
         position absolute
+        bottom auto
+      li.active::after
         top 10px
         bottom 2px
         left 1px
         background light
         width 2px 
-        opacity .2
-      li.active::before
+        opacity .3
+        transition all .3s ease-out
+      li::before
         content ''
         position absolute
+        width 0%
+      li.active::before
         left 0
         bottom 2px
         height 2px
         background light
         width 60%
+        transition width .2s ease-out
       li.active > div > input
         font-weight bold
         color light
