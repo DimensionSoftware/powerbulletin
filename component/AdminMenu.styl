@@ -8,7 +8,7 @@
     top -17px
     position absolute
   .col1
-    width 365px
+    width 313px
     position fixed
     top 100px
     padding-left 20px
@@ -35,7 +35,7 @@
       margin 20px 0
       li:hover
         .cancel
-          opacity .6
+          opacity .8
         .cancel:hover
           opacity 1
       li::after
@@ -44,23 +44,23 @@
         bottom auto
       li.active::after
         top 10px
-        bottom 2px
+        bottom 4px
         left 1px
         background light
-        width 2px 
-        opacity .3
-        transition all .3s ease-out
+        width 1px 
+        opacity .7
+        transition all .5s ease-out
       li::before
         content ''
         position absolute
         width 0%
       li.active::before
-        left 0
-        bottom 2px
+        left 1px
+        bottom 4px
         height 2px
         background light
-        width 60%
-        transition width .2s ease-out
+        width 25px
+        transition width .3s ease-out .2s
       li.active > div > input
         font-weight bold
         color light
