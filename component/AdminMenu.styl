@@ -29,38 +29,37 @@
     .sortable li.mjs-nestedSortable-expanded > div > .disclose > spanbefore 
       content '- '
     .sortable
-      color #ccc
+      color #aaa
       font-size .8em
       font-weight 100
       margin 20px 0
       li:hover
         .cancel
-          opacity .8
-        .cancel:hover
           opacity 1
       li::after
         content ''
         position absolute
-        bottom auto
-      li.active::after
+        bottom 18px
         top 10px
-        bottom 4px
+        left -5px
+        opacity 0
+        width 1px 
+      li.active::after
         left 1px
         background light
-        width 1px 
         opacity .7
-        transition all .5s ease-out
+        transition all .2s ease-out
       li::before
         content ''
         position absolute
         width 0%
-      li.active::before
+        bottom 18px
         left 1px
-        bottom 4px
         height 2px
         background light
-        width 25px
-        transition width .3s ease-out .2s
+      li.active::before
+        width 55px
+        transition width .2s ease-out .15s
       li.active > div > input
         font-weight bold
         color light
@@ -74,13 +73,12 @@
           position absolute
           z-index 10
           left 208px
-          top -9px
-          //background none
+          top 5px
           background radial-gradient(circle closest-corner at 45% 35%, #fff 40%, #ddd 100%)
       .row
         font-size 1.1em
         padding 8px
-        border-right 1px solid #eee
+        border-right 0
         border-top 0
         border-left 0
         color #333
