@@ -27,8 +27,9 @@ module.exports =
       # set them up based on mod-info above
       @mods = {}
       for mname, mi of mod-info
-        m = @mods[mname] = new mi.klass {}, "div.#{mi.css-class}", @
+        m = new mi.klass {}, "div.#{mi.css-class}", @
         m <<< {mi.css-class}
+        @mods[mname] = m
 
       @state.mods = @@$R ~> @mods # expose mods to jade
 
@@ -39,8 +40,11 @@ module.exports =
       for mname, mi of mod-info
         $dom.find('.SuperAdmin-content').append("<div class=\"#{mi.css-class}\">")
     on-attach: ->
-      for k,m of @mods
-        @$.on \click, ".SuperAdmin-nav a.#{m.css-class}", ~>
+      function attach-mod-nav-handlers mod
+        @$.on \click, ".SuperAdmin-nav a.#{mod.css-class}", ~>
           @$.find('.SuperAdmin-content > div').hide!
-          @$.find(".SuperAdmin-content > div.#{m.css-class}").show!
+          @$.find(".SuperAdmin-content > div.#{mod.css-class}").show!
           return false
+
+      for ,m of @mods
+        attach-mod-nav-handlers.call(@, m)
