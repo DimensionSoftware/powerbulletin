@@ -9,15 +9,15 @@ h2#imagine.stick
 #register_top
 h2#features.stick Why you'll love PowerBulletin ...
 nav
-  li
+  li.navigation
     a.name.onclick-scroll-to(data-scroll-to='#navigation') Navigation
-  li 
+  li.responsive
     a.name.onclick-scroll-to(data-scroll-to='#responsive') Responsive
-  li 
+  li.realtime
     a.name.onclick-scroll-to(data-scroll-to='#realtime') Real-Time
-  li 
+  li.products
     a.name.onclick-scroll-to(data-scroll-to='#products') Commerce
-  li 
+  li.support
     a.name.onclick-scroll-to(data-scroll-to='#support') Support
 .container.first
   img.bg(src="#{cvars.cacheUrl}/images/navigation.jpg")
@@ -57,7 +57,7 @@ section#products.feature
     a.onclick-scroll-to(data-scroll-to="#support") Next
 .container.fifth
   img.bg(src="#{cvars.cacheUrl}/images/live_support.jpg")
-section#support
+section#support.feature
   article
     h4 Live Support
     p

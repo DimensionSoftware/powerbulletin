@@ -12,13 +12,24 @@ blend = rgba(0,0,0,.5)
     right -500px
     width 150px
     z-index 10
-    li:hover::before
+    li.active::before, li:hover::before
       background-color transparent
       border 1px solid #333
       right -2px
-      height 7px
-      width 7px
-      border-radius 7px
+      height 6px
+      width 6px
+      border-radius 6px
+    li.active::before
+      background-color #777
+    li::before
+      content ''
+      position absolute
+      right 0
+      top 8px
+      height 4px
+      width 4px
+      border-radius 5px
+      background-color #666
     li:hover
       .name
         opacity 1
@@ -38,15 +49,6 @@ blend = rgba(0,0,0,.5)
         opacity 0
         background rgba(255,255,255,.2)
         font-size .8em
-    li::before
-      content ''
-      position absolute
-      right 0
-      top 8px
-      height 4px
-      width 4px
-      border-radius 5px
-      background-color #666
 
   //{{{ Intro (below header)
   #imagine
@@ -133,6 +135,9 @@ blend = rgba(0,0,0,.5)
   //  article
   //    transform scale(1.02)
   //    transition all .1s ease-out
+  section#support.feature
+    background-image none
+    box-shadow 0
   section.feature
     border-top 1px solid #777
     border-bottom 1px solid #777
