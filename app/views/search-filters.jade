@@ -1,15 +1,11 @@
-mixin forumOptions(forums, prefix)
-  each f in forums
-    option(value=f.id)= prefix + f.title
-    mixin forumOptions(f.forums, '-')
-
 #search_filters
   div
     label
       h4 Filter by Forum
       select(name='forum_id')
         option(value='') - All -
-        mixin forumOptions(menu, '')
+        each f in forumsAlphabetized
+          option(value=f.id)= f.title
 
   div
     label
