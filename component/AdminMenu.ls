@@ -24,6 +24,12 @@ module.exports =
       start-collapsed: true
       opacity: 0.8
       force-placeholder-size: true
+      is-allowed: (item, parent) ->
+        # only move items with a type
+        unless (item.find \.row .data \form)?dialog
+          ch.show-tooltip ($ \#warning), 'Select a Type First!'
+          return false
+        true
 
     template: templates.AdminMenu
     current:  null # active "selected" menu item
@@ -107,6 +113,8 @@ module.exports =
       @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!
 
     resort: (ev, ui) !~>
+      # guard unless item has a type to avoid nulls
+      return unless (ui.item.find \.row .data \form)?dialog
       id    = ui.item.attr \id .replace /^list_/ ''
       $form = @$.find \form
       url   = $form.attr \action

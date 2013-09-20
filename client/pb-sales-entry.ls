@@ -13,6 +13,7 @@ require \jqueryHistory
 require \jqueryTransit
 require \jqueryUi
 require \./layout
+require \jqueryWaypoints
 {each} = require \prelude-ls
 
 # components
@@ -41,6 +42,14 @@ $ window .on \scroll, ->
   for e in <[.first .second .third .fourth .fifth]>
     dy = -($ e .offset!top)
     $ "#e .bg" .css \y, "#{0+((dy+offset)*0.6)}px"
+
+# waypoints
+fn = (direction) ->
+  id = $ this .attr \id
+  $ \nav
+    ..find \.active .remove-class \active # remove
+    ..find ".#id" .add-class \active
+$ '#features, .feature' .waypoint fn, {offset: 400px}
 
 # animate focus
 set-timeout (-> # bring in register
