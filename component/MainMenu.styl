@@ -1,0 +1,158 @@
+.MainMenu
+  //{{{ Structure-related
+  .menu
+    padding 0
+    margin -3px auto 0 auto
+    display inline-block
+    position absolute
+    bottom -1px
+    > .row
+        position relative!important
+        z-index 50!important
+      .title
+        display inline-block
+        text-transform capitalize
+        padding 0 19px
+    .row.active, .row:hover
+      z-index 7
+      .submenu
+        opacity 1
+        top 30px
+        max-height 450px
+        height auto
+        min-width 850px
+        padding 10px 0 35px 0
+        transition opacity .5s ease-out .3s, max-height .25s cubic-bezier(1, -0.01, 1, .08) .35s, top .2s ease-out .15s
+    .row:nth-last-child(3)
+      .submenu
+        margin-left -130px
+    .row:nth-last-child(2)
+      .submenu
+        margin-left -300px
+    .row:nth-child(2)
+      .submenu
+        margin-left -42px
+    .row:first-child
+      .submenu
+        margin-left -50px
+    .row:last-child
+      .submenu
+        margin-left -400px
+    .row
+      cursor pointer
+      display inline
+      line-height 38px
+      font-size 16px
+      .title
+        position relative
+        z-index 66
+      .submenu
+        z-index 65
+        top -600px
+        padding 0 15px
+        overflow-y scroll
+        opacity 0
+        position absolute
+        padding 0 0 grid 0
+        margin 0
+        max-height 50px
+        min-width 600px
+        menu
+          margin 10px 0
+          .row
+            width 250px
+            height 35px
+            display inline-block
+            float left
+            font-size 14px
+            text-indent 2px
+            a
+              line-height 28px
+              padding 0 20px
+              display inline-block
+    //}}}
+  //{{{ Theme-related
+  .menu
+    > .row
+      .title.active:hover
+        color dark_text
+      .title.active
+        position relative!important
+        z-index 75!important
+        color dark_text
+        font-style italic
+        font-weight bold
+        transition color .5s ease-out
+      .title.active::after
+        background radial-gradient(ellipse farthest-corner at 50% 300%, light 50%, rgba(255,255,255,0) 80%)
+        height 8px
+        opacity 1
+        transition opacity .5s ease-out, height .2s ease-out
+    > .row
+      .title:hover, .title.hover
+        color #555
+        animation-name tiny-grow!important
+        animation-duration .1s
+        transition border-bottom .4s, color .3s, color .4s
+    > .row
+      .title
+        text-decoration none
+        border-bottom 1px solid transparent
+        color #777
+        text-transform uppercase
+        font-weight 400
+        letter-spacing -1px
+        font-size .85em
+        text-shadow 0 0 1px #fff
+      .title::after
+        position absolute
+        content ''
+        left 20%
+        width 60%
+        bottom 0
+        height 0
+        opacity 0
+      .submenu
+        box-shadow 0 0 10px 0 light
+        border-right 1px solid #ccc
+        border-bottom 1px solid #ddd
+        border-top 1px solid #efefef
+        border-radius 30px
+        background-color #fff
+        background-image linear-gradient(bottom, #fff 50%, #f0f0f0)
+        color #333
+        .row:hover
+          a
+            color #fff
+            animation-name none
+            background-color light
+            border-radius 20px
+            font-size 15px
+            transform scale(1.05)
+        .row.active:hover
+          a
+            color #fff
+            background-color light
+            text-shadow none
+            padding-bottom 1px
+        .row.active
+          a
+            color #000
+            animation-name none
+            font-weight bold
+            border-radius 20px
+            font-size 15px
+            text-shadow 0 1px 0 #fff
+        .row
+          line-height (grid*4)
+          border-right 1px solid transparent
+          border-left 1px solid transparent
+          //border-bottom 1px solid #fafafa
+          a
+            color #222
+            text-decoration none
+            white-space nowrap
+            text-overflow ellipsis
+  // }}}
+
+// vim:fdm=marker
