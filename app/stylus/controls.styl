@@ -4,6 +4,7 @@
 // error classes for inputs
 .has-error:focus, .has-error:active, .validation-error:focus, .validation-error:active
   border-color red!important
+  box-shadow none!important
 .has-error:hover, .validation-error:hover
   box-shadow 0 0 1px red!important
 .has-error, .validation-error:hover
@@ -51,14 +52,49 @@ input.active, input[type="password"]:focus, input[type="password"]:focus, select
   border-bottom 1px solid #777
   border-right 1px solid #888
   border-top 1px solid #fff!important
-  box-shadow -1px 0 2px -1px #888 inset,1px 1px 2px 0 light, 0 0 1px 0 #eaeaea
+  box-shadow -1px 0 2px -1px #888 inset,0 1px 0 dark, 1px 0 1px -1px light
   transform scale(1.015)
   transition box-shadow .1s ease-out, letter-spacing .1s ease-out, border-radius .8s ease-out
   border-radius 8px / 3px
 textarea:focus, select:focus
   letter-spacing 0
 //}}}
-
+//{{{ Checkboxes (switch)
+input[type="checkbox"]
+  display none
+input[type="checkbox"]:checked ~ label .switch
+  margin-left 20px
+  padding 5px
+  box-shadow -1px 1px 1px 0 #777
+input[type="checkbox"]:checked ~ label
+  background-color light
+  transition background-color .3s ease-out
+label.switch-control
+  display inline-block!important
+  width 50px!important
+  height 30px
+  padding 1px
+  margin 0 10px 8px 0
+  border-radius 30px
+  background rgba(0,0,0,.03)
+  box-shadow inset 0 0 1px #666,0 2px 5px #eee
+label[for="hide_menu"]:hover, label[for="private"]:hover, label[for="invite_only"]:hover
+  box-shadow inset 0 0 1px #888, 0 1px 2px #eee, 0 0 0 1px light
+  transition box-shadow .1s ease-out
+.box
+  display inline-block
+  margin-top 0
+.switch 
+  cursor pointer
+  display block
+  width 20px
+  height 20px
+  padding 5px
+  background #fff
+  box-shadow inset 0 0 2px rgba(0, 0, 0,0.25), 0 1px 1px #999
+  border-radius 20px
+  transition all .4s bounce
+//}}}
 //{{{ Buttons
 .button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
   animation-name tiny-grow
@@ -149,5 +185,5 @@ input[type="submit"]::before, button::before, .button::before
   padding 6px 15px
   text-align center
   border-radius 5px / 1px
-
+//}}}
 // vim: fdm=marker
