@@ -39,6 +39,7 @@ describe 'new Paginator {locals: {qty: 16}}' ->
     <strong class="Paginator-page">1</strong>
     <a href="?page=2" data-page="2" class="mutant Paginator-page">2</a>
     <a href="?page=2" data-page="2" class="mutant Paginator-page">&gt;</a>
+    <a href="?page=2" data-page="2" class="mutant Paginator-page">Last</a>
     '
 
     _it "should return expected html" !->
@@ -53,6 +54,7 @@ describe 'new Paginator {locals: {qty: 17}}' ->
     <a href="?page=2" data-page="2" class="mutant Paginator-page">2</a>
     <a href="?page=3" data-page="3" class="mutant Paginator-page">3</a>
     <a href="?page=2" data-page="2" class="mutant Paginator-page">&gt;</a>
+    <a href="?page=3" data-page="3" class="mutant Paginator-page">Last</a>
     '
 
     _it "should return expected html" !->
@@ -81,6 +83,7 @@ describe 'new Paginator {locals: {active-page: 2, qty: 16}}' ->
 
   describe ".html(false)", ->
     expected = '
+    <a href="?page=1" data-page="1" class="mutant Paginator-page">First</a>
     <a href="?page=1" data-page="1" class="mutant Paginator-page">&lt;</a>
     <a href="?page=1" data-page="1" class="mutant Paginator-page">1</a>
     <strong class="Paginator-page">2</strong>
@@ -103,6 +106,7 @@ describe 'new Paginator {locals: {qty: 64}}' ->
     <a href="?page=7" data-page="7" class="mutant Paginator-page">7</a>
     <a href="?page=8" data-page="8" class="mutant Paginator-page">8</a>
     <a href="?page=2" data-page="2" class="mutant Paginator-page">&gt;</a>
+    <a href="?page=8" data-page="8" class="mutant Paginator-page">Last</a>
     '
 
     _it "should return expected html" !->
@@ -123,6 +127,7 @@ describe 'new Paginator {locals: {qty: 65}}' ->
     <a href="?page=8" data-page="8" class="mutant Paginator-page">8</a>
     <a href="?page=9" data-page="9" class="mutant Paginator-page">9</a>
     <a href="?page=2" data-page="2" class="mutant Paginator-page">&gt;</a>
+    <a href="?page=9" data-page="9" class="mutant Paginator-page">Last</a>
     '
 
     _it "should return expected html" !->
