@@ -11,12 +11,14 @@ module.exports =
   class MainMenu extends Component
     template: templates.MainMenu
 
-    on-attach: !~>
-      #{{{ Event Delegates
-      #}}}
+    init: !~>
       @menu = @@$R((new-menu) ~>
         # TODO reactive menu
       ).bind-to @state.menu
+
+    on-attach: !~>
+      #{{{ Event Delegates
+      #}}}
 
       ####  main  ;,.. ___  _
       # TODO
