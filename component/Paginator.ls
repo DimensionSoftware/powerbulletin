@@ -25,11 +25,25 @@ function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-hre
       {num, title: num, href: pnum-to-href(num), active: active-page is num}
 
   first-num = 1
-  if pages.length and pages.0.title isnt first-num
+  # move left anchor
+  if pages.length and active-page > first-num
+    do ->
+      num = active-page - 1
+      pages.unshift {num, title: \<, href: pnum-to-href(num)}
+
+  # jump to first anchor
+  if pages.length and pages.0.num isnt first-num
     pages.unshift {num: first-num, title: \First, href: pnum-to-href(first-num)}
 
   last-num = pages.length - 1
-  if pages.length and pages[last-num].title isnt page-qty
+  # move right anchor
+  if pages.length and active-page < page-qty
+    do ->
+      num = active-page + 1
+      pages.push {num, title: \>, href: pnum-to-href(num)}
+
+  # jump to last anchor
+  if pages.length and pages[last-num].num isnt page-qty
     pages.push {num: page-qty, title: \Last, href: pnum-to-href(page-qty)}
 
   pages
