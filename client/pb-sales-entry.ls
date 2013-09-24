@@ -50,11 +50,15 @@ $ window .on \scroll, ->
 
 # waypoints
 fn = (direction) ->
-  id = $ this .attr \id
+  id  = this.id or ($ this .attr \id)
+  cur = ($ \nav .find \.active).attr \class
+  if cur is id then return # guard
   $ \nav
     ..find \.active .remove-class \active # remove
     ..find ".#id" .add-class \active
 $ '#features, .feature' .waypoint fn, {offset: 400px}
+$ 'nav a' .on \click ->
+  set-timeout (~> fn.call {id:($ this .parents \li:first).attr \class}), 500ms
 
 # animate focus
 set-timeout (-> # bring in register
