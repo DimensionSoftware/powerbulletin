@@ -68,12 +68,36 @@ blend = rgba(0,0,0,.5)
   #register_top
     margin-top 65px
     opacity 0
+  #register_top.show
+    transform translateX(25px)
+    opacity 1
+    transition all .4s ease-out
   #features
+    opacity 0
     font-style italic
     font-weight 200
     color #aaa
-    margin 70px 0 0 -30px
-    font-size 1.25em
+    padding-bottom 20px
+    margin 70px auto 0 auto
+    font-size 1.15em
+    width 370px
+    animation-name none
+    span
+      padding 0 3px
+    b
+      font-weight inherit
+  #features::after
+    animation-name move-down
+    animation-duration 1s
+    animation-iteration-count infinite
+    animation-direction alternate
+    left 170px
+    top 35px
+  #features:hover
+    letter-spacing 0
+    color #888
+    transform scale(1.02)
+    transition all .08s ease-out
   h2
     font-size 1.45em
     font-weight 400

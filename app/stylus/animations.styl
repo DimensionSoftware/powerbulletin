@@ -1,5 +1,13 @@
 
 // Animations!
+@keyframes move-down
+  0%
+    transform translateY(0)
+  70%
+    transform translateY(-3px)
+  100%
+    transform translateY(2px)
+
 @keyframes hover-around
   0%
     transform rotateZ(0deg)
@@ -9,7 +17,6 @@
     transform rotateY(-30deg)
   100%
     transform rotateY(10deg)
-
 .hover-around
   perspective 300
   transformation-style preserve-3d
