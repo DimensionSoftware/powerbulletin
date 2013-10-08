@@ -15,7 +15,13 @@ require \./layout
 require \jqueryWaypoints
 {each} = require \prelude-ls
 
-# components
+focus-last  = -> set-timeout (-> $ \.SiteRegister-subdomain:last .focus!), 500ms
+focus-first = -> set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 500ms
+
+# focus events
+$ '#products .onclick-scroll-to' .click -> focus-last!
+
+#{{{ components
 window.component =
   sales-app: (new SalesApp {-auto-render} \body).attach!
 
@@ -30,47 +36,54 @@ $R((user) ->
   else
     component.sales-app.logout!
 ).bind-to window.r-user
-
-# parallax
+#}}}
+#{{{ parallax
 $ window .on \scroll, ->
   offset  = $ window .scroll-top!
+  if offset is 0 then focus-first!
+
   # top animations
-  if offset < 500px # save cpu for top pieces
-    inverse = 25/Math.abs(offset/0.18)
-    $ '#imagine p'   .css \opacity, inverse
-    $ \#imagine      .css {opacity:80/Math.abs(offset), y:"#{0-(offset*0.75)}px"}
-    $ \#logo         .css {opacity:80/Math.abs(offset), y:"#{0-(offset*0.5)}px"}
-    $ \#register_top .css {opacity:inverse, y:"#{0-(offset*2.7)}px"}
+  if offset < 430px # save cpu for top pieces
+    $ \#imagine      .css {y:"#{0+(offset*0.45)}px"}
+    #$ \#logo         .css {y:"#{0-(offset*0.45)}px"}
 
   # backgrounds
   # - FIXME optimize by pre-computing & only moving imgs in view
   for e in <[.first .second .third .fourth .fifth]>
     dy = -($ e .offset!top)
     $ "#e .bg" .css \y, "#{0+((dy+offset)*0.6)}px"
-
-# waypoints
+#}}}
+#{{{ waypoints
 fn = (direction) ->
   id  = this.id or ($ this .attr \id)
   cur = ($ \nav .find \.active).attr \class
   if cur is id then return # guard
-  $ \nav
+  $ \nav # activate right-side bullets
     ..find \.active .remove-class \active # remove
     ..find ".#id" .add-class \active
-$ '#features, .feature' .waypoint fn, {offset: 400px}
-$ 'nav a' .on \click ->
-  set-timeout (~> fn.call {id:($ this .parents \li:first).attr \class}), 500ms
 
-# animate focus
+# - on scroll
+$ '#features, .feature' .waypoint fn, {offset: 400px}
+# - on click
+$ 'nav a' .on \click ->
+  id = ($ this .parents \li:first).attr \class
+  set-timeout (~> fn.call {id}), 300ms # force correct selection
+  if id is \support then focus-last!
+#}}}
+#{{{ animate build-in & initial focus
 set-timeout (-> # bring in register
   icon = $ \.logo-icon
   icon.transition {opacity:1, x:\0px, y:\0px, rotate:\0deg}, 700ms, \easeOutExpo
-  $ \#register_top .transition {x:25px, opacity:1}, 1000ms, \easeOutExpo
-  $ \.SiteRegister-subdomain:first .focus!
+  $ \#register_top  .add-class \show
+  focus-first!
   set-timeout (-> # ...and action!
     $ '.SiteRegister h3' .transition {opacity:1, y:30px}, 400ms
-    icon.add-class \hover-around), 100ms), 1200ms
+    icon.add-class \hover-around
+    set-timeout (-> # build-in features last
+      $ \#features .transition {opacity:1}, 1200ms), 1000ms), 100ms), 500ms
 
 unless $ window .scroll-top is 0 # scroll to top
-  $ 'html,body' .animate {scroll-top:0}, 500ms, \easeOutExpo
+  $ 'html,body' .animate {scroll-top:0}, 300ms, \easeOutExpo
+#}}}
 
 # vim:fdm=marker
