@@ -174,63 +174,56 @@ header
         .title
           display inline-block
           text-transform capitalize
-          padding 0 19px
+          padding 0 15px
+          margin-right 20px
       .row.active, .row:hover
         z-index 7
-        .submenu
+        > .submenu
           opacity 1
           top 30px
           max-height 450px
           height auto
           min-width 850px
-          padding 10px 0 35px 0
-          transition opacity .5s ease-out .3s, max-height .25s cubic-bezier(1, -0.01, 1, .08) .35s, top .2s ease-out .15s
-      .row:nth-last-child(3)
-        .submenu
-          margin-left -130px
-      .row:nth-last-child(2)
-        .submenu
-          margin-left -300px
-      .row:nth-child(2)
-        .submenu
-          margin-left -42px
-      .row:first-child
-        .submenu
-          margin-left -50px
-      .row:last-child
-        .submenu
-          margin-left -400px
+          padding 10px 0 25px 0
+          margin-left -27px
+          box-shadow 0 1px 15px -1px light
+          transition padding .15s ease-out .15s, margin-left .15s ease-out .2s, box-shadow .15s ease-out .2s, max-height .05s ease-out .2s
       .row
         cursor pointer
         display inline
         line-height 38px
-        font-size 16px
+        font-size 1em
+        position relative
         .title
           position relative
           z-index 66
         .submenu
+          text-transform capitalize
           z-index 65
           top -600px
-          padding 0 15px
           overflow-y scroll
           opacity 0
           position absolute
-          padding 0 0 grid 0
+          padding 0
           margin 0
-          max-height 50px
+          max-height 0
           min-width 600px
+          box-shadow 0
+          transition padding .1s ease-out, opacity .1s ease-out, max-height .0s ease-out .1s, top 0s ease-out .1s, min-width 0s ease-out .1s, margin 0s ease-out .1s
+          > menu
+            margin-top 12px!important
           menu
-            margin 10px 0
+            margin 0
+            padding-left 25px
             .row
               width 250px
-              height 35px
               display inline-block
               float left
-              font-size 14px
+              font-size .9em
               text-indent 2px
               a
                 line-height 28px
-                padding 0 20px
+                padding 0 10px
                 display inline-block
     .search
       top 10px
