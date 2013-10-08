@@ -3,23 +3,22 @@ $ ->
   menu = $ \#menu
   rows = menu.find '> .row > a'
 
-  intent-timer = null
+  intent-timer = void
   remove-hover = -> rows.remove-class \hover
 
   # delegates
   rows.on \mouseenter -> # set hover
     clear-timeout intent-timer
     remove-hover!
-    r = $ this .add-class \hover # row
-    # TODO intelligently reposition submenu
-    s = r.next \.submenu
-    ro = r.offset!left
-    so = s.offset!left
-    s.css \left, 10
+    r  = $ this .add-class \hover # row
+    s  = r.next \.submenu         # row's menu
 
-    console.log \r:, r.offset!left
-    console.log \s:, s.offset!left
-    #console.log s.position!left
+    # precalc
+    w  = $ window .width!
+    ds = w - (s.offset!left + s.width!)
+    if ds < 0 # intelligently reposition submenu
+      set-timeout (-> s.transition {left:ds}, 200ms, \easeOutExpo), 200ms
+
   menu.on \mouseleave -> # mouse-hover-intent'd out
     intent-timer := set-timeout (->
       remove-hover!

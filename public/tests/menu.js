@@ -3,21 +3,25 @@
     var menu, rows, intentTimer, removeHover;
     menu = $('#menu');
     rows = menu.find('> .row > a');
-    intentTimer = null;
+    intentTimer = void 8;
     removeHover = function(){
       return rows.removeClass('hover');
     };
     rows.on('mouseenter', function(){
-      var r, s, ro, so;
+      var r, s, w, ds;
       clearTimeout(intentTimer);
       removeHover();
       r = $(this).addClass('hover');
       s = r.next('.submenu');
-      ro = r.offset().left;
-      so = s.offset().left;
-      s.css('left', 10);
-      console.log('r:', r.offset().left);
-      return console.log('s:', s.offset().left);
+      w = $(window).width();
+      ds = w - (s.offset().left + s.width());
+      if (ds < 0) {
+        return setTimeout(function(){
+          return s.transition({
+            left: ds
+          }, 200, 'easeOutExpo');
+        }, 200);
+      }
     });
     return menu.on('mouseleave', function(){
       return intentTimer = setTimeout(function(){
