@@ -179,7 +179,7 @@ module.exports =
 
         s = @$.find \.sortable
         # generate id & add new menu item!
-        max = parse-int maximum(s.find \li |> map (-> it.id.replace prefix, ''))
+        max = maximum(s.find \li |> map (-> parse-int it.id.replace(prefix, '')))
         id  = unless max then 1 else max+1
         e   = @clone {id:"#prefix#id"}
 
