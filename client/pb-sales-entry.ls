@@ -50,13 +50,13 @@ $ window .on \scroll, ->
   # move background images in view
   cur = switch cur-id
   | \features   => <[.first .second]>
-  | \navigation => <[.first .second]>
-  | \responsive => <[.first .second .third]>
-  | \realtime   => <[.second .third .fourth]>
-  | \products   => <[third .fourth .fifth]>
-  | \support    => <[.fourth .fifth]>
+  | \navigation => <[.first .second .third]>
+  | \responsive => <[.first .second .third .fourth]>
+  | \realtime   => <[.second .third .fourth .fifth]>
+  | \products   => <[.third .fourth .fifth]>
+  | \support    => <[.third .fourth .fifth]>
   if cur then for e in cur
-    dy = -($ e .offset!top)
+    dy = -($ e .offset!?top)
     $ "#e .bg" .css \y, "#{0+((dy+offset)*0.6)}px"
 #}}}
 #{{{ waypoints
