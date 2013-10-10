@@ -17,6 +17,7 @@ require \jqueryWaypoints
 
 focus-last  = -> set-timeout (-> $ \.SiteRegister-subdomain:last .focus!), 500ms
 focus-first = -> set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 500ms
+cur-id      = void # waypoint id of current scrolled-to-section
 
 # focus events
 $ '#products .onclick-scroll-to' .click -> focus-last!
@@ -44,12 +45,17 @@ $ window .on \scroll, ->
 
   # top animations
   if offset < 430px # save cpu for top pieces
-    $ \#imagine      .css {y:"#{0+(offset*0.45)}px"}
-    #$ \#logo         .css {y:"#{0-(offset*0.45)}px"}
+    $ \#imagine .css {y:"#{0+(offset*0.45)}px"}
 
-  # backgrounds
-  # - FIXME optimize by pre-computing & only moving imgs in view
-  for e in <[.first .second .third .fourth .fifth]>
+  # move background images in view
+  cur = switch cur-id
+  | \features   => <[.first .second]>
+  | \navigation => <[.first .second]>
+  | \responsive => <[.first .second .third]>
+  | \realtime   => <[.second .third .fourth]>
+  | \products   => <[third .fourth .fifth]>
+  | \support    => <[.fourth .fifth]>
+  if cur then for e in cur
     dy = -($ e .offset!top)
     $ "#e .bg" .css \y, "#{0+((dy+offset)*0.6)}px"
 #}}}
@@ -61,6 +67,7 @@ fn = (direction) ->
   $ \nav # activate right-side bullets
     ..find \.active .remove-class \active # remove
     ..find ".#id" .add-class \active
+  cur-id := id # track
 
 # - on scroll
 $ '#features, .feature' .waypoint fn, {offset: 400px}
