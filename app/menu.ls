@@ -248,15 +248,21 @@ require! {
   data.site_id = site.id
 
   switch type
-  | \page          => db.pages.upsert data, (err, data) ->
-    if err and err.routine.match /unique/
-      err.message = "Slug is already taken"
-    cb err, data
-  | \forum         => db.forums.upsert data, (err, data) ->
-    # TODO - forum case is not so simple and will need to be expanded upon
-    if err and err.routine.match /unique/
-      err.message = "Slug is already taken."
-    cb err, data
+  | \page          =>
+    if not data?path
+      return cb errors: [ "URI is required." ]
+    db.pages.upsert data, (err, data) ->
+      if err and err.routine.match /unique/
+        err.message = "Slug is already taken"
+      cb err, data
+  | \forum         =>
+    if not data?uri
+      return cb errors: [ "URI is required." ]
+    db.forums.upsert data, (err, data) ->
+      # TODO - forum case is not so simple and will need to be expanded upon
+      if err and err.routine.match /unique/
+        err.message = "Slug is already taken."
+      cb err, data
   | \link          => cb null, []
   | otherwise      => cb new Error("menu.upsert unknown type #type"), data
 
