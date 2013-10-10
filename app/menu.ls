@@ -15,7 +15,7 @@ require! {
     return [ ...p, menu.index-of(menu-item) ]
   else
     #console.log \not-found
-    ndx-menu-pairs = menu |> map (.children) |> zip [0 to 100] |> filter (-> it.1)
+    ndx-menu-pairs = menu |> map (.children) |> zip [0 to 1000] |> filter (-> it.1)
     if ndx-menu-pairs.length
       #console.log \child-menus
       f = null
@@ -124,7 +124,7 @@ require! {
     # ...and there's more to the path, add children
     if rest.length
       #console.log \--rest
-      menu-item.children = @struct-upsert [], rest, object
+      menu-item.children = @struct-upsert menu-item.children, rest, object
       new-menu[first] = menu-item
       return new-menu
     # ...there's nothing left, merge the object into menu-item
