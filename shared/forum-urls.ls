@@ -61,15 +61,15 @@ inputs =
 
 @machine =
   initial:
-    string : \forum
-    number : \forum
-    new    : \forum
-    edit   : \forum
+    string   : \forum
+    number   : \forum
+    new      : \forum
+    edit     : \forum
     censored : \forum
-    m      : \forum
-    t      : \forum
-    page   : \forum
-    fbdn   : \error
+    m        : \forum
+    t        : \forum
+    page     : \forum
+    fbdn     : \error
   forum:
     string   : \forum
     number   : \forum
@@ -80,125 +80,125 @@ inputs =
     page     : \forum
     fbdn     : \error
   moderation:
-    string : \error
-    number : \error
-    new    : \error
-    edit   : \error
+    string   : \error
+    number   : \error
+    new      : \error
+    edit     : \error
     censored : \error
-    m      : \error
-    t      : \error
-    page   : \error
-    fbdn   : \error
+    m        : \error
+    t        : \error
+    page     : \error
+    fbdn     : \error
   'new-thread':
-    string : \error
-    number : \error
-    new    : \error
-    edit   : \error
+    string   : \error
+    number   : \error
+    new      : \error
+    edit     : \error
     censored : \error
-    m      : \error
-    t      : \error
-    page   : \error
-    fbdn   : \error
+    m        : \error
+    t        : \error
+    page     : \error
+    fbdn     : \error
   '-thread-marker':
-    string : \thread
-    number : \thread
-    new    : \thread
-    edit   : \thread
+    string   : \thread
+    number   : \thread
+    new      : \thread
+    edit     : \thread
     censored : \thread
-    m      : \thread
-    t      : \thread
-    page   : \thread
-    fbdn   : \error
+    m        : \thread
+    t        : \thread
+    page     : \thread
+    fbdn     : \error
   thread:
-    string : \thread-permalink
-    number : \thread-permalink
-    new    : \error
-    edit   : \-edit-marker
+    string   : \thread-permalink
+    number   : \thread-permalink
+    new      : \error
+    edit     : \-edit-marker
     censored : \error
-    m      : \thread-permalink
-    t      : \error
-    page   : \-page-marker
-    fbdn   : \error
+    m        : \thread-permalink
+    t        : \error
+    page     : \-page-marker
+    fbdn     : \error
   'thread-permalink':
-    string : \error
-    number : \error
-    new    : \error
-    edit   : \-edit-marker
+    string   : \error
+    number   : \error
+    new      : \error
+    edit     : \-edit-marker
     censored : \error
-    m      : \error
-    t      : \error
-    page   : \-permalink-page-marker
-    fbdn   : \error
+    m        : \error
+    t        : \error
+    page     : \-permalink-page-marker
+    fbdn     : \error
   '-edit-marker':
-    string : \error
-    number : \edit
-    new    : \error
-    edit   : \error
+    string   : \error
+    number   : \edit
+    new      : \error
+    edit     : \error
     censored : \error
-    m      : \error
-    t      : \error
-    page   : \error
-    fbdn   : \error
+    m        : \error
+    t        : \error
+    page     : \error
+    fbdn     : \error
   edit:
-    string : \error
-    number : \error
-    new    : \error
-    edit   : \error
+    string   : \error
+    number   : \error
+    new      : \error
+    edit     : \error
     censored : \error
-    m      : \error
-    t      : \error
-    page   : \error
-    fbdn   : \error
+    m        : \error
+    t        : \error
+    page     : \error
+    fbdn     : \error
   '-permalink-page-marker':
-    string : \error
-    number : \thread-permalink-page
-    new    : \error
-    edit   : \error
+    string   : \error
+    number   : \thread-permalink-page
+    new      : \error
+    edit     : \error
     censored : \error
-    m      : \error
-    t      : \error
-    page   : \error
-    fbdn   : \error
+    m        : \error
+    t        : \error
+    page     : \error
+    fbdn     : \error
   'thread-permalink-page':
-    string : \error
-    number : \error
-    new    : \error
-    edit   : \error
+    string   : \error
+    number   : \error
+    new      : \error
+    edit     : \error
     censored : \error
-    m      : \error
-    t      : \error
-    page   : \error
-    fbdn   : \error
+    m        : \error
+    t        : \error
+    page     : \error
+    fbdn     : \error
   '-page-marker':
-    string : \error
-    number : \thread-page
-    new    : \error
-    edit   : \error
+    string   : \error
+    number   : \thread-page
+    new      : \error
+    edit     : \error
     censored : \error
-    m      : \error
-    t      : \error
-    page   : \error
-    fbdn   : \error
+    m        : \error
+    t        : \error
+    page     : \error
+    fbdn     : \error
   'thread-page':
-    string : \error
-    number : \error
-    new    : \error
-    edit   : \error
+    string   : \error
+    number   : \error
+    new      : \error
+    edit     : \error
     censored : \error
-    m      : \error
-    t      : \error
-    page   : \error
-    fbdn   : \error
+    m        : \error
+    t        : \error
+    page     : \error
+    fbdn     : \error
   error:
-    string : \error
-    number : \error
-    new    : \error
-    edit   : \error
+    string   : \error
+    number   : \error
+    new      : \error
+    edit     : \error
     censored : \error
-    m      : \error
-    t      : \error
-    page   : \error
-    fbdn   : \error
+    m        : \error
+    t        : \error
+    page     : \error
+    fbdn     : \error
 
 
 # Given a URL path, return the type of forum url and the associated metadata
