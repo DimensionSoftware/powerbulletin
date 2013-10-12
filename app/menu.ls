@@ -8,7 +8,7 @@ require! {
 # @param  Scalar  id        id of nested sortable item
 # @param  Array   p
 # @return Array             path for menu-item or false
-@path = (menu=[], id, p=[]) ->
+@path = (menu, id, p=[]) ->
   menu-item = find (.id is id), menu
   if menu-item
     #console.log [...p, menu.index-of menu-item]
@@ -35,7 +35,7 @@ require! {
 # @param  Array   menu
 # @param  Scalar  id        id of nested sortable item
 # @return Array             path for menu-item
-@path-for-upsert = (menu=[], id) -> @path(menu, id) or [menu.length]
+@path-for-upsert = (menu, id) -> @path(menu, id) or [menu.length]
 
 # Return the item at the given path
 #
@@ -94,7 +94,7 @@ require! {
 # @param  Array   p         path made of array indices (like [0, 1, 0, 5])
 # @param  Object  object    object to add or merge at the given path
 # @return Array   new menu
-@struct-upsert = (menu=[], p=[], object={}) ->
+@struct-upsert = (menu, p, object) ->
   #[first, ...rest] = p.split '/' |> reject (-> it is '')
   [first, ...rest] = p
   #console.log { first, rest }
