@@ -270,9 +270,9 @@ require! {
   | \link          => cb null, []
   | otherwise      => cb new Error("menu.upsert unknown type #type"), data
 
-# Delete a menu item (recursively if necessary) from the database
+# Delete an object referenced by a menu-item from the database.
 #
-# @param  Object    object  menu item to delete; may have children
+# @param  Object    object  menu item to delete; children are not automatically deleted
 # @param  Function  cb      function to run after deletions have completed
 @db-delete = (object, cb) ->
   [type, data] = @extract object
