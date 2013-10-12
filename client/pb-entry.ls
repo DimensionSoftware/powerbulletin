@@ -33,13 +33,13 @@ require \layout
 {render-and-append, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
-
-window.Chat  = require \../component/Chat
-window.Auth  = require \../component/Auth
-window.Pager = require \./pager
-window.furl  = require \../shared/forum-urls
-window.tasks = require \./tasks
-window.ioc   = require \./io-client
+window.MainMenu = require \../component/MainMenu
+window.Chat     = require \../component/Chat
+window.Auth     = require \../component/Auth
+window.Pager    = require \./pager
+window.furl     = require \../shared/forum-urls
+window.tasks    = require \./tasks
+window.ioc      = require \./io-client
 window <<< {ck-submit-form}
 
 window.PhotoCropper = require \../component/PhotoCropper
@@ -386,6 +386,9 @@ window.do-buy = (product-id) ->
   if b then b.detach!      # cleanup
   b = window.component.buy = new Buy {locals}
   $.fancybox b.$, fancybox-params
+
+# kick-off main menu
+window.component.main-menu = new MainMenu {-auto-render, locals:{}}, $ \#menu
 #}}}
 
 # vim:fdm=marker
