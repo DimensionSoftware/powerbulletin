@@ -114,7 +114,7 @@ inputs =
     number   : \thread-permalink
     new      : \error
     edit     : \-edit-marker
-    censored : \error
+    censored : \error # instead of an error, this could point to a thread-level view of the moderation log
     m        : \thread-permalink
     t        : \error
     page     : \-page-marker
