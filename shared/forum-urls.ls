@@ -65,6 +65,7 @@ inputs =
     number : \forum
     new    : \forum
     edit   : \forum
+    censored : \forum
     m      : \forum
     t      : \forum
     page   : \forum
@@ -83,6 +84,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \error
+    censored : \error
     m      : \error
     t      : \error
     page   : \error
@@ -92,6 +94,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \error
+    censored : \error
     m      : \error
     t      : \error
     page   : \error
@@ -101,6 +104,7 @@ inputs =
     number : \thread
     new    : \thread
     edit   : \thread
+    censored : \thread
     m      : \thread
     t      : \thread
     page   : \thread
@@ -110,6 +114,7 @@ inputs =
     number : \thread-permalink
     new    : \error
     edit   : \-edit-marker
+    censored : \error
     m      : \thread-permalink
     t      : \error
     page   : \-page-marker
@@ -119,6 +124,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \-edit-marker
+    censored : \error
     m      : \error
     t      : \error
     page   : \-permalink-page-marker
@@ -128,6 +134,7 @@ inputs =
     number : \edit
     new    : \error
     edit   : \error
+    censored : \error
     m      : \error
     t      : \error
     page   : \error
@@ -137,6 +144,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \error
+    censored : \error
     m      : \error
     t      : \error
     page   : \error
@@ -146,6 +154,7 @@ inputs =
     number : \thread-permalink-page
     new    : \error
     edit   : \error
+    censored : \error
     m      : \error
     t      : \error
     page   : \error
@@ -155,6 +164,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \error
+    censored : \error
     m      : \error
     t      : \error
     page   : \error
@@ -164,6 +174,7 @@ inputs =
     number : \thread-page
     new    : \error
     edit   : \error
+    censored : \error
     m      : \error
     t      : \error
     page   : \error
@@ -173,6 +184,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \error
+    censored : \error
     m      : \error
     t      : \error
     page   : \error
@@ -182,6 +194,7 @@ inputs =
     number : \error
     new    : \error
     edit   : \error
+    censored : \error
     m      : \error
     t      : \error
     page   : \error
