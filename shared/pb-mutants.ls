@@ -90,7 +90,9 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
   p = w.$ "menu .submenu .forum-#fid"
   if p.length # subform
     p.parent!add-class \active
-    w.$(last p.parents \li) .find \.title:first .add-class \active # get parent, too
+    w.$(last p.parents \li) .children \.title # get parent, too
+      ..add-class \active
+      ..add-class \hover
 
 layout-on-personalize = (w, u) ->
   if u # guard
