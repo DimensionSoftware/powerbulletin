@@ -168,69 +168,6 @@ header
             overflow hidden
     #warning
       bottom 8px
-    .menu
-      padding 0
-      margin -3px auto 0 auto
-      display inline-block
-      position absolute
-      bottom -1px
-      > .row
-          position relative!important
-          z-index 50!important
-        .title
-          display inline-block
-          text-transform capitalize
-          padding 0 15px
-          margin-right 20px
-      .row.active, .row:hover
-        z-index 7
-        > .submenu
-          opacity 1
-          top 30px
-          max-height 450px
-          height auto
-          min-width 850px
-          padding 10px 0 25px 0
-          margin-left -27px
-          box-shadow 0 1px 15px -1px light
-          transition padding .15s ease-out .15s, margin-left .15s ease-out .2s, box-shadow .15s ease-out .2s, max-height .05s ease-out .2s
-      .row
-        cursor pointer
-        display inline
-        line-height 38px
-        font-size 1em
-        position relative
-        .title
-          position relative
-          z-index 66
-        .submenu
-          text-transform capitalize
-          z-index 65
-          top -600px
-          overflow-y scroll
-          opacity 0
-          position absolute
-          padding 0
-          margin 0
-          max-height 0
-          min-width 600px
-          box-shadow 0
-          transition box-shadow 0s ease-out .1s, padding 0s ease-out .1s, opacity .1s ease-out, max-height .0s ease-out .1s, top 0s ease-out .1s, min-width 0s ease-out .1s, margin 0s ease-out .1s
-          > menu
-            margin-top 12px!important
-          menu
-            margin 0
-            padding-left 25px
-            .row
-              width 250px
-              display inline-block
-              float left
-              font-size .9em
-              text-indent 2px
-              a
-                line-height 28px
-                padding 0 10px
-                display inline-block
     .search
       top 10px
       left 234px
@@ -529,15 +466,6 @@ body.scrolled
   header
     height header-scrolled-height
     .container
-      .menu
-        bottom -2px
-        > .row:hover
-          .submenu
-            top 30px
-        .row
-          top 1px
-          line-height header-scrolled-height + 1
-          font-size 16px
       .tools
         top 16px
         .container menu

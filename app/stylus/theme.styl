@@ -63,91 +63,6 @@ header
   border-bottom 1px solid rgba(180,180,180,0.15)
   color #555
   .container
-    .menu
-      .row
-        > .title.hover
-          position relative!important
-          z-index 75!important
-          color dark_text!important
-          font-style italic
-          transition color .5s ease-out
-        > .title.hover::after
-          background radial-gradient(ellipse farthest-corner at 50% 300%, light 50%, rgba(255,255,255,0) 80%)
-          height 8px
-          width 60%
-          transition width .15s ease-out .15s
-        .title.active
-          font-weight bold
-        > .title:hover, .title.hover
-          color #555
-          animation-name tiny-grow!important
-          animation-duration .1s
-        .title
-          text-decoration none
-          border-bottom 1px solid transparent
-          color #777
-          text-transform uppercase
-          font-weight 400
-          letter-spacing -1px
-          text-shadow 0 0 1px #fff
-        .title::after
-          position absolute
-          content ''
-          left 20%
-          width 0%
-          height 0
-          bottom 0
-        .submenu
-          //border-right 1px solid #ccc
-          //border-bottom 1px solid #ddd
-          //border-top 1px solid #efefef
-          border-radius 30px
-          background-color #fff
-          background-image linear-gradient(bottom, #fff 50%, #f0f0f0)
-          color #333
-          .row:hover
-            > a
-              color #fff
-              animation-name none
-              background-color light
-              border-radius 50px
-              transform scale(1.05)
-          .row.active:hover
-            > a
-              color #fff
-              background-color light
-              text-shadow none
-              padding-bottom 1px
-          .row.active
-            a
-              color #000
-              animation-name none
-              font-weight bold
-              border-radius 20px
-              text-shadow 0 1px 0 #fff
-          .row
-            line-height (grid*4)
-            border-right 1px solid transparent
-            border-left 1px solid transparent
-            a
-              color #222
-              text-decoration none
-              white-space nowrap
-              text-overflow ellipsis
-          .indent
-            menu
-              margin-top -5px
-              margin-left 0
-              .row
-                padding 0
-                > a
-                  color #777
-              .row:hover
-                > a
-                  //border-bottom 1px solid light
-                  color #444
-                  background none
-                  border none
     .search
       .icon
         background radial-gradient(circle closest-corner at 50% 44%, light 55%, dark 100%)
@@ -364,13 +279,6 @@ body.scrolled
     height -2px
     transition height .2s ease-out, background-color .5s ease-out
     .container
-      menu.menu
-        > .row
-        .row
-          transition line-height .2s ease-out
-          .submenu
-            .row
-              line-height (grid*3)
       .search
         .query
           border-bottom-width 1px
