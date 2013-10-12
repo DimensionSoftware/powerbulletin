@@ -402,9 +402,9 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- Create a preverified user.  Just need user_id, site_id, and name.
 CREATE FUNCTION procs.alias_create_preverified(alias JSON) RETURNS JSON AS $$
   sql = """
-  INSERT INTO aliases (user_id, site_id, name, rights, verified) VALUES ($1, $2, $3, $4, 't') RETURNING *
+  INSERT INTO aliases (user_id, site_id, name, rights, photo, verified) VALUES ($1, $2, $3, $4, $5, 't') RETURNING *
   """
-  return plv8.execute(sql, [alias.user_id, alias.site_id, alias.name, alias.rights])[0]
+  return plv8.execute(sql, [alias.user_id, alias.site_id, alias.name, alias.rights, alias.photo])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 --
