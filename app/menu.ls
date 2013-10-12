@@ -250,14 +250,18 @@ require! {
   switch type
   | \page          =>
     if not data?path
-      return cb errors: [ "URI is required." ]
+      return cb errors: [ "Slug is required." ]
+    if not data.path.match /^\//
+      return cb errors: [ "Slug must begin with /" ]
     db.pages.upsert data, (err, data) ->
       if err and err.routine.match /unique/
         err.message = "Slug is already taken"
       cb err, data
   | \forum         =>
     if not data?uri
-      return cb errors: [ "URI is required." ]
+      return cb errors: [ "Slug is required." ]
+    if not data.uri.match /^\//
+      return cb errors: [ "Slug must begin with /" ]
     db.forums.upsert data, (err, data) ->
       # TODO - forum case is not so simple and will need to be expanded upon
       if err and err.routine.match /unique/

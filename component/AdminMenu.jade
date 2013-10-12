@@ -20,7 +20,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
           label.header(for='forum') Forum
           .dialog
             label(for='forum_slug') Slug
-            input#forum_slug(type='text', name='forumSlug')
+            input#forum_slug(type='text', name='forumSlug', placeholder='/path/to/forum')
             .note URL suffix for this page
             .break
             label(for='locked') Admin Only
@@ -46,7 +46,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
           label.header(for='page') Page
           .dialog
             label(for='page_slug') Slug
-            input#page_slug(type='text', name='pageSlug')
+            input#page_slug(type='text', name='pageSlug', placeholder='/path/to/page')
             .note URL suffix for this page
             .break
             label Content Only
