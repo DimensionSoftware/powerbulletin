@@ -126,16 +126,18 @@ body.scrolled
         color #333
         .row:hover
           > a
-            color #fff
+            color #fff!important
             animation-name none
+            transition none
             background-color light
             border-radius 50px
             transform scale(1.05)
         .row.active:hover
           > a
-            color #fff
+            color #fff!important
             background-color light
             text-shadow none
+            transition none
             padding-bottom 1px
         .row.active
           a
@@ -161,12 +163,7 @@ body.scrolled
               padding 0
               > a
                 color #777
-            .row:hover
-              > a
-                //border-bottom 1px solid light
-                color #444
-                background none
-                border none
+            // XXX reusing existing (parent) &:hover style
   // }}}
 
 // vim:fdm=marker

@@ -33,7 +33,7 @@ a
 .online
   box-shadow 0 0 2px 0 dark, 1px 1px 10px -1px light
   border 1px solid #eee
-  opacity 1
+  opacity 1!important
   transition box-shadow .3s ease-out, opacity .3s ease-out
 
 .saved
@@ -263,21 +263,21 @@ body.scrolled
   footer:hover::before
     border-top 1px solid #ccc
     transition border-top .2s ease-out
-  header::after
-    border-bottom 1px solid #ddd
-    box-shadow 0 2px 6px 0px #ddd
-    bottom -3px
-    left 0
-    right 0
-    height 1px
-    content ''
-    position absolute
   header
     background-color rgba(255,255,255,0.95)
     box-shadow 0 -1px 12px 2px #eee
     border-bottom 1px solid #fff
     height -2px
     transition height .2s ease-out, background-color .5s ease-out
+    &::after
+      border-bottom 1px solid #ddd
+      box-shadow 0 2px 6px 0px #ddd
+      bottom -1px
+      left 0
+      right 0
+      height 1px
+      content ''
+      position absolute
     .container
       .search
         .query
