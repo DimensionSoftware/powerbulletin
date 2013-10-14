@@ -8,14 +8,14 @@ require! {
 # @param  Scalar  id        id of nested sortable item
 # @param  Array   p
 # @return Array             path for menu-item or false
-@path = (menu=[], id, p=[]) ->
+@path = (menu, id, p=[]) ->
   menu-item = find (.id is id), menu
   if menu-item
     #console.log [...p, menu.index-of menu-item]
     return [ ...p, menu.index-of(menu-item) ]
   else
     #console.log \not-found
-    ndx-menu-pairs = menu |> map (.children) |> zip [0 to 100] |> filter (-> it.1)
+    ndx-menu-pairs = menu |> map (.children) |> zip [0 to 1000] |> filter (-> it.1)
     if ndx-menu-pairs.length
       #console.log \child-menus
       f = null
@@ -35,7 +35,7 @@ require! {
 # @param  Array   menu
 # @param  Scalar  id        id of nested sortable item
 # @return Array             path for menu-item
-@path-for-upsert = (menu=[], id) -> @path(menu, id) or [menu.length]
+@path-for-upsert = (menu, id) -> @path(menu, id) or [menu.length]
 
 # Return the item at the given path
 #
@@ -94,7 +94,7 @@ require! {
 # @param  Array   p         path made of array indices (like [0, 1, 0, 5])
 # @param  Object  object    object to add or merge at the given path
 # @return Array   new menu
-@struct-upsert = (menu=[], p=[], object={}) ->
+@struct-upsert = (menu, p, object) ->
   #[first, ...rest] = p.split '/' |> reject (-> it is '')
   [first, ...rest] = p
   #console.log { first, rest }
@@ -124,7 +124,7 @@ require! {
     # ...and there's more to the path, add children
     if rest.length
       #console.log \--rest
-      menu-item.children = @struct-upsert [], rest, object
+      menu-item.children = @struct-upsert menu-item.children, rest, object
       new-menu[first] = menu-item
       return new-menu
     # ...there's nothing left, merge the object into menu-item
@@ -248,21 +248,31 @@ require! {
   data.site_id = site.id
 
   switch type
-  | \page          => db.pages.upsert data, (err, data) ->
-    if err and err.routine.match /unique/
-      err.message = "Slug is already taken"
-    cb err, data
-  | \forum         => db.forums.upsert data, (err, data) ->
-    # TODO - forum case is not so simple and will need to be expanded upon
-    if err and err.routine.match /unique/
-      err.message = "Slug is already taken."
-    cb err, data
+  | \page          =>
+    if not data?path
+      return cb errors: [ "Slug is required." ]
+    if not data.path.match /^\//
+      return cb errors: [ "Slug must begin with /" ]
+    db.pages.upsert data, (err, data) ->
+      if err and err.routine.match /unique/
+        err.message = "Slug is already taken"
+      cb err, data
+  | \forum         =>
+    if not data?uri
+      return cb errors: [ "Slug is required." ]
+    if not data.uri.match /^\//
+      return cb errors: [ "Slug must begin with /" ]
+    db.forums.upsert data, (err, data) ->
+      # TODO - forum case is not so simple and will need to be expanded upon
+      if err and err.routine.match /unique/
+        err.message = "Slug is already taken."
+      cb err, data
   | \link          => cb null, []
   | otherwise      => cb new Error("menu.upsert unknown type #type"), data
 
-# Delete a menu item (recursively if necessary) from the database
+# Delete an object referenced by a menu-item from the database.
 #
-# @param  Object    object  menu item to delete; may have children
+# @param  Object    object  menu item to delete; children are not automatically deleted
 # @param  Function  cb      function to run after deletions have completed
 @db-delete = (object, cb) ->
   [type, data] = @extract object

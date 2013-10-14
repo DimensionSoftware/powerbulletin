@@ -54,28 +54,34 @@ body.scrolled .nicescroll-rails
   display none
 
 //{{{ Header
+// TODO move this into app/stylus/pb.styl & re-create everything in css (after/before pseudo for text)
 .logo
   margin 0
   padding 0
   a
+    text-shadow 0 0 1px #ccc
+    color #888
     background-image url(cache-url + '/images/pb_icon_logo_sm.png')
     background-repeat no-repeat
-    padding-left 32px
-    padding-top 3px
+    padding-left 35px
+    padding-top 4px
     vertical-align top
     font-size .75em
     text-decoration none
     font-weight 200
-    letter-spacing -2px
+    letter-spacing -1px
+    font-style normal
     position fixed
-    top 18px
+    top 17px
     left 35px
     height 30px
     z-index 10
     strong
+      color #555
       letter-spacing -1px
+      font-style italic
       font-weight 600
-      padding-left 4px
+      padding-left 3px
 header
   position fixed
   height header-height
@@ -162,76 +168,6 @@ header
             overflow hidden
     #warning
       bottom 8px
-    .menu
-      padding 0
-      margin -3px auto 0 auto
-      display inline-block
-      position absolute
-      bottom -1px
-      > .row
-          position relative!important
-          z-index 50!important
-        .title
-          display inline-block
-          text-transform capitalize
-          padding 0 19px
-      .row.active, .row:hover
-        z-index 7
-        .submenu
-          opacity 1
-          top 30px
-          max-height 450px
-          height auto
-          min-width 850px
-          padding 10px 0 35px 0
-          transition opacity .5s ease-out .3s, max-height .25s cubic-bezier(1, -0.01, 1, .08) .35s, top .2s ease-out .15s
-      .row:nth-last-child(3)
-        .submenu
-          margin-left -130px
-      .row:nth-last-child(2)
-        .submenu
-          margin-left -300px
-      .row:nth-child(2)
-        .submenu
-          margin-left -42px
-      .row:first-child
-        .submenu
-          margin-left -50px
-      .row:last-child
-        .submenu
-          margin-left -400px
-      .row
-        cursor pointer
-        display inline
-        line-height 38px
-        font-size 16px
-        .title
-          position relative
-          z-index 66
-        .submenu
-          z-index 65
-          top -600px
-          padding 0 15px
-          overflow-y scroll
-          opacity 0
-          position absolute
-          padding 0 0 grid 0
-          margin 0
-          max-height 50px
-          min-width 600px
-          menu
-            margin 10px 0
-            .row
-              width 250px
-              height 35px
-              display inline-block
-              float left
-              font-size 14px
-              text-indent 2px
-              a
-                line-height 28px
-                padding 0 20px
-                display inline-block
     .search
       top 10px
       left 234px
@@ -279,19 +215,6 @@ body.paginator
   padding-top (grid*2)
   .photo
     margin-top 9px
-  .handle::before
-    position absolute
-    content ''
-    border-bottom 8px solid transparent
-    border-top 8px solid transparent
-    border-left 10px solid transparent
-    height 0
-    width 0
-    top 8px
-    left -1px
-  .handle:hover
-    right -15px
-    transition right .1s ease-out
   .handle
     z-index 5
     border-radius 20px
@@ -307,6 +230,19 @@ body.paginator
     text-align center
     cursor pointer
     z-index 95
+    &::before
+      position absolute
+      content ''
+      border-bottom 8px solid transparent
+      border-top 8px solid transparent
+      border-left 10px solid transparent
+      height 0
+      width 0
+      top 8px
+      left -1px
+    &:hover
+      right -15px
+      transition right .1s ease-out
   #paginator
     position absolute
     width 0
@@ -523,21 +459,13 @@ footer
 body.scrolled
   .logo
     a
-      top 4px
-      font-size .68em
-      transition margin-top .3s bounce
+      top 3px
+      font-size .62em
+      transition all .1s ease-out
+      padding-top 6px
   header
     height header-scrolled-height
     .container
-      .menu
-        bottom -2px
-        > .row:hover
-          .submenu
-            top 30px
-        .row
-          top 1px
-          line-height header-scrolled-height + 1
-          font-size 16px
       .tools
         top 16px
         .container menu
@@ -598,7 +526,7 @@ body.collapsed
       transform rotate(180deg)
       top 8px
       left 14px
-      transition all .5s ease-out
+      transition all .2s ease-out
     .handle
       right -25px
     .create a

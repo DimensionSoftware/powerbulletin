@@ -59,9 +59,9 @@ html
           input#query.query(type='text', placeholder='Search', autocomplete='off')
           .onclick-close.toggler(title='Close!') x
         #warning.tooltip
-        .menu-container
+        .MainMenu.menu-container
           menu#menu.menu
-            mixin _menu(menu)
+            +_menu(0, menu)
         .tools
           a.profile.photo.mutant
             img#profile(src="#{cacheUrl}/images/profile.jpg")

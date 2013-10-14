@@ -31,7 +31,7 @@ module.exports =
           code:    @$.find \.Buy-card-code .val!
         product = @local \product .id
         re-enable = -> $ ev.target .attr \disabled null
-        ch.show-tooltip (@$.find \.tooltip), 'Securing a connection'
+        ch.show-tooltip (@$.find \.tooltip), 'Securing connection'
         @@$.post "/ajax/checkout/#product", data, (r) ~>
           if r.success
             site.subscriptions.push product # subscribe!

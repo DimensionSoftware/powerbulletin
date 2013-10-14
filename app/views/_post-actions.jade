@@ -1,8 +1,9 @@
 mixin _post_actions(p)
+  stripped = p.uri ? p.uri.replace(/\/\d+$/, '') : ''
   .actions
     a.onclick-append-reply-ui(title='Comment')
       .s-reply
-    a.edit.mutant.no-surf(data-edit=p.id, href="#{p.uri.replace(/\/\d+$/, '')}/edit/#{p.id}") Edit
+    a.edit.mutant.no-surf(data-edit=p.id, href="#{stripped}/edit/#{p.id}") Edit
     a.permalink.mutant(href=p.uri, title='Permalink')
       .s-permalink
     a.censor.onclick-censor-post(title='Censor')

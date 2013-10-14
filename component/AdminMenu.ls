@@ -34,7 +34,9 @@ module.exports =
     template: templates.AdminMenu
     current:  null # active "selected" menu item
 
-    show:         ~> set-timeout (~> @$.find \.col2 .show 300ms), 300ms
+    show: ~>
+      set-timeout (~> @$.find \.col2 .show 300ms), 300ms
+
     clone: (item) ~> # clone a template defined as class="default"
       e = @$.find \.default .clone!remove-class(\default).attr \id, item.id
       e.find \input # add metadata to input
@@ -176,10 +178,11 @@ module.exports =
 
       @$.on \click \.onclick-add (ev) ~>
         @show!
+        ch.show-tooltip ($ \#warning), 'Select a Type.'
 
         s = @$.find \.sortable
         # generate id & add new menu item!
-        max = parse-int maximum(s.find \li |> map (-> it.id.replace prefix, ''))
+        max = maximum(s.find \li |> map (-> parse-int it.id.replace(prefix, '')))
         id  = unless max then 1 else max+1
         e   = @clone {id:"#prefix#id"}
 
