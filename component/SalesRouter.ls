@@ -94,6 +94,13 @@ module.exports =
 
       finish = (klass, layout-klass) ~>
         only-attach = false
+
+        # reap previous component
+        if old-c = @top-components[@last-klass-name]
+          old-c.detach!
+          delete @top-components[@last-klass-name]
+        @last-klass-name = klass-name
+
         c = @top-components[klass-name]
         unless c
           # instantiate since there is no instance yet...
@@ -101,9 +108,18 @@ module.exports =
           if existing-root-el.length
             console.log "#klass-name: skipping render (already in DOM, only attaching)"
             only-attach = true # component is on page from a server-side html render, only attach
-            root-el = existing-root-el
+
+            # reap previous componente
+            lre = @last-root-el
+            set-timeout (-> lre.remove!), 3000 if lre
+
+            @last-root-el = root-el = existing-root-el
           else
-            root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
+            # reap previous componente
+            lre = @last-root-el
+            set-timeout (-> lre.remove!), 3000 if lre
+
+            @last-root-el = root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
             b.append root-el
 
           make-component = (elr, parent) ->
