@@ -56,8 +56,8 @@ sub-forums = (id, fields='*') ->
 export top-posts = (site-id, sort, limit = void, offset = 0, fields='p.*') ->
   sort-expr =
     switch sort
-    | \recent   => 'p.created DESC, p.id ASC'
-    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC'
+    | \recent   => 'p.is_sticky DESC, p.created DESC, p.id DESC'
+    | \popular  => 'p.is_sticky DESC, (SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC'
     | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
 
   sql = """

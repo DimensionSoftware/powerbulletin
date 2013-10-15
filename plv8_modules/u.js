@@ -69,9 +69,9 @@
     sortExpr = (function(){
       switch (sort) {
       case 'recent':
-        return 'p.created DESC, p.id ASC';
+        return 'p.is_sticky DESC, p.created DESC, p.id DESC';
       case 'popular':
-        return '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC';
+        return 'p.is_sticky DESC, (SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC';
       default:
         throw new Error("invalid sort for top-posts: " + sort);
       }
