@@ -69,7 +69,7 @@
     sortExpr = (function(){
       switch (sort) {
       case 'recent':
-        return 'p.is_sticky DESC, p.created DESC, p.id DESC';
+        return 'p.is_sticky DESC, (SELECT MAX(created) FROM posts WHERE thread_id=p.thread_id) DESC';
       case 'popular':
         return 'p.is_sticky DESC, (SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id GROUP BY thread_id) DESC';
       default:
