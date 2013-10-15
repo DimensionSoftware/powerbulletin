@@ -37,7 +37,15 @@ module.exports =
       @children <<< @mods # mods are a subset of children
 
       @@$R((route) ->
+        # route is one of [\super, \superSites, \superUsers]
+        # in future:
+        # {type: \super, id: 1}, {type: \superSites}]
         console.warn \PLACEHOLDER_IN_SuperAdmin, "route for SuperAdmin to handle is: #route"
+        {
+          super       : ->
+          super-sites : ->
+          super-users : ->
+        }[route]!
       ).bind-to @state.route
     mutate: ($dom) ->
       # setup anchor points for mods based on inference
