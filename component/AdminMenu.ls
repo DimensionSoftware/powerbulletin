@@ -166,6 +166,16 @@ module.exports =
 
     on-attach: !~>
       #{{{ Event Delegates
+      @$.find('.upload input[type=file]').html5-uploader {
+        name: \background
+        post-url: @endpoint-url
+        on-success: (xhr, file, r-json) ~>
+          # TODO live load current background
+          r = JSON.parse(r-json)
+          cache-buster = Math.random!to-string!replace \\. ''
+          @$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
+      }
+
       @$.on \change 'input[name="dialog"]' ~> # type was selected
         # TODO - make sure current-restore has the right data to restore; when adding a new item, it often does not.
         # TODO - create slug out of title
@@ -178,7 +188,7 @@ module.exports =
 
       @$.on \click \.onclick-add (ev) ~>
         @show!
-        ch.show-tooltip ($ \#warning), 'Select a Type.'
+        ch.show-tooltip ($ \#warning), 'Select a type below!'
 
         s = @$.find \.sortable
         # generate id & add new menu item!

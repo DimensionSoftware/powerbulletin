@@ -436,8 +436,10 @@ same-profile = (hints) ->
   switch action
   | \domains  => try win.render-mutant \main_content, \admin-domains
   | \invites  => try win.render-mutant \main_content, \admin-invites
-  | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site: site}}
-  | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
+  | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu,
+    {locals: {endpointUrl:"/resources/site/#{site.id}", site: site}}
+  | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade,
+    {locals: {subscriptions: site.subscriptions}}
   | otherwise => try win.render-mutant \main_content, \admin-general
 
 @admin =
@@ -475,6 +477,7 @@ same-profile = (hints) ->
       # no pager (for now)
       window.pages-count = 0
       #pager-init window
+      <~ lazy-load-html5-uploader
       <~ lazy-load-fancybox
       <~ lazy-load-nested-sortable
       next!

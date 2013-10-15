@@ -3,7 +3,7 @@ li.default
     input.row(type='text', placeholder='Title')
     .cancel.onclick-close(title='Delete') X
 
-form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
+form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", enctype='multipart/form-data')
   input(type='hidden', name='action', value='menu')
   input(type='hidden', name='id')    //- active id
   input(type='hidden', name='dbid')  //- database id (for pages and forums)
@@ -22,6 +22,16 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put")
             label(for='forum_slug') Slug
             input#forum_slug(type='text', name='forumSlug', placeholder='/path/to/forum')
             .note URL suffix for this page
+            .break
+            //- XXX hoping html5-uploader works inside parent <form>
+            //-form(method='POST', action=endpointUrl, enctype='multipart/form-data')
+            label(for='upload') Background
+              //- XXX if not then we move this <form> block elsewhere in dom and use stylus to visually drop it in
+              //-input(name='action', value='background-upload', type='hidden')
+              div.button 
+                span Upload
+                input.upload(id='upload', type='file', name='background')
+            .note Drag &amp; drop or choose above
             .break
             label(for='locked') Admin Only
             .box

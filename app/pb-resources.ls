@@ -27,6 +27,20 @@ is-locked-forum = (m, forum-id) ->
   menu.flatten(m) |> find (-> f = it.form; f.dialog is \forum and f.dbid is forum-id and f.locked)
 
 @sites =
+  create: (req, res, next) ->
+    if not req?user?rights?super then return next 404 # guard
+
+    # get site
+    site = res.vars.site
+    err, site <- db.site-by-id site.id
+    if err then return next err
+
+    switch req.body.action
+    | \background-upload =>
+      # TODO save background image to forum
+      # - mkdirp public/sites/ID
+      # - atomic write to public/sites/ID/FORUM-ID.jpg
+
   update: (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
 
