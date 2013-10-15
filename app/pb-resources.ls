@@ -22,6 +22,10 @@ ban-all-domains = (site-id) ->
   if err then return next err
   for d in domains then v.ban-domain d.name
 
+# Return true if forum-id is a locked forum according to the menu m.
+is-locked-forum = (m, forum-id) ->
+  menu.flatten(m) |> find (-> f = it.form; f.dialog is \forum and f.dbid is forum-id and f.locked)
+
 @sites =
   update: (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard
@@ -245,6 +249,9 @@ ban-all-domains = (site-id) ->
     post.ip       = res.vars.remote-ip
     post.tags     = h.hash-tags post.body
     post.forum_id = post.forum_id
+
+    if is-locked-forum(site.config.menu, parse-int(post.forum_id)) and (not user.rights?super)
+      return res.json success: false, errors: [ "The forum is locked." ]
 
     err, ap-res <- db.add-post post
     if err then return next err
