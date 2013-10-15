@@ -250,7 +250,7 @@ is-locked-forum = (m, forum-id) ->
     post.tags     = h.hash-tags post.body
     post.forum_id = post.forum_id
 
-    if is-locked-forum(site.config.menu, parse-int(post.forum_id)) and (not user.rights?super)
+    if is-locked-forum(site.config.menu, parse-int(post.forum_id)) and (not req.user.rights?super)
       return res.json success: false, errors: [ "The forum is locked." ]
 
     err, ap-res <- db.add-post post
