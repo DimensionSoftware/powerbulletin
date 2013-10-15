@@ -142,12 +142,12 @@ require! {
   list = []
   for item in menu
     if item.children?length
-      console.log \recurse
+      #console.log \recurse
       list = list.concat item, @flatten(item.children)
     else
-      console.log "concating #{item.id}"
+      #console.log "concating #{item.id}"
       list = list.concat item
-  console.log \ids list.map (.id)
+  #console.log \ids list.map (.id)
   list
 
 # Given a form submission, figure out what kind of data we have.
@@ -186,7 +186,7 @@ require! {
     delete data.id
   return [type, data]
 
-# Given a menu, and 2 paths, the first path will swap positions with the second path
+# Given a menu, and 2 paths, move an item from the first path to the 2nd path.
 #
 # @param  Array   menu      sites.config.menu
 # @param  Array   old-path  path of item to move
