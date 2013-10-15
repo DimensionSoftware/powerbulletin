@@ -265,18 +265,19 @@ html.forum, html.profile, html.search, html.moderation
             height 45px
             width 45px
             margin-top (grid/2)
-        .summary::before:hover
-          margin-left 2px
-        .summary::before
-          position absolute
-          z-index 1
-          content ''
-          top 19px
-          height 0
-          width 0
-          border-bottom 7px solid transparent
-          border-right 7px solid transparent
-          border-top 7px solid transparent
+          // arrow
+          &::before:hover
+            margin-left 2px
+          &::before
+            position absolute
+            z-index 1
+            content ''
+            top 19px
+            height 0
+            width 0
+            border-bottom 7px solid transparent
+            border-right 7px solid transparent
+            border-top 7px solid transparent
         .title
           display block
           width 50%
