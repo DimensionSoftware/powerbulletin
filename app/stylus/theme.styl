@@ -298,8 +298,11 @@ body.scrolled
   #left_content::after
     bottom (footer-height - 4)
   footer
-    opacity 1
+    opacity .9
     transition bottom .4s ease-out
+    &:hover
+      opacity 1
+      transition opacity .1s ease-out
 //}}}
 
 //{{{ Fancybox
