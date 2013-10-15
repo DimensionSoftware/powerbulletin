@@ -37,7 +37,10 @@ module.exports =
 
       # run component handler first
       # which should populate locals
-      err <- handlers[type] req, res
+      # a fallback handler is provided in case a component handler was not defined yet
+      # the fallback handler does _nothing_
+      component-handler = handlers[type] or ((req, res, next) -> next!)
+      err <- component-handler req, res
       if err then return next err
 
       if req.query._surf
@@ -88,38 +91,35 @@ module.exports =
 
       b = if @is-client then @@$('body') else @$.find('body')
 
-      [klass-name, layout-klass-name, layout-root-sel] = surl-mapping[type]
+      [klass-name, layout-klass-name, layout-root-sel] =
+        surl-mapping[type] or throw new Error "no component mapping defined for route token: '#type'"
       css-class = "#{klass-name}-root"
       css-sel   = ".#css-class"
 
       finish = (klass, layout-klass) ~>
         only-attach = false
 
-        # reap previous component
-        if old-c = @top-components[@last-klass-name]
-          old-c.detach!
+        # reap previous component only if going to a new top-level klass
+        if klass-name isnt @last-klass-name and old-c = @top-components[@last-klass-name]
           delete @top-components[@last-klass-name]
+          old-c.detach!
+          # we remove parent instead if it exists, since it is the dynamic layout we injected from before
+          set-timeout (-> (old-c.parent?$ or old-c.$).remove!), 3000 # reap dom root after 3 secs
         @last-klass-name = klass-name
 
-        c = @top-components[klass-name]
-        unless c
+        reuse-component = false
+        if c = @top-components[klass-name]
+          # component already initialized from previous route, so we just touch the reactive 'route' local
+          reuse-component = true
+        else
           # instantiate since there is no instance yet...
           existing-root-el = @@$(css-sel)
           if existing-root-el.length
             console.log "#klass-name: skipping render (already in DOM, only attaching)"
             only-attach = true # component is on page from a server-side html render, only attach
-
-            # reap previous componente
-            lre = @last-root-el
-            set-timeout (-> lre.remove!), 3000 if lre
-
-            @last-root-el = root-el = existing-root-el
+            root-el = existing-root-el
           else
-            # reap previous componente
-            lre = @last-root-el
-            set-timeout (-> lre.remove!), 3000 if lre
-
-            @last-root-el = root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
+            root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
             b.append root-el
 
           make-component = (elr, parent) ->
@@ -136,10 +136,15 @@ module.exports =
             c = @top-components[klass-name] = make-component root-el
 
         custom-reload = (l) ->
-          c.detach!
-          c.locals l
-          c.render! unless only-attach
-          c.attach!
+          if reuse-component
+            # component already initialized from previous route, so we just touch the reactive 'route' local
+            console.warn "touching route local for #klass-name with value '#type'"
+            c.local \route, type
+          else
+            c.detach!
+            c.locals l
+            c.render! unless only-attach
+            c.attach!
 
           # put url type in body class to trigger css transition
           b.attr(\class, null).add-class(type)

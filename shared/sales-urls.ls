@@ -7,8 +7,10 @@ require, exports, module <- define
 @parse = (path) ->
   type =
     switch path
-    | \/        => \homepage
-    | \/super   => \super
+    | \/              => \homepage
+    | \/super         => \super
+    | \/super/sites   => \superSites
+    | \/super/users   => \superUsers
     | otherwise => \error
 
   if type is \error
