@@ -1,18 +1,37 @@
 .Paginator
-  a:hover
-    background-color #bbb
-    color #fff
-    border-radius 8px / 5px
+  margin-top 1px
+  // active & inactive links
+  a, strong
     position relative
     z-index 1
-    text-shadow 0 -1px 0 #444
-  a, strong
-    padding 3px 7px 5px 7px
-    margin 10px 20px
-    font-size 1.25em
-    line-height 1.25em
-    letter-spacing 2px
+    display inline-block
+    height 12px
+    line-height 9px
+    font-weight 300
+    padding 4px 8px
+    margin 0 18px
+    font-size 1em
+    letter-spacing 1px
+    border-radius 30px
+    border 1px solid transparent
+  // active-only
   strong
     font-weight bold
-    line-height 1.1em
-    color #888
+    color #fff
+    background-color light
+    border 1px solid dark
+  // inactive-only
+  a
+    &:hover
+      position relative
+      z-index 1
+      text-shadow 0 -1px 0 rgba(50,50,50,.05)
+      border 1px solid light
+      box-shadow 0 0 2px light
+      transition all .1s ease-out
+  // inset controls (< > reply & top)
+  .inset
+    color #777
+    background-color #ddd
+    background-image linear-gradient(to top, #ddd 10%, #f4f4f4 100%)
+    border 1px solid #ccc

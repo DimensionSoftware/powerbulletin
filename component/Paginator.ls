@@ -30,7 +30,7 @@ function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-hre
   if page-qty and active-page > 1
     do ->
       num = active-page - 1
-      pages.unshift {num, title: \<, href: pnum-to-href(num)}
+      pages.unshift {num, title: \<, href: pnum-to-href(num), class:\inset}
 
     # jump to first anchor
     pages.unshift {num: 1, title: \First, href: pnum-to-href(1)}
@@ -39,7 +39,7 @@ function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-hre
   if page-qty and active-page < page-qty
     do ->
       num = active-page + 1
-      pages.push {num, title: \>, href: pnum-to-href(num)}
+      pages.push {num, title: \>, href: pnum-to-href(num), class:\inset}
 
     # jump to last anchor
     pages.push {num: page-qty, title: \Last, href: pnum-to-href(page-qty)}
