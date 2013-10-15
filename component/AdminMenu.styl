@@ -7,6 +7,7 @@
     left 0
     top -17px
     position absolute
+  // left-side (menu)
   .col1
     width 313px
     position fixed
@@ -89,6 +90,8 @@
       margin -1px
       border-radius 3px
       height 20px
+
+  // right-side (body/content)
   .col2
     display none
     margin-left 365px
@@ -120,6 +123,10 @@
         padding 0
         li:first-child .header
           margin-left 105px
+        input[type='radio'] + label.header
+          font-weight 400
+          font-weight 600
+          font-size 1.1em
         li
           float left
           > label

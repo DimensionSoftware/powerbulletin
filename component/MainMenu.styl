@@ -108,7 +108,6 @@ body.scrolled
         text-transform uppercase
         font-weight 400
         letter-spacing -1px
-        text-shadow 0 0 1px #fff
       .title::after
         position absolute
         content ''
@@ -124,32 +123,32 @@ body.scrolled
         background-color #fff
         background-image linear-gradient(bottom, #fff 50%, #f0f0f0)
         color #333
-        .row:hover
-          > a
-            color #fff!important
-            animation-name none
-            transition none
-            background-color light
-            border-radius 50px
-            transform scale(1.05)
-        .row.active:hover
-          > a
-            color #fff!important
-            background-color light
-            text-shadow none
-            transition none
-            padding-bottom 1px
-        .row.active
-          a
-            color #000
-            animation-name none
-            font-weight bold
-            border-radius 20px
-            text-shadow 0 1px 0 #fff
         .row
           line-height (grid*4)
           border-right 1px solid transparent
           border-left 1px solid transparent
+          .title::after
+            display none
+          &:hover
+            > a
+              color #fff!important
+              animation-name none
+              transition none
+              background-color light
+              border-radius 50px
+              transform scale(1.05)
+          .row.active
+            &:hover
+              > a
+                color #fff!important
+                background-color light
+                transition none
+                padding-bottom 1px
+            a
+              color #000
+              animation-name none
+              font-weight bold
+              border-radius 20px
           a
             color #222
             text-decoration none
