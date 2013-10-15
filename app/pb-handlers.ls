@@ -450,7 +450,7 @@ function profile-paths user, uploaded-file, base=\avatar
   err, forum-dict <- db.forum-dict site.id
   if err then return next(err)
 
-  res.locals <<< {searchopts: cleanup-searchopts(searchopts)}
+  res.locals {searchopts: cleanup-searchopts(searchopts)}
 
   for h in elres.hits
     h._source.posts = [] # stub object for non-existent sub-posts in search view
@@ -470,13 +470,21 @@ function profile-paths user, uploaded-file, base=\avatar
 
     facets.forum.push {forum_id, title, uri, hit-count}
 
+  function compare-title o1, o2
+    if o1.title > o2.title
+      1
+    else if o1.title is o2.title
+      0
+    else
+      -1
+
   res.locals {
     elres
     facets
+    forums-alphabetized: [{id: k, title: v} for k,v of forum-dict].sort compare-title
+    menu:  site.config.menu
     page: (req.query.page or '1')
     title: "Search#{if res.locals.searchopts.q then (' : ' + res.locals.searchopts.q) else ''}"
-    menu:  site.config.menu
-
   }
 
   # NOTE: not sure if caching is possible given the dynamicness of

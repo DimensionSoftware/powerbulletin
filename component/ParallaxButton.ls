@@ -24,8 +24,10 @@ module.exports =
       @on-scroll ||= ~>
         @render-top-half!
 
-      @@$(window).on 'load resize', @on-load-resize
-      @@$(window).on \scroll, @on-scroll
+      #XXX: disable this until we can troubleshoot it
+      #FIXME: can't i have a parallax button? :(
+      #@@$(window).on 'load resize', @on-load-resize
+      #@@$(window).on \scroll, @on-scroll
     on-detach: !->
       @$.off \click, \button
       @@$(window).off 'load resize', @on-load-resize

@@ -7,18 +7,8 @@ require! \./Sales
 {templates} = require \../build/component-jade
 
 module.exports =
-  class SalesApp extends Component
-    template: templates.SalesApp
-
-    init: ->
-      @local \cacheUrl, null # define early, since it is passed to child
-
-      s = @state
-      @children =
-        sales: new Sales {locals: {s.cache-url}} \.SalesApp-content @
-
-    on-attach: ->
-      @@$ \.Sales-subdomain:first .focus!
+  class SalesLayout extends Component
+    template: templates.SalesLayout
 
     login: (user) ->
       # use user later

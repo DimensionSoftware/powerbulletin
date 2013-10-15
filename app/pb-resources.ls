@@ -193,27 +193,8 @@ is-locked-forum = (m, forum-id) ->
       err <- fs.write-file "#base-css/#{domain.site_id}.auth.css" domain.config.style
 
       res.json success:true
+
 @users =
-  index: (req, res, next) ->
-    #XXX: fixme needs rights
-    if not req.user?rights?super then return next 404
-
-    site_id = res.vars.site.id # this will need to be passed in later instead of inferred (on sales site)
-    limit = req.query.i-display-length
-    offset = req.query.i-display-start
-
-    err, total-users-count <- db.users.all-count {site_id}
-    if err then return next err
-
-    err, users <- db.users.all {site_id, limit, offset}
-    if err then return next err
-
-    # format which datatables expects
-    res.json {
-      aa-data: users
-      i-total-records: total-users-count # no filtering
-      i-total-display-records: total-users-count # after filter
-    }
   create : (req, res, next) ->
     user   = req.user
     site   = res.vars.site

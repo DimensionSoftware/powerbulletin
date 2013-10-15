@@ -13,9 +13,8 @@ base-url: "#{cache-url}/client" # override for optimized builds
 wait-seconds: 8 # give a single module this long to load til timeout
 paths:
   fse                   : "../local/fse"
-  jquery                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min else \../local/jquery-1.10.2.min
+  jquery                : \../local/jquery-1.10.2.min
   jquery-cookie         : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.3.1/jquery.cookie.min else \../local/jquery.cookie-1.3.1.min
-  jquery-datatables     : \//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min
   jquery-history        : "../local/history.min"
   jquery-html5-uploader : "../local/jquery.html5uploader"
   #jquery-masonry        : \//cdnjs.cloudflare.com/ajax/libs/masonry/3.1.1/masonry.pkgd.min
@@ -24,7 +23,7 @@ paths:
   jquery-nicescroll     : "../local/jquery.nicescroll.min"
   jquery-transit        : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.9/jquery.transit.min else \../local/jquery.transit-0.9.9.min
   jquery-ui             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min else \../local/jquery-ui.min
-  jquery-waypoints      : "../local/waypoints.min"
+  jquery-waypoints      : \../local/waypoints.min
   lodash                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min else \../local/lodash.min
   raf                   : "../local/raf"
   powerbulletin         : "../powerbulletin"
@@ -40,8 +39,8 @@ shim:
     exports: \History.Adapter
     deps: [\jquery]
   jquery-masonry:
-    # no exports property needed since masonry is native AMD
     deps: [\jquery]
+    exports: \jQuery.Mason
   jquery-nicescroll:
     exports: \jQuery.nicescroll
     deps: [\jquery]
@@ -77,5 +76,5 @@ name: \pb-entry
 # excludeShallow items which we do not want uglified...
 # right now I am doing it to all components, since we don't want class name mangled
 # this is undefined on client-side, this option is only needed when creating an optimized build
-exclude-shallow: ["../component/#{f.slice(0, -3)}" for f in fs.readdir-sync('component') when f.match /.ls$/i] unless window?
+#exclude-shallow: ["../component/#{f.slice(0, -3)}" for f in fs.readdir-sync('component') when f.match /.ls$/i] unless window?
 optimize: \uglify # can be 'none', 'uglify', 'uglify2', or 'closure'

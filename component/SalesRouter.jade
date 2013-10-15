@@ -18,17 +18,17 @@ html
     for stylesheet in stylesheets
       link(rel='stylesheet', type='text/css', href=stylesheet)
     script(src="#{cacheUrl}/local/head-0.99.load.min.js")
+
     if env == 'production'
       script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
+      //- in this case we preload most libraries, as opposed to fetching them all separately
+      script(src="#{cacheUrl}/pb-sales-optimized.js")
     else
       script(src='#{cacheUrl}/local/require.js')
-    //-if env == 'production'
-    //-  //- in this case we preload most libraries, as opposed to fetching them all separately
-    //-  script(src="#{cacheUrl}/pb-sales-optimized.js")
-
     |<script type="text/javascript">
     |  window.headjs = head.js
     |  window.env = '!{env}'
+    |  window.CHANGESET = !{JSON.stringify(CHANGESET)};
     |  window.cacheUrl = '!{cacheUrl}';
     |  window.cache2Url = '!{cache2Url}';
     |  window.cache3Url = '!{cache3Url}';
@@ -40,3 +40,4 @@ html
     |  require(['requirejs-config'], function(cfg){ require.config(cfg); require.call(window,['pb-sales-entry']); });
     |</script>
   body
+    #auth

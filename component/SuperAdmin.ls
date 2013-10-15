@@ -27,20 +27,36 @@ module.exports =
       # set them up based on mod-info above
       @mods = {}
       for mname, mi of mod-info
-        m = @mods[mname] = new mi.klass {}, "div.#{mi.css-class}", @
+        m = new mi.klass {}, "div.#{mi.css-class}", @
         m <<< {mi.css-class}
+        @mods[mname] = m
 
       @state.mods = @@$R ~> @mods # expose mods to jade
 
       @children = {}
       @children <<< @mods # mods are a subset of children
+
+      @@$R((route) ->
+        # route is one of [\super, \superSites, \superUsers]
+        # in future:
+        # {type: \super, id: 1}, {type: \superSites}]
+        console.warn \PLACEHOLDER_IN_SuperAdmin, "route for SuperAdmin to handle is: #route"
+        {
+          super       : ->
+          super-sites : ->
+          super-users : ->
+        }[route]!
+      ).bind-to @state.route
     mutate: ($dom) ->
       # setup anchor points for mods based on inference
       for mname, mi of mod-info
         $dom.find('.SuperAdmin-content').append("<div class=\"#{mi.css-class}\">")
     on-attach: ->
-      for m in @mods
-        console.warn \WANK, ".SuperAdmin-content > div.#{m.css-class}"
-        @$.on \click, ".SuperAdmin-nav > a.#{m.css-class}", ~>
+      function attach-mod-nav-handlers mod
+        @$.on \click, ".SuperAdmin-nav a.#{mod.css-class}", ~>
           @$.find('.SuperAdmin-content > div').hide!
-          @$.find(".SuperAdmin-content > div.#{m.css-class}").show!
+          @$.find(".SuperAdmin-content > div.#{mod.css-class}").show!
+          return false
+
+      for ,m of @mods
+        attach-mod-nav-handlers.call(@, m)

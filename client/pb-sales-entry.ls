@@ -4,6 +4,7 @@ require, exports, module <- define
 require! $R:reactivejs
 require! {
   \../component/SalesApp
+  \../component/SalesRouter
   \../component/Buy
 }
 
@@ -14,6 +15,9 @@ require \jqueryUi
 require \./layout
 require \jqueryWaypoints
 {each} = require \prelude-ls
+
+# components
+window.router = new SalesRouter
 
 focus-last  = -> set-timeout (-> $ \.SiteRegister-subdomain:last .focus!), 500ms
 focus-first = -> set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 500ms

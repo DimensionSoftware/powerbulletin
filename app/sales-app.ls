@@ -1,5 +1,5 @@
 require! express
-require! \../component/SalesLoader
+require! \../component/SalesRouter
 require! {
   cors
   \express-validator
@@ -40,31 +40,7 @@ s-app.get \/mu-d81b9b5a-572eee60-bc2ce3f6-e3fc404b (req, res) -> res.send \42
 
 s-app.get '/dynamic/css/:file' pb-handlers.stylus
 
-s-app.get '/' (req, res, next) ->
-  scripts =
-    * jsu.jquery
-    * jsu.jquery-cookie
-    * jsu.jquery-history
-    * jsu.jquery-nicescroll
-    * jsu.jquery-transit
-    * jsu.jquery-ui
-    * jsu.raf
-    * jsu.powerbulletin-sales
-  scripts = ["#s?#{CHANGESET}" for s in scripts]
-
-  stylesheets = [
-    csu.master-sales
-  ]
-
-  locals = {scripts, stylesheets} <<< cvars
-  sl = new SalesLoader {locals}
-  res.content-type \html
-  body = sl.html(false)
-
-  # cache 1 hour with strong etag validation
-  sh.caching-strategies.etag res, sh.sha1(body), 60*60
-
-  res.send body
+s-app.use SalesRouter.middleware
 
 s-app.get '/ajax/check-domain-availability', (req, res, next) ->
   domain = req.query.domain

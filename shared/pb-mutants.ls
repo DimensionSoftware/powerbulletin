@@ -1,6 +1,9 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
+# needed here
+require \jqueryWaypoints if window?
+
 #XXX: this code is smelly, global-ness, bad
 furl = require \../shared/forum-urls
 

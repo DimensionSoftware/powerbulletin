@@ -11,6 +11,7 @@ if [ "$NODE_ENV" = 'production' ] ; then
 
   # build optimized requirejs bundle
   bin/build-requirejs-optimized
+  bin/build-requirejs-optimized-sales
 
   # varnish setup to handle 3000-3009 for now
   # but we are starting with 3 node processes
