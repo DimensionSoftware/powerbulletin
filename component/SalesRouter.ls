@@ -123,11 +123,11 @@ module.exports =
             b.append root-el
 
           make-component = (elr, parent) ->
-            new klass {-auto-render, -auto-attach, locals}, elr, parent
+            new klass {-auto-render, -auto-attach, locals: ({} <<< locals <<< {route: type})}, elr, parent
 
           if layout-klass
             # nest a component in a parent layout without coupling them together
-            layout-c = new layout-klass {-auto-render, -auto-attach, locals}, root-el
+            layout-c = new layout-klass {-auto-render, -auto-attach, locals: ({} <<< locals <<< {route: type})}, root-el
             nested-c = @top-components[klass-name] = make-component layout-root-sel, layout-c # layout-c is the parent of nested-c
             layout-c.children ||= {} # just in case there are other children in layout, we want to be nice
             layout-c.children <<< {content: nested-c} # mix our special child in (top-level component nested in layout)
