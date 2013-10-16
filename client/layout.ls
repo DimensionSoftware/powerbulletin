@@ -14,6 +14,7 @@ mutant  = require \mutant
 require! ch: \./client-helpers
 require! globals
 window.Auth  = require \../component/Auth
+window.switch-and-focus = ch.switch-and-focus
 
 window.cors =
   ajax-params:

@@ -256,8 +256,8 @@ auth-finisher = (req, res, next) ->
   if first-visit
     res.send """
     <script type="text/javascript">
-      window.opener.$('\#auth input[name=username]').val('#{user.name}');
-      window.opener.switchAndFocus('on-login', 'on-choose', '\#auth input[name=username]');
+      window.opener.$('\#auth .choose input[name=username]').val('#{user.name}');
+      window.opener.switchAndFocus('on-login', 'on-choose', '\#auth .choose input[name=username]');
       window.close();
     </script>
     """
