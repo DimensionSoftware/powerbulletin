@@ -12,6 +12,7 @@ require! {
   auth: \./auth
   furl: \../shared/forum-urls
   pay: \./payments
+  \./menu
   url
 }
 
@@ -90,7 +91,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   uri  = req.path
 
   meta = furl.parse querystring.unescape(req.path)
-  console.warn meta.type, meta.path
+  #console.warn meta.type, meta.path
   res.locals.furl = meta
 
   # guards
@@ -156,7 +157,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
         delete tasks.menu
 
     err, fdoc <- async.auto tasks
-    console.warn err, keys(fdoc)
+    #console.warn err, keys(fdoc)
     if err   then return next err
     if !fdoc then return next 404
     if page > 1 and fdoc.sub-posts-tree.length < 1 then return next 404
@@ -265,6 +266,40 @@ function profile-paths user, uploaded-file, base=\avatar
   r.fs-path = "#{r.fs-dir-path}/#{r.avatar-file}"
   r
 
+@forum-background = (req, res, next) ->
+  # get site
+  site = res.vars.site
+  err, site <- db.site-by-id site.id
+  if err then return next err
+
+  # html5-uploader (save forum backgrounds)
+  # - since plugin can't have actions, it must be default; so-- save:
+  background = req.files.background
+
+  # - mkdirp public/sites/ID
+  dst = "public/sites/#{site.id}"
+  err <- mkdirp dst
+  if err
+    console.error \mkdirp.rename, err
+    return res.json { -success, type:\mkdirp }
+
+  # - atomic write to public/sites/SITE-ID/FORUM-ID.jpg
+  forum-id  = req.params.id
+  ext       = background.name.match(/\.(\w+)$/)?1 or ""
+  file-name = if ext then "#forum-id.#ext" else forum-id
+  err <- move background.path, "#dst/#file-name"
+  if err
+    console.error \move, err
+    return res.json {-success, type:\move}
+
+  # - TODO update site.config.menu
+  m = site.config.menu
+  item = menu.flatten m |> find -> it.form.dbid is forum-id
+  console.log \found:, item
+
+  if err then return res.json {-success, type:err}
+  res.json {+success}
+
 @profile-avatar = (req, res, next) ->
   db   = pg.procs
   user = req.user
@@ -291,14 +326,6 @@ function profile-paths user, uploaded-file, base=\avatar
     return res.json { success: false, type: \mkdirp }
 
   # move image to public/images/user/:user_id/
-  move = (src, dst, cb) ->
-    _is = fs.create-read-stream src
-    _os = fs.create-write-stream dst
-    _is.on \end, (err) ->
-      err2 <- fs.unlink src
-      cb(err)
-    _is.pipe(_os)
-
   err <- move avatar.path, fs-path
   if err
     console.error \move, err

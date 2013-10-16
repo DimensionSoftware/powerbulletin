@@ -166,9 +166,9 @@ module.exports =
 
     on-attach: !~>
       #{{{ Event Delegates
-      @$.find('.upload input[type=file]').html5-uploader {
+      @$.find('.drop-target, input.upload[type=file]').html5-uploader {
         name: \background
-        post-url: @endpoint-url
+        post-url: @local \endpoint
         on-success: (xhr, file, r-json) ~>
           # TODO live load current background
           r = JSON.parse(r-json)
