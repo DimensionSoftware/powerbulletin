@@ -79,6 +79,17 @@ module.exports =
       # SalesRouter is intended to only be attached once, so this is fine!
       @navigate(window.location.pathname)
 
+      # attach anchor/button hijacking, use data-href or href attribute
+      dollarish = @@$
+      click-handler = ->
+        $el = dollarish @
+        href = $el.data(\href) or $el.attr(\href)
+        History.push-state null, null, href
+        false
+
+      @@$('body').on \click \a.mutant click-handler
+      @@$('body').on \click \button.mutant click-handler
+
     # client: load any dependencies and navigate to url in component and navigate window history
     # server: load any dependencies and navigate to url in component
     navigate: (url, locals, cb = (->)) ->
@@ -86,8 +97,7 @@ module.exports =
       {incomplete, type} = surl.parse path
 
       if incomplete
-        console.warn "cannot navigate to invalid path: #path"
-        return cb!
+        throw new Error "cannot navigate to invalid path: #path"
 
       b = if @is-client then @@$('body') else @$.find('body')
 
@@ -115,7 +125,6 @@ module.exports =
           # instantiate since there is no instance yet...
           existing-root-el = @@$(css-sel)
           if existing-root-el.length
-            console.log "#klass-name: skipping render (already in DOM, only attaching)"
             only-attach = true # component is on page from a server-side html render, only attach
             root-el = existing-root-el
           else
@@ -138,7 +147,6 @@ module.exports =
         custom-reload = (l) ->
           if reuse-component
             # component already initialized from previous route, so we just touch the reactive 'route' local
-            console.warn "touching route local for #klass-name with value '#type'"
             c.local \route, type
           else
             c.detach!

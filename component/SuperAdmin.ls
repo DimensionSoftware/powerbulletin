@@ -9,8 +9,8 @@ require! {
 {templates} = require \../build/component-jade
 
 mod-info =
-  mod-users: {klass: SuperAdminUsers}
-  mod-sites: {klass: SuperAdminSites}
+  mod-users: {klass: SuperAdminUsers, url: '/super/users'}
+  mod-sites: {klass: SuperAdminSites, url: '/super/sites'}
 
 for mname, mi of mod-info
   mi.css-class = "SuperAdmin-#mname"
@@ -20,15 +20,12 @@ module.exports =
   class SuperAdmin extends Component
     template: templates.SuperAdmin
     init: ->
-      # default locals
-      @local \activeMod, \modUsers unless @local(\activeMod)
-
       # @mods are special children
       # set them up based on mod-info above
       @mods = {}
       for mname, mi of mod-info
         m = new mi.klass {}, "div.#{mi.css-class}", @
-        m <<< {mi.css-class}
+        m <<< {mi.css-class, mi.url, mod-name: mname}
         @mods[mname] = m
 
       @state.mods = @@$R ~> @mods # expose mods to jade
@@ -36,27 +33,24 @@ module.exports =
       @children = {}
       @children <<< @mods # mods are a subset of children
 
-      @@$R((route) ->
+      @@$R((route) ~>
         # route is one of [\super, \superSites, \superUsers]
         # in future:
         # {type: \super, id: 1}, {type: \superSites}]
-        console.warn \PLACEHOLDER_IN_SuperAdmin, "route for SuperAdmin to handle is: #route"
         {
-          super       : ->
-          super-sites : ->
-          super-users : ->
+          super       : ~> @activate-mod \modUsers
+          super-sites : ~> @activate-mod \modSites
+          super-users : ~> @activate-mod \modUsers
         }[route]!
       ).bind-to @state.route
     mutate: ($dom) ->
       # setup anchor points for mods based on inference
       for mname, mi of mod-info
         $dom.find('.SuperAdmin-content').append("<div class=\"#{mi.css-class}\">")
+    activate-mod: (mname) ->
+      mod = @mods[mname] or throw new Error "cannot activate invalid SuperAdmin module name: #mname"
+      if @is-client # we don't really give a damn about the initial server-side render for this component ;)
+        @$.find(".SuperAdmin-content > div").hide!
+        @$.find(".SuperAdmin-content > div.#{mod.css-class}").show!
     on-attach: ->
-      function attach-mod-nav-handlers mod
-        @$.on \click, ".SuperAdmin-nav a.#{mod.css-class}", ~>
-          @$.find('.SuperAdmin-content > div').hide!
-          @$.find(".SuperAdmin-content > div.#{mod.css-class}").show!
-          return false
-
-      for ,m of @mods
-        attach-mod-nav-handlers.call(@, m)
+      @state.route! # touch route reactive-var on initial load
