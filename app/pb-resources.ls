@@ -35,11 +35,8 @@ is-locked-forum = (m, forum-id) ->
     err, site <- db.site-by-id site.id
     if err then return next err
 
-    switch req.body.action
-    | \background-upload =>
-      # TODO save background image to forum
-      # - mkdirp public/sites/ID
-      # - atomic write to public/sites/ID/FORUM-ID.jpg
+    # TODO /icanhazsite
+    res.json {-success}
 
   update: (req, res, next) ->
     if not req?user?rights?super then return next 404 # guard

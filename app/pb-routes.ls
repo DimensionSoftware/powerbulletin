@@ -26,18 +26,19 @@ personal-mw =
   * auth.mw.session
 
 #{{{ API Resources
-app.all      \/resources/*,                ...personal-mw
-app.resource \resources/sites,             resources.sites
-app.resource \resources/posts,             resources.posts
-app.resource \resources/users,             resources.users
-app.resource \resources/products,          resources.products
-app.resource \resources/conversations,     resources.conversations
-app.resource \resources/threads,           resources.threads
-app.get  \/resources/posts/:id/sub-posts,  handlers.sub-posts
-app.post \/resources/posts/:id/impression, handlers.add-impression
-app.post \/resources/posts/:id/censor,     handlers.censor
-app.post \/resources/users/:id/avatar,     handlers.profile-avatar
-app.put \/resources/users/:id/avatar,      handlers.profile-avatar-crop
+app.all      \/resources/*,                 ...personal-mw
+app.resource \resources/sites,              resources.sites
+app.resource \resources/posts,              resources.posts
+app.resource \resources/users,              resources.users
+app.resource \resources/products,           resources.products
+app.resource \resources/conversations,      resources.conversations
+app.resource \resources/threads,            resources.threads
+app.get  \/resources/posts/:id/sub-posts,   handlers.sub-posts
+app.post \/resources/posts/:id/impression,  handlers.add-impression
+app.post \/resources/posts/:id/censor,      handlers.censor
+app.post \/resources/users/:id/avatar,      handlers.profile-avatar
+app.post \/resources/forums/:id/background, handlers.forum-background
+app.put \/resources/users/:id/avatar,       handlers.profile-avatar-crop
 #}}}
 
 # common for all pages within a site
