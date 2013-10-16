@@ -226,33 +226,37 @@ header
 
 ///}}}
 //{{{ Footer
-footer::before
-  border-top 1px solid #eee
-  top 0
-  left 0
-  right 0
-  content ''
-  position absolute
-footer:hover::before
-  border-top 1px solid #ddd
-  transition border-top .2s ease-out
-footer:hover
-  color #666
-footer.expanded::before
-  position fixed
-  left 0
-  right 0
-  bottom 0
-  top 0
 footer.expanded
   background-color #fafafa
   box-shadow 0 3px 30px 0 light
+  &::before
+    position fixed
+    left 0
+    right 0
+    bottom 0
+    top 0
 footer
   opacity 0
-  background-color #f7f7f7
-  box-shadow 0 0 3px 0 light
+  //background-color #f7f7f7
+  background-image linear-gradient(to top, #f7f7f7 15px, rgba(255,255,255,.7))
+  box-shadow 0 0 4px -1px light
   text-align center
   color #777
+  &::before
+    //border-top 1px solid #eee
+    top 0
+    left 0
+    right 0
+    content ''
+    position absolute
+  &:hover::before
+    //border-top 1px solid #ddd
+    transition border-top .2s ease-out
+  &:hover
+    color #666
+    background-image linear-gradient(to top, #f7f7f7 15px, rgba(255,255,255,1))
+    box-shadow 0 0 3px 0 light
+    transition box-shadow .3s ease-out
   h6
     cursor default
     font-size .9em
@@ -263,10 +267,10 @@ footer
 
 //{{{ Scrolled <body>
 body.scrolled
-  footer::before
-    border-top 1px solid #ddd
+  //footer::before
+  //  border-top 1px solid #ddd
   footer:hover::before
-    border-top 1px solid #ccc
+    //border-top 1px solid #ccc
     transition border-top .2s ease-out
   header
     background-color rgba(255,255,255,0.95)
@@ -298,11 +302,11 @@ body.scrolled
   #left_content::after
     bottom (footer-height - 4)
   footer
-    opacity .9
     transition bottom .4s ease-out
     &:hover
-      opacity 1
-      transition opacity .1s ease-out
+      box-shadow 0 0 4px 0 light
+      background-image linear-gradient(to top, #f7f7f7 10px, rgba(255,255,255,1))
+      transition all .1s ease-out
 //}}}
 
 //{{{ Fancybox
