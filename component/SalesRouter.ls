@@ -12,17 +12,21 @@ require \jqueryHistory if window?
 
 {templates} = require \../build/component-jade
 
+function kill-trailing-slash path
+  if path.match /\/$/
+    # remove trailing slash if it exists
+    path.slice(0, -1)
+  else
+    path
+
 function parse-path url
   parser = sh.parse-url url
   path = parser.pathname
   if path is \/
     \/
-  else if path.match /\/$/
-    # remove trailing slash if it exists
-    path.slice(0, -1)
   else
     # no trailing slash to remove
-    path
+    kill-trailing-slash path
 
 module.exports =
   class SalesRouter extends Component
@@ -73,11 +77,11 @@ module.exports =
         # marking locals as null tells @navigate to fetch with surf instead
         locals = if Object.keys(data).length then data else null
 
-        @navigate parse-path(History.get-page-url!), locals
+        @navigate kill-trailing-slash(History.get-page-url!), locals
 
       # attach to existing dom if available on  attach/page-load
       # SalesRouter is intended to only be attached once, so this is fine!
-      @navigate(window.location.pathname)
+      @navigate(window.location.pathname + window.location.search)
 
       # attach anchor/button hijacking, use data-href or href attribute
       dollarish = @@$
@@ -93,6 +97,7 @@ module.exports =
     # client: load any dependencies and navigate to url in component and navigate window history
     # server: load any dependencies and navigate to url in component
     navigate: (url, locals, cb = (->)) ->
+      _url = url #DAFUQ?
       path = parse-path(url)
       {incomplete, type} = surl.parse path
 
@@ -160,7 +165,8 @@ module.exports =
 
         if @is-client and not locals
           # fetch from server remotely
-          remote-locals <- @@$.get url, {_surf:1}
+          __url = _url + (if _url.match(/\?/) then '&' else '?') + '_surf=1'
+          remote-locals <- @@$.get __url
           custom-reload remote-locals
           cb!
         else
