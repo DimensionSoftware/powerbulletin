@@ -9,8 +9,8 @@ require! {
 {templates} = require \../build/component-jade
 
 mod-info =
-  mod-users: {klass: SuperAdminUsers}
-  mod-sites: {klass: SuperAdminSites}
+  mod-users: {klass: SuperAdminUsers, url: '/super/users'}
+  mod-sites: {klass: SuperAdminSites, url: '/super/sites'}
 
 for mname, mi of mod-info
   mi.css-class = "SuperAdmin-#mname"
@@ -25,7 +25,7 @@ module.exports =
       @mods = {}
       for mname, mi of mod-info
         m = new mi.klass {}, "div.#{mi.css-class}", @
-        m <<< {mi.css-class, mod-name: mname}
+        m <<< {mi.css-class, mi.url, mod-name: mname}
         @mods[mname] = m
 
       @state.mods = @@$R ~> @mods # expose mods to jade
@@ -55,9 +55,3 @@ module.exports =
         @$.find(".SuperAdmin-content > div.#{mod.css-class}").show!
     on-attach: ->
       @state.route! # touch route reactive-var on initial load
-      function attach-mod-nav-handlers mod
-        @$.on \click, ".SuperAdmin-nav a.#{mod.css-class}", ~>
-          @activate-mod mod.mod-name
-          return false
-      for ,m of @mods
-        attach-mod-nav-handlers.call(@, m)

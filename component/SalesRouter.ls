@@ -79,6 +79,17 @@ module.exports =
       # SalesRouter is intended to only be attached once, so this is fine!
       @navigate(window.location.pathname)
 
+      # attach anchor/button hijacking, use data-href or href attribute
+      dollarish = @@$
+      click-handler = ->
+        $el = dollarish @
+        href = $el.data(\href) or $el.attr(\href)
+        History.push-state null, null, href
+        false
+
+      @@$('body').on \click \a.mutant click-handler
+      @@$('body').on \click \button.mutant click-handler
+
     # client: load any dependencies and navigate to url in component and navigate window history
     # server: load any dependencies and navigate to url in component
     navigate: (url, locals, cb = (->)) ->
