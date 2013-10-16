@@ -9,7 +9,7 @@ require! {
 }
 {templates} = require \../build/component-jade
 
-debounce = lodash.debounce _, 250
+debounce = lodash.debounce _, 250ms
 
 module.exports =
   class Sales extends Component
@@ -30,3 +30,22 @@ module.exports =
           c.update-subdomain subdomain
       ).bind-to @state.subdomain
 
+      #{{{ animate build-in & initial focus
+      set-timeout (-> # bring in register
+        icon = $ \.logo-icon
+        icon.transition {opacity:1, x:\0px, y:\0px, rotate:\0deg}, 700ms, \easeOutExpo
+        $ \#register_top  .add-class \show
+        $ \.SiteRegister-subdomain:first .focus!
+        set-timeout (-> # ...and action!
+          $ '.SiteRegister h3' .transition {opacity:1, y:30px}, 400ms
+          icon.add-class \hover-around
+          set-timeout (-> # build-in features last
+            $ \#features .transition {opacity:1}, 1200ms), 1000ms), 100ms), 500ms
+
+      unless $ window .scroll-top is 0 # scroll to top
+        $ 'html,body' .animate {scroll-top:0}, 300ms, \easeOutExpo
+      #}}}
+
+    on-detach: -> @$.off!
+
+# vim:fdm=marker

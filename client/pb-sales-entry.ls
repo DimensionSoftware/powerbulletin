@@ -18,14 +18,6 @@ require \jqueryWaypoints
 
 # components
 window.router = new SalesRouter
-
-focus-last  = -> set-timeout (-> $ \.SiteRegister-subdomain:last .focus!), 500ms
-focus-first = -> set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 500ms
-cur-id      = void # waypoint id of current scrolled-to-section
-
-# focus events
-$ '#products .onclick-scroll-to' .click -> focus-last!
-
 #{{{ components
 window.component =
   sales-app: (new SalesApp {-auto-render} \body).attach!
@@ -42,6 +34,14 @@ $R((user) ->
     component.sales-app.logout!
 ).bind-to window.r-user
 #}}}
+
+# "global" window/layout behaviors below
+focus-last  = -> set-timeout (-> $ \.SiteRegister-subdomain:last .focus!), 500ms
+focus-first = -> set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 500ms
+cur-id      = void # waypoint id of current scrolled-to-section
+
+# focus events
+$ '#products .onclick-scroll-to' .click -> focus-last!
 #{{{ parallax
 $ window .on \scroll, ->
   offset  = $ window .scroll-top!
@@ -80,21 +80,6 @@ $ 'nav a' .on \click ->
   id = ($ this .parents \li:first).attr \class
   set-timeout (~> fn.call {id}), 300ms # force correct selection
   if id is \support then focus-last!
-#}}}
-#{{{ animate build-in & initial focus
-set-timeout (-> # bring in register
-  icon = $ \.logo-icon
-  icon.transition {opacity:1, x:\0px, y:\0px, rotate:\0deg}, 700ms, \easeOutExpo
-  $ \#register_top  .add-class \show
-  focus-first!
-  set-timeout (-> # ...and action!
-    $ '.SiteRegister h3' .transition {opacity:1, y:30px}, 400ms
-    icon.add-class \hover-around
-    set-timeout (-> # build-in features last
-      $ \#features .transition {opacity:1}, 1200ms), 1000ms), 100ms), 500ms
-
-unless $ window .scroll-top is 0 # scroll to top
-  $ 'html,body' .animate {scroll-top:0}, 300ms, \easeOutExpo
 #}}}
 
 # vim:fdm=marker
