@@ -187,6 +187,9 @@ is-locked-forum = (m, forum-id) ->
       err, r <- db.domain-update domain # save!
       if err then return next err
 
+      # delete existing passport for domain so new one can be created
+      delete auth.passports[domain.name]
+
       # save css to disk
       err <- mkdirp base-css
       if err then return next err
