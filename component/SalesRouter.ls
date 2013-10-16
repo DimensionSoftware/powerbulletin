@@ -119,7 +119,7 @@ module.exports =
           delete @top-components[@last-klass-name]
           old-c.detach!
           # we remove parent instead if it exists, since it is the dynamic layout we injected from before
-          set-timeout (-> (old-c.parent?$ or old-c.$).remove!), 3000 # reap dom root after 3 secs
+          (old-c.parent?$ or old-c.$).remove! # reap dom immediately
         @last-klass-name = klass-name
 
         reuse-component = false
