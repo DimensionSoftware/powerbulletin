@@ -37,7 +37,6 @@ module.exports =
         # route is one of [\super, \superSites, \superUsers]
         # in future:
         # {type: \super, id: 1}, {type: \superSites}]
-        console.warn \PLACEHOLDER_IN_SuperAdmin, "route for SuperAdmin to handle is: #route"
         {
           super       : ~> @activate-mod \modUsers
           super-sites : ~> @activate-mod \modSites

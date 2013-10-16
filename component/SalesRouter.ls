@@ -97,8 +97,7 @@ module.exports =
       {incomplete, type} = surl.parse path
 
       if incomplete
-        console.warn "cannot navigate to invalid path: #path"
-        return cb!
+        throw new Error "cannot navigate to invalid path: #path"
 
       b = if @is-client then @@$('body') else @$.find('body')
 
@@ -126,7 +125,6 @@ module.exports =
           # instantiate since there is no instance yet...
           existing-root-el = @@$(css-sel)
           if existing-root-el.length
-            console.log "#klass-name: skipping render (already in DOM, only attaching)"
             only-attach = true # component is on page from a server-side html render, only attach
             root-el = existing-root-el
           else
@@ -149,7 +147,6 @@ module.exports =
         custom-reload = (l) ->
           if reuse-component
             # component already initialized from previous route, so we just touch the reactive 'route' local
-            console.warn "touching route local for #klass-name with value '#type'"
             c.local \route, type
           else
             c.detach!
