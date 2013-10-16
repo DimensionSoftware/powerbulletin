@@ -1,8 +1,17 @@
 body > div
   display none
 
-body > .fancybox-wrap.fancybox-opened
-  display block
+body >
+  .fancybox-overlay
+    position fixed
+    top 0
+    bottom 0
+    left 0
+    right 0
+    height auto!important
+  .fancybox-wrap.fancybox-opened
+    margin-top -225px
+    display block
 
 // would be nice to infer this stuff from sales-url-mappings
 body.super, body.superSites, body.superUsers
