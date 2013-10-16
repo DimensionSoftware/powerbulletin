@@ -159,4 +159,12 @@ process-cached-data = {}
   else
     cb "#file-name is not allowed"
 
+@move = (src, dst, cb) ->
+  _is = fs.create-read-stream src
+  _os = fs.create-write-stream dst
+  _is.on \end, (err) ->
+    err2 <- fs.unlink src
+    cb(err)
+  _is.pipe(_os)
+
 # vim:fdm=marker
