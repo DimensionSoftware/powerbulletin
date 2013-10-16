@@ -24,9 +24,8 @@ module.exports =
         window._auth             = new Auth locals: {site-name: window.site-name, invite-only:window.invite-only}, $ \#auth
         window._auth.after-login = Auth.after-login if Auth.after-login
 
-      # FIXME the fancybox-locked class isn't added to <body>
       $.fancybox.open \#auth, window.fancybox-params unless $ \.fancybox-overlay:visible .length
-      set-timeout (-> $ '#auth .login input[name=username]' .focus! ), 500ms
+      set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
       # password complexity ui
       window.COMPLEXIFY_BANLIST = [\god \money \password \love]
       $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
