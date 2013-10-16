@@ -47,6 +47,7 @@ module.exports =
           remove-hover!
           @$.find \.active:first .add-class \hover), 400ms
 
-    on-detach: -> @$.off!
+    # this runs for lifetime of page
+    #on-detach: -> @$.off!
 
 # vim:fdm=marker
