@@ -476,6 +476,8 @@ same-profile = (hints) ->
       if window.admin-expanded = $b.has-class \collapsed
         $b.remove-class \collapsed
       $ 'form input:first' .focus!select!
+      current-domain = (window.site.domains.filter (-> it.name is window.location.hostname))?0
+      $('.domain select').val current-domain.id.to-string! if current-domain
       $ \.domain .trigger \change # fill-in authorization
       # no pager (for now)
       window.pages-count = 0
