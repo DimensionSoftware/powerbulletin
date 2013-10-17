@@ -142,12 +142,12 @@ require! {
   list = []
   for item in menu
     if item.children?length
-      console.log \recurse
+      #console.log \recurse
       list = list.concat item, @flatten(item.children)
     else
-      console.log "concating #{item.id}"
+      #console.log "concating #{item.id}"
       list = list.concat item
-  console.log \ids list.map (.id)
+  #console.log \ids list.map (.id)
   list
 
 # Given a form submission, figure out what kind of data we have.

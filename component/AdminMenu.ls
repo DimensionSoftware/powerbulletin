@@ -170,7 +170,7 @@ module.exports =
             $container.remove!
             $cursor.focus!
           .fail (jqxhr, status, err) ~>
-            console.warn status, err
+            console?warn status, err
 
     build-nested-sortable: ($ol, menu) ~>
       for item in menu

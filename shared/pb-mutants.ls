@@ -439,10 +439,8 @@ same-profile = (hints) ->
   switch action
   | \domains  => try win.render-mutant \main_content, \admin-domains
   | \invites  => try win.render-mutant \main_content, \admin-invites
-  | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu,
-    {locals: {endpoint:"/resources/forums/#{site.id}/background", site:site}}
-  | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade,
-    {locals: {subscriptions: site.subscriptions}}
+  | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site:site}}
+  | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
   | otherwise => try win.render-mutant \main_content, \admin-general
 
 @admin =
