@@ -134,6 +134,7 @@ if window.location.host not in [\powerbulletin.com, \pb.com]
 #}}}
 #{{{ Personalizing behaviors
 window.onload-personalize = ->
+  # TODO use a class on <body> and move this logic into stylus
   if window.user # logged in, so ...
     $ \.onclick-profile .each -> this.href = "/user/#{window.user.name}"
     $ \.onclick-login   .hide!
