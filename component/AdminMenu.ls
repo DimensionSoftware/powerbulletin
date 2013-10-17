@@ -37,6 +37,16 @@ module.exports =
     show: ~>
       set-timeout (~> @$.find \.col2 .show 300ms), 300ms
 
+    set-background-thumb: (uri) ~>
+      cache-buster = Math.random!to-string!replace \\. ''
+      @$.find \.background
+        ..data \src, uri
+        ..attr \src,
+          if uri
+            "#{cacheUrl}/sites/#uri?#cache-buster"
+          else
+            "#{cacheUrl}/images/transparent-1px.gif"
+
     clone: (item) ~> # clone a template defined as class="default"
       e = @$.find \.default .clone!remove-class(\default).attr \id, item.id
       e.find \input # add metadata to input
@@ -66,12 +76,27 @@ module.exports =
               | otherwise
                 if $i.is \textarea
                   v
+        data.background = (html-form.find \.background).data \src
         e # store
           ..data \id,    e.data!id.replace /list_/ ''
           ..data \form,  data
           ..data \title, e.val!
     current-restore: !~>
       unless e = @current then return # guard
+
+      init-html5-uploader = (form) ~> # FIXME wrap in Component for cleanup with detach!destroy!
+        @set-background-thumb form.background
+        @$.find('.drop-target, input.upload[type=file]').html5-uploader {
+          name: \background
+          post-url: "/resources/forums/#{form.dbid}/background"
+          on-success: (xhr, file, r-json) ~>
+            # load current background
+            r = JSON.parse r-json
+            if r.success
+              @set-background-thumb r.background
+              @current-store!
+        }
+
       # set visually active
       $ \.col1 .find \.active .remove-class \active
       e.add-class \active
@@ -88,6 +113,7 @@ module.exports =
         if form # restore current's id + menu + title
           e.val title
           form{id, title} = {id, title}
+          init-html5-uploader form # applies form.background
           html-form.find 'input,textarea' |> each (input) ->
             $i = @$ input
             n = $i?attr \name
@@ -166,16 +192,6 @@ module.exports =
 
     on-attach: !~>
       #{{{ Event Delegates
-      @$.find('.drop-target, input.upload[type=file]').html5-uploader {
-        name: \background
-        post-url: @local \endpoint
-        on-success: (xhr, file, r-json) ~>
-          # TODO live load current background
-          r = JSON.parse(r-json)
-          cache-buster = Math.random!to-string!replace \\. ''
-          @$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
-      }
-
       @$.on \change 'input[name="dialog"]' ~> # type was selected
         # TODO - make sure current-restore has the right data to restore; when adding a new item, it often does not.
         # TODO - create slug out of title
