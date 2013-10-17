@@ -25,7 +25,7 @@ var s
     else
       load!
 
-process.on \SIGHUP, restart
+process.on \SIGHUP, -> console.warn 'SIGHUP recieved!'; restart!
 
 restart!
 # vim:fdm=marker
