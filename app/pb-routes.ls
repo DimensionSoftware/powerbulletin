@@ -56,7 +56,6 @@ common-js = [v for k,v of jsu when k in [
   \jqueryFancybox
   \jqueryHistory
   \jqueryMasonry
-  \jqueryNicescroll
   \jqueryTransit
   \jqueryUi
   \jqueryWaypoints

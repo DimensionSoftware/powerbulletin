@@ -20,7 +20,6 @@ paths:
   #jquery-masonry        : \//cdnjs.cloudflare.com/ajax/libs/masonry/3.1.1/masonry.pkgd.min
   # above didn't work because amd tried to resolve sub-modules ^^
   jquery-masonry        : "../local/jquery.masonry.min"
-  jquery-nicescroll     : "../local/jquery.nicescroll.min"
   jquery-transit        : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.9/jquery.transit.min else \../local/jquery.transit-0.9.9.min
   jquery-ui             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min else \../local/jquery-ui.min
   jquery-waypoints      : \../local/waypoints.min
@@ -41,9 +40,6 @@ shim:
   jquery-masonry:
     deps: [\jquery]
     exports: \jQuery.Mason
-  jquery-nicescroll:
-    exports: \jQuery.nicescroll
-    deps: [\jquery]
   jquery-transit:
     exports: \jQuery.transit
     deps: [\jquery]

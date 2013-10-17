@@ -6,8 +6,6 @@ bounce = cubic-bezier(0,1.72,0,.75)
 //{{{ - homepage
 // XXX add html. selector here for any single-column layout & the leftnav will animate out, etc...
 html.homepage, html.page, html.moderation
-  .nicescroll-rails
-    display none
   .left-content
     transform translateX(-600px)
     opacity 0
@@ -114,6 +112,7 @@ html.forum, html.profile, html.search, html.moderation
         padding 8px 10px
     .scrollable
       overflow hidden
+      overflow-y scroll
       height 100%
     .threads
       //overflow-y scroll
@@ -467,8 +466,6 @@ html.profile
 //}}}
 //{{{ - search
 html.search
-  .nicescroll-rails
-    display none
   #left_container 
     h1, h2, h3, h4
       margin 11px 0

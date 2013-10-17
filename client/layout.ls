@@ -2,7 +2,6 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require \jqueryHistory
-require \jqueryNicescroll
 require \jqueryUi
 
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
@@ -163,19 +162,7 @@ window.onload-resizable = ->
         $l.toggle-class \wide ($l.width! > 300px)        # resize left nav
         $r.css \padding-left (ui.size.width+left-offset) # " resizable
         $ \footer .css \left (ui.size.width+1)
-        $l.find \.scrollable .get-nice-scroll!resize!
         window.save-ui!)
-    # TODO
-    #  - would be nice to ease-expo-out on scroll
-    #  - fix scrollable region to include another hundred px on bottom
-    $l.find \.scrollable .nice-scroll {
-      bouncescroll:    true
-      cursorcolor:     \#bbb
-      cursorwidth:     6
-      hidecursordelay: 1000
-      mousescrollstep: 6
-      railoffset:      true
-      railpadding:     {bottom:150px}}
     $r.css \padding-left ($l.width!+left-offset) # snap
   else
     try

@@ -21,7 +21,6 @@ require! {
 require \jqueryCookie
 require \jqueryHistory
 require \jqueryMasonry
-require \jqueryNicescroll
 require \jqueryTransit
 require \jqueryUi
 require \jqueryWaypoints
@@ -78,7 +77,6 @@ window.load-ui = -> # restore ui state from cookie
     [collapsed, w] = s.split sep
     if collapsed is \1 and not $ \html .has-class \admin
       $ \body .add-class \collapsed # only collapse on non-admin mutants
-      $l.find \.scrollable .get-nice-scroll!resize!
     w = parse-int w
     $l.transition({width: w} 500ms \easeOutExpo -> set-wide!)
     set-timeout (-> # ... & snap

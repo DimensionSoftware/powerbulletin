@@ -8,7 +8,6 @@ module.exports =
   jquery-history        : "#{cvars.cache5-url}/local/history.min.js"
   jquery-html5-uploader : "#{cvars.cache2-url}/local/jquery.html5uploader.js"
   jquery-masonry        : "#{cvars.cache4-url}/local/jquery.masonry.min.js"
-  jquery-nicescroll     : "#{cvars.cache5-url}/local/jquery.nicescroll.min.js"
   jquery-transit        : "#{cvars.cache2-url}/local/jquery.transit-0.9.9.min.js"
   jquery-ui             : "#{cvars.cache3-url}/local/jquery-ui.min.js"
   jquery-waypoints      : "#{cvars.cache4-url}/local/waypoints.min.js"

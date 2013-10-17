@@ -30,17 +30,6 @@ body.waiting
 .onclick-logout, .onclick-profile, .admin-only, .has-facebook, .has-google, .has-twitter, .has-auth
   display none
 
-body.scrolled .nicescroll-rails
-  top 100px!important
-
-.nicescroll-rails
-  position fixed!important
-  cursor s-resize!important
-  top 190px!important
-  z-index 8!important
-  div
-    margin-right 5px
-
 .close, .onclick-close
   opacity 0
   cursor pointer
@@ -570,8 +559,6 @@ body.scrolled
 //}}}
 //{{{ Collapsed left nav
 body.collapsed
-  .nicescroll-rails
-    display none
   #left_content
     width 0!important
     transition width .1s
