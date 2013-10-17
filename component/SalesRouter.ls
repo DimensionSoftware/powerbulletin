@@ -24,7 +24,6 @@ function parse-path url
   if path is \/
     \/
   else
-    # no trailing slash to remove
     kill-trailing-slash path
 
 module.exports =

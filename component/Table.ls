@@ -9,6 +9,9 @@ require! {
 
 module.exports =
   class Table extends Component
+    ({@pnum-to-href} = {}) ->
+      super ...
+
     template: templates.Table
     init: ->
       # mandatory variables
@@ -26,7 +29,7 @@ module.exports =
 
       do ~>
         locals = {s.active-page, s.qty, s.step}
-        @children = {paginator: new Paginator({locals}, \td.Table-paginator, @)}
+        @children = {paginator: new Paginator({locals, @pnum-to-href}, \td.Table-paginator, @)}
 
       # most naive update routine possible :D
       ignore = false
