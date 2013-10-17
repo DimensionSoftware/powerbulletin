@@ -323,9 +323,6 @@ blend = rgba(0,0,0,.5)
           transition all .1s ease-out
   //}}}
 //{{{ Footer
-footer:hover
-  bottom -43px
-  height 42px
 footer
   z-index 101
   opacity 0
@@ -339,6 +336,10 @@ footer
   background #555
   border-radius 30px / 20px
   border 1px solid #222
+  &:hover
+    bottom -43px
+    height 42px
+    background #444!important
   .onclick-scroll-top:hover
     color #fff
   .onclick-scroll-top:hover::before
