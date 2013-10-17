@@ -34,6 +34,7 @@ socket.on \leave-site, (message, cb) ->
 
 socket.on \menu-update, (menu, cb) ->
   $ \#menu .html jade.templates.menu {menu}
+  window.component.main-menu.detach!attach!
 
 socket.on \thread-impression (thread, cb) ->
   if thread.forum_id is window.active-forum-id
