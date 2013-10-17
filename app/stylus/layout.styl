@@ -175,7 +175,7 @@ header
         height 75px
         width 75px
         border-radius 75px
-        transition all .15s ease-out
+        transition all .05s ease-out
       .container
         height 0
         width 0
@@ -436,18 +436,19 @@ footer
     position absolute
     padding-right 20px
     left 12px
-    color #bbb
-    background-color #ddd
-    background-image linear-gradient(to bottom, #ddd 2px, #f1f1f1 100%)
-    border 1px solid #ddd
+    top 2px
+    color #666
+    background-color #bbb
+    background-image linear-gradient(to bottom, #444 -25px, #f1f1f1 100%)
+    border 1px solid #ccc
     border-radius 30px
-    width 2px
-    height 21px
+    width 5px
+    height 24px
     &:hover
-      color #888
-      background-image linear-gradient(to bottom, #ccc 2px, #f1f1f1 100%)
-      border 1px solid #ccc
-      transition all .1s ease-out
+      color #333
+      background-image linear-gradient(to bottom, #333 -23px, #f1f1f1 100%)
+      border 1px solid #999
+      transition border .1s ease-out, color .1s ease-out
     &::after
       position absolute
       content 'Reply'
@@ -475,7 +476,7 @@ footer
     &:hover
       color #aaa
       background-image linear-gradient(to bottom, #ccc 2px, #f1f1f1 100%)
-      border 1px solid #ccc
+      border 1px solid #999
       transition all .1s ease-out
     &:hover::before
       border-bottom 9px solid #888
@@ -505,6 +506,7 @@ body.scrolled
     width 22px
     height 22px
     opacity 1
+    transition all .1s ease-out
   .logo
     a
       top 3px
