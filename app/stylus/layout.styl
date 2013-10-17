@@ -429,33 +429,31 @@ footer
   width auto
   font-size .95em
   padding 5px 0
-  .post-reply::after
-    position absolute
-    content 'Reply'
-    left 0
-    top 0
+  // reply button on footer
   .post-reply
     display none
     cursor pointer
     position absolute
     padding-right 20px
-    font-size .95em
-    letter-spacing 1px
     left 12px
-  .post-reply:hover
-    color #222
-  .post-reply:hover::before
-    border-left 8px solid #aaa
-    left 39px
-    transition all .1s ease-out
-  .post-reply::before
-    position absolute
-    content ''
-    border 4px solid transparent
-    border-left 6px solid #ccc
-    top 8px
-    left 38px
-    transition all .2s ease-out
+    color #bbb
+    background-color #ddd
+    background-image linear-gradient(to bottom, #ddd 2px, #f1f1f1 100%)
+    border 1px solid #ddd
+    border-radius 30px
+    width 2px
+    height 21px
+    &:hover
+      color #888
+      background-image linear-gradient(to bottom, #ccc 2px, #f1f1f1 100%)
+      border 1px solid #ccc
+      transition all .1s ease-out
+    &::after
+      position absolute
+      content 'Reply'
+      padding-left 20px
+      left 12px
+      top 0
   .onclick-scroll-top
     cursor default
     height 0
@@ -467,19 +465,21 @@ footer
     border-radius 30px
     font-size .8em
     letter-spacing 2px
-    text-indent -70px
+    text-indent -65px
     padding 0
     color #ccc
     background-color #ddd
-    background-image linear-gradient(to top, #ddd 10%, #f4f4f4 100%)
-    border 1px solid #ccc
+    background-image linear-gradient(to bottom, #ddd 2px, #f1f1f1 100%)
+    border 1px solid #ddd
     transition opacity .1s ease-out
     &:hover
       color #aaa
+      background-image linear-gradient(to bottom, #ccc 2px, #f1f1f1 100%)
+      border 1px solid #ccc
       transition all .1s ease-out
     &:hover::before
       border-bottom 9px solid #888
-      top 0
+      top 1px
       transition all .1s ease-out
     &::before
       position absolute
