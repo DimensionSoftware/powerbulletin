@@ -273,32 +273,33 @@ function profile-paths user, uploaded-file, base=\avatar
   if err then return next err
 
   # html5-uploader (save forum backgrounds)
-  # - since plugin can't have actions, it must be default; so-- save:
   background = req.files.background
 
-  # - mkdirp public/sites/ID
+  # mkdirp public/sites/ID
   dst = "public/sites/#{site.id}"
   err <- mkdirp dst
-  if err
-    console.error \mkdirp.rename, err
-    return res.json { -success, type:\mkdirp }
+  if err then return res.json {-success, msg:err}
 
-  # - atomic write to public/sites/SITE-ID/FORUM-ID.jpg
-  forum-id  = req.params.id
+  # atomic write to public/sites/SITE-ID/FORUM-ID.jpg
+  forum-id  = parse-int req.params.id
   ext       = background.name.match(/\.(\w+)$/)?1 or ""
   file-name = if ext then "#forum-id.#ext" else forum-id
   err <- move background.path, "#dst/#file-name"
-  if err
-    console.error \move, err
-    return res.json {-success, type:\move}
+  if err then return res.json {-success, msg:err}
 
-  # - TODO update site.config.menu
-  m = site.config.menu
+  # update site.config.menu
+  m    = site.config.menu
   item = menu.flatten m |> find -> it.form.dbid is forum-id
-  console.log \found:, item
+  console.log \item:, item
+  path = menu.path-for-upsert m, item.id.to-string!
+  item.form.background = "#{site.id}/#file-name"
+  console.log \path:, path
+  site.config.menu     = menu.struct-upsert m, path, item
+  console.log \saved:, site.config.menu.0.form
 
-  if err then return res.json {-success, type:err}
-  res.json {+success}
+  err, r <- db.site-update site # save!
+  if err then return res.json {-success, msg:err}
+  res.json {+success, background:item.form.background}
 
 @profile-avatar = (req, res, next) ->
   db   = pg.procs
