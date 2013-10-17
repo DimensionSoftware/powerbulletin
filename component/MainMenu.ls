@@ -38,7 +38,7 @@ module.exports =
 
         # precalc
         w  = $ window .width!
-        ds = w - (s.offset!left + s.width!)
+        ds = w - (s.offset!?left + s.width!)
         if ds < 0 # intelligently reposition submenu
           set-timeout (-> s.transition {left:ds - 40px}, 200ms, \easeOutExpo), 200ms
 
@@ -47,7 +47,6 @@ module.exports =
           remove-hover!
           @$.find \.active:first .add-class \hover), 400ms
 
-    # this runs for lifetime of page
-    #on-detach: -> @$.off!
+    on-detach: -> @$.off!
 
 # vim:fdm=marker
