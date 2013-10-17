@@ -5,7 +5,6 @@ require! {
   Component: yacomponent
   sh: \../shared/shared-helpers
   surl: \../shared/sales-urls
-  surl-mapping: \../shared/sales-url-mappings
 }
 
 require \jqueryHistory if window?
@@ -97,7 +96,6 @@ module.exports =
     # client: load any dependencies and navigate to url in component and navigate window history
     # server: load any dependencies and navigate to url in component
     navigate: (url, locals, cb = (->)) ->
-      _url = url #DAFUQ?
       path = parse-path(url)
       {incomplete, type} = surl.parse path
 
@@ -107,7 +105,7 @@ module.exports =
       b = if @is-client then @@$('body') else @$.find('body')
 
       [klass-name, layout-klass-name, layout-root-sel] =
-        surl-mapping[type] or throw new Error "no component mapping defined for route token: '#type'"
+        surl.mappings[type] or throw new Error "no component mapping defined for route token: '#type'"
       css-class = "#{klass-name}-root"
       css-sel   = ".#css-class"
 
@@ -165,8 +163,8 @@ module.exports =
 
         if @is-client and not locals
           # fetch from server remotely
-          __url = _url + (if _url.match(/\?/) then '&' else '?') + '_surf=1'
-          remote-locals <- @@$.get __url
+          surf-url = kill-trailing-slash(url) + (if url.match(/\?/) then '&' else '?') + '_surf=1'
+          remote-locals <- @@$.get surf-url
           custom-reload remote-locals
           cb!
         else

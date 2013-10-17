@@ -2,6 +2,7 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
+  surl: \../shared/sales-urls
   Component: yacomponent
   \./SuperAdminUsers
   \./SuperAdminSites
@@ -9,8 +10,8 @@ require! {
 {templates} = require \../build/component-jade
 
 mod-info =
-  mod-users: {klass: SuperAdminUsers, url: '/super/users'}
-  mod-sites: {klass: SuperAdminSites, url: '/super/sites'}
+  mod-users: {klass: SuperAdminUsers, url: surl.gen(\superUsers)}
+  mod-sites: {klass: SuperAdminSites, url: surl.gen(\superSites)}
 
 for mname, mi of mod-info
   mi.css-class = "SuperAdmin-#mname"

@@ -18,6 +18,22 @@ require, exports, module <- define
   else
     {path, type}
 
+# opposite of parse
+@gen = (route) ->
+  switch route
+  | \homepage   => \/
+  | \super      => \/super
+  | \superSites => \/super/sites
+  | \superUsers => \/super/users
+
+# component mappings
+#TODO: create a high-level abstraction so we only have to define a components layout properties once
+#      but still provide the same array interface to module.exports
+@mappings =
+  homepage    : [\Sales, \SalesLayout, \.SalesLayout-content]
+  super       : [\SuperAdmin, \SalesLayout, \.SalesLayout-content]
+  super-sites : [\SuperAdmin, \SalesLayout, \.SalesLayout-content]
+  super-users : [\SuperAdmin, \SalesLayout, \.SalesLayout-content]
 
 /*
 Try these in the REPL.
