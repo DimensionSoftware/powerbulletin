@@ -8,7 +8,8 @@
     br
     fieldset
       img(src="#{cacheUrl}/images/facebook_32.png")
-      legend Facebook
+      legend
+        a(href="https://developer.facebook.com/", target="_blank") Facebook
       label(for="facebook_client_id") ID
       input.first(id="facebook_client_id", type='text', name='facebookClientId', placeholder='Facebook API ID ...',
       value=site.config.facebookClientId)
@@ -17,7 +18,8 @@
       value=site.config.facebookClientId)
     fieldset
       img(src="#{cacheUrl}/images/twitter_32.png")
-      legend Twitter
+      legend
+        a(href="https://dev.twitter.com/", target="_blank") Twitter
       label(for="twitter_key") Key
       input.first(id="twitter_key", type='text', name='twitterConsumerKey', placeholder='Twitter API key ...',
       value=site.config.twitterConsumerKey)
@@ -26,7 +28,8 @@
       value=site.config.twitterConsumerSecret)
     fieldset
       img(src="#{cacheUrl}/images/google_32.png")
-      legend Google+
+      legend
+        a(href="https://code.google.com/apis/console/", target="_blank") Google+
       label(for="google_key") Key
       input.first(id="google_key", type='text', name='googleConsumerKey', placeholder='Google+ API key ...', value=site.config.googleConsumerKey)
       label(for="google_secret") Secret
