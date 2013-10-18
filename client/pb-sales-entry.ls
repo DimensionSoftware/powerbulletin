@@ -27,12 +27,12 @@ window.do-buy = ->
   <- lazy-load-fancybox
   $.fancybox(window.component.buy.$)
 
-$R((user) ->
+window.r-user = $R((user) ->
   if user
     component.sales-app.login user
   else
     component.sales-app.logout!
-).bind-to window.r-user
+)
 #}}}
 
 # "global" window/layout behaviors below

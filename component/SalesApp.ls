@@ -24,8 +24,10 @@ module.exports =
       # use user later
       @$.find 'li.auth a.onclick-login' .hide!
       @$.find 'li.auth a.onclick-logout' .show!
+      @$.find 'li.my-sites' .show!
 
     logout: ->
       @$.find 'li.auth a.onclick-login' .show!
       @$.find 'li.auth a.onclick-logout' .hide!
+      @$.find 'li.my-sites' .hide!
 
