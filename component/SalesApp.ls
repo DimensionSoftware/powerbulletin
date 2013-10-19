@@ -4,6 +4,8 @@ require, exports, module <- define
 require! \./Auth
 require! Component: yacomponent
 require! \./Sales
+require! \./MiniSiteList
+require! ch: \../client/client-helpers
 {templates} = require \../build/component-jade
 
 module.exports =
@@ -20,6 +22,8 @@ module.exports =
     on-attach: ->
       @@$ \.Sales-subdomain:first .focus!
 
+      @@$ \.onclick-my-sites .click @show-my-sites
+
     login: (user) ->
       # use user later
       @$.find 'li.auth a.onclick-login' .hide!
@@ -31,3 +35,8 @@ module.exports =
       @$.find 'li.auth a.onclick-logout' .hide!
       @$.find 'li.my-sites' .hide!
 
+    show-my-sites: ~>
+      <~ ch.lazy-load-fancybox
+      $div = $ '<div/>'
+      msl = new MiniSiteList({locals: {}}, $div)
+      $.fancybox.open $div
