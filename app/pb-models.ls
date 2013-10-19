@@ -138,6 +138,30 @@ query-dictionary =
     upsert: upsert-fn \forums
     delete: delete-fn \forums
 
+  sites:
+    owned-by-user: (user-id, cb) ->
+      # add user count
+      sql = '''
+      SELECT s.*, d.name as domain
+      FROM sites s
+      JOIN domains d ON d.site_id = s.id
+      WHERE s.user_id = $1
+      ORDER BY s.id, d.id
+      '''
+      err, r <- postgres.query sql, [user-id]
+      if err then return cb err
+
+      combine = (a, b) ->
+        if not a[b.id]
+          a[b.id] = b
+          b.domains = [ b.domain ]
+          delete b.domain
+        else
+          a[b.id].domains.push b.domain
+        a
+
+      cb null, fold combine, {}, r
+
 
 # assumed postgres is initialized
 export init = (cb) ->
