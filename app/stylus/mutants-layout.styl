@@ -174,7 +174,7 @@ html.forum, html.profile, html.search, html.moderation
       position relative
       clear both
       min-height 650px
-      margin-bottom (grid*6)
+      margin-bottom (grid*2)
       p
         margin 0
       .container
@@ -681,17 +681,26 @@ html.admin
 //}}}
 //{{{ - forum
 html.forum
+  #forum_background
+    position fixed
+    top 0
+    right 0
+    bottom 0
+    left 0
+    width 100%
   .main-content
     p.onclick-footer-toggle:hover
-      color #999
       transition all .1s ease-out
     p.onclick-footer-toggle
-      color #bbb
+      color dark_text
       cursor pointer
       font-weight 200
       margin (grid*2) 0
       text-align center
       font-size 1.1em
+      border-top 1px solid #f4f4f4
+      padding-top 15px
+      margin-bottom 10px
   footer.expanded
     cursor s-resize
     height 320px
