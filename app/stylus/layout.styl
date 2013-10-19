@@ -91,8 +91,8 @@ header
         border-radius 30px
         height 10px
         width 10px
-        right 35px
-        top 50px
+        right 51px
+        top 58px
         opacity 0
       .bubble2
         height 15px
@@ -119,6 +119,8 @@ header
           text-align center
           transition all .2s ease-out
           menu
+            padding 5px
+            transition padding .1s ease-out
             li
               height 23px
               opacity 1
@@ -131,16 +133,16 @@ header
       &::before
         content ''
         position absolute
-        top 25px
-        right 45px
+        top 45px
+        right 53px
         z-index 12
         height 20px
         width 20px
         border-radius 20px
       // ::after is the arrow
       &:hover::after
-        top 32px
-        right 53px
+        top 51px
+        right 62px
         border-top-width 9px
         transform rotate(10deg)
         transition all .2s ease-out
@@ -149,8 +151,8 @@ header
         border-top 6px solid #fff
         content ''
         position absolute
-        top 33px
-        right 51px
+        top 52px
+        right 59px
         z-index 13
         height 20px
       .profile
@@ -174,11 +176,11 @@ header
         transition all .1s ease-out
         menu
           position relative
-          right -66px
+          right -42px
           border-radius 15px
           list-style none
-          margin-top 10px
-          padding 10px 10px
+          margin-top 12px
+          padding 0
           li
             padding 2px 6px
             height 0
@@ -521,7 +523,9 @@ body.scrolled
         .container
           padding-top 35px!important
           menu
-            padding 15px
+            padding 5px
+            right -72px
+            margin-top 12px
       .tools::before
         display none
       .search

@@ -40,7 +40,7 @@ module.exports =
         w  = $ window .width!
         ds = w - (s.offset!?left + s.width!)
         if ds < 0 # intelligently reposition submenu
-          set-timeout (-> s.transition {left:ds - 40px}, 200ms, \easeOutExpo), 200ms
+          set-timeout (-> s.transition {left:ds - 40px}, 500ms, \easeOutExpo), 200ms
 
       @$.on \mouseleave ~> # mouse-hover-intent'd out
         intent-timer := set-timeout (~>
