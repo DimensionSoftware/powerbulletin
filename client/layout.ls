@@ -232,7 +232,7 @@ window.shake-dialog = ($form, time) ->
 # get the user after a successful login
 Auth.after-login = ->
   window.user <- $.getJSON \/auth/user
-  window.r-user window.user
+  if window.r-user then window.r-user window.user
   onload-personalize!
   if user and mutants?[window.mutator]?on-personalize
     ch.set-profile user.photo
@@ -307,7 +307,7 @@ onload-resizable!
 
 # run initial mutant & personalize ( based on parameters from user obj )
 window.user <- $.getJSON \/auth/user
-window.r-user window.user
+if window.r-user then window.r-user window.user
 
 # hash actions
 if window.location.hash.match /^\#recover=/ then Auth.show-reset-password-dialog!
