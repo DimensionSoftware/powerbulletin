@@ -202,7 +202,48 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     fdoc.active-forum-id = fdoc.forum-id
     fdoc.title = fdoc?forum?title
 
+    # figure forum background
+    if m = fdoc.menu
+      item = menu.flatten m |> find -> it.form.dbid is fdoc.forum-id
+      if b = item.form.background
+        fdoc.background = b
+      else
+        # TODO get menu.path
+        # TODO recurse up to get nearest background
+
     finish fdoc
+
+@forum-background = (req, res, next) ->
+  # get site
+  site = res.vars.site
+  err, site <- db.site-by-id site.id
+  if err then return next err
+
+  # html5-uploader (save forum backgrounds)
+  background = req.files.background
+
+  # mkdirp public/sites/ID
+  dst = "public/sites/#{site.id}"
+  err <- mkdirp dst
+  if err then return res.json {-success, msg:err}
+
+  # atomic write to public/sites/SITE-ID/FORUM-ID.jpg
+  forum-id  = parse-int req.params.id
+  ext       = background.name.match(/\.(\w+)$/)?1 or ""
+  file-name = if ext then "#forum-id.#ext" else forum-id
+  err <- move background.path, "#dst/#file-name"
+  if err then return res.json {-success, msg:err}
+
+  # update site.config.menu
+  m    = site.config.menu
+  item = menu.flatten m |> find -> it.form.dbid is forum-id
+  path = menu.path-for-upsert m, item.id.to-string!
+  item.form.background = "#{site.id}/#file-name"
+  site.config.menu     = menu.struct-upsert m, path, item
+
+  err, r <- db.site-update site # save!
+  if err then return res.json {-success, msg:err}
+  res.json {+success, background:item.form.background}
 
 # user profiles /user/:name
 @profile = (req, res, next) ->
@@ -265,41 +306,6 @@ function profile-paths user, uploaded-file, base=\avatar
   r.fs-dir-path = "public#{r.url-dir-path}"
   r.fs-path = "#{r.fs-dir-path}/#{r.avatar-file}"
   r
-
-@forum-background = (req, res, next) ->
-  # get site
-  site = res.vars.site
-  err, site <- db.site-by-id site.id
-  if err then return next err
-
-  # html5-uploader (save forum backgrounds)
-  background = req.files.background
-
-  # mkdirp public/sites/ID
-  dst = "public/sites/#{site.id}"
-  err <- mkdirp dst
-  if err then return res.json {-success, msg:err}
-
-  # atomic write to public/sites/SITE-ID/FORUM-ID.jpg
-  forum-id  = parse-int req.params.id
-  ext       = background.name.match(/\.(\w+)$/)?1 or ""
-  file-name = if ext then "#forum-id.#ext" else forum-id
-  err <- move background.path, "#dst/#file-name"
-  if err then return res.json {-success, msg:err}
-
-  # update site.config.menu
-  m    = site.config.menu
-  item = menu.flatten m |> find -> it.form.dbid is forum-id
-  console.log \item:, item
-  path = menu.path-for-upsert m, item.id.to-string!
-  item.form.background = "#{site.id}/#file-name"
-  console.log \path:, path
-  site.config.menu     = menu.struct-upsert m, path, item
-  console.log \saved:, site.config.menu.0.form
-
-  err, r <- db.site-update site # save!
-  if err then return res.json {-success, msg:err}
-  res.json {+success, background:item.form.background}
 
 @profile-avatar = (req, res, next) ->
   db   = pg.procs
