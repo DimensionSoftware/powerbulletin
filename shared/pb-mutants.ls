@@ -77,26 +77,25 @@ function default-pnum-to-href-fun uri
 # Common
 layout-static = (w, next-mutant, active-forum-id=-1) ->
   # XXX to be run last in mutant static
-  if w?active-forum-id
-    # indicate current
-    forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
-    w.$ \html .attr(\class "#{next-mutant}#{forum-class}") # stylus
-    w.marshal \mutator, next-mutant                        # js
+  # indicate current
+  forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
+  w.$ \html .attr(\class "#{next-mutant}#{forum-class}") # stylus
+  w.marshal \mutator, next-mutant                        # js
 
-    # handle active main menu
-    fid = active-forum-id or w.active-forum-id
-    w.$ 'header .menu' .find \.active # remove prev
-      ..remove-class \active
-      ..remove-class \hover
-    w.$ "menu .row .forum-#fid" # add current
+  # handle active main menu
+  fid = active-forum-id or w.active-forum-id
+  w.$ 'header .menu' .find \.active # remove prev
+    ..remove-class \active
+    ..remove-class \hover
+  w.$ "menu .row .forum-#fid" # add current
+    ..add-class \active
+    ..add-class \hover
+  p = w.$ "menu .submenu .forum-#fid"
+  if p.length # subform
+    p.parent!add-class \active
+    w.$(last p.parents \li) .children \.title # get parent, too
       ..add-class \active
       ..add-class \hover
-    p = w.$ "menu .submenu .forum-#fid"
-    if p.length # subform
-      p.parent!add-class \active
-      w.$(last p.parents \li) .children \.title # get parent, too
-        ..add-class \active
-        ..add-class \hover
 
   # handle forum background
   w.$ \#forum_background .remove! # reap
