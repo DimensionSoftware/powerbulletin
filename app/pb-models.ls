@@ -142,7 +142,10 @@ query-dictionary =
     owned-by-user: (user-id, cb) ->
       # add user count
       sql = '''
-      SELECT s.*, d.name as domain
+      SELECT
+        s.*,
+        d.name AS domain,
+        (SELECT COUNT(a.user_id) FROM aliases a WHERE a.site_id = s.id) AS user_count
       FROM sites s
       JOIN domains d ON d.site_id = s.id
       WHERE s.user_id = $1
@@ -160,7 +163,11 @@ query-dictionary =
           a[b.id].domains.push b.domain
         a
 
-      cb null, fold combine, {}, r
+      sites = fold combine, {}, r
+      |> values
+      |> sort-by (.id)
+
+      cb null, sites
 
 
 # assumed postgres is initialized
