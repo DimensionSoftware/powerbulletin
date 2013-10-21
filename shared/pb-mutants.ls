@@ -686,25 +686,28 @@ mk-post-pnum-to-href = (post-uri) ->
 # of the site and prompt for login (all sensitive details should be removed)
 @private-site =
   static: (window, next) ->
-    #layout-static.call @ window, \privateSite
     window.$ \header .remove!
     window.$ \footer .remove!
     window.$ \#left_content .remove!
     window.$ \#main_content .remove!
+    layout-static.call @, window, \privateSite
     next!
   on-load: (window, next) ->
     # ensure login stays open
-    fancybox-params <<< {
-      close-btn:    false
-      close-click:  false
-      modal:        true}
+    window.fancybox-params ||= {}
+    window.fancybox-params <<< {
+      open-easing: \easeOutExpo
+      open-speed:  2000ms
+      close-btn:   false
+      close-click: false
+      modal:       true}
     Auth.show-login-dialog! # show!
     next!
 
 @moderation =
   static: (w, next) ->
-    layout-static.call @, w, \moderation
     w.render-mutant \main_content \moderation
+    layout-static.call @, w, \moderation
     next!
   on-load: (window, next) ->
     next!
