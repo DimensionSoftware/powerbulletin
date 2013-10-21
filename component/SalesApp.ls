@@ -38,5 +38,9 @@ module.exports =
     show-my-sites: ~>
       <~ ch.lazy-load-fancybox
       $div = $ '<div/>'
-      msl = new MiniSiteList({locals: {}}, $div)
-      $.fancybox.open $div
+      r <~ @@$.get '/ajax/sites'
+      if r.success
+        msl = new MiniSiteList({locals: {sites: r.sites}}, $div)
+        $.fancybox.open $div
+      else
+        # error
