@@ -86,6 +86,13 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   res.content-type \html
   res.mutant \homepage
 
+# returns forum background
+function background-for-forum m, active-forum-id
+  return unless m?length # guard
+  item = menu.flatten m |> find -> it.form.dbid is active-forum-id
+  if b = item.form.background
+    b
+
 @forum = (req, res, next) ->
   user = req.user
   uri  = req.path
@@ -131,6 +138,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     caching-strategies.nocache res
     res.mutant \moderation
     return
+
   else if post_part # post
     err, post <- db.uri-to-post site.id, meta.thread-uri
     if err then return next err
@@ -173,6 +181,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     fdoc.pages-count = Math.ceil(fdoc.qty / fdoc.limit)
     fdoc.active-forum-id  = fdoc.post.forum_id
     fdoc.active-thread-id = post.id
+    fdoc.background       = background-for-forum fdoc.menu, fdoc.active-forum-id
 
     finish fdoc
 
@@ -198,18 +207,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     if !fdoc then return next 404
 
     fdoc <<< {forum-id, cvars.t-step}
-    fdoc.menu = site.config.menu
+    fdoc.menu            = site.config.menu
     fdoc.active-forum-id = fdoc.forum-id
-    fdoc.title = fdoc?forum?title
-
-    # figure forum background
-    if m = fdoc.menu
-      item = menu.flatten m |> find -> it.form.dbid is fdoc.forum-id
-      if b = item.form.background
-        fdoc.background = b
-      else
-        # TODO get menu.path
-        # TODO recurse up to get nearest background
+    fdoc.title           = fdoc?forum?title
+    fdoc.background      = background-for-forum fdoc.menu, fdoc.active-forum-id
 
     finish fdoc
 
