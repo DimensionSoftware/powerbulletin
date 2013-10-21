@@ -1,3 +1,13 @@
+h1 My Sites
 ul
-  li hi
-  li bye
+  each s in sites
+    li 
+      h2= s.name
+      .users
+        span.count= s.user_count
+        | &nbsp;registered users
+
+      ul
+        each d in s.domains
+          li
+            a(href="https://#{d}/", target="_blank")= d
