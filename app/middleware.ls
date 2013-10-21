@@ -2,6 +2,7 @@ require! {
   async
   fs
   geoip
+  \./menu
   pg: \./postgres
 }
 
@@ -59,7 +60,8 @@ require! {
   return next! unless res.locals.private # only private sites run this middleware
   return next! if req.user # only run this middleware when req.user is null/undefined
 
-  site-id = res.vars.site.id
+  site    = res.vars.site
+  site-id = site.id
   tasks =
     menu:   db.menu site-id, _
     forums: db.site-summary site-id, 6threads, (req.query?order or \recent), _
@@ -70,6 +72,11 @@ require! {
   res.locals async-locals
 
   res.locals {site-id}
+
+  # set homepage background
+  if m = site.config.menu
+    item = menu.flatten m |> sort-by (-> Math.random!) |> find -> it.form.background
+    if item then res.locals.background = item.form.background
 
   res.mutant \privateSite # do _not_ call next because this is the end of the road
 
