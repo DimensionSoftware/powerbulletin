@@ -80,6 +80,13 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
   else
     done!
 
+s-app.get '/ajax/sites', sales-personal-mw, (req, res, next) ->
+  sh.caching-strategies.nocache res
+  if not req.user then return res.json success: false, errors: [ "No user" ]
+  err, sites <- db.sites.owned-by-user req.user.id
+  if err then return res.json success: false, errors: [ err ]
+  res.json {success: true, sites}
+
 # /auth/*
 auth-handlers.apply-to s-app, sales-personal-mw
 
