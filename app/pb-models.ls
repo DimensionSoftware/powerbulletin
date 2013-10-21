@@ -7,7 +7,7 @@ require! {
   postgres: \./postgres
 }
 
-{filter, join, keys, values} = require \prelude-ls
+{filter, join, keys, values, sort-by} = require \prelude-ls
 
 logger = debug \thin-orm
 
