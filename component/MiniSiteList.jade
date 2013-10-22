@@ -1,16 +1,21 @@
 h1 My Sites
-ul
-  each s in sites
-    li 
-      h2= s.name
-      .users
-        span.count= s.user_count
-        | &nbsp;registered users
+if sites.length
+  ul
+    each s in sites
+      li
+        h2= s.name
+        .users
+          span.count= s.user_count
+          | &nbsp;registered users
 
-      ul
-        each d in s.domains
-          li
-            a(href="https://#{d}/", target="_blank")= d
-            | &nbsp;(
-            a(href="https://#{d}/#once-admin", target="_blank") admin
-            | )
+        ul
+          each d in s.domains
+            li
+              a(href="https://#{d}/", target="_blank")= d
+              | &nbsp;(
+              a(href="https://#{d}/#once-admin", target="_blank") admin
+              | )
+else
+  p
+    a.onclick-first-site Click here to create your first site
+      i !
