@@ -9,5 +9,10 @@ require! {
 module.exports =
   class MiniSiteList extends Component
     template: templates.MiniSiteList
+
     init: ->
 
+    on-attach: ~>
+      @$.find('a.onclick-first-site').click (ev) ~>
+        @@$.fancybox.close!
+        @@$ '.SiteRegister-subdomain:first' .focus!
