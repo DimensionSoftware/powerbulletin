@@ -11,3 +11,6 @@ ul
         each d in s.domains
           li
             a(href="https://#{d}/", target="_blank")= d
+            | &nbsp;(
+            a(href="https://#{d}/#once-admin", target="_blank") admin
+            | )
