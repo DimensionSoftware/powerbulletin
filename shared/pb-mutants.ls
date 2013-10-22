@@ -303,9 +303,6 @@ layout-on-personalize = (w, u) ->
       post-id = $('#main_content .post:first').data(\post-id)
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
-      # pager
-      #pager-init window
-
       # bring down first reply
       if user
         e = $ \.onclick-append-reply-ui:first
