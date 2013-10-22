@@ -264,5 +264,14 @@ timers = {}
     ..on   \load -> $ 'header .profile' .show!css \opacity, 1
     ..attr \src, window.cache-url + src
 
+@set-imgs = ~>
+# apply src attrs to images with data attrs (speeds up DOM-ready)
+  $ 'img[data-src]' .each ->
+    e = $ this
+      ..css \opacity, 0
+      ..attr \src, e.data \src
+      ..load ->
+        e.transition opacity:1, 500ms
+
 @
 # vim:fdm=marker

@@ -28,7 +28,7 @@ require \raf
 
 require \layout
 
-{align-ui, ck-submit-form, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
+{set-imgs, align-ui, ck-submit-form, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
 {render-and-append, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
@@ -114,6 +114,7 @@ censor = (ev) ->
 #.
 #### main   ###############>======-- -   -
 ##
+set-imgs!
 load-ui!
 set-timeout (->
   $ \footer

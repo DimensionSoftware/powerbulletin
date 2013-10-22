@@ -9,7 +9,7 @@ furl = require \../shared/forum-urls
 
 # only required if on client-side
 if window?
-  {align-ui, edit-post, fancybox-params, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
+  {set-imgs, align-ui, edit-post, fancybox-params, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {flip-background, is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -100,7 +100,7 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
   # handle forum background
   w.$ \#forum_background .remove! # reap
   if @background
-    w.$ \body .prepend "<img id='forum_background' src='#{@cache-url}/sites/#{@background}'>"
+    w.$ \body .prepend "<img id='forum_background' data-src='#{@cache-url}/sites/#{@background}'>"
 
 
 layout-on-personalize = (w, u) ->
@@ -280,6 +280,7 @@ layout-on-personalize = (w, u) ->
       next!
   on-load:
     (window, next) ->
+      ch.set-imgs!
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
       flip-background window, cur
       $ = window.$
@@ -694,14 +695,16 @@ mk-post-pnum-to-href = (post-uri) ->
     next!
   on-load: (window, next) ->
     # ensure login stays open
-    window.fancybox-params ||= {}
-    window.fancybox-params <<< {
-      open-easing: \easeOutExpo
-      open-speed:  2000ms
-      close-btn:   false
-      close-click: false
-      modal:       true}
-    Auth.show-login-dialog! # show!
+    set-timeout (->
+      window.fancybox-params ||= {}
+      window.fancybox-params <<< {
+        open-easing: \easeOutExpo
+        open-speed:  2000ms
+        close-btn:   false
+        close-click: false
+        modal:       true}
+      Auth.show-login-dialog! # show!
+    ), 10ms # yield (so fancybox doesn't run too early)
     next!
 
 @moderation =
