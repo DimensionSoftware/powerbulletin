@@ -61,7 +61,7 @@ module.exports =
         else
           $form .find 'h2:first' .html "Couldn't find you. :("
 
-    @login-with-token = ->
+    @login-with-token = (cb) ->
       r <- cors.get "#{auth-domain}/auth/once", { site_id: window.site-id }
       #console.warn \cors, r
       if r
@@ -70,6 +70,7 @@ module.exports =
         if rr.success
           Auth.after-login!
           window.location.hash = ''
+          if cb then return cb!
         #else
           #console.error 'local /auth/once failed'
       #else
