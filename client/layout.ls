@@ -313,9 +313,12 @@ if window.r-user then window.r-user window.user
 if window.location.hash.match /^\#recover=/ then Auth.show-reset-password-dialog!
 if m = window.location.hash.match /^\#invalid=(.+)/ then Auth.show-info-dialog "Welcome back #{m.1}!"
 switch window.location.hash
-| \#invalid  => Auth.show-info-dialog 'Invalid invite code!'
-| \#validate => Auth.after-login! # email activation
-| \#once     => Auth.login-with-token!
+| \#invalid    => Auth.show-info-dialog 'Invalid invite code!'
+| \#validate   => Auth.after-login! # email activation
+| \#once       => Auth.login-with-token!
+| \#once-admin =>
+  <- Auth.login-with-token!
+  History.push-state null, null, \/admin
 
 onload-personalize!
 if window.initial-mutant # XXX sales-app doesn't have a mutant
