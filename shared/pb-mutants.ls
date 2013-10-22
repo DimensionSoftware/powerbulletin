@@ -98,10 +98,12 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
       ..add-class \hover
 
   # handle forum background
-  w.$ \#forum_background .remove! # reap
-  if @background
-    w.$ \body .prepend "<img id='forum_background' data-src='#{@cache-url}/sites/#{@background}'>"
-
+  img = (id) ~> "<img id='#id' data-src='#{@cache-url}/sites/#{@background}'>"
+  bg  = w.$ \#forum_background
+  if bg.length and @background # use buffer
+    w.$ \body .prepend (img \forum_background_buffer)
+  else if @background # first, so add
+    w.$ \body .prepend (img \forum_background)
 
 layout-on-personalize = (w, u) ->
   if u # guard
@@ -313,6 +315,26 @@ layout-on-personalize = (w, u) ->
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
+
+      # handle forum background
+      # - XXX move to helpers if used in homepage mutant, etc...
+      bg = $ \#forum_background
+      bf = $ \#forum_background_buffer
+      if @background and bg.length and bf.length # double-buffer
+        bf
+          ..attr \src, bf.data \src
+          ..load ->
+            bg.transition opacity:0, 500ms
+            bf.transition opacity:1, 500ms, \easeOutExpo, ->
+              # TODO cleanup
+              bg.remove!
+              bf.attr \id, \forum_background
+      else if @background # set bg
+        ch.set-imgs!
+      else if bg.length # no background, so--reap both!
+        bf.remove!
+        bg.remove!
+
       next!
   on-initial:
     (window, next) ->

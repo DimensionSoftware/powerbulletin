@@ -265,13 +265,14 @@ timers = {}
     ..attr \src, window.cache-url + src
 
 @set-imgs = ~>
-# apply src attrs to images with data attrs (speeds up DOM-ready)
+  # apply src attrs to images with data attrs (speeds up DOM-ready)
   $ 'img[data-src]' .each ->
     e = $ this
       ..css \opacity, 0
       ..attr \src, e.data \src
       ..load ->
-        e.transition opacity:1, 500ms
+        e.remove-attr \data-src # cleanup
+        e.transition opacity:1, 800ms
 
 @
 # vim:fdm=marker
