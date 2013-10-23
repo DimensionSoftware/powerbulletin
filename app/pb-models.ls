@@ -169,6 +169,13 @@ query-dictionary =
 
       cb null, sites
 
+  subscriptions:
+    list-for-site: (site-id, cb) ->
+      sql = '''
+      SELECT * FROM subscriptions WHERE site_id = $1
+      '''
+      postgres.query sql, [site-id], cb
+
 
 # assumed postgres is initialized
 export init = (cb) ->
