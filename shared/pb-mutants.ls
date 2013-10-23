@@ -365,7 +365,10 @@ layout-on-personalize = (w, u) ->
     next!
   on-unload:
     (win, next-mutant, next) ->
+      # cleanup
       $ \body .off \click
+      $ \#forum_background .remove!
+      $ \#forum_background_buffer .remove!
       try win.$ \#left_container .resizable(\destroy)
       reset-paginator win unless next-mutant is \forum
       next!
