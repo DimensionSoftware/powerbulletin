@@ -54,6 +54,9 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
   site = req.body
   site.user_id = user.id if user and site
   console.log {site}
+  if site.domain.match /^\s*\./
+    return res.json success: false, errors: ["Invalid domain."]
+
   err, result <- db.create-site site
   if err then return next err
   console.log result
