@@ -308,7 +308,7 @@ CREATE FUNCTION procs.register_local_user(usr JSON) RETURNS JSON AS $$
   errors = []
   if ((plv8.execute 'SELECT id FROM users WHERE email=$1::varchar', [usr.email]).length)
     errors.push msg:'Email in-use'
-  if ((plv8.execute 'SELECT user_id FROM aliases WHERE name=$1::varchar', [usr.name]).length)
+  if ((plv8.execute 'SELECT user_id FROM aliases WHERE name=$1::varchar AND site_id=$2::int', [usr.name, usr.site_id]).length)
     errors.push msg:'User name in-use'
   if errors.length then return {success:false, errors}
 
