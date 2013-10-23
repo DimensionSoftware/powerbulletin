@@ -197,6 +197,15 @@ blend = rgba(0,0,0,.5)
   section#support.feature
     background-image none
     box-shadow 0
+  section.feature.shown
+    article
+      p
+        opacity 1
+        text-indent 0
+        transition all .2s ease-out .1s
+    .arrow
+      opacity 1
+      transition opacity .5s ease-out .4s
   section.feature
     border-top 1px solid #777
     border-bottom 1px solid #777
@@ -212,6 +221,8 @@ blend = rgba(0,0,0,.5)
       text-shadow 1px 1px 0 dark
     article
       p
+        text-indent -200px
+        opacity 0
         padding 0 105px
     .arrow
       width 150px
@@ -220,6 +231,7 @@ blend = rgba(0,0,0,.5)
       letter-spacing 3px
       margin 35px auto 0 auto
       text-transform uppercase
+      opacity 0
       color #bbb
   section
     position relative

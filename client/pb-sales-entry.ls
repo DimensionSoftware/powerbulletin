@@ -49,7 +49,7 @@ $ window .on \scroll, ->
 
   # top animations
   if offset < 430px # save cpu for top pieces
-    $ \#imagine .css {y:"#{0+(offset*0.45)}px"}
+    $ \#imagine .css {y:"#{0+(offset*0.55)}px"}
 
   # move background images in view
   cur = switch cur-id
@@ -71,6 +71,7 @@ fn = (direction) ->
   $ \nav # activate right-side bullets
     ..find \.active .remove-class \active # remove
     ..find ".#id" .add-class \active
+  $ "##{id}" .add-class \shown
   cur-id := id # track
 
 # - on scroll
@@ -80,6 +81,8 @@ $ 'nav a' .on \click ->
   id = ($ this .parents \li:first).attr \class
   set-timeout (~> fn.call {id}), 300ms # force correct selection
   if id is \support then focus-last!
+
+set-timeout (-> $ \.shown .remove-class \shown), 600ms # reset if had to scroll-to-top
 #}}}
 
 # vim:fdm=marker

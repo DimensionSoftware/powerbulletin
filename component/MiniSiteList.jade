@@ -6,9 +6,9 @@ if sites.length
         h2= s.name
         .users
           span.count= s.user_count
-          | &nbsp;registered users
+          | &nbsp;registered user #{s.user_count == 1 ? '' : 's'}
 
-        ul
+        ul.domains
           each d in s.domains
             li
               a(href="https://#{d}/", target="_blank")= d
@@ -17,5 +17,5 @@ if sites.length
               | )
 else
   p
-    a.onclick-first-site Click here to create your first site
+    a.onclick-first-site(href='#') Name your first site by clicking here 
       i !

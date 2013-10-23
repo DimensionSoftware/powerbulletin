@@ -191,8 +191,8 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
     cur-scroll = window.scroll-y
     if Math.abs(dst-scroll - cur-scroll) > (threshold*2)
       bounce = threshold / 3
-      <- $ 'html,body' .animate { scroll-top:dst-scroll+bounce }, ms, \easeOutExpo
-      <- $ 'html,body' .animate { scroll-top:dst-scroll }, 20ms, \easeInExpo
+      #<- $ 'html,body' .animate { scroll-top:dst-scroll+bounce }, ms, \easeOutExpo
+      <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms, \easeOutExpo
       cb!
     else
       cb!

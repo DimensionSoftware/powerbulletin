@@ -15,4 +15,5 @@ module.exports =
     on-attach: ~>
       @$.find('a.onclick-first-site').click (ev) ~>
         @@$.fancybox.close!
-        @@$ '.SiteRegister-subdomain:first' .focus!
+        window.scroll-to-top!
+        set-timeout (-> @@$ '.SiteRegister-subdomain:first' .focus!), 400ms
