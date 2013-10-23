@@ -6,7 +6,7 @@ if sites.length
         h2= s.name
         .users
           span.count= s.user_count
-          | &nbsp;registered user #{s.user_count == 1 ? '' : 's'}
+          | &nbsp;registered user#{s.user_count == 1 ? '' : 's'}
 
         ul.domains
           each d in s.domains
