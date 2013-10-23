@@ -61,8 +61,8 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
   err, old-menu <- db.menu result.site_id
   if err then return next err
   err, new-site <- db.site-by-id result.site_id
-  new-site.config.menu = menu.upconvert old-menu
-  console.warn new-site.config.menu
+  new-site.config?menu = menu.upconvert old-menu
+  console.warn new-site.config?menu
   err <- db.site-update new-site
   if err then return next err
 
