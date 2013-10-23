@@ -1,0 +1,66 @@
+#!./node_modules/.bin/lsc
+
+require! {
+  program: \commander
+  pg: '../app/postgres'
+  models: '../app/pb-models'
+}
+global <<< require \prelude-ls
+
+no-op = (cb) -> cb null
+
+exit-on-err = (err, code=1) ->
+  if err
+    console.log err
+    process.exit code
+
+err <- pg.init!
+exit-on-err err
+err <- models.init
+exit-on-err err
+db = pg.procs
+
+program
+  .usage '[OPTION]... [<KEY> <VALUE>]...'
+  .option  '-s, --site <id>',            "site id",                     parse-int
+  .option  '-p, --product <string>',     "product name"
+  .option  '-u, --unsubscribe',          "unsubscribe instead"
+  .option  '-l, --list',                 "list subscriptions"
+  .option  '    --price <cents>',        "override price of product",   parse-int
+  .parse process.argv
+
+main = ->
+  site-id = program.site
+  product = program.product
+
+  maybe-subscribe = if program.site and not program.unsubscribe
+    (cb) ->
+      db.add-subscription site-id, product, (err) ->
+      if err then return cb err
+      if program.price
+        pg.query "UPDATE subscriptions SET price = $1 WHERE site_id = $2 and product_id = $3", [price, site-id, product], cb
+      else
+        cb null
+  else
+    no-op
+
+  err <- maybe-subscribe
+  exit-on-err err
+
+  maybe-list = if program.list and program.site
+    (cb) ->
+      err, subscriptions <- models.subscriptions.list-for-site site-id
+      if err then return cb err
+      console.log subscriptions
+      cb null
+  else
+    no-op
+
+  err <- maybe-list
+  exit-on-err err
+
+  process.exit 0
+
+main!
+
+# vim:ft=ls
