@@ -25,7 +25,7 @@ module.exports =
         window._auth.after-login = Auth.after-login if Auth.after-login
 
       $.fancybox.open \#auth, window.fancybox-params unless $ \.fancybox-overlay:visible .length
-      set-timeout (-> $ '#auth input[name=username]' .focus! ), 100ms
+      set-timeout (-> $ '#auth input[name=username]' .focus! ), 200ms
       # password complexity ui
       window.COMPLEXIFY_BANLIST = [\god \money \password \love]
       $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
