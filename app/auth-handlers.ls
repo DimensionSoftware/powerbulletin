@@ -96,7 +96,7 @@ announce = sioa.create-client!
         res.json success:false, errors:[msg:'Resent verification email!']
       else
         # default error situation
-        return next err
+        return res.json success:false, errors:[ err.msg ]
 
     done = ~>
       auth.send-registration-email u, site, (err, r) ->
