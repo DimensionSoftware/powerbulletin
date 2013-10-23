@@ -440,16 +440,17 @@ footer
     top 3px
     color #666
     background-color #bbb
-    background-image linear-gradient(to bottom, #444 -25px, #f1f1f1 100%)
-    border 1px solid #ccc
+    background-image linear-gradient(to bottom, light 0px, light 100%)
+    border 1px solid rgba(255,255,255,.4)
     border-radius 30px
     width 5px
     height 24px
+    .s-reply
+      opacity .9
     &:hover
       color #333
-      background-image linear-gradient(to bottom, #333 -23px, #f1f1f1 100%)
-      border 1px solid #999
-      transition border .1s ease-out, color .1s ease-out
+      .s-reply
+        opacity 1
     &::after
       position absolute
       content 'Reply'
