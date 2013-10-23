@@ -199,8 +199,8 @@ module.exports =
           msgs = []
           r.errors?for-each (e) ->
             $e = $form.find("input[name=#{e.param}]")
-            $e.add-class \validation-error .focus! # focus control
-            msgs.push e.msg
+            if $e.length then $e.add-class \validation-error .focus! # focus control
+            msgs.push (e.msg or e)
           ch.show-tooltip $form.find(\.tooltip), unique(msgs).join \<br> # display errors
           shake-dialog $form, 100ms
         s.remove-attr \disabled
@@ -216,7 +216,7 @@ module.exports =
           Auth.show-info-dialog 'Check your inbox for reset link!', '', \on-forgot
         else
           $form.find \input:first .focus!
-          msg = r.errors?0?name or r.errors?0?msg or 'Unable to find you'
+          msg = r.errors?0?name or r.errors?0 or 'Unable to find you'
           ch.show-tooltip $form.find(\.tooltip), msg # display error
           shake-dialog $form, 100ms
         s.remove-attr \disabled

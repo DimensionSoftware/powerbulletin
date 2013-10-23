@@ -151,7 +151,7 @@ do-verify = (req, res, next) ~>
     else
       res.json success: true
   else
-    res.json success: false, errors: [ msg:'User not found' ]
+    res.json success: false, errors: [ 'User not found' ]
 
 @forgot-user = (req, res, next) ->
   site = res.vars.site
