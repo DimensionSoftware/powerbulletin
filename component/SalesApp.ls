@@ -29,6 +29,7 @@ module.exports =
       @$.find 'li.auth a.onclick-login' .hide!
       @$.find 'li.auth a.onclick-logout' .show!
       @$.find 'li.my-sites' .show!
+      @show-my-sites!
 
     logout: ->
       @$.find 'li.auth a.onclick-login' .show!
