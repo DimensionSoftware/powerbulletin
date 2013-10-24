@@ -18,3 +18,7 @@ bin/domain-config  -i 2 facebookClientId    454403507966007                     
 
 bin/domain-config  -i 5 facebookClientId    482385075166196                              facebookClientSecret   14966ecfc55f9091e8033e1310549359
 
+# powerbulletin configs. -- yeahh!
+./bin/domain-config -i 13 facebookClientId 240716139417739 facebookClientSecret 840258189e0e0af16574a1f5f558d47b
+./bin/domain-config -i 13 twitterConsumerKey nkAJfXB65CBZxkFjfycw twitterConsumerSecret eZSlV0yec1qVs3lG31b0vjZ5hj6JXIz4TT3G4EPkw
+./bin/domain-config -i 13 googleConsumerKey 1018263566895.apps.googleusercontent.com googleConsumerSecret yAwcqM4IcJ1V8zffxUrckakR
