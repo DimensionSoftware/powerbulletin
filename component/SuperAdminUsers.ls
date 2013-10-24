@@ -20,8 +20,15 @@ module.exports =
         else
           base
 
-      locals =
-        cols: [\foo, \bar]
-        rows: [[1,2],[3,4]]
-        qty: 100
+      # table locals
+      s = @state
+      locals = {
+        #cols: [\foo, \bar]
+        #rows: [[1,2],[3,4]]
+        #qty: 100
+        s.cols
+        s.rows
+        s.qty
+        s.active-page
+      }
       @children = {table: new Table {locals, pnum-to-href} \.SuperAdminUsers-table @}

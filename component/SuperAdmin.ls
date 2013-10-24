@@ -25,7 +25,7 @@ module.exports =
       # set them up based on mod-info above
       @mods = {}
       for mname, mi of mod-info
-        m = new mi.klass {}, "div.#{mi.css-class}", @
+        m = new mi.klass {locals: @state}, "div.#{mi.css-class}", @
         m <<< {mi.css-class, mi.url, mod-name: mname}
         @mods[mname] = m
 

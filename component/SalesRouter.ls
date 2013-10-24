@@ -114,8 +114,8 @@ module.exports =
         # reap previous component only if going to a new top-level klass
         if klass-name isnt @last-klass-name and old-c = @top-components[@last-klass-name]
           delete @top-components[@last-klass-name]
-          old-c.detach!
-          # we remove parent instead if it exists, since it is the dynamic layout we injected from before
+          # we remove/detach parent instead if it exists, since it is the dynamic layout we injected from before
+          (old-c.parent or old-c).detach!
           (old-c.parent?$ or old-c.$).remove! # reap dom immediately
         @last-klass-name = klass-name
 
@@ -129,8 +129,14 @@ module.exports =
           if existing-root-el.length
             only-attach = true # component is on page from a server-side html render, only attach
             root-el = existing-root-el
+            initial-locals = root-el.data(\locals) # apparently jquery automatically detects json and parses it?!?!
+            locals := {} <<< initial-locals <<< locals # merge passed locals into initial-locals
           else
             root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
+
+            # on server-side, preload initial locals in html data attribute 'locals'
+            root-el.attr \data-locals, JSON.stringify(locals) unless @is-client
+
             b.append root-el
 
           make-component = (elr, parent) ->
@@ -138,7 +144,7 @@ module.exports =
 
           if layout-klass
             # nest a component in a parent layout without coupling them together
-            layout-c = new layout-klass {-auto-render, -auto-attach, locals: ({} <<< locals <<< {route: type})}, root-el
+            layout-c = new layout-klass {-auto-render, -auto-attach, locals: ({} <<< locals)}, root-el
             nested-c = @top-components[klass-name] = make-component layout-root-sel, layout-c # layout-c is the parent of nested-c
             layout-c.children ||= {} # just in case there are other children in layout, we want to be nice
             layout-c.children <<< {content: nested-c} # mix our special child in (top-level component nested in layout)
@@ -146,13 +152,13 @@ module.exports =
           else
             c = @top-components[klass-name] = make-component root-el
 
-        custom-reload = (l) ->
+        custom-load = (l) ~>
+          tc = @top-components[klass-name]
+          tc.locals l
           if reuse-component
             # component already initialized from previous route, so we just touch the reactive 'route' local
-            c.local \route, type
+            tc.local \route, type
           else
-            c.detach!
-            c.locals l
             c.render! unless only-attach
             c.attach!
 
@@ -164,10 +170,10 @@ module.exports =
           # fetch from server remotely
           surf-url = kill-trailing-slash(url) + (if url.match(/\?/) then '&' else '?') + '_surf=1'
           remote-locals <- @@$.get surf-url
-          custom-reload remote-locals
+          custom-load remote-locals
           cb!
         else
-          custom-reload locals
+          custom-load locals
           cb!
 
       if @is-client
