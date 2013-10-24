@@ -2,6 +2,16 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! $R:reactivejs
+
+#{{{ setup reactive user before layout kicks off
+window.r-user = $R((user) ->
+  if user
+    component.sales-app.login user
+  else
+    component.sales-app.logout!
+)
+#}}}
+
 require! {
   \../component/SalesApp
   \../component/SalesRouter
@@ -27,12 +37,6 @@ window.do-buy = ->
   <- lazy-load-fancybox
   $.fancybox(window.component.buy.$)
 
-window.r-user = $R((user) ->
-  if user
-    component.sales-app.login user
-  else
-    component.sales-app.logout!
-)
 #}}}
 
 # "global" window/layout behaviors below
