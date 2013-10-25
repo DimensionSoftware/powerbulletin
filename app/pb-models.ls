@@ -92,22 +92,34 @@ query-dictionary =
   users:
     # used by SuperAdminUsers
     all: ({site_id, limit, offset}, cb) ->
-      postgres.query '''
+      sql = """
       SELECT
-        u.id, u.email
+        u.id, u.email,
         a.name, a.photo, a.rights, a.verified, a.created, a.site_id
       FROM users u
       JOIN aliases a ON a.user_id=u.id
-      WHERE a.site_id=$1
-      LIMIT $2 OFFSET $3
-      ''', [site_id, limit, offset], cb
+      #{if site_id then 'WHERE a.site_id=$3' else ''}
+      LIMIT $1 OFFSET $2
+      """
+      params =
+        if site_id
+          [limit, offset, site_id]
+        else
+          [limit, offset]
+      postgres.query sql, params, cb
     all-count: ({site_id}, cb) ->
-      err, [{count}] <- postgres.query '''
-                  SELECT COUNT(*)
-                  FROM users u
-                  JOIN aliases a ON a.user_id=u.id
-                  WHERE a.site_id=$1
-                  ''', [site_id]
+      sql = """
+      SELECT COUNT(*)
+      FROM users u
+      JOIN aliases a ON a.user_id=u.id
+      #{if site_id then 'WHERE a.site_id=$1' else ''}
+      """
+      params =
+        if site_id
+          [site_id]
+        else
+          []
+      err, [{count}] <- postgres.query sql, params
       if err then return cb err
       cb null, count
     email-in-use: ({email}, cb) ->
