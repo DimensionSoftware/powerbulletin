@@ -88,7 +88,6 @@ body.scrolled
         position relative!important
         z-index 75!important
         color dark_text!important
-        font-style italic
         transition color .5s ease-out
       > .title.hover::after
         background radial-gradient(ellipse farthest-corner at 50% 300%, light 50%, rgba(255,255,255,0) 80%)
@@ -97,6 +96,7 @@ body.scrolled
         transition width .15s ease-out .15s
       .title.active
         font-weight bold
+        font-style italic
       > .title:hover, .title.hover
         color #555
         animation-name tiny-grow!important
