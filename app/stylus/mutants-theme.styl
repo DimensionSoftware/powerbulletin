@@ -275,27 +275,29 @@ html.admin
       a
         font-style italic
         color #fff
-    li::after
-      position absolute
-      content ''
-      top 10px
-      opacity 0
-      right -6px
-      border 10px solid transparent
-    li.active::after
-      position absolute
-      content ''
-      top 0
-      opacity 1
-      right -34px
-      border 17px solid transparent
-      border-left 17px solid dark
-      transition all .1s ease-out
+      &::after
+        position absolute
+        content ''
+        top 0
+        opacity 1
+        right -34px
+        border 17px solid transparent
+        border-left 17px solid dark
+        transition all .1s ease-out
+      &.small
+        border-bottom 1px solid #555
     li
       a
         padding 2px 8px
         font-size 1.2em!important
         text-decoration none
+      &::after
+        position absolute
+        content ''
+        top 10px
+        opacity 0
+        right -6px
+        border 10px solid transparent
 
   .main-content
     .domains form fieldset

@@ -79,7 +79,7 @@ fn = (direction) ->
   cur-id := id # track
 
 # - on scroll
-$ '#features, .feature' .waypoint fn, {offset: 500px}
+$ '#features, .feature' .waypoint fn, {offset: 600px}
 # - on click
 $ 'nav a' .on \click ->
   id = ($ this .parents \li:first).attr \class
