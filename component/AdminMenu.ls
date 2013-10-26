@@ -38,12 +38,11 @@ module.exports =
       set-timeout (~> @$.find \.col2 .show 300ms), 300ms
 
     set-background-thumb: (uri) ~>
-      cache-buster = Math.random!to-string!replace \\. ''
       @$.find \.background
         ..data \src, uri
         ..attr \src,
           if uri
-            "#{cacheUrl}/sites/#uri?#cache-buster"
+            "#{cacheUrl}/sites/#uri"
           else
             "#{cacheUrl}/images/transparent-1px.gif"
 

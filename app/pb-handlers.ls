@@ -7,6 +7,7 @@ require! {
   gm
   s: \./search
   c: \./cache
+  h: \./server-helpers
   __:   \lodash
   pg:   \./postgres
   auth: \./auth
@@ -239,7 +240,7 @@ function background-for-forum m, active-forum-id
   m    = site.config.menu
   item = menu.flatten m |> find -> it.form.dbid is forum-id
   path = menu.path-for-upsert m, item.id.to-string!
-  item.form.background = "#{site.id}/#file-name"
+  item.form.background = "#{site.id}/#file-name?#{h.cache-buster!}"
   site.config.menu     = menu.struct-upsert m, path, item
 
   err, r <- db.site-update site # save!
