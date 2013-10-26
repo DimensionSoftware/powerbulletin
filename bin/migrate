@@ -1,0 +1,116 @@
+#!./node_modules/.bin/lsc
+
+require! {
+  \fs
+  \async
+  program: \commander
+  pg: '../app/postgres'
+}
+global <<< require \prelude-ls
+
+err <- pg.init
+if err then "Unable to init DB"; process.exit 1 # guard
+
+defaults =
+  id: 1
+
+program
+  .usage '[OPTION]...'
+  .description 'Default is to migrate up to the latest'
+  .option  '-m, --migration', "print current migration"
+  .parse process.argv
+
+const valid      = /^(\d+)-/
+const migrations = \/vagrant/migrations
+const table-name = \_version
+const log        = console.log
+const create-sql = """
+  CREATE TABLE #table-name (n int DEFAULT 0);
+  INSERT INTO #table-name VALUES (0) RETURNING *;
+"""
+
+init = (cb) ->
+  # return current version
+  err, r <- pg.query "SELECT n FROM #table-name LIMIT 1", []
+  if err
+    # no version, so--create table w/ defaults
+    log 'Initializing migrations ...'
+    err, r <- pg.query create-sql, []
+    if err
+      log "Unable to create #table-name"
+      process.exit 1
+    else
+      cb null, r
+  else
+    cb null, r
+
+migrations-available = (path, cur-version, cb) ->
+  err, files <- fs.readdir migrations
+  if err then return cb err
+
+  numeric = (a, b) -> # sort numeric
+    an = parse-int (a.match valid).1
+    bn = parse-int (b.match valid).1
+    an - bn
+
+  sorted = files
+    |> filter (-> # scrub invalid files
+      m = it.match valid
+      parse-int(m?1) and m?1 > cur-version) # already ran these
+    |> sort-with numeric
+    |> map (.replace /\.\w+$/, '')
+  cb null, sorted
+
+update-version = (client, file, cb) ->
+  v = parse-int file.match(valid)?1
+  client.query "UPDATE #table-name SET n=$1 returning *", [v], cb
+
+migrate-up = (file, cb) ->
+  rollback = (client, done=(->)) ->
+    log "Rolling back #file"
+    err <- client.query \ROLLBACK, []
+    done err
+    process.exit 1
+
+  try
+    m = require "#migrations/#file"
+  catch
+    cb "Unable to require #file"
+
+  if m.up
+    # TODO converge migration & version update into single transaction
+    #err, client, done <- pg.connect pg.conn-str
+    #if err then done err; cb err; return
+    client = pg # XXX remove after converging
+    # run migration in a transaction
+    err, r <- client.query \BEGIN, []
+    if err then rollback client; return
+    <- process.next-tick # if rollback, let finish (return client back to pool)
+    err <- m.up client
+    if err then rollback!; return
+    err <- client.query \COMMIT, []
+    if err then rollback!; return
+
+    # update version
+    err <- update-version client, file
+    if err then rollback!; return
+    cb null, true; #done!
+  else
+    cb "Invalid migration #file"
+
+####  main  ;,.. ___  _
+err, [version] <- init
+if program.migration
+  log "@ migration #{version.n}"
+  process.exit 0
+
+# TODO (re)run a specific migration
+
+else # run all outstanding migrations
+  err, files <- migrations-available migrations, version.n
+  err <- async.each-series files, migrate-up
+  if err then throw err
+  process.exit 0
+
+
+# vim:ft=ls
