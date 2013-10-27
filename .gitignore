@@ -1,6 +1,6 @@
 /public/master.css
 /public/master-sales.css
-/public/sites
+/public/sites/
 /.vagrant
 /.config/
 /classes/
@@ -26,6 +26,7 @@
 /elasticsearch-data/
 /build/
 /pb.sql
+/pb.sql.gz
 /.bash_history
 # precompile ignores
 /app/*.js

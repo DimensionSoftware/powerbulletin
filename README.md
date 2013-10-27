@@ -55,3 +55,5 @@ Post-Modern, Realtime, FREE (as in freedom) Community
     /usr/lib/postgresql/9.2/bin/initdb --locale=en_US.utf8 --encoding=UTF8 /var/lib/postgresql/9.2/main
     exit
     sudo service postgres start
+# Crontab for remote backups
+    7 *  *   *   *     cd /pb; time bin/remote-backup >> /pb/backup.log 2>&1
