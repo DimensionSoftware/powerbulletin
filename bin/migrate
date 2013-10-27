@@ -94,6 +94,7 @@ migrate-up = (file, cb) ->
     # update version
     err <- update-version client, file
     if err then rollback!; return
+    log "`- migrated #file"
     cb null, true; #done!
   else
     cb "Invalid migration #file"
@@ -110,6 +111,8 @@ else # run all outstanding migrations
   err, files <- migrations-available migrations, version.n
   err <- async.each-series files, migrate-up
   if err then throw err
+  err, [new-version] <- init
+  log "@ migration #{new-version.n}"
   process.exit 0
 
 
