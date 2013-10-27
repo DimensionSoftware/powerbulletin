@@ -56,4 +56,4 @@ Post-Modern, Realtime, FREE (as in freedom) Community
     exit
     sudo service postgres start
 # Crontab for remote backups
-    7 *  *   *   *     time bin/remote-backup >> /pb/backup.log 2>&1
+    7 *  *   *   *     cd /pb; time bin/remote-backup >> /pb/backup.log 2>&1
