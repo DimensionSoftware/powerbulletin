@@ -1,5 +1,7 @@
-h1 My Sites
+h1 My Communities
 if sites.length
+  a.new.top.onclick-first-site(href='#', title='Start a new community!') +
+    b New
   ul
     each s in sites
       li
@@ -16,9 +18,19 @@ if sites.length
               a(href="https://#{d}/#once-admin", target="_blank") admin
               | )
   p.new
-    a.onclick-first-site(href='#') Start a new site by clicking here 
+    a.onclick-first-site(href='#') Start a new community by clicking here
       i !
 else
   p
-    a.onclick-first-site(href='#') Name your first site by clicking here 
+    | Choose a name for your first community; anything you wish!
+    br
+    b NAME
+    |.powerbulletin.com will be created
+    br
+    small You may point additional domains later with your
+      b /admin
+      |.
+    br
+    br
+    a.onclick-first-site(href='#') Click to Get Started
       i !

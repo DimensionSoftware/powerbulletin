@@ -4,7 +4,8 @@ require, exports, module <- define
 require! {
   Component: yacomponent
 }
-{templates} = require \../build/component-jade
+{templates}    = require \../build/component-jade
+{show-tooltip} = require \../client/client-helpers
 
 module.exports =
   class MiniSiteList extends Component
@@ -16,4 +17,7 @@ module.exports =
       @$.find('a.onclick-first-site').click (ev) ~>
         @@$.fancybox.close!
         window.scroll-to-top!
-        set-timeout (-> @@$ '.SiteRegister-subdomain:first' .focus!), 400ms
+        set-timeout (->
+          const sr = @@$ \.SiteRegister:first
+          show-tooltip (sr.find \.tooltip), 'Name your community here!'
+          sr.find \.SiteRegister-subdomain .focus!), 400ms

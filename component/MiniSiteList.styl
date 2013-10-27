@@ -5,17 +5,32 @@
   background-color #fff
   border-color #f0f0f0
   border-bottom 1px solid #f6f6f6
-  margin 58px 20px 20px 20px
-  padding 30px 50px
+  margin 58px 20px 30px 20px
+  padding 30px 50px 10px 30px
   position relative
-
+  max-width 600px
   p, h1
     margin 0
     padding 0
 
   .new
+    position absolute
+    right 8px
+    bottom -30px
+    font-weight 200
     font-size .75em
-    margin 20px 0 0 12px
+    a
+      color #444
+      transition all .4s ease-out .4s
+      &:hover
+        color #222
+        text-shadow 0 0 1px light
+        transition none
+    &.top
+      bottom auto
+      top -36px
+      b
+        margin-left 5px
 
   h1
     position absolute
@@ -42,7 +57,7 @@
     padding 0
     li
       font-size 1.1em
-      color #bbb
+      color #ddd
       list-style none
 
 .MiniSiteList > ul
@@ -53,3 +68,12 @@
     margin-bottom 8px
     padding 8px
     color #333
+    a:first-child
+      padding 1px 8px 3px 8px
+      margin-left -8px
+      transition all .2s ease-out
+      &:hover
+        background-color light
+        border-radius 4px
+        color #fff
+        transition none
