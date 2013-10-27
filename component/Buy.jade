@@ -41,14 +41,14 @@ h1 #{product.description}
         i !
       a.Buy-change-card(href='#') Enter different credit card details
       .clear
-      em Saves for all subscriptions
+      em Applies to all subscriptions
     .clear
       button.Buy-checkout(type='submit', value='CHECKOUT') CHECKOUT
 .right.features
   if price && (price !== '0')
-    h2 Only 
+    h2 
+      small $
       b
-        small $
         != price
       small /mo
   else
@@ -65,3 +65,4 @@ h1 #{product.description}
   .amex
   .mastercard
   .visa
+.notice * Card details are not stored on our servers for added security
