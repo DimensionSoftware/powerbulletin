@@ -13,7 +13,7 @@ if window?
   ch = require \../client/client-helpers
 
 {flip-background, is-editing, is-email, is-forum-homepage} = require \./shared-helpers
-{last} = require \prelude-ls
+{last, sort-by} = require \prelude-ls
 
 require! {
   \../component/SuperAdminUsers
@@ -76,15 +76,15 @@ function default-pnum-to-href-fun uri
       parsed.pathname
 
 # Common
-set-background-onload = (w, background) ->
+set-background-onload = (w, background, duration=400ms) ->
   bg = w.$ \#forum_background
   bf = w.$ \#forum_background_buffer
   if background and bg.length and bf.length # double-buffer
     bf
       ..attr \src, bf.data \src
       ..load ->
-        bg.transition opacity:0, 500ms
-        bf.transition opacity:1, 500ms, \easeOutExpo, ->
+        bg.transition opacity:0, duration
+        bf.transition opacity:1, duration, \easeOutExpo, ->
           # cleanup
           bg.remove!
           bf.attr \id, \forum_background
@@ -100,14 +100,14 @@ set-background-static = (w, cache-url, background) ->
     w.$ \body .prepend (img \forum_background_buffer)
   else if background # first, so add
     w.$ \body .prepend (img \forum_background)
-  w.marshal \background, background or void
+  if w.marshal then w.marshal \background, (background or void)
 
 layout-static = (w, next-mutant, active-forum-id=-1) ->
   # XXX to be run last in mutant static
   # indicate current
   forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
   w.$ \html .attr(\class "#{next-mutant}#{forum-class}") # stylus
-  w.marshal \mutator, next-mutant                        # js
+  if w.marshal then w.marshal \mutator, next-mutant      # js
 
   # handle active main menu
   fid = active-forum-id or w.active-forum-id
@@ -714,12 +714,24 @@ mk-post-pnum-to-href = (post-uri) ->
 # this mutant pre-empts any action for private sites where user is not logged in
 # it means the site owner has specified that the site is private therefore we show a skeleton
 # of the site and prompt for login (all sensitive details should be removed)
+!function rotate-backgrounds window, cache-url, backgrounds
+  set-timeout (->
+    # shuffle backgrounds & choose
+    s = backgrounds |> sort-by (-> Math.random!)
+    c = if (window.$ \#forum_background .attr \src).index-of(s.0.trim!) > -1 then s?1 else s?0
+    # set choice in static & on-load
+    set-background-static window, cache-url, c
+    set-background-onload window, c, 2500ms
+    rotate-backgrounds window, cache-url, backgrounds # again, and again...
+  ), 8000ms
+  #
 @private-site =
   static: (window, next) ->
     window.$ \header .remove!
     window.$ \footer .remove!
     window.$ \#left_content .remove!
     window.$ \#main_content .remove!
+    window.marshal \backgrounds, @backgrounds
     layout-static.call @, window, \privateSite
     next!
   on-load: (window, next) ->
@@ -733,6 +745,7 @@ mk-post-pnum-to-href = (post-uri) ->
         close-click: false
         modal:       true}
       Auth.show-login-dialog! # show!
+      rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds.length > 1
     ), 10ms # yield (so fancybox doesn't run too early)
     next!
 

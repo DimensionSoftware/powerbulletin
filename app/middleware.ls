@@ -73,10 +73,15 @@ require! {
 
   res.locals {site-id}
 
-  # set homepage background
+  # set random background
   if m = site.config.menu
-    item = menu.flatten m |> sort-by (-> Math.random!) |> find -> it.form.background
-    if item then res.locals.background = item.form.background
+    bgs = menu.flatten m
+      |> sort-by (-> Math.random!)
+      |> filter  (-> it.form.background)
+      |> map     (-> it.form.background.trim!)
+    if bgs
+      res.locals.backgrounds = bgs   # all
+      res.locals.background  = bgs.0 # active
 
   res.mutant \privateSite # do _not_ call next because this is the end of the road
 
