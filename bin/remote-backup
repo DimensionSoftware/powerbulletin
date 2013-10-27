@@ -1,11 +1,12 @@
 #!/bin/sh -e
-echo backing up postgres...
-# remove old db backup
+echo remote backup starting... [ `date` ]
+
+echo dumping postgres to pb.sql... 
 rm -f pb.sql.gz
-# backup an image of postgres to pb.sql
 bin/backup-postgres
-# compress
+
+echo compressing pb.sql... 
 gzip -9 pb.sql
 
-echo shipping database and public filestore to rsync.net
+echo shipping pb.sql.gz and public filestore to rsync.net
 rsync -avz --delete public pb.sql.gz 8804@usw-s008.rsync.net:backup
