@@ -281,7 +281,7 @@ blend = rgba(0,0,0,.5)
     border-top 1px solid #ddd
     box-shadow 0 -1px 0px 0px #666 inset,0 6px 12px 3px #eee inset
     article
-      width 800px
+      max-width 900px
       margin 55px auto 0 auto
       h3
         color #555
@@ -299,7 +299,7 @@ blend = rgba(0,0,0,.5)
 
   section
     article
-      width 800px
+      max-width 900px
       margin 70px auto 0 auto
       h3
         position relative
@@ -323,16 +323,21 @@ blend = rgba(0,0,0,.5)
         line-height 1.5em
         a
           color #222
-          margin 0 4px
+          margin 0 4px 5px 4px
           padding 2px 10px
           border-radius 5px / 2px
-          background-color rgba(0,0,0,.04)
-          border-bottom 1px solid #ccc
-        a:hover
-          color #000
-          background-color rgba(0,0,0,.06)
-          border-bottom 1px solid #bbb
-          transition all .1s ease-out
+          background-color #fafafa
+          border-bottom 1px solid #ddd
+          transition all .1s ease-out .3s
+          display inline-block
+          &:hover
+            color #000
+            background-color #f0f0f0
+            border-bottom 1px solid #bbb
+            transition none
+            position relative
+            transform scale(1.1)
+            z-index 2
   //}}}
 //{{{ Footer
 footer

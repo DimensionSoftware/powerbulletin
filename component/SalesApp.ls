@@ -29,11 +29,13 @@ module.exports =
       @$.find 'li.auth a.onclick-login' .hide!
       @$.find 'li.auth a.onclick-logout' .show!
       @$.find 'li.my-sites' .show!
+      @$.find 'li.community' .hide!
       @show-my-sites!
 
     logout: ->
       @$.find 'li.auth a.onclick-login' .show!
       @$.find 'li.auth a.onclick-logout' .hide!
+      @$.find 'li.community' .show!
       @$.find 'li.my-sites' .hide!
 
     show-my-sites: ~>
