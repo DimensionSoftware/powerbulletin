@@ -76,6 +76,32 @@ function default-pnum-to-href-fun uri
       parsed.pathname
 
 # Common
+set-background-onload = (w, background) ->
+  bg = w.$ \#forum_background
+  bf = w.$ \#forum_background_buffer
+  if background and bg.length and bf.length # double-buffer
+    bf
+      ..attr \src, bf.data \src
+      ..load ->
+        bg.transition opacity:0, 500ms
+        bf.transition opacity:1, 500ms, \easeOutExpo, ->
+          # cleanup
+          bg.remove!
+          bf.attr \id, \forum_background
+  else if background # set bg
+    ch.set-imgs!
+  else if bg.length # no background passed in, so--reap both!
+    bf.remove!
+    bg.remove!
+set-background-static = (w, cache-url, background) ->
+  img = (id) ~> "<img id='#id' data-src='#{cache-url}/sites/#{background}'>"
+  bg  = w.$ \#forum_background
+  if bg.length and background # use buffer
+    w.$ \body .prepend (img \forum_background_buffer)
+  else if background # first, so add
+    w.$ \body .prepend (img \forum_background)
+  w.marshal \background, background or void
+
 layout-static = (w, next-mutant, active-forum-id=-1) ->
   # XXX to be run last in mutant static
   # indicate current
@@ -98,13 +124,8 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
       ..add-class \active
       ..add-class \hover
 
-  # handle forum background
-  img = (id) ~> "<img id='#id' data-src='#{@cache-url}/sites/#{@background}'>"
-  bg  = w.$ \#forum_background
-  if bg.length and @background # use buffer
-    w.$ \body .prepend (img \forum_background_buffer)
-  else if @background # first, so add
-    w.$ \body .prepend (img \forum_background)
+  # handle backgrounds
+  set-background-static w, @cache-url, @background
 
 layout-on-personalize = (w, u) ->
   if u # guard
@@ -283,7 +304,6 @@ layout-on-personalize = (w, u) ->
       next!
   on-load:
     (window, next) ->
-      ch.set-imgs!
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
       flip-background window, cur
       $ = window.$
@@ -315,23 +335,7 @@ layout-on-personalize = (w, u) ->
       window.surf-data = window.active-forum-id
 
       # handle forum background
-      # - XXX move to helpers if used in homepage mutant, etc...
-      bg = $ \#forum_background
-      bf = $ \#forum_background_buffer
-      if @background and bg.length and bf.length # double-buffer
-        bf
-          ..attr \src, bf.data \src
-          ..load ->
-            bg.transition opacity:0, 500ms
-            bf.transition opacity:1, 500ms, \easeOutExpo, ->
-              # TODO cleanup
-              bg.remove!
-              bf.attr \id, \forum_background
-      else if @background # set bg
-        ch.set-imgs!
-      else if bg.length # no background, so--reap both!
-        bf.remove!
-        bg.remove!
+      set-background-onload window, window.background
 
       next!
   on-initial:
@@ -368,10 +372,11 @@ layout-on-personalize = (w, u) ->
     (win, next-mutant, next) ->
       # cleanup
       $ \body .off \click
-      $ \#forum_background .remove!
-      $ \#forum_background_buffer .remove!
       try win.$ \#left_container .resizable(\destroy)
-      reset-paginator win unless next-mutant is \forum
+      unless next-mutant is \forum
+        $ \#forum_background .remove!
+        $ \#forum_background_buffer .remove!
+        reset-paginator win
       next!
 
 same-profile = (hints) ->
