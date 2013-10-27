@@ -24,6 +24,9 @@ module.exports =
         register-bottom: new SiteRegister {locals: {subdomain: @state.subdomain}}, \#register_bottom, @
 
     on-attach: ->
+      unless $ window .scroll-top is 0 # scroll to top
+        $ 'html,body' .animate {scroll-top:0}, 50ms
+
       @@$R((subdomain) ~>
         for c in [@children.register-top, @children.register-bottom]
           #unless subdomain is c.local(\subdomain)
@@ -31,19 +34,16 @@ module.exports =
       ).bind-to @state.subdomain
 
       #{{{ animate build-in & initial focus
-      set-timeout (-> # bring in register
+      set-timeout (-> # bring in logo & register
         icon = $ \.logo-icon
-        icon.transition {opacity:1, x:\0px, y:\0px, rotate:\0deg}, 700ms, \easeOutExpo
+        icon.transition {opacity:1, x:\0px, y:\0px, rotate:\0deg}, 1000ms, \easeOutExpo, ->
+          icon.add-class \hover-around # animation
         $ \#register_top  .add-class \show
         $ \.SiteRegister-subdomain:first .focus!
         set-timeout (-> # ...and action!
           $ '.SiteRegister h3' .transition {opacity:1, y:30px}, 400ms
-          icon.add-class \hover-around
-          set-timeout (-> # build-in features last
-            $ \#features .transition {opacity:1}, 1200ms), 1000ms), 100ms), 500ms
-
-      unless $ window .scroll-top is 0 # scroll to top
-        $ 'html,body' .animate {scroll-top:0}, 300ms, \easeOutExpo
+          set-timeout (-> # build-in "Why you'll love" features last
+            $ \#features .transition {opacity:1}, 1400ms), 1200ms), 100ms), 800ms
       #}}}
 
     on-detach: -> @$.off!

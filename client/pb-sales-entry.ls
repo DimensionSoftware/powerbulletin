@@ -86,7 +86,7 @@ $ 'nav a' .on \click ->
   set-timeout (~> fn.call {id}), 300ms # force correct selection
   if id is \support then focus-last!
 
-set-timeout (-> $ \.shown .remove-class \shown), 600ms # reset if had to scroll-to-top
+set-timeout (-> $ \.shown .not(\#support).remove-class \shown), 600ms # reset if had to scroll-to-top
 #}}}
 
 # vim:fdm=marker

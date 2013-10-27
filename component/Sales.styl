@@ -187,13 +187,6 @@ blend = rgba(0,0,0,.5)
     border-top 1px solid #888
   .container.fifth + section
     border-top 1px solid #777
-  //section.feature:hover
-  //  border-color #555
-  //  box-shadow 0 0 30px 0 blend
-  //  transition all .1s ease-out
-  //  article
-  //    transform scale(1.02)
-  //    transition all .1s ease-out
   section#support.feature
     background-image none
     box-shadow 0
@@ -211,6 +204,14 @@ blend = rgba(0,0,0,.5)
     border-bottom 1px solid #777
     box-shadow 0 0 28px -2px blend
     background-image radial-gradient(ellipse closest-corner at 50% 50%, #fff 70%, #000 150%)
+    transition box-shadow 1s ease-out .5s
+    &:hover
+      border-color #555
+      box-shadow 0 0 30px 0 blend
+      transition none
+    article
+      transform scale(1.02)
+      transition all .1s ease-out
     h4
       text-transform uppercase
       color light
