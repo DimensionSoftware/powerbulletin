@@ -57,7 +57,8 @@ h1 #{product.description}
         i !
   menu
     each f in product.config.features
-      li= f
+      li
+        span= f
 .cards
   .jcb
   .dinersclub
