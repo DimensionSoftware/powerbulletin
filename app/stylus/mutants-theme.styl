@@ -69,8 +69,9 @@ html.forum, html.profile, html.search, html.moderation
         color #111
         .post-edit:hover
           .summary::before
-            border-left 5px solid dark
-            transition border-right .2s ease-out .1s
+            transition none
+            z-index 2
+            border-left 5px solid light
         p.body
           border-bottom 1px solid rgba(0,0,0,.05)
       .post.censored
@@ -99,6 +100,7 @@ html.forum, html.profile, html.search, html.moderation
         .post-edit
           .summary::before
             border-left 4px solid #ccc
+            transition all .2s ease-out .4s
         .hash-tag, .at-tag
           display inline-block
           padding 2px 4px

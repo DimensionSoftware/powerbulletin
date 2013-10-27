@@ -202,9 +202,10 @@ html.forum, html.profile, html.search, html.moderation
           right 5px
           visibility hidden
       .post-edit:hover
+        transition none
         .close
           opacity 1
-          transition opacity .2s ease-out .1s
+          transition none
       .reply
         .fadein
           margin-top 8px
@@ -232,6 +233,7 @@ html.forum, html.profile, html.search, html.moderation
             right 8px
             height 27px
             font-size 15px
+            font-weight 200
             padding 0 6px
             z-index 100
             position relative
@@ -259,7 +261,9 @@ html.forum, html.profile, html.search, html.moderation
           top 34px
           position absolute
           z-index 100
+          transition opacity .2s ease-out .4s
         .summary
+          transition all .2s ease-out .4s
           .profile.photo
             margin-left 3px
             border-radius 45px
@@ -683,24 +687,63 @@ html.admin
 //}}}
 //{{{ - forum
 html.forum
+  // reply button on footer
+  .post-reply
+    display none
+    cursor pointer
+    position absolute
+    padding-right 20px
+    left 12px
+    top 3px
+    color #666
+    background-color #bbb
+    background-image linear-gradient(to bottom, light 0px, light 100%)
+    border 1px solid rgba(255,255,255,.4)
+    border-radius 30px
+    width 5px
+    height 24px
+    .s-reply
+      opacity .9
+    &:hover
+      color #333
+      .s-reply
+        opacity 1
+    &::after
+      position absolute
+      content 'Reply'
+      padding-left 20px
+      left 12px
+      top 0
   .main-content
-    p.onclick-footer-toggle:hover
-      transition all .1s ease-out
-    p.onclick-footer-toggle
-      color dark_text
+    .post-reply.onclick-footer-toggle:hover
+      transition none
+    .post-reply.onclick-footer-toggle
+      transition all .5s ease-out .5s
+      position relative
+      display block
       cursor pointer
       font-weight 200
-      margin (grid*2) 0
-      text-align center
-      font-size 1.1em
-      border-top 1px solid #f4f4f4
-      padding-top 15px
+      margin 0 auto
       margin-bottom 70px
   footer.expanded
     cursor s-resize
     height 320px
     left 0!important
     transition height .3s bounce
+    .post-reply
+      margin-top 8px
+      &::after
+        content 'Close'
+      &:hover::before
+        border 4px solid transparent
+        border-top 8px solid #aaa
+        top 8px
+        left 36px
+      &::before
+        border 4px solid transparent
+        border-top 6px solid #ccc
+        top 9px
+        left 36px
     h6
       display none
     .post-container

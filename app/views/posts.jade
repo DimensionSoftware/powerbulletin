@@ -34,7 +34,8 @@ if typeof(post) !== 'undefined'
               mixin _post(sp, 0)
       else if post.morePosts
         a(href='#') Load more posts ...
-    p.onclick-footer-toggle Post Reply
+    .onclick-footer-toggle.post-reply
+      .s-reply
 else //- placeholder
   .forum.resizable
 
