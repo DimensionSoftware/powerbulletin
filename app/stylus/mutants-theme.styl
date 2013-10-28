@@ -260,31 +260,31 @@ html.profile
 //{{{ - admin
 html.admin
   #left_container
-    li.feature
-      font-size .75em
-    li:hover
-      border-radius 5px / 3px
     li
       border-left 1px solid transparent
       height 23px
-    li.feature.upgrade.active::after
-      border-left-color dark2
-    li.feature.upgrade.active
-      background-color dark2
-    li.feature.upgrade
-      position relative
-      margin-top (grid*3)
-      &::before
-        content ''
-        position absolute
-        height 1px
-        width 30px
-        background-color #ccc
-        top -(grid)
-        left 50px
-      a
-        margin-right 8px
-        font-style italic
+      &:hover
+        border-radius 5px / 3px
+      &.feature.upgrade
+        font-size .75em
+      &.feature.upgrade.active::after
+        border-left-color dark2
+      &.feature.upgrade.active
+        background-color dark2
+      &.feature
+        position relative
+        margin-top (grid*3)
+        &::before
+          content ''
+          position absolute
+          height 1px
+          width 30px
+          background-color #ccc
+          top -(grid)
+          left 50px
+        a
+          margin-right 8px
+          font-style italic
     li.active
       background-color dark
       text-shadow 0 1px 0 #000
@@ -306,8 +306,6 @@ html.admin
         border 17px solid transparent
         border-left 17px solid dark
         transition all .1s ease-out
-      &.small
-        border-bottom 1px solid #555
     li
       a
         padding 2px 8px

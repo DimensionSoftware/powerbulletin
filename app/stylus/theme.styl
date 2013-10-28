@@ -90,13 +90,6 @@ header
         border-radius 22px
         .s-search
           margin-left 2px
-      .query:focus
-        margin-top -1px
-        height 21px
-        text-indent 13px
-        border-radius 5px
-        box-shadow 1px 1px 3px 1px light
-        color #111
       .query
         box-shadow 1px 1px 3px light inset
         border 0
@@ -104,6 +97,14 @@ header
         border-radius 6px
         font-size 1.15em
         height 20px
+        &:focus
+          background-color tint-color
+          margin-top -1px
+          height 21px
+          text-indent 13px
+          border-radius 5px
+          box-shadow 1px 1px 3px 1px light
+          color #111
       .query::-webkit-input-placeholder
           color #ccc
       .query:-moz-placeholder
@@ -251,7 +252,8 @@ footer.expanded
     top 0
 footer
   opacity 0
-  background-image linear-gradient(to top, #fff 26px, rgba(255,255,255,.35))
+  //background-image linear-gradient(to top, #fff 26px, rgba(255,255,255,.35))
+  background-image linear-gradient(to top, tint-color 26px, rgba(255,255,255,.35))
   box-shadow 0 0 4px -1px light
   text-align center
   color #777
