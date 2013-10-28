@@ -71,10 +71,11 @@ a
 
 //{{{ Header
 header
-  background-color tint-color
   border-top 1px solid #aaa
   border-bottom 1px solid rgba(180,180,180,0.15)
   color #555
+  &.expanded
+    background-color tint-color
   .container
     .search
       .icon
@@ -194,7 +195,6 @@ header
 //}}}
 //{{{ Main Content
 .main-content
-  background-color tint-color
   a:hover
     color #000
     text-decoration underline
@@ -203,8 +203,7 @@ header
     text-decoration none
 
   #breadcrumb
-    background-color #f5f5f5
-    background-image linear-gradient(to top, #eee, #f8f8f8 10%)
+    background-color tint-color
     border-bottom 1px solid #ddd
     border-right 1px solid #ddd
     border-left 1px solid #ddd
@@ -255,7 +254,6 @@ footer
   box-shadow 0 0 4px -1px light
   text-align center
   color #777
-  transition all .4s ease-out .8s
   &::before
     //border-top 1px solid #eee
     top 0
@@ -267,7 +265,7 @@ footer
     color #666
     background-image linear-gradient(to top, #f7f7f7 15px, rgba(255,255,255,1))
     box-shadow 0 0 3px 0 light
-    transition none
+    transition all .3s ease-out
   h6
     cursor default
     font-size .9em
@@ -281,7 +279,7 @@ body.scrolled
   //footer::before
   //  border-top 1px solid #ddd
   header
-    background-color rgba(255,255,255,0.95)
+    background-color tint-color
     box-shadow 0 -1px 12px 2px #eee
     border-bottom 1px solid #fff
     height -2px

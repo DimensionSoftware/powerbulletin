@@ -202,15 +202,20 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
 has-scrolled = ->
   st = $w.scroll-top!
   $ \body .toggle-class \scrolled (st > threshold)
+  if st is 0 then $ \header .remove-class \expanded
 set-timeout (->
   $w.on \scroll -> has-scrolled!
   has-scrolled!), 600ms # initially yield
 $ \header.header .on \click (ev) ->
   if $ ev.target .has-class \header # pull down search when header is clicked
+    h = $ this
     b = $ \body
     if $w.scroll-top! > threshold
       b.toggle-class \scrolled
+      h.add-class \expanded
       set-timeout (-> $ \#query .focus!), 1ms # ...and focus search
+    else
+      h.remove-class \expanded
 
 # attach scroll-to's
 $d.on \click '.onclick-scroll-to' ->

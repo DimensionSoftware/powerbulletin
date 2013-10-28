@@ -165,22 +165,23 @@ html.forum, html.profile, html.search, html.moderation
             height 27px
             width 27px
   .left-content
-    border-right 1px solid #eaeaea
+    // for light & dark colors
+    box-shadow 0 1px 1px rgba(0,0,0,.3), 0 2px 1px rgba(255,255,255,.3)
     .threads
-      .thread::after
-        position absolute
-        content ''
-        border-bottom 1px solid rgba(0,0,0,.05)
-        background-color #fff
-        height 1px
-        margin-top 10px
-        left 10%
-        width 80%
       .thread
         list-style-type none
         border-top 1px solid transparent
         border-left 2px solid transparent
         border-right 2px solid transparent
+        &::after
+          position absolute
+          content ''
+          border-bottom 1px solid rgba(0,0,0,.1)
+          background-color rgba(255,255,255,.3)
+          height 1px
+          margin-top 10px
+          left 10%
+          width 80%
         .title
           text-shadow none
           color dark
@@ -197,7 +198,7 @@ html.forum, html.profile, html.search, html.moderation
       .thread:first-child:hover
         border-top 1px solid rgba(250,250,250,.2)
       .thread:hover::after
-        border-bottom 1px solid rgba(0,0,0,.1)
+        border-bottom 1px solid rgba(0,0,0,.2)
       .thread:hover
         //border-bottom 1px solid rgba(90,90,90,.2)
         background-color rgba(255,255,255,.2)
@@ -271,7 +272,18 @@ html.admin
     li.feature.upgrade.active
       background-color dark2
     li.feature.upgrade
+      position relative
+      margin-top (grid*3)
+      &::before
+        content ''
+        position absolute
+        height 1px
+        width 30px
+        background-color #ccc
+        top -(grid)
+        left 50px
       a
+        margin-right 8px
         font-style italic
     li.active
       background-color dark
