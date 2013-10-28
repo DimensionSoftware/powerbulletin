@@ -745,7 +745,7 @@ mk-post-pnum-to-href = (post-uri) ->
     <- headjs \//muscache.pb.com/local/plax.js
 
     # handle background
-    rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds.length > 1
+    rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds?length > 1
 
     #  show Auth dialog
     set-timeout (->
