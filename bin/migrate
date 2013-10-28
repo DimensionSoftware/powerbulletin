@@ -63,7 +63,8 @@ migrations-available = (path, cur-version, cb) ->
 
 update-version = (client, file, cb) ->
   v = parse-int file.match(valid)?1
-  client.query "UPDATE #table-name SET n=$1 returning *", [v], cb
+  err, r <- client.query "UPDATE #table-name SET n=$1 RETURNING *", [v]
+  cb err, r
 
 migrate-up = (file, cb) ->
   rollback = (client, done=(->)) ->
@@ -78,24 +79,20 @@ migrate-up = (file, cb) ->
     cb "Unable to require #file"
 
   if m.up
-    # TODO converge migration & version update into single transaction
-    #err, client, done <- pg.connect pg.conn-str
-    #if err then done err; cb err; return
-    client = pg # XXX remove after converging
+    # converge migration & version update into single transaction
+    err, client, done <- pg.connect
     # run migration in a transaction
     err, r <- client.query \BEGIN, []
     if err then rollback client; return
-    <- process.next-tick # if rollback, let finish (return client back to pool)
     err <- m.up client
     if err then rollback!; return
+    # update version
+    err, v <- update-version client, file
+    if err then cb err; return
+    log "`- migrated #file OK"
     err <- client.query \COMMIT, []
     if err then rollback!; return
-
-    # update version
-    err <- update-version client, file
-    if err then rollback!; return
-    log "`- migrated #file"
-    cb null, true; #done!
+    cb null, v; done! if done
   else
     cb "Invalid migration #file"
 

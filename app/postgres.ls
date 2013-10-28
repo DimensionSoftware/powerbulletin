@@ -59,3 +59,6 @@ export query = (sql, args, cb) ->
 
   # unwrap rows from result
   cb null, res.rows
+
+# connection only (raw queries)
+export connect = pg.connect conn-str, _
