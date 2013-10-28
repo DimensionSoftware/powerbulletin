@@ -63,6 +63,14 @@ html.homepage
 //}}}
 //{{{ - forum, profile, search & moderation
 html.forum, html.profile, html.search, html.moderation
+  #forum_background_buffer::after, #forum_background::after
+    content ''
+    position absolute
+    top 0
+    right 0
+    bottom 0
+    left 0
+    background-color tint-color
   .main-content
     .forum, .threads, .search
       .post:hover

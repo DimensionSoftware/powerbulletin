@@ -80,8 +80,9 @@ set-background-onload = (w, background, duration=400ms) ->
   bg = w.$ \#forum_background
   bf = w.$ \#forum_background_buffer
   if background and bg.length and bf.length # double-buffer
-    bf
-      ..attr \src, bf.data \src
+    bf-img = bf.find \img
+    bf-img
+      ..attr \src, bf-img.data \src
       ..load ->
         bg.transition opacity:0, duration
         bf.transition opacity:1, duration, \easeOutExpo, ->
@@ -94,7 +95,8 @@ set-background-onload = (w, background, duration=400ms) ->
     bf.remove!
     bg.remove!
 set-background-static = (w, cache-url, background) ->
-  img = (id) ~> "<img id='#id' data-src='#{cache-url}/sites/#{background}'>"
+  # wrap img for pseudo selectors
+  img = (id) ~> "<div id='#id'><img data-src='#{cache-url}/sites/#{background}'></div>"
   bg  = w.$ \#forum_background
   if bg.length and background # use buffer
     w.$ \body .prepend (img \forum_background_buffer)
@@ -718,7 +720,7 @@ mk-post-pnum-to-href = (post-uri) ->
   set-timeout (->
     # shuffle backgrounds & choose
     s = backgrounds |> sort-by (-> Math.random!)
-    c = if (window.$ \#forum_background .attr \src).index-of(s.0.trim!) > -1 then s?1 else s?0
+    c = if (window.$ '#forum_background img' .attr \src).index-of(s.0.trim!) > -1 then s?1 else s?0
     # set choice in static & on-load
     set-background-static window, cache-url, c
     set-background-onload window, c, 2500ms
