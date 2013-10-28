@@ -76,7 +76,7 @@ function default-pnum-to-href-fun uri
       parsed.pathname
 
 # Common
-set-background-onload = (w, background, duration=400ms, fx=\fade) ->
+set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
   bg = w.$ \#forum_background
   bf = w.$ \#forum_background_buffer
   if background and bg.length and bf.length # double-buffer
@@ -89,6 +89,7 @@ set-background-onload = (w, background, duration=400ms, fx=\fade) ->
           # cleanup
           bg.remove!
           bf.attr \id, \forum_background
+          cb!
   else if background # set bg
     ch.set-imgs!
   else if bg.length # no background passed in, so--reap both!
@@ -716,6 +717,8 @@ mk-post-pnum-to-href = (post-uri) ->
 # this mutant pre-empts any action for private sites where user is not logged in
 # it means the site owner has specified that the site is private therefore we show a skeleton
 # of the site and prompt for login (all sensitive details should be removed)
+!function plax-bg window # background parallax
+  window.$ \#forum_background .plaxify {y-range:10px,x-range:50px,invert:true}
 !function rotate-backgrounds window, cache-url, backgrounds
   set-timeout (->
     # shuffle backgrounds & choose
@@ -723,7 +726,8 @@ mk-post-pnum-to-href = (post-uri) ->
     c = if (window.$ '#forum_background img' .attr \src).index-of(s.0.trim!) > -1 then s?1 else s?0
     # set choice in static & on-load
     set-background-static window, cache-url, c
-    set-background-onload window, c, 2500ms, \scale
+    <- set-background-onload window, c, 2500ms, \scale
+    plax-bg window
     rotate-backgrounds window, cache-url, backgrounds # again, and again...
   ), 8000ms
   #
@@ -734,11 +738,16 @@ mk-post-pnum-to-href = (post-uri) ->
     window.$ \#left_content .remove!
     window.$ \#main_content .remove!
     window.marshal \backgrounds, @backgrounds
+    window.$ \body .add-class \parallax-viewport
     layout-static.call @, window, \privateSite
     next!
   on-load: (window, next) ->
+    <- headjs \//muscache.pb.com/local/plax.js
+
     # handle background
     rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds.length > 1
+
+    #  show Auth dialog
     set-timeout (->
       # ensure login stays open
       window.fancybox-params ||= {}
@@ -748,10 +757,19 @@ mk-post-pnum-to-href = (post-uri) ->
         close-btn:   false
         close-click: false
         modal:       true}
-      Auth.show-login-dialog!), 200ms # show!
-    set-timeout (-> # guarantee fancybox shows
-      Auth.show-login-dialog! unless $ \.fancybox-overlay:visible .length), 1200ms
-    next!
+      <- Auth.show-login-dialog), 200ms
+    set-timeout (-> # XXX guarantee fancybox shows -- race condition & plax!
+      plax = -> # parallax background & auth dialog
+        $ \.fancybox-skin .plaxify {y-range:0,x-range:10px}
+        plax-bg window
+        $.plax.enable!
+      unless $ \.fancybox-overlay:visible .length
+        <- Auth.show-login-dialog
+        plax!
+      else
+        plax!), 1200ms
+    # remove initial hover state to dim if mouse is really hovered out
+    set-timeout (-> window.$ \.fancybox-skin .remove-class \hover), 3000ms
 
 @moderation =
   static: (w, next) ->
