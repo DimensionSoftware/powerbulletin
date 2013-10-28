@@ -737,18 +737,20 @@ mk-post-pnum-to-href = (post-uri) ->
     layout-static.call @, window, \privateSite
     next!
   on-load: (window, next) ->
-    # ensure login stays open
+    # handle background
+    rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds.length > 1
     set-timeout (->
+      # ensure login stays open
       window.fancybox-params ||= {}
       window.fancybox-params <<< {
         open-easing: \easeOutExpo
-        open-speed:  2000ms
+        open-speed:  1000ms
         close-btn:   false
         close-click: false
         modal:       true}
-      Auth.show-login-dialog! # show!
-      rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds.length > 1
-    ), 10ms # yield (so fancybox doesn't run too early)
+      Auth.show-login-dialog!), 200ms # show!
+    set-timeout (-> # guarantee fancybox shows
+      Auth.show-login-dialog! unless $ \.fancybox-overlay:visible .length), 1200ms
     next!
 
 @moderation =
