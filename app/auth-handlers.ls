@@ -267,6 +267,9 @@ auth-finisher = (req, res, next) ->
     <script type="text/javascript">
       window.opener.$.fancybox.close();
       window.opener.Auth.afterLogin();
+      if (window.opener.rUser) {
+        window.opener.rUser(window.opener.user);
+      }
       window.close();
     </script>
     """
