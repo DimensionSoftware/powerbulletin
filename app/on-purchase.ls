@@ -4,12 +4,12 @@
 @private = (site-id, cb = (->)) ->
   # update site config and mark private
 
-  err, config <- db.sites.find-one {criteria: {id: site-id}, columns: [\config]}
+  err, site <- db.site-by-id site-id
   if err then return cb err
 
-  config.private = true
+  site.config.private = true
 
-  err <- db.sites.update {criteria: {id: site-id}, data: {config: JSON.stringify(config)}}
+  err <- db.sites-update site
   if err then return cb err
 
   console.warn \private, \purchased, site-id
