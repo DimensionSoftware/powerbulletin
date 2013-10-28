@@ -76,7 +76,7 @@ function default-pnum-to-href-fun uri
       parsed.pathname
 
 # Common
-set-background-onload = (w, background, duration=400ms) ->
+set-background-onload = (w, background, duration=400ms, fx=\fade) ->
   bg = w.$ \#forum_background
   bf = w.$ \#forum_background_buffer
   if background and bg.length and bf.length # double-buffer
@@ -84,7 +84,7 @@ set-background-onload = (w, background, duration=400ms) ->
     bf-img
       ..attr \src, bf-img.data \src
       ..load ->
-        bg.transition opacity:0, duration
+        bg.transition (if fx is \fade then {opacity:0} else {scale:1.5}), duration
         bf.transition opacity:1, duration, \easeOutExpo, ->
           # cleanup
           bg.remove!
@@ -723,7 +723,7 @@ mk-post-pnum-to-href = (post-uri) ->
     c = if (window.$ '#forum_background img' .attr \src).index-of(s.0.trim!) > -1 then s?1 else s?0
     # set choice in static & on-load
     set-background-static window, cache-url, c
-    set-background-onload window, c, 2500ms
+    set-background-onload window, c, 2500ms, \scale
     rotate-backgrounds window, cache-url, backgrounds # again, and again...
   ), 8000ms
   #
