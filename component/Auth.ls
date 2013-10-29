@@ -25,7 +25,7 @@ module.exports =
         window._auth.after-login = Auth.after-login if Auth.after-login
 
       $.fancybox.open \#auth, window.fancybox-params unless $ \.fancybox-overlay:visible .length
-      set-timeout (-> $ '#auth input[name=username]' .focus! ), 200ms
+      set-timeout (-> $ '#auth input[name=login-email]' .focus! ), 200ms
       # password complexity ui
       window.COMPLEXIFY_BANLIST = [\god \money \password \love]
       $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
@@ -114,7 +114,7 @@ module.exports =
       @$.on \click \.onclick-close-fancybox ->
         $.fancybox.close!
       @$.on \click \.onclick-show-login ->
-        ch.switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=username]'
+        ch.switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=login-email]'
       @$.on \click \.onclick-show-forgot ->
         ch.switch-and-focus \on-error \on-forgot '#auth input[name=email]'
       @$.on \click \.onclick-show-choose ->
@@ -139,7 +139,7 @@ module.exports =
     # handler for login form
     login: (ev) ~>
       $form = $ ev.target
-      u = $form.find 'input[name=username]'
+      u = $form.find 'input[name=login-email]'
       p = $form.find 'input[name=password]'
       s = $form.find 'input[type=submit]'
       params =
