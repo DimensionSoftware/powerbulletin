@@ -718,7 +718,7 @@ mk-post-pnum-to-href = (post-uri) ->
 # it means the site owner has specified that the site is private therefore we show a skeleton
 # of the site and prompt for login (all sensitive details should be removed)
 !function plax-bg window # background parallax
-  window.$ \#forum_background .plaxify {y-range:10px,x-range:50px,invert:true}
+  window.$ \#forum_background .plaxify {y-range:15px,x-range:40px,invert:true}
 !function rotate-backgrounds window, cache-url, backgrounds
   set-timeout (->
     # shuffle backgrounds & choose
@@ -729,7 +729,7 @@ mk-post-pnum-to-href = (post-uri) ->
     <- set-background-onload window, c, 2500ms, \scale
     plax-bg window
     rotate-backgrounds window, cache-url, backgrounds # again, and again...
-  ), 8000ms
+  ), 9000ms
   #
 @private-site =
   static: (window, next) ->
