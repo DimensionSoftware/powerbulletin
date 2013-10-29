@@ -745,7 +745,15 @@ mk-post-pnum-to-href = (post-uri) ->
     layout-static.call @, window, \privateSite
     next!
   on-load: (window, next) ->
-    <- headjs \//muscache.pb.com/local/plax.js
+    <~ lazy-load-fancybox
+
+    # XXX: not sure why this fails the first time...
+    # workaround ;(
+    try
+      <- require [\jqueryPlax]
+    catch
+      <- require [\jqueryPlax]
+
 
     # handle background
     rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds?length > 1
@@ -760,19 +768,22 @@ mk-post-pnum-to-href = (post-uri) ->
         close-btn:   false
         close-click: false
         modal:       true}
-      <- Auth.show-login-dialog), 200ms
-    set-timeout (-> # XXX guarantee fancybox shows -- race condition & plax!
-      plax = -> # parallax background & auth dialog
-        $ \.fancybox-skin .plaxify {y-range:0,x-range:10px}
-        plax-bg window
-        $.plax.enable!
-      unless $ \.fancybox-overlay:visible .length
-        <- Auth.show-login-dialog
-        plax!
-      else
-        plax!), 1200ms
-    # remove initial hover state to dim if mouse is really hovered out
-    set-timeout (-> window.$ \.fancybox-skin .remove-class \hover), 3000ms
+      <- Auth.show-login-dialog
+
+      set-timeout (-> # XXX guarantee fancybox shows -- race condition & plax!
+        plax = -> # parallax background & auth dialog
+          $ \.fancybox-skin .plaxify {y-range:0,x-range:10px}
+          plax-bg window
+          $.plax.enable!
+        unless $ \.fancybox-overlay:visible .length
+          <- Auth.show-login-dialog
+          plax!
+        else
+          plax!), 1200ms
+      # remove initial hover state to dim if mouse is really hovered out
+      #
+      set-timeout (-> window.$ \.fancybox-skin .remove-class \hover), 3000ms
+    ), 200ms
 
 @moderation =
   static: (w, next) ->
