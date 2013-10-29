@@ -477,7 +477,7 @@ same-profile = (hints) ->
   switch action
   | \domains  => try win.render-mutant \main_content, \admin-domains
   | \invites  => try win.render-mutant \main_content, \admin-invites
-  | \users    => render-component win, \#main_content, \admin-users, SuperAdminUsers, {locals: {}}
+  | \users    => render-component win, \#main_content, \admin-users, SuperAdminUsers, {locals: win.admin-users-locals}
   | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site:site}}
   | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
   | otherwise => try win.render-mutant \main_content, \admin-general
@@ -491,7 +491,9 @@ same-profile = (hints) ->
       window.$ '#left_container menu li' .remove-class \active
       window.$ "\#left_container menu .#{@action or \general}" .add-class \active
 
+      window.marshal \adminUsersLocals, ({} <<< @) if @action is \users
       render-admin-components @action, @site, window
+
       # these two vars have to be marshalled so the components have access
       # to them on-initial
       window.marshal \action @action

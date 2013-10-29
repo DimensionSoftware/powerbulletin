@@ -15,12 +15,13 @@ require! {
   pay: \./payments
   \./menu
   url
+  sch: \./sales-component-handlers
 }
 
 announce = require(\socket.io-announce).create-client!
 
-global <<< require \./server-helpers
-global <<< require \../shared/shared-helpers
+global <<< require \./server-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
+global <<< require \../shared/shared-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
 
 {is-editing, is-admin, is-auth} = require \./path-regexps
 
@@ -457,9 +458,20 @@ function profile-paths user, uploaded-file, base=\avatar
   fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')
   fdoc.title = \Admin
   fdoc.menu = site.config.menu
+
   res.locals fdoc
 
-  res.mutant \admin # out!
+  if res.locals.action is \users
+    # populate user info into locals
+    # XXX this shares namespace with other mutant admin locals so this code needs to be treaded on very carefully
+    # ideally in the future we won't be using the mutant system in the same namespace or the whole mutant forum app
+    # will be encapsulated into its own Component
+    err <- sch.super-users req, res
+    if err then return next err
+    res.mutant \admin # out!
+  else
+    # default
+    res.mutant \admin # out!
 
 @search = (req, res, next) ->
   function cleanup-searchopts opts
