@@ -328,7 +328,7 @@ layout-on-personalize = (w, u) ->
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
       # bring down first reply
-      if user
+      if user?
         e = $ \.onclick-append-reply-ui:first
           ..data \no-focus, true # not the neatest, needed to not steal ui focus
           ..click!
