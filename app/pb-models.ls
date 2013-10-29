@@ -127,6 +127,44 @@ query-dictionary =
       if err then return cb err
       cb null, !!r.0.c
 
+    # Given an email, load a user.
+    # If the user does not have an alias for the given site-id,
+    # name, photo, rights, and config will be void
+    by-email-and-site: (email, site-id, cb) ->
+      user-sql = '''
+      SELECT u.* FROM users u WHERE u.email = $1
+      '''
+      auths-sql = '''
+      SELECT a.* FROM auths a WHERE a.user_id = $1
+      '''
+      alias-sql = '''
+      SELECT a.* FROM aliases a WHERE a.site_id = $1
+      '''
+      err, r <- postgres.query user-sql, [email]
+      if err then return cb err
+      user = r.0
+      err, auths <- postgres.query auths-sql, [user.id]
+      if err then return cb err
+      user.auths = auths
+      err, r <- postgres.query alias-sql, [site-id]
+      if err then return cb err
+
+      # site-specific info to be mixed into this user
+      if r.0
+        _a = r.0
+        alias =
+          name   : _a.name
+          photo  : _a.photo
+          rights : _a.rights
+          config : _a.config
+      else
+        alias =
+          name   : void
+          photo  : void
+          rights : void
+          config : void
+      cb null, user <<< alias
+
   pages:
     upsert: upsert-fn \pages
     delete: delete-fn \pages
