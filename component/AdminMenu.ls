@@ -20,8 +20,10 @@ module.exports =
       tolerance-element: '> div'
       placeholder: \placeholder
       is-tree: true
+      tab-size: 25
+      revert: 200
       expand-on-hover: 800ms
-      start-collapsed: true
+      start-collapsed: false
       opacity: 0.8
       force-placeholder-size: true
       is-allowed: (item, parent) ->
@@ -185,12 +187,18 @@ module.exports =
             $ol.append($item)
           # if item has children, create a sub $ol and recurse
           if item.children?length
+            $item?add-class \mjs-nestedSortable-expanded
             $sub-ol = $('<ol/>')
             $item?append $sub-ol
             @build-nested-sortable $sub-ol, item.children
 
     on-attach: !~>
       #{{{ Event Delegates
+      @$.on \click \.disclose ->
+        $ this .closest \li
+          ..toggle-class \mjs-nestedSortable-collapsed
+          ..toggle-class \mjs-nestedSortable-expanded
+
       @$.on \change 'input[name="dialog"]' ~> # type was selected
         # TODO - make sure current-restore has the right data to restore; when adding a new item, it often does not.
         # TODO - create slug out of title
