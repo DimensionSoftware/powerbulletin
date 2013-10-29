@@ -138,7 +138,7 @@ query-dictionary =
       SELECT a.* FROM auths a WHERE a.user_id = $1
       '''
       alias-sql = '''
-      SELECT a.* FROM aliases a WHERE a.site_id = $1
+      SELECT a.* FROM aliases a WHERE a.site_id = $1 AND a.user_id = $2
       '''
       err, r <- postgres.query user-sql, [email]
       if err then return cb err
@@ -146,7 +146,7 @@ query-dictionary =
       err, auths <- postgres.query auths-sql, [user.id]
       if err then return cb err
       user.auths = auths
-      err, r <- postgres.query alias-sql, [site-id]
+      err, r <- postgres.query alias-sql, [site-id, user.id]
       if err then return cb err
 
       # site-specific info to be mixed into this user
