@@ -187,7 +187,7 @@ module.exports =
             $ol.append($item)
           # if item has children, create a sub $ol and recurse
           if item.children?length
-            $item?add-class \mjs-nestedSortable-expanded
+            $item?add-class \mjs-nestedSortable-collapsed
             $sub-ol = $('<ol/>')
             $item?append $sub-ol
             @build-nested-sortable $sub-ol, item.children
