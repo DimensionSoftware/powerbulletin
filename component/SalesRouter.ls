@@ -140,7 +140,7 @@ module.exports =
             b.append root-el
 
           make-component = (elr, parent) ->
-            new klass {-auto-render, -auto-attach, locals: ({} <<< locals <<< {route: type})}, elr, parent
+            new klass {-auto-render, -auto-attach, locals: ({} <<< locals <<< {surl.gen, route: type})}, elr, parent
 
           if layout-klass
             # nest a component in a parent layout without coupling them together

@@ -6,6 +6,7 @@ require \jqueryWaypoints if window?
 
 #XXX: this code is smelly, global-ness, bad
 furl = require \../shared/forum-urls
+purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
@@ -477,7 +478,7 @@ same-profile = (hints) ->
   switch action
   | \domains  => try win.render-mutant \main_content, \admin-domains
   | \invites  => try win.render-mutant \main_content, \admin-invites
-  | \users    => render-component win, \#main_content, \admin-users, SuperAdminUsers, {locals: win.admin-users-locals}
+  | \users    => render-component win, \#main_content, \admin-users, SuperAdminUsers, {locals: {} <<< win.admin-users-locals <<< {purl.gen}}
   | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site:site}}
   | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
   | otherwise => try win.render-mutant \main_content, \admin-general
