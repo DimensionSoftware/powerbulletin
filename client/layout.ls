@@ -157,7 +157,7 @@ window.onload-resizable = ->
   if $r.length
     $l.resizable(
       min-width: 200px
-      max-width: 450px
+      max-width: 550px
       resize: (e, ui) ->
         $l.toggle-class \wide ($l.width! > 300px)        # resize left nav
         $r.css \padding-left (ui.size.width+left-offset) # " resizable

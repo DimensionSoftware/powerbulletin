@@ -253,8 +253,6 @@ footer.expanded
     top 0
 footer
   opacity 0
-  //background-image linear-gradient(to top, #fff 26px, rgba(255,255,255,.35))
-  background-image linear-gradient(to top, tint-color 26px, rgba(255,255,255,.35))
   box-shadow 0 0 4px -1px light
   text-align center
   color #777
@@ -280,8 +278,6 @@ footer
 
 //{{{ Scrolled <body>
 body.scrolled
-  //footer::before
-  //  border-top 1px solid #ddd
   header
     background-color tint-color
     box-shadow 0 -1px 12px 2px #eee
@@ -312,6 +308,7 @@ body.scrolled
   #left_content::after
     bottom (footer-height - 4)
   footer
+    background-image linear-gradient(to top, tint-color 26px, rgba(255,255,255,.35))
     &:hover
       box-shadow 0 0 4px 0 light
       background-image linear-gradient(to top, #f7f7f7 10px, rgba(255,255,255,1))
