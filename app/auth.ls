@@ -180,21 +180,21 @@ export create-passport = (domain, cb) ->
 
   pass.serialize-user (user, done) ~>
     log \user, \xxx, user
-    parts = "#{user.name}:#{user.site_id}"
+    parts = "#{user.email}:#{user.site_id}"
     done null, parts
 
   pass.deserialize-user (parts, done) ~>
     log \parts, parts
-    [name, site_id] = parts.split ':'
-    (err, user) <~ db.usr {name, site_id}
+    [email, site_id] = parts.split ':'
+    (err, user) <~ db.usr {email, site_id}
     if err then return cb err
-    if name and site_id
+    if email and site_id
       done null, user
     else
       done new Error("bad cookie #{parts}")
 
-  pass.use new passport-local.Strategy (username, password, done) ~>
-    (err, user) <~ db.usr { name: username, site_id: site.id }  # XXX - how do i get site_id?
+  pass.use new passport-local.Strategy (email, password, done) ~>
+    (err, user) <~ db.usr { email: email, site_id: site.id }
     if err then return done(err)
     if not user
       log 'no user'
