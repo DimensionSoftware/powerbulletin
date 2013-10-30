@@ -1,27 +1,37 @@
 form
+  h2 Edit User
   fieldset
-    legend Edit User
-
+    legend Info
     .box
       label Name
-        input(name='name', type='text')
+        input(name='name', type='text', value=user.name)
     .box
       label Email
-        input(name='email', type='text')
+        input(name='email', type='text', value=user.email)
     .box 
       label Photo
-        input(name='photo', type='text')
+        input(name='photo', type='text', value=user.photo)
+  fieldset
+    legend Settings
     .box
-      input#UserEditor-verified(type='checkbox')
+      input#UserEditor-verified(name='verified', type='checkbox', checked=user.verified)
       label.switch-control(for='UserEditor-verified')
         .switch
       span.label.checked Verified
       .note Toggle user verified status
     .box
-      input#UserEditor-disabled(type='checkbox')
+      input#UserEditor-disabled(name='disabled', type='checkbox', checked=user.disabled)
       label.switch-control(for='UserEditor-disabled')
         .switch
       span.label.checked Disabled
       .note Toggle user disabled status
-    .box(style='margin:10px auto 5px auto; text-align:center')
-      input(style='width: 80%', type='submit', value='Save')
+  fieldset
+    legend Rights
+    .box
+      input#UserEditor-admin(name='admin', type='checkbox', checked=user.rights.super)
+      label.switch-control(for='UserEditor-admin')
+        .switch
+      span.label.checked Site Admin
+      .note Toggle user as a site-wide administrator
+  .box(style='margin:10px auto 5px auto; text-align:center')
+    input(style='width: 80%', type='submit', value='Save')

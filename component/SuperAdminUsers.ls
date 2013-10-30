@@ -7,6 +7,8 @@ require! {
 }
 {templates} = require \../build/component-jade
 
+{lazy-load-fancybox} = require \../client/client-helpers
+
 # responsible for url token superUsers
 module.exports =
   class SuperAdminUsers extends Component
@@ -23,12 +25,19 @@ module.exports =
       # table locals
       s = @state
       locals = {
-        #cols: [\foo, \bar]
-        #rows: [[1,2],[3,4]]
-        #qty: 100
         s.cols
         s.rows
         s.qty
         s.active-page
       }
       @children = {table: new Table {locals, pnum-to-href} \.SuperAdminUsers-table @}
+    on-attach: ->
+      dollarish = @@$
+      @$.on \click 'button[data-edit-user]' ->
+        user = dollarish @ .data \edit-user
+
+        <- lazy-load-fancybox
+        UserEditor <- require [\./UserEditor] # lazy load at moment that user clicks on item
+
+        window.$.fancybox (new UserEditor {locals: {user}}).$
+        false

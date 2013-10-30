@@ -229,6 +229,14 @@ is-locked-forum = (m, forum-id) ->
       # munge data
       (err, user) <- db.find-or-create user
       res.json user
+  update: (req, res, next) ->
+    # XXX: fill in this stub
+    # RIGHTS: can only edit users on sites you are an admin of
+    # need this db function: db.users.can-edit-user uid -> boolean
+    id = req.params.user
+    user = {} <<< req.body <<< {id}
+    console.warn \STUB, 'handle user PUT from UserEditor'
+    console.warn \STUBUSER, user
 @posts =
   index   : (req, res) ->
     res.locals.fid = req.query.fid

@@ -2,12 +2,12 @@ table
   thead
     tr
       each ctitle in cols
-        th= ctitle
+        th!= ctitle
   tbody.Table-tbody
     each row in rows
       tr
         each ctitle, c in cols
-          td= row[c]
+          td!= row[c]
   tfoot
     tr
       td.Table-paginator
