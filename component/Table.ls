@@ -29,7 +29,7 @@ module.exports =
 
       do ~>
         locals = {s.active-page, s.qty, s.step}
-        @children = {paginator: new Paginator({locals, @pnum-to-href}, \td.Table-paginator, @)}
+        @children = {paginator: new Paginator({locals, @pnum-to-href}, \.Table-paginator, @)}
 
       # most naive update routine possible :D
       ignore = false

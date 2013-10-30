@@ -1,0 +1,2 @@
+#!/bin/sh -e
+cloc --force-lang="HTML",jade --force-lang="CSS",styl app shared client component

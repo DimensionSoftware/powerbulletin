@@ -117,8 +117,8 @@ query-dictionary =
     all: ({site_id, limit, offset}, cb) ->
       sql = """
       SELECT
-        u.id, u.email,
-        a.name, a.photo, a.rights, a.verified, a.created, a.site_id
+        u.id, u.email, u.rights AS sys_rights,
+        a.name, a.photo, a.rights AS site_rights, a.verified, a.created, a.site_id
       FROM users u
       JOIN aliases a ON a.user_id=u.id
       #{if site_id then 'WHERE a.site_id=$3' else ''}
@@ -129,7 +129,18 @@ query-dictionary =
           [limit, offset, site_id]
         else
           [limit, offset]
-      postgres.query sql, params, cb
+
+      err, users <- postgres.query sql, params
+      if err then return cb err
+
+      for u in users
+        sys-r = JSON.parse delete u.sys_rights
+        site-r = JSON.parse delete u.site_rights
+        u.sys_admin = !! sys-r.super
+        u.site_admin = !! site-r.super
+
+      cb null, users
+
     all-count: ({site_id}, cb) ->
       sql = """
       SELECT COUNT(*)

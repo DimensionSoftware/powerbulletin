@@ -40,12 +40,12 @@ require! {
 !function render-component win, target, name, klass, first-klass-arg
   wc = win.component ||= {}
   if c = wc[name] # already registered
-    if locals = first-klass-arg?locals
-      c.locals locals
-    c.reload!
-  else # instantiate and register (locals are in first-klass-arg)
-    # always instantiate using 'internal' dom by not passing a target at instantiation
-    c = wc[name] = new klass(first-klass-arg)
+    delete wc[name] # remove old
+
+  # instantiate and register (locals are in first-klass-arg)
+  # always instantiate using 'internal' dom by not passing a target at instantiation
+  c = wc[name] = new klass(first-klass-arg)
+
   win.$(target).html('').append c.$ # render
 
 !function paginator-component w, locals, pnum-to-href

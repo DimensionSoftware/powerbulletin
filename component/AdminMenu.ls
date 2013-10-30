@@ -24,7 +24,7 @@ module.exports =
       tab-size: 25
       revert: 200
       expand-on-hover: 800ms
-      start-collapsed: false
+      start-collapsed: true
       opacity: 0.8
       force-placeholder-size: true
       is-allowed: (item, parent) ->
@@ -99,6 +99,10 @@ module.exports =
             locals:
               background: form.background
               post-url: "/resources/forums/#{form.dbid}/background"
+              on-delete: ~>
+                # remove background from config
+                @$.find 'form.menus .background' .data \src, ''
+                @current-store!
               on-success: (xhr, file, r-json) ~>
                 @current-store!}, \#uploader_component
 
@@ -118,7 +122,7 @@ module.exports =
                   if $i.is \textarea
                     $i.val form[n]
 
-    store-title: (ev) !->
+    store-title: (ev) !~>
       $input     = $ ev.target
       data       = $input.data!
       data.title = data.form.title = $input.val!
@@ -225,12 +229,11 @@ module.exports =
 
         @$.find \.sortable
           ..append e
-          ..nested-sortable opts
-
-        @$.find \.disclose .on \click, ->
-          $ @ .closest \li
-            ..toggle-class \mjs-nestedSortable-collapsed
-            ..toggle-class \mjs-nestedSortable-expanded
+          ..nested-sortable { stop: @resort } <<< opts
+          ..find \.disclose .on \click, ~> # bind expand/collapse behavior
+            $ @ .closest \li
+              ..toggle-class \mjs-nestedSortable-collapsed
+              ..toggle-class \mjs-nestedSortable-expanded
 
         e.find \input .data default-data
         e.find \input .focus!

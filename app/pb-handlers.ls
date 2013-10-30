@@ -216,6 +216,27 @@ function background-for-forum m, active-forum-id
 
     finish fdoc
 
+@forum-background-delete = (req, res, next) ->
+  # get site
+  site = res.vars.site
+  err, site <- db.site-by-id site.id
+  if err then return next err
+  forum-id  = parse-int req.params.id
+  # get item
+  m    = site.config.menu
+  item = menu.flatten m |> find -> it.form.dbid is forum-id
+  unless item then return res.json {-success} # guard
+  # wipe file from disk
+  err <- fs.unlink "public/sites/#{item.form.background.replace(/\?.*$/, '')}"
+  if err then return res.json {-success, msg:err}
+  # update config
+  path = menu.path-for-upsert m, item.id.to-string!
+  item.form.background = void
+  site.config.menu     = menu.struct-upsert m, path, item
+  err, r <- db.site-update site # save!
+  if err then return res.json {-success, msg:err}
+  res.json {+success}
+
 @forum-background = (req, res, next) ->
   # get site
   site = res.vars.site
@@ -234,14 +255,15 @@ function background-for-forum m, active-forum-id
   forum-id  = parse-int req.params.id
   ext       = background.name.match(/\.(\w+)$/)?1 or ""
   file-name = if ext then "#forum-id.#ext" else forum-id
-  err <- move background.path, "#dst/#file-name"
+  err <- move background.path, "#dst/#file-name".to-lower-case!
   if err then return res.json {-success, msg:err}
 
   # update site.config.menu
   m    = site.config.menu
   item = menu.flatten m |> find -> it.form.dbid is forum-id
+  unless item then return res.json {-success} # guard
   path = menu.path-for-upsert m, item.id.to-string!
-  item.form.background = "#{site.id}/#file-name?#{h.cache-buster!}"
+  item.form.background = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
   site.config.menu     = menu.struct-upsert m, path, item
 
   err, r <- db.site-update site # save!

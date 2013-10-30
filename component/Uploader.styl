@@ -1,7 +1,18 @@
 // Uploader must be embedded inside a <form>, so prefix:
 form
   .Uploader
+    &:hover
+      .cancel
+        opacity 1
+        transition none
+
     // <drag-n-drop & upload widget>
+    .cancel
+      opacity 0
+      transition .2s ease-out .3s
+      position absolute
+      top -10px
+      right -7px
     label
       .button
         margin -21px 0 7px 140px!important
@@ -27,6 +38,9 @@ form
         right -135px
         top 0
         border-radius 3px
+        // hide close for empty backgrounds
+        &[src*='transparent'] + .close
+          opacity 0!important
         // magnify these on hover--they have backgrounds
         &[src*='/sites/']:hover
           border 1px solid light

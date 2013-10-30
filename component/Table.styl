@@ -1,2 +1,26 @@
 .Table
-  background auto
+  margin 20px 0
+  padding 10px 20px
+  border-radius 10px
+  background linear-gradient(to top, #fff 10px, #f2f2f2 100%)
+  thead
+    th
+      text-transform uppercase
+      padding 3px 0 10px 0
+      font-weight 200
+      color #333
+  tbody
+    tr
+      color #444
+      transition .2s ease-out
+      &:hover
+        color #000
+        border-bottom 1px solid #ddd
+        transition none
+        &:nth-of-type(even)
+          border-bottom 1px solid #ddd
+      &:nth-of-type(even)
+        border-bottom 1px solid #eee
+      
+  > .Paginator
+    margin-top 20px

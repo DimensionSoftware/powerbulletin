@@ -21,6 +21,12 @@ module.exports =
       for k,v of default-locals when @local(k) is void
         @local k, v
 
+    delete-background-thumb: ->
+      @@$.ajax {method:\DELETE, url:@local \postUrl}
+        .done (data) ~>
+          @set-background-thumb void # remove thumb
+          @locals!on-delete data # cb
+
     set-background-thumb: (uri) ->
       @$.find \.background
         ..data \src, uri
@@ -30,10 +36,11 @@ module.exports =
           else
             "#{cacheUrl}/images/transparent-1px.gif"
 
-
     on-attach: !->
       #{{{ Event Delegates
-        # TODO delete
+      @$.on \click \.onclick-delete (ev) ~> # delete
+        if confirm "Permanently Delete Background?"
+          @delete-background-thumb!
       #}}}
 
       init-html5-uploader = (locals) ~>
@@ -46,7 +53,7 @@ module.exports =
             r = JSON.parse r-json
             if r.success
               @set-background-thumb r.background
-              locals.onSuccess xhr, file, r-json}
+              locals.on-success xhr, file, r-json}
 
       ####  main  ;,.. ___  _
       init-html5-uploader @locals!
