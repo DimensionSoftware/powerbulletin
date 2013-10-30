@@ -24,7 +24,7 @@ module.exports =
       tab-size: 25
       revert: 200
       expand-on-hover: 800ms
-      start-collapsed: false
+      start-collapsed: true
       opacity: 0.8
       force-placeholder-size: true
       is-allowed: (item, parent) ->
@@ -225,12 +225,11 @@ module.exports =
 
         @$.find \.sortable
           ..append e
-          ..nested-sortable opts
-
-        @$.find \.disclose .on \click, ->
-          $ @ .closest \li
-            ..toggle-class \mjs-nestedSortable-collapsed
-            ..toggle-class \mjs-nestedSortable-expanded
+          ..nested-sortable { stop: @resort } <<< opts
+          ..find \.disclose .on \click, ~> # bind expand/collapse behavior
+            $ @ .closest \li
+              ..toggle-class \mjs-nestedSortable-collapsed
+              ..toggle-class \mjs-nestedSortable-expanded
 
         e.find \input .data default-data
         e.find \input .focus!
