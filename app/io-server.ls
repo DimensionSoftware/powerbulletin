@@ -10,17 +10,19 @@ require! {
   '../component/Chat'
   sio: \socket.io
   pg: \./postgres
+  m: \./pb-models
 }
 
+global <<< require \prelude-ls
 
 log = debug 'io-server'
 
 user-from-session = (s, cb) ->
   unless s?passport?user
     return cb null, {id:0, name:\Anonymous, guest:true}
-  [name, site_id] = s?passport?user?split \:
-  if name and site_id
-    (err, user) <~ db.usr {name, site_id}
+  [email, site_id] = s?passport?user?split \:
+  if email and site_id
+    (err, user) <~ db.users.by-email-and-site email, site_id
     if err
       log \user-from-session, \db.usr, err
       return cb err
@@ -39,6 +41,13 @@ site-by-domain = (domain, cb) ->
   err <- pg.init
   if err then throw err
   global.db = pg.procs
+
+  # initialize models
+  err <~ m.init
+  if err then throw err
+
+  # mixing additional keys into 'db' namespace
+  do -> pg.procs <<< { [k,v] for k,v of m when k not in <[orm client driver]> }
 
   io  = sio.listen server
   io.set \transports, [
