@@ -36,8 +36,16 @@ module.exports =
       @$.on \click 'button[data-edit-user]' ->
         user = dollarish @ .data \edit-user
 
-        <- lazy-load-fancybox
-        UserEditor <- require [\./UserEditor] # lazy load at moment that user clicks on item
+        finish = (UserEditor) ->
+          window.$.fancybox (new UserEditor {locals: {user}}).$
+          false
 
-        window.$.fancybox (new UserEditor {locals: {user}}).$
-        false
+        <- lazy-load-fancybox
+
+        # lazy load at moment that user clicks on item
+        #XXX:  WHYYYYYY?!?!?
+        # workaround for weird requirejs issue with async api
+        try
+          require [\./UserEditor], finish
+        catch
+          require [\./UserEditor], finish
