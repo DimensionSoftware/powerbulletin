@@ -9,7 +9,7 @@
 
   site.config.private = true
 
-  err <- db.sites-update site
+  err <- db.site-update site
   if err then return cb err
 
   console.warn \private, \purchased, site-id
