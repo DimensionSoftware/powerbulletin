@@ -21,7 +21,7 @@ program
   .parse process.argv
 
 const valid      = /^(\d+)-/
-const migrations = \/vagrant/migrations
+const migrations = if process.env.NODE_ENV is \production then \/pb/migrations else \/vagrant/migrations
 const table-name = \_version
 const log        = console.log
 const create-sql = """
@@ -106,6 +106,7 @@ if program.migration
 
 else # run all outstanding migrations
   err, files <- migrations-available migrations, version.n
+  unless files then log 'No migrations found!'; process.exit 1
   err <- async.each-series files, migrate-up
   if err then throw err
   err, [new-version] <- init
