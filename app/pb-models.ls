@@ -88,6 +88,29 @@ delete-fn = (table) ->
 # This is for queries that don't need to be stored procedures.
 # Base the top-level key for the table name from the FROM clause of the SQL query.
 query-dictionary =
+  aliases:
+
+    # Add aliases to a user
+    #
+    # @param Integer    user-id
+    # @param Array      site-ids
+    # @param Object     attrs
+    # @param Function   cb
+    add-to-user: (user-id, site-ids, attrs, cb) ->
+      if not attrs.name
+        cb new Error "attrs.name required!"
+
+      do-insert = (site-id, cb) ->
+        row =
+          user_id : user-id
+          site_id : site-id
+          photo   : \/images/profile.jpg
+        row <<< attrs
+        [insert-sql, vals] = insert-statement \aliases, row
+        postgres.query insert-sql, vals, cb
+
+      async.each site-ids, do-insert, cb
+
   # db.users.all cb
   users:
     # used by SuperAdminUsers
