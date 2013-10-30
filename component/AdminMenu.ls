@@ -118,7 +118,7 @@ module.exports =
                   if $i.is \textarea
                     $i.val form[n]
 
-    store-title: (ev) !->
+    store-title: (ev) !~>
       $input     = $ ev.target
       data       = $input.data!
       data.title = data.form.title = $input.val!
