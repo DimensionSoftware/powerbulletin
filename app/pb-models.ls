@@ -142,6 +142,8 @@ query-dictionary =
       '''
       err, r <- postgres.query user-sql, [email]
       if err then return cb err
+      if r.length is 0
+        return cb null, null
       user = r.0
       err, auths <- postgres.query auths-sql, [user.id]
       if err then return cb err
