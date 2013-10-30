@@ -576,17 +576,12 @@ sub vcl_recv {
   }
 
   # if it starts with /socket.io then send to socket backend
-  # this also allows us to serve files from socket.io in our cache domains
   if (req.url ~ "(?i)^/socket\.io/") {
     set req.backend = socket;
-
-    # pipe any socket.io requests which aren't headed to the client js library
-    if (req.url !~ "(?i)^/socket.io/socket.io.js") {
-      return (pipe);
-    }
+    # pipe any socket.io requests as they are long polling requests
+    return (pipe);
   }
-  # decide whether or not this request is headed towards the cache backend, rather than normal app backend
-  # the static file cache server is isolated since it is a much higher reliability factor than the main app
+  # if it is a cdn domain send to cache backend
   else if (req.http.host ~ "(?i)^muscache\d?\.(pb|powerbulletin)\.com$") {
     set req.backend = cache;
   }
