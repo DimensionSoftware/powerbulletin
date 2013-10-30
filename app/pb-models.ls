@@ -145,7 +145,7 @@ query-dictionary =
       user = r.0
       err, auths <- postgres.query auths-sql, [user.id]
       if err then return cb err
-      user.auths = auths
+      user.auths = fold ((a,b) -> a[b.type] = b; a), {}, auths
       err, r <- postgres.query alias-sql, [site-id, user.id]
       if err then return cb err
 
