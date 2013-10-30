@@ -40,8 +40,6 @@ s-app.get \/mu-d81b9b5a-572eee60-bc2ce3f6-e3fc404b (req, res) -> res.send \42
 
 s-app.get '/dynamic/css/:file' pb-handlers.stylus
 
-s-app.use SalesRouter.middleware
-
 s-app.get '/ajax/check-domain-availability', (req, res, next) ->
   domain = req.query.domain
   err, domain-exists <- db.domain-by-name-exists domain
@@ -95,5 +93,9 @@ auth-handlers.apply-to s-app, sales-personal-mw
 
 # The ability to give out login tokens is not applied by default.
 s-app.get '/auth/once', sales-personal-mw, auth-handlers.once-setup
+
+# assume SalesRouter needs this middleware
+sales-personal-mw.for-each ((m) -> s-app.use m)
+s-app.use SalesRouter.middleware
 
 module.exports = s-app

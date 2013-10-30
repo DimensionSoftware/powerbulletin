@@ -6,6 +6,7 @@ require \jqueryWaypoints if window?
 
 #XXX: this code is smelly, global-ness, bad
 furl = require \../shared/forum-urls
+purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
@@ -328,7 +329,7 @@ layout-on-personalize = (w, u) ->
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
       # bring down first reply
-      if user
+      if user?
         e = $ \.onclick-append-reply-ui:first
           ..data \no-focus, true # not the neatest, needed to not steal ui focus
           ..click!
@@ -477,7 +478,7 @@ same-profile = (hints) ->
   switch action
   | \domains  => try win.render-mutant \main_content, \admin-domains
   | \invites  => try win.render-mutant \main_content, \admin-invites
-  | \users    => render-component win, \#main_content, \admin-users, SuperAdminUsers, {locals: {}}
+  | \users    => render-component win, \#main_content, \admin-users, SuperAdminUsers, {locals: {} <<< win.admin-users-locals <<< {purl.gen}}
   | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site:site}}
   | \upgrade  => render-component win, \#main_content, \admin-upgrade, AdminUpgrade, {locals: {subscriptions: site.subscriptions}}
   | otherwise => try win.render-mutant \main_content, \admin-general
@@ -491,7 +492,9 @@ same-profile = (hints) ->
       window.$ '#left_container menu li' .remove-class \active
       window.$ "\#left_container menu .#{@action or \general}" .add-class \active
 
+      window.marshal \adminUsersLocals, ({} <<< @) if @action is \users
       render-admin-components @action, @site, window
+
       # these two vars have to be marshalled so the components have access
       # to them on-initial
       window.marshal \action @action
@@ -718,7 +721,7 @@ mk-post-pnum-to-href = (post-uri) ->
 # it means the site owner has specified that the site is private therefore we show a skeleton
 # of the site and prompt for login (all sensitive details should be removed)
 !function plax-bg window # background parallax
-  window.$ \#forum_background .plaxify {y-range:10px,x-range:50px,invert:true}
+  window.$ \#forum_background .plaxify {y-range:15px,x-range:40px,invert:true}
 !function rotate-backgrounds window, cache-url, backgrounds
   set-timeout (->
     # shuffle backgrounds & choose
@@ -729,7 +732,7 @@ mk-post-pnum-to-href = (post-uri) ->
     <- set-background-onload window, c, 2500ms, \scale
     plax-bg window
     rotate-backgrounds window, cache-url, backgrounds # again, and again...
-  ), 8000ms
+  ), 9000ms
   #
 @private-site =
   static: (window, next) ->
@@ -742,7 +745,15 @@ mk-post-pnum-to-href = (post-uri) ->
     layout-static.call @, window, \privateSite
     next!
   on-load: (window, next) ->
-    <- headjs \//muscache.pb.com/local/plax.js
+    <~ lazy-load-fancybox
+
+    # XXX: not sure why this fails the first time...
+    # workaround ;(
+    try
+      <- require [\jqueryPlax]
+    catch
+      <- require [\jqueryPlax]
+
 
     # handle background
     rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds?length > 1
@@ -757,19 +768,22 @@ mk-post-pnum-to-href = (post-uri) ->
         close-btn:   false
         close-click: false
         modal:       true}
-      <- Auth.show-login-dialog), 200ms
-    set-timeout (-> # XXX guarantee fancybox shows -- race condition & plax!
-      plax = -> # parallax background & auth dialog
-        $ \.fancybox-skin .plaxify {y-range:0,x-range:10px}
-        plax-bg window
-        $.plax.enable!
-      unless $ \.fancybox-overlay:visible .length
-        <- Auth.show-login-dialog
-        plax!
-      else
-        plax!), 1200ms
-    # remove initial hover state to dim if mouse is really hovered out
-    set-timeout (-> window.$ \.fancybox-skin .remove-class \hover), 3000ms
+      <- Auth.show-login-dialog
+
+      set-timeout (-> # XXX guarantee fancybox shows -- race condition & plax!
+        plax = -> # parallax background & auth dialog
+          $ \.fancybox-skin .plaxify {y-range:0,x-range:10px}
+          plax-bg window
+          $.plax.enable!
+        unless $ \.fancybox-overlay:visible .length
+          <- Auth.show-login-dialog
+          plax!
+        else
+          plax!), 1200ms
+      # remove initial hover state to dim if mouse is really hovered out
+      #
+      set-timeout (-> window.$ \.fancybox-skin .remove-class \hover), 3000ms
+    ), 200ms
 
 @moderation =
   static: (w, next) ->

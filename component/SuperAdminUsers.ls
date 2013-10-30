@@ -4,17 +4,17 @@ require, exports, module <- define
 require! {
   Component: yacomponent
   \./Table
-  surl: \../shared/sales-urls
 }
 {templates} = require \../build/component-jade
 
+# responsible for url token superUsers
 module.exports =
   class SuperAdminUsers extends Component
     template: templates.SuperAdminUsers
     title: 'Edit Users'
     init: ->
-      pnum-to-href = (pg) ->
-        base = surl.gen(\superUsers)
+      pnum-to-href = (pg) ~>
+        base = @local(\gen) \superUsers
         if parse-int(pg) > 1
           base + "?page=#pg"
         else

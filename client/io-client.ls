@@ -10,110 +10,121 @@ require! {
 
 {render-and-append} = require \../shared/shared-helpers
 
-<- ch.lazy-load-socketio
+####  main  ;,.. ___  _
+init = -> # export socket to window + init
+  if sock = window.socket = io?connect!
+    init-with-socket sock
+  sock
+main = ->
+  <- ch.lazy-load-socketio # first try
+  unless init!
+    set-timeout (-> # static crashed or otherwise 50x'd--try again:
+      <- ch.lazy-load-socketio
+      init!) 3000ms
+main!
 
-window.socket = io.connect!
 
 # https://github.com/LearnBoost/socket.io/wiki/Exposed-events
 # socket.on \event-name, (message, cb) ->
+function init-with-socket s
+  s.on \connect, ->
+    globals.r-socket s
+    #console.log \connected
 
-socket.on \connect, ->
-  globals.r-socket socket
-  #console.log \connected
+  s.on \disconnect, ->
+    #console.log \disconnected
 
-socket.on \disconnect, ->
-  #console.log \disconnected
+  s.on \enter-site, (message, cb) ->
+    #console.warn \enter-site, message
+    ch.set-online-user message?id
 
-socket.on \enter-site, (message, cb) ->
-  #console.warn \enter-site, message
-  ch.set-online-user message?id
+  s.on \leave-site, (message, cb) ->
+    #console.warn \leave-site, message
+    $ "[data-user-id=#{message.id}] .profile.photo" .remove-class \online
 
-socket.on \leave-site, (message, cb) ->
-  #console.warn \leave-site, message
-  $ "[data-user-id=#{message.id}] .profile.photo" .remove-class \online
+  s.on \menu-update, (menu, cb) ->
+    $ \#menu .html jade.templates.menu {menu}
+    window.component.main-menu.detach!attach!
 
-socket.on \menu-update, (menu, cb) ->
-  $ \#menu .html jade.templates.menu {menu}
-  window.component.main-menu.detach!attach!
+  s.on \thread-impression (thread, cb) ->
+    if thread.forum_id is window.active-forum-id
+      $ "\#left_container ul.threads li[data-id=#{thread.id}] span.views"
+        .html "#{thread.views}<i>views</i>"
 
-socket.on \thread-impression (thread, cb) ->
-  if thread.forum_id is window.active-forum-id
-    $ "\#left_container ul.threads li[data-id=#{thread.id}] span.views"
-      .html "#{thread.views}<i>views</i>"
+  s.on \thread-create (thread, cb) ->
+    if window.active-forum-id is thread?forum_id
+      $ui.trigger \thread-create, thread
 
-socket.on \thread-create (thread, cb) ->
-  if window.active-forum-id is thread?forum_id
-    $ui.trigger \thread-create, thread
+  s.on \post-create (post, cb) ->
+    # only real-time posts for users':
+    # - currently active thread
+    # - own posts on profile pages
+    window.active-thread-id ||= -1
+    if post.thread_id is window.active-thread-id or (post.user_id is user.id and window.mutator is \profile)
+      return if $ "post_#{post.id}" .length # guard (exists)
 
-socket.on \post-create (post, cb) ->
-  # only real-time posts for users':
-  # - currently active thread
-  # - own posts on profile pages
-  window.active-thread-id ||= -1
-  if post.thread_id is window.active-thread-id or (post.user_id is user.id and window.mutator is \profile)
-    return if $ "post_#{post.id}" .length # guard (exists)
+      # update post count
+      pc = $ "\#left_container ul.threads li[data-id=#{post.thread_id}] span.post-count"
+      pc.html ("#{(parse-int pc.text!) + 1} <i>posts</i>")
 
-    # update post count
-    pc = $ "\#left_container ul.threads li[data-id=#{post.thread_id}] span.post-count"
-    pc.html ("#{(parse-int pc.text!) + 1} <i>posts</i>")
+      # & render new post
+      sel = "\#post_#{post.parent_id} + .children"
+      animate-in = (e) -> $ e .add-class \post-animate-in
+      render-and-append(
+        window, $(sel), \post, post:post, (new-post) ->
+          if post.user_id is user?id # & scroll-to
+            mutants.forum.on-personalize window, user, (->) # enable edit, etc...
+            set-timeout (-> animate-in new-post), 250ms
+            if window.mutator is \forum then awesome-scroll-to new-post, 300ms
+          else
+            animate-in new-post)
 
-    # & render new post
-    sel = "\#post_#{post.parent_id} + .children"
-    animate-in = (e) -> $ e .add-class \post-animate-in
-    render-and-append(
-      window, $(sel), \post, post:post, (new-post) ->
-        if post.user_id is user?id # & scroll-to
-          mutants.forum.on-personalize window, user, (->) # enable edit, etc...
-          set-timeout (-> animate-in new-post), 250ms
-          if window.mutator is \forum then awesome-scroll-to new-post, 300ms
-        else
-          animate-in new-post)
+  s.on \new-hit, (hit) ->
+    hs = hit._source
+    window.new-hits++
+    window.$new-hits.prepend jade.templates.post({post: hs})
 
-socket.on \new-hit, (hit) ->
-  hs = hit._source
-  window.new-hits++
-  window.$new-hits.prepend jade.templates.post({post: hs})
+    # XXX: find out better place to declare these?
+    # @beppusan, don't judge me for using onclick attributes ;)
+    window.show-new-hits = ->
+      <- window.awesome-scroll-to \#main_content, null
+      $('#new_posts').html('').append(window.$new-hits).effect(\flash)
+      return false # just in case its used in a click handler
+    window.hide-new-hits = ->
+      $('#new_posts').html('')
+      return false # just in case its used in a click handler
 
-  # XXX: find out better place to declare these?
-  # @beppusan, don't judge me for using onclick attributes ;)
-  window.show-new-hits = ->
-    <- window.awesome-scroll-to \#main_content, null
-    $('#new_posts').html('').append(window.$new-hits).effect(\flash)
-    return false # just in case its used in a click handler
-  window.hide-new-hits = ->
-    $('#new_posts').html('')
-    return false # just in case its used in a click handler
+    # FIXME move to jade, even if only for consistency and ajax instead of reloading
+    suffix = if window.new-hits is 1 then '' else \s
+    realtime-html = """
+    <a href="#" onclick="showNewHits()">
+      #{window.new-hits} new result#suffix
+    </a>
+    """
 
-  # FIXME move to jade, even if only for consistency and ajax instead of reloading
-  suffix = if window.new-hits is 1 then '' else \s
-  realtime-html = """
-  <a href="#" onclick="showNewHits()">
-    #{window.new-hits} new result#suffix
-  </a>
-  """
+    # fills in top of search page with new hits total
+    $ \#new_hit_count
+      ..find \.count .html window.new-hits
+      ..show!effect \highlight
 
-  # fills in top of search page with new hits total
-  $ \#new_hit_count
-    ..find \.count .html window.new-hits
-    ..show!effect \highlight
+    # fills in breadcrumb (selectors are poorly named ATM)
+    $ \#new_hits .html realtime-html
+    $ \#breadcrumb .slide-down 300ms
 
-  # fills in breadcrumb (selectors are poorly named ATM)
-  $ \#new_hits .html realtime-html
-  $ \#breadcrumb .slide-down 300ms
+  s.on \new-profile-photo, (user) ->
+    $("div.post[data-user-id=#{user.id}]").find('div.profile img').attr(\src, "#{cache-url}#{user.photo}")
+    $("li.thread[data-user-id=#{user.id}]").find('div.profile img').attr(\src, "#{cache-url}#{user.photo}")
+    $("div.profile[data-user-id=#{user.id}]").find('div.avatar img').attr(\src, "#{cache-url}#{user.photo}")
+    if window?user?id is user.id
+      $('#profile').attr(\src, "#{cache-url}#{user.photo}")
 
-socket.on \new-profile-photo, (user) ->
-  $("div.post[data-user-id=#{user.id}]").find('div.profile img').attr(\src, "#{cache-url}#{user.photo}")
-  $("li.thread[data-user-id=#{user.id}]").find('div.profile img').attr(\src, "#{cache-url}#{user.photo}")
-  $("div.profile[data-user-id=#{user.id}]").find('div.avatar img').attr(\src, "#{cache-url}#{user.photo}")
-  if window?user?id is user.id
-    $('#profile').attr(\src, "#{cache-url}#{user.photo}")
+    # TODO
+    # add data-user-id to posts on the homepage
 
-  # TODO
-  # add data-user-id to posts on the homepage
+  s.on \debug, (message, cb) ->
+    console?log \debug, message
 
-socket.on \debug, (message, cb) ->
-  console?log \debug, message
+  Chat.client-socket-init s
 
-Chat.client-socket-init socket
 
 # vim:fdm=indent

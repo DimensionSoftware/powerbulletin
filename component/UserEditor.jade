@@ -1,0 +1,27 @@
+form
+  fieldset
+    legend Edit User
+
+    .box
+      label Name
+        input(name='name', type='text')
+    .box
+      label Email
+        input(name='email', type='text')
+    .box 
+      label Photo
+        input(name='photo', type='text')
+    .box
+      input#UserEditor-verified(type='checkbox')
+      label.switch-control(for='UserEditor-verified')
+        .switch
+      span.label.checked Verified
+      .note Toggle user verified status
+    .box
+      input#UserEditor-disabled(type='checkbox')
+      label.switch-control(for='UserEditor-disabled')
+        .switch
+      span.label.checked Disabled
+      .note Toggle user disabled status
+    .box(style='margin:10px auto 5px auto; text-align:center')
+      input(style='width: 80%', type='submit', value='Save')
