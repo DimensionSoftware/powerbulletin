@@ -4,7 +4,6 @@ require, exports, module <- define
 # needed here
 require \jqueryWaypoints if window?
 
-#XXX: this code is smelly, global-ness, bad
 furl = require \../shared/forum-urls
 purl = require \../shared/pb-urls
 

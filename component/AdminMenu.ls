@@ -3,6 +3,7 @@ require, exports, module <- define
 
 require! {
   Component: yacomponent
+  \./Uploader
 }
 ch = require \../client/client-helpers if window?
 
@@ -36,19 +37,10 @@ module.exports =
     template: templates.AdminMenu
     current:  null # active "selected" menu item
 
-    show: ~>
+    show: ->
       set-timeout (~> @$.find \.col2 .show 300ms), 300ms
 
-    set-background-thumb: (uri) ~>
-      @$.find \.background
-        ..data \src, uri
-        ..attr \src,
-          if uri
-            "#{cacheUrl}/sites/#uri"
-          else
-            "#{cacheUrl}/images/transparent-1px.gif"
-
-    clone: (item) ~> # clone a template defined as class="default"
+    clone: (item) -> # clone a template defined as class="default"
       e = @$.find \.default .clone!remove-class(\default).attr \id, item.id
       e.find \input # add metadata to input
         ..data \id,    item.id.replace /list_/ ''
@@ -56,7 +48,7 @@ module.exports =
         ..data \title, item.data?title
         ..val item.data?title
       e
-    current-store: !~>
+    current-store: !->
       unless e = @current then return # guard
       html-form = @$.find \form.menus
       if html-form
@@ -82,21 +74,8 @@ module.exports =
           ..data \id,    e.data!id.replace /list_/ ''
           ..data \form,  data
           ..data \title, e.val!
-    current-restore: !~>
+    current-restore: !->
       unless e = @current then return # guard
-
-      init-html5-uploader = (form) ~> # FIXME wrap in Component for cleanup with detach!destroy!
-        @set-background-thumb form.background
-        @$.find('.drop-target, input.upload[type=file]').html5-uploader {
-          name: \background
-          post-url: "/resources/forums/#{form.dbid}/background"
-          on-success: (xhr, file, r-json) ~>
-            # load current background
-            r = JSON.parse r-json
-            if r.success
-              @set-background-thumb r.background
-              @current-store!
-        }
 
       # set visually active
       $ \.col1 .find \.active .remove-class \active
@@ -114,7 +93,15 @@ module.exports =
         if form # restore current's id + menu + title
           e.val title
           form{id, title} = {id, title}
-          init-html5-uploader form # applies form.background
+          # init-html5-uploader
+          @uploader.detach! if @uploader # cleanup
+          @uploader = new Uploader {
+            locals:
+              background: form.background
+              post-url: "/resources/forums/#{form.dbid}/background"
+              on-success: (xhr, file, r-json) ~>
+                @current-store!}, \#uploader_component
+
           html-form.find 'input,textarea' |> each (input) ->
             $i = @$ input
             n = $i?attr \name
@@ -131,14 +118,14 @@ module.exports =
                   if $i.is \textarea
                     $i.val form[n]
 
-    store-title: (ev) !~>
+    store-title: (ev) !->
       $input     = $ ev.target
       data       = $input.data!
       data.title = data.form.title = $input.val!
       @$.find 'input[name=title]' .val $input.val!
       $input.data data
 
-    to-hierarchy: ~>
+    to-hierarchy: ->
       @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!
 
     resort: (ev, ui) !~>
@@ -156,7 +143,7 @@ module.exports =
           tree   : JSON.stringify @to-hierarchy!
       jqxhr = @@$.ajax req
 
-    delete: (row) !~>
+    delete: (row) !->
       if confirm "Permanently Delete #{row.val!}?"
         req =
           method : \PUT
@@ -173,7 +160,7 @@ module.exports =
           .fail (jqxhr, status, err) ~>
             console?warn status, err
 
-    build-nested-sortable: ($ol, menu) ~>
+    build-nested-sortable: ($ol, menu) ->
       for item in menu
         if item
           # add item to $ol
@@ -192,7 +179,7 @@ module.exports =
             $item?append $sub-ol
             @build-nested-sortable $sub-ol, item.children
 
-    on-attach: !~>
+    on-attach: !->
       #{{{ Event Delegates
       @$.on \click \.disclose ->
         $ this .closest \li

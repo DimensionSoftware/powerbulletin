@@ -1,0 +1,40 @@
+// Uploader must be embedded inside a <form>, so prefix:
+form
+  .Uploader
+    // <drag-n-drop & upload widget>
+    label
+      .button
+        margin -21px 0 7px 140px!important
+        padding 0
+        width 85px!important
+        height 35px!important
+        span
+          color #fff
+          font-weight 400
+          font-size 15px
+          line-height 35px
+    label[for='upload']
+      position relative
+      .background
+        position absolute
+        z-index 10
+        display block
+        background-color #fafafa
+        border 1px solid #ccc
+        outline none
+        height 37px
+        width 37px
+        right -135px
+        top 0
+        border-radius 3px
+        // magnify these on hover--they have backgrounds
+        &[src*='/sites/']:hover
+          border 1px solid light
+          background-color #f8f8f8
+          transform scale(3)
+          transition all .15s ease-out .15s
+    .upload
+      display none
+    .button
+      width 350px!important
+      margin 14px 0 0 140px!important
