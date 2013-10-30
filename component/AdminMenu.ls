@@ -99,6 +99,10 @@ module.exports =
             locals:
               background: form.background
               post-url: "/resources/forums/#{form.dbid}/background"
+              on-delete: ~>
+                # remove background from config
+                @$.find 'form.menus .background' .data \src, ''
+                @current-store!
               on-success: (xhr, file, r-json) ~>
                 @current-store!}, \#uploader_component
 
