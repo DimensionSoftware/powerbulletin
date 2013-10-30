@@ -197,13 +197,14 @@ export create-passport = (domain, cb) ->
     console.log email, site.id
     (err, user) <~ db.users.by-email-and-site email, site.id
     console.log \db.users.by-email-and-site, user
+    errors = [ "Invalid login" ] # vague message on purpose
     if err then return done(err)
     if not user
       log 'no user'
-      return done(null, false, { type: \user-not-found, errors: ['User not found'] })
+      return done(null, false, { errors })
     if not valid-password(user, password)
       log 'invalid password', password, user
-      return done(null, false, { type: \incorrect-password, errors: ['Incorrect password'] })
+      return done(null, false, { errors })
     # XXX the following lines force verification
     #if not user.verified
     #  log 'unverified user', user
