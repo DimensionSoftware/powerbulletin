@@ -28,10 +28,16 @@ form
   fieldset
     legend Rights
     .box
-      input#UserEditor-admin(name='admin', type='checkbox', checked=user.rights.super)
-      label.switch-control(for='UserEditor-admin')
+      input#UserEditor-site_admin(name='site_admin', type='checkbox', checked=user.site_admin)
+      label.switch-control(for='UserEditor-site_admin')
         .switch
       span.label.checked Site Admin
       .note Toggle user as a site-wide administrator
+    .box
+      input#UserEditor-sys_admin(name='sys_admin', type='checkbox', checked=user.sys_admin)
+      label.switch-control(for='UserEditor-sys_admin')
+        .switch
+      span.label.checked System Admin
+      .note Toggle user as a system-wide administrator
   .box(style='margin:10px auto 5px auto; text-align:center')
     input(style='width: 80%', type='submit', value='Save')

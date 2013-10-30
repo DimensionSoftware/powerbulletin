@@ -12,7 +12,7 @@ require! async
   active-page = parse-int(req.query.page) or 1
   step = 4
   offset = (active-page - 1) * step
-  cols = [\id, \email, \name, \photo, \rights, \verified, \created, \site_id, \actions]
+  cols = [\id, \email, \name, \photo, \site_admin, \sys_admin, \verified, \created, \site_id, \actions]
 
   err, a <- async.auto {
     obj-rows: db.users.all {limit: step, offset}, _
