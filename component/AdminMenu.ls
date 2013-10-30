@@ -100,7 +100,7 @@ module.exports =
               background: form.background
               post-url: "/resources/forums/#{form.dbid}/background"
               on-success: (xhr, file, r-json) ~>
-                @current-store!}, \#uploader-component
+                @current-store!}, \#uploader_component
 
           html-form.find 'input,textarea' |> each (input) ->
             $i = @$ input
@@ -128,7 +128,7 @@ module.exports =
     to-hierarchy: ->
       @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!
 
-    resort: (ev, ui) !->
+    resort: (ev, ui) !~>
       # guard unless item has a type to avoid nulls
       return unless (ui.item.find \.row .data \form)?dialog
       id    = ui.item.attr \id .replace /^list_/ ''
