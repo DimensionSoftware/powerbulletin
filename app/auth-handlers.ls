@@ -134,7 +134,7 @@ do-verify = (req, res, next) ~>
     res.json success: false, errors: [ msg:'Blank email' ]
     return
 
-  err, user <- db.usr { email, site_id: site.id }
+  err, user <- db.users.by-email-and-site email, site.id
   if err
     res.json success: false, errors: [ err ]
     return
@@ -199,7 +199,7 @@ do-verify = (req, res, next) ~>
   site  = res.vars.site
   email = req.body.email
 
-  err, user <- db.usr { email, site_id: site.id }
+  err, user <- db.users.by-email-and-site email, site.id
   if err then return res.json success: false, when: \db.usr
 
   err, verify <- auth.unique-hash \verify, site.id

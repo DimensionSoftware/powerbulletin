@@ -194,7 +194,9 @@ export create-passport = (domain, cb) ->
       done new Error("bad cookie #{parts}")
 
   pass.use new passport-local.Strategy (email, password, done) ~>
-    (err, user) <~ db.usr { email: email, site_id: site.id }
+    console.log email, site.id
+    (err, user) <~ db.users.by-email-and-site email, site.id
+    console.log \db.users.by-email-and-site, user
     if err then return done(err)
     if not user
       log 'no user'
