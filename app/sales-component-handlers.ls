@@ -12,13 +12,16 @@ require! async
   active-page = parse-int(req.query.page) or 1
   step = 4
   offset = (active-page - 1) * step
-  cols = [\id, \email, \name, \photo, \rights, \verified, \created, \site_id]
+  cols = [\id, \email, \name, \photo, \rights, \verified, \created, \site_id, \actions]
 
   err, a <- async.auto {
     obj-rows: db.users.all {limit: step, offset}, _
     qty: db.users.all-count {}, _
   }
   if err then return next err
+
+  for o in a.obj-rows
+    o.actions = "<button data-edit-user=#{JSON.stringify(o)}>Edit User</button>"
 
   # pass page var thru
   res.locals {
