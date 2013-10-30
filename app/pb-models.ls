@@ -145,7 +145,7 @@ query-dictionary =
       user = r.0
       err, auths <- postgres.query auths-sql, [user.id]
       if err then return cb err
-      user.auths = fold ((a,b) -> a[b.type] = b; a), {}, auths
+      user.auths = fold ((a,b) -> a[b.type] = JSON.parse(b.profile); a), {}, auths
       err, r <- postgres.query alias-sql, [site-id, user.id]
       if err then return cb err
 
@@ -153,16 +153,18 @@ query-dictionary =
       if r.0
         _a = r.0
         alias =
-          name   : _a.name
-          photo  : _a.photo
-          rights : _a.rights
-          config : _a.config
+          name    : _a.name
+          photo   : _a.photo
+          rights  : _a.rights
+          config  : _a.config
+          site_id : site-id
       else
         alias =
-          name   : void
-          photo  : void
-          rights : void
-          config : void
+          name    : void
+          photo   : void
+          rights  : void
+          config  : void
+          site_id : site-id
       cb null, user <<< alias
 
   pages:
