@@ -173,6 +173,7 @@ export create-passport = (domain, cb) ->
   config = current-domain.config
 
   pass = new Passport
+  cvars = global.cvars
 
   # middleware functions for this passport
   pass.mw-initialize = pass.initialize()
@@ -180,15 +181,15 @@ export create-passport = (domain, cb) ->
 
   pass.serialize-user (user, done) ~>
     log \user, \xxx, user
-    parts = "#{user.email}:#{user.site_id}"
+    parts = "#{user.name}:#{user.site_id}"
     done null, parts
 
   pass.deserialize-user (parts, done) ~>
     log \parts, parts
-    [email, site_id] = parts.split ':'
-    (err, user) <~ db.usr {email, site_id}
+    [name, site_id] = parts.split ':'
+    (err, user) <~ db.usr {name, site_id}
     if err then return cb err
-    if email and site_id
+    if name and site_id
       done null, user
     else
       done new Error("bad cookie #{parts}")
@@ -232,8 +233,8 @@ export create-passport = (domain, cb) ->
     (err, user) <- db.find-or-create-user u
     log 'err', err if err
     if err then return cb err
-    default-site-ids = cvars.default-site-ids |> filter (-> it not site.id)
-    (err) <- db.aliases.add-to-user u.id, default-site-ids, { name, +verified }
+    default-site-ids = cvars.default-site-ids |> filter (-> it is not site.id)
+    (err) <- db.aliases.add-to-user user.id, default-site-ids, { name, +verified }
     done(err, user)
 
   twitter-options =
@@ -256,8 +257,8 @@ export create-passport = (domain, cb) ->
     (err, user) <- db.find-or-create-user u
     log 'err', err if err
     if err then return cb err
-    default-site-ids = cvars.default-site-ids |> filter (-> it not site.id)
-    (err) <- db.aliases.add-to-user u.id, default-site-ids, { name, +verified }
+    default-site-ids = cvars.default-site-ids |> filter (-> it is not site.id)
+    (err) <- db.aliases.add-to-user user.id, default-site-ids, { name, +verified }
     done(err, user)
 
   google-options =
@@ -282,8 +283,8 @@ export create-passport = (domain, cb) ->
     (err, user) <- db.find-or-create-user u
     log 'err', err if err
     if err then return cb err
-    default-site-ids = cvars.default-site-ids |> filter (-> it not site.id)
-    (err) <- db.aliases.add-to-user u.id, default-site-ids, { name, +verified }
+    default-site-ids = cvars.default-site-ids |> filter (-> it is not site.id)
+    (err) <- db.aliases.add-to-user user.id, default-site-ids, { name, +verified }
     done(err, user)
 
   cb(null, pass)
