@@ -719,8 +719,8 @@ mk-post-pnum-to-href = (post-uri) ->
 # this mutant pre-empts any action for private sites where user is not logged in
 # it means the site owner has specified that the site is private therefore we show a skeleton
 # of the site and prompt for login (all sensitive details should be removed)
-!function plax-bg window # background parallax
-  window.$ \#forum_background .plaxify {y-range:15px,x-range:40px,invert:true}
+#!function plax-bg window # background parallax
+#  window.$ \#forum_background .plaxify {y-range:15px,x-range:40px,invert:true}
 !function rotate-backgrounds window, cache-url, backgrounds
   set-timeout (->
     # shuffle backgrounds & choose
@@ -729,7 +729,7 @@ mk-post-pnum-to-href = (post-uri) ->
     # set choice in static & on-load
     set-background-static window, cache-url, c
     <- set-background-onload window, c, 2500ms, \scale
-    plax-bg window
+    #plax-bg window
     rotate-backgrounds window, cache-url, backgrounds # again, and again...
   ), 9000ms
   #
@@ -746,18 +746,10 @@ mk-post-pnum-to-href = (post-uri) ->
   on-load: (window, next) ->
     <~ lazy-load-fancybox
 
-    # XXX: not sure why this fails the first time...
-    # workaround ;(
-    try
-      <- require [\jqueryPlax]
-    catch
-      <- require [\jqueryPlax]
-
-
     # handle background
     rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds?length > 1
 
-    #  show Auth dialog
+    # yield & show Auth dialog
     set-timeout (->
       # ensure login stays open
       window.fancybox-params ||= {}
@@ -770,18 +762,10 @@ mk-post-pnum-to-href = (post-uri) ->
       <- Auth.show-login-dialog
 
       set-timeout (-> # XXX guarantee fancybox shows -- race condition & plax!
-        plax = -> # parallax background & auth dialog
-          $ \.fancybox-skin .plaxify {y-range:0,x-range:10px}
-          plax-bg window
-          $.plax.enable!
         unless $ \.fancybox-overlay:visible .length
-          <- Auth.show-login-dialog
-          plax!
-        else
-          plax!), 1200ms
+          <- Auth.show-login-dialog), 1200ms
       # remove initial hover state to dim if mouse is really hovered out
-      #
-      set-timeout (-> window.$ \.fancybox-skin .remove-class \hover), 3000ms
+      set-timeout (-> window.$ \.fancybox-skin .remove-class \hover), 4000ms
     ), 200ms
 
 @moderation =
