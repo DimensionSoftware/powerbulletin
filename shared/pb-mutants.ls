@@ -725,7 +725,7 @@ mk-post-pnum-to-href = (post-uri) ->
   set-timeout (->
     # shuffle backgrounds & choose
     s = backgrounds |> sort-by (-> Math.random!)
-    c = if (window.$ '#forum_background img' .attr \src).index-of(s.0.trim!) > -1 then s?1 else s?0
+    c = if (window.$ '#forum_background img' .attr \src)?index-of(s.0.trim!) > -1 then s?1 else s?0
     # set choice in static & on-load
     set-background-static window, cache-url, c
     <- set-background-onload window, c, 2500ms, \scale
