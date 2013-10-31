@@ -193,6 +193,7 @@ query-dictionary =
       if r.length is 0
         return cb null, null
       user = r.0
+      user.sys_rights = JSON.parse user.sys_rights
       err, auths <- postgres.query auths-sql, [user.id]
       if err then return cb err
       user.auths = fold ((a,b) -> a[b.type] = JSON.parse(b.profile); a), {}, auths
@@ -205,8 +206,8 @@ query-dictionary =
         alias =
           name    : _a.name
           photo   : _a.photo
-          rights  : _a.rights
-          config  : _a.config
+          rights  : JSON.parse _a.rights
+          config  : JSON.parse _a.config
           site_id : site-id
       else
         alias =
