@@ -338,10 +338,10 @@ html.forum, html.profile, html.search, html.moderation
         p.body
           color #444
           line-height 1.5em
-          margin (grid/2) 0 grid -17px
+          margin 0 0 grid -17px
           border-bottom-right-radius 20px
           border-bottom-left-radius 20px
-          padding 10px 15px 15px 15px
+          padding 0 15px 15px 15px
           clear both
           font-size 1.05em
         .actions
@@ -413,21 +413,24 @@ html.profile
       margin-left 0
   .main-content
     .forum
+      .username
+        text-transform capitalize
+        margin grid 0
       .heading
         margin grid 0 0 0
         padding 0
         font-size 1em
         color #000
         text-transform none
-        a
-          text-decoration none
-        b
-          font-weight 500
-          text-transform capitalize
         .title
           margin 0 1px 0 -1px
-          padding 1px 5px
+          padding 1px 6px 3px 6px
           font-size 1.12em
+          &:hover
+            text-decoration none
+          b
+            font-weight 500
+            text-transform capitalize
         .by, .forum-link
           margin-right 1px
           font-size .8em
@@ -444,9 +447,10 @@ html.profile
         margin-top 2px
         b
           margin-left 1px
-        .title
+        > h4.title
           font-size 1.4em
           letter-spacing -1px
+          display none
         .body
           margin-top 0
         .profile
@@ -464,6 +468,9 @@ html.profile
             display inline-block
             b
               font-weight 200
+      .bottom
+        margin-bottom (grid*6)
+
   ul
     list-style none
     margin grid 0 0 0
@@ -722,7 +729,7 @@ html.forum
       cursor pointer
       font-weight 200
       margin 0 auto
-      margin-bottom 70px
+      margin-bottom 30px
   footer.expanded
     cursor s-resize
     height 320px
