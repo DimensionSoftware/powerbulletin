@@ -53,11 +53,10 @@ module.exports =
       ch.switch-and-focus '', \on-reset, '#auth .reset input:first'
       hash = location.hash.split('=')[1]
       $form.find('input[type=hidden]').val(hash)
-      console.log hash, $form, $auth
       $.post '/auth/forgot-user', { forgot: hash }, (r) ->
         if r.success
           $form .find 'h2:first' .html 'Choose a New Password'
-          $form .find('input').prop('disabled', false)
+          $form .find('button,input').prop('disabled', false)
         else
           $form .find 'h2:first' .html "Couldn't find you. :("
 
