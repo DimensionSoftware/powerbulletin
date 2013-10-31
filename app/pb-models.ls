@@ -47,6 +47,17 @@ insert-statement = (table, obj) ->
   vals      = values obj
   return ["INSERT INTO #table (#columns) VALUES (#value-set) RETURNING *", vals]
 
+conditional-insert-statement = (table, obj, condition) ->
+  columns   = keys obj
+  value-set = [ "$#{i+1}" for k,i in columns ].join ', '
+  vals      = values obj
+  sql       = """
+  INSERT INTO #table (#columns)
+    SELECT #value-set WHERE NOT EXISTS
+      (SELECT * FROM #table WHERE #condition)
+  """
+  return [sql, vals]
+
 update-statement = (table, obj, wh) ->
   wh       ?= "WHERE id = $1"
   ks        = keys obj |> filter (-> it isnt \id)
@@ -106,7 +117,9 @@ query-dictionary =
           site_id : site-id
           photo   : \/images/profile.jpg
         row <<< attrs
-        [insert-sql, vals] = insert-statement \aliases, row
+        uid = parse-int user-id
+        sid = parse-int sid
+        [insert-sql, vals] = conditional-insert-statement \aliases, row, "user_id = #uid AND site_id = #sid"
         postgres.query insert-sql, vals, cb
 
       async.each site-ids, do-insert, cb
