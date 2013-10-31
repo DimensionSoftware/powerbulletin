@@ -53,14 +53,15 @@ is-locked-forum = (m, forum-id) ->
       for f in [\style \postsPerPage \inviteOnly \private \analytics]
         if site.config[f] isnt req.body[f] then should-ban = true
 
+      css-dir = "#base-css/#{site.id}"
       # save css to disk for site
       if site.config.style isnt req.body.style # only on change
         site.config.cache-buster = h.cache-buster!
-        err <- mkdirp base-css
+        err <- mkdirp css-dir
         if err then return next err
         (err, css) <- stylus.render site.config.style, {compress:true}
         if err then return res.json {success:false, msg:'CSS must be valid!'}
-        err <- fs.write-file "#base-css/#{site.id}.css" css
+        err <- fs.write-file "#css-dir/master.css" css
         if err then return next err
 
       # update site
@@ -188,9 +189,10 @@ is-locked-forum = (m, forum-id) ->
       delete auth.passports[domain.name]
 
       # save css to disk
-      err <- mkdirp base-css
+      css-dir = "#base-css/#{domain.site_id}"
+      err <- mkdirp css-dir
       if err then return next err
-      err <- fs.write-file "#base-css/#{domain.site_id}-#{domain.id}.auth.css" domain.config.style
+      err <- fs.write-file "#css-dir/#{domain.id}.auth.css" domain.config.style
 
       res.json success:true
 
