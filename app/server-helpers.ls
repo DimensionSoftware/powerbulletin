@@ -124,8 +124,8 @@ process-cached-data = {}
     if err                then return cb err
     if r.success is false then return cb r
 
-    # TODO: reserve a site_id for community.pb.com and add it to default-site-ids
-    default-site-ids = [ 1 ] |> filter (-> it not site.id)
+    # TODO: reserve a site_id for community.pb.com and add it to cvars.default-site-ids
+    default-site-ids = cvars.default-site-ids |> filter (-> it not site.id)
     err <~ db.aliases.add-to-user u.id, default-site-ids, { name, +verified }
     if err then return cb err
 
