@@ -118,8 +118,9 @@ query-dictionary =
           photo   : \/images/profile.jpg
         row <<< attrs
         uid = parse-int user-id
-        sid = parse-int sid
+        sid = parse-int site-id
         [insert-sql, vals] = conditional-insert-statement \aliases, row, "user_id = #uid AND site_id = #sid"
+        #console.log insert-sql, vals
         postgres.query insert-sql, vals, cb
 
       async.each site-ids, do-insert, cb
