@@ -132,7 +132,7 @@ query-dictionary =
       sql = """
       SELECT
         u.id, u.email, u.rights AS sys_rights,
-        a.name, a.photo, a.rights AS site_rights, a.verified, a.created, a.site_id
+        a.name, a.photo, a.rights AS rights, a.verified, a.created, a.site_id
       FROM users u
       JOIN aliases a ON a.user_id=u.id
       #{if site_id then 'WHERE a.site_id=$3' else ''}
@@ -149,7 +149,7 @@ query-dictionary =
 
       for u in users
         sys-r = JSON.parse delete u.sys_rights
-        site-r = JSON.parse delete u.site_rights
+        site-r = JSON.parse delete u.rights
         u.sys_admin = !! sys-r.super
         u.site_admin = !! site-r.super
 
@@ -180,7 +180,7 @@ query-dictionary =
     # name, photo, rights, and config will be void
     by-email-and-site: (email, site-id, cb) ->
       user-sql = '''
-      SELECT u.* FROM users u WHERE u.email = $1
+      SELECT u.*, u.rights AS sys_rights FROM users u WHERE u.email = $1
       '''
       auths-sql = '''
       SELECT a.* FROM auths a WHERE a.user_id = $1
