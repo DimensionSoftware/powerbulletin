@@ -28,7 +28,7 @@ html
       for obj in cssUrls
         link(rel='stylesheet',type='text/css',href=obj.url)
     if domainStyle
-      link(href="#{cache3Url}/sites/#{siteId}.auth.css?#{cacheBuster}", rel='stylesheet', type='text/css')
+      link(href="#{cache3Url}/sites/#{siteId}-#{domainId}.auth.css?#{cacheBuster}", rel='stylesheet', type='text/css')
     if style
       link(href="#{cache2Url}/sites/#{siteId}.css?#{cacheBuster}", rel='stylesheet', type='text/css')
 
