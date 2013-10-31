@@ -25,7 +25,7 @@ require! {
   if err then return next err
 
   if site
-    {id, name, current_domain, domain_config, config} = site
+    {id, name, current_domain, domain_id, domain_config, config} = site
     res.vars.site = site
     res.locals.site-id        = id
     res.locals.site-name      = name
@@ -35,6 +35,7 @@ require! {
     res.locals.private        = config.private
     res.locals.style          = config.style
     res.locals.domain-style   = domain_config.style
+    res.locals.domain-id      = domain_id
     res.locals.cache-buster   = config.cache-buster or '' # default
     for i in ['', 2, 3, 4, 5]
       res.locals["cache#{i}Url"] = cvars["cache#{i}Url"]

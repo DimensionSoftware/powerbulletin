@@ -10,7 +10,7 @@ cache-url =
     cvars.cache-url
 
 base-url: "#{cache-url}/client" # override for optimized builds
-wait-seconds: 8 # give a single module this long to load til timeout
+wait-seconds: 30 # give a single module this long to load till timeout
 paths:
   fse                   : "../local/fse"
   jquery                : \../local/jquery-1.10.2.min

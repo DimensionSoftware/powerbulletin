@@ -482,7 +482,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- @param String domain
 CREATE FUNCTION procs.site_by_domain(domain JSON) RETURNS JSON AS $$
   sql = """
-  SELECT s.*, d.config AS domain_config, d.name AS current_domain
+  SELECT s.*, d.id AS domain_id, d.config AS domain_config, d.name AS current_domain
   FROM sites s JOIN domains d ON s.id = d.site_id
   WHERE d.name = $1
   """
