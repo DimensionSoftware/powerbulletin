@@ -117,7 +117,7 @@ render = (sel, locals, cb=(->)) ~>
     render \#post_new, data, ~> # init form
       <- @lazy-load-editor
       unless CKEDITOR.instances.post_new
-        CKEDITOR.replace ($ '#post_new textarea' .0)#, {startup-focus:true}
+        CKEDITOR.replace ($ '#post_new textarea' .0), {startup-focus:true}
       e.find 'form.post-new input[name="forum_id"]' .val window.active-forum-id
       e.find 'form.post-new input[name="parent_id"]' .val window.active-thread-id
 
