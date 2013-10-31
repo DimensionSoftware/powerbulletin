@@ -255,7 +255,7 @@ html.profile
     .forum
       .heading
         .title
-          color dark
+          color dark_text
 //}}}
 //{{{ - admin
 html.admin
@@ -354,15 +354,11 @@ html.privateSite
       background-color transparent!important
 
 // hover fx for links
-.stylish:hover
-   //background-color dark
-   //color #fff!important
-   //color #000!important
-   text-decoration none!important
-   border-radius 4px / 2px
-   background-image linear-gradient(bottom, transparent 99%, dark)
-   border-bottom 1px solid dark!important
-   transform scale(1.04)
-   text-indent -1px
-   transition all .1s ease-out .05s
+.stylish
+   //transition all .1s ease-out .05s
+   &:hover
+     transition none
+     text-decoration none!important
+     //border-radius 9px
+     //background-color light
 // vim:fdm=marker

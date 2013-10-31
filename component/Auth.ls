@@ -111,7 +111,10 @@ module.exports =
       @$.on \click '.dialog a.resend' @resend
 
       @$.on \click \.onclick-close-fancybox ->
-        $.fancybox.close!
+        if window.mutator is \privateSite # back to login dialog
+          ch.switch-and-focus 'on-dialog on-forgot on-register on-reset' \on-login '#auth input[name=login-email]'
+        else
+          $.fancybox.close!
       @$.on \click \.onclick-show-login ->
         ch.switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=login-email]'
       @$.on \click \.onclick-show-forgot ->

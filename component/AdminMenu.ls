@@ -192,6 +192,7 @@ module.exports =
 
       @$.on \change 'input[name="dialog"]' ~> # type was selected
         # TODO - make sure current-restore has the right data to restore; when adding a new item, it often does not.
+        $ \.tooltip .remove-class \hover # hide tooltip
         # TODO - create slug out of title
         @$.find \fieldset .add-class \has-dialog .find \input:visible .focus!
 
@@ -202,7 +203,7 @@ module.exports =
 
       @$.on \click \.onclick-add (ev) ~>
         @show!
-        ch.show-tooltip ($ \#warning), 'Select a type below!'
+        ch.show-tooltip ($ \#warning), 'Select a type below!', 20000ms # closes early when selected
 
         s = @$.find \.sortable
         # generate id & add new menu item!

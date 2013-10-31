@@ -753,20 +753,20 @@ mk-post-pnum-to-href = (post-uri) ->
     catch
       <- require [\jqueryPlax]
 
-
     # handle background
     rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds?length > 1
+
+    window.fancybox-params ||= {}
+    window.fancybox-params <<< {
+      open-easing: \easeOutExpo
+      open-speed:  1000ms
+      close-btn:   false
+      close-click: false
+      modal:       true}
 
     #  show Auth dialog
     set-timeout (->
       # ensure login stays open
-      window.fancybox-params ||= {}
-      window.fancybox-params <<< {
-        open-easing: \easeOutExpo
-        open-speed:  1000ms
-        close-btn:   false
-        close-click: false
-        modal:       true}
       <- Auth.show-login-dialog
 
       set-timeout (-> # XXX guarantee fancybox shows -- race condition & plax!
