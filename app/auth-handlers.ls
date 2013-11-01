@@ -102,6 +102,8 @@ announce = sioa.create-client!
       auth.send-registration-email u, site, (err, r) ->
         console.warn 'registration email', err, r
       #res.json success:true, errors:[]   # <- just register
+
+      req.body.username = email           # give passport what it wants, where it wants it
       @login req, res, next               # <- autologin
                                           # pick one
 
