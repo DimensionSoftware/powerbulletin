@@ -1,3 +1,9 @@
+@can-list-site-users = (user, site-id, cb) ->
+  if user.rights.super
+    cb null true
+  else
+    cb null false
+
 @can-edit-user = (user, target-user-id, cb) ->
   if user.rights.super
     cb null true
@@ -37,7 +43,9 @@ for k, v of @
   do ~>
     orig-fn = v
     @[k] = (user, ...args, cb) ~>
-      if user.sys_rights.super
+      if not user
+        return cb null, false
+      else if user.sys_rights.super
         return cb null, true
       else
         orig-fn.apply @, arguments

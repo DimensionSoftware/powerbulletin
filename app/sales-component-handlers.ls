@@ -1,4 +1,7 @@
-require! async
+require! {
+  async
+  \./rights
+}
 
 @homepage = (req, res, next) ->
   res.locals {
@@ -11,7 +14,10 @@ require! async
   next!
 
 @super = @super-users = (req, res, next) ->
-  return next(404) unless req.user?rights.super
+  err, can-list-site-users <- rights.can-list-site-users req.user, res.vars.site.id
+  if err then return next err
+
+  return next 404 unless can-list-site-users
 
   active-page = parse-int(req.query.page) or 1
   step   = 35
