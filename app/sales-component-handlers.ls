@@ -6,7 +6,11 @@ require! async
   }
   next!
 
-@super = @superSites = @superUsers = (req, res, next) ->
+@super-sites = (req, res, next) ->
+  return next 404
+  next!
+
+@super = @super-users = (req, res, next) ->
   return next(404) unless req.user?rights.super
 
   active-page = parse-int(req.query.page) or 1
