@@ -32,16 +32,14 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
               input#locked(type='checkbox', value='checked', name='locked')
               label.switch-control(for='locked')
                 .switch
-              span.label.checked Locked
-              .note Lock entire forum (read-only except admin)
+            .note Lock entire forum (read-only except admin)
             .break    
             label(for='comments') Comments
             .box
               input#comments(type='checkbox', value='checked', name='comments')
               label.switch-control(for='comments')
                 .switch
-              span.label.checked Yes
-              .note Commentable forums are threaded like Reddit
+            .note Commentable forums are threaded like Reddit
             .break    
             button(type='submit', value='Save') Save
             .tooltip
@@ -58,8 +56,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
               input#content_only(type='checkbox', value='checked', name='contentOnly')
               label.switch-control(for='content_only')
                 .switch
-              span.label.checked On
-              .note Hide the header, side-bar &amp; footer for this page
+            .note Hide the header, side-bar &amp; footer for this page
             .break
             label(for='content') Content
             textarea(id='content', name='content')
@@ -79,8 +76,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
               input#separate_tab(type='checkbox', value='checked', name='separateTab')
               label.switch-control(for='separate_tab')
                 .switch
-              span.label.checked Yes
-              .note Open link in separate window
+            .note Open link in separate window
             .break    
             button(type='submit', value='Save') Save
             .tooltip

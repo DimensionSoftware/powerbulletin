@@ -74,11 +74,24 @@ input[type="checkbox"]:checked ~ label .switch
 input[type="checkbox"]:checked ~ label
   background-color light
   transition background-color .4s ease-out
+// these are placeholders for switch state text, eg: "On" "Off"
+input[type="checkbox"]:checked + label::after
+  color #444
+  font-weight 400
+input[type="checkbox"] + label::after
+  position absolute
+  top 14px
+  left 60px
+  color #aaa
+  font-weight 200
+  letter-spacing 1px
+  font-size .9em
 label.switch-control
   display inline-block!important
   width 50px!important
   height 30px
   padding 1px
+  letter-spacing 1px
   margin 0 10px 8px 0
   border-radius 30px
   background rgba(0,0,0,.03)
@@ -88,6 +101,7 @@ label.switch-control
     transition box-shadow .1s ease-out
 // box is the surround container
 .box
+  position relative
   display inline-block
   margin-top 0
 .switch 
