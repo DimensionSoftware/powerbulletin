@@ -232,9 +232,6 @@ export create-passport = (domain, cb) ->
       verify  : vstring
     (err, user) <- db.find-or-create-user u
     log 'err', err if err
-    if err then return cb err
-    default-site-ids = cvars.default-site-ids |> filter (-> it is not site.id)
-    (err) <- db.aliases.add-to-user user.id, default-site-ids, { name, +verified }
     done(err, user)
 
   twitter-options =
@@ -256,9 +253,6 @@ export create-passport = (domain, cb) ->
       verify  : vstring
     (err, user) <- db.find-or-create-user u
     log 'err', err if err
-    if err then return cb err
-    default-site-ids = cvars.default-site-ids |> filter (-> it is not site.id)
-    (err) <- db.aliases.add-to-user user.id, default-site-ids, { name, +verified }
     done(err, user)
 
   google-options =
@@ -282,9 +276,6 @@ export create-passport = (domain, cb) ->
     log \u, u
     (err, user) <- db.find-or-create-user u
     log 'err', err if err
-    if err then return cb err
-    default-site-ids = cvars.default-site-ids |> filter (-> it is not site.id)
-    (err) <- db.aliases.add-to-user user.id, default-site-ids, { name, +verified }
     done(err, user)
 
   cb(null, pass)

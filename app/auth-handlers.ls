@@ -228,7 +228,11 @@ do-verify = (req, res, next) ~>
     name    : req.body.username
   (err, r) <- db.change-alias usr
   if err then return res.json {success:false, msg:'Name in-use!'}
-  console.warn "Changed name to #{req.body.username}"
+
+  cvars = global.cvars
+  default-site-ids = cvars.default-site-ids |> filter (-> it is not user.site_id)
+  (err) <- db.aliases.add-to-user user.id, default-site-ids, { name: req.body.username, +verified }
+
   req.session?passport?user = "#{req.body.username}:#{user.site_id}"
   res.json success:true
 
