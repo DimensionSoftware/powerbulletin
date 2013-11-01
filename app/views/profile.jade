@@ -1,7 +1,5 @@
 
 .container
-  h2= profile.name
-
   .profile(data-user-id="#{profile.id}", data-user-name="#{profile.name}")
     form(action="/resources/users/#{profile.id}/avatar", enctype="multipart/form-data", method="post")
       .avatar
@@ -22,5 +20,11 @@
     li.count
       b!= profile.human_post_count 
       span  #{profile.post_count == 1 ? "post" : "posts"}
-    li.chat
-      button.onclick-chat(title="Chat") Private Message
+    if postsByUser.length
+      //- use date of last post
+      p = postsByUser[0]
+      li.last-activity
+        span Last active 
+        span.date(data-time=p.created_iso)!= p.created_human
+
+  button.onclick-chat(title="Chat") Chat

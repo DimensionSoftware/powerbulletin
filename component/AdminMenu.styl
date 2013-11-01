@@ -131,6 +131,14 @@
       .dialog
         visibility hidden
         opacity 0
+        #locked:checked + label::after, #comments:checked + label::after
+          content 'On'
+        #locked + label::after, #comments + label::after
+          content 'Off'
+        #content_only:checked + label::after, #separate_tab:checked + label::after
+          content 'Yes'
+        #content_only + label::after, #separate_tab + label::after
+          content 'No'
       .type, .dialog
         position absolute
         left 0

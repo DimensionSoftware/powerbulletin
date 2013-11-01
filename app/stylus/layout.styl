@@ -405,11 +405,13 @@ footer
   //left 0
   // bottom -(footer-height)
   bottom -(grid)
-  height footer-height
+  height 0
+  opacity 0
   z-index 9
   width auto
   font-size .95em
   padding 5px 0
+  transition height .2s ease-out .3s
   .onclick-scroll-top
     cursor default
     height 0
@@ -523,7 +525,9 @@ body.scrolled
       top (header-scrolled-height+2)
       transition top .2s ease-out
   footer
-    //opacity 1
+    opacity 1
+    height footer-height
+    transition height .1s ease-out
 //}}}
 //{{{ Collapsed left nav
 body.collapsed

@@ -398,7 +398,7 @@ html.forum, html.profile, html.search, html.moderation
 html.profile
   .left-content
     .container
-      margin 0 (grid*2)
+      margin 0 (grid*3.5) 0 (grid*2)
       overflow hidden
       button
         margin 12px 2px 2px 2px
@@ -407,6 +407,12 @@ html.profile
       max-width 255px
     ul
       font-weight 300
+      color #777
+      b
+        color #444
+      .date
+        display inline-block
+        margin-left 5px
     h1, h2, h3
       text-transform capitalize
       margin-top 0
@@ -661,6 +667,10 @@ html.admin
           width 305px
           height 100px
           font-size 1em
+        #invite_only:checked + label::after, #private:checked + label::after
+          content 'On'
+        #invite_only + label::after, #private + label::after
+          content 'Off'
       button
         display block
         width 420px
@@ -684,9 +694,6 @@ html.admin
         color dark
         font-size .9em
         animation-name none
-      input[type="checkbox"]:checked ~ span[class*="checked"]
-        color #444
-        font-weight 400
   footer
     left 150px!important
 //}}}
