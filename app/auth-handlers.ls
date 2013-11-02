@@ -27,11 +27,47 @@ announce = sioa.create-client!
       console.warn \auth-response, err, user, info unless env is \production
       if err then return next(err)
       if not user then return res.json { success: false } <<< info
-      req.login user, (err) ->
+
+      extra = {}
+
+      maybe-join-site = if user and not user.name
+        (cb) ->
+          console.error "joining site for first time"
+          # grab default user (site_id 1)
+          email = req.body.username
+          err, default-user <- db.users.by-email-and-site email, 1
+          if err then return cb err
+
+          # create unique name based on default user's name
+          err, unique-name <- db.unique-name name: default-user.name, site_id: site.id
+          if err then return cb err
+
+          # create an alias for this site
+          alias =
+            user_id : default-user.id
+            site_id : site.id
+            name    : unique-name
+            rights  : {}
+            photo   : default-user.photo
+          err <- db.alias-create-preverified alias
+          if err then cb err
+
+          # make client choose alias.name
+          extra.choose-name = true
+          new-user = user <<< alias
+          cb null, new-user
+      else
+        (cb) -> cb null, user
+
+      err, maybe-new-user <- maybe-join-site
+      console.log \maybe-join-site err
+      if err then res.json success: false
+
+      req.login maybe-new-user, (err) ->
         if err then return next(err)
         console.warn "emitting enter-site #{JSON.stringify(user)}" unless env is \production
         announce.in(site-room).emit \enter-site, user
-        res.json { success: true }
+        res.json { success: true } <<< extra
 
     passport.authenticate('local', auth-response)(req, res, next)
   else
