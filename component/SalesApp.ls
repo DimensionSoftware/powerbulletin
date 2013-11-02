@@ -30,7 +30,7 @@ module.exports =
       @$.find 'li.auth a.onclick-logout' .show!
       @$.find 'li.my-sites' .show!
       @$.find 'li.community' .hide!
-      @show-my-sites!
+      set-timeout (~> @show-my-sites!), 800ms
 
     logout: ->
       @$.find 'li.auth a.onclick-login' .show!
@@ -39,14 +39,12 @@ module.exports =
       @$.find 'li.my-sites' .hide!
 
     show-my-sites: ~>
-      set-timeout (->
-        return if $('#auth:visible .register').length #guard
-        <~ ch.lazy-load-fancybox
-        $div = $ '<div/>'
-        r <~ @@$.get '/ajax/sites'
-        if r.success
-          msl = new MiniSiteList({locals: {sites: r.sites}}, $div)
-          $.fancybox.open $div
-        else
-          # error
-      ), 800
+      return if $('#auth:visible .register').length #guard
+      <~ ch.lazy-load-fancybox
+      $div = $ '<div/>'
+      r <~ @@$.get '/ajax/sites'
+      if r.success
+        msl = new MiniSiteList({locals: {sites: r.sites}}, $div)
+        $.fancybox.open $div
+      else
+        # error
