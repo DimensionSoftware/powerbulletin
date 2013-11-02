@@ -326,10 +326,10 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
 )
 #}}}
 #{{{ - admin
-$d.on \click 'html.admin .onclick-submit button[type="submit"]' (ev) ->
+$d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin [type="checkbox"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form
-    t = $(f.find \.tooltip)
+    t = $ \#warning
     inputs = # class to apply & which input
       saved: f.find 'input, textarea'
 
@@ -349,6 +349,8 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"]' (ev) ->
     else # indicated failure
       show-tooltip t, data?msg
   )
+  true
+
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
   #console.log \parsed_id, id

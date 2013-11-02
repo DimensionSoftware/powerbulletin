@@ -43,8 +43,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
     label(for='analytics') Analytics
     textarea(id='analytics', name='analytics')= analytics
     .note Paste Javascript code above, excluding &lt;script&gt; tags
-  .tooltip
   button(type='submit', value='Save') Save
   input(type='hidden', name='action', value='general')
-  a.menu-link.mutant(href='/admin/menu') Click here to continue building your menu
-    i !
+a.menu-link.mutant(href='/admin/menu') Continue building your menu here
+  i !
