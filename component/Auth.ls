@@ -151,13 +151,20 @@ module.exports =
       s.attr \disabled \disabled
       $.post $form.attr(\action), params, (r) ~>
         if r.success
-          $.fancybox.close!
-          @after-login! if @after-login
-          if Auth.require-login-cb
-            Auth.require-login-cb!
-            Auth.require-login-cb = null
-          # reload page XXX I know its not ideal but the alternative is painful >.<
-          if window.initial-mutant is \privateSite then window.location.reload!
+          if r.choose-name
+            @after-login! if @after-login
+            if Auth.require-login-cb
+              Auth.require-login-cb!
+              Auth.require-login-cb = null
+            ch.switch-and-focus '', \on-choose, '.choose input:first'
+          else
+            $.fancybox.close!
+            @after-login! if @after-login
+            if Auth.require-login-cb
+              Auth.require-login-cb!
+              Auth.require-login-cb = null
+            # reload page XXX I know its not ideal but the alternative is painful >.<
+            if window.initial-mutant is \privateSite then window.location.reload!
         else
           if r.type is \unverified-user
             resend = """
