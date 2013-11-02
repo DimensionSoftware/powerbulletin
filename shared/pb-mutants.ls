@@ -745,7 +745,7 @@ mk-post-pnum-to-href = (post-uri) ->
     window.$ \#left_content .remove!
     window.$ \#main_content .remove!
     window.marshal \backgrounds, @backgrounds
-    window.$ \body .add-class \parallax-viewport
+    #window.$ \body .add-class \parallax-viewport
     layout-static.call @, window, \privateSite
     next!
   on-load: (window, next) ->
