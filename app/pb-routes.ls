@@ -21,7 +21,7 @@ personal-mw =
   * cors(origin: '*', credentials: true)
   * express.body-parser!
   * express.cookie-parser!
-  * express.cookie-session {secret:cvars.secret}
+  * express.cookie-session {secret:cvars.secret, proxy:true, cookie:{proxy:true, secure:true}}
   * auth.mw.initialize
   * auth.mw.session
 
