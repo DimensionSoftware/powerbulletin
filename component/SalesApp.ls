@@ -42,9 +42,9 @@ module.exports =
       return if $('#auth:visible .register').length #guard
       <~ ch.lazy-load-fancybox
       $div = $ '<div/>'
-      r <~ @@$.get '/ajax/sites'
+      r <~ @@$.get '/ajax/sites-and-memberships'
       if r.success
-        msl = new MiniSiteList({locals: {sites: r.sites}}, $div)
+        msl = new MiniSiteList({locals: r}, $div)
         $.fancybox.open $div
       else
         # error

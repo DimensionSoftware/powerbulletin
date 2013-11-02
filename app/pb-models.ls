@@ -250,6 +250,19 @@ query-dictionary =
     delete: delete-fn \forums
 
   sites:
+    user-is-member-of: (user-id, cb) ->
+      # every site user has an alias to
+      sql = '''
+      SELECT a.photo, a.name, d.site_id, d.name AS domain
+      FROM aliases a
+      JOIN domains d ON a.site_id = d.site_id
+      WHERE user_id = $1
+      ORDER BY d.id
+      '''
+      err, r <- postgres.query sql, [user-id]
+      if err then return cb err
+      cb null, r
+
     owned-by-user: (user-id, cb) ->
       # add user count
       sql = '''

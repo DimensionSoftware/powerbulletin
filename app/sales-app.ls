@@ -2,6 +2,7 @@ require! express
 require! \../component/SalesRouter
 require! {
   cors
+  async
   \express-validator
   csu: \./css-urls
   jsu: \./js-urls
@@ -81,12 +82,20 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
   else
     done!
 
-s-app.get '/ajax/sites', sales-personal-mw, (req, res, next) ->
+s-app.get '/ajax/sites-and-memberships', sales-personal-mw, (req, res, next) ->
   sh.caching-strategies.nocache res
   if not req.user then return res.json success: false, errors: [ "No user" ]
-  err, sites <- db.sites.owned-by-user req.user.id
+  tasks =
+    sites:       db.sites.owned-by-user req.user.id, _
+    memberships: db.sites.user-is-member-of req.user.id, _
+  err, r <- async.auto tasks
   if err then return res.json success: false, errors: [ err ]
-  res.json {success: true, sites}
+  {sites, memberships} = r
+  uniq-memberships = memberships
+  |> filter (m) -> # remove memberships we own
+    !find ((s) -> m.site_id is s.id), sites
+  |> map -> delete it.config; it # remove config for client
+  res.json {success:true, sites, memberships:uniq-memberships}
 
 # /auth/*
 auth-handlers.apply-to s-app, sales-personal-mw
