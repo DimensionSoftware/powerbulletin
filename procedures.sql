@@ -447,7 +447,7 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
 
   sql = """
   SELECT
-    u.id, u.email,
+    u.id, u.email, u.rights AS sys_rights,
     a.photo, a.verified, a.rights, a.name, a.created, a.site_id,
     (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2) AS post_count,
     auths.type, auths.profile 
@@ -471,6 +471,7 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
     photo      : auths.0?photo
     email      : auths.0?email
     rights     : auths.0?rights
+    sys_rights : auths.0?sys_rights
     verified   : auths.0?verified
     created    : auths.0?created
     post_count : auths.0?post_count

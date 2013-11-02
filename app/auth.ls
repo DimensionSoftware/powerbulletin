@@ -173,6 +173,7 @@ export create-passport = (domain, cb) ->
   config = current-domain.config
 
   pass = new Passport
+  cvars = global.cvars
 
   # middleware functions for this passport
   pass.mw-initialize = pass.initialize()
@@ -193,15 +194,18 @@ export create-passport = (domain, cb) ->
     else
       done new Error("bad cookie #{parts}")
 
-  pass.use new passport-local.Strategy (username, password, done) ~>
-    (err, user) <~ db.usr { name: username, site_id: site.id }  # XXX - how do i get site_id?
+  pass.use new passport-local.Strategy (email, password, done) ~>
+    console.log email, site.id
+    (err, user) <~ db.users.by-email-and-site email, site.id
+    console.log \db.users.by-email-and-site, user
+    errors = [ "Invalid login" ] # vague message on purpose
     if err then return done(err)
     if not user
       log 'no user'
-      return done(null, false, { type: \user-not-found, errors: ['User not found'] })
+      return done(null, false, { errors })
     if not valid-password(user, password)
       log 'invalid password', password, user
-      return done(null, false, { type: \incorrect-password, errors: ['Incorrect password'] })
+      return done(null, false, { errors })
     # XXX the following lines force verification
     #if not user.verified
     #  log 'unverified user', user

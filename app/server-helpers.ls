@@ -123,8 +123,14 @@ process-cached-data = {}
     err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
     if err                then return cb err
     if r.success is false then return cb r
-    #@login(req, res, cb) # on successful registration, automagically @login, too
+
     u.id = r.id
+
+    default-site-ids = global.cvars.default-site-ids |> filter (-> it is not site.id)
+    err <~ db.aliases.add-to-user r.id, default-site-ids, { name: username, +verified }
+    if err then return cb err
+
+    #@login(req, res, cb) # on successful registration, automagically @login, too
     cb null, u
 
 @format =

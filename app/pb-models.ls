@@ -47,6 +47,17 @@ insert-statement = (table, obj) ->
   vals      = values obj
   return ["INSERT INTO #table (#columns) VALUES (#value-set) RETURNING *", vals]
 
+conditional-insert-statement = (table, obj, condition) ->
+  columns   = keys obj
+  value-set = [ "$#{i+1}" for k,i in columns ].join ', '
+  vals      = values obj
+  sql       = """
+  INSERT INTO #table (#columns)
+    SELECT #value-set WHERE NOT EXISTS
+      (SELECT * FROM #table WHERE #condition)
+  """
+  return [sql, vals]
+
 update-statement = (table, obj, wh) ->
   wh       ?= "WHERE id = $1"
   ks        = keys obj |> filter (-> it isnt \id)
@@ -88,6 +99,40 @@ delete-fn = (table) ->
 # This is for queries that don't need to be stored procedures.
 # Base the top-level key for the table name from the FROM clause of the SQL query.
 query-dictionary =
+  aliases:
+
+    # Add aliases to a user
+    #
+    # @param Integer    user-id
+    # @param Array      site-ids
+    # @param Object     attrs
+    # @param Function   cb
+    add-to-user: (user-id, site-ids, attrs, cb) ->
+      if not attrs.name
+        cb new Error "attrs.name required!"
+
+      do-insert = (site-id, cb) ->
+        row =
+          user_id : user-id
+          site_id : site-id
+          photo   : \/images/profile.jpg
+        row <<< attrs
+        uid = parse-int user-id
+        sid = parse-int site-id
+        [insert-sql, vals] = conditional-insert-statement \aliases, row, "user_id = #uid AND site_id = #sid"
+        #console.log insert-sql, vals
+        postgres.query insert-sql, vals, cb
+
+      async.each site-ids, do-insert, cb
+
+    most-recent-for-user: (user-id, cb) ->
+      sql = '''
+      SELECT * FROM aliases WHERE user_id = $1 ORDER BY created DESC LIMIT 1
+      '''
+      err, r <- postgres.query sql, [user-id]
+      if err then return cb err
+      cb null, r.0
+
   # db.users.all cb
   users:
     # used by SuperAdminUsers
@@ -95,7 +140,7 @@ query-dictionary =
       sql = """
       SELECT
         u.id, u.email, u.rights AS sys_rights,
-        a.name, a.photo, a.rights AS site_rights, a.verified, a.created, a.site_id
+        a.name, a.photo, a.rights AS rights, a.verified, a.created, a.site_id
       FROM users u
       JOIN aliases a ON a.user_id=u.id
       #{if site_id then 'WHERE a.site_id=$3' else ''}
@@ -112,7 +157,7 @@ query-dictionary =
 
       for u in users
         sys-r = JSON.parse delete u.sys_rights
-        site-r = JSON.parse delete u.site_rights
+        site-r = JSON.parse delete u.rights
         u.sys_admin = !! sys-r.super
         u.site_admin = !! site-r.super
 
@@ -137,6 +182,49 @@ query-dictionary =
       err, r <- postgres.query 'SELECT COUNT(*) AS c FROM users WHERE email = $1', [email]
       if err then return cb err
       cb null, !!r.0.c
+
+    # Given an email, load a user.
+    # If the user does not have an alias for the given site-id,
+    # name, photo, rights, and config will be void
+    by-email-and-site: (email, site-id, cb) ->
+      user-sql = '''
+      SELECT u.*, u.rights AS sys_rights FROM users u WHERE u.email = $1
+      '''
+      auths-sql = '''
+      SELECT a.* FROM auths a WHERE a.user_id = $1
+      '''
+      alias-sql = '''
+      SELECT a.* FROM aliases a WHERE a.site_id = $1 AND a.user_id = $2
+      '''
+      err, r <- postgres.query user-sql, [email]
+      if err then return cb err
+      if r.length is 0
+        return cb null, null
+      user = r.0
+      user.sys_rights = JSON.parse user.sys_rights
+      err, auths <- postgres.query auths-sql, [user.id]
+      if err then return cb err
+      user.auths = fold ((a,b) -> a[b.type] = JSON.parse(b.profile); a), {}, auths
+      err, r <- postgres.query alias-sql, [site-id, user.id]
+      if err then return cb err
+
+      # site-specific info to be mixed into this user
+      if r.0
+        _a = r.0
+        alias =
+          name    : _a.name
+          photo   : _a.photo
+          rights  : JSON.parse _a.rights
+          config  : JSON.parse _a.config
+          site_id : site-id
+      else
+        alias =
+          name    : void
+          photo   : void
+          rights  : void
+          config  : void
+          site_id : site-id
+      cb null, user <<< alias
 
   pages:
     upsert: upsert-fn \pages

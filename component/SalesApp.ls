@@ -39,11 +39,14 @@ module.exports =
       @$.find 'li.my-sites' .hide!
 
     show-my-sites: ~>
-      <~ ch.lazy-load-fancybox
-      $div = $ '<div/>'
-      r <~ @@$.get '/ajax/sites'
-      if r.success
-        msl = new MiniSiteList({locals: {sites: r.sites}}, $div)
-        $.fancybox.open $div
-      else
-        # error
+      set-timeout (->
+        return if $('#auth:visible .register').length #guard
+        <~ ch.lazy-load-fancybox
+        $div = $ '<div/>'
+        r <~ @@$.get '/ajax/sites'
+        if r.success
+          msl = new MiniSiteList({locals: {sites: r.sites}}, $div)
+          $.fancybox.open $div
+        else
+          # error
+      ), 800
