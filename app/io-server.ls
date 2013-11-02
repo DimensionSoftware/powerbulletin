@@ -22,10 +22,13 @@ user-from-session = (s, cb) ->
     return cb null, {id:0, name:\Anonymous, guest:true}
   [name, site_id] = s?passport?user?split \:
   if name and site_id
-    (err, user) <~ db.usr {name, site_id}
+    (err, user) <~ db.usr { name, site_id }
     if err
       log \user-from-session, \db.usr, err
       return cb err
+    if not user
+      console.log \no-user
+      return cb new Error("couldn't find user")
     delete user.auths
     cb null, user
   else
