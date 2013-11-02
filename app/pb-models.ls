@@ -125,6 +125,14 @@ query-dictionary =
 
       async.each site-ids, do-insert, cb
 
+    most-recent-for-user: (user-id, cb) ->
+      sql = '''
+      SELECT * FROM aliases WHERE user_id = $1 ORDER BY created DESC LIMIT 1
+      '''
+      err, r <- postgres.query sql, [user-id]
+      if err then return cb err
+      cb null, r.0
+
   # db.users.all cb
   users:
     # used by SuperAdminUsers

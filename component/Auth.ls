@@ -156,6 +156,7 @@ module.exports =
             if Auth.require-login-cb
               Auth.require-login-cb!
               Auth.require-login-cb = null
+            $ '.choose input:first' .val r.name
             ch.switch-and-focus '', \on-choose, '.choose input:first'
           else
             $.fancybox.close!

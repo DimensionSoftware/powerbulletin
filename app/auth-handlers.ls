@@ -35,25 +35,26 @@ announce = sioa.create-client!
           console.error "joining site for first time"
           # grab default user (site_id 1)
           email = req.body.username
-          err, default-user <- db.users.by-email-and-site email, 1
+          err, default-alias <- db.aliases.most-recent-for-user user.id
           if err then return cb err
 
           # create unique name based on default user's name
-          err, unique-name <- db.unique-name name: default-user.name, site_id: site.id
+          err, unique-name <- db.unique-name name: default-alias.name, site_id: site.id
           if err then return cb err
 
           # create an alias for this site
           alias =
-            user_id : default-user.id
+            user_id : default-alias.user_id
             site_id : site.id
             name    : unique-name
             rights  : {}
-            photo   : default-user.photo
+            photo   : default-alias.photo
           err <- db.alias-create-preverified alias
           if err then cb err
 
           # make client choose alias.name
           extra.choose-name = true
+          extra.name        = unique-name
           new-user = user <<< alias
           cb null, new-user
       else
@@ -258,6 +259,7 @@ do-verify = (req, res, next) ~>
 # - then build a setting in general admin to user-specify
 @choose-username = (req, res, next) ->
   user = req.user
+  site = res.vars.site
   if not user then return res.json success:false
   db   = pg.procs
   usr  =
@@ -267,9 +269,17 @@ do-verify = (req, res, next) ~>
   (err, r) <- db.change-alias usr
   if err then return res.json {success:false, msg:'Name in-use!'}
 
-  cvars = global.cvars
-  default-site-ids = cvars.default-site-ids |> filter (-> it is not user.site_id)
-  (err) <- db.aliases.add-to-user user.id, default-site-ids, { name: req.body.username, +verified }
+
+  maybe-add-aliases = if site.id is 1
+    (cb) ->
+      cvars = global.cvars
+      default-site-ids = cvars.default-site-ids |> filter (-> it is not user.site_id)
+      db.aliases.add-to-user user.id, default-site-ids, { name: req.body.username, +verified }, cb
+  else
+    (cb) -> cb null
+
+  err <- maybe-add-aliases
+  if err then return res.json success: false
 
   req.session?passport?user = "#{req.body.username}:#{user.site_id}"
   res.json success:true
