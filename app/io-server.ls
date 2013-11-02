@@ -20,9 +20,9 @@ log = debug 'io-server'
 user-from-session = (s, cb) ->
   unless s?passport?user
     return cb null, {id:0, name:\Anonymous, guest:true}
-  [email, site_id] = s?passport?user?split \:
-  if email and site_id
-    (err, user) <~ db.users.by-email-and-site email, site_id
+  [name, site_id] = s?passport?user?split \:
+  if name and site_id
+    (err, user) <~ db.usr {name, site_id}
     if err
       log \user-from-session, \db.usr, err
       return cb err
