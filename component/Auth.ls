@@ -55,6 +55,7 @@ module.exports =
       $form.find('input[type=hidden]').val(hash)
       $.post '/auth/forgot-user', { forgot: hash }, (r) ->
         if r.success
+          $ \#password .val '' # blank password
           $form .find 'h2:first' .html 'Choose a New Password'
           $form .find('button,input').prop('disabled', false)
         else
@@ -215,6 +216,7 @@ module.exports =
       s.attr \disabled \disabled
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
+          $ \#email .val '' # blank email
           Auth.show-info-dialog 'Check your inbox for reset link!', '', \on-forgot
         else
           $form.find \input:first .focus!
@@ -236,6 +238,7 @@ module.exports =
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $form.find('input').prop(\disabled, true)
+          $form.find \#email .val '' # blank email
           ch.show-tooltip $form.find(\.tooltip), "Password changed!"
           location.hash = ''
           $form.find('input[name=password]').val('')
@@ -279,6 +282,7 @@ module.exports =
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $.fancybox.close!
+          $ \#username .val '' # blank username
           @after-login!
           window.location.hash = ''
         else

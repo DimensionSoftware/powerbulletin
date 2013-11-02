@@ -12,17 +12,15 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
       input#private(type='checkbox', value='checked', name='private', checked=site.config.private)
       label.switch-control(for='private')
         .switch
-      span.label.checked On
-      .note Hide content from search engines &amp; the public
+    .note Hide content from search engines &amp; the public
     .break
     label Invite Only
     .box
       input#invite_only(type='checkbox', value='checked', name='inviteOnly', checked=site.config.inviteOnly)
       label.switch-control(for='invite_only')
         .switch
-      span.label.checked On
-      .note Disallow the public from registering - 
-        a.mutant(href='/admin/invites') Invites
+    .note Disallow the public from registering - 
+      a.mutant(href='/admin/invites') Invites
 
     //-.break
     //-label(for='theme') Base Theme

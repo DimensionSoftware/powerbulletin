@@ -9,7 +9,7 @@ purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
-  {set-imgs, align-ui, edit-post, fancybox-params, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
+  {switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {flip-background, is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -420,7 +420,10 @@ same-profile = (hints) ->
       next!
   on-load:
     (window, next) ->
-      #pager-init window
+      # forgot password delegate
+      window.$ \body .on \click \.onclick-show-forgot ->
+        <- Auth.show-login-dialog
+        ch.switch-and-focus \on-error \on-forgot '#auth input[name=email]'
       next!
   on-mutate:
     (window, next) ->
@@ -458,6 +461,8 @@ same-profile = (hints) ->
     next!
   on-unload:
     (window, next-mutant, next) ->
+      # cleanup/unbind
+      window.$ \body .off \click \.onclick-show-forgot
       reset-paginator window unless next-mutant is \forum
       next!
   on-initial:
