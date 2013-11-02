@@ -1,5 +1,6 @@
 
 .container
+  h2= profile.name
   .profile(data-user-id="#{profile.id}", data-user-name="#{profile.name}")
     form(action="/resources/users/#{profile.id}/avatar", enctype="multipart/form-data", method="post")
       .avatar
@@ -17,7 +18,7 @@
     li.since
       span Joined 
       != profile.created_human
-    li.count
+      span &nbsp; - 
       b!= profile.human_post_count 
       span  #{profile.post_count == 1 ? "post" : "posts"}
     if postsByUser.length
@@ -27,4 +28,5 @@
         span Last active 
         span.date(data-time=p.created_iso)!= p.created_human
 
-  button.onclick-chat(title="Chat") Chat
+  button.onclick-chat(title="Private Message") Chat
+  a.onclick-show-forgot(title="Change Password") Change Password

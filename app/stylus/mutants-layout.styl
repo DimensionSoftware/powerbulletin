@@ -396,7 +396,19 @@ html.forum, html.profile, html.search, html.moderation
 //}}}
 //{{{ - profile
 html.profile
+  // hide Back button on "change password" dialog
+  .msg.onclick-show-login
+    display none
   .left-content
+    h2
+      margin-left 3px
+    .onclick-chat
+      margin 10px 3px
+      max-width 250px
+      width 98%
+    .onclick-show-forgot
+      display block
+      margin grid 3px
     .container
       margin 0 (grid*3.5) 0 (grid*2)
       overflow hidden
@@ -406,6 +418,7 @@ html.profile
       width 100%
       max-width 255px
     ul
+      margin 10px 3px
       font-weight 300
       color #777
       b
@@ -421,7 +434,10 @@ html.profile
     .forum
       .username
         text-transform capitalize
-        margin grid 0
+        margin 12px 0 20px -5px
+        color #777
+        font-style italic
+        font-size 1em
       .heading
         margin grid 0 0 0
         padding 0

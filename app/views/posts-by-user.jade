@@ -2,7 +2,7 @@ include _post
 
 .resizable.forum
   if postsByUser.length
-    h2.username #{profile.name}'s Latest
+    h4.username Recent Posts
     last_thread_id = -1
     each p, i in postsByUser
       if last_thread_id != p.thread_id
