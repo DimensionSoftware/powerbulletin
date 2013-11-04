@@ -23,10 +23,18 @@ require! {
   step   = 35
   offset = (active-page - 1) * step
   cols   = [\id, \email, \name, \photo, \site_admin, \sys_admin, \verified, \created, \site_id, \actions]
+  site   = res.vars.site
+
+  with-site = if site.id is not 1
+    {
+      site_id: site.id
+    }
+  else
+    {}
 
   err, a <- async.auto {
-    obj-rows: db.users.all {limit: step, offset}, _
-    qty: db.users.all-count {}, _
+    obj-rows: db.users.all {limit: step, offset} <<< with-site, _
+    qty: db.users.all-count {} <<< with-site, _
   }
   if err then return next err
 
