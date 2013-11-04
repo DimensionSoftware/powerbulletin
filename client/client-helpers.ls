@@ -153,7 +153,7 @@ load-css = (href) ->
   b.add-class \waiting
   unless test!
     if css then load-css css
-    <- headjs script
+    <- require [script]
     b .remove-class \waiting
     cb!
   else
@@ -179,14 +179,19 @@ load-css = (href) ->
     "#cache-url/local/editor/ckeditor.js",
     null,
     cb
+@lazy-load-complexify = (cb) ~>
+  @lazy-load (-> window.$.fn.complexify),
+    "#cache-url/local/jquery.complexify.min.js"
+    null,
+    cb
 @lazy-load-fancybox = (cb) ~>
   @lazy-load (-> window.$!fancybox?length),
     "#cache-url/fancybox/jquery.fancybox.pack.js",
     "#cache-url/fancybox/jquery.fancybox.css",
     cb
 @lazy-load-socketio = (cb) ~>
-  @lazy-load (-> window.io),
-    "#cache-url/local/socket.io.min.js?#{window.CHANGESET}",
+  @lazy-load (-> window.$!fancybox?length),
+    "#cache-url/local/socket.io.min.js",
     null,
     cb
 #}}}

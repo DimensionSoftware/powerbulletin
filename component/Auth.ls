@@ -19,7 +19,7 @@ module.exports =
     # helper to construct an Auth component and show it
     @show-login-dialog = (cb=(->)) ->
       <~ ch.lazy-load-fancybox
-      <~ ch.lazy-load (-> window.$.fn.complexify), "#{window.cache-url}/local/jquery.complexify.min.js", null
+      <~ ch.lazy-load-complexify
       if not window._auth
         window._auth             = new Auth locals: {site-name: window.site-name, invite-only:window.invite-only}, $ \#auth
         window._auth.after-login = Auth.after-login if Auth.after-login

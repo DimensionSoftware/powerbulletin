@@ -24,6 +24,8 @@ paths:
   jquery-ui             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min else \../local/jquery-ui.min
   jquery-waypoints      : \../local/waypoints.min
   lodash                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min else \../local/lodash.min
+  #jquery-fancybox       : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack else \../local/jquery.fancybox.pack
+  #socketio              : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min else \../local/socket.io.min
   raf                   : "../local/raf"
   powerbulletin         : "../powerbulletin"
   powerbulletin-sales   : "../powerbulletin-sales"
