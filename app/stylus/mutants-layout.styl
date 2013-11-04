@@ -400,18 +400,19 @@ html.profile
   .msg.onclick-show-login
     display none
   .left-content.editable
-    .avatar img
-      cursor copy
-    .onclick-show-forgot
+    .avatar
+      img
+        cursor copy
+    .change-profile, .onclick-show-forgot
       display block
-  .left-content
-    h2
-      margin-left 3px
     .onclick-chat
-      margin 10px 3px
+      display none
+  .left-content
+    .onclick-chat
+      margin 8px 3px
       max-width 250px
       width 98%
-    .onclick-show-forgot
+    .change-profile, .onclick-show-forgot
       display none
       margin grid 3px
     .container
@@ -419,22 +420,30 @@ html.profile
       overflow hidden
       button
         margin 12px 2px 2px 2px
-    .avatar img
-      width 100%
+    .avatar
+      position relative
+      overflow hidden
       max-width 255px
+      .drag
+        display none
+      img
+        width 100%
     ul
       margin 10px 3px
       font-weight 300
       color #777
-      b
-        color #444
-      .date
-        display inline-block
-        margin-left 5px
+      li
+        margin-bottom 3px
+        b
+          color #444
+        .date
+          display inline-block
     h1, h2, h3
       text-transform capitalize
       margin-top 0
       margin-left 0
+    h2
+      margin 18px 0 0 3px
   .main-content
     .forum
       .username
