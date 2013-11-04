@@ -241,7 +241,7 @@ load-css = (href) ->
   false
 
 timers = {}
-@show-tooltip = ($tooltip, msg, duration=5000ms) ~>
+@show-tooltip = ($tooltip, msg, duration=4500ms) ~>
   unless msg?length then return # guard
   timer = timers[msg]
   if timer then clear-timeout timer

@@ -192,7 +192,7 @@ module.exports =
 
       @$.on \change 'input[name="dialog"]' ~> # type was selected
         # TODO - make sure current-restore has the right data to restore; when adding a new item, it often does not.
-        $ \.tooltip .remove-class \hover # hide tooltip
+        $ \#warning .remove-class \hover # hide tooltip
         # TODO - create slug out of title
         @$.find \fieldset .add-class \has-dialog .find \input:visible .focus!
 
@@ -258,8 +258,7 @@ module.exports =
           @$.find 'input[name=dbid]' .val data.id
           @current.data \form, data-form
           f = $ this # form
-          t = $(form.find \.tooltip)
-          ch.show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
+          ch.show-tooltip \#warning, unless data.success then (data?errors?join \<br>) else \Saved!
 
       @$.on \change \form (ev) ~> @current-store! # save active title & form
       @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore! # load active row
