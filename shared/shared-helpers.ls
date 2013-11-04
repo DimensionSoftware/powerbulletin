@@ -82,11 +82,12 @@ seconds-to-human-readable = (secs) ->
       timestring = "#{secs} seconds"
   timestring
 
+# XXX html is returned
 @elapsed-to-human-readable = (secs-ago) ~>
   suffix = \ago
-  human  = if secs-ago < 30s then 'Just now!'
-  else if secs-ago < 60s then "A moment #{suffix}"
-  else if secs-ago < 120s then "A minute #{suffix}"
+  human  = if secs-ago < 30s then '<b>Just now!</b>'
+  else if secs-ago < 60s then "<b>a moment #{suffix}</b>"
+  else if secs-ago < 120s then "<b>a minute #{suffix}</b>"
   else if secs-ago < 86400s # within the day
      seconds-to-human-readable(secs-ago)+' '+suffix
   else if secs-ago < 172800s # within 2 days
