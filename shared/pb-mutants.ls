@@ -710,11 +710,17 @@ mk-post-pnum-to-href = (post-uri) ->
       window.replace-html window.$(\#left_container), ''
       window.replace-html window.$(\#main_content), @page.config.main_content
       window.marshal \activeForumId, @active-forum-id
+      window.marshal \contentOnly, @content-only
       layout-static.call @, window, \page, @active-forum-id
       next!
   on-load:
     (window, next) ->
-      #pager-init window
+      $ \body .toggle-class(\minimized, window.content-only)
+      next!
+  on-unload:
+    (window, next-mutant, next) ->
+      unless next-mutant is \page
+        $ \body .remove-class \minimized
       next!
   on-mutate:
     (window, next) ->

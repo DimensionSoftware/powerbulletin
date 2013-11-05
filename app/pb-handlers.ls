@@ -576,8 +576,10 @@ function profile-paths user, uploaded-file, base=\avatar
     if req.surfing then delete-unnecessary-surf-data res
     fdoc ||= {}
     fdoc.menu = site.config.menu
-    fdoc.page = page
+    item = fdoc.menu |> find -> it.form.dialog is \page and it.form.dbid is page.id
+    fdoc.page            = page
     fdoc.active-forum-id = page.id
+    fdoc.content-only    = item?form?content-only is \checked
     res.locals fdoc
     res.mutant \page
   else
