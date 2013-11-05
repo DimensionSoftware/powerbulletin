@@ -29,11 +29,12 @@ module.exports =
         s.rows
         s.qty
         s.active-page
+        s.step
       }
       @children = {table: new Table {locals, pnum-to-href} \.SuperAdminUsers-table @}
     on-attach: ->
       dollarish = @@$
-      @$.on \click 'button[data-edit-user]' ->
+      @$.on \click 'a[data-edit-user]' ->
         user = dollarish @ .data \edit-user
 
         finish = (UserEditor) ->

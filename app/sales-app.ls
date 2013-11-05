@@ -64,6 +64,8 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
   if err then return next err
   err, new-site <- db.site-by-id result.site_id
   new-site.config?menu = menu.upconvert old-menu
+  new-site.config.posts-per-page = 20
+  new-site.config.items-per-page = 20
   console.warn new-site.config?menu
   err <- db.site-update new-site
   if err then return next err
