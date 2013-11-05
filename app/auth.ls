@@ -151,7 +151,7 @@ export user-forgot-password = (user, cb) ->
   if err then return cb err
 
   user.forgot = hash
-  err <- db.aliases.update criteria: { user_id: user.id, site_id: user.site_id }, data: { forgot: hash }
+  err <- db.aliases.update criteria: { user_id: user.id, site_id: user.site_id }, data: { forgot: hash } # XXX thinorm
 
   cb null, user
 
@@ -160,7 +160,7 @@ export set-login-token = (user, cb) ->
   if err then return cb err
 
   user.login_token = hash
-  err <- db.aliases.update criteria: { user_id: user.id, site_id: user.site_id }, data: { login_token: hash }
+  err <- db.aliases.update criteria: { user_id: user.id, site_id: user.site_id }, data: { login_token: hash } # XXX thinorm
 
   cb null, user
 

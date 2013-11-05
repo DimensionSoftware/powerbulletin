@@ -569,7 +569,7 @@ function profile-paths user, uploaded-file, base=\avatar
 
 @page = (req, res, next) ->
   site = res.vars.site
-  err, page <- db.pages.find-one criteria: { site_id: site.id, path: req.path }
+  err, page <- db.pages.find-one criteria: { site_id: site.id, path: req.path } # XXX thinorm
   if err then return next err
   if page
     page.config = JSON.parse page.config
@@ -590,7 +590,7 @@ function profile-paths user, uploaded-file, base=\avatar
   product-id = req.params.product-id
   errors     = []
 
-  err, existing-subscription <- db.subscriptions.find-one {
+  err, existing-subscription <- db.subscriptions.find-one { # XXX thinorm
     criteria: {site_id: site-id, product_id: product-id}
     columns: [\product_id]
   }

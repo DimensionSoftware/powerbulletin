@@ -218,7 +218,7 @@ do-verify = (req, res, next) ~>
     auths-local.password = auth.hash password
     auths-json = JSON.stringify auths-local
     # TODO if alias doesn't exist, ask for username and insert (register)
-    err <- db.auths.update criteria: { type: \local, user_id: user.id }, data: { profile: auths-json }
+    err <- db.auths.update criteria: { type: \local, user_id: user.id }, data: { profile: auths-json } # XXX thinorm
     if err
       console.warn \auths-update, err
       return res.json success: false, errors: [ err ]
@@ -246,7 +246,7 @@ do-verify = (req, res, next) ~>
   user.verify = verify
 
   # TODO if alias doesn't exist, ask for username and insert (register)
-  err <- db.aliases.update criteria: { user_id: user.id, site_id: site.id }, data: { verify }
+  err <- db.aliases.update criteria: { user_id: user.id, site_id: site.id }, data: { verify } # XXX thinorm
   if err then return res.json success: false, when: \db.aliases.update
 
   err <- auth.send-registration-email user, site

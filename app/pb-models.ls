@@ -3,19 +3,19 @@ require! {
   pg
   debug
   \fs
-  orm: \thin-orm
+  orm: \thin-orm          # XXX thinorm
   postgres: \./postgres
 }
 
 {filter, join, keys, values, sort-by} = require \prelude-ls
 
-logger = debug \thin-orm
+logger = debug \thin-orm # XXX thinorm
 
 export orm    = orm
 export client = { connect: (cb) -> pg.connect postgres.conn-str, cb }
 export driver = orm.create-driver \pg, { pg: client, logger }
 
-export-model = ([t, cs]) ->
+export-model = ([t, cs]) -> # XXX thinorm
   orm.table(t).columns(cs)
   module.exports[t] = orm.create-client driver, t
 

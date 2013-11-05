@@ -29,7 +29,7 @@ export subscribe = ({
   unless site-id
     return cb new Error "siteId is required to subscribe"
 
-  err, product <~ db.products.find-one {
+  err, product <~ db.products.find-one { # XXX thinorm
     criteria: {id: product-id}
     columns: [\price]
   }
@@ -37,7 +37,7 @@ export subscribe = ({
   unless product
     return cb new Error "Subscription requires a valid product"
 
-  err, res <~ db.sites.find-one {
+  err, res <~ db.sites.find-one { # XXX thinorm
     criteria: {id: site-id}
     columns: [\user_id]
   }
@@ -57,7 +57,7 @@ export subscribe = ({
   }
   subscription <<< {card} if card
 
-  err, res <~ db.users.find-one {
+  err, res <~ db.users.find-one { # XXX thinorm
     criteria: {id: user-id}
     columns: [\stripe_id]
   }
@@ -74,7 +74,7 @@ export subscribe = ({
     err, customer <- @client.customers.create subscription
     if err then return cb err
 
-    err <- db.users.update {criteria: {id: user-id}, data: {stripe_id: customer.id}}
+    err <- db.users.update {criteria: {id: user-id}, data: {stripe_id: customer.id}} # XXX thinorm
     if err then return cb err
 
     err <- db.add-subscription site-id, product-id
