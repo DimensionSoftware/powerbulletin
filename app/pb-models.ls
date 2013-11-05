@@ -244,6 +244,7 @@ query-dictionary =
       JOIN moderations m ON m.post_id=p.id
       WHERE p.forum_id=$1
       ''', [forum-id], cb
+    upsert: upsert-fn \posts
 
   forums:
     upsert: upsert-fn \forums
