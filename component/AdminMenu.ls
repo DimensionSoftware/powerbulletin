@@ -197,6 +197,10 @@ module.exports =
         @$.find \fieldset .add-class \has-dialog .find \input:visible .focus!
 
       @$.on \keyup, 'input.active', @store-title
+      @$.on \keypress, \form, -> # disable form submit on enter press
+        if (it.key-code or it.which) is 13
+          it.prevent-default!
+          false
 
       @$.on \click \.onclick-close (ev) ~>
         @delete ($ ev.target .prev \.row) # extract row
