@@ -245,7 +245,7 @@ timers = {}
   unless msg?length then return # guard
   timer = timers[msg]
   if timer then clear-timeout timer
-  $tooltip.html msg .add-class \hover # show
+  if $tooltip?length then $tooltip.html msg .add-class \hover # show
   timers[msg] = set-timeout (-> timers[msg]=void; $tooltip.remove-class \hover), duration # remove
 
 @switch-and-focus = (remove, add, focus-on) ~>
