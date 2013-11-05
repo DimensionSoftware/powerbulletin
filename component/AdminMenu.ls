@@ -258,7 +258,7 @@ module.exports =
           @$.find 'input[name=dbid]' .val data.id
           @current.data \form, data-form
           f = $ this # form
-          ch.show-tooltip \#warning, unless data.success then (data?errors?join \<br>) else \Saved!
+          ch.show-tooltip $(\#warning), unless data.success then (data?errors?join \<br>) else \Saved!
 
       @$.on \change \form (ev) ~> @current-store! # save active title & form
       @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore! # load active row
