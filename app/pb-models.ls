@@ -246,6 +246,18 @@ query-dictionary =
       ''', [forum-id], cb
     upsert: upsert-fn \posts
 
+    toggle-sticky: (id, cb) ->
+      sql = '''
+      UPDATE posts SET is_sticky = (NOT is_sticky) WHERE id = $1 RETURNING *
+      '''
+      postgres.query sql, [id], cb
+
+    toggle-locked: (id, cb) ->
+      sql = '''
+      UPDATE posts SET is_locked = (NOT is_sticky) WHERE id = $1 RETURNING *
+      '''
+      postgres.query sql, [id], cb
+
   forums:
     upsert: upsert-fn \forums
     delete: delete-fn \forums
