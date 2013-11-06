@@ -30,10 +30,10 @@ require, exports, module <- define
 #TODO: create a high-level abstraction so we only have to define a components layout properties once
 #      but still provide the same array interface to module.exports
 @mappings =
-  homepage    : [\Sales, \SalesLayout, \.SalesLayout-content]
-  super       : [\SuperAdmin, \SalesLayout, \.SalesLayout-content]
-  super-sites : [\SuperAdmin, \SalesLayout, \.SalesLayout-content]
-  super-users : [\SuperAdmin, \SalesLayout, \.SalesLayout-content]
+  homepage    : [\Sales, \SalesApp, \.SalesApp-content]
+  super       : [\SuperAdmin, \SalesApp, \.SalesApp-content]
+  super-sites : [\SuperAdmin, \SalesApp, \.SalesApp-content]
+  super-users : [\SuperAdmin, \SalesApp, \.SalesApp-content]
 
 /*
 Try these in the REPL.
