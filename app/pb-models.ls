@@ -136,21 +136,41 @@ query-dictionary =
   # db.users.all cb
   users:
     # used by SuperAdminUsers
-    all: ({site_id, limit, offset}, cb) ->
+    all: ({site_id, q, limit, offset}, cb) ->
+      pdollars = ['$' + i for i in [3 to 5]]
+      where-clauses = []
+      where-args = []
+
+      maybe-add-clause = (args, clause-fns) ->
+        if args.length and args.0
+          # an array with length > 1 means combine with OR
+          where-clauses.push "(#{[fn(pdollars.shift!) for fn in clause-fns].join(' OR ')})"
+          where-args := where-args ++ args
+
+      console.log \E
+      maybe-add-clause [site_id], [-> "a.site_id = #it"]
+      maybe-add-clause [q, q], [
+        * -> "a.name @@ to_tsquery(#it)"
+        * -> "u.email @@ to_tsquery(#it)"
+      ]
+
+      where-clause =
+        if where-clauses.length
+          'WHERE ' + where-clauses.join ' AND '
+        else
+          ''
+
       sql = """
       SELECT
         u.id, u.email, u.rights AS sys_rights,
         a.name, a.photo, a.rights AS rights, a.verified, a.created, a.site_id
       FROM users u
       JOIN aliases a ON a.user_id=u.id
-      #{if site_id then 'WHERE a.site_id=$3' else ''}
+      #where-clause
       LIMIT $1 OFFSET $2
       """
-      params =
-        if site_id
-          [limit, offset, site_id]
-        else
-          [limit, offset]
+      console.log \SQL, "\n" + sql + "\n"
+      params = [limit, offset] ++ where-args
 
       err, users <- postgres.query sql, params
       if err then return cb err
@@ -163,7 +183,7 @@ query-dictionary =
 
       cb null, users
 
-    all-count: ({site_id}, cb) ->
+    all-count: ({site_id, q}, cb) ->
       sql = """
       SELECT COUNT(*)
       FROM users u
