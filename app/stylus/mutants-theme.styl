@@ -73,15 +73,6 @@ html.forum, html.profile, html.search, html.moderation
     background-color tint-color
   .main-content
     .forum, .threads, .search
-      .post:hover
-        color #111
-        .post-edit:hover
-          .summary::before
-            transition none
-            z-index 2
-            border-left 5px solid light
-        p.body
-          border-bottom 1px solid rgba(0,0,0,.05)
       .post.censored
         .body, blockquote, p
           text-decoration line-through
@@ -98,13 +89,30 @@ html.forum, html.profile, html.search, html.moderation
       .post
         overflow visible
         color #333
+        &:hover
+          color #111
+          .post-edit:hover
+            .summary::before
+              transition none
+              z-index 2
+              border-left 5px solid light
+          p.body::after
+            border-bottom 1px solid rgba(0,0,0,.1)
         .username
           font-weight 500
           color dark_text
           text-transform capitalize
         p.body
-          background-color rgba(0,0,0,.015)
-          border-bottom 1px solid transparent
+          position relative
+          &::after
+            content ''
+            position absolute
+            left 0
+            right 0
+            bottom 0
+            height 0
+            box-shadow 0 0 10px 1px tint-color
+            border-bottom 1px solid rgba(0,0,0,.06)
         .post-edit
           .summary::before
             border-left 4px solid #ccc
@@ -139,14 +147,14 @@ html.forum, html.profile, html.search, html.moderation
               margin-top 0
           .date
             color #999
-            text-transform lowercase
-            padding-right (grid*2.5)
       .actions
-        a:active, a:focus
-          background radial-gradient(circle closest-corner at 55% 65%, light2 85%, dark2 100%)
-        a:hover
-          background radial-gradient(circle closest-corner at 45% 35%, light2 55%, dark2 100%)
+        position relative
+        z-index 2
         a
+          &:active, &:focus
+            background radial-gradient(circle closest-corner at 55% 65%, light2 85%, dark2 100%)
+          &:hover
+            background radial-gradient(circle closest-corner at 45% 35%, light2 55%, dark2 100%)
           color dark
           background-color light2
           background-image linear-gradient(to top, dark2 10%, light2 100%)
