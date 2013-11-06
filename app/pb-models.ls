@@ -47,9 +47,9 @@ where-x = (criteria) ->
 # Generate a function that takes another function and transforms its first parameter
 # according to the rules in serializers
 #
-# @param  Function  fn      function to wrap
+# @param  Function  fn              function to wrap
 # @param  Object    serializers
-# @return Function          wrapped function
+# @return Function                  wrapped function
 serialized-fn = (fn, serializers) ->
   (object, ...rest) ->
     for k,sz of serializers
@@ -57,16 +57,14 @@ serialized-fn = (fn, serializers) ->
         object[k] = serializers[k] object[k]
     fn object, ...rest
 
-# Hey, they're identical except for the nouns.  This reads better in certain contexts and vice versa.
-deserialized-fn = serialized-fn
-
-find-fn = (table) ->
-  (where-criteria, cb) ->
-    [where-sql, where-vals] = where-x(where-criteria)
-    sql = """
-    SELECT * FROM #table #where-sql
-    """
-    postgres.query sql, where-vals, cb
+select1-statement = (table, obj, wh) ->
+  if wh is null
+    wh-ere  = "WHERE id = $1"
+    wh-vals = [obj.id]
+  else
+    wh-ere  = wh.0
+    wh-vals = wh.1
+  return ["SELECT * FROM #table #wh-ere LIMIT 1", wh-vals]
 
 insert-statement = (table, obj) ->
   columns   = keys obj
@@ -98,6 +96,11 @@ update-statement = (table, obj, wh) ->
   vals      = [...wh-vals, ...obj-vals]
   return ["UPDATE #table SET #value-set #wh-ere RETURNING *", vals]
 
+select1-fn = (table) ->
+  (object, cb) ->
+    [sql, vals] = select1-statement table, object
+    postgres.query sql, vals, cb
+
 # Generate an upsert function for the given table name
 # 
 # @param  String    table   name of table
@@ -125,7 +128,6 @@ upsert-fn = (table) ->
 # @param  String    table   name of table
 # @param  Function  wh-fn   (optional) function that generates a where clause from an object
 # @return Function          an update function for the table
-#
 update-fn = (table, wh-fn=(->null)) ->
   (object, cb) ->
     [update-sql, vals] = update-statement table, object, wh-fn(object)
@@ -181,7 +183,8 @@ query-dictionary =
       if err then return cb err
       cb null, r.0
 
-    update1: serialized-fn (update-fn \aliases, _alias-where), rights: JSON.stringify, config: JSON.stringify
+    select1: serialized-fn (select1-fn \aliases, _alias-where), rights: JSON.parse,     config: JSON.parse
+    update1: serialized-fn (update-fn \aliases, _alias-where),  rights: JSON.stringify, config: JSON.stringify
 
   # db.users.all cb
   users:
@@ -276,7 +279,8 @@ query-dictionary =
           site_id : site-id
       cb null, user <<< alias
 
-    update1: serialized-fn (update-fn \users), rights: JSON.stringify
+    select1: serialized-fn (select1-fn \users), rights: JSON.parse
+    update1: serialized-fn (update-fn \users),  rights: JSON.stringify
 
   pages:
     upsert: upsert-fn \pages
