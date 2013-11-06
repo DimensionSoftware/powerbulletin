@@ -20,6 +20,7 @@ require! {
 
   return next 404 unless can-list-site-users
 
+  q = req.query.q # optional query filter
   active-page = parse-int(req.query.page) or 1
   site   = res.vars.site
   step   = site.config.items-per-page || 20
@@ -32,8 +33,8 @@ require! {
     { }
 
   err, a <- async.auto {
-    obj-rows: db.users.all {limit: step, offset} <<< with-site, _
-    qty: db.users.all-count {} <<< with-site, _
+    obj-rows: db.users.all {limit: step, offset, q} <<< with-site, _
+    qty: db.users.all-count {q} <<< with-site, _
   }
   if err then return next err
 
