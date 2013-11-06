@@ -232,13 +232,27 @@ is-locked-forum = (m, forum-id) ->
       (err, user) <- db.find-or-create user
       res.json user
   update: (req, res, next) ->
-    # XXX: fill in this stub
     # RIGHTS: can only edit users on sites you are an admin of
-    # need this db function: db.users.can-edit-user uid -> boolean
-    id = req.params.user
+    admin = req.user
+    site  = res.vars.site
+    id    = req.params.user
+    err, can-edit-user <- rights.can-edit-user admin, id
+    if not can-edit-user
+      res.json success: false, errors: [ "#{admin.name} may not edit this user." ]
+
     user = {} <<< req.body <<< {id}
     console.warn \STUB, 'handle user PUT from UserEditor'
     console.warn \STUBUSER, user
+    alias =
+      name    : user.name
+      user_id : id
+      site_id : site.id
+    err, new-alias <- db.aliases.update1 alias
+    if err
+      res.json success: false, errors: [ "Could not sove user." ]
+    else
+      res.json success: true, alias: new-alias
+
 @posts =
   index   : (req, res) ->
     res.locals.fid = req.query.fid
