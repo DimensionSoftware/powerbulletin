@@ -119,7 +119,6 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     ..remove-class \hover
   w.$ "menu .row .forum-#fid" # add current
     ..add-class \active
-    ..add-class \hover
   p = w.$ "menu .submenu .forum-#fid"
   if p.length # subform
     p.parent!add-class \active

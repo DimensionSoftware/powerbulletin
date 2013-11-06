@@ -44,8 +44,8 @@ module.exports =
 
       @$.on \mouseleave ~> # mouse-hover-intent'd out
         intent-timer := set-timeout (~>
-          remove-hover!
-          @$.find \.active:first .add-class \hover), 400ms
+          remove-hover!), 400ms
+          #@$.find \.active:first .add-class \hover), 400ms
 
     on-detach: -> @$.off!
 
