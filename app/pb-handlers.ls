@@ -20,6 +20,7 @@ require! {
 
 announce = require(\socket.io-announce).create-client!
 
+# FIXME how about fixing instead of littering our codebase with these comments?
 global <<< require \./server-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
 global <<< require \../shared/shared-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
 
