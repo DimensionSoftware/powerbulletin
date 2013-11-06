@@ -281,7 +281,7 @@ time-updater = ->
     if $el.has-class 'time-title'
       $el.attr \title, hr.replace(/<.*?\/?>/g, '')
     else
-      $el.html hr
+      $el.html "Posted #hr"
 
 set-interval time-updater, 30000ms
 #}}}
