@@ -35,11 +35,11 @@ html
     //- the only .js in our <head> 
     if env == 'production'
       //- in this case we preload most libraries, as opposed to fetching them all separately
-      script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
-      script(src="#{cacheUrl}/pb-optimized.js")
+      script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
+      script(type='text/javascript', src="#{cacheUrl}/pb-optimized.js")
     else
       script(type='text/javascript', src="#{cache4Url}/local/require.js") //- offline
-    script(type="text/javascript")
+    script(type="text/javascript").
       window.CHANGESET=!{JSON.stringify(CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.cache2Url=!{JSON.stringify(cvars.cache2Url)};window.cache3Url=!{JSON.stringify(cvars.cache3Url)};window.cache4Url=!{JSON.stringify(cvars.cache4Url)};window.cache5Url=!{JSON.stringify(cvars.cache5Url)};window.authDomain="!{cvars.authDomain}";window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cacheUrl+'/client',urlArgs:!{JSON.stringify(CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
   body
 
