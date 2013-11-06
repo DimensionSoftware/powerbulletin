@@ -41,6 +41,19 @@ get-cols = (dbname, tname, cb) ->
   if err then return cb(err)
   cb null, rows.map (.column_name)
 
+# Generate a function that takes another function and transforms its first parameter
+# according to the rules in serializers
+#
+# @param  Function  fn      function to wrap
+# @param  Object    serializers
+# @return Function          wrapped function
+serialized-fn = (fn, serializers) ->
+  (object, ...rest) ->
+    for k,sz of serializers
+      if object?[k]
+        object[k] = serializers[k] object[k]
+    fn object, ...rest
+
 insert-statement = (table, obj) ->
   columns   = keys obj
   value-set = [ "$#{i+1}" for k,i in columns ].join ', '
@@ -59,12 +72,17 @@ conditional-insert-statement = (table, obj, condition) ->
   return [sql, vals]
 
 update-statement = (table, obj, wh) ->
-  wh       ?= "WHERE id = $1"
+  if wh is null
+    wh-ere  = "WHERE id = $1"
+    wh-vals = [obj.id]
+  else
+    wh-ere  = wh.0
+    wh-vals = wh.1
   ks        = keys obj |> filter (-> it isnt \id)
   obj-vals  = [ obj[k] for k in ks ]
-  value-set = [ "#k = $#{i + 2}" for k,i in ks].join ', '
-  vals      = [obj.id, ...obj-vals]
-  return ["UPDATE #table SET #value-set #wh RETURNING *", vals]
+  value-set = [ "#k = $#{i + (wh-vals.length+1)}" for k,i in ks].join ', '
+  vals      = [...wh-vals, ...obj-vals]
+  return ["UPDATE #table SET #value-set #wh-ere RETURNING *", vals]
 
 # Generate an upsert function for the given table name
 # 
@@ -88,13 +106,29 @@ upsert-fn = (table) ->
     else
       do-insert cb
 
-# Generate a dlete function for the given table name
+# Generate an update function for the given table name
+#
+# @param  String    table   name of table
+# @param  Function  wh-fn   (optional) function that generates a where clause from an object
+# @return Function          an update function for the table
+#
+update-fn = (table, wh-fn=(->null)) ->
+  (object, cb) ->
+    [update-sql, vals] = update-statement table, object, wh-fn(object)
+    postgres.query update-sql, vals, cb
+
+# Generate a delete function for the given table name
 #
 # @param  String    table   name of table
 # @return Function          a delete function for the table
 delete-fn = (table) ->
   (object, cb) ->
     postgres.query "DELETE FROM #table WHERE id = $1", [ object.id ], cb
+
+# Generate a WHERE clause to uniquely identify a row in the aliases table
+_alias-where = (obj) ->
+  throw new Error("need user_id and site_id") if (not obj.user_id and not obj.site_id);
+  ["WHERE user_id = $1 AND site_id = $2", [obj.user_id, obj.site_id]]
 
 # This is for queries that don't need to be stored procedures.
 # Base the top-level key for the table name from the FROM clause of the SQL query.
@@ -132,6 +166,8 @@ query-dictionary =
       err, r <- postgres.query sql, [user-id]
       if err then return cb err
       cb null, r.0
+
+    update1: serialized-fn (update-fn \aliases, _alias-where), rights: JSON.stringify, config: JSON.stringify
 
   # db.users.all cb
   users:
@@ -225,6 +261,8 @@ query-dictionary =
           config  : void
           site_id : site-id
       cb null, user <<< alias
+
+    update1: serialized-fn (update-fn \users), rights: JSON.stringify
 
   pages:
     upsert: upsert-fn \pages
