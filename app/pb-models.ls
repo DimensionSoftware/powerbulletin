@@ -41,6 +41,9 @@ get-cols = (dbname, tname, cb) ->
   if err then return cb(err)
   cb null, rows.map (.column_name)
 
+where-x = (criteria) ->
+  []
+
 # Generate a function that takes another function and transforms its first parameter
 # according to the rules in serializers
 #
@@ -53,6 +56,17 @@ serialized-fn = (fn, serializers) ->
       if object?[k]
         object[k] = serializers[k] object[k]
     fn object, ...rest
+
+# Hey, they're identical except for the nouns.  This reads better in certain contexts and vice versa.
+deserialized-fn = serialized-fn
+
+find-fn = (table) ->
+  (where-criteria, cb) ->
+    [where-sql, where-vals] = where-x(where-criteria)
+    sql = """
+    SELECT * FROM #table #where-sql
+    """
+    postgres.query sql, where-vals, cb
 
 insert-statement = (table, obj) ->
   columns   = keys obj
