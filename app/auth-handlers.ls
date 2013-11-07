@@ -379,7 +379,7 @@ auth-finisher = (req, res, next) ->
 
 @logout = (req, res, next) ->
   user = req.user
-  user_id = user.id
+  user_id = user?id
   site_id = res.vars.site.id
   if req.user # guard
     req.logout!
