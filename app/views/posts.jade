@@ -19,8 +19,7 @@ if typeof(post) !== 'undefined'
           != post.created_human
         .edit-container
         if post.html
-          //- XXX for now, html is now escaped (not ideal)
-          p.body= post.html
+          p.body!= post.html
         .reply
         .actions
           a.onclick-footer-toggle(title='Reply')
