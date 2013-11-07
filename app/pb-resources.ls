@@ -6,6 +6,7 @@ require! {
   sioa: \socket.io-announce
   auth: \./auth
   menu: \./menu
+  rights: \./rights
   async
   fs
   mkdirp
@@ -25,6 +26,19 @@ ban-all-domains = (site-id) ->
 # Return true if forum-id is a locked forum according to the menu m.
 is-locked-forum = (m, forum-id) ->
   menu.flatten(m) |> find (-> f = it.form; f.dialog is \forum and f.dbid is forum-id and f.locked)
+
+@aliases =
+  update: (req, res, next) ->
+    try [user_id, site_id] = req.params.alias.split \:
+    (err, r) <- rights.can-edit-user req.user, user_id
+    if err then return next err
+    if r # can edit, so--
+      (err, alias) <- db.aliases.select1 {user_id, site_id} # fetch current config
+      config = alias.config <<< req.body.config
+      err <- db.aliases.updatex {config}, {user_id, site_id}
+      res.json {+success}
+    else
+      res.json {-success}
 
 @sites =
   create: (req, res, next) ->

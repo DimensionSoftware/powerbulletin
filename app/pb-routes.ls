@@ -30,6 +30,7 @@ app.all      \/resources/*,                 ...personal-mw
 app.resource \resources/sites,              resources.sites
 app.resource \resources/posts,              resources.posts
 app.resource \resources/users,              resources.users
+app.resource \resources/aliases,            resources.aliases
 app.resource \resources/products,           resources.products
 app.resource \resources/conversations,      resources.conversations
 app.resource \resources/threads,            resources.threads
