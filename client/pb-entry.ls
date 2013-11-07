@@ -89,9 +89,7 @@ $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 80
 # show reply ui
 append-reply-ui = (ev) ->
   focus = !($ ev.target .data \no-focus) # take focus?
-
   $p = $ ev.target .parents \.post:first # post div
-
   # append dom for reply ui
   unless $p.find('.reply .post-edit:visible').length
     render-and-append window,  $p.find(\.reply:first), \post-edit, (post:
@@ -99,8 +97,9 @@ append-reply-ui = (ev) ->
       forum_id:   $p.data(\forum-id) or window.active-forum-id
       parent_id:  $p.data \post-id
       is_comment: true), ->
-        #if ev.original-event then $p.find('textarea[name="body"]').focus! # user clicked
-        if focus then $p.find('textarea[name="body"]').focus!
+        editor = $p.find 'textarea[name="body"]'
+        editor.autosize!
+        if focus then editor.focus!
   else
     $p.find('.reply .cancel').click!
 
@@ -235,7 +234,7 @@ $d.on \click \.edit.no-surf Auth.require-login((ev) ->
   edit-post $(ev.target).data \edit)
 $d.on \click '.onclick-submit .cancel' (ev) ->
   f = $(ev.target).closest(\.post-edit)  # form
-  f.hide 350ms \easeOutExpo
+  f.slide-up 100ms \easeOutExpo
   meta = furl.parse window.location.pathname
   switch meta.type
   | \new-thread => History.back!
@@ -253,7 +252,7 @@ submit = Auth.require-login(
       # render updated post
       p.find \.title .html data.0?title
       p.find \.body  .html data.0?body
-      f.remove-class \fadein .hide 200ms # & hide
+      f.remove-class \fadein .slide-up 100ms \easeOutExpo # & hide
       meta = furl.parse window.location.pathname
       window.last-statechange-was-user = false # flag that this was programmer, not user
       switch meta.type
@@ -273,7 +272,7 @@ submit-selectors =
   * "html.forum .onclick-submit button[type='submit']"
   * "html.search .onclick-submit button[type='submit']"
 $d.on \click, submit-selectors.join(', '), post-submit
-$d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then post-submit it
+$d.on \keydown \.onenter-submit ~> if it.which is 13 and not it.shift-key then post-submit it; it.target?blur!
 
 $d.on \click \.onclick-append-reply-ui Auth.require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post Auth.require-login(censor)

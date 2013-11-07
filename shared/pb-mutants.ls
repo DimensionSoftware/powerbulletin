@@ -326,19 +326,13 @@ layout-on-personalize = (w, u) ->
       post-id = $('#main_content .post:first').data(\post-id)
       $.post "/resources/posts/#{post-id}/impression" if post-id
 
-      # bring down first reply
-      if user?
-        e = $ \.onclick-append-reply-ui:first
-          ..data \no-focus, true # not the neatest, needed to not steal ui focus
-          ..click!
-          ..data \no-focus, false
-
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
 
       # handle forum background
       set-background-onload window, window.background
 
+      <- require ["#cache-url/local/jquery.autosize.min.js"]
       next!
   on-initial:
     (window, next) ->
