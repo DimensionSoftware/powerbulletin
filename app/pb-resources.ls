@@ -320,13 +320,9 @@ is-locked-forum = (m, forum-id) ->
 @products =
   show: (req, res, next) ->
     return next 404 unless id = req.params.product
-    err, product <- db.products.find-one { # XXX thinorm
-      criteria: {id}
-      columns: [\id \description \price \config]
-    }
+    err, product <- db.products.select1 { id }
     if err then return next err
     if product
-      product.config = JSON.parse product.config # p00f--json'ify
       res.json product
     else
       next 404

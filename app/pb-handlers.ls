@@ -569,10 +569,9 @@ function profile-paths user, uploaded-file, base=\avatar
 
 @page = (req, res, next) ->
   site = res.vars.site
-  err, page <- db.pages.find-one criteria: { site_id: site.id, path: req.path } # XXX thinorm
+  err, page <- db.pages.select1 { site_id: site.id, path: req.path }
   if err then return next err
   if page
-    page.config = JSON.parse page.config
     if req.surfing then delete-unnecessary-surf-data res
     fdoc ||= {}
     fdoc.menu = site.config.menu
@@ -590,10 +589,7 @@ function profile-paths user, uploaded-file, base=\avatar
   product-id = req.params.product-id
   errors     = []
 
-  err, existing-subscription <- db.subscriptions.find-one { # XXX thinorm
-    criteria: {site_id: site-id, product_id: product-id}
-    columns: [\product_id]
-  }
+  err, existing-subscription <- db.subscriptions.select1 {site_id: site-id, product_id: product-id}
   if err then return next err
   if existing-subscription then errors.push 'You\'re already subscribed'
 
