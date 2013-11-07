@@ -41,9 +41,6 @@ get-cols = (dbname, tname, cb) ->
   if err then return cb(err)
   cb null, rows.map (.column_name)
 
-where-x = (criteria) ->
-  []
-
 # Generate a function that takes another function and transforms its first parameter
 # according to the rules in serializers
 #
@@ -57,14 +54,41 @@ serialized-fn = (fn, serializers) ->
         object[k] = serializers[k] object[k]
     fn object, ...rest
 
-select1-statement = (table, obj, wh) ->
+# Generate a function that wraps an existing functions cb and deserializes its results
+deserialized-fn = (fn, deserializers) ->
+  (object, ...rest, cb) ->
+    fn object, ...rest, (err, r) ->
+      return cb err if err
+      if r.has-own-property \length
+        new-r = for item in r
+          for k,sz of deserializers
+            if item?[k]
+              item[k] = deserializers[k] item[k]
+          item
+        cb null, new-r
+      else
+        item = r
+        for k,sz of deserializers
+          if item?[k]
+            item[k] = deserializers[k] item[k]
+        cb null, item
+
+where-x = (criteria, n=1) ->
+  where-sql = "WHERE " + (keys criteria
+    |> zip [n to n+100]
+    |> map (-> "#{it.1} = $#{it.0}")
+    |> join " AND ")
+  where-vals = values criteria
+  [where-sql, where-vals]
+
+select-statement = (table, wh) ->
   if wh is null
     wh-ere  = "WHERE id = $1"
     wh-vals = [obj.id]
   else
     wh-ere  = wh.0
     wh-vals = wh.1
-  return ["SELECT * FROM #table #wh-ere LIMIT 1", wh-vals]
+  return ["SELECT * FROM #table #wh-ere", wh-vals]
 
 insert-statement = (table, obj) ->
   columns   = keys obj
@@ -97,8 +121,16 @@ update-statement = (table, obj, wh) ->
   return ["UPDATE #table SET #value-set #wh-ere RETURNING *", vals]
 
 select1-fn = (table) ->
-  (object, cb) ->
-    [sql, vals] = select1-statement table, object
+  (criteria, cb) ->
+    [sql, vals] = select-statement table, where-x(criteria)
+    sql1 = "#sql LIMIT 1"
+    console.log \select1, sql1, vals
+    postgres.query sql1, vals, (err, r) ->
+      cb err, r?0
+
+selectx-fn = (table) ->
+  (criteria, cb) ->
+    [sql, vals] = select-statement table, where-x(criteria)
     postgres.query sql, vals, cb
 
 # Generate an upsert function for the given table name
@@ -123,14 +155,24 @@ upsert-fn = (table) ->
     else
       do-insert cb
 
-# Generate an update function for the given table name
+# Generate an update function for the given table name that updates one row
 #
 # @param  String    table   name of table
 # @param  Function  wh-fn   (optional) function that generates a where clause from an object
 # @return Function          an update function for the table
-update-fn = (table, wh-fn=(->null)) ->
+update1-fn = (table, wh-fn=(->null)) ->
   (object, cb) ->
     [update-sql, vals] = update-statement table, object, wh-fn(object)
+    postgres.query update-sql, vals, cb
+
+# Generate an update function for the given table name that updates based on criteria passed to it
+#
+# @param  String    table   name of table
+# @return Function          an update function for the table
+updatex-fn = (table) ->
+  (object, criteria, cb) ->
+    [update-sql, vals] = update-statement table, object, where-x(criteria)
+    console.log \updatex, update-sql, vals
     postgres.query update-sql, vals, cb
 
 # Generate a delete function for the given table name
@@ -184,7 +226,7 @@ query-dictionary =
       cb null, r.0
 
     select1: serialized-fn (select1-fn \aliases, _alias-where), rights: JSON.parse,     config: JSON.parse
-    update1: serialized-fn (update-fn \aliases, _alias-where),  rights: JSON.stringify, config: JSON.stringify
+    update1: serialized-fn (update1-fn \aliases, _alias-where), rights: JSON.stringify, config: JSON.stringify
 
   # db.users.all cb
   users:
@@ -279,8 +321,11 @@ query-dictionary =
           site_id : site-id
       cb null, user <<< alias
 
-    select1: serialized-fn (select1-fn \users), rights: JSON.parse
-    update1: serialized-fn (update-fn \users),  rights: JSON.stringify
+    select1: deserialized-fn (select1-fn \users), rights: JSON.parse
+    update1: serialized-fn (update1-fn \users),  rights: JSON.stringify
+
+  auths:
+    updatex: serialized-fn (updatex-fn \auths), profile: JSON.stringify
 
   pages:
     upsert: upsert-fn \pages
@@ -313,6 +358,11 @@ query-dictionary =
       UPDATE posts SET is_locked = (NOT is_sticky) WHERE id = $1 RETURNING *
       '''
       postgres.query sql, [id], cb
+
+  products:
+    select1: deserialized-fn (select1-fn \products), config: JSON.parse
+    update1: serialized-fn (update1-fn \products), config: JSON.stringify
+    updatex: serialized-fn (updatex-fn \products), config: JSON.stringify
 
   forums:
     upsert: upsert-fn \forums
