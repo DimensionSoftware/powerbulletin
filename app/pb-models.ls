@@ -3,21 +3,13 @@ require! {
   pg
   debug
   \fs
-  orm: \thin-orm
   postgres: \./postgres
 }
 
 {filter, join, keys, values, sort-by} = require \prelude-ls
 
-logger = debug \thin-orm
-
-export orm    = orm
-export client = { connect: (cb) -> pg.connect postgres.conn-str, cb }
-export driver = orm.create-driver \pg, { pg: client, logger }
-
 export-model = ([t, cs]) ->
-  orm.table(t).columns(cs)
-  module.exports[t] = orm.create-client driver, t
+  module.exports[t] = {}
 
 get-tables = (dbname, cb) ->
   sql = '''
@@ -44,15 +36,51 @@ get-cols = (dbname, tname, cb) ->
 # Generate a function that takes another function and transforms its first parameter
 # according to the rules in serializers
 #
-# @param  Function  fn      function to wrap
+# @param  Function  fn              function to wrap
 # @param  Object    serializers
-# @return Function          wrapped function
+# @return Function                  wrapped function
 serialized-fn = (fn, serializers) ->
   (object, ...rest) ->
     for k,sz of serializers
       if object?[k]
         object[k] = serializers[k] object[k]
     fn object, ...rest
+
+# Generate a function that wraps an existing functions cb and deserializes its results
+deserialized-fn = (fn, deserializers) ->
+  (object, ...rest, cb) ->
+    fn object, ...rest, (err, r) ->
+      return cb err if err
+      if r.has-own-property \length
+        new-r = for item in r
+          for k,sz of deserializers
+            if item?[k]
+              item[k] = deserializers[k] item[k]
+          item
+        cb null, new-r
+      else
+        item = r
+        for k,sz of deserializers
+          if item?[k]
+            item[k] = deserializers[k] item[k]
+        cb null, item
+
+where-x = (criteria, n=1) ->
+  where-sql = "WHERE " + (keys criteria
+    |> zip [n to n+100]
+    |> map (-> "#{it.1} = $#{it.0}")
+    |> join " AND ")
+  where-vals = values criteria
+  [where-sql, where-vals]
+
+select-statement = (table, wh) ->
+  if wh is null
+    wh-ere  = "WHERE id = $1"
+    wh-vals = [obj.id]
+  else
+    wh-ere  = wh.0
+    wh-vals = wh.1
+  return ["SELECT * FROM #table #wh-ere", wh-vals]
 
 insert-statement = (table, obj) ->
   columns   = keys obj
@@ -84,6 +112,18 @@ update-statement = (table, obj, wh) ->
   vals      = [...wh-vals, ...obj-vals]
   return ["UPDATE #table SET #value-set #wh-ere RETURNING *", vals]
 
+select1-fn = (table) ->
+  (criteria, cb) ->
+    [sql, vals] = select-statement table, where-x(criteria)
+    sql1 = "#sql LIMIT 1"
+    postgres.query sql1, vals, (err, r) ->
+      cb err, r?0
+
+selectx-fn = (table) ->
+  (criteria, cb) ->
+    [sql, vals] = select-statement table, where-x(criteria)
+    postgres.query sql, vals, cb
+
 # Generate an upsert function for the given table name
 # 
 # @param  String    table   name of table
@@ -106,15 +146,23 @@ upsert-fn = (table) ->
     else
       do-insert cb
 
-# Generate an update function for the given table name
+# Generate an update function for the given table name that updates one row
 #
 # @param  String    table   name of table
 # @param  Function  wh-fn   (optional) function that generates a where clause from an object
 # @return Function          an update function for the table
-#
-update-fn = (table, wh-fn=(->null)) ->
+update1-fn = (table, wh-fn=(->null)) ->
   (object, cb) ->
     [update-sql, vals] = update-statement table, object, wh-fn(object)
+    postgres.query update-sql, vals, cb
+
+# Generate an update function for the given table name that updates based on criteria passed to it
+#
+# @param  String    table   name of table
+# @return Function          an update function for the table
+updatex-fn = (table) ->
+  (object, criteria, cb) ->
+    [update-sql, vals] = update-statement table, object, where-x(criteria)
     postgres.query update-sql, vals, cb
 
 # Generate a delete function for the given table name
@@ -167,7 +215,9 @@ query-dictionary =
       if err then return cb err
       cb null, r.0
 
-    update1: serialized-fn (update-fn \aliases, _alias-where), rights: JSON.stringify, config: JSON.stringify
+    select1: deserialized-fn (select1-fn \aliases), rights: JSON.parse, config: JSON.parse
+    update1: serialized-fn (update1-fn \aliases, _alias-where), rights: JSON.stringify, config: JSON.stringify
+    updatex: serialized-fn (updatex-fn \aliases), rights: JSON.stringify, config: JSON.stringify
 
   # db.users.all cb
   users:
@@ -282,11 +332,16 @@ query-dictionary =
           site_id : site-id
       cb null, user <<< alias
 
-    update1: serialized-fn (update-fn \users), rights: JSON.stringify
+    select1: deserialized-fn (select1-fn \users), rights: JSON.parse
+    update1: serialized-fn (update1-fn \users),  rights: JSON.stringify
+
+  auths:
+    updatex: serialized-fn (updatex-fn \auths), profile: JSON.stringify
 
   pages:
     upsert: upsert-fn \pages
     delete: delete-fn \pages
+    select1: deserialized-fn (select1-fn \pages), config: JSON.parse
 
   posts:
     moderated: (forum-id, cb) ->
@@ -315,6 +370,11 @@ query-dictionary =
       UPDATE posts SET is_locked = (NOT is_sticky) WHERE id = $1 RETURNING *
       '''
       postgres.query sql, [id], cb
+
+  products:
+    select1: deserialized-fn (select1-fn \products), config: JSON.parse
+    update1: serialized-fn (update1-fn \products), config: JSON.stringify
+    updatex: serialized-fn (updatex-fn \products), config: JSON.stringify
 
   forums:
     upsert: upsert-fn \forums
@@ -370,6 +430,8 @@ query-dictionary =
       SELECT * FROM subscriptions WHERE site_id = $1
       '''
       postgres.query sql, [site-id], cb
+
+    select1: select1-fn \subscriptions
 
 
 # assumed postgres is initialized
