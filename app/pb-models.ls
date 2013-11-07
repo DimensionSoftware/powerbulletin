@@ -218,6 +218,9 @@ query-dictionary =
     select1: deserialized-fn (select1-fn \aliases), rights: JSON.parse, config: JSON.parse
     update1: serialized-fn (update1-fn \aliases, _alias-where), rights: JSON.stringify, config: JSON.stringify
     updatex: serialized-fn (updatex-fn \aliases), rights: JSON.stringify, config: JSON.stringify
+    update-last-activty-for-user: (user, cb) ->
+      if not user.id then return cb null
+      @updatex { last_activity: (new Date).to-ISO-string! }, { user_id: user.id, site_id: user.site_id }, cb
 
   # db.users.all cb
   users:

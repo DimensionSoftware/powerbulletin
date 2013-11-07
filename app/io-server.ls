@@ -101,6 +101,11 @@ site-by-domain = (domain, cb) ->
       log err
       return
 
+    err <- db.aliases.update-last-activty-for-user user
+    if err
+      log err
+      return
+
     err, site <- site-by-domain socket.handshake.domain
     if err
       log err
@@ -138,6 +143,8 @@ site-by-domain = (domain, cb) ->
       if search-room
         socket.leave search-room
       if user and site
+        err <- db.aliases.update-last-activty-for-user user
+        if err then return log \db.aliases.update-last-activty-for-user, err
         err <- presence.users-client-remove socket.id, user
         if err then return log \presence.users-client-remove, err
         err, cids <- presence.cids-by-uid user.id

@@ -68,6 +68,8 @@ announce = sioa.create-client!
         if err then return next(err)
         console.warn "emitting enter-site #{JSON.stringify(user)}" unless env is \production
         announce.in(site-room).emit \enter-site, user
+        err <- db.aliases.update-last-activty-for-user user
+        if err then return next(err)
         res.json { success: true } <<< extra
 
     passport.authenticate('local', auth-response)(req, res, next)
@@ -376,8 +378,13 @@ auth-finisher = (req, res, next) ->
 @login-twitter-finish = auth-finisher
 
 @logout = (req, res, next) ->
+  user = req.user
+  user_id = user.id
+  site_id = res.vars.site.id
   if req.user # guard
     req.logout!
+    err <- db.aliases.update-last-activty-for-user { user_id, site_id }
+    if err then return next err
     redirect-url = req.param(\redirect-url) or req.header(\Referer) or '/'
     res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '').replace(is-auth, '')
   else
