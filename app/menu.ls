@@ -173,7 +173,7 @@ require! {
       site_id     : null
       path        : form.page-slug
       title       : title
-      config      : JSON.stringify(main_content: form.content)
+      config      : JSON.stringify(main_content: form.content, content-only: form.content-only)
   | \link =>
     type = \link
     data = {}

@@ -100,7 +100,7 @@ conditional-insert-statement = (table, obj, condition) ->
   return [sql, vals]
 
 update-statement = (table, obj, wh) ->
-  if wh is null
+  unless wh
     wh-ere  = "WHERE id = $1"
     wh-vals = [obj.id]
   else
