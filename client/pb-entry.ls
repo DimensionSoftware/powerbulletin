@@ -77,11 +77,11 @@ window.load-ui = -> # restore ui state from cookie
     [collapsed, w] = s.split sep
     if collapsed is \1 and not $ \html .has-class \admin
       $ \body .add-class \collapsed # only collapse on non-admin mutants
+    # animate build-in
     w = parse-int w
-    $l.transition({width: w} 500ms \easeOutExpo -> set-wide!)
-    set-timeout (-> # ... & snap
-      $ '#main_content .resizable' .transition({padding-left: w+left-offset} 450ms \snap)), 300ms
-  set-timeout (-> set-wide!; align-ui!), 500ms
+    $l.transition({width: w} 600ms \easeOutExpo -> set-wide!)
+    $ '#main_content .resizable' .transition({padding-left: w+left-offset} 300ms \easeOutExpo)
+  set-timeout (-> set-wide!; align-ui!), 1000ms
 
 # waypoints
 $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 800ms)

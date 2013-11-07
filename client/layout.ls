@@ -88,7 +88,7 @@ if window.location.host not in [\powerbulletin.com, \pb.com]
     window.hints.current <<< { pathname: window.location.pathname, mutator: null }
 
     # if the previous and next mutations are between forum...
-    #   generte recommendations
+    #   generate recommendations
     if window.hints.last.mutator is \forum and not window.location.pathname.match /^\/(auth|admin|resources)/
       rc = window.tasks.recommendation window.location.pathname, window.hints.last.pathname
 

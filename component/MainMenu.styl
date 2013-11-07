@@ -89,13 +89,19 @@ body.scrolled
         z-index 75!important
         color dark_text!important
         transition color .5s ease-out
+      > .title.active::after
+        background radial-gradient(ellipse farthest-corner at 50% 500%, light 50%, rgba(255,255,255,0) 73%)
+        height 6px
+        width 60%
+        transition width .15s ease-out .15s
       > .title.hover::after
-        background radial-gradient(ellipse farthest-corner at 50% 300%, light 50%, rgba(255,255,255,0) 80%)
-        height 8px
+        background radial-gradient(ellipse farthest-corner at 50% 375%, light 50%, rgba(255,255,255,0) 80%)
+        height 7px
         width 60%
         transition width .15s ease-out .15s
       .title.active
-        font-weight bold
+        font-weight 500
+        color #333
         font-style italic
       > .title:hover, .title.hover
         color #555

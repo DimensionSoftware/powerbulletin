@@ -11,10 +11,12 @@ mixin _post(p, i, moderatorMode)
     mixin _post-profile(p)
     .container
       span.username= p.user_name
-      .date(data-time=p.created_iso)!= p.created_human
+      .date(data-time=p.created_iso, title=p.created_iso) Posted 
+        != p.created_human
       .post-content
         if p.html
-          p.body!= p.html
+          //- XXX for now, html is now escaped (not ideal)
+          p.body= p.html
     if !moderatorMode
       mixin _post-actions(p)
       .reply
