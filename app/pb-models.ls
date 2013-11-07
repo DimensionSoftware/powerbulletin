@@ -51,7 +51,7 @@ deserialized-fn = (fn, deserializers) ->
   (object, ...rest, cb) ->
     fn object, ...rest, (err, r) ->
       return cb err if err
-      if r.has-own-property \length
+      if r?length
         new-r = for item in r
           for k,sz of deserializers
             if item?[k]
