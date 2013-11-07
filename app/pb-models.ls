@@ -225,8 +225,9 @@ query-dictionary =
       if err then return cb err
       cb null, r.0
 
-    select1: serialized-fn (select1-fn \aliases, _alias-where), rights: JSON.parse,     config: JSON.parse
+    select1: deserialized-fn (select1-fn \aliases), rights: JSON.parse, config: JSON.parse
     update1: serialized-fn (update1-fn \aliases, _alias-where), rights: JSON.stringify, config: JSON.stringify
+    updatex: serialized-fn (updatex-fn \aliases), rights: JSON.stringify, config: JSON.stringify
 
   # db.users.all cb
   users:
@@ -330,6 +331,7 @@ query-dictionary =
   pages:
     upsert: upsert-fn \pages
     delete: delete-fn \pages
+    select1: deserialized-fn (select1-fn \pages), config: JSON.parse
 
   posts:
     moderated: (forum-id, cb) ->
@@ -418,6 +420,8 @@ query-dictionary =
       SELECT * FROM subscriptions WHERE site_id = $1
       '''
       postgres.query sql, [site-id], cb
+
+    select1: select1-fn \subscriptions
 
 
 # assumed postgres is initialized
