@@ -281,8 +281,12 @@ time-updater = ->
     if $el.has-class 'time-title'
       $el.attr \title, hr.replace(/<.*?\/?>/g, '')
     else
+      # set human time
       $el.html hr
+      # TODO set friendly time
+      #$el.attr \title, 
 
+time-updater!
 set-interval time-updater, 30000ms
 #}}}
 #{{{ Loading cursor spinner
