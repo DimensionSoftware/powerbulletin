@@ -84,18 +84,19 @@ seconds-to-human-readable = (secs) ->
 
 # XXX html is returned
 @elapsed-to-human-readable = (secs-ago) ~>
+  bold   = -> "<b>#it</b>"
   suffix = \ago
-  human  = if secs-ago < 30s then '<b>Just now!</b>'
-  else if secs-ago < 60s then "<b>a moment #{suffix}</b>"
-  else if secs-ago < 120s then "<b>a minute #{suffix}</b>"
+  human  = if secs-ago < 30s then bold 'Just now!'
+  else if secs-ago < 60s then bold "a moment #{suffix}"
+  else if secs-ago < 120s then bold "a minute #{suffix}"
   else if secs-ago < 86400s # within the day
      seconds-to-human-readable(secs-ago)+' '+suffix
   else if secs-ago < 172800s # within 2 days
-    \Yesterday
+    bold \Yesterday
   else if secs-ago < 604800s # within the week, use specific day
     d = new Date!
     d.set-time d.get-time!-(secs-ago*1000s)
-    @pretty-day-name d.get-day!
+    bold(@pretty-day-name d.get-day!)
   else if secs-ago < 2628000s # within a month
     weeks = Math.floor secs-ago / 604800s
     if weeks == 1 then "A week #{suffix}" else "#{weeks} weeks #{suffix}"
@@ -105,7 +106,7 @@ seconds-to-human-readable = (secs) ->
   else
     years = Math.floor secs-ago / 31446925s
     if years == 1 then "A year #{suffix}" else "#{years} years #{suffix}"
-  human.replace /^(\d+\s\w+)|(\w+)/g '<b>$1$2</b>' # bold numbers & metric, or single word (Yesterday)
+  human.replace /^(\d+\s\w+)/g '<b>$1</b>' # bold numbers & metric
 
 # ported from http://erlycoder.com/49/javascript-hash-functions-to-convert-string-into-integer-hash-
 @djb2-hash = (str) ->
