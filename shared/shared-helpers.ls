@@ -115,32 +115,6 @@ seconds-to-human-readable = (secs) ->
     hash = ((hash .<<. 5) + hash) + char
   hash
 
-
-date-fields =
-  * \created
-  * \updated
-
-# recursively turn date-fields into Date objects
-@add-dates = (o) ~>
-  now = Date.now!
-  return o unless o
-  switch typeof o
-  | 'object' =>
-    for df in date-fields
-      if o[df]
-        o[df] = new Date o[df]
-        o["#{df}_human"] = @elapsed-to-human-readable ((now - o[df]) / 1000)
-        o["#{df}_iso"] = o[df].toISOString()
-    sub = __.keys(o).filter (k) -> typeof o[k] == 'array' || typeof o[k] == 'object'
-    for k in sub
-      o[k] = @add-dates o[k]
-    o
-  | 'array' =>
-    for v,i in o
-      if typeof v == 'object'
-        o[i] = @add-dates o[i]
-    o
-  | otherwise => o
 #}}}
 
 # double-buffered replace of view with target
