@@ -1,7 +1,7 @@
 require! {
   async
   \./rights
-  \../shared/shared-helpers
+  \./server-helpers
 }
 
 @homepage = (req, res, next) ->
@@ -39,7 +39,7 @@ require! {
   if err then return next err
 
   for o in a.obj-rows
-    o = shared-helpers.add-dates o
+    o = server-helpers.add-dates o
     o.name = "<a href=\"\#\" data-edit-user=\'#{JSON.stringify(o)}\'>#{o.name}</span>"
     o.created = "<span title=\"@ #{o.created_iso}\">#{o.created_human}</span>"
 

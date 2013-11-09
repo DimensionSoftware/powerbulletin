@@ -1,6 +1,6 @@
 require! {
   el: \./elastic
-  sh: \../shared/shared-helpers
+  sh: \./server-helpers
 }
 
 const day-ms = 24h * 60m * 60s * 1000ms

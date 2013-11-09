@@ -6,6 +6,8 @@ require! {
   crypto
   bbcode
   nodemailer
+  strftime
+  h: \../shared/shared-helpers
   auth:  \./auth
   cvars: \./load-cvars
 }
@@ -173,5 +175,32 @@ process-cached-data = {}
     err2 <- fs.unlink src
     cb(err)
   _is.pipe(_os)
+
+date-fields =
+  * \created
+  * \updated
+
+# recursively turn date-fields into Date objects
+@add-dates = (o) ~>
+  now = Date.now!
+  return o unless o
+  switch typeof o
+  | 'object' =>
+    for df in date-fields
+      if o[df]
+        o[df] = new Date o[df]
+        o["#{df}_human"] = h.elapsed-to-human-readable ((now - o[df]) / 1000)
+        o["#{df}_iso"] = o[df].toISOString()
+        o["#{df}_friendly"] = strftime "%A %b %e, %Y", o[df]
+    sub = keys(o) |> filter (k) -> typeof o[k] == 'array' || typeof o[k] == 'object'
+    for k in sub
+      o[k] = @add-dates o[k]
+    o
+  | 'array' =>
+    for v,i in o
+      if typeof v == 'object'
+        o[i] = @add-dates o[i]
+    o
+  | otherwise => o
 
 # vim:fdm=marker
