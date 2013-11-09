@@ -6,6 +6,7 @@ require! {
   crypto
   bbcode
   nodemailer
+  strftime
   h: \../shared/shared-helpers
   auth:  \./auth
   cvars: \./load-cvars
@@ -190,6 +191,7 @@ date-fields =
         o[df] = new Date o[df]
         o["#{df}_human"] = h.elapsed-to-human-readable ((now - o[df]) / 1000)
         o["#{df}_iso"] = o[df].toISOString()
+        o["#{df}_friendly"] = strftime "%A %b %e, %Y", o[df]
     sub = keys(o) |> filter (k) -> typeof o[k] == 'array' || typeof o[k] == 'object'
     for k in sub
       o[k] = @add-dates o[k]
