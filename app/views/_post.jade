@@ -12,8 +12,8 @@ mixin _post(p, i, moderatorMode)
     .container
       a.user.mutant(href="/user/#{p.user_name}")
         span.username= p.user_name
-      .date(data-time=p.created_iso, title=p.created_iso) Posted 
-        != p.created_human
+      .date Posted 
+        span(data-time=p.created_iso, title=p.created_iso)!= p.created_human
       .post-content
         if p.html
           p.body!= p.html
