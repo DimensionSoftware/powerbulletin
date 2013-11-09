@@ -18,15 +18,14 @@
     li.post-count
       b!= profile.human_post_count 
         span  #{profile.post_count == 1 ? "post" : "posts"}
-    li.since(title=profile.created_iso)
+    li.since(title=profile.created_friendly)
       span Joined 
       != profile.created_human
     if postsByUser.length
       //- use date of last post
-      p = postsByUser[0]
       li.last-activity
         span Last active 
-        span.date(title=p.created_iso, data-time=p.created_iso)!= p.created_human
+        span.date(title=profile.last_activity_friendly, data-time=profile.last_activity_iso)!= profile.last_activity_human
 
   button.onclick-chat(title="Private Message") Chat
   a.onclick-show-forgot Change Password

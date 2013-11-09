@@ -304,10 +304,12 @@ function background-for-forum m, active-forum-id
 
   err, fdoc <- async.auto tasks
   unless fdoc.profile then return next 404 # guard
-  fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
-  fdoc.menu  = site.config.menu
-  fdoc.page  = parse-int page
-  fdoc.title = name
+  fdoc.profile = add-dates fdoc.profile, [ \last_activity ]
+  console.log \profile, fdoc.profile
+  fdoc.furl    = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
+  fdoc.menu    = site.config.menu
+  fdoc.page    = parse-int page
+  fdoc.title   = name
   fdoc.profile.human_post_count = add-commas(fdoc.qty)
 
   res.locals fdoc

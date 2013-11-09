@@ -9,7 +9,7 @@ mixin _thread(t)
       .container
         span.username
           em= t.user_name // XXX weird things happened when I tried to turn this into an anchor
-        span.created(data-time=t.created_iso)!= t.created_human
+        span.created(data-time=t.created_friendly)!= t.created_human
         .clear
         span.post-count= t.post_count
           i posts

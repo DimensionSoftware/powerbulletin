@@ -176,12 +176,12 @@ process-cached-data = {}
     cb(err)
   _is.pipe(_os)
 
-date-fields =
+_date-fields =
   * \created
   * \updated
 
 # recursively turn date-fields into Date objects
-@add-dates = (o) ~>
+@add-dates = (o, date-fields=_date-fields) ~>
   now = Date.now!
   return o unless o
   switch typeof o

@@ -16,7 +16,7 @@ if typeof(post) !== 'undefined'
             img(src="#{cacheUrl}/#{post.user_photo}")
           span.username=post.user_name
         .date Posted 
-          span(data-time=post.created_iso, title=post.created_iso)!= post.created_human
+          span(data-time=post.created_iso, title=post.created_friendly)!= post.created_human
         .edit-container
         if post.html
           p.body!= post.html
