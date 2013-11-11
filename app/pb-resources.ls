@@ -29,13 +29,14 @@ is-locked-forum = (m, forum-id) ->
 
 @aliases =
   update: (req, res, next) ->
-    try [user_id, site_id] = req.params.alias.split \:
+    site_id = req.user?site_id # only allow updating on auth'd site
+    user_id = req.params.alias
     (err, r) <- rights.can-edit-user req.user, user_id
     if err then return next err
     if r # can edit, so--
-      (err, alias) <- db.aliases.select1 {user_id, site_id} # fetch current config
-      config = alias.config <<< req.body.config
-      err <- db.aliases.updatex {config}, {user_id, site_id}
+      (err, alias) <- db.aliases.select1 {user_id, site_id}  # fetch current config
+      config = alias.config <<< req.body?config or {}        # & merge
+      err <- db.aliases.updatex {config}, {user_id, site_id} # & update!
       res.json {+success}
     else
       res.json {-success}
