@@ -448,7 +448,7 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
   sql = """
   SELECT
     u.id, u.email, u.rights AS sys_rights,
-    a.photo, a.verified, a.rights, a.name, a.created, a.site_id, a.last_activity,
+    a.photo, a.verified, a.rights, a.name, a.created, a.site_id, a.last_activity, a.config AS config,
     (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2) AS post_count,
     auths.type, auths.profile 
   FROM users u
@@ -465,6 +465,7 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
     memo
   u =
     auths         : {}
+    title         : auths.0?config?title
     id            : auths.0?id
     site_id       : auths.0?site_id
     name          : auths.0?name

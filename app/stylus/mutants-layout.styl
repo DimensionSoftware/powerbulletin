@@ -147,7 +147,6 @@ html.forum, html.profile, html.search, html.moderation
       overflow-y scroll
       height 100%
     .threads
-      //overflow-y scroll
       height 100%
       margin 0
       padding-top grid
@@ -478,18 +477,37 @@ html.profile
     .avatar
       img
         cursor copy
-    .change-profile, .onclick-show-forgot
+    .change-profile, .onclick-show-forgot, .onclick-change-sig, .change-title
       display block
-    .onclick-chat
+    h3, .onclick-chat, .title
       display none
+    .onclick-change-sig
+      display block
   .left-content
     .onclick-chat
       margin 8px 3px
       max-width 250px
       width 98%
-    .change-profile, .onclick-show-forgot
+    .change-profile, .onclick-show-forgot, .onclick-change-sig, .change-title
       display none
-      margin grid 3px
+      margin 3px 0
+    h3
+      padding 8px
+      font-size 1.1em
+      font-weight normal
+    h3, .change-title
+      position absolute
+      text-transform capitalize
+      bottom 0
+      left 0
+      right 0
+      border none
+      background rgba(0,0,0,.5)
+      color #fff
+      margin 0
+      box-shadow none
+      &:hover, &:focus
+        box-shadow none
     .container
       margin 0 (grid*3.5) 0 (grid*2)
       overflow hidden
@@ -498,7 +516,8 @@ html.profile
     .avatar
       position relative
       overflow hidden
-      max-width 255px
+      max-width 225px
+      max-height 225px
       .drag
         display none
       img
@@ -511,7 +530,7 @@ html.profile
         margin-bottom 3px
         b
           color #444
-          font-weight 500
+          font-weight 400
         .date
           display inline-block
     h1, h2, h3
@@ -519,7 +538,7 @@ html.profile
       margin-top 0
       margin-left 0
     h2
-      margin 18px 0 0 3px
+      margin 18px 0 18px 3px
   .main-content
     .forum
       .username
@@ -541,7 +560,7 @@ html.profile
           &:hover
             text-decoration none
           b
-            font-weight 500
+            font-weight 400
             text-transform capitalize
         .by, .forum-link
           margin-right 1px

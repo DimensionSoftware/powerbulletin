@@ -427,25 +427,45 @@ same-profile = (hints) ->
 
     photocropper-start = (ev) -> PhotoCropper.start!
 
+    change-title-enable = ->
+      var last
+      e = w.$ \#change_title
+      e.on \click -> false # interception
+      e.on \keypress (ev) -> if (ev.key-code or ev.which) is 13 then false else true
+      e.on \keyup __.debounce (-> # watch & save title
+        cur = e.val!
+        unless last then last := \first
+        if last isnt cur # save!
+          w.$.ajax {
+            type: \PUT
+            url:  "/resources/aliases/#{w.user.id}",
+            data:
+              config:
+                title: cur
+            success: ->
+              last := cur
+          }), 1000ms
     photocropper-enable = ->
-      window.$(\#left_content).add-class \editable
-      window.$(\body).on \click, '#left_content.editable .avatar', photocropper-start
+      w.$ \#left_content .add-class \editable
+      w.$ \body .on \click, '#left_content.editable .avatar', photocropper-start
       options =
         name: \avatar
-        post-url: "/resources/users/#{window.user.id}/avatar"
+        post-url: "/resources/users/#{w.user.id}/avatar"
         on-success: (xhr, file, r-json) ->
           r = JSON.parse r-json
           PhotoCropper.start mode: \crop, photo: r.url
-      window.$('#left_content .avatar').html5-uploader options
+      w.$('#left_content .avatar').html5-uploader options
 
     photocropper-disable = ->
-      window.$(\#left_content).remove-class \editable
-      window.$(\body).off \click, '#left_content.editable .avatar', photocropper-start
+      w.$(\#left_content).remove-class \editable
+      w.$(\body).off \click, '#left_content.editable .avatar', photocropper-start
 
     if u # guard
       layout-on-personalize w, u
-      profile-user-id = window.$('#left_content .profile').data \userId
+      w.$ \#change_title .val u?title # most current (cache blow)
+      profile-user-id = w.$('#left_content .profile').data \userId
       if profile-user-id is u.id
+        change-title-enable!
         photocropper-enable!
       else
         photocropper-disable!
@@ -456,6 +476,7 @@ same-profile = (hints) ->
     (window, next-mutant, next) ->
       # cleanup/unbind
       window.$ \body .off \click \.onclick-show-forgot
+      window.$ \.change-title .off!
       reset-paginator window unless next-mutant is \forum
       next!
   on-initial:
