@@ -1,1 +1,1 @@
-../../node_modules/strftime/strftime.js
+../../node_modules/strftime/strftime-min.js
