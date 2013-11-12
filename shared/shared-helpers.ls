@@ -200,7 +200,7 @@ _date-fields =
 
 # A date in "friendly" format.  This is for absolute times (NOT elapsed times).
 @friendly-date-string = (d) ->
-  strftime "%A %b %e, %Y", d
+  strftime "%A - %b %e, %Y @ %I:%M %p", d
 
 # # Return a timezone-adjusted date from a date-string.
 # @tz-adjusted-date = (date-string) ->
