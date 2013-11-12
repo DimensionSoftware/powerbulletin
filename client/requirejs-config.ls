@@ -27,6 +27,7 @@ paths:
   #jquery-fancybox       : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack else \../local/jquery.fancybox.pack
   #socketio              : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min else \../local/socket.io.min
   raf                   : "../local/raf"
+  strftime              : "../local/strftime"
   powerbulletin         : "../powerbulletin"
   powerbulletin-sales   : "../powerbulletin-sales"
 shim:
