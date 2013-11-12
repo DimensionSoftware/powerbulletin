@@ -762,14 +762,10 @@ mk-post-pnum-to-href = (post-uri) ->
     window.$ \#left_content .remove!
     window.$ \#main_content .remove!
     window.marshal \backgrounds, @backgrounds
-    #window.$ \body .add-class \parallax-viewport
     layout-static.call @, window, \privateSite
     next!
   on-load: (window, next) ->
     <~ lazy-load-fancybox
-
-    # handle background
-    rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds?length > 1
 
     window.fancybox-params ||= {}
     window.fancybox-params <<< {
@@ -779,17 +775,22 @@ mk-post-pnum-to-href = (post-uri) ->
       close-click: false
       modal:       true}
 
-    #  show Auth dialog
-    set-timeout (->
-      # ensure login stays open
-      <- Auth.show-login-dialog
+    # show Auth dialog
+    <- Auth.show-login-dialog
+    set-timeout (-> # XXX guarantee fancybox shows
+      unless $ \.fancybox-overlay:visible .length
+        <- Auth.show-login-dialog), 1200ms
 
-      set-timeout (-> # XXX guarantee fancybox shows
-        unless $ \.fancybox-overlay:visible .length
-          <- Auth.show-login-dialog), 1200ms
-      # remove initial hover state to dim if mouse is really hovered out
-      set-timeout (-> window.$ \.fancybox-skin .remove-class \hover), 4000ms
-    ), 200ms
+    # handle background
+    rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds?length > 1
+
+    fb = window.$ \.fancybox-skin
+    fn = -> fb.remove-class \hover
+    fr = set-timeout fn, 4000ms                   # dim if mouse hovers out
+    window.$ 'input[placeholder]' .on \keydown -> # opaque on key press, and re-dim:
+      clear-timeout fr
+      fb.add-class \hover
+      fr := set-timeout fn, 2000ms
 
 @moderation =
   static: (w, next) ->
