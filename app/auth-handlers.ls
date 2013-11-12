@@ -68,7 +68,7 @@ announce = sioa.create-client!
         if err then return next(err)
         console.warn "emitting enter-site #{JSON.stringify(user)}" unless env is \production
         announce.in(site-room).emit \enter-site, user
-        err <- db.aliases.update-last-activty-for-user user
+        err <- db.aliases.update-last-activity-for-user user
         if err then return next(err)
         res.json { success: true } <<< extra
 
@@ -141,6 +141,9 @@ announce = sioa.create-client!
       auth.send-registration-email u, site, (err, r) ->
         console.warn 'registration email', err, r
       #res.json success:true, errors:[]   # <- just register
+
+      err <~ db.aliases.update-last-activity-for-user u
+      if err then next err
 
       req.body.username = email           # give passport what it wants, where it wants it
       @login req, res, next               # <- autologin
@@ -308,6 +311,8 @@ do-verify = (req, res, next) ~>
 auth-finisher = (req, res, next) ->
   user = req.user
   first-visit = user.created_human.match /just now/i
+  err <- db.aliases.update-last-activity-for-user user
+  if err then return next err
   if first-visit
     res.send """
     <script type="text/javascript">
@@ -383,7 +388,7 @@ auth-finisher = (req, res, next) ->
   site_id = res.vars.site.id
   if req.user # guard
     req.logout!
-    err <- db.aliases.update-last-activty-for-user { user_id, site_id }
+    err <- db.aliases.update-last-activity-for-user { user_id, site_id }
     if err then return next err
     redirect-url = req.param(\redirect-url) or req.header(\Referer) or '/'
     res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '').replace(is-auth, '')
