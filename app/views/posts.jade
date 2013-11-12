@@ -18,7 +18,7 @@ if typeof(post) !== 'undefined'
         .user-title=post.alias_config.title
         if post.user_last_activity
           //- rely on client to out human-friendly time
-          .date Last Active
+          .date Last Active 
             span(data-time=post.user_last_activity)
         .date Posted 
           span(data-time=post.created_iso, title=post.created_friendly)!= post.created_human
