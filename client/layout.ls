@@ -270,22 +270,17 @@ time-updater = ->
 
     elapsed = (now - d) / 1000s
     hr = helpers.elapsed-to-human-readable elapsed
+    fr = helpers.friendly-date-string d
 
-    # debug crap XXX: to figure out what is going on with time
-    # TODO: remove me
-    lh = $el.data(\last-human)
-    #if lh isnt hr
-      #console.log "human-readable time changed", {elapsed, lh, hr}
     $el.data(\last-human, hr)
 
-    if $el.has-class 'time-title'
-      $el.attr \title, hr.replace(/<.*?\/?>/g, '')
-    else
-      # set human time
-      $el.html hr
-      # TODO set friendly time
-      #$el.attr \title, 
+    $el.attr \title, fr
 
+    # chat doesn't want its html replaced
+    if not $el.has-class 'time-title'
+      $el.html hr
+
+window.time-updater = time-updater # XXX remove me
 time-updater!
 set-interval time-updater, 30000ms
 #}}}

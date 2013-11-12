@@ -54,6 +54,9 @@ shim:
     deps: [\jquery]
   raf:
     exports: \raf
+  strftime:
+    exports: \strftime
+    init: -> window.strftime
 map:
   '*':
     cheerio: \jquery

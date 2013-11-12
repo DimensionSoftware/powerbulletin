@@ -186,7 +186,7 @@ _date-fields =
         o[df] = new Date o[df]
         o["#{df}_human"] = @elapsed-to-human-readable ((now - o[df]) / 1000)
         o["#{df}_iso"] = o[df].toISOString()
-        o["#{df}_friendly"] = strftime "%A %b %e, %Y", o[df]
+        o["#{df}_friendly"] = @friendly-date-string o[df]
     sub = keys(o) |> filter (k) -> typeof o[k] == 'array' || typeof o[k] == 'object'
     for k in sub
       o[k] = @add-dates o[k]
@@ -197,6 +197,18 @@ _date-fields =
         o[i] = @add-dates o[i]
     o
   | otherwise => o
+
+# A date in "friendly" format.  This is for absolute times (NOT elapsed times).
+@friendly-date-string = (d) ->
+  strftime "%A %b %e, %Y", d
+
+# # Return a timezone-adjusted date from a date-string.
+# @tz-adjusted-date = (date-string) ->
+#   date = new Date(date-string)
+#   tz-offset = (new Date).get-timezone-offset! * 60 * 1000
+#   new-date = new Date(date - -tz-offset)
+#   console.log \old-vs-new, date, new-date
+#   new-date
 
 @
 # vim:fdm=marker
