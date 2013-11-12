@@ -15,6 +15,11 @@ if typeof(post) !== 'undefined'
           .profile.photo
             img(src="#{cacheUrl}/#{post.user_photo}")
           span.username=post.user_name
+        .user-title=post.alias_config.title
+        if post.user_last_activity
+          //- rely on client to out human-friendly time
+          .date Last Active
+            span(data-time=post.user_last_activity)
         .date Posted 
           span(data-time=post.created_iso, title=post.created_friendly)!= post.created_human
         .edit-container

@@ -40,10 +40,12 @@
     return results$;
   });
   out$.userFields = userFields = userFields = function(uField, sid){
-    var aliasSql, photoSql;
+    var aliasSql, photoSql, titleSql, activeSql;
     aliasSql = "SELECT a.name FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid;
     photoSql = "SELECT a.photo FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid;
-    return "(" + aliasSql + ") AS user_name,\n(" + photoSql + ") AS user_photo";
+    titleSql = "SELECT a.config FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid;
+    activeSql = "SELECT a.last_activity FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid;
+    return "(" + aliasSql + ")  AS user_name,\n(" + photoSql + ")  AS user_photo,\n(" + titleSql + ")  AS alias_config,\n(" + activeSql + ") AS user_last_activity";
   };
   topForums = function(siteId, limit, fields){
     var sql;
