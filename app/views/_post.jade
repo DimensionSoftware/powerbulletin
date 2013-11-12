@@ -12,6 +12,7 @@ mixin _post(p, i, moderatorMode)
     .container
       a.user.mutant(href="/user/#{p.user_name}")
         span.username= p.user_name
+      .user-title=p.alias_config.title
       .date Posted 
         span(data-time=p.created_iso, title=p.created_friendly)!= p.created_human
       .post-content

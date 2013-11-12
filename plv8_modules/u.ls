@@ -27,11 +27,15 @@ export map = (f, xs) -->
   [f x for x in xs]
 
 export user-fields = user-fields = (u-field, sid) ->
-  alias-sql = "SELECT a.name FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
-  photo-sql = "SELECT a.photo FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
+  alias-sql  = "SELECT a.name FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
+  photo-sql  = "SELECT a.photo FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
+  title-sql  = "SELECT a.config FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
+  active-sql = "SELECT a.last_activity FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
   """
-  (#alias-sql) AS user_name,
-  (#photo-sql) AS user_photo
+  (#alias-sql)  AS user_name,
+  (#photo-sql)  AS user_photo,
+  (#title-sql)  AS alias_config,
+  (#active-sql) AS user_last_activity
   """
 ## END PURE FUNCTIONS ##
 
