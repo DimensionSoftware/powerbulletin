@@ -1,13 +1,13 @@
 .fancybox-overlay .fancybox-wrap .fancybox-skin
-  opacity .85
-  background-image linear-gradient(to top, #fff 10px, #f2f2f2 100%)
+  opacity .8
+  background-image linear-gradient(to top, #000 10px, #222 100%)
   transition opacity .3s ease-out 3s
   &:hover, &.hover
-    opacity 1
+    opacity .95
     transition none
 #auth
   .strength-meter
-    background-color #fafafa
+    background-color #fcfcfc
     border-left 1px solid #eee
     .strength
       background-color red
@@ -17,38 +17,39 @@
         background-color green
         border-top 1px solid #278000
         background-image linear-gradient(0deg, #8AD702 0%, #389100 80%)
-  .toggle-password:hover
-    background #f3f3f3
-    color #444
-   border-radius 4px / 6px
   .toggle-password
-    background #f6f6f6
+    background #fcfcfc
     border 1px solid #eee
     color #666
     border-radius 3px / 5px
+    &:hover
+      background #fff
+      color #444
+      border 1px solid #ddd
+      border-radius 4px / 6px
   .login
     .msg.onclick-show-register
       opacity 1
       height 30px
-      h3:hover
-        color #222
-        text-shadow 0 0 1px dark
-        transition none
       h3
         position relative
         float right
         margin-top 8px
         text-shadow none
         transition text-shadow .4s ease-out .4s
-      h3::before
-        display none
+        &:hover
+          color #eee
+          text-shadow 0 0 1px dark
+          transition none
+        &::before
+          display none
     .small
       h3
-        color #777
-      h3:hover
-        color #333
-        text-shadow 0 0 0 dark
-        transition all .1s ease-out
+        color #aaa
+        &:hover
+          color #ccc
+          text-shadow 0 0 0 dark
+          transition all .1s ease-out
     .msg
       overflow hidden
       display block
@@ -58,35 +59,43 @@
         text-shadow 0 0 1px dark
   .msg.onclick-show-login
     h3:hover
-      color #444
+      color #eee
   h3
     font-weight 200
     position relative
     font-size 15px
-    color #555
+    color #ddd
+    &:hover::before
+      border-right 10px solid #ddd
+      left -10px
+      transition all .2s ease-out
+    &::before
+      display block
+      position absolute
+      border-right 9px solid #aaa
+      border-left 5px solid transparent
+      border-top 5px solid transparent
+      border-bottom 5px solid transparent
+      content ''
+      left -7px
+      top 7px
   .social h3::before
     display none
   .onclick-show-forgot h3::before
     border none
-  h3:hover::before
-    border-right 10px solid #aaa
-    left -10px
-    transition all .2s ease-out
-  h3::before
-    display block
-    position absolute
-    border-right 9px solid #ddd
-    border-left 5px solid transparent
-    border-top 5px solid transparent
-    border-bottom 5px solid transparent
-    content ''
-    left -7px
-    top 7px
   fieldset
     padding-top 40px
-    border-color #f0f0f0
+    //border-color #f0f0f0
+    border-color #111
     border-radius 2px
-    background-color #fff
+    background-color #222
+  input
+    background-image none
+    background-color #f3f3f3
+    &:hover
+      background-color #fafafa
+    &:focus, &:active
+      background-color #fff
   input[name="password"]:focus
     border-top-left-radius 3px
     border-top-right-radius 3px
