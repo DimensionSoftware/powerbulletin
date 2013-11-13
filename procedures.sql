@@ -54,12 +54,13 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
     # fetch thread & forum context
     thread-sql = """
       SELECT p.id,p.title,p.uri, a.user_id,a.name, f.uri furi,f.title ftitle
-      FROM posts p
+       FROM posts p
         LEFT JOIN aliases a ON a.user_id=p.user_id
         LEFT JOIN forums f ON f.id=p.forum_id
       WHERE p.id IN (#{(u.unique [p.thread_id for p,i in posts]).join(', ')})
+        AND a.site_id = $1
     """
-    ctx = plv8.execute(thread-sql, [])
+    ctx = plv8.execute(thread-sql, [usr.site_id])
 
     # hash for o(n) + o(1) * posts -> thread mapping
     lookup = {[v.id, v] for k,v of ctx}
@@ -608,7 +609,7 @@ CREATE FUNCTION procs.bans_for_post(post_id JSON, user_id JSON) RETURNS JSON AS 
 
   for b in bans
     b.url = '^' + b.url
-  
+
   # ban associated profile, too
   profiles = bans.map (b) ->
     {host:b.host, url:"^/user/#user_id"}
