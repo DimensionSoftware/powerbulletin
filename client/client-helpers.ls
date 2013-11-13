@@ -260,8 +260,8 @@ timers = {}
     ..add-class \online
     ..attr \title, \Online!
 
-@set-profile = (src) ~>
-  $ \.photo
+@set-profile = (src) ~> # top-right profile/login area
+  $ '.tools > .photo'
     ..attr \href "/user/#{user.name}"
     ..add-class \online # set online!
     ..attr \title user.name

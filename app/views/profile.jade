@@ -3,7 +3,7 @@
   .profile(data-user-id="#{profile.id}", data-user-name="#{profile.name}")
     h2= profile.name
     form(action="/resources/users/#{profile.id}/avatar", enctype="multipart/form-data", method="post")
-      .avatar
+      .avatar.profile
         if profile.photo
           if profile.photo.match(/^https?:/)
             img(src="#{profile.photo}")
