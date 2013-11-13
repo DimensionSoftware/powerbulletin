@@ -37,6 +37,7 @@ is-locked-forum = (m, forum-id) ->
       (err, alias) <- db.aliases.select1 {user_id, site_id}  # fetch current config
       config = alias.config <<< req.body?config or {}        # & merge
       err <- db.aliases.updatex {config}, {user_id, site_id} # & update!
+      announce.in(site_id).emit \new-profile-title, { id:user_id, title:config?title }
       res.json {+success}
     else
       res.json {-success}

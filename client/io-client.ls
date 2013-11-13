@@ -111,7 +111,10 @@ function init-with-socket s
     $ \#new_hits .html realtime-html
     $ \#breadcrumb .slide-down 300ms
 
-  s.on \new-profile-photo, (user) ->
+  # <profile-related updates>
+  s.on \new-profile-title, (user) ->
+    $ "[data-user-id=#{user.id}] .user-title" .html user.title
+  s.on \new-profile-photo, (user) -> # TODO smoothly load image
     $ "[data-user-id=#{user.id}]" .find('.profile img').attr \src, "#{cache-url}#{user.photo}"
     if window?user?id is user.id
       $ \#profile .attr \src, "#{cache-url}#{user.photo}"
