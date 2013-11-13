@@ -22,8 +22,7 @@
     li.since(title=profile.created_friendly)
       span Joined 
       != profile.created_human
-    if postsByUser.length
-      //- use date of last post
+    if profile.last_activity_iso
       li.last-activity
         span Last active 
         span.date(title=profile.last_activity_friendly, data-time=profile.last_activity_iso)!= profile.last_activity_human
