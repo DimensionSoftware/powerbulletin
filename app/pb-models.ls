@@ -220,10 +220,26 @@ query-dictionary =
     selectx: deserialized-fn (selectx-fn \aliases), rights: JSON.parse, config: JSON.parse
     update1: serialized-fn (update1-fn \aliases, _alias-where), rights: JSON.stringify, config: JSON.stringify
     updatex: serialized-fn (updatex-fn \aliases), rights: JSON.stringify, config: JSON.stringify
+
     update-last-activity-for-user: (user, cb) ->
       id = user.id or user.user_id
       if not id then return cb null
       @updatex { last_activity: (new Date).to-ISO-string! }, { user_id: id, site_id: user.site_id }, cb
+
+    participants-for-thread: deserialized-fn ((thread-id, cb) ->
+      err, r <- postgres.query "SELECT f.site_id FROM posts p JOIN forums f ON p.forum_id = f.id WHERE p.id = $1", [thread-id]
+      if err then return cb err
+      site-id = r.0?site_id
+      if not site-id
+        return cb new Error("no site_id for post #thread-id")
+      sql = '''
+      SELECT a.*
+      FROM aliases a
+      WHERE user_id IN
+        (SELECT p.user_id FROM posts p WHERE p.thread_id = $1)
+      AND site_id = $2
+      '''
+      postgres.query sql, [thread-id, site-id], cb), rights: JSON.parse, config: JSON.parse
 
   # db.users.all cb
   users:
