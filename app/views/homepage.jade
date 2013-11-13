@@ -15,7 +15,7 @@ mixin posts(f, i)
       if p.media_url
         mixin media-post(p, i)
       else
-        mixin html-post(p, i)
+        //-mixin html-post(p, i)
       //- subpost summary
       mixin _post-profile(p, i)
     //- .up(class='onclick-scroll-to', data-scroll-to="#forum_#{f.id}", title="Scroll top of #{f.title}!")
