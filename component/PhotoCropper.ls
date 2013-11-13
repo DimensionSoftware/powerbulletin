@@ -60,7 +60,7 @@ module.exports =
           @crop-mode r
       }
 
-      @$.find('.crop .button').click @crop
+      @$.find('.crop button').click @crop
 
     #
     upload: ->
