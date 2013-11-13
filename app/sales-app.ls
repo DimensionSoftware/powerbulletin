@@ -4,6 +4,7 @@ require! {
   cors
   async
   \express-validator
+  \express/node_modules/connect
   csu: \./css-urls
   jsu: \./js-urls
   mw: \./middleware
@@ -26,6 +27,7 @@ sales-mw =
   * mw.multi-domain
   * express-validator
 sales-mw.for-each ((m) -> s-app.use m)
+s-app.use connect.logger(immediate: false, format: sh.dev-log-format) if (env is \development or env is void)
 
 # middleware for auth routes
 sales-personal-mw =
