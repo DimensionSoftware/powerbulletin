@@ -2,11 +2,15 @@ require! {
   async
   pg
   debug
+  stylus
+  mkdirp
   \fs
   postgres: \./postgres
 }
 
 {filter, join, keys, values, sort-by} = require \prelude-ls
+
+const base-css = \public/sites
 
 export-model = ([t, cs]) ->
   module.exports[t] = {}
@@ -445,6 +449,17 @@ query-dictionary =
       |> sort-by (.id)
 
       cb null, sites
+
+    # save css to disk for site
+    save-style: (site, cb) ->
+      cb "no site.id"             if not site?id
+      cb "no site.config.style"   if not site?config?style
+      css-dir  = "#base-css/#{site.id}"
+      err <- mkdirp css-dir
+      if err then return cb err
+      (err, css) <- stylus.render site.config.style, {compress:true}
+      if err then return cb {success:false, msg:'CSS must be valid!'}
+      fs.write-file "#css-dir/master.css" css, cb
 
   subscriptions:
     list-for-site: (site-id, cb) ->
