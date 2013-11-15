@@ -248,11 +248,11 @@ function background-for-forum m, active-forum-id
   background = req.files.background
 
   # mkdirp public/sites/ID
-  dst = "public/sites/#{site.id}"
+  dst = "public/sites/#{site.id}/bg"
   err <- mkdirp dst
   if err then return res.json {-success, msg:err}
 
-  # atomic write to public/sites/SITE-ID/FORUM-ID.jpg
+  # atomic write to public/sites/SITE-ID/bg/FORUM-ID.jpg
   forum-id  = parse-int req.params.id
   ext       = background.name.match(/\.(\w+)$/)?1 or ""
   file-name = if ext then "#forum-id.#ext" else forum-id
@@ -264,7 +264,7 @@ function background-for-forum m, active-forum-id
   item = menu.flatten m |> find -> it.form.dbid is forum-id
   unless item then return res.json {-success} # guard
   path = menu.path-for-upsert m, item.id.to-string!
-  item.form.background = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
+  item.form.background = "#{site.id}/bg/#file-name?#{h.cache-buster!}".to-lower-case!
   site.config.menu     = menu.struct-upsert m, path, item
 
   err, r <- db.site-update site # save!
