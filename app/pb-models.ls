@@ -230,20 +230,17 @@ query-dictionary =
       if not id then return cb null
       @updatex { last_activity: (new Date).to-ISO-string! }, { user_id: id, site_id: user.site_id }, cb
 
-    participants-for-thread: deserialized-fn ((thread-id, cb) ->
-      err, r <- postgres.query "SELECT f.site_id FROM posts p JOIN forums f ON p.forum_id = f.id WHERE p.id = $1", [thread-id]
-      if err then return cb err
-      site-id = r.0?site_id
-      if not site-id
-        return cb new Error("no site_id for post #thread-id")
+    participants-for-thread: (thread-id, cb) ->
       sql = '''
-      SELECT a.*
-      FROM aliases a
-      WHERE user_id IN
-        (SELECT p.user_id FROM posts p WHERE p.thread_id = $1)
-      AND site_id = $2
+      SELECT p.user_id, a.name, a.photo, count(p.user_id) AS count
+        FROM posts p
+        JOIN forums f ON p.forum_id = f.id
+        JOIN aliases a ON (a.site_id = f.site_id AND a.user_id = p.user_id)
+       WHERE p.thread_id = $1
+       GROUP BY p.user_id, name, photo
+       ORDER BY count DESC
       '''
-      postgres.query sql, [thread-id, site-id], cb), rights: JSON.parse, config: JSON.parse
+      postgres.query sql, [thread-id], cb
 
   # db.users.all cb
   users:
