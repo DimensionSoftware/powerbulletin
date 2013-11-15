@@ -16,6 +16,9 @@ module.exports =
       @seen     = {}
       @selected = null
       @$ul      = @$.find('ul:first')
+      @delay    = 250ms
+      @ease-in  = \easeInBack
+      @ease-out = \easeOutBack
 
     on-attach: ->
 
@@ -85,7 +88,9 @@ module.exports =
         selected-panel = @find @selected
         selected-panel.resize!
 
-    show: ->
+    hide: (sel) ->
+      @@$(sel).hide(@delay, @ease-in)
 
-    hide: ->
+    show: (sel) ->
+      @@$(sel).css(height: "#{(hi - 27)}px").show @delay, @ease-out
 

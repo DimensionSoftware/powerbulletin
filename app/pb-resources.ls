@@ -73,12 +73,12 @@ is-locked-forum = (m, forum-id) ->
       # save css to disk for site
       if site.config.style isnt req.body.style # only on change
         site.config.cache-buster = h.cache-buster!
-        err <- mkdirp css-dir
-        if err then return next err
-        (err, css) <- stylus.render site.config.style, {compress:true}
-        if err then return res.json {success:false, msg:'CSS must be valid!'}
-        err <- fs.write-file "#css-dir/master.css" css
-        if err then return next err
+        err <- db.sites.save-style site
+        if err
+          if err?msg?match /CSS/i
+            return res.json {success:false, msg:'CSS must be valid!'}
+          else
+            return next err
 
       # update site
       site.name = req.body.name
