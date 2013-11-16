@@ -6,14 +6,14 @@ require! $R:reactivejs
 #{{{ setup reactive user before layout kicks off
 window.r-user = $R((user) ->
   if user
-    component.sales-app.login user
+    component.sales.login user
   else
-    component.sales-app.logout!
+    component.sales.logout!
 )
 #}}}
 
 require! {
-  \../component/SalesApp
+  \../component/Sales
   \../component/SalesRouter
   \../component/Buy
 }
@@ -30,7 +30,7 @@ require \jqueryWaypoints
 window.router = new SalesRouter
 #{{{ components
 window.component =
-  sales-app: (new SalesApp {-auto-render} \body).attach!
+  sales: (new Sales {-auto-render} \body).attach!
 
 window.do-buy = ->
   window.component.buy ||= (new Buy).attach!

@@ -4,7 +4,10 @@ require, exports, module <- define
 require! {
   lodash
   Component: yacomponent
+  \./Auth
   \./SiteRegister
+  \./MiniSiteList
+  ch: \../client/client-helpers
   sh: \../shared/shared-helpers
 }
 {templates} = require \../build/component-jade
@@ -33,6 +36,7 @@ module.exports =
           c.update-subdomain subdomain
       ).bind-to @state.subdomain
 
+      @@$ \.onclick-my-sites .click @show-my-sites
       #{{{ animate build-in & initial focus
       set-timeout (-> # bring in logo & register
         icon = $ \.logo-icon
@@ -45,6 +49,31 @@ module.exports =
           set-timeout (-> # build-in "Why you'll love" features last
             $ \#features .transition {opacity:1}, 1400ms), 1200ms), 100ms), 800ms
       #}}}
+
+    login: (user) ->
+      # use user later
+      @$.find 'li.auth a.onclick-login' .hide!
+      @$.find 'li.auth a.onclick-logout' .show!
+      @$.find 'li.my-sites' .show!
+      @$.find 'li.community' .hide!
+      set-timeout (~> @show-my-sites!), 10ms # yield (for tha smoothness)
+
+    logout: ->
+      @$.find 'li.auth a.onclick-login' .show!
+      @$.find 'li.auth a.onclick-logout' .hide!
+      @$.find 'li.community' .show!
+      @$.find 'li.my-sites' .hide!
+
+    show-my-sites: ~>
+      return if $('#auth:visible .register').length #guard
+      <~ ch.lazy-load-fancybox
+      $div = $ '<div/>'
+      r <~ @@$.get '/ajax/sites-and-memberships'
+      if r.success
+        msl = new MiniSiteList({locals: r}, $div)
+        $.fancybox.open $div
+      else
+        # error
 
     on-detach: -> @$.off!
 
