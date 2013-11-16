@@ -761,6 +761,7 @@ mk-post-pnum-to-href = (post-uri) ->
     window.$ \footer .remove!
     window.$ \#left_content .remove!
     window.$ \#main_content .remove!
+    window.$ \body .add-class \oval # fancybox theme
     window.marshal \backgrounds, @backgrounds
     layout-static.call @, window, \privateSite
     next!
