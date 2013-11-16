@@ -406,31 +406,29 @@ query-dictionary =
     # new forum summary
     summary: (id, cb) ->
       sql = '''
-      SELECT
-        p.id,
-        p.title,
-        p.views,
-        p.created,
-        p.user_id,
-        a.name,
-        last.id        AS last_post_id,
-        last.user_id   AS last_post_user_id,
-        last.name      AS last_post_name,
-        last.created   AS last_post_created
-      FROM posts p
-      JOIN forums f  ON p.forum_id = f.id
-      JOIN aliases a ON p.user_id = a.user_id
-      JOIN (
-        SELECT p2.id, p2.user_id, a2.name, p2.thread_id, p2.created
-        FROM   posts p2
-        JOIN   forums f2 ON p2.forum_id = f2.id
-        JOIN   aliases a2 ON (p2.user_id = a2.user_id AND f2.site_id = a2.site_id)
-        WHERE  p2.id IN (SELECT MAX(id) FROM posts WHERE parent_id IS NOT NULL GROUP BY thread_id)
-          AND  a2.site_id = f2.site_id
-        ) last ON last.thread_id = p.id
-      WHERE a.site_id = f.site_id
-        AND p.parent_id is NULL AND p.forum_id = $1
-      ORDER BY last_post_created DESC
+      SELECT p.id,
+             p.title,
+             p.views,
+             p.created,
+             p.user_id,
+             a.name,
+             last.id        AS last_post_id,
+             last.user_id   AS last_post_user_id,
+             last.name      AS last_post_name,
+             last.created   AS last_post_created
+        FROM posts p
+        JOIN forums f  ON p.forum_id = f.id
+        JOIN aliases a ON p.user_id = a.user_id
+        JOIN (SELECT p2.id, p2.user_id, a2.name, p2.thread_id, p2.created
+                FROM posts p2
+                JOIN forums f2 ON p2.forum_id = f2.id
+                JOIN aliases a2 ON (p2.user_id = a2.user_id AND f2.site_id = a2.site_id)
+               WHERE p2.id IN (SELECT MAX(id) FROM posts WHERE parent_id IS NOT NULL GROUP BY thread_id)
+                 AND  a2.site_id = f2.site_id
+             ) last ON last.thread_id = p.id
+       WHERE a.site_id = f.site_id
+         AND p.parent_id is NULL AND p.forum_id = $1
+       ORDER BY last_post_created DESC
       '''
       err, r <- postgres.query sql, [id]
       if err then return cb err
