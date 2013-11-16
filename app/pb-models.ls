@@ -423,7 +423,7 @@ query-dictionary =
                 FROM posts p2
                 JOIN forums f2 ON p2.forum_id = f2.id
                 JOIN aliases a2 ON (p2.user_id = a2.user_id AND f2.site_id = a2.site_id)
-               WHERE p2.id IN (SELECT MAX(id) FROM posts WHERE parent_id IS NOT NULL GROUP BY thread_id)
+               WHERE p2.id IN (SELECT MAX(id) FROM posts GROUP BY thread_id)
                  AND  a2.site_id = f2.site_id
              ) last ON last.thread_id = p.id
        WHERE a.site_id = f.site_id
