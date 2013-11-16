@@ -1,3 +1,5 @@
+.body-bg
+  img(src="#{cacheUrl}/images/pb_sales_main_bg.jpg")
 header
   ul
     li
@@ -9,15 +11,23 @@ header
     li.auth
       a.onclick-login Login
       a.onclick-logout(style="display:none;") Logout
+    li
+      button#start_now Start Now
 
 #wrapper.Sales-content
 
 #logo.logo
   h1 Power
     b Bulletin
-  em The Official Real-Time Community Builder
 h2#imagine.stick
-  p Imagine real-time communities at the click of a button.
+  p Your own real-time community
+  ul
+    li The perfect place to pour your passion
+    li Connect your business, friends, family or colleagues
+    //-li
+    //-  small
+    //-    i Only possible with 
+    //-      b PowerBulletin
   .logo-icon
 #register_top
 h2#features.stick.arrow.onclick-scroll-to(data-scroll-to='#navigation')
@@ -40,37 +50,40 @@ nav
   img.bg(src="#{cacheUrl}/images/navigation.jpg")
 section#navigation.feature
   article
-    h4 Breakthrough Navigation
-    p
-      | From SEO technology that speedily transmits page delta instead of reloading browsers,
-      | to a split-thread &amp; post interface, the PowerBulletin experience is always secure, fast &amp; fluid.
+    h4 Seamless Navigation
+    ul
+      li SEO technology transmits page delta vs. browser reloads
+      li Split interface to shows navigation &amp; threads
+      li Browse threads without leaving a post
     a.arrow.onclick-scroll-to(data-scroll-to="#responsive") Next
 .container.second
   img.bg(src="#{cacheUrl}/images/responsiveness.jpg")
 section#responsive.feature
   article
-    h4 Unmatched Responsive Design
-    p
-      | A modern, responsive interface that scales from to your phone,
-      | tablet and PC to wide-screen projectors--your PowerBulletin community always stuns.
+    h4 Device Responsive
+    ul
+      li Modern interface that scales across all devices
+      li Mobile &amp; tablets, to wide-screen -- your PowerBulletin community always stuns
     a.arrow.onclick-scroll-to(data-scroll-to="#realtime") Next
 .container.third
   img.bg(src="#{cacheUrl}/images/real_time_flow.jpg")
 section#realtime.feature
   article
     h4 Real-Time Flow
-    p
-      | Ultrafast PowerBulletin is built on a real-time engine that powers
-      | everything from user chat &amp; posts to administration, such as creating products.
+    ul
+      li Ultrafast PowerBulletin is built on a real-time engine
+      li Real-time posting, chatting, administration -- everything
+        i !
+      li Always secure, fast &amp; fluid
     a.arrow.onclick-scroll-to(data-scroll-to="#products") Next
 .container.fourth
   img.bg(src="#{cacheUrl}/images/products_ecommerce.jpg")
 section#products.feature
   article
-    h4 Products &amp; e-Commerce Capabilities
-    p
-      | Sell your business products &amp; services around PowerBulletin communities.
-      | Offering e-commerce is so easy to use, it's easy to love.
+    h4 Products &amp; e-Commerce
+    ul
+      li Sell your business around PowerBulletin communities
+      li Offering e-commerce is so easy to use, it's easy to love
     a.arrow.onclick-scroll-to(data-scroll-to="#support") Next
 .container.fifth
   img.bg(src="#{cacheUrl}/images/live_support.jpg")

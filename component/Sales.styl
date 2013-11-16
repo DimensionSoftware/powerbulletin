@@ -3,21 +3,44 @@ blend = rgba(0,0,0,.5)
 // Sales is a site component that owns <body> and it can define initial style:
 body
   margin 0
-  height 5555px
+  height 5956px
   position relative
+  .body-bg
+    position fixed
+    top 0
+    left 0
+    right 0
+    bottom 0
+    &::before
+      background-image radial-gradient(ellipse closest-corner at 45% 50%, rgba(0,0,0,.3) 70%, rgba(0,0,0,.6) 100%)
+      content ''
+      position absolute
+      top -235px
+      bottom 0
+      left 0
+      right 0
+      height 5000px
+    img
+      width 100%
+      min-height 1015px
+      min-width 1542px
   .container.first
     border-top-width 0!important
   .bg, .feature
     opacity 0
-  #imagine p, #register_top
+  #imagine p, #imagine ul, #register_top
     opacity 1
     transition opacity 1s ease-out
 //{{{ - Site Scrolled behaviors
 body.scrolled
+  .body-bg
+    opacity 0
+    transition opacity .5s ease-out
   header
     border-bottom 0
     height 0
     box-shadow none
+    background rgba(255,255,255,.65)
     li
       margin-top 15px
       a
@@ -35,12 +58,16 @@ body.scrolled
     transition opacity .3s ease-out
   #logo
     opacity 0
-    transform translateY(-30px)
-    transition all .25s ease-out
-  #imagine p
-    opacity 0
-    transform translateX(25px)
-    transition all .2s ease-out
+    transition all .4s ease-out
+  #imagine
+    p, ul
+      opacity 0
+      transform translateX(25px)
+      transition all .2s ease-out
+    .logo-icon
+      opacity 1
+      transform translate(0, 0) rotate(0deg)
+      transition all .5s ease-out
   #register_top.show
     transform translateX(-25px)
     opacity 0
@@ -122,21 +149,10 @@ body.scrolled
           width 80%
 //}}}
 
-
-.Sales::before
-  //background-image linear-gradient(top, #ccc 10%, #fff 100%)
-  background-image radial-gradient(ellipse closest-corner at 45% 50%, #fff 70%, #bbb 200%)
-  content ''
-  position absolute
-  top -235px
-  bottom 0
-  left 0
-  right 0
-  height 5000px
 .Sales
   //position relative
   text-align center
-  margin-top 235px
+  margin-top 100px
   .arrow:hover
     letter-spacing 4px
     color #999
@@ -217,9 +233,9 @@ body.scrolled
     width 100%
     height 45px
     text-align right
-    border-bottom-color #f6f6f6
+    border-bottom-color #eee
     z-index 20!important
-    background #fff
+    background rgba(255,255,255,.65)
     ul
       list-style none
       margin 0 50px
@@ -229,6 +245,11 @@ body.scrolled
         margin-left 48px
         font-weight 200
         cursor pointer
+        #start_now
+          margin-top -5px
+          height 34px
+          font-size 14px
+          border-radius 6px / 5px
         .my-sites
           display none
         a:hover
@@ -242,9 +263,17 @@ body.scrolled
   //{{{ Intro (below header)
   #imagine
     position relative
-    font-size 1.75em
+    font-size 3em
     letter-spacing 1px
-    font-weight 300
+    font-weight bold
+    color #fff
+    margin-top 200px
+    ul
+      font-size .55em
+      color #eee
+      line-height 1.3em
+      padding-top 20px
+      list-style none
     .logo-icon
       background-image url(cache-url + '/images/pb_icon_logo.png')
       background-repeat no-repeat
@@ -254,7 +283,7 @@ body.scrolled
       opacity 0
       transform rotate(90deg) translate(15px, 35px)
   #register_top
-    margin-top 65px
+    margin-top 25px
     opacity 0
   #register_top.show
     transform translateX(25px)
@@ -263,8 +292,8 @@ body.scrolled
   #features
     opacity 0
     font-style italic
-    font-weight 200
-    color #aaa
+    font-weight 300
+    color #ddd
     padding-bottom 20px
     margin 70px auto 0 auto
     font-size 1.15em
@@ -294,21 +323,26 @@ body.scrolled
   //{{{ Logo
   .logo
     position fixed
-    top 0
+    top 8px
     left 100px
-    z-index 0
-    margin-top 100px
+    z-index 20
     text-align left
+    background-image url('//muscache.pb.com/images/pb_icon_logo_sm.png')
+    background-repeat no-repeat
+    height 30px
+    padding-left 35px
+    padding-top 4px
     h1
-      font-size 3em
+      font-size 1.5em
       font-weight 200
       margin 0
       color #666
       letter-spacing -1px
       text-shadow 1px 1px 1px #ddd
+      font-style italic
       b
+        font-style normal
         letter-spacing 0
-        font-style italic
         margin-left 4px
         font-weight 500
         color #444
@@ -364,17 +398,20 @@ body.scrolled
       box-shadow 0 0 30px 0 blend
       transition none
     article
-      transform scale(1.02)
-      transition all .1s ease-out
-    h4
-      text-transform uppercase
-      color light
-      font-weight 600
-      font-size 2em
-      letter-spacing 1px
-      font-style italic
-      text-shadow 1px 1px 0 dark
-    article
+      //transform translateX(100px)
+      h4
+        color light
+        font-weight 600
+        font-size 2em
+        letter-spacing 1px
+        font-style italic
+        text-shadow 1px 1px 0 dark
+        text-align left
+      ul
+        text-align left
+        li
+          color #222
+          margin-top 5px
       p
         text-indent -200px
         opacity 0
@@ -384,6 +421,7 @@ body.scrolled
       height 30px
       font-size .7em
       letter-spacing 3px
+      padding-right 200px
       margin 35px auto 0 auto
       text-transform uppercase
       opacity 0
@@ -403,6 +441,7 @@ body.scrolled
     bottom 400px
     top auto
     min-height 100px
+    min-width 900px
     height 195px
     border-top 1px solid #f5f5f5
     article
@@ -436,7 +475,7 @@ body.scrolled
     border-top 1px solid #ddd
     box-shadow 0 -1px 0px 0px #666 inset,0 6px 12px 3px #eee inset
     article
-      max-width 800px
+      max-width 900px
       margin 80px auto 0 auto
       h3
         color #555
@@ -455,7 +494,7 @@ body.scrolled
 
   section
     article
-      max-width 900px
+      max-width 600px
       margin 70px auto 0 auto
       h3
         position relative
