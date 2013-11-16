@@ -324,23 +324,25 @@ body.scrolled
 .shake
   animation-name shake
   animation-duration .8s
-.fancybox-overlay::after
-  position absolute
-  bottom (grid*2)
-  right (grid*2)
-  height 24px
-  width 228px
-  content ''
-  background-image url(cache-url + '/images/secure.png')
 .fancybox-overlay
   background radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,0.5) 20%, rgba(0,0,0,0.95) 100%)!important
   overflow none
+  &::after
+    position absolute
+    bottom (grid*2)
+    right (grid*2)
+    height 24px
+    width 228px
+    content ''
+    background-image url(cache-url + '/images/secure.png')
   .fancybox-wrap
     .fancybox-skin
-      padding 0!important
-      box-shadow 0 1px 12px 3px rgba(0,0,0,0.4)!important
       h1, h2, h3
-        color #999
+        color #eee
+.fancybox-overlay .fancybox-wrap .fancybox-skin
+  background-image linear-gradient(to top, #111 10px, #333 100%)
+  border 2px solid #222
+  transition opacity .3s ease-out 3s
 //}}}
 //{{{ jQuery UI
 .ui-widget-overlay
