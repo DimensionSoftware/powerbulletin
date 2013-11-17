@@ -37,19 +37,19 @@ module.exports =
       ).bind-to @state.subdomain
 
       @@$ \.onclick-my-sites .click @show-my-sites
-      @@$ \#start_now .click ~># @scroll-to-top window; @@$ '.SiteRegister-create button:first' .click!
+      @@$ \#start_now .click ~>
         @scroll-to-top window
         const sr = @@$ \.SiteRegister:first
         show-tooltip (sr.find \.tooltip), 'Name your community here!'
         set-timeout (-> sr.find \.SiteRegister-subdomain .focus!), 100ms
       #{{{ animate build-in & initial focus
-      set-timeout (-> # bring in register
+      set-timeout (->
         $ \#register_top  .add-class \show
         $ \.SiteRegister-subdomain:first .focus!
         set-timeout (-> # ...and action!
           $ '.SiteRegister h3' .transition {opacity:1, x:-30px}, 350ms
           set-timeout (-> # build-in "Why you'll love" features last
-            $ \#features .transition {opacity:1}, 1400ms), 1200ms), 100ms), 800ms
+            $ \#features .transition {opacity:1}, 1400ms), 1200ms), 100ms), 200ms
       #}}}
 
     login: (user) ->
@@ -58,7 +58,7 @@ module.exports =
       @$.find 'li.auth a.onclick-logout' .show!
       @$.find 'li.my-sites' .show!
       @$.find 'li.community' .hide!
-      set-timeout (~> @show-my-sites!), 10ms # yield (for tha smoothness)
+      @show-my-sites!
 
     logout: ->
       @$.find 'li.auth a.onclick-login' .show!
@@ -67,7 +67,7 @@ module.exports =
       @$.find 'li.my-sites' .hide!
 
     show-my-sites: ~>
-      return if $('#auth:visible .register').length #guard
+      return if $ '#auth .register:visible' .length # guard
       <~ ch.lazy-load-fancybox
       $div = $ '<div/>'
       r <~ @@$.get '/ajax/sites-and-memberships'

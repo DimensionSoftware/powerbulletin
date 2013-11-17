@@ -1,3 +1,4 @@
+#auth
 .body-bg
   img(src="#{cacheUrl}/images/pb_sales_main_bg.jpg")
 header
@@ -31,6 +32,8 @@ h2#imagine.stick
   .logo-icon
 #register_top
 h2#features.stick.arrow.onclick-scroll-to(data-scroll-to='#navigation')
+  .down-arrow
+    .s-down-arrow
   span.why Why you'll
   span.love love
   span.pb Power
@@ -55,7 +58,9 @@ section#navigation.feature
       li SEO technology transmits page delta vs. browser reloads
       li Split interface to shows navigation &amp; threads
       li Browse threads without leaving a post
-    a.arrow.onclick-scroll-to(data-scroll-to="#responsive") Next
+    a.arrow.onclick-scroll-to(data-scroll-to="#responsive")
+      .down-arrow
+        .s-down-arrow
 .container.second
   img.bg(src="#{cacheUrl}/images/responsiveness.jpg")
 section#responsive.feature
@@ -63,8 +68,11 @@ section#responsive.feature
     h4 Device Responsive
     ul
       li Modern interface that scales across all devices
-      li Mobile &amp; tablets, to wide-screen -- your PowerBulletin community always stuns
-    a.arrow.onclick-scroll-to(data-scroll-to="#realtime") Next
+      li Mobile &amp; tablets, to wide-screen --
+      li Your PowerBulletin community always stuns
+    a.arrow.onclick-scroll-to(data-scroll-to="#realtime")
+      .down-arrow
+        .s-down-arrow
 .container.third
   img.bg(src="#{cacheUrl}/images/real_time_flow.jpg")
 section#realtime.feature
@@ -75,7 +83,9 @@ section#realtime.feature
       li Real-time posting, chatting, administration -- everything
         i !
       li Always secure, fast &amp; fluid
-    a.arrow.onclick-scroll-to(data-scroll-to="#products") Next
+    a.arrow.onclick-scroll-to(data-scroll-to="#products")
+      .down-arrow
+        .s-down-arrow
 .container.fourth
   img.bg(src="#{cacheUrl}/images/products_ecommerce.jpg")
 section#products.feature
@@ -84,7 +94,9 @@ section#products.feature
     ul
       li Sell your business around PowerBulletin communities
       li Offering e-commerce is so easy to use, it's easy to love
-    a.arrow.onclick-scroll-to(data-scroll-to="#support") Next
+    a.arrow.onclick-scroll-to(data-scroll-to="#support")
+      .down-arrow
+        .s-down-arrow
 .container.fifth
   img.bg(src="#{cacheUrl}/images/live_support.jpg")
 section#support.feature.shown

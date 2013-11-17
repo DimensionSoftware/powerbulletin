@@ -1,9 +1,9 @@
 blend = rgba(0,0,0,.5)
 
-// Sales is a site component that owns <body> and it can define initial style:
+//{{{ Sales is a site component that owns <body> and it can define initial style:
 body
   margin 0
-  height 5956px
+  height 6200px
   position relative
   .body-bg
     position fixed
@@ -12,7 +12,7 @@ body
     right 0
     bottom 0
     &::before
-      background-image radial-gradient(ellipse closest-corner at 45% 50%, rgba(0,0,0,.3) 70%, rgba(0,0,0,.6) 100%)
+      background-image radial-gradient(ellipse closest-corner at 45% 50%, rgba(0,0,0,.5) 70%, rgba(0,0,0,.6) 100%)
       content ''
       position absolute
       top -235px
@@ -28,9 +28,7 @@ body
     border-top-width 0!important
   .bg, .feature
     opacity 0
-  #imagine p, #imagine ul, #register_top
-    opacity 1
-    transition opacity 1s ease-out
+//}}}
 //{{{ - Site Scrolled behaviors
 body.scrolled
   .body-bg
@@ -41,11 +39,12 @@ body.scrolled
     height 0
     box-shadow none
     background rgba(255,255,255,.65)
-    li
-      margin-top 15px
-      a
-        color #444
-        font-weight 400
+    ul
+      li
+        margin-top 15px
+        a
+          color #444
+          font-weight 600
   header::after
     display none
     bottom -1px
@@ -59,6 +58,9 @@ body.scrolled
   #logo
     opacity 0
     transition all .4s ease-out
+  #imagine p, #imagine ul, #register_top
+    opacity 1
+    transition opacity 1s ease-out
   #imagine
     p, ul
       opacity 0
@@ -119,112 +121,89 @@ body.scrolled
 //}}}
 //{{{ - Site Responsive (mobile)
 @media screen and (max-width: 800px)
-  .Sales
-    font-size .85em
-    height 2300px
-    .logo
-      left 115px!important
-    #imagine
-      display none
-    .SiteRegister
-      h3
-        left 149px!important
-    .container
-      height auto
-      .bg
+  body.homepage
+    height 2685px!important
+    .Sales
+      font-size .85em
+      .Sales-content
+        padding-top 60px
+      .body-bg
         display none
-    section
-      article
-        width 85%!important
-    .feature
-      h4
-        font-size 1.5em!important
-    section.faq
-      article
-        h3::after
-          left 29%
-        p
-          padding 0
-        menu
-          width 80%
+      .logo
+        left 15px!important
+      #imagine
+        display none
+      nav
+        display none
+      #start_now
+        display none
+      .SiteRegister
+        left 0!important
+        h3
+          left 149px!important
+        .SiteRegister-subdomain
+          width 300px
+        .SiteRegister-create
+          right 247px
+      .container
+        height auto!important
+        .bg
+          display none
+      section.feature
+        h4
+          font-size 1.5em!important
+        article
+          transform translateX(35px)
+          width 90%!important
+      section.last
+        .SiteRegister
+          padding-left 50px!important
+      section#support
+        article h4
+          margin-left 250px!important
+      section.faq
+        article
+          h3::after
+            left 29%
+          p
+            padding 0
+          menu
+            width 80%
 //}}}
 
 .Sales
-  //position relative
+  //{{{ Common
   text-align center
   margin-top 100px
-  .arrow:hover
-    letter-spacing 4px
-    color #999
-    transition all .1s ease-out
   .arrow
     cursor pointer
     display block
     position relative
-    animation-name move-down
-    animation-duration 1s
-    animation-iteration-count infinite
-    animation-direction alternate
-  .arrow::after
-    border 9px solid transparent
-    border-top 9px solid #ccc
-    content ''
-    position absolute
-    bottom -10px
-    left 64px
-  .arrow:hover::after
-    border-top 12px solid #aaa
-    bottom -12px
-    transition all .1s ease-out
-
-  nav
-    list-style none
-    position fixed
-    opacity 0
-    text-align right
-    top 30%
-    right -500px
-    width 150px
-    z-index 10
-    li.active::before, li:hover::before
-      background-color transparent
-      border 1px solid #444
-      right -2px
-      height 6px
-      width 6px
-      border-radius 6px
-    li.active::before
-      background-color #777
-    li::before
-      content ''
-      position absolute
-      right 0
-      top 9px
-      height 4px
-      width 4px
-      border-radius 5px
-      background-color #666
+    .down-arrow
+      &:hover:before
+        background-color #6a6a6a
+      &:before
+        content ''
+        position absolute
+        left 157px
+        top 36px
+        padding 30px
+        border-radius 100%
+        background-color #777
+        transition all .1s ease-out
+      .s-down-arrow
+        position absolute
+        top 55px
+        left 169px
+        animation-name move-down
+        animation-duration 1s
+        animation-iteration-count infinite
+        animation-direction alternate
+    &:hover
+      letter-spacing 4px
+      color #fff
       transition all .1s ease-out
-    li:hover
-      .name
-        opacity 1
-        margin-right -10px
-        transition opacity .4s ease-out, margin-right .1s ease-out, letter-spacing .13s ease-out
-        letter-spacing 1px
-    li
-      position relative
-      .name
-        cursor pointer
-        padding 1px 23px 1px 8px
-        border-radius 3px
-        color #444
-        position relative
-        margin-right -25px
-        letter-spacing -5px
-        opacity 0
-        background rgba(255,255,255,.2)
-        font-size .8em
-
+  //}}}
   //{{{ Header
   header
     position fixed
@@ -233,9 +212,9 @@ body.scrolled
     width 100%
     height 45px
     text-align right
-    border-bottom-color #eee
+    border-bottom-color #cfcfcf
     z-index 20!important
-    background rgba(255,255,255,.65)
+    background rgba(255,255,255,.55)
     ul
       list-style none
       margin 0 50px
@@ -252,13 +231,16 @@ body.scrolled
           border-radius 6px / 5px
         .my-sites
           display none
-        a:hover
-          color #111
-          transform scale(1.08)
-          transition all .08s ease-out
         a
           display block
           color #666
+          font-weight 400
+          &:hover
+            color #111
+            transform scale(1.08)
+            transition all .08s ease-out
+        &:last-child
+          width 125px
   //}}}
   //{{{ Intro (below header)
   #imagine
@@ -277,13 +259,13 @@ body.scrolled
     .logo-icon
       background-image url(cache-url + '/images/pb_icon_logo.png')
       background-repeat no-repeat
-      margin 40px auto 0 auto
+      margin -100px auto 180px auto
       width 81px
       height 96px
       opacity 0
       transform rotate(90deg) translate(15px, 35px)
   #register_top
-    margin-top 25px
+    margin-top -60px
     opacity 0
   #register_top.show
     transform translateX(25px)
@@ -295,7 +277,7 @@ body.scrolled
     font-weight 300
     color #ddd
     padding-bottom 20px
-    margin 70px auto 0 auto
+    margin 40px auto 0 auto
     font-size 1.15em
     width 370px
     animation-name none
@@ -303,18 +285,18 @@ body.scrolled
       padding 0 3px
     b
       font-weight inherit
-  #features::after
-    animation-name move-down
-    animation-duration 1s
-    animation-iteration-count infinite
-    animation-direction alternate
-    left 170px
-    top 35px
-  #features:hover
-    letter-spacing 0
-    color #888
-    transform scale(1.02)
-    transition all .08s ease-out
+    &::after
+      animation-name move-down
+      animation-duration 1s
+      animation-iteration-count infinite
+      animation-direction alternate
+      left 170px
+      top 35px
+    &:hover
+      letter-spacing 0
+      color #fff
+      transform scale(1.02)
+      transition all .08s ease-out
   h2
     font-size 1.45em
     font-weight 400
@@ -357,6 +339,55 @@ body.scrolled
       color #999
   //}}}
   //{{{ Sections
+  // section navigator
+  nav
+    list-style none
+    position fixed
+    opacity 0
+    text-align right
+    top 30%
+    right -500px
+    width 150px
+    z-index 10
+    li.active::before, li:hover::before
+      background-color transparent
+      border 1px solid #444
+      right -2px
+      height 6px
+      width 6px
+      border-radius 6px
+    li.active::before
+      background-color #777
+    li
+      position relative
+      &::before
+        content ''
+        position absolute
+        right 0
+        top 9px
+        height 4px
+        width 4px
+        border-radius 5px
+        background-color #666
+        font-weight 300
+        transition all .1s ease-out
+      &:hover
+        .name
+          opacity 1
+          margin-right -10px
+          transition opacity .4s ease-out, margin-right .1s ease-out, letter-spacing .13s ease-out
+          letter-spacing 1px
+      .name
+        cursor pointer
+        padding 1px 23px 1px 8px
+        border-radius 3px
+        color #444
+        position relative
+        margin-right -25px
+        letter-spacing -5px
+        opacity 0
+        background rgba(255,255,255,.2)
+        font-size .8em
   .container
     position relative
     height 600px
@@ -378,6 +409,12 @@ body.scrolled
   section#support.feature
     background-image none
     box-shadow 0
+    article
+      transform translateX(-120px)
+      h4
+        margin-left 350px
+      p
+        width 100%
   section.feature.shown
     article
       p
@@ -385,6 +422,8 @@ body.scrolled
         text-indent 0
         transition all .2s ease-out .1s
     .arrow
+      position relative
+      z-index 10
       opacity 1
       transition opacity .5s ease-out .4s
   section.feature
@@ -393,12 +432,12 @@ body.scrolled
     box-shadow 0 0 28px -2px blend
     background-image radial-gradient(ellipse closest-corner at 50% 50%, #fff 70%, #000 150%)
     transition box-shadow 1s ease-out .5s
-    &:hover
-      border-color #555
-      box-shadow 0 0 30px 0 blend
-      transition none
+    //&:hover
+    //  border-color #555
+    //  box-shadow 0 0 30px 0 blend
+    //  transition none
     article
-      //transform translateX(100px)
+      transform translateX(150px)
       h4
         color light
         font-weight 600
@@ -408,6 +447,7 @@ body.scrolled
         text-shadow 1px 1px 0 dark
         text-align left
       ul
+        list-style-type circle
         text-align left
         li
           color #222
@@ -417,12 +457,12 @@ body.scrolled
         opacity 0
         padding 0 105px
     .arrow
-      width 150px
+      width 100%
       height 30px
       font-size .7em
       letter-spacing 3px
       padding-right 200px
-      margin 35px auto 0 auto
+      margin 5px auto 0 auto
       text-transform uppercase
       opacity 0
       color #bbb
@@ -433,7 +473,7 @@ body.scrolled
     display block
     top 0
     left 0
-    height 300px
+    height 355px
     width 100%
     overflow hidden
   section.last
@@ -452,6 +492,7 @@ body.scrolled
         display none
       #register_bottom
         position absolute
+        padding-left 0
         bottom 10px
   //}}}
   //{{{ FAQ
@@ -477,9 +518,10 @@ body.scrolled
     article
       max-width 900px
       margin 80px auto 0 auto
+      padding-left 40px
       h3
         color #555
-        text-indent -30px
+        text-indent -65px
       menu
         text-align left
         float left
@@ -494,7 +536,7 @@ body.scrolled
 
   section
     article
-      max-width 600px
+      max-width 700px
       margin 70px auto 0 auto
       h3
         position relative

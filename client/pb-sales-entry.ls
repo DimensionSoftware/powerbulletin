@@ -53,7 +53,7 @@ $ window .on \scroll, ->
 
   # top animations
   if offset < 430px # save cpu for top pieces
-    $ \#imagine .css {y:"#{0+(offset*0.55)}px"}
+    $ \#imagine .css {y:"#{0+(offset*0.65)}px"}
 
   # move background images in view
   cur = switch cur-id
