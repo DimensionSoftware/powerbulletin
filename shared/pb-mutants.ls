@@ -21,6 +21,7 @@ require! {
   \../component/AdminMenu
   \../component/Paginator
   \../component/PhotoCropper
+  \../component/Editor
   \../client/globals
   __: lodash
   $R: reactivejs
@@ -427,6 +428,12 @@ same-profile = (hints) ->
 
     photocropper-start = (ev) -> PhotoCropper.start!
 
+    change-sig-enable = ->
+      w.$ \.onclick-change-sig .on \click ->
+        <~ lazy-load-fancybox
+        e = w.component.editor = new Editor locals:{id:\second}
+        w.$.fancybox e.$, fancybox-params
+
     change-title-enable = ->
       var last
       e = w.$ \#change_title
@@ -465,6 +472,7 @@ same-profile = (hints) ->
       w.$ \#change_title .val u?title # most current (cache blow)
       profile-user-id = w.$('#left_content .profile').data \userId
       if profile-user-id is u.id
+        change-sig-enable!
         change-title-enable!
         photocropper-enable!
       else
@@ -477,6 +485,7 @@ same-profile = (hints) ->
       # cleanup/unbind
       window.$ \body .off \click \.onclick-show-forgot
       window.$ \.change-title .off!
+      window.$ \.change-sig .off!
       reset-paginator window unless next-mutant is \forum
       next!
   on-initial:
