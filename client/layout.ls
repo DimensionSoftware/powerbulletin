@@ -180,7 +180,7 @@ window.scroll-to-top = (cb=->) ->
 window.awesome-scroll-to = (e, duration, cb=->) ->
   e      = $ e
   ms     = duration or 1000ms
-  offset = 10px
+  offset = 100px
 
   return unless e.length # guard
   if is-ie or is-opera

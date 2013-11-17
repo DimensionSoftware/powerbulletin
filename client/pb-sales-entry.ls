@@ -24,7 +24,7 @@ require \jqueryTransit
 require \jqueryUi
 require \./layout
 require \jqueryWaypoints
-{each} = require \prelude-ls
+{each, filter, reject} = require \prelude-ls
 
 # components
 window.router = new SalesRouter
@@ -53,19 +53,26 @@ $ window .on \scroll, ->
 
   # top animations
   if offset < 430px # save cpu for top pieces
-    $ \#imagine .css {y:"#{0+(offset*0.65)}px"}
+    $ \#imagine .css {y:"#{0+(offset*0.8)}px"}
 
   # move background images in view
-  cur = switch cur-id
+  const all = <[.first .second .third .fourth .fifth]>
+  # <optimization> -- save work on invisible sections
+  cur = switch cur-id # given cur-id, these must be visible:
   | \features   => <[.first .second]>
   | \navigation => <[.first .second .third]>
-  | \responsive => <[.first .second .third .fourth]>
+  | \responsive => all
   | \realtime   => <[.second .third .fourth .fifth]>
   | \products   => <[.third .fourth .fifth]>
   | \support    => <[.third .fourth .fifth]>
-  if cur then for e in cur
-    dy = -($ e .offset!?top)
-    $ "#e .bg" .css \y, "#{0+((dy+offset)*0.6)}px"
+  if cur
+    for e in all
+      if e in cur # visible, so-- move into place & show
+        dy = -($ e .offset!?top)
+        $ "#e .bg" .css \y, "#{0+((dy+offset)*0.6)}px"
+        $ e .attr \visibility, \visible
+      else # invisible
+        $ e .attr \visibility, \hidden
 #}}}
 #{{{ waypoints
 fn = (direction) ->

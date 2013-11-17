@@ -3,7 +3,7 @@ blend = rgba(0,0,0,.5)
 //{{{ Sales is a site component that owns <body> and it can define initial style:
 body
   margin 0
-  height 6200px
+  height 5730px
   position relative
   .body-bg
     position fixed
@@ -52,6 +52,16 @@ body.scrolled
     box-shadow none
   .container.first
     border-top-width 1px!important
+  .down-arrow
+    &:hover:before
+      background-color rgba(255,255,255,.5)!important
+    &:before
+      background-color rgba(255,255,255,.4)!important
+      padding 37px 40px!important
+      left 147px!important
+      top 35px!important
+    .s-down-arrow
+      top 75px!important
   .bg, .feature
     opacity 1
     transition opacity .3s ease-out
@@ -76,6 +86,8 @@ body.scrolled
     transition all .25s ease-out
   #features
     font-size 1.7em
+    .down-arrow
+      top 57px
     .why
       opacity 0
       transition .2s ease-out
@@ -180,8 +192,11 @@ body.scrolled
     display block
     position relative
     .down-arrow
+      position relative
+      z-index 9
+      transition top .3s ease-out
       &:hover:before
-        background-color #6a6a6a
+        background-color rgba(0,0,0,.3)
       &:before
         content ''
         position absolute
@@ -189,8 +204,8 @@ body.scrolled
         top 36px
         padding 30px
         border-radius 100%
-        background-color #777
-        transition all .1s ease-out
+        background-color rgba(0,0,0,.2)
+        transition all .2s ease-out
       .s-down-arrow
         position absolute
         top 55px
@@ -249,7 +264,7 @@ body.scrolled
     letter-spacing 1px
     font-weight bold
     color #fff
-    margin-top 200px
+    margin-top 55px
     ul
       font-size .55em
       color #eee
@@ -276,7 +291,7 @@ body.scrolled
     font-style italic
     font-weight 300
     color #ddd
-    padding-bottom 20px
+    padding-bottom 80px
     margin 40px auto 0 auto
     font-size 1.15em
     width 370px
@@ -402,7 +417,7 @@ body.scrolled
       width 100%
       min-width 1200px
   .container.first
-    margin-top 100px
+    margin-top 25px
     border-top 1px solid #888
   .container.fifth + section
     border-top 1px solid #777
@@ -432,6 +447,9 @@ body.scrolled
     box-shadow 0 0 28px -2px blend
     background-image radial-gradient(ellipse closest-corner at 50% 50%, #fff 70%, #000 150%)
     transition box-shadow 1s ease-out .5s
+    overflow visible
+    .down-arrow
+      top 57px
     //&:hover
     //  border-color #555
     //  box-shadow 0 0 30px 0 blend
@@ -457,6 +475,7 @@ body.scrolled
         opacity 0
         padding 0 105px
     .arrow
+      top -40px
       width 100%
       height 30px
       font-size .7em
@@ -473,7 +492,7 @@ body.scrolled
     display block
     top 0
     left 0
-    height 355px
+    height 280px
     width 100%
     overflow hidden
   section.last
@@ -483,11 +502,13 @@ body.scrolled
     min-height 100px
     min-width 900px
     height 195px
-    border-top 1px solid #f5f5f5
+    border-top 1px solid #eee
+    background-image linear-gradient(bottom, light -650px, #fff 180px)
     article
       width 530px
       h3
         left 130px
+        color #777
       h3::after
         display none
       #register_bottom
@@ -496,12 +517,6 @@ body.scrolled
         bottom 10px
   //}}}
   //{{{ FAQ
-  section.faq:hover
-    box-shadow 0 -1px 0px 0px #777 inset,0 6px 12px 5px #eee inset
-    transition all .2s ease-out
-    h3
-      color #222
-      transition all .1s ease-out
   section.faq
     position absolute
     bottom 0
@@ -509,12 +524,9 @@ body.scrolled
     z-index 0
     min-height 100px
     height 350px
-    background #ccc
-    background-image linear-gradient(top, #ddd 10%, #fff 100%)
     margin 0
     padding 0
-    border-top 1px solid #ddd
-    box-shadow 0 -1px 0px 0px #666 inset,0 6px 12px 3px #eee inset
+    border-top 1px solid #eee
     article
       max-width 900px
       margin 80px auto 0 auto
@@ -541,17 +553,6 @@ body.scrolled
       h3
         position relative
         letter-spacing 2px
-        &::after
-          content ''
-          position absolute
-          top 38px
-          left 34%
-          width 200px
-          height 1px
-          background #eee
-          border-bottom 1px solid #ddd
-          border-radius 100px / 1px
-          box-shadow 0 0 3px 0px #eee
       p
         margin auto
         color #555
