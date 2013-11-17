@@ -22,11 +22,16 @@ paths:
   jquery-masonry        : "../local/jquery.masonry.min"
   jquery-transit        : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.9/jquery.transit.min else \../local/jquery.transit-0.9.9.min
   jquery-ui             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min else \../local/jquery-ui.min
-  jquery-waypoints      : \../local/waypoints.min
+  jquery-waypoints      : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/waypoints/2.0.3/waypoints.min else \../local/waypoints.min
   lodash                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min else \../local/lodash.min
+  pd-editor             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.min else \../local/pagedown/Markdown.Editor
+  #pagedown              : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.min else \../local/pagedown/Markdown.Sanitizer
   #jquery-fancybox       : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack else \../local/jquery.fancybox.pack
   #socketio              : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min else \../local/socket.io.min
+  pd-converter          : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.min else \../local/pagedown/Markdown.Converter
+  pd-sanitizer          : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.min else \../local/pagedown/Markdown.Sanitizer
   raf                   : "../local/raf"
+  pagedown              : ["../local/Markdown.Converter", "../local/Markdown.Sanitizer"]
   strftime              : "../local/strftime"
   powerbulletin         : "../powerbulletin"
   powerbulletin-sales   : "../powerbulletin-sales"
@@ -52,6 +57,15 @@ shim:
   jquery-waypoints:
     exports: \jQuery.waypoints
     deps: [\jquery]
+  pd-converter:
+    exports: \Markdown.Converter
+    deps: [\pdSanitizer]
+  pd-sanitizer:
+    exports: \Markdown.Sanitizer
+  pd-editor:
+    exports: \Markdown.Editor
+    deps: [\pdConverter]
+    init: -> window.Markdown.Editor
   raf:
     exports: \raf
   strftime:
