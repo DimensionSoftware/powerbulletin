@@ -42,6 +42,16 @@ body.scrolled
         margin-left -27px
         box-shadow 0 1px 15px -1px light
         transition padding .15s ease-out .15s, margin-left .15s ease-out .2s, box-shadow .15s ease-out .2s, max-height .05s ease-out .2s
+        .col-sep
+          left 270px
+        .col-sep2
+          left 520px
+        .col-sep, .col-sep2
+          position absolute
+          background #eee
+          width 1px
+          bottom 30px
+          top 40px
     .row
       cursor pointer
       display inline
@@ -61,18 +71,18 @@ body.scrolled
         padding 0
         margin 0
         max-height 0
-        min-width 600px
         box-shadow 0
         transition box-shadow 0s ease-out .1s, padding 0s ease-out .1s, opacity .1s ease-out, max-height .0s ease-out .1s, top 0s ease-out .1s, min-width 0s ease-out .1s, margin 0s ease-out .1s
-        > menu
+        > ul
           margin-top 12px!important
-        menu
+        ul
           margin 0
           padding-left 25px
           .row
             width 250px
             display inline-block
-            float left
+            clear both
+            //float left
             font-size .9em
             text-indent 2px
             a
@@ -90,19 +100,19 @@ body.scrolled
         color dark_text!important
         transition color .5s ease-out
       > .title.active::after
-        background radial-gradient(ellipse farthest-corner at 50% 500%, light 50%, rgba(255,255,255,0) 73%)
-        height 6px
+        background radial-gradient(ellipse farthest-corner at 50% 800%, light 50%, rgba(255,255,255,0) 80%)
+        height 5px
         width 60%
-        transition width .15s ease-out .15s
+        transition width .15s ease-out, height .15s ease-out
       > .title.hover::after
         background radial-gradient(ellipse farthest-corner at 50% 375%, light 50%, rgba(255,255,255,0) 80%)
         height 7px
         width 60%
         transition width .15s ease-out .15s
       .title.active
-        font-weight 500
+        font-weight 400
         color #333
-        font-style italic
+        transition color .2s ease-out
       > .title:hover, .title.hover
         color #555
         animation-name tiny-grow!important
@@ -157,7 +167,8 @@ body.scrolled
             white-space nowrap
             text-overflow ellipsis
         .indent
-          menu
+          float left
+          ul
             margin-top -5px
             margin-left 0
             .row

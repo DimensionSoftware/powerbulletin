@@ -10,6 +10,7 @@ require! {
 module.exports =
   class MainMenu extends Component
 
+    # XXX renders in mutant static app/views/menu.jade
     #template: templates.MainMenu
 
     init: !~>

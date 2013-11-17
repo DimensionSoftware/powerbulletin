@@ -3,11 +3,21 @@ mixin _menu(depth, menu)
   if (typeof(menu) == 'object')
     klass = (depth > 0) ? 'indent' : 'submenu'
     each item,i in menu
-        if item && item.title && item.form
-          li.row
-            - var url = item.form.forumSlug || item.form.pageSlug || item.form.url;
-            a.title(data-surf=item.form.dbid, data-scroll-to="#forum_#{item.form.dbid}", class="forum-#{item.form.dbid}", href=url, target=(item.form.separateTab ? '_blank' : '_self'))= item.title
-            if item.children
-              div(class=klass)
-                menu
-                  +_menu(++depth, item.children)
+      if item && item.title && item.form
+        //- row -> out!
+        li.row
+          a.title(
+            data-surf=item.form.dbid,
+            data-scroll-to="#forum_#{item.form.dbid}",
+            class="forum-#{item.form.dbid}",
+            href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
+            target=(item.form.separateTab ? '_blank' : '_self'))= item.title
+           //- stylize depth & recurse
+          if item.children
+            div(class=klass)
+              ul
+                //- makeshift separators
+                if klass == 'submenu'
+                  .col-sep
+                  .col-sep2
+                +_menu(++depth, item.children)
