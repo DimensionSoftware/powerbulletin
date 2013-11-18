@@ -80,17 +80,18 @@ function default-pnum-to-href-fun uri
 set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
   bg = w.$ \#forum_background
   bf = w.$ \#forum_background_buffer
-  if background and bg.length and bf.length # double-buffer
-    bf-img = bf.find \img
-    bf-img
-      ..attr \src, bf-img.data \src
-      ..load ->
-        bg.transition (if fx is \fade then {opacity:0} else {scale:1.5}), duration
-        bf.transition opacity:1, duration, \easeOutExpo, ->
-          # cleanup
-          bg.remove!
-          bf.attr \id, \forum_background
-          cb!
+  if background and bg.length and bf.length      # double-buffer replace!
+    cur = bg.find \img .attr \src                # current visible background
+    unless cur?match new RegExp "#{background}$" # bail if same ass passed in
+      bf-img = bf.find \img
+        ..attr \src, bf-img.data \src
+        ..load ->
+          bg.transition (if fx is \fade then {opacity:0} else {scale:1.5}), duration
+          bf.transition opacity:1, duration, \easeOutExpo, ->
+            # cleanup
+            bg.remove!
+            bf.attr \id, \forum_background
+            cb!
   else if background # set bg
     ch.set-imgs!
   else if bg.length # no background passed in, so--reap both!
