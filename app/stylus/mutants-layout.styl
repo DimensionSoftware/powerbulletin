@@ -865,6 +865,11 @@ html.forum
       left 12px
       top 0
   .main-content
+    opacity 1
+    transition opacity .15s
+    &.transparent
+      opacity 0
+      transition none
     .post-reply.onclick-footer-toggle:hover
       transition none
     .post-reply.onclick-footer-toggle

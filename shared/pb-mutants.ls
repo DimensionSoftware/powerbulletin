@@ -334,6 +334,8 @@ layout-on-personalize = (w, u) ->
       set-background-onload window, window.background
 
       <- require ["#cache-url/local/jquery.autosize.min.js"]
+
+      window.$ \#main_content .remove-class \transparent # fade content in
       next!
   on-initial:
     (window, next) ->
@@ -366,14 +368,15 @@ layout-on-personalize = (w, u) ->
       set-inline-editor.call ch, u.id
     next!
   on-unload:
-    (win, next-mutant, next) ->
+    (w, next-mutant, next) ->
       # cleanup
-      $ \body .off \click
-      try win.$ \#left_container .resizable(\destroy)
+      w.$ \body .off \click
+      w.$ \#main_content .add-class \transparent
+      try w.$ \#left_container .resizable(\destroy)
       unless next-mutant is \forum
-        $ \#forum_background .remove!
-        $ \#forum_background_buffer .remove!
-        reset-paginator win
+        w.$ \#forum_background .remove!
+        w.$ \#forum_background_buffer .remove!
+        reset-paginator w
       next!
 
 same-profile = (hints) ->
