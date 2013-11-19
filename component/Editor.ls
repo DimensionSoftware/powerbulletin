@@ -23,11 +23,15 @@ module.exports =
       <~ require <[pdEditor pdConverter pdSanitizer]>
 
       # init editor
-      c = new Markdown.Converter!
-      e = new Markdown.Editor c, "-#{@local \id}"
-      e.run!
+      id      = @local \id
+      html-id = if id then "\#wmd-input#id" else \#wmd-input
 
-      # TODO savehandle save
+      c = new Markdown.Converter!
+      e = new Markdown.Editor c, id
+      e.run!
+      set-timeout (~> @@$ html-id .focus!), 100ms # focus!
+
+      # TODO handle save
 
     on-detach: ->
       # TODO cleanup editors

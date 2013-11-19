@@ -435,7 +435,7 @@ same-profile = (hints) ->
     change-sig-enable = ->
       w.$ \.onclick-change-sig .on \click ->
         <~ lazy-load-fancybox
-        e = w.component.editor = new Editor locals:{id:\second}
+        e = w.component.editor = new Editor
         w.$.fancybox e.$, fancybox-params
 
     change-title-enable = ->
