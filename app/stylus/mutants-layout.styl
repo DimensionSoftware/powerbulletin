@@ -476,18 +476,27 @@ html.profile
       img
         cursor copy
     .change-profile, .onclick-show-forgot, .onclick-change-sig, .change-title
+      opacity 1
       display block
+      height auto
+      width auto
+      font-size 1em
+      transition opacity .3s ease-out
     h3, .onclick-chat, .title
       display none
     .onclick-change-sig
-      display block
+      opacity 1
   .left-content
     .onclick-chat
       margin 8px 3px
       max-width 250px
       width 98%
     .change-profile, .onclick-show-forgot, .onclick-change-sig, .change-title
-      display none
+      opacity 0
+      font-size 0
+      display block
+      height 0
+      width 0
       margin 3px 0
     h3
       padding 8px
