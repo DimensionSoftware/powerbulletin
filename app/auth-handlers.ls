@@ -100,6 +100,9 @@ announce = sioa.create-client!
   else
     res.json success: false
 
+@once-admin = (req, res, next) ->
+  res.render \once-admin
+
 @register = (req, res, next) ~>
   site     = res.vars.site
   domain   = site.current_domain
@@ -410,6 +413,7 @@ auth-finisher = (req, res, next) ->
   app.all  /^\/auth\/.*$/,              @no-cache
   app.post '/auth/login',           mw, @login
   app.post '/auth/once',            mw, @once
+  app.get  '/auth/once-admin'       mw, @once-admin
   app.post '/auth/register',        mw, @register
   app.post '/auth/choose-username', mw, @choose-username
   app.get  '/auth/user',            mw, @user
