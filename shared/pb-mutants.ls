@@ -772,6 +772,7 @@ mk-post-pnum-to-href = (post-uri) ->
   static: (window, next) ->
     window.$ \header .remove!
     window.$ \footer .remove!
+    window.$ \#menu .remove!
     window.$ \#left_content .remove!
     window.$ \#main_content .remove!
     window.$ \body .add-class \oval # fancybox theme

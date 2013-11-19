@@ -27,6 +27,7 @@ export map = (f, xs) -->
   [f x for x in xs]
 
 export user-fields = user-fields = (u-field, sid) ->
+  # TODO possibly use JOIN on result SELECT to pick out fields -- needs FROM to have p.user_id & f.site_id
   alias-sql  = "SELECT a.name FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
   photo-sql  = "SELECT a.photo FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
   title-sql  = "SELECT a.config FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"

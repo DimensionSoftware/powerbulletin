@@ -20,7 +20,7 @@ module.exports =
     on-attach: ->
       # lazy-load-pagedown on client
       window.Markdown ||= {}
-      <~ requirejs <[pdEditor pdConverter pdSanitizer]>
+      <~ require <[pdEditor pdConverter pdSanitizer]>
 
       # init editor
       c = new Markdown.Converter!
