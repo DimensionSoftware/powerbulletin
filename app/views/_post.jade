@@ -2,6 +2,7 @@ include _post-actions
 include _post-profile
 
 mixin _post(p, i, moderatorMode)
+  utitle = (p.alias_config && p.alias_config.title) ? p.alias_config.title : ''
   .post(id="post_#{p.id}", class=p.reason ? 'censored' : '', data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id, data-forum-id=p.forum_id)
     if p.thread_uri
       h4.title
@@ -12,7 +13,7 @@ mixin _post(p, i, moderatorMode)
     .container
       a.user.mutant(href="/user/#{p.user_name}")
         span.username= p.user_name
-      .user-title=p.alias_config.title
+      .user-title=utitle
       .date Posted 
         span(data-time=p.created_iso, title=p.created_friendly)!= p.created_human
       .post-content
