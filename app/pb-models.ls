@@ -12,31 +12,6 @@ require! {
 
 const base-css = \public/sites
 
-export-model = ([t, cs]) ->
-  module.exports[t] = {}
-
-get-tables = (dbname, cb) ->
-  sql = '''
-  SELECT table_name
-  FROM information_schema.tables
-  WHERE table_catalog=$1
-    AND table_schema='public'
-  '''
-  err, rows <- postgres.query sql, [dbname]
-  if err then return cb(err)
-  cb null, rows.map (.table_name)
-
-get-cols = (dbname, tname, cb) ->
-  sql = '''
-  SELECT ordinal_position, column_name
-  FROM information_schema.columns
-  WHERE table_catalog=$1 AND table_name=$2 AND table_schema='public'
-  ORDER BY ordinal_position asc
-  '''
-  err, rows <- postgres.query sql, [dbname, tname]
-  if err then return cb(err)
-  cb null, rows.map (.column_name)
-
 # Generate a function that takes another function and transforms its first parameter
 # according to the rules in serializers
 #
@@ -504,6 +479,47 @@ query-dictionary =
       postgres.query sql, [site-id], cb
 
     select1: select1-fn \subscriptions
+
+export-model = ([t, cs]) ->
+  fns = if cs?id
+    #console.log \model, t, cs
+    # TODO (deserialized-fn (serialized-fn (select-fn table), (serializers cs)) (deserializers cs))
+    {
+    # select1 => select-1
+    # selectx => select
+    # update1 => update-1
+    # updatex => update
+    # upsert: upsert-fn t
+    # delete: delete-fn t
+    }
+  else
+    #console.error \no-model, t
+    {}
+  #console.log \fns, t, fns
+  module.exports[t] = fns
+
+get-tables = (dbname, cb) ->
+  sql = '''
+  SELECT table_name
+  FROM information_schema.tables
+  WHERE table_catalog=$1
+    AND table_schema='public'
+  '''
+  err, rows <- postgres.query sql, [dbname]
+  if err then return cb(err)
+  cb null, rows.map (.table_name)
+
+get-cols = (dbname, tname, cb) ->
+  sql = '''
+  SELECT ordinal_position, column_name, udt_name
+  FROM information_schema.columns
+  WHERE table_catalog=$1 AND table_name=$2 AND table_schema='public'
+  ORDER BY ordinal_position asc
+  '''
+  err, rows <- postgres.query sql, [dbname, tname]
+  if err then return cb(err)
+  schema = { [o.column_name, o.udt_name] for o in rows }
+  cb null, schema
 
 
 # assumed postgres is initialized
