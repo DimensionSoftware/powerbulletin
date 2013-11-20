@@ -480,17 +480,28 @@ query-dictionary =
 
     select1: select1-fn \subscriptions
 
+serializers-for =
+  json: JSON.stringify
+
+deserializers-for =
+  json: JSON.parse
+
+export serializers = (cs) ->
+  { [attribute, serializers-for[type]] for attribute, type of cs when serializers-for[type] }
+
+export deserializers = (cs) ->
+  { [attribute, deserializers-for[type]] for attribute, type of cs when deserializers-for[type] }
+
 export-model = ([t, cs]) ->
   fns = if cs?id
     #console.log \model, t, cs
-    # TODO (deserialized-fn (serialized-fn (select-fn table), (serializers cs)) (deserializers cs))
     {
-    # select1 => select-1
-    # selectx => select
-    # update1 => update-1
-    # updatex => update
-    # upsert: upsert-fn t
-    # delete: delete-fn t
+      select-one : (deserialized-fn (serialized-fn (select1-fn t), (serializers cs)), (deserializers cs))
+      select     : (deserialized-fn (serialized-fn (selectx-fn t), (serializers cs)), (deserializers cs))
+      update-one : (deserialized-fn (serialized-fn (update1-fn t), (serializers cs)), (deserializers cs))
+      update     : (deserialized-fn (serialized-fn (updatex-fn t), (serializers cs)), (deserializers cs))
+      upsert     : (deserialized-fn (serialized-fn (upsert-fn t), (serializers cs)), (deserializers cs))
+      delete     : (serialized-fn (upsert-fn t), (serializers cs))
     }
   else
     #console.error \no-model, t
