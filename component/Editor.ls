@@ -33,7 +33,7 @@ module.exports =
       set-timeout (~> editor.focus!), 100ms # focus!
 
       # {{{ - delegates
-      # - escape to close
+      # escape to close
       editor.on \keydown ~> if it.which is 27 then $.fancybox.close!; false
 
       # TODO handle save

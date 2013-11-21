@@ -125,11 +125,8 @@ module.exports =
       @$.on \click \.onclick-show-register ->
         ch.switch-and-focus \on-login \on-register '#auth input[name=username]'
 
-      # catch esc key events on input boxes for login box
-      @$.on \keyup '.fancybox-inner input' ->
-        if it.which is 27 # esc
-          $.fancybox.close!
-          false
+      # catch esc key events on input boxes for Auth
+      @$.on \keydown \input -> if it.which is 27 then $.fancybox.close!; false
 
     on-detach: !~>
 
