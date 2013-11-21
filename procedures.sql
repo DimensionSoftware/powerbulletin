@@ -467,6 +467,7 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
   u =
     auths         : {}
     title         : auths.0?config?title
+    sig           : auths.0?config?sig
     id            : auths.0?id
     site_id       : auths.0?site_id
     name          : auths.0?name

@@ -29,6 +29,7 @@ module.exports =
       @dirty   = false
       @retry   = 0
 
+    body:  ~> @editor.val!
     watch: ~> @watcher = set-interval @save, watch-interval
     save:  ~>
       if @dirty # save!

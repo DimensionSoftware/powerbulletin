@@ -435,8 +435,8 @@ same-profile = (hints) ->
     change-sig-enable = ->
       w.$ \.onclick-change-sig .on \click ->
         <~ lazy-load-fancybox
-        e = w.component.editor = new Editor {locals:{url:"/resources/aliases/#{w.user.id}"}}
-        w.$.fancybox e.$, {after-close:-> e.detach!} <<< fancybox-params # cleanup on close
+        e = w.component.editor = new Editor {locals:{url:"/resources/aliases/#{w.user.id}", body:u.sig}}
+        w.$.fancybox e.$, {after-close:-> user <<< sig:e.body!; e.detach!} <<< fancybox-params # set sig & cleanup
 
     change-title-enable = ->
       var last
