@@ -25,13 +25,19 @@ module.exports =
       # init editor
       id      = @local \id
       html-id = if id then "\#wmd-input#id" else \#wmd-input
+      editor  = @@$ html-id
 
       c = new Markdown.Converter!
       e = new Markdown.Editor c, id
       e.run!
-      set-timeout (~> @@$ html-id .focus!), 100ms # focus!
+      set-timeout (~> editor.focus!), 100ms # focus!
+
+      # {{{ - delegates
+      # - escape to close
+      editor.on \keydown ~> if it.which is 27 then $.fancybox.close!; false
 
       # TODO handle save
+      # }}}
 
     on-detach: ->
       # TODO cleanup editors
