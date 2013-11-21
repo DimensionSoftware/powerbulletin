@@ -13,10 +13,10 @@ const watch-interval = 2500ms # check dirty every...
 
 module.exports =
   class Editor extends Component
-    @dirty   = false
-    @watcher = void
-    @retry   = 0
-    @editor  = void
+    dirty:   false
+    watcher: void
+    retry:   0
+    editor:  void
 
     template: templates.Editor
 
@@ -24,10 +24,6 @@ module.exports =
       # defaults
       @local \id,   '' unless @local \id
       @local \body, '' unless @local \body
-
-      # XXX why is this necessary?
-      @dirty   = false
-      @retry   = 0
 
     body:  ~> @editor.val!
     watch: ~> @watcher = set-interval @save, watch-interval
