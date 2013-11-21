@@ -328,4 +328,10 @@ onload-personalize!
 if window.initial-mutant # XXX sales-app doesn't have a mutant
   <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
 $ '.tools .profile' .show! # show default avatar
+console?log '''
+░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
+░█▀▀░█░█░█▄█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░░█░░░█░░█░█
+░▀░░░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀▀▀░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀
+Hey, you!  Want to work with us?  https://powerbulletin.com
+'''
 # vim:fdm=marker
