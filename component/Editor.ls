@@ -6,7 +6,7 @@ require! {
   #pagedown # XXX pull in converter + sanitizer if needed on server
 }
 {templates} = require \../build/component-jade
-{lazy-load-fancybox} = require \../client/client-helpers
+{storage, lazy-load-fancybox} = require \../client/client-helpers
 
 const max-retry      = 3failures
 const watch-interval = 2500ms # check dirty every...
