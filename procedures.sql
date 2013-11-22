@@ -451,6 +451,7 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
     u.id, u.email, u.rights AS sys_rights,
     a.photo, a.verified, a.rights, a.name, a.created, a.site_id, a.last_activity, a.config AS config,
     (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2) AS post_count,
+    (SELECT SUM(count) FROM (SELECT DISTINCT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2 GROUP BY thread_id) AS tc) AS thread_count,
     auths.type, auths.profile 
   FROM users u
   JOIN aliases a ON a.user_id = u.id
@@ -479,6 +480,7 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
     last_activity : auths.0?last_activity
     created       : auths.0?created
     post_count    : auths.0?post_count
+    thread_count  : auths.0?thread_count
   user = auths.reduce make-user, u
   return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
