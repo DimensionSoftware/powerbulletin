@@ -196,6 +196,12 @@ load-css = (href) ->
     cb
 #}}}
 
+@storage = # use local storage
+  del: (k)    -> local-storage.remove-item k
+  get: (k)    -> try local-storage.get-item k |> JSON.parse
+  has: (k)    -> local-storage.has-own-property k
+  set: (k, v) -> local-storage.set-item k, JSON.stringify v
+
 @fancybox-params =
   close-effect: \elastic
   close-speed:  200ms
