@@ -2,6 +2,8 @@
 .container
   .profile(data-user-id="#{profile.id}", data-user-name="#{profile.name}")
     h2= profile.name
+    h3= profile.title
+    input#change_title.change-title(placeholder='Choose a title', type='text', name='title', value=profile.title)
     form(action="/resources/users/#{profile.id}/avatar", enctype="multipart/form-data", method="post")
       .avatar.profile
         if profile.photo
@@ -11,8 +13,6 @@
             img(src="#{cacheUrl}/#{profile.photo}")
         else
           img(src="#{cacheUrl}/images/profile.jpg")
-        h3= profile.title
-        input#change_title.change-title(placeholder='Title', type='text', name='title', value=profile.title)
       input(type="file", name="avatar", style="display:none;")
 
   ul
@@ -26,8 +26,8 @@
       li.last-activity
         span Last active 
         span.date(title=profile.last_activity_friendly, data-time=profile.last_activity_iso)!= profile.last_activity_human
-
-  button.onclick-chat(title="Private Message") Chat
-  a.onclick-show-forgot Change Password
-  a.change-profile.avatar Change Profile Photo
-  a.onclick-change-sig Change Signature
+  .profile-actions
+    button.onclick-chat(title="Private Message") Chat
+    a.change-profile.avatar Edit Profile Photo
+    a.onclick-change-sig Edit Signature
+    a.onclick-show-forgot Change Password
