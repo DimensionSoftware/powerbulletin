@@ -27,21 +27,25 @@ module.exports =
 
     body:  ~> @editor.val!
     watch: ~> @watcher = set-interval @save, watch-interval
-    save:  ~>
+    save: (to-server=false) ~>
+      v = @editor.val!
       if @dirty # save!
-        clear-interval @watcher; @watcher=void # stop watching
-        data = {}
-        @@$.ajax {
-          type : \PUT
-          data : {config:sig:@editor.val!}
-          url  : @local \url
-        }
-          ..done (r) ~> # saved, so reset--
-            @dirty=false
-            @retry=0
-            @watch @save
-          ..fail (r) ~> # failed, so try again until max-retries
-            if ++@retry <= max-retry then @watch @save
+        if to-server or (parse-int(Math.random!*4) is 1) # 1-in-4 saves to server
+          clear-interval @watcher; @watcher=void # stop watching
+          data = {}
+          @@$.ajax {
+            type : \PUT
+            data : {config:sig:v}
+            url  : @local \url
+          }
+            ..done (r) ~> # saved, so reset--
+              @dirty=false
+              @retry=0
+              @watch @save
+            ..fail (r) ~> # failed, so try again until max-retries
+              if ++@retry <= max-retry then @watch @save true # to server, again
+        else # local storage
+          storage.set \sig, v
 
     on-attach: ->
       ####  main  ;,.. ___  _
@@ -68,7 +72,7 @@ module.exports =
     on-detach: ~> # XXX ensure detach is called
       # save & cleanup
       clear-interval @watcher
-      @save!
+      @save true # to server
       @$.off!remove!
 
 # vim: fdm=marker
