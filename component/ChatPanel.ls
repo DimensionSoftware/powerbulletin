@@ -26,7 +26,7 @@ module.exports =
       if @local \virgin
         @$.find \div:first .css(width: @local \width)
         @local \virgin, false
-      @$.find \div:first .css(height: "#{hi - 27}px")
+      @$.find \div:first .css(height: "#{hi}px")
       @p.show @$
 
     hide: ->

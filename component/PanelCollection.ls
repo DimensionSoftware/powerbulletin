@@ -9,12 +9,16 @@ require! {
 
 module.exports =
   class PanelCollection extends Component
+    # in browser repl:
+    # x = PanelCollection.x()
+    # x.p.select('a')
+    # x.p.select('b')
     @x = ->
       p = new PanelCollection
       $('body').append p.$
-      a = new ChatPanel({locals: { id: 'a', icon: 'https://muscache.pb.com/images/twitter_32.png', width: '400px', css: { background: '#c88', opacity: 0.75 }, p: p}})
+      a = new ChatPanel({locals: { id: 'a', icon: 'https://muscache.pb.com/images/twitter_32.png', width: 300px, css: { background: '#544', opacity: 0.85 }, p: p}})
       p.add 'a', a
-      b = new ChatPanel({locals: { id: 'b', icon: 'https://muscache.pb.com/images/twitter_32.png', width: '400px', css: { background: '#88c', opacity: 0.75 }, p: p}})
+      b = new ChatPanel({locals: { id: 'b', icon: 'https://muscache.pb.com/images/twitter_32.png', width: 400px, css: { background: '#88c', opacity: 0.75 }, p: p}})
       p.add 'b', b
       {p, a, b}
 
@@ -39,7 +43,7 @@ module.exports =
         @seen[name] = @list.length - 1
         # dom
         $icon = @@$ '<li class="panel-icon"><img title="" /></li>'
-        $icon.find 'img' .attr { src: panel.icon, title: panel.title }
+        $icon.find 'img' .attr { src: panel.local(\icon), title: panel.local(\title) }
         @$ul.append $icon
         @$.append panel.$
         $ul = @$ul
@@ -79,6 +83,7 @@ module.exports =
         return selected-panel.exec!
 
       $togglers = @$.find \.panel-togglers
+      console.log \togglers, $togglers
       if @selected is name
         selected-panel.hide!
         @selected = null
@@ -86,13 +91,13 @@ module.exports =
         $togglers .animate { left: 0 }, @delay, @ease-in
       else if @selected is null
         selected-panel.show!
-        $togglers .animate { left: -selected-panel.width }, @delay, @ease-out
+        $togglers .animate { left: -(selected-panel.local \width) }, @delay, @ease-out
         @selected = name
       else if @selected != name
         unselected-panel = @find @selected
         unselected-panel.hide!
         selected-panel.show!
-        $togglers .animate { left: -selected-panel.width }, @delay
+        $togglers .animate { left: -(selected-panel.local \width) }, @delay
         @selected = name
       @selected
 
@@ -106,6 +111,6 @@ module.exports =
 
     show: (sel) ->
       hi = $(window).height!
-      @@$(sel).css(height: "#{hi - 27}px").show @delay, @ease-out
+      @@$(sel).css(height: "#{hi}px").show @delay, @ease-out
 
 # vim:fdm=indent
