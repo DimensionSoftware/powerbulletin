@@ -7,15 +7,14 @@ require \jqueryUi
 # XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
 helpers = require \../shared/shared-helpers
 mutants = require \../shared/pb-mutants
-
 mutant  = require \mutant
 
-require! ch: \./client-helpers
+{storage, switch-and-focus, mutate, show-tooltip, set-profile} = require \./client-helpers
 require! globals
 window.Auth  = require \../component/Auth
-window.switch-and-focus = ch.switch-and-focus
+window.switch-and-focus = switch-and-focus
 
-window.cors =
+window.cors = #{{{
   ajax-params:
     xhr-fields:
       with-credentials: true
@@ -33,19 +32,16 @@ window.cors =
     params <<< { type: \POST, url, data }
     params.success = cb if cb
     $.ajax params
-
-window.hints =
+#}}}
+window.hints = #{{{
   last:
     pathname: null
     mutator: null
   current:
     pathname: window.location.pathname
     mutator: window.mutator
-
-# shortcuts
-$w = $ window
-$d = $ document
-
+#}}}
+#{{{ Portability
 is-ie        = false or \msTransform in document.documentElement.style
 is-moz       = false or \MozBoxSizing in document.documentElement.style
 is-opera     = !!(window.opera and window.opera.version)
@@ -55,6 +51,11 @@ is-touchable = do ->
     true
   catch
     false
+#}}}
+
+# shortcuts
+$w = $ window
+$d = $ document
 
 const threshold = 15px # snap
 
@@ -68,8 +69,8 @@ if window.location.host not in [\powerbulletin.com, \pb.com]
 
   # setup click hijackers for forum app only
   # this should be moved into a forum-only module (not a shared module)
-  $d.on \click \a.mutant ch.mutate # hijack urls
-  $d.on \click \button.mutant ch.mutate # hijack urls
+  $d.on \click \a.mutant mutate # hijack urls
+  $d.on \click \button.mutant mutate # hijack urls
 
 window.last-statechange-was-user = true # default state
 last-req-id = 0
@@ -127,7 +128,7 @@ if window.location.host not in [\powerbulletin.com, \pb.com]
 
       # capture error
       jqxhr.fail (xhr, status, error) ->
-        ch.show-tooltip $(\#warning), "Page Not Found", 8000ms
+        show-tooltip $(\#warning), "Page Not Found", 8000ms
         History.back!
         window.spin false
 #}}}
@@ -240,7 +241,7 @@ Auth.after-login = ->
   if window.r-user then window.r-user window.user
   onload-personalize!
   if user and mutants?[window.mutator]?on-personalize
-    ch.set-profile user.photo
+    set-profile user.photo
     mutants?[window.mutator]?on-personalize window, user, ->
       socket?disconnect!
       socket?socket?connect!
@@ -249,15 +250,8 @@ Auth.after-login = ->
 window.logout = ->
   window.location = \/auth/logout; false # for intelligent redirect
 $d.on \click \.onclick-logout -> window.logout!; false
-
 $d.on \click \.require-login, Auth.require-login(-> this.click)
 $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
-#$d.on \click '.toggle-password' toggle-password
-#$d.on \submit '.login form' login
-#$d.on \submit '.register form' register
-#$d.on \submit '.forgot form' forgot-password
-#$d.on \submit '.reset form' reset-password
-#$d.on \submit '.choose form' choose
 
 #}}}
 #{{{ Keep human readable time up to date
@@ -310,28 +304,42 @@ window.spin = (loading = true) ->
 onload-resizable!
 
 # run initial mutant & personalize ( based on parameters from user obj )
-window.user <- $.getJSON \/auth/user
-if window.r-user then window.r-user window.user
+if not (window.user = storage.get \user) # fetch (blocking)
+  fetch-and-set-user after-user
+else # use locally stored user (non-blocking)
+  after-user!
+  if parse-int(Math.random!*3) is 1
+    fetch-and-set-user! # lazy update (minimize stale client)
+#{{{ User-related
+!function fetch-and-set-user cb=(->)
+  console.log \fetch
+  window.user <- $.getJSON \/auth/user
+  storage.set \user, window.user # set latest
+  cb!
+!function after-user
+  if window.r-user then window.r-user window.user
 
-# hash actions
-if window.location.hash.match /^\#recover=/ then Auth.show-reset-password-dialog!
-if m = window.location.hash.match /^\#invalid=(.+)/ then Auth.show-info-dialog "Welcome back #{m.1}!"
-switch window.location.hash
-| \#invalid    => Auth.show-info-dialog 'Invalid invite code!'
-| \#validate   => Auth.after-login! # email activation
-| \#once       => Auth.login-with-token!
-| \#once-admin =>
-  <- Auth.login-with-token!
-  History.push-state null, null, \/admin
+  # hash actions
+  if window.location.hash.match /^\#recover=/ then Auth.show-reset-password-dialog!
+  if m = window.location.hash.match /^\#invalid=(.+)/ then Auth.show-info-dialog "Welcome back #{m.1}!"
+  switch window.location.hash
+  | \#invalid    => Auth.show-info-dialog 'Invalid invite code!'
+  | \#validate   => Auth.after-login! # email activation
+  | \#once       => Auth.login-with-token!
+  | \#once-admin =>
+    <- Auth.login-with-token!
+    History.push-state null, null, \/admin
 
-onload-personalize!
-if window.initial-mutant # XXX sales-app doesn't have a mutant
-  <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
-$ '.tools .profile' .show! # show default avatar
-console?log '''
-░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
-░█▀▀░█░█░█▄█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░░█░░░█░░█░█
-░▀░░░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀▀▀░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀
-Hey, you!  Want to work with us?  https://powerbulletin.com
-'''
-# vim:fdm=marker
+  onload-personalize!
+  if window.initial-mutant # XXX sales-app doesn't have a mutant
+    <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
+  $ '.tools .profile' .show! # show default avatar
+  # advertise
+  console?log '''
+  ░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
+  ░█▀▀░█░█░█▄█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░░█░░░█░░█░█
+  ░▀░░░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀▀▀░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀
+  Hey, you-- join us!  https://powerbulletin.com
+  '''
+#}}}
+# vim: fdm=marker
