@@ -9,7 +9,7 @@ purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
-  {switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
+  {storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {flip-background, is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -435,7 +435,9 @@ same-profile = (hints) ->
     change-sig-enable = ->
       w.$ \.onclick-change-sig .on \click ->
         <~ lazy-load-fancybox
-        e = w.component.editor = new Editor {locals:{url:"/resources/aliases/#{w.user.id}", body:u.sig}}
+        e = w.component.editor = new Editor {locals:
+          url:  "/resources/aliases/#{w.user.id}"
+          body: (storage.get \sig) or u.sig}
         w.$.fancybox e.$, {after-close:-> user <<< sig:e.body!; e.detach!} <<< fancybox-params # set sig & cleanup
 
     change-title-enable = ->

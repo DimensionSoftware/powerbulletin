@@ -5,18 +5,17 @@ require! {
   Component: yacomponent
   #pagedown # XXX pull in converter + sanitizer if needed on server
 }
+{throttle}  = require \lodash
 {templates} = require \../build/component-jade
 {storage, lazy-load-fancybox} = require \../client/client-helpers
 
-const max-retry      = 3failures
-const watch-interval = 2500ms # check dirty every...
+const watch-every = 2500ms
+const max-retry   = 3failures
 
 module.exports =
   class Editor extends Component
-    dirty:   false
-    watcher: void
-    retry:   0
-    editor:  void
+    retry:  0
+    editor: void
 
     template: templates.Editor
 
@@ -25,23 +24,22 @@ module.exports =
       @local \id,   '' unless @local \id
       @local \body, '' unless @local \body
 
-    body:  ~> @editor.val!
-    watch: ~> @watcher = set-interval @save, watch-interval
-    save:  ~>
-      if @dirty # save!
-        clear-interval @watcher; @watcher=void # stop watching
-        data = {}
-        @@$.ajax {
-          type : \PUT
-          data : {config:sig:@editor.val!}
-          url  : @local \url
-        }
-          ..done (r) ~> # saved, so reset--
-            @dirty=false
-            @retry=0
-            @watch @save
-          ..fail (r) ~> # failed, so try again until max-retries
-            if ++@retry <= max-retry then @watch @save
+    body: ~> @editor.val!
+    save: (to-server=false) ~>
+      v = @editor.val!
+      unless v is storage.get \sig
+        storage.set \sig, v # update locally
+        if to-server or (parse-int(Math.random!*4) is 1) # 1-in-4 saves to server
+          data = {}
+          @@$.ajax {
+            type : \PUT
+            data : {config:sig:v}
+            url  : @local \url
+          }
+            ..done (r) ~> # saved, so reset--
+              @retry=0
+            ..fail (r) ~> # failed, so try again (to server) until max-retries
+              if ++@retry <= max-retry then @save true
 
     on-attach: ->
       ####  main  ;,.. ___  _
@@ -60,15 +58,13 @@ module.exports =
       #{{{ - delegates
       # escape to close
       @editor.on \keydown ~> if it.which is 27 then $.fancybox.close!; false
-      @editor.on \keyup   ~> @dirty=true # yo, editor--save me soon
+      @editor.on \keyup   throttle @save, watch-every # save
       #}}}
-      @watch @save # initial watch--go
       set-timeout (~> @editor.focus!), 100ms # ... & focus!
 
     on-detach: ~> # XXX ensure detach is called
-      # save & cleanup
-      clear-interval @watcher
-      @save!
+      # save to server & cleanup
+      @save true
       @$.off!remove!
 
 # vim: fdm=marker
