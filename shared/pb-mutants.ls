@@ -422,6 +422,7 @@ same-profile = (hints) ->
       window.$ \body .on \click \.onclick-show-forgot ->
         <- Auth.show-login-dialog
         ch.switch-and-focus \on-error \on-forgot '#auth input[name=email]'
+      <- require ["#cache-url/local/jquery.autosize.min.js"]
       next!
   on-mutate:
     (window, next) ->
