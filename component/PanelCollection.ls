@@ -9,18 +9,27 @@ require! {
 
 module.exports =
   class PanelCollection extends Component
+    @x = ->
+      p = new PanelCollection
+      $('body').append p.$
+      a = new ChatPanel({locals: { id: 'a', icon: 'https://muscache.pb.com/images/twitter_32.png', width: '400px', css: { background: '#c88', opacity: 0.75 }, p: p}})
+      p.add 'a', a
+      b = new ChatPanel({locals: { id: 'b', icon: 'https://muscache.pb.com/images/twitter_32.png', width: '400px', css: { background: '#88c', opacity: 0.75 }, p: p}})
+      p.add 'b', b
+      {p, a, b}
+
     template: templates.PanelCollection
 
     init: ->
       @list     = []
       @seen     = {}
       @selected = null
-      @$ul      = @$.find('ul:first')
       @delay    = 250ms
       @ease-in  = \easeInBack
       @ease-out = \easeOutBack
 
     on-attach: ->
+      @$ul      = @$.find('ul:first')
 
     # add a panel to the collection
     add: (name, panel) ->
@@ -29,9 +38,10 @@ module.exports =
         @list.push [name, panel]
         @seen[name] = @list.length - 1
         # dom
-        $icon = @$ '<li class="panel-icon"><img title="" /></li>'
+        $icon = @@$ '<li class="panel-icon"><img title="" /></li>'
         $icon.find 'img' .attr { src: panel.icon, title: panel.title }
         @$ul.append $icon
+        @$.append panel.$
         $ul = @$ul
         self = @
         $icon.click (ev) ->
@@ -48,7 +58,9 @@ module.exports =
         @list.splice i, 1
         delete @seen[name]
         $icon = @$ul.find('li')[i]
+        $panel = @$.find('.panel')[i]
         $icon.remove!
+        $panel.remove!
         for key in this.seen
           if @seen[key] > i then @seen[key]--
       else
@@ -75,6 +87,7 @@ module.exports =
       else if @selected is null
         selected-panel.show!
         $togglers .animate { left: -selected-panel.width }, @delay, @ease-out
+        @selected = name
       else if @selected != name
         unselected-panel = @find @selected
         unselected-panel.hide!
@@ -92,5 +105,7 @@ module.exports =
       @@$(sel).hide(@delay, @ease-in)
 
     show: (sel) ->
-      @@$(sel).css(height: "#{(hi - 27)}px").show @delay, @ease-out
+      hi = $(window).height!
+      @@$(sel).css(height: "#{hi - 27}px").show @delay, @ease-out
 
+# vim:fdm=indent

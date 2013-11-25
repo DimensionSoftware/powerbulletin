@@ -32,16 +32,17 @@ require \layout
 {render-and-append, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
-window.MainMenu = require \../component/MainMenu
-window.Chat     = require \../component/Chat
-window.Auth     = require \../component/Auth
-window.Pager    = require \./pager
+window.MainMenu        = require \../component/MainMenu
+window.Chat            = require \../component/Chat
+window.Auth            = require \../component/Auth
+window.PhotoCropper    = require \../component/PhotoCropper
+window.PanelCollection = require \../component/PanelCollection
+window.ChatPanel       = require \../component/ChatPanel
+
 window.furl     = require \../shared/forum-urls
 window.tasks    = require \./tasks
 window.ioc      = require \./io-client
 window <<< {ck-submit-form}
-
-window.PhotoCropper = require \../component/PhotoCropper
 
 # components
 require! \../component/Buy
