@@ -29,7 +29,7 @@ module.exports =
       v = @editor.val!
       unless v is storage.get \sig
         storage.set \sig, v # update locally
-        if to-server or (parse-int(Math.random!*4) is 1) # 1-in-4 saves to server
+        if to-server
           data = {}
           @@$.ajax {
             type : \PUT
@@ -56,14 +56,15 @@ module.exports =
       e = new Markdown.Editor c, id
       e.run!
       #{{{ - delegates
-      # escape to close
-      @editor.on \keydown ~> if it.which is 27 then $.fancybox.close!; false
-      @editor.on \keyup   throttle @save, watch-every # save
+      @editor.on \keydown ~> if it.which is 27 then $.fancybox.close!; false # escape save & close
+      @editor.on \keyup   throttle (~> @save), watch-every # save to local storage
+      $ window .on \unload.Editor ~> @save true            # save to server
       #}}}
       set-timeout (~> @editor.focus!), 100ms # ... & focus!
 
     on-detach: ~> # XXX ensure detach is called
       # save to server & cleanup
+      $ window .off \unload.Editor
       @save true
       @$.off!remove!
 
