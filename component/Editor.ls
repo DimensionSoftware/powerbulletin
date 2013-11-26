@@ -27,6 +27,7 @@ module.exports =
 
     body: ~> @editor?val!
     save: (to-server=false) ~>
+      return unless @editor # guard
       v = @editor.val!
       unless v is storage.get \sig
         storage.set \sig, v # update locally
