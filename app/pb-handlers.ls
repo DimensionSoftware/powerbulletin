@@ -572,7 +572,7 @@ function profile-paths user, uploaded-file, base=\avatar
 
 @page = (req, res, next) ->
   site = res.vars.site
-  err, page <- db.pages.select1 { site_id: site.id, path: req.path }
+  err, page <- db.pages.select-one { site_id: site.id, path: req.path }
   if err then return next err
   if page
     if req.surfing then delete-unnecessary-surf-data res
