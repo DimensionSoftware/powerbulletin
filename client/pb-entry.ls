@@ -390,6 +390,10 @@ window.do-buy = (product-id) ->
 
 # kick-off main menu
 window.component.main-menu = new MainMenu {-auto-render, locals:{}}, $ \#menu
+
+# panels
+window.component.panels = new PanelCollection {}
+$ \body .append window.component.panels.$
 #}}}
 
 # vim:fdm=marker
