@@ -33,7 +33,6 @@ require \layout
 
 #XXX: end legacy
 window.MainMenu        = require \../component/MainMenu
-window.Chat            = require \../component/Chat
 window.Auth            = require \../component/Auth
 window.PhotoCropper    = require \../component/PhotoCropper
 window.PanelCollection = require \../component/PanelCollection
@@ -315,14 +314,22 @@ if mocha? and window.location.search.match /test=1/
 #}}}
 #{{{ - chat
 $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
-  profile-name = $ 'div.profile:first' .data \user-name
-  f  = user
   $p = $ \div.profile:first
   t  =
     id     : $p.data \user-id
     name   : $p.data \user-name
-    photo  : $p.find \img .attr \src
-  Chat.start [f, t]
+  icon = $p.find \img .attr \src
+  panels = window.component.panels
+  id = "chat-#{$p.data \user-id}"
+  chat-panel-exists = $ "\##{id}" .length
+  if chat-panel-exists
+    console.log \chat-panel-exists
+    panels.show id
+  else
+    console.log \chat-panel-doesnt-exists
+    chat-panel = new ChatPanel locals: { id, icon, to: t, width: 300px, css: { background: '#544', opacity: 0.85 }, p: panels }
+    panels.add id, chat-panel
+    panels.show id
 )
 #}}}
 #{{{ - admin

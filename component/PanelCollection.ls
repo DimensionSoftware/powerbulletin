@@ -42,7 +42,7 @@ module.exports =
         @list.push [name, panel]
         @seen[name] = @list.length - 1
         # dom
-        $icon = @@$ '<li class="panel-icon"><img title="" /></li>'
+        $icon = @@$ '<li class="panel-icon photo"><img title="" /></li>'
         $icon.find 'img' .attr { src: panel.local(\icon), title: panel.local(\title) }
         @$ul.append $icon
         @$.append panel.$
@@ -90,6 +90,20 @@ module.exports =
         @$ul.find \li .remove-class \selected
         $togglers .animate { left: 0 }, @delay, @ease-in
       else if @selected is null
+        selected-panel.show!
+        $togglers .animate { left: -(selected-panel.local \width) }, @delay, @ease-out
+        @selected = name
+      else if @selected != name
+        unselected-panel = @find @selected
+        unselected-panel.hide!
+        selected-panel.show!
+        $togglers .animate { left: -(selected-panel.local \width) }, @delay
+        @selected = name
+      @selected
+
+    show: (name) ->
+      selected-panel = @find name
+      if @selected is null
         selected-panel.show!
         $togglers .animate { left: -(selected-panel.local \width) }, @delay, @ease-out
         @selected = name
