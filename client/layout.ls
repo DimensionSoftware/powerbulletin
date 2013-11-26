@@ -305,18 +305,13 @@ onload-resizable!
 
 # run initial mutant & personalize ( based on parameters from user obj )
 if not (window.user = storage.get \user) # fetch (blocking)
-  fetch-and-set-user after-user
-else # use locally stored user (non-blocking)
-  after-user!
-  if parse-int(Math.random!*3) is 1
-    fetch-and-set-user! # lazy update (minimize stale client)
-#{{{ User-related
-!function fetch-and-set-user cb=(->)
-  console.log \fetch
   window.user <- $.getJSON \/auth/user
   storage.set \user, window.user # set latest
-  cb!
-!function after-user
+  after-user!
+else # use locally stored user (non-blocking)
+  after-user!
+
+!function after-user #{{{
   if window.r-user then window.r-user window.user
 
   # hash actions

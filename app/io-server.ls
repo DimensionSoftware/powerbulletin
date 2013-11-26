@@ -158,7 +158,7 @@ site-by-domain = (domain, cb) ->
       err, users <- presence.in "#{site.id}"
       unless err then try # guard
         users |> filter (-> it) |> each (u) ->
-          socket.in("#{site.id}").emit \enter-site, u # not braoadcast
+          socket.in("#{site.id}").emit \enter-site, u # not broadcast
 
     socket.on \debug, ->
       socket.emit \debug, socket.manager.rooms

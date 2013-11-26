@@ -40,7 +40,10 @@ is-locked-forum = (m, forum-id) ->
       for k in <[title sig]>
         config[k]=alias.config[k]                            # & scrub
       err <- db.aliases.updatex {config}, {user_id, site_id} # & update!
-      announce.in(site_id).emit \new-profile-title, { id:user_id, title:config?title }
+      announce.in(site_id).emit \new-profile-title, { id:user_id, title:config?title } # broadcast title everywhere
+      (err, user) <~ db.usr { id:user_id, site_id }
+      delete user.auths
+      announce.in("#site_id/users/#user_id").emit \set-user, user # brodcast new user object to all of my browsers
       res.json {+success}
     else
       res.json {-success}
