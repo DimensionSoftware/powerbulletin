@@ -8,11 +8,13 @@ height = 300px
   &.has-preview
     .wmd-panel
       width 50%
+      transition none
     .wmd-preview 
       width 49%
       transition width .1s ease-out
     .onclick-toggle-preview
       width 94px
+      transition width .1s ease-out
       &:after
         content 'Hide Preview'
   .onclick-toggle-preview
@@ -21,17 +23,22 @@ height = 300px
     right 0
     bottom 0
     height 20px
-    width 99px
+    width 55px
     padding 4px 12px
     color #fff
+    font-size .95em
     background-color rgba(0,0,0,.6)
     border-left 1px solid #333
     border-top 1px solid #333
     border-top-left-radius 8px
     cursor pointer
+    transition background-color .2s ease-out
+    &:hover
+      background-color rgba(0,0,0,.75)
+      transition none
     &:after
       position absolute
-      content 'Show Preview'
+      content 'Preview'
 
   //{{{ <PageDown Editor>
   blockquote 
@@ -47,6 +54,7 @@ height = 300px
     border-top-left-radius 3px
     border-bottom-left-radius 3px
     background-color #fff
+    transition width .1s ease-out
     .wmd-input 
       position absolute
       top 37px

@@ -25,7 +25,7 @@ module.exports =
       @local \id,   '' unless @local \id
       @local \body, '' unless @local \body
 
-    body: ~> @editor.val!
+    body: ~> @editor?val!
     save: (to-server=false) ~>
       v = @editor.val!
       unless v is storage.get \sig
