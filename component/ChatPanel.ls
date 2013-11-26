@@ -24,13 +24,22 @@ module.exports =
     show: ->
       hi = $(window).height!
       if @local \virgin
-        @$.find \div:first .css(width: @local \width)
+        @$.css(width: @local \width)
+        @$.find \textarea .css(width: @local \width)
         @local \virgin, false
-      @$.find \div:first .css(height: "#{hi}px")
+      @$.css(height: "#{hi}px")
       @p.show @$
 
     hide: ->
       @p.hide @$
 
     resize: ->
+
+
+    @client-socket-init = (socket) ->
+      socket.on \chat-message, (message, cb) ->
+        # do we have a panel for the conversation this message belongs to?
+        # if not, create one
+        # show the panel
+        # add the message to the chat panel
 

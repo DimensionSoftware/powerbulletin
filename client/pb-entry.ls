@@ -323,13 +323,11 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
   id = "chat-#{$p.data \user-id}"
   chat-panel-exists = $ "\##{id}" .length
   if chat-panel-exists
-    console.log \chat-panel-exists
-    panels.show id
+    panels.select-force id
   else
-    console.log \chat-panel-doesnt-exists
     chat-panel = new ChatPanel locals: { id, icon, to: t, width: 300px, css: { background: '#544', opacity: 0.85 }, p: panels }
     panels.add id, chat-panel
-    panels.show id
+    panels.select-force id
 )
 #}}}
 #{{{ - admin

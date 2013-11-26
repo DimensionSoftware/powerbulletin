@@ -83,7 +83,6 @@ module.exports =
         return selected-panel.exec!
 
       $togglers = @$.find \.panel-togglers
-      console.log \togglers, $togglers
       if @selected is name
         selected-panel.hide!
         @selected = null
@@ -101,19 +100,16 @@ module.exports =
         @selected = name
       @selected
 
-    show: (name) ->
+    select-force: (name) ->
+      console.log name
       selected-panel = @find name
-      if @selected is null
-        selected-panel.show!
-        $togglers .animate { left: -(selected-panel.local \width) }, @delay, @ease-out
-        @selected = name
-      else if @selected != name
+      $togglers = @$.find \.panel-togglers
+      if @selected != name and @selected isnt null
         unselected-panel = @find @selected
         unselected-panel.hide!
-        selected-panel.show!
-        $togglers .animate { left: -(selected-panel.local \width) }, @delay
-        @selected = name
-      @selected
+      selected-panel.show!
+      $togglers .animate { left: -(selected-panel.local \width) }, @delay
+      @selected = name
 
     resize: ->
       if @selected
@@ -121,10 +117,12 @@ module.exports =
         selected-panel.resize!
 
     hide: (sel) ->
+      @@$(sel).add-class \hidden
       @@$(sel).hide(@delay, @ease-in)
 
     show: (sel) ->
       hi = $(window).height!
+      @@$(sel).remove-class \hidden
       @@$(sel).css(height: "#{hi}px").show @delay, @ease-out
 
 # vim:fdm=indent

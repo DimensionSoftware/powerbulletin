@@ -10,45 +10,10 @@ require! {
 
 log = debug 'io-chat-server'
 
-# Redis Keys
-# chats-by-connection:$sid = hash conversation.id => JSON.stringify(conversation)
-
 module.exports = class ChatServer
 
   (@io, @socket, @presence, @site, @user) ->
     @r = redis.create-client!
-
-  chats-by-connection: ~>
-    "chats-by-connection:#{@socket.id}"
-
-  join: (c, cb) ~>
-    log \chat-join, { connection: @socket.id, chat: c.id }
-    c.room = "#{@site.id}/conversations/#{c.id}"
-    err <~ @r.hset @chats-by-connection!, c.id, JSON.stringify(c)
-    if err then return cb err
-    err <~ @presence.enter c.room, @socket.id
-    if err then return cb err
-    @socket.join c.room
-    cb null, c
-
-  leave: (c, cb) ~>
-    log \chat-leave, { connection: @socket.id, chat: c.id }
-    err <~ @r.hdel @chats-by-connection!, c.id
-    if err then return cb err
-    err <~ @presence.leave c.room, @socket.id
-    if err then return cb err
-    @socket.leave c?room
-    cb null, c
-
-  disconnect: (cb=(->)) ~>
-    # leave all user's chats
-    log \chat-disconnect
-    #for c in keys @connections[@socket.id]
-    #  @leave {id:c, room:"#{@site.id}/conversations/#c"}, (->)
-    err, cs-json <~ @r.hvals @chats-by-connection!
-    if err then return cb err
-    cs = cs-json |> map (-> JSON.parse it)
-    async.each cs, ((c, cb) ~> @leave c, cb), cb
 
   message: (message, cb) ~>
     ## if they're not currently online, there should be some way to notify them of new messages when they do get online

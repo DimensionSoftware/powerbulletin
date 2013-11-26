@@ -3,7 +3,7 @@ require, exports, module <- define
 
 require! {
   ch: './client-helpers'
-  Chat: '../component/Chat'
+  ChatPanel: '../component/ChatPanel'
   \./globals
   mutants: \../shared/pb-mutants
 }
@@ -122,7 +122,7 @@ function init-with-socket s
   s.on \debug, (message, cb) ->
     console?log \debug, message
 
-  Chat.client-socket-init s
+  ChatPanel.client-socket-init s
 
 
 # vim:fdm=indent
