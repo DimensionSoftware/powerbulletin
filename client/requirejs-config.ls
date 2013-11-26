@@ -14,7 +14,6 @@ wait-seconds: 30 # give a single module this long to load till timeout
 paths:
   fse                   : "../local/fse"
   jquery                : \../local/jquery-1.10.2.min
-  jquery-cookie         : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.3.1/jquery.cookie.min else \../local/jquery.cookie-1.3.1.min
   jquery-history        : "../local/history.min"
   jquery-html5-uploader : "../local/jquery.html5uploader"
   #jquery-masonry        : \//cdnjs.cloudflare.com/ajax/libs/masonry/3.1.1/masonry.pkgd.min
@@ -39,9 +38,6 @@ shim:
   lodash:
     exports: \_
     init: -> window._
-  jquery-cookie:
-    exports: \jQuery.cookie
-    deps: [\jquery]
   jquery-history:
     exports: \History.Adapter
     deps: [\jquery]
