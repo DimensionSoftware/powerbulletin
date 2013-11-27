@@ -24,7 +24,8 @@ require \jqueryTransit
 require \jqueryUi
 require \./layout
 require \jqueryWaypoints
-{each, filter, reject} = require \prelude-ls
+{partition} = require \prelude-ls
+{throttle}  = require \lodash
 
 # components
 window.router = new SalesRouter
@@ -47,7 +48,9 @@ cur-id      = void # waypoint id of current scrolled-to-section
 # focus events
 $ '#products .onclick-scroll-to' .click -> focus-last!
 #{{{ parallax
-$ window .on \scroll, ->
+last=void
+last-visible=[]
+$ window .on \scroll, throttle (-> # 24fps
   offset  = $ window .scroll-top!
   if offset is 0 then focus-first!
 
@@ -55,24 +58,28 @@ $ window .on \scroll, ->
   if offset < 430px # save cpu for top pieces
     $ \#imagine .css {y:"#{0+(offset*0.8)}px"}
 
-  # move background images in view
-  const all = <[.first .second .third .fourth .fifth]>
-  # <optimization> -- save work on invisible sections
-  cur = switch cur-id # given cur-id, these must be visible:
-  | \features   => <[.first .second]>
-  | \navigation => <[.first .second .third]>
-  | \responsive => all
-  | \realtime   => <[.second .third .fourth .fifth]>
-  | \products   => <[.third .fourth .fifth]>
-  | \support    => <[.third .fourth .fifth]>
-  if cur
-    for e in all
-      if e in cur # visible, so-- move into place & show
-        dy = -($ e .offset!?top)
-        $ "#e .bg" .css \y, "#{0+((dy+offset)*0.6)}px"
-        $ e .add-class \visible
-      else # invisible
-        $ e .remove-class \visible
+  if offset > 40px
+    # move background images in view
+    const all = <[.first .second .third .fifth]>
+    # <optimization> -- save work on invisible sections
+    if cur-id
+      if last isnt cur-id # new section in view, so-- show & hide
+        cur = switch cur-id # given cur-id, these must be visible:
+        | \features   => <[.first .second]>
+        | \navigation => <[.first .second .third]>
+        | \responsive => all
+        | \realtime   => <[.second .third .fifth]>
+        | \products   => <[.third .fifth]>
+        | \support    => <[.third .fifth]>
+        [visible, hide] = partition (-> it in cur), all
+        for h in hide then $ h .remove-class \visible # hide these
+        for v in visible then $ v .add-class \visible # show these
+        last         := cur-id
+        last-visible := visible
+      else # same section, so parallax visible sections!
+        for v in last-visible
+          dy = -($ v .offset!?top)
+          $ "#v .bg" .css \y, "#{0+((dy+offset)*0.6)}px"), 41ms
 #}}}
 #{{{ waypoints
 fn = (direction) ->
