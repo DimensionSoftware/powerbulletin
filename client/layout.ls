@@ -248,6 +248,7 @@ Auth.after-login = ->
 
 # logout
 window.logout = ->
+  storage.del \user
   window.location = \/auth/logout; false # for intelligent redirect
 $d.on \click \.onclick-logout -> window.logout!; false
 $d.on \click \.require-login, Auth.require-login(-> this.click)
