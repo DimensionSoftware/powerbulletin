@@ -3,15 +3,6 @@ require, exports, module <- define
 
 require! $R:reactivejs
 
-#{{{ setup reactive user before layout kicks off
-window.r-user = $R((user) ->
-  if user
-    component.sales.login user
-  else
-    component.sales.logout!
-)
-#}}}
-
 require! {
   \../component/Sales
   \../component/SalesRouter
@@ -22,7 +13,6 @@ require! {
 require \jqueryHistory
 require \jqueryTransit
 require \jqueryUi
-require \./layout
 require \jqueryWaypoints
 {partition} = require \prelude-ls
 {throttle}  = require \lodash
@@ -102,5 +92,13 @@ $ 'nav a' .on \click ->
 
 set-timeout (-> $ \.shown .not(\#support).remove-class \shown), 600ms # reset if had to scroll-to-top
 #}}}
-
+#{{{ setup reactive user before layout kicks off
+window.r-user = $R((user) ->
+  if user
+    component.sales.login user
+  else
+    component.sales.logout!
+)
+#}}}
+<- require [\./layout]
 # vim:fdm=marker
