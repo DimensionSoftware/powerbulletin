@@ -70,9 +70,9 @@ $ window .on \scroll, ->
       if e in cur # visible, so-- move into place & show
         dy = -($ e .offset!?top)
         $ "#e .bg" .css \y, "#{0+((dy+offset)*0.6)}px"
-        $ e .attr \visibility, \visible
+        $ e .add-class \visible
       else # invisible
-        $ e .attr \visibility, \hidden
+        $ e .remove-class \visible
 #}}}
 #{{{ waypoints
 fn = (direction) ->

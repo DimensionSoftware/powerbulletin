@@ -3,7 +3,7 @@ blend = rgba(0,0,0,.5)
 //{{{ Sales is a site component that owns <body> and it can define initial style:
 body
   margin 0
-  height 5700px
+  height 4820px
   position relative
   .body-bg
     position fixed
@@ -11,6 +11,7 @@ body
     left 0
     right 0
     bottom 0
+    z-index 1
     &::before
       background-image radial-gradient(ellipse closest-corner at 45% 50%, rgba(0,0,0,.5) 70%, rgba(0,0,0,.6) 100%)
       content ''
@@ -265,6 +266,7 @@ body.scrolled
     font-weight bold
     color #fff
     margin-top 155px
+    z-index 2
     ul
       font-size .55em
       color #eee
@@ -282,6 +284,7 @@ body.scrolled
   #register_top
     margin-top -60px
     opacity 0
+    z-index 2
   #register_top.show
     transform translateX(25px)
     opacity 1
@@ -295,6 +298,7 @@ body.scrolled
     margin 40px auto 0 auto
     font-size 1.15em
     width 370px
+    z-index 2
     animation-name none
     span
       padding 0 3px
@@ -403,12 +407,26 @@ body.scrolled
         opacity 0
         background rgba(255,255,255,.2)
         font-size .8em
+  .container.visible
+    visibility visible
+    &:after
+      display block
   .container
     position relative
     height 600px
     //height 1150px
     width 100%
     overflow hidden
+    visibility hidden
+    &:after
+      content ''
+      position absolute
+      top 0
+      right 0
+      bottom 0
+      left 0
+      background rgba(0,0,0,.4)
+      display none
     img.bg
       position absolute
       left 0
@@ -423,7 +441,8 @@ body.scrolled
     border-top 1px solid #777
   section#support.feature
     background-image none
-    box-shadow 0
+    box-shadow none
+    border none
     article
       transform translateX(-120px)
       h4
@@ -486,7 +505,7 @@ body.scrolled
   section
     position relative
     background-color #fff
-    z-index 2
+    //z-index 2
     display block
     top 0
     left 0
