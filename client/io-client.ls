@@ -9,6 +9,7 @@ require! {
 }
 
 {render-and-append} = require \../shared/shared-helpers
+{lazy-load-socketio, set-online-user, storage} = require \./client-helpers
 
 ####  main  ;,.. ___  _
 init = -> # export socket to window + init
@@ -16,10 +17,10 @@ init = -> # export socket to window + init
     init-with-socket sock
   sock
 main = ->
-  <- ch.lazy-load-socketio # first try
+  <- lazy-load-socketio # first try
   unless init!
     set-timeout (-> # static crashed or otherwise 50x'd--try again:
-      <- ch.lazy-load-socketio
+      <- lazy-load-socketio
       init!) 3000ms
 main!
 
@@ -36,7 +37,7 @@ function init-with-socket s
 
   s.on \enter-site, (message, cb) ->
     #console.warn \enter-site, message
-    ch.set-online-user message?id
+    set-online-user message?id
 
   s.on \leave-site, (message, cb) ->
     #console.warn \leave-site, message
@@ -112,6 +113,9 @@ function init-with-socket s
     $ \#breadcrumb .slide-down 300ms
 
   # <profile-related updates>
+  s.on \set-user, (user) ->
+    storage.set \user, window.user = user           # local storage
+    if window.r-user then window.r-user window.user # react
   s.on \new-profile-title, (user) ->
     $ "[data-user-id=#{user.id}] .user-title" .html user.title
   s.on \new-profile-photo, (user) -> # TODO smoothly load image
@@ -123,6 +127,5 @@ function init-with-socket s
     console?log \debug, message
 
   ChatPanel.client-socket-init s
-
 
 # vim:fdm=indent

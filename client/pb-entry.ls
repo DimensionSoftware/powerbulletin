@@ -18,7 +18,6 @@ require! {
 #XXX : more legacy, assumed to be globally present always, should be
 # refactored so that each jquery plugin is only required where needed
 # in the future... as opposed to using global-ness
-require \jqueryCookie
 require \jqueryHistory
 require \jqueryMasonry
 require \jqueryTransit
@@ -28,7 +27,7 @@ require \raf
 
 require \layout
 
-{set-imgs, align-ui, ck-submit-form, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
+{storage, set-imgs, align-ui, ck-submit-form, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
 {render-and-append, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
@@ -57,20 +56,20 @@ left-offset = 50px
 #{{{ UI Interactions
 # ui save state
 sep = \-
-window.save-ui = -> # serialize ui state to cookie
+window.save-ui = -> # serialize ui state to local storage
   min-width = 200px
   w = $ \#left_content .width!
-  s = $.cookie \s
+  s = storage.get \s
   if s then [_, _, prev] = s.split sep
   w = if w > min-width then w else prev or min-width # default
   vals =
     if $ \body .has-class(\collapsed) then 1 else 0
     w
-  $.cookie \s, vals.join(sep),
+  storage.set \s, vals.join(sep),
     path:   \/
     secure: true
-window.load-ui = -> # restore ui state from cookie
-  s  = $.cookie \s
+window.load-ui = -> # restore ui state from local storage
+  s  = storage.get \s
   $l = $ \#left_content
 
   if s # restore
