@@ -42,6 +42,21 @@ body.waiting
 .hidden
   display none
 
+//{{{  Background of entire window
+#forum_background_buffer
+  opacity 0
+  z-index 1
+#forum_background_color, #forum_background_buffer, #forum_background
+  position fixed
+  top -12px
+  right -40px
+  bottom -12px
+  left -40px
+  img
+    width 100%
+    min-height 100%
+//}}}
+
 //{{{ Header
 // TODO move this into app/stylus/pb.styl & re-create everything in css (after/before pseudo for text)
 .logo
@@ -554,6 +569,7 @@ body.collapsed
     left 0!important
 //}}}
 
+// homepage
 //{{{ Background layer
 img.bg
   position fixed
@@ -571,7 +587,6 @@ img.bg.active
   //opacity 1
   //display block
 //}}}
-
 //{{{ Masonry
 .masonry, .masonry .masonry-brick
   transition-duration 0.1s

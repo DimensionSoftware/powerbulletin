@@ -105,6 +105,8 @@ set-background-static = (w, cache-url, background) ->
     w.$ \body .prepend (img \forum_background_buffer)
   else if background # first, so add
     w.$ \body .prepend (img \forum_background)
+  else # use solid background color
+    w.$ \body .prepend '<div id="forum_background_color">'
   if w.marshal then w.marshal \background, (background or void)
 
 layout-static = (w, next-mutant, active-forum-id=-1) ->
