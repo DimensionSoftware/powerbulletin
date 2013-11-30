@@ -3,8 +3,15 @@
 
 // XXX default theme containing all color decoration & embellishments
 
-tint-color = rgba(255,255,255,0.9)
-footer-height = 25px
+// tint color is placed over the background among other images (translucent)
+tint_color         = rgba(240,240,240,0.9)
+// overlay is tint applied to the header & footer while scrolled
+overlay_tint_color = rgba(255,255,255,0.9)
+// these are the overlay colors for the most important - least important blocks of elements (opaque)
+overlay_color_primary   = #fff
+overlay_color_secondary = #fafafa
+
+footer_height = 25px
 
 body
   font-family 'Source Sans Pro', 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue', sans-serif
@@ -73,8 +80,9 @@ header
   border-top 1px solid #aaa
   border-bottom 1px solid rgba(180,180,180,0.15)
   color #555
+  background overlay_color_secondary
   &.expanded
-    background-color tint-color
+    background-color overlay_tint_color
   .container
     .search
       .icon
@@ -96,7 +104,7 @@ header
         font-size 1.15em
         height 20px
         &:focus
-          background-color tint-color
+          background-color overlay_color_primary
           margin-top -1px
           height 21px
           text-indent 13px
@@ -120,29 +128,30 @@ header
     .tools
       .bubble, .bubble2
         box-shadow 1px 1px 3px light
-        background-color tint-color
+        background-color overlay_color_primary
       .bubble
         box-shadow 1px 1px 2px light
       &::before
         background-color light
       .container
         menu
-          background-color tint-color
+          background-color overlay_color_primary
           box-shadow 1px 1px 4px light
 //}}}
 //{{{ Left side
-#left_content:hover::after
-  width 1px
-  background-color #fafafa
-#left_content::after
-  position absolute
-  right 0
-  top 1px
-  content ''
-  bottom 0
-  background-color #f7f7f7
-  width 1px
 #left_content
+  background-color overlay_color_primary
+  &:hover::after
+    width 1px
+    background-color #fafafa
+  &::after
+    position absolute
+    right 0
+    top 1px
+    content ''
+    bottom 0
+    background-color #f7f7f7
+    width 1px
   .handle
     transition all .2s ease-out
     background-color #ddd
@@ -163,13 +172,13 @@ header
     letter-spacing -1px
     font-size 1.1em
     margin (grid / 2) 0
-  #paginator:hover
-    border-right 1px solid #bbb
   #paginator
     border-right 1px solid #ddd
     background-color rgba(200,200,200,0.1)
     border-top 2px solid #ccc
     border-bottom 1px solid #ccc
+    &:hover
+      border-right 1px solid #bbb
     .current:hover
       border-left 1px solid #ccc
       border-top 1px solid #ccc
@@ -203,7 +212,7 @@ header
     text-decoration none
 
   #breadcrumb
-    background-color tint-color
+    background-color overlay_color_secondary
     border-bottom 1px solid #ddd
     border-right 1px solid #ddd
     border-left 1px solid #ddd
@@ -276,7 +285,7 @@ footer
 //{{{ Scrolled <body>
 body.scrolled
   header
-    background-color tint-color
+    background-color overlay_tint_color
     box-shadow 0 -1px 12px 2px #eee
     border-bottom 1px solid #fff
     height -2px
@@ -303,9 +312,9 @@ body.scrolled
         .query:-ms-input-placeholder
             color #bbb
   #left_content::after
-    bottom (footer-height - 4)
+    bottom (footer_height - 4)
   footer
-    background-image linear-gradient(to top, tint-color 26px, rgba(255,255,255,.35))
+    background-image linear-gradient(to top, overlay_tint_color 26px, rgba(255,255,255,.35))
     &:hover
       box-shadow 0 0 4px 0 light
       background-image linear-gradient(to top, #f7f7f7 10px, rgba(255,255,255,1))

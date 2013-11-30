@@ -4,12 +4,12 @@
 // XXX eventually each forum will have its own theme.{styl,css}
 bounce = cubic-bezier(0,1.72,0,.75)
 
-header-height           = 100px
-header-scrolled-height  = 35px
+header_height           = 100px
+header_scrolled_height  = 35px
 
-forum-header-height = 0
-footer-height       = 36px
-left-content-width  = 310px
+forum-header_height = 0
+footer_height       = 36px
+left_content_width  = 310px
 
 section
   box-sizing border-box
@@ -73,7 +73,7 @@ body.waiting
       padding-left 3px
 header
   position fixed
-  height header-height
+  height header_height
   top 0
   z-index 10
   .container
@@ -228,9 +228,9 @@ body.paginator
   position fixed
   left 0
   bottom 0
-  top (header-height+2)
+  top (header_height+2)
   height auto
-  width left-content-width
+  width left_content_width
   z-index 8
   padding-top (grid*2)
   .photo
@@ -243,7 +243,7 @@ body.paginator
     height 32px
     width 32px
     margin-top 9px
-    top (header-height-20)
+    top (header_height-20)
     right -17px
     cursor pointer
     position absolute
@@ -290,7 +290,7 @@ body.paginator
     a.page
       display block
       position absolute
-      height footer-height + (grid * 2)
+      height footer_height + (grid * 2)
       width 12px
     a.page.previous
       top 0
@@ -368,8 +368,8 @@ body.paginator
 
 .main-content
   grid(100%, 800px)
-  padding forum-header-height 0 0 0
-  padding-top (header-height+(grid*2))
+  padding forum-header_height 0 0 0
+  padding-top (header_height+(grid*2))
   z-index 5
   .breadcrumb
     position fixed
@@ -387,7 +387,7 @@ body.paginator
       padding-right (grid/2)
       margin-right 3px
   .resizable
-    padding-left (left-content-width+(grid*3))
+    padding-left (left_content_width+(grid*3))
   .onclick-scroll-top
     clear both
 //}}}
@@ -404,7 +404,7 @@ footer
   position fixed
   right 0
   //left 0
-  // bottom -(footer-height)
+  // bottom -(footer_height)
   bottom -(grid)
   height 0
   opacity 0
@@ -474,7 +474,7 @@ body.scrolled
       transition all .1s ease-out
       padding-top 4px
   header
-    height header-scrolled-height
+    height header_scrolled_height
     .container
       .tools
         top 15px
@@ -513,7 +513,7 @@ body.scrolled
         right -85px
         transition all .2s bounce
   #left_content
-    top (header-scrolled-height+5)
+    top (header_scrolled_height+5)
     padding-top (grid * 1.5)
     transition padding-top .3s ease-out, top .2s ease-out!important
     .handle
@@ -525,11 +525,11 @@ body.scrolled
         bottom 10px
   .main-content
     .breadcrumb
-      top (header-scrolled-height+2)
+      top (header_scrolled_height+2)
       transition top .2s ease-out
   footer
     opacity 1
-    height footer-height
+    height footer_height
     transition height .1s ease-out
 //}}}
 //{{{ Collapsed left nav
