@@ -265,7 +265,7 @@ body.paginator
     text-align center
     cursor pointer
     z-index 95
-    &::before
+    &::after, &::before
       position absolute
       content ''
       border-bottom 8px solid transparent
@@ -275,6 +275,8 @@ body.paginator
       width 0
       top 8px
       left -1px
+    &:before
+      left -2px
     &:hover
       right -15px
       transition right .1s ease-out
@@ -552,13 +554,16 @@ body.collapsed
   #left_content
     width 0!important
     transition width .1s
-    .handle::before
-      transform rotate(180deg)
-      top 8px
-      left 14px
-      transition all .2s ease-out
     .handle
       right -25px
+      &::before, &::after
+        transform rotate(180deg)
+        top 8px
+        left 14px
+        transition all .2s ease-out
+      &::after
+        top 7px
+        left 15px
     .create a
       display none!important
   .main-content

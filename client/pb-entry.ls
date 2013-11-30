@@ -295,6 +295,7 @@ $d.on \click \#handle ->
   $ '#main_content .resizable'
     .css(\padding-left, ($l.width! + w? + left-offset))
   save-ui!
+  set-wide!
 #}}}
 
 # {{{ Mocha testing harness

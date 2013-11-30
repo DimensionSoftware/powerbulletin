@@ -144,16 +144,22 @@ header
     background radial-gradient(circle closest-corner at 45% 35%, #e0e0e0 40%, #bbb 100%)
     border 1px solid #ddd
     color #888
-    &:hover::before
-      border-right 12px solid #fff
-      left -3px
-    &::before
+    &::after
       border-right 10px solid #fff
+      transition all .1s ease-out
+    &::before
+      border-right 12px solid #aaa
       transition all .1s ease-out
     &:hover
       background-color #ddd
       background radial-gradient(circle closest-corner at 45% 35%, #e0e0e0 40%, #a0a0a0 100%)
       color #444
+      &::before
+        border-right 14px solid #999
+        left -4px
+      &::after
+        border-right 12px solid #fff
+        left -3px
   .title
     letter-spacing -1px
     font-size 1.1em
