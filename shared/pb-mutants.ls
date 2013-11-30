@@ -80,6 +80,7 @@ function default-pnum-to-href-fun uri
 set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
   bg = w.$ \#forum_background
   bf = w.$ \#forum_background_buffer
+  bc = w.$ \#forum_background_color
   if background and bg.length and bf.length      # double-buffer replace!
     cur = bg.find \img .attr \src                # current visible background
     unless cur?match new RegExp "#{background}$" # bail if same ass passed in
@@ -92,9 +93,11 @@ set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
             bg.remove!
             bf.attr \id, \forum_background
             cb!
+    bc.remove!
   else if background # set bg
     ch.set-imgs!
-  else if bg.length # no background passed in, so--reap both!
+    bc.remove!
+  else if bg.length # no background passed in, so--reap bg & buffer!
     bf.remove!
     bg.remove!
 set-background-static = (w, cache-url, background) ->
