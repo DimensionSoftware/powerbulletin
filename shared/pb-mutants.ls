@@ -95,9 +95,9 @@ set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
             cb!
     bc.remove!
   else if background # set bg
-    ch.set-imgs!
     bc.remove!
-  else if bg.length # no background passed in, so--reap bg & buffer!
+    ch.set-imgs!
+  else if bg.length # no background passed in, so--reap bg + buffer & use color!
     bf.remove!
     bg.remove!
 set-background-static = (w, cache-url, background) ->
@@ -109,7 +109,8 @@ set-background-static = (w, cache-url, background) ->
   else if background # first, so add
     w.$ \body .prepend (img \forum_background)
   else # use solid background color
-    w.$ \body .prepend '<div id="forum_background_color">'
+    unless w.$ \#forum_background_color .length # no dups
+      w.$ \body .prepend '<div id="forum_background_color"></div>'
   if w.marshal then w.marshal \background, (background or void)
 
 layout-static = (w, next-mutant, active-forum-id=-1) ->
