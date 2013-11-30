@@ -61,8 +61,8 @@ window.save-ui = -> # serialize ui state to local storage
   min-width = 200px
   w = $ \#left_content .width!
   s = storage.get \s
-  if s then [_, _, prev] = s.split sep
-  w = if w > min-width then w else prev or min-width # default
+  if s then [_, last] = s.split sep
+  w = if w > min-width then w else last or min-width # default
   vals =
     if $ \body .has-class(\collapsed) then 1 else 0
     w
@@ -288,10 +288,12 @@ $d.on \click 'header .onclick-close' (e) ->
   History.back!
 #{{{ - left_nav handle
 $d.on \click \#handle ->
+  s  = storage.get \s
   $l = $ \#left_content
+  if s then [collapsed, w] = s.split sep
   $ \body .toggle-class \collapsed
   $ '#main_content .resizable'
-    .css(\padding-left, ($l.width! + left-offset))
+    .css(\padding-left, ($l.width! + w? + left-offset))
   save-ui!
 #}}}
 
