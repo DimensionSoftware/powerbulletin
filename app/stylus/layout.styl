@@ -70,11 +70,10 @@ body.waiting
     padding-left 35px
     padding-top 4px
     vertical-align top
-    font-size .75em
+    font-size .65em
     text-decoration none
     font-weight 200
-    letter-spacing -1px
-    font-style normal
+    font-style italic
     position fixed
     top 17px
     left 35px
@@ -82,8 +81,9 @@ body.waiting
     z-index 10
     strong
       color #555
+      font-size 1.1em
       letter-spacing -1px
-      font-style italic
+      font-style normal
       font-weight 600
       padding-left 3px
 header
@@ -393,8 +393,8 @@ body.paginator
     top -100px
     text-align center
     z-index 100
-    border-bottom-left-radius 3px
-    border-bottom-right-radius 3px
+    border-bottom-left-radius 10px
+    border-bottom-right-radius 10px
     padding (grid/2+2) (grid*2.5) 3px (grid*2.5)
     font-size .9em
     margin-bottom (grid/2)
@@ -487,7 +487,7 @@ body.scrolled
   .logo
     a
       top 3px
-      font-size .62em
+      font-size .6em
       transition all .1s ease-out
       padding-top 4px
   header
@@ -530,9 +530,9 @@ body.scrolled
         right -85px
         transition all .2s bounce
   #left_content
-    top (header_scrolled_height+5)
+    top (header_scrolled_height+3)
     padding-top (grid * 1.5)
-    transition padding-top .3s ease-out, top .2s ease-out!important
+    transition padding-top .4s ease-out, top .1s ease-out!important
     .handle
       transition top .2s ease-out
     #paginator
@@ -543,7 +543,7 @@ body.scrolled
   .main-content
     .breadcrumb
       top (header_scrolled_height+2)
-      transition top .2s ease-out
+      transition top .25s ease-out
   footer
     opacity 1
     height footer_height
@@ -556,6 +556,10 @@ body.collapsed
     transition width .1s
     .handle
       right -25px
+      background-color #bbb
+      background radial-gradient(circle closest-corner at 45% 35%, #d0d0d0 40%, #999 100%)
+      border 1px solid #888
+      box-shadow 0 0 3px 1px light
       &::before, &::after
         transform rotate(180deg)
         top 8px

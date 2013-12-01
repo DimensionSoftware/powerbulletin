@@ -4,7 +4,7 @@
 // XXX default theme containing all color decoration & embellishments
 
 // tint color is placed over the background among other images (translucent)
-tint_color         = rgba(240,240,240,0.9)
+tint_color         = rgba(240,240,240,0.85)
 // overlay is tint applied to the header & footer while scrolled
 overlay_tint_color = rgba(255,255,255,0.9)
 // these are the overlay colors for the most important - least important blocks of elements (opaque)
@@ -64,7 +64,6 @@ a
 //{{{ Header
 header
   border-top 1px solid #aaa
-  border-bottom 1px solid rgba(180,180,180,0.15)
   color #555
   background overlay_color_secondary
   &.expanded
@@ -205,14 +204,14 @@ header
 
   #breadcrumb
     background-color overlay_color_secondary
-    border-bottom 1px solid #ddd
-    border-right 1px solid #ddd
-    border-left 1px solid #ddd
-    box-shadow 0 1px 0px 0px #aaa
+    border-bottom 1px solid #eee
+    border-right 1px solid #eee
+    border-left 1px solid #eee
+    box-shadow 0 1px 0 0 #eee
     font-style italic
-    color #ddd
+    color #e9e9e9
     a, em
-      color #666
+      color #888
 
   a.page
     color #eee
@@ -272,6 +271,8 @@ footer
     letter-spacing 3px
     margin 0
     font-weight 100
+    b
+      color #999
 //}}}
 
 //{{{ Scrolled <body>
@@ -283,7 +284,6 @@ body.scrolled
     height -2px
     transition height .1s ease-out
     &::after
-      border-bottom 1px solid #ddd
       box-shadow 0 2px 6px 0px #ddd
       bottom -1px
       left 0
@@ -306,7 +306,7 @@ body.scrolled
   #left_content::after
     bottom (footer_height - 4)
   footer
-    background-image linear-gradient(to top, overlay_tint_color 26px, rgba(255,255,255,.35))
+    background-image linear-gradient(to top, overlay_tint_color 96%, rgba(255,255,255,.35))
     &:hover
       box-shadow 0 0 4px 0 light
       background-image linear-gradient(to top, #f7f7f7 10px, rgba(255,255,255,1))
