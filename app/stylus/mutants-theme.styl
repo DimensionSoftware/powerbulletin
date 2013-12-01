@@ -92,14 +92,13 @@ html.forum, html.profile, html.search, html.moderation
               transition none
               z-index 2
               border-left 5px solid light
-          p.body::after
-            border-bottom 1px solid rgba(0,0,0,.1)
-        .username
-          font-weight 500
-          color dark_text
-          text-transform capitalize
-        p.body
-          position relative
+        .profile-container
+          .username
+            font-weight 500
+            color dark_text
+            text-transform capitalize
+        .container
+          background-color #fff
           &::after
             content ''
             position absolute
@@ -108,7 +107,8 @@ html.forum, html.profile, html.search, html.moderation
             bottom 0
             height 0
             box-shadow 0 0 10px 1px tint-color
-            border-bottom 1px solid rgba(0,0,0,.06)
+          .body
+            position relative
         .post-edit
           .summary::before
             border-left 4px solid #ccc
@@ -126,17 +126,8 @@ html.forum, html.profile, html.search, html.moderation
       // 2nd children and thereafter are comments
       .children
         .children
-          p.body, .user span
+          .body
             color #666
-          .container
-            max-width 450px
-          .container, .actions
-            margin-left 52px
-          .username
-            color #444
-          .user
-            .profile.photo
-              position absolute
           .post-content, .cke_editable
             p
               color #444
@@ -201,8 +192,6 @@ html.forum, html.profile, html.search, html.moderation
           border-top 1px solid transparent
         &:first-child:hover
           border-top 1px solid rgba(250,250,250,.2)
-        &:hover::after
-          border-bottom 1px solid rgba(0,0,0,.2)
         &:hover
           background-color rgba(255,255,255,.2)
           .created

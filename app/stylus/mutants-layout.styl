@@ -212,9 +212,6 @@ html.forum, html.profile, html.search, html.moderation
         position absolute
         right 0
         bottom -30px
-      .post:hover
-        position relative
-        z-index 4
       #post_new
         display none
       #cke_post_new
@@ -236,13 +233,14 @@ html.forum, html.profile, html.search, html.moderation
           opacity 1
           transition none
       .reply
-        margin-left 20px
+        margin-left 172px
         width 405px
         .fadein
           margin-top 8px
         .post-edit form
           clear both
           vertical-align top
+          margin -20px 0 30px 0
           .close
             right -9px
             top -10px
@@ -336,63 +334,96 @@ html.forum, html.profile, html.search, html.moderation
           border-bottom 1px solid rgba(0,0,0,.15)
         .post-reply
           position absolute
-          right 50px
-          top 16px
+          right 69px
+          top 35px
           left auto
           font-size .9em
+          color dark_text
       .post
         position relative
         clear both
         margin-right (grid*4)
         padding-top (grid*2)
+        margin-bottom (grid*2)
+        &:hover
+          position relative
+          z-index 4
+          .actions
+            opacity 1
+            transition opacity .3s
         &:first-child
           padding-top (grid*1.5)
         .breadcrumb
           margin-bottom (grid*2)
           span, em
             display none
-        .profile
-          width 80px
-          height 80px
-          margin-bottom (grid)
-        img
-          max-width 100%
-        .title
-          margin 0 0 15px -1px
-          font-size 1.5em
-          color #444
-        .user
-          font-weight bold
+        .profile-container
+          position absolute
+          width 150px
+          text-align right
+          .user-title
+            text-transform capitalize
+          .user
+            clear both
+            font-weight bold
+            position relative
+            .profile
+              width 80px
+              height 80px
+              margin-bottom (grid)
+              margin-right -5px
+              float right
+              img
+                max-width 100%
+            .username
+              clear both
+              display block
+          .date
+            clear both
+            font-size .8em
+            color #aaa
+            font-style italic
+            padding-left 13px
+            display block
+            text-indent 1px
+            margin-top -1px
+            b
+              color #888
+        .container
           position relative
+          margin-left 183px
+          margin-bottom 35px
+          padding 23px 30px 30px 35px
+          border-bottom-right-radius 20px
+          border-bottom-left-radius 20px
+          border-top-right-radius 20px
+          .s-chat-bubble
+            position absolute
+            top 0
+            left -34px
+          .title
+            margin 0 0 15px -1px
+            padding-bottom 15px
+            font-size 1.5em
+            color #444
+            border-bottom 1px solid #eee
+            text-transform capitalize
+          textarea.body
+            font-size 1.1em
+          .body
+            color #444
+            line-height 1.5em
+            clear both
+            font-size 1.05em
         .title, .user
           font-weight 400
           text-transform capitalize
-        textarea.body
-          font-size 1.1em
-        .date
-          font-size .9em
-          color #aaa
-          font-style italic
-          padding-left 13px
-          display block
-          text-indent 1px
-          margin-top -1px
-        p.body
-          color #444
-          line-height 1.5em
-          margin 0 0 12px -14px
-          border-bottom-right-radius 20px
-          border-bottom-left-radius 20px
-          padding 0 15px 25px 15px
-          clear both
-          font-size 1.05em
         .actions
           opacity 0
-          clear both
-          margin-top -25px
-          margin-bottom 2px
-          line-height 15px
-          margin-left -2px
+          position absolute
+          left 197px
+          bottom -22px
+          z-index 9
           a
             font-size .9em
             font-weight 400
@@ -404,22 +435,16 @@ html.forum, html.profile, html.search, html.moderation
             display none
       .page-loaded:last-child, #listview div[data-infinity-pageid]
         padding-bottom (grid*4) !important
-      .post:hover
-        .actions
-          opacity 1
-          //letter-spacing 0
-          transition opacity .3s
       .children
         font-size .95em
-        .profile.photo
-          width 55px
-          height 55px
+        .profile-container .user
+          .profile.photo
+            width 60px
+            height 60px
+        .container
+          min-height 90px
         .children
-          margin-left (grid*6)
-          .body
-            line-height 20px
-            margin 3px 0 11px -14px
-            padding-bottom 25px
+          margin-left (grid*3.5)
           .post-edit
             .summary
               position relative
@@ -449,23 +474,39 @@ html.forum, html.profile, html.search, html.moderation
             margin-left -28px
           .post
             padding-top 0
+            .container, .actions
+              margin-left 38px
+            .container
+              min-height 48px
+              margin-left 222px
+              padding 25px 37px 0 37px
+              .post-content
+                .body
+                  line-height 20px
+                  margin 0
+                  padding-bottom 20px
             .button
               bottom 19px
-            .user, .date
-              display inline
-              font-size .92em
-            .user
-              font-weight bold
-            .user-title
-              display none
-            .date
-              margin-left 7px
-              font-size .85em
-              padding-left 0
-              padding-right (grid*2.5)
-            .profile
-              width 45px
-              height 45px
+            .profile-container
+              margin 0
+              .user, .date
+                display inline
+                font-size .92em
+              .user
+                .profile.photo
+                  position absolute
+                  font-weight bold
+                .username
+                  margin 10px 12px 0 0!important
+              .user-title
+                display none
+              .date
+                margin 7px -36px 0 0
+                display block
+                font-size .85em
+              .profile
+                width 35px
+                height 35px
 //}}}
 //{{{ - profile
 html.profile
@@ -509,6 +550,7 @@ html.profile
     .change-title
       display none
       width 100%
+      margin-left 2px
       padding 8px 4px
       max-width max_width
     .container
@@ -576,7 +618,7 @@ html.profile
             span
               font-weight 300
       .heading
-        margin grid 0 0 0
+        margin grid 0 grid 0
         padding 0
         font-size 1em
         color #000
@@ -878,9 +920,10 @@ html.forum
     display none
     cursor pointer
     position absolute
+    z-index 9
     padding-right 20px
     left 12px
-    top 3px
+    top 4px
     color #666
     background-color #bbb
     background-image linear-gradient(to bottom, light 0px, light 100%)
@@ -888,10 +931,10 @@ html.forum
     border-radius 30px
     width 5px
     height 24px
+    color dark_text
     .s-reply
       opacity .9
     &:hover
-      color #333
       .s-reply
         opacity 1
     &::after

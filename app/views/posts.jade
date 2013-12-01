@@ -15,22 +15,27 @@ if typeof(post) !== 'undefined'
       .post.head(id="post_#{post.id}", class=post.reason ? 'censored' : '', data-user-id=post.user_id, data-post-id=post.id)
         .onclick-footer-toggle.post-reply
           .s-reply
-        h3.title= post.title
-        a.user.mutant(href="/user/#{post.user_name}")
-          .profile.photo
-            img(src="#{cacheUrl}/#{post.user_photo}")
-          span.username=post.user_name
-        .user-title=post.alias_config.title
-        if post.user_last_activity
-          //- rely on client to out human-friendly time
-          .date Last Active 
-            span(data-time=post.user_last_activity)
-        .date Posted 
-          span(data-time=post.created_iso, title=post.created_friendly)!= post.created_human
+        .profile-container
+          a.user.mutant(href="/user/#{post.user_name}")
+            .profile.photo
+              img(src="#{cacheUrl}/#{post.user_photo}")
+            span.username=post.user_name
+          .user-title=post.alias_config.title
+          if post.user_last_activity
+            //- rely on client to out human-friendly time
+            .date Last Active 
+              span(data-time=post.user_last_activity)
+          .date Posted 
+            span(data-time=post.created_iso, title=post.created_friendly)!= post.created_human
         .edit-container
-        if post.html
-          p.body!= post.html
+        .container
+          .s-chat-bubble
+          .post-content
+            h2.title= post.title
+            if post.html
+              .body!= post.html
         .reply
+        //- actions for top-level posts are different from children's post-actions partial
         .actions
           a.onclick-footer-toggle(title='Reply')
             .s-reply.onclick-footer-toggle
