@@ -216,11 +216,30 @@ html.forum, html.profile, html.search, html.moderation
           width 0
           bottom -1px
           content ''
+        .arrow
+          position fixed
+          content ''
+          right -51px
+          top 0
+          z-index 1
+          &:after
+            position absolute
+            content ''
+            right -42px
+            top -42px
+            z-index 2
       .thread.active
-        &::after
-          height 0
-          border none
-        &::before
+        .arrow
+          border 43px solid transparent
+          border-left 12px solid light
+          right -55px
+          transition right .1s ease-out
+          &:after
+            border 42px solid transparent
+            border-left 12px solid #fff
+            right -41px
+            transition right .05s ease-out
+        &:before
           background-image linear-gradient(to top, dark 10%, light 100%)
           width 5px
       .thread.active:last-child, .thread.active
