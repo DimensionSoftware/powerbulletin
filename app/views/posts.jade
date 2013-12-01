@@ -2,6 +2,11 @@ include _post
 include _post-actions
 include _breadcrumb
 
+//- breadcrumb for posts
+if typeof(post) !== 'undefined'
+  #breadcrumb.breadcrumb
+    mixin _breadcrumb(post)
+
 //- posts tree
 if typeof(post) !== 'undefined'
   - if (!post.user_photo) post.user_photo = cacheUrl + 'images/profile.jpg'
@@ -47,10 +52,6 @@ if typeof(post) !== 'undefined'
     .bottom
 else //- placeholder
   .forum.resizable
-
-if typeof(post) !== 'undefined'
-  #breadcrumb.breadcrumb
-    mixin _breadcrumb(post)
 
 
 //- vim:fdm=marker
