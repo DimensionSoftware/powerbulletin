@@ -40,7 +40,7 @@ $ '#products .onclick-scroll-to' .click -> focus-last!
 #{{{ parallax
 last=void
 last-visible=[]
-$ window .on \scroll, throttle (-> # 24fps
+$ window .on \scroll, (-> # 24fps
   offset  = $ window .scroll-top!
   if offset is 0 then focus-first!
 
@@ -69,7 +69,7 @@ $ window .on \scroll, throttle (-> # 24fps
       else # same section, so parallax visible sections!
         for v in last-visible
           dy = -($ v .offset!?top)
-          $ "#v .bg" .css \y, "#{0+((dy+offset)*0.6)}px"), 41ms
+          $ "#v .bg" .css \y, "#{0+((dy+offset)*0.6)}px")
 #}}}
 #{{{ waypoints
 fn = (direction) ->
