@@ -5,7 +5,7 @@ require! $R:reactivejs
 
 require! {
   \../component/Sales
-  \../component/SalesRouter
+#  \../component/SalesRouter
   \../component/Buy
 }
 
@@ -18,7 +18,7 @@ require \jqueryWaypoints
 {throttle}  = require \lodash
 
 # components
-window.router = new SalesRouter
+#window.router = new SalesRouter
 #{{{ components
 window.component =
   sales: (new Sales {-auto-render} \body).attach!

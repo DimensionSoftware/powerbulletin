@@ -1,5 +1,5 @@
 require! express
-require! \../component/SalesRouter
+#require! \../component/SalesRouter
 require! {
   cors
   async
@@ -110,6 +110,6 @@ s-app.get '/auth/once', sales-personal-mw, auth-handlers.once-setup
 
 # assume SalesRouter needs this middleware
 sales-personal-mw.for-each ((m) -> s-app.use m)
-s-app.use SalesRouter.middleware
+#s-app.use SalesRouter.middleware
 
 module.exports = s-app
