@@ -58,7 +58,7 @@ module.exports =
       $errors   = @@$ \.SiteRegister-errors
       component = @ # save
 
-      # XXX Until the extra SiteRegister instances are found, his will prevent excessive handlers from being attached.
+      # XXX Until the extra SiteRegister instances are found, this will prevent excessive handlers from being attached.
       if @$.has-class \xxx
         #console.trace 'stop'
         return
