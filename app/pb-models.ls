@@ -503,8 +503,6 @@ export-model = ([t, cs]) ->
   else
     #console.error \no-model, t
     {}
-  if t is \pages
-    console.log \fns, t, (deserializers cs)
   module.exports[t] = fns
 
 get-tables = (dbname, cb) ->
