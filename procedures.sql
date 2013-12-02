@@ -480,7 +480,7 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
     last_activity : auths.0?last_activity
     created       : auths.0?created
     post_count    : auths.0?post_count
-    thread_count  : auths.0?thread_count
+    thread_count  : auths.0?thread_count or 0
   user = auths.reduce make-user, u
   return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
