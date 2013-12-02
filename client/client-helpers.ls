@@ -248,7 +248,7 @@ load-css = (href) ->
 
 timers = {}
 @show-tooltip = ($tooltip, msg, duration=4500ms) ~>
-  unless msg?length then return # guard
+  unless msg?length then $tooltip.remove-class \hover; return # hide & guard
   timer = timers[msg]
   if timer then clear-timeout timer
   if $tooltip?length then $tooltip.html msg .add-class \hover # show
