@@ -18,6 +18,8 @@ debounce = lodash.debounce _, 250ms
 
 module.exports =
   class SiteRegister extends Component
+    @last-subdomain = ''
+
     template: templates.SiteRegister
     init: ->
       # mandatory state
@@ -59,11 +61,20 @@ module.exports =
       component = @ # save
 
       @check-subdomain-availability = @@$R((subdomain) ~>
+        if subdomain is @@last-subdomain
+          return
+        @@last-subdomain = subdomain
         errors = pure-validations.subdomain subdomain
-        @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ->
+        @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ~>
           unless res.available then errors.push 'Domain is unavailable, try again!'
-          if errors.length then component.disable-ui! else component.enable-ui!
-          show-tooltip $errors, errors.join \<br> if errors.length
+          console.log @parent.children
+          children = [@parent.children.register-top, @parent.children.register-bottom]
+          if errors.length
+            each (.disable-ui!), children
+            show-tooltip $errors, errors.join \<br> if errors.length
+          else
+            each (.enable-ui!), children
+            show-tooltip $errors, ''
       ).bind-to @state.subdomain
 
       var last-val
