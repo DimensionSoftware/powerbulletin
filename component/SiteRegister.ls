@@ -11,7 +11,7 @@ require! {
 }
 
 {show-tooltip} = require \../client/client-helpers if window?
-
+{each} = require \prelude-ls
 {templates} = require \../build/component-jade
 
 debounce = lodash.debounce _, 250ms
@@ -67,7 +67,6 @@ module.exports =
         errors = pure-validations.subdomain subdomain
         @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ~>
           unless res.available then errors.push 'Domain is unavailable, try again!'
-          console.log @parent.children
           children = [@parent.children.register-top, @parent.children.register-bottom]
           if errors.length
             each (.disable-ui!), children
@@ -78,8 +77,6 @@ module.exports =
       ).bind-to @state.subdomain
 
       var last-val
-      # XXX Somehow, there are 4 instances of SiteRegister when there should only be 2.
-      #console.trace \wtf, @is-attached
       @$.on \click, \.hostname (ev) -> $ ev.target .prev \.SiteRegister-subdomain .focus!
       @$.on \keydown, \input.SiteRegister-subdomain, -> $ \.hostname .css \opacity, 0
       @$.on \keyup, \input.SiteRegister-subdomain, debounce ->
