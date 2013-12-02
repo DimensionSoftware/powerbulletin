@@ -23,10 +23,9 @@ if typeof(post) !== 'undefined'
           .user-title=post.alias_config.title
           if post.user_last_activity
             //- rely on client to out human-friendly time
-            .date Last Active 
+            .date Active 
               span(data-time=post.user_last_activity)
-          .date Posted 
-            span(data-time=post.created_iso, title=post.created_friendly)!= post.created_human
+          .date(data-time=post.created_iso, title=post.created_friendly)!= post.created_human
         .edit-container
         .container
           .s-chat-bubble
