@@ -29,7 +29,7 @@ export subscribe = ({
   unless site-id
     return cb new Error "siteId is required to subscribe"
 
-  err, product <~ db.products.select1 id: product-id
+  err, product <~ db.products.select-one id: product-id
   if err then return cb err
   unless product
     return cb new Error "Subscription requires a valid product"
@@ -51,7 +51,7 @@ export subscribe = ({
   }
   subscription <<< {card} if card
 
-  err, res <~ db.users.select1 id: user-id
+  err, res <~ db.users.select-one id: user-id
   if err then return cb err
   if stripe-id = res.stripe_id
     err <- @client.customers.update_subscription stripe-id, subscription
@@ -65,7 +65,7 @@ export subscribe = ({
     err, customer <- @client.customers.create subscription
     if err then return cb err
 
-    err <- db.users.updatex { stripe_id: customer.id }, { id: user-id }
+    err <- db.users.update { stripe_id: customer.id }, { id: user-id }
     if err then return cb err
 
     err <- db.add-subscription site-id, product-id
