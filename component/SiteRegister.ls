@@ -10,7 +10,7 @@ require! {
   \../plv8_modules/pure-validations
 }
 
-ch = require \../client/client-helpers if window?
+{show-tooltip} = require \../client/client-helpers if window?
 
 {templates} = require \../build/component-jade
 
@@ -30,7 +30,7 @@ module.exports =
           subdomain = @local \subdomain
           @@$.post '/ajax/can-has-site-plz', {domain: subdomain+@local(\hostname)}, ({errors}:r) ~>
             if errors.length
-              ch.show-tooltip (@@$ \.SiteRegister-errors), errors.join \<br> if errors.length
+              show-tooltip (@@$ \.SiteRegister-errors), errors.join \<br> if errors.length
             else
               window.location = "http://#subdomain#{@local \hostname}\#once"
         after-registration = ~>
@@ -58,18 +58,12 @@ module.exports =
       $errors   = @@$ \.SiteRegister-errors
       component = @ # save
 
-      # XXX Until the extra SiteRegister instances are found, this will prevent excessive handlers from being attached.
-      if @$.has-class \xxx
-        #console.trace 'stop'
-        return
-      @$.add-class \xxx
-
       @check-subdomain-availability = @@$R((subdomain) ~>
         errors = pure-validations.subdomain subdomain
         @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ->
           unless res.available then errors.push 'Domain is unavailable, try again!'
           if errors.length then component.disable-ui! else component.enable-ui!
-          ch.show-tooltip $errors, errors.join \<br> if errors.length
+          show-tooltip $errors, errors.join \<br> if errors.length
       ).bind-to @state.subdomain
 
       var last-val
