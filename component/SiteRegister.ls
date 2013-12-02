@@ -58,6 +58,12 @@ module.exports =
       $errors   = @@$ \.SiteRegister-errors
       component = @ # save
 
+      # XXX Until the extra SiteRegister instances are found, his will prevent excessive handlers from being attached.
+      if @$.has-class \xxx
+        #console.trace 'stop'
+        return
+      @$.add-class \xxx
+
       @check-subdomain-availability = @@$R((subdomain) ~>
         errors = pure-validations.subdomain subdomain
         @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ->
@@ -67,6 +73,8 @@ module.exports =
       ).bind-to @state.subdomain
 
       var last-val
+      # XXX Somehow, there are 4 instances of SiteRegister when there should only be 2.
+      #console.trace \wtf, @is-attached
       @$.on \click, \.hostname (ev) -> $ ev.target .prev \.SiteRegister-subdomain .focus!
       @$.on \keydown, \input.SiteRegister-subdomain, -> $ \.hostname .css \opacity, 0
       @$.on \keyup, \input.SiteRegister-subdomain, debounce ->
