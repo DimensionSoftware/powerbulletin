@@ -11,13 +11,15 @@ require! {
 }
 
 {show-tooltip} = require \../client/client-helpers if window?
-
+{each} = require \prelude-ls
 {templates} = require \../build/component-jade
 
 debounce = lodash.debounce _, 250ms
 
 module.exports =
   class SiteRegister extends Component
+    @last-subdomain = ''
+
     template: templates.SiteRegister
     init: ->
       # mandatory state
@@ -59,16 +61,22 @@ module.exports =
       component = @ # save
 
       @check-subdomain-availability = @@$R((subdomain) ~>
+        if subdomain is @@last-subdomain
+          return
+        @@last-subdomain = subdomain
         errors = pure-validations.subdomain subdomain
-        @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ->
+        @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ~>
           unless res.available then errors.push 'Domain is unavailable, try again!'
-          if errors.length then component.disable-ui! else component.enable-ui!
-          show-tooltip $errors, errors.join \<br> if errors.length
+          children = [@parent.children.register-top, @parent.children.register-bottom]
+          if errors.length
+            each (.disable-ui!), children
+            show-tooltip $errors, errors.join \<br> if errors.length
+          else
+            each (.enable-ui!), children
+            show-tooltip $errors, ''
       ).bind-to @state.subdomain
 
       var last-val
-      # XXX Somehow, there are 4 instances of SiteRegister when there should only be 2.
-      #console.trace \wtf, @is-attached
       @$.on \click, \.hostname (ev) -> $ ev.target .prev \.SiteRegister-subdomain .focus!
       @$.on \keydown, \input.SiteRegister-subdomain, -> $ \.hostname .css \opacity, 0
       @$.on \keyup, \input.SiteRegister-subdomain, debounce ->
