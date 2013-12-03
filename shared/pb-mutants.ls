@@ -532,7 +532,10 @@ same-profile = (hints) ->
       window.$ '#left_container menu li' .remove-class \active
       window.$ "\#left_container menu .#{@action or \general}" .add-class \active
 
-      window.marshal \adminUsersLocals, ({} <<< @) if @action is \users
+      if @action is \users
+        @.cols.splice 3, 1                # prune photo col
+        @.rows.for-each -> it.splice 3, 1 # ...and assoc. row
+        window.marshal \adminUsersLocals, {} <<< @
       render-admin-components @action, @site, window
 
       # these two vars have to be marshalled so the components have access
