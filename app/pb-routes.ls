@@ -115,6 +115,21 @@ app.get '/user/:name/page/:page',
   handlers.profile
 #}}}
 
+app.get '/dynamic/css/:file' handlers.stylus # dynamic serving
+
+app.get '/favicon.ico', (req, res, next) ->
+  # TODO - replace with real favicon
+  next 404, \404
+
+# page handler tries to match paths before forum handler
+app.get '*',
+  personal-mw,
+  mw.add-js(common-js),
+  mw.add-css(common-css),
+  mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
+  handlers.page
+
 app.get '/',
   personal-mw,
   mw.geo,
@@ -134,12 +149,6 @@ app.get \/search,
 
 app.get '/hello', handlers.hello
 
-app.get '/dynamic/css/:file' handlers.stylus # dynamic serving
-
-app.get '/favicon.ico', (req, res, next) ->
-  # replace with real favicon
-  next 404, \404
-
 app.get '/:forum/most-active',
   personal-mw,
   mw.add-js(common-js),
@@ -148,15 +157,6 @@ app.get '/:forum/most-active',
   mw.private-site,
   handlers.forum
 
-
-# page handler tries to match paths before forum handler
-app.get '*',
-  personal-mw,
-  mw.add-js(common-js),
-  mw.add-css(common-css),
-  mmw.mutant-layout(\layout, mutants),
-  mw.private-site,
-  handlers.page
 
 # XXX: TODO, FURL needs to take into account these cases so i can get rid of dependent
 # hacky regexps:
@@ -208,14 +208,5 @@ app.all new RegExp('^(.+)$'),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.forum
-
-#{{{ Development Debug
-if process.env.NODE_ENV != \production
-  app.get '/debug/sub-posts-tree/:post_id', (req, res, next) ->
-    site = res.vars.site
-    err, d <- db.sub-posts-tree site.id, req.params.post_id, 25, 0
-    if err then return next(err)
-    res.json d
-#}}}
 
 # vim:fdm=marker
