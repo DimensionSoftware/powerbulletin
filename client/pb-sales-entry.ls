@@ -40,7 +40,7 @@ $ '#products .onclick-scroll-to' .click -> focus-last!
 #{{{ parallax
 last=void
 last-visible=[]
-$ window .on \scroll, (-> # 24fps
+$ window .on \scroll, (->
   offset  = $ window .scroll-top!
   if offset is 0 then focus-first!
 
@@ -59,7 +59,7 @@ $ window .on \scroll, (-> # 24fps
         | \navigation => <[.first .second .third]>
         | \responsive => all
         | \realtime   => <[.second .third .fifth]>
-        | \products   => <[.third .fifth]>
+        #| \products   => <[.third .fifth]>
         | \support    => <[.third .fifth]>
         [visible, hide] = partition (-> it in cur), all
         for h in hide then $ h .remove-class \visible # hide these
@@ -69,7 +69,7 @@ $ window .on \scroll, (-> # 24fps
       else # same section, so parallax visible sections!
         for v in last-visible
           dy = -($ v .offset!?top)
-          $ "#v .bg" .css \y, "#{0+((dy+offset)*0.6)}px")
+          $ "#v .bg" .transition {y:"#{(dy+offset)*0.6}px"}, 0)
 #}}}
 #{{{ waypoints
 fn = (direction) ->
