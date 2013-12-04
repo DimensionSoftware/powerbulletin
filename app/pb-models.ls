@@ -477,6 +477,14 @@ query-dictionary =
 
     select-one: select1-fn \subscriptions
 
+  conversations:
+    between: (users) ->
+      sql = """
+      select c.id, (select count(*)
+      from users_conversations where conversation_id = c.id) as c
+      from conversations c join users_conversations uc1 on uc1.conversation_id = c.id join users_conversations uc2 on uc2.conversation_id = c.id where uc1.user_id = 1 and uc2.user_id = 3;
+      """
+
 serializers-for =
   json: JSON.stringify
 
@@ -493,6 +501,7 @@ export-model = ([t, cs]) ->
   fns = if cs?id
     #console.log \model, t, cs
     {
+      attrs      : cs
       select-one : (deserialized-fn (serialized-fn (select1-fn t), (serializers cs)), (deserializers cs))
       select     : (deserialized-fn (serialized-fn (selectx-fn t), (serializers cs)), (deserializers cs))
       update-one : (deserialized-fn (serialized-fn (update1-fn t), (serializers cs)), (deserializers cs))
@@ -502,7 +511,7 @@ export-model = ([t, cs]) ->
     }
   else
     #console.error \no-model, t
-    {}
+    { attrs : cs }
   module.exports[t] = fns
 
 get-tables = (dbname, cb) ->
