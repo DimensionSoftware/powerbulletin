@@ -518,6 +518,21 @@ query-dictionary =
       if err then return cb err
       return cb null, r.0
 
+    participants: deserialized-fn ((c-id, cb) ->
+      sql = '''
+      SELECT a.user_id,
+             a.site_id,
+             a.name,
+             a.photo,
+             a.rights,
+             a.config
+        FROM aliases a
+             JOIN conversations c ON c.site_id = a.site_id
+             JOIN users_conversations uc ON (uc.user_id = a.user_id AND uc.conversation_id = c.id)
+       WHERE c.id = $1
+      '''
+      postgres.query sql, [c-id], cb), rights: JSON.parse, config: JSON.parse
+
 serializers-for =
   json: JSON.stringify
 
