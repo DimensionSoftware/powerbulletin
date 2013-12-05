@@ -21,11 +21,10 @@ html.profile .wmd-preview
       width 50%
       transition none
     .wmd-preview 
-      width 49%
-      transition width .04s ease-out
+      width 50%
+      transition none
     .onclick-toggle-preview
       width 80px
-      transition width .1s ease-out
       &:after
         content 'Hide Preview'
   .onclick-toggle-preview
@@ -38,14 +37,16 @@ html.profile .wmd-preview
     padding 4px 12px
     color #fff
     font-size .95em
-    background-color rgba(0,0,0,.6)
-    border-left 1px solid #333
-    border-top 1px solid #333
+    background-color rgba(0,0,0,.3)
+    border-left 1px solid #999
+    border-top 1px solid #999
     border-top-left-radius 8px
     cursor pointer
-    transition background-color .2s ease-out
+    transition all .4s ease-out .1s
     &:hover
-      background-color rgba(0,0,0,.75)
+      background-color rgba(0,0,0,.5)
+      border-left 1px solid #555
+      border-top 1px solid #555
       transition none
     &:after
       position absolute
