@@ -9,7 +9,7 @@ helpers = require \../shared/shared-helpers
 mutants = require \../shared/pb-mutants
 mutant  = require \mutant
 
-{storage, switch-and-focus, mutate, show-tooltip, set-profile} = require \./client-helpers
+{respond-resize, storage, switch-and-focus, mutate, show-tooltip, set-profile} = require \./client-helpers
 require! globals
 window.Auth  = require \../component/Auth
 window.switch-and-focus = switch-and-focus
@@ -163,6 +163,7 @@ window.onload-resizable = ->
         $l.toggle-class \wide ($l.width! > 300px)        # resize left nav
         $r.css \padding-left (ui.size.width+left-offset) # " resizable
         $ \footer .css \left (ui.size.width+1)
+        respond-resize!
         window.save-ui!)
     $r.css \padding-left ($l.width!+left-offset) # snap
   else

@@ -222,12 +222,28 @@ html.forum, html.profile, html.search, html.moderation
           border 43px solid transparent
           border-left 12px solid light
           right -55px
-          transition right .1s ease-out
           &:after
             border 42px solid transparent
             border-left 12px solid #fff
             right -41px
-            transition right .05s ease-out
+        &.small .arrow
+          border 30px solid transparent
+          border-left 12px solid light
+          right -43px
+          &:after
+            border 32px solid transparent
+            border-left 12px solid #fff
+            margin-top 9px
+            right -30px
+        &.large .arrow
+          border 53px solid transparent
+          border-left 12px solid light
+          right -64px
+          &:after
+            border 54px solid transparent
+            border-left 12px solid #fff
+            margin-top -12px
+            right -53px
         &:before
           background-image linear-gradient(to top, dark 10%, light 100%)
           width 5px

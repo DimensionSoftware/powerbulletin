@@ -211,6 +211,20 @@ load-css = (href) ->
 
 @respond-resize = ~>
   w = $ window
+  # augment stylus for height
+  if e = $ \.thread.active
+    switch e.height!
+    | 49 => # one-liner title
+      e.add-class \small
+      e.remove-class 'medium large'
+    | 71 => # most variations fit into medium
+      e.add-class \medium
+      e.remove-class 'small large'
+    | 93 => # long title & narrow nav
+      e.add-class \large
+      e.remove-class 'small medium'
+    e.remove-class \hidden
+
   unless window.mutator is \admin # FIXME improve responsive.styl
     if w.width! <= 800px then $ \body .add-class \collapsed
 
