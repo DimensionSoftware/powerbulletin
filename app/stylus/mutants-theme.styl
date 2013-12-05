@@ -138,14 +138,7 @@ html.forum, html.profile, html.search, html.moderation
         position relative
         z-index 2
         a
-          &:active, &:focus
-            background radial-gradient(circle closest-corner at 55% 65%, light2 85%, dark2 100%)
-          &:hover
-            background radial-gradient(circle closest-corner at 45% 35%, light2 55%, dark2 100%)
-          color dark
-          background-color light2
-          background-image linear-gradient(to top, dark2 10%, light2 100%)
-          border-radius 27px
+          color dark_text
           .s-reply::after, .s-permalink::after, .s-censor::after
             position absolute
             content ''
@@ -284,9 +277,9 @@ html.admin
       &.feature.upgrade
         font-size .75em
       &.feature.upgrade.active::after
-        border-left-color dark2
+        border-left-color dark
       &.feature.upgrade.active
-        background-color dark2
+        background-color dark
       &.feature
         position relative
         margin-top (grid*3)

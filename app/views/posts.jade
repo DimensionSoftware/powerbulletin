@@ -38,13 +38,13 @@ if typeof(post) !== 'undefined'
         .reply
         //- actions for top-level posts are different from children's post-actions partial
         .actions
-          a.onclick-footer-toggle(title='Reply')
-            .s-reply.onclick-footer-toggle
+          a.onclick-footer-toggle(title='Reply') Reply
+            .s-dark-reply.onclick-footer-toggle
           a.edit.mutant.no-surf(data-edit=post.id, href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
-          a.permalink.mutant(href=post.uri, title='Permalink')
-            .s-permalink
-          a.censor.onclick-censor-post(title='Censor')
-            .s-censor
+          a.permalink.mutant(href=post.uri, title='Permalink') Permalink
+            .s-dark-permalink
+          a.censor.onclick-censor-post(title='Censor') Censor
+            .s-dark-censor
     .children
       if post.posts.length
         div(data-page=page)
