@@ -477,6 +477,7 @@ query-dictionary =
     select-one: select1-fn \subscriptions
 
   conversations:
+    # returns a conversation object for the site and list of users, creating one if neeeded
     between: (site-id, users, cb) ->
       joins-sql = (n) ->
         [ "JOIN users_conversations uc#i ON uc#i.conversation_id = c.id" for i in [ 1 to n ] ].join "\n       "
@@ -518,6 +519,7 @@ query-dictionary =
       if err then return cb err
       return cb null, r.0
 
+    # list of aliases for a given c-id
     participants: deserialized-fn ((c-id, cb) ->
       sql = '''
       SELECT a.user_id,
