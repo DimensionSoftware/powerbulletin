@@ -374,7 +374,6 @@ query-dictionary =
   products: {}
 
   forums:
-
     # new forum summary
     summary: (id, cb) ->
       sql = '''
@@ -477,6 +476,48 @@ query-dictionary =
 
     select-one: select1-fn \subscriptions
 
+  conversations:
+    between: (site-id, users, cb) ->
+      joins-sql = (n) ->
+        [ "JOIN users_conversations uc#i ON uc#i.conversation_id = c.id" for i in [ 1 to n ] ].join "\n       "
+
+      where-sql = (n) ->
+        user-id-sql = [ "uc#i.user_id = $#i" for i in [1 to n] ]. join " AND "
+        c-sql = "AND (SELECT COUNT(*) FROM users_conversations WHERE conversation_id = c.id) = #n"
+        """
+        #user-id-sql
+               #c-sql
+        """
+
+      sql = """
+      SELECT c.id,
+             c.site_id,
+             c.created,
+             c.updated
+        FROM conversations c
+             #{joins-sql users.length}
+       WHERE #{where-sql users.length}
+             AND c.site_id = $#{users.length + 1}
+      """
+      #console.log sql
+      err, r <~ postgres.query sql, [...users, site-id]
+      if err then return cb err
+      if r.length then return cb null, r.0
+
+      # first time chatting together on this site
+      insert-ppl-sql = (n) ->
+        ["i#i AS (INSERT INTO users_conversations (user_id, conversation_id) SELECT $#{i+1}, id FROM c)" for i in [1 to n]].join ",\n  "
+      new-sql = """
+      WITH 
+        c AS (INSERT INTO conversations (site_id) VALUES ($1) RETURNING *),
+        #{insert-ppl-sql users.length}
+        SELECT * FROM c;
+      """
+      #console.log new-sql
+      err, r <~ postgres.query new-sql, [site-id, ...users]
+      if err then return cb err
+      return cb null, r.0
+
 serializers-for =
   json: JSON.stringify
 
@@ -493,6 +534,7 @@ export-model = ([t, cs]) ->
   fns = if cs?id
     #console.log \model, t, cs
     {
+      attrs      : cs
       select-one : (deserialized-fn (serialized-fn (select1-fn t), (serializers cs)), (deserializers cs))
       select     : (deserialized-fn (serialized-fn (selectx-fn t), (serializers cs)), (deserializers cs))
       update-one : (deserialized-fn (serialized-fn (update1-fn t), (serializers cs)), (deserializers cs))
@@ -502,7 +544,7 @@ export-model = ([t, cs]) ->
     }
   else
     #console.error \no-model, t
-    {}
+    { attrs : cs }
   module.exports[t] = fns
 
 get-tables = (dbname, cb) ->

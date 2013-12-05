@@ -575,7 +575,6 @@ function profile-paths user, uploaded-file, base=\avatar
   err, page <- db.pages.select-one { site_id: site.id, path: req.path }
   if err then return next err
   if page
-    console.warn \page, page
     if req.surfing then delete-unnecessary-surf-data res
     fdoc ||= {}
     fdoc.menu = site.config.menu
