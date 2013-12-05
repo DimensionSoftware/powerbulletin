@@ -2,8 +2,9 @@ blend = rgba(0,0,0,.5)
 
 //{{{ Sales is a site component that owns <body> and it can define initial style:
 body
+  background-color #000
   margin 0
-  height 4820px
+  height 4900px
   position relative
   .body-bg
     position fixed
@@ -11,6 +12,7 @@ body
     left 0
     right 0
     bottom 0
+    opacity 1
     img
       width 100%
       min-height 1015px
@@ -22,6 +24,7 @@ body
 //}}}
 //{{{ - Site Scrolled behaviors
 body.scrolled
+  background-color #fff
   .body-bg
     opacity 0
     transition opacity .5s ease-out
@@ -107,6 +110,8 @@ body.scrolled
         font-style italic
         margin-left 1px
         letter-spacing 1px
+  section
+    opacity 1
   #features::after
     border-top-color light
   nav
@@ -125,13 +130,13 @@ body.scrolled
 //{{{ - Site Responsive (mobile)
 @media screen and (max-width: 800px)
   body.homepage
-    height 2000px!important
+    height 2515px!important
     .Sales
       font-size .85em
       .Sales-content
         padding-top 60px
-      .body-bg
-        display none
+      //.body-bg
+      //  display none
       .logo
         left 15px!important
       #imagine
@@ -158,6 +163,13 @@ body.scrolled
         article
           transform translateX(35px)
           width 90%!important
+          .arrow
+            display none
+          img
+            display none
+          ul
+            opacity 1
+            text-indent 0
       section.last
         .SiteRegister
           padding-left 50px!important
@@ -165,6 +177,7 @@ body.scrolled
         article h4
           margin-left 250px!important
       section.faq
+        margin-bottom 25px
         article
           h3::after
             left 29%
@@ -187,7 +200,7 @@ body.scrolled
       z-index 9
       transition top .3s ease-out
       &:hover:before
-        background-color rgba(0,0,0,.3)
+        background-color rgba(150,150,150,.3)
       &:before
         content ''
         position absolute
@@ -195,7 +208,7 @@ body.scrolled
         top 36px
         padding 30px
         border-radius 100%
-        background-color rgba(0,0,0,.2)
+        background-color rgba(150,150,150,.2)
         transition all .2s ease-out
       .s-down-arrow
         position absolute
@@ -403,7 +416,7 @@ body.scrolled
       display block
   .container
     position relative
-    height 600px
+    height 500px
     width 100%
     overflow hidden
     visibility hidden
@@ -424,13 +437,16 @@ body.scrolled
     box-shadow none
     border none
     article
-      transform translateX(-120px)
       h4
-        margin-left 350px
+        margin-left 0
       p
         width 100%
+        text-align left
   section.feature.shown
     article
+      img
+        opacity 1
+        transition opacity .3s ease-out .1s
       ul
         opacity 1
         text-indent 0
@@ -444,7 +460,7 @@ body.scrolled
     border-top 1px solid #777
     border-bottom 1px solid #777
     box-shadow 0 0 28px -2px blend
-    background-image radial-gradient(ellipse closest-corner at 50% 50%, #fff 70%, #000 150%)
+    background-image radial-gradient(ellipse closest-corner at 50% 50%, #fff 85%, #000 160%)
     transition box-shadow 1s ease-out .5s
     overflow visible
     .down-arrow
@@ -455,6 +471,12 @@ body.scrolled
     //  transition none
     article
       transform translateX(150px)
+      img
+        position absolute
+        top -74px
+        left -388px
+        opacity 0
+        outline none
       h4
         color light
         font-weight 600
@@ -472,7 +494,7 @@ body.scrolled
           color #222
           margin-top 5px
     .arrow
-      top -40px
+      top 30px
       width 100%
       height 30px
       font-size .7em
@@ -489,8 +511,9 @@ body.scrolled
     display block
     top 0
     left 0
-    height 280px
+    height 400px
     width 100%
+    opacity 0
     overflow hidden
   section.last
     position absolute
@@ -512,6 +535,11 @@ body.scrolled
         position absolute
         padding-left 0
         bottom 10px
+  #realtime img
+    top 0
+    left -450px
+  #responsive img
+    left -510px
   //}}}
   //{{{ FAQ
   section.faq
@@ -545,8 +573,8 @@ body.scrolled
 
   section
     article
-      max-width 700px
-      margin 70px auto 0 auto
+      max-width 600px
+      margin 120px auto 0 auto
       h3
         position relative
         letter-spacing 2px
