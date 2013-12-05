@@ -5,7 +5,7 @@ include _breadcrumb
 //- breadcrumb for posts
 if typeof(post) !== 'undefined'
   #breadcrumb.breadcrumb
-    mixin _breadcrumb(post)
+    +_breadcrumb(post)
 
 //- posts tree
 if typeof(post) !== 'undefined'
@@ -33,6 +33,8 @@ if typeof(post) !== 'undefined'
             h2.title= post.title
             if post.html
               .body!= post.html
+          if !post.is_comment && post.alias_config.sig
+            .sig!= post.alias_config.sigHtml
         .reply
         //- actions for top-level posts are different from children's post-actions partial
         .actions
@@ -48,7 +50,7 @@ if typeof(post) !== 'undefined'
         div(data-page=page)
           each sp in post.posts
             if sp.parent_id !== null
-              mixin _post(sp, 0)
+              +_post(sp, 0)
       else if post.morePosts
         a(href='#') Load more posts ...
     .onclick-footer-toggle.post-reply
