@@ -1,11 +1,22 @@
 height = 300px
 
+//{{{ special style for "Edit Signature" preview
+html.profile .wmd-preview
+  font-size .85em
+  color #999
+  img
+    max-width 80%
+    max-height 125px
+//}}}
+
 .Editor
   width 100%
   min-width 800px
   min-height height
   position relative
+  //{{{ Preview pane
   &.has-preview
+  // - when the preview is visible
     .wmd-panel
       width 50%
       transition none
@@ -13,7 +24,7 @@ height = 300px
       width 49%
       transition width .04s ease-out
     .onclick-toggle-preview
-      width 94px
+      width 80px
       transition width .1s ease-out
       &:after
         content 'Hide Preview'
@@ -39,7 +50,7 @@ height = 300px
     &:after
       position absolute
       content 'Preview'
-
+  //}}}
   //{{{ <PageDown Editor>
   blockquote 
     border-left 2px dotted #888

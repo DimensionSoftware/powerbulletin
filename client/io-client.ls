@@ -70,6 +70,7 @@ function init-with-socket s
       # & render new post
       sel = "\#post_#{post.parent_id} + .children"
       animate-in = (e) -> $ e .add-class \post-animate-in
+      if post.user_id is user?id then post.is_comment=true # hide sig., etc... on our own posts
       render-and-append(
         window, $(sel), \post, post:post, (new-post) ->
           if post.user_id is user?id # & scroll-to
