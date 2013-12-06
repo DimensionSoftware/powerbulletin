@@ -25,7 +25,7 @@
     if profile.last_activity_iso
       li.last-activity
         span Last active 
-        span.date(title=profile.last_activity_friendly, data-time=profile.last_activity_iso)!= profile.last_activity_human
+        span.date(title=profile.last_activity_friendly, data-time=profile.last_activity_iso)
   .profile-actions
     button.onclick-chat(title="Private Message") Chat
     a.change-profile.avatar Edit Profile Photo
