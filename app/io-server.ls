@@ -132,9 +132,6 @@ site-by-domain = (domain, cb) ->
     #ChatServer
     chat-server = new ChatServer(io, socket, presence, site, user)
     socket.on \chat-message, chat-server.message
-    socket.on \chat-join, chat-server.join
-    socket.on \chat-leave, chat-server.leave
-    socket.on \chat-debug, chat-server.debug
 
     socket.on \disconnect, ->
       log \disconnected
