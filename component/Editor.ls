@@ -11,7 +11,9 @@ require! {
 
 const watch-every   = 2500ms
 const max-retry     = 3failures
-const k-has-preview = \Editor.has-preview
+const u             = storage.get \user
+const k-has-preview = "#{u?id}-editer-has-preview"
+const k-sig         = "#{u?id}-sig"
 
 module.exports =
   class Editor extends Component
@@ -29,8 +31,8 @@ module.exports =
     save: (to-server=false) ~>
       return unless @editor # guard
       v = @editor.val!
-      unless v is storage.get \sig
-        storage.set \sig, v # update locally
+      unless v is storage.get k-sig
+        storage.set k-sig, v # update locally
         if to-server
           data = {}
           @@$.ajax {
@@ -43,7 +45,8 @@ module.exports =
             ..fail (r) ~> # failed, so try again (to server) until max-retries
               if ++@retry <= max-retry then @save true
     toggle-preview: ~>
-      hidden = (storage.get k-has-preview) or false # default w/ preview
+      hidden = storage.get k-has-preview
+      if hidden is null then hidden = true # default w/ preview
       storage.set k-has-preview, !hidden
       @$.toggle-class \has-preview, !hidden
 
