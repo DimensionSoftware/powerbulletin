@@ -11,9 +11,6 @@ require! {
 
 const watch-every   = 2500ms
 const max-retry     = 3failures
-const u             = storage.get \user
-const k-has-preview = "#{u?id}-editer-has-preview"
-const k-sig         = "#{u?id}-sig"
 
 module.exports =
   class Editor extends Component
@@ -27,12 +24,18 @@ module.exports =
       @local \id,   '' unless @local \id
       @local \body, '' unless @local \body
 
+    # keys for local storage (must bind later, after the user exists)
+    k-has-preview: ~>
+      "#{(storage.get \user)?id}-editer-has-preview"
+    k-sig: ~>
+      "#{(storage.get \user)?id}-sig"
+
     body: ~> @editor?val!
     save: (to-server=false) ~>
       return unless @editor # guard
       v = @editor.val!
-      unless v is storage.get k-sig
-        storage.set k-sig, v # update locally
+      unless v is storage.get @k-sig!
+        storage.set @k-sig!, v # update locally
         if to-server
           data = {}
           @@$.ajax {
@@ -45,9 +48,9 @@ module.exports =
             ..fail (r) ~> # failed, so try again (to server) until max-retries
               if ++@retry <= max-retry then @save true
     toggle-preview: ~>
-      hidden = storage.get k-has-preview
+      hidden = storage.get @k-has-preview!
       if hidden is null then hidden = true # default w/ preview
-      storage.set k-has-preview, !hidden
+      storage.set @k-has-preview!, !hidden
       @$.toggle-class \has-preview, !hidden
 
     on-attach: ->
@@ -70,7 +73,7 @@ module.exports =
       @editor.on \keyup   throttle (~> @save), watch-every # save to local storage
       $ window .on \unload.Editor ~> @save true            # save to server
       #}}}
-      @$.toggle-class \has-preview, (storage.get k-has-preview) or true # default w/ preview
+      @$.toggle-class \has-preview, (storage.get @k-has-preview!) or true # default w/ preview
       set-timeout (~> @editor.focus!), 100ms # ... & focus!
 
     on-detach: ~> # XXX ensure detach is called
