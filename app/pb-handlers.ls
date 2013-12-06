@@ -583,6 +583,7 @@ function profile-paths user, uploaded-file, base=\avatar
     fdoc.active-forum-id = page.id
     fdoc.content-only    = item?form?content-only is \checked
     res.locals fdoc
+    caching-strategies.etag res, sha1(JSON.stringify page.config), 60s
     res.mutant \page
   else
     next!

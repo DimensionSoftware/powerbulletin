@@ -26,7 +26,7 @@ module.exports =
       id = @conversation?id
       if chats.index-of(id) == -1 and id
         chats.push id
-        $.cookie 'chats', JSON.stringify(chats), { path: '/' }
+        #$.cookie 'chats', JSON.stringify(chats), { path: '/' }
       else
         console.warn chats.index-of(id), id
 

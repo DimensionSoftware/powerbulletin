@@ -44,14 +44,15 @@ nav
     a.name.onclick-scroll-to(data-scroll-to='#responsive') Responsive
   li.realtime
     a.name.onclick-scroll-to(data-scroll-to='#realtime') Real-Time
-  li.products
-    a.name.onclick-scroll-to(data-scroll-to='#products') Commerce
+  //-li.products
+  //-  a.name.onclick-scroll-to(data-scroll-to='#products') Commerce
   li.support
     a.name.onclick-scroll-to(data-scroll-to='#support') Support
 .container.first
   img.bg(src="#{cacheUrl}/images/navigation.jpg")
 section#navigation.feature
   article
+    img(src="#{cacheUrl}/images/navigation-icon.jpg")
     h4 Seamless Navigation
     ul
       li SEO technology transmits page delta vs. browser reloads
@@ -64,6 +65,7 @@ section#navigation.feature
   img.bg(src="#{cacheUrl}/images/responsiveness.jpg")
 section#responsive.feature
   article
+    img(src="#{cacheUrl}/images/responsiveness-icon.jpg")
     h4 Device Responsive
     ul
       li Modern interface that scales across all devices
@@ -76,32 +78,34 @@ section#responsive.feature
   img.bg(src="#{cacheUrl}/images/real_time_flow.jpg")
 section#realtime.feature
   article
+    img(src="#{cacheUrl}/images/real_time_flow-icon.jpg")
     h4 Real-Time Flow
     ul
       li Ultrafast PowerBulletin is built on a real-time engine
       li Real-time posting, chatting, administration -- everything
         i !
       li Always secure, fast &amp; fluid
-    a.arrow.onclick-scroll-to(data-scroll-to="#products")
-      .down-arrow
-        .s-down-arrow
-.container.fourth
-  img.bg(src="#{cacheUrl}/images/products_ecommerce.jpg")
-section#products.feature
-  article
-    h4 Products &amp; e-Commerce
-    ul
-      li Sell your business around PowerBulletin communities
-      li Offering e-commerce is so easy to use, it's easy to love
-      li Coming soon
-        i !
     a.arrow.onclick-scroll-to(data-scroll-to="#support")
       .down-arrow
         .s-down-arrow
+//-.container.fourth
+//-  img.bg(src="#{cacheUrl}/images/products_ecommerce.jpg")
+//-section#products.feature
+//-  article
+//-    h4 Products &amp; e-Commerce
+//-    ul
+//-      li Sell your business around PowerBulletin communities
+//-      li Offering e-commerce is so easy to use, it's easy to love
+//-      li Coming soon
+//-        i !
+//-    a.arrow.onclick-scroll-to(data-scroll-to="#support")
+//-      .down-arrow
+//-        .s-down-arrow
 .container.fifth
   img.bg(src="#{cacheUrl}/images/live_support.jpg")
 section#support.feature.shown
   article
+    img(src="#{cacheUrl}/images/live_support-icon.jpg")
     h4 Live Support
     p
       | Knowledge is PowerBulletin!  With

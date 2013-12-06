@@ -106,7 +106,7 @@ seconds-to-human-readable = (secs) ->
   else
     years = Math.floor secs-ago / 31446925s
     if years == 1 then "a year #{suffix}" else "#{years} years #{suffix}"
-  human.replace /^(\d+\s\w+)/g '<b>$1</b>' # bold numbers & metric
+  human.replace /(\d+\s\w+)/g '<b>$1</b>' # bold numbers & metric
 
 # ported from http://erlycoder.com/49/javascript-hash-functions-to-convert-string-into-integer-hash-
 @djb2-hash = (str) ->

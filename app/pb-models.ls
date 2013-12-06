@@ -22,7 +22,7 @@ serialized-fn = (fn, serializers) ->
   (object, ...rest) ->
     for k,sz of serializers
       if object?[k]
-        object[k] = serializers[k] object[k]
+        object[k] = sz object[k]
     fn object, ...rest
 
 # Generate a function that wraps an existing functions cb and deserializes its results
@@ -39,9 +39,9 @@ deserialized-fn = (fn, deserializers) ->
         cb null, new-r
       else
         item = r
-        for k,sz of deserializers
+        for k,dsz of deserializers
           if item?[k]
-            item[k] = deserializers[k] item[k]
+            item[k] = dsz item[k]
         cb null, item
 
 where-x = (criteria, n=1) ->
@@ -158,6 +158,14 @@ _alias-where = (obj) ->
   throw new Error("need user_id and site_id") if (not obj.user_id and not obj.site_id);
   ["WHERE user_id = $1 AND site_id = $2", [obj.user_id, obj.site_id]]
 
+_alias-serializers =
+  rights: JSON.stringify
+  config: JSON.stringify
+
+_alias-deserializers =
+  rights: JSON.parse
+  config: JSON.parse
+
 # This is for queries that don't need to be stored procedures.
 # Base the top-level key for the table name from the FROM clause of the SQL query.
 query-dictionary =
@@ -195,15 +203,15 @@ query-dictionary =
       if err then return cb err
       cb null, r.0
 
-    select1: deserialized-fn (select1-fn \aliases), rights: JSON.parse, config: JSON.parse
-    selectx: deserialized-fn (selectx-fn \aliases), rights: JSON.parse, config: JSON.parse
-    update1: serialized-fn (update1-fn \aliases, _alias-where), rights: JSON.stringify, config: JSON.stringify
-    updatex: serialized-fn (updatex-fn \aliases), rights: JSON.stringify, config: JSON.stringify
+    select-one : deserialized-fn (select1-fn \aliases), _alias-deserializers
+    select     : deserialized-fn (selectx-fn \aliases), _alias-deserializers
+    update-one : deserialized-fn (serialized-fn (update1-fn \aliases, _alias-where), _alias-serializers), _alias-deserializers
+    update     : deserialized-fn (serialized-fn (updatex-fn \aliases), _alias-serializers), _alias-deserializers
 
     update-last-activity-for-user: (user, cb) ->
       id = user.id or user.user_id
       if not id then return cb null
-      @updatex { last_activity: (new Date).to-ISO-string! }, { user_id: id, site_id: user.site_id }, cb
+      @update { last_activity: (new Date).to-ISO-string! }, { user_id: id, site_id: user.site_id }, cb
 
     participants-for-thread: (thread-id, cb) ->
       sql = '''
@@ -330,16 +338,9 @@ query-dictionary =
           site_id : site-id
       cb null, user <<< alias
 
-    select1: deserialized-fn (select1-fn \users), rights: JSON.parse
-    update1: serialized-fn (update1-fn \users),  rights: JSON.stringify
+  auths: {}
 
-  auths:
-    updatex: serialized-fn (updatex-fn \auths), profile: JSON.stringify
-
-  pages:
-    upsert: upsert-fn \pages
-    delete: delete-fn \pages
-    select1: deserialized-fn (select1-fn \pages), config: JSON.parse
+  pages: {}
 
   posts:
     moderated: (forum-id, cb) ->
@@ -355,6 +356,7 @@ query-dictionary =
       JOIN moderations m ON m.post_id=p.id
       WHERE p.forum_id=$1
       ''', [forum-id], cb
+
     upsert: upsert-fn \posts
 
     toggle-sticky: (id, cb) ->
@@ -369,15 +371,9 @@ query-dictionary =
       '''
       postgres.query sql, [id], cb
 
-  products:
-    select1: deserialized-fn (select1-fn \products), config: JSON.parse
-    update1: serialized-fn (update1-fn \products), config: JSON.stringify
-    updatex: serialized-fn (updatex-fn \products), config: JSON.stringify
+  products: {}
 
   forums:
-    upsert: upsert-fn \forums
-    delete: delete-fn \forums
-
     # new forum summary
     summary: (id, cb) ->
       sql = '''
@@ -478,7 +474,66 @@ query-dictionary =
       '''
       postgres.query sql, [site-id], cb
 
-    select1: select1-fn \subscriptions
+    select-one: select1-fn \subscriptions
+
+  conversations:
+    # returns a conversation object for the site and list of users, creating one if neeeded
+    between: (site-id, users, cb) ->
+      joins-sql = (n) ->
+        [ "JOIN users_conversations uc#i ON uc#i.conversation_id = c.id" for i in [ 1 to n ] ].join "\n       "
+
+      where-sql = (n) ->
+        user-id-sql = [ "uc#i.user_id = $#i" for i in [1 to n] ]. join " AND "
+        c-sql = "AND (SELECT COUNT(*) FROM users_conversations WHERE conversation_id = c.id) = #n"
+        """
+        #user-id-sql
+               #c-sql
+        """
+
+      sql = """
+      SELECT c.id,
+             c.site_id,
+             c.created,
+             c.updated
+        FROM conversations c
+             #{joins-sql users.length}
+       WHERE #{where-sql users.length}
+             AND c.site_id = $#{users.length + 1}
+      """
+      #console.log sql
+      err, r <~ postgres.query sql, [...users, site-id]
+      if err then return cb err
+      if r.length then return cb null, r.0
+
+      # first time chatting together on this site
+      insert-ppl-sql = (n) ->
+        ["i#i AS (INSERT INTO users_conversations (user_id, conversation_id) SELECT $#{i+1}, id FROM c)" for i in [1 to n]].join ",\n  "
+      new-sql = """
+      WITH 
+        c AS (INSERT INTO conversations (site_id) VALUES ($1) RETURNING *),
+        #{insert-ppl-sql users.length}
+        SELECT * FROM c;
+      """
+      #console.log new-sql
+      err, r <~ postgres.query new-sql, [site-id, ...users]
+      if err then return cb err
+      return cb null, r.0
+
+    # list of aliases for a given c-id
+    participants: deserialized-fn ((c-id, cb) ->
+      sql = '''
+      SELECT a.user_id,
+             a.site_id,
+             a.name,
+             a.photo,
+             a.rights,
+             a.config
+        FROM aliases a
+             JOIN conversations c ON c.site_id = a.site_id
+             JOIN users_conversations uc ON (uc.user_id = a.user_id AND uc.conversation_id = c.id)
+       WHERE c.id = $1
+      '''
+      postgres.query sql, [c-id], cb), rights: JSON.parse, config: JSON.parse
 
 serializers-for =
   json: JSON.stringify
@@ -496,6 +551,7 @@ export-model = ([t, cs]) ->
   fns = if cs?id
     #console.log \model, t, cs
     {
+      attrs      : cs
       select-one : (deserialized-fn (serialized-fn (select1-fn t), (serializers cs)), (deserializers cs))
       select     : (deserialized-fn (serialized-fn (selectx-fn t), (serializers cs)), (deserializers cs))
       update-one : (deserialized-fn (serialized-fn (update1-fn t), (serializers cs)), (deserializers cs))
@@ -505,8 +561,7 @@ export-model = ([t, cs]) ->
     }
   else
     #console.error \no-model, t
-    {}
-  #console.log \fns, t, fns
+    { attrs : cs }
   module.exports[t] = fns
 
 get-tables = (dbname, cb) ->

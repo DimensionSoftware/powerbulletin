@@ -34,7 +34,7 @@ sales-personal-mw =
   * cors(origin: true, credentials: true)
   * express.body-parser!
   * express.cookie-parser!
-  * express.cookie-session {secret:cvars.secret, proxy:true, cookie:{proxy:true, secure:true}}
+  * express.cookie-session {secret:cvars.secret, proxy:true, cookie:{proxy:true, secure:true, max-age:1000*60*60*24*365}}
   * auth.mw.initialize
   * auth.mw.session
 
@@ -60,11 +60,12 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
 
   err, result <- db.create-site site
   if err then return next err
-  console.log result
+  console.warn \create-site, err, result
 
   err, old-menu <- db.menu result.site_id
   if err then return next err
   err, new-site <- db.site-by-id result.site_id
+  if err then return next err
   new-site.config?menu = menu.upconvert old-menu
   new-site.config.posts-per-page = 20
   new-site.config.items-per-page = 20

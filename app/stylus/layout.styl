@@ -4,12 +4,12 @@
 // XXX eventually each forum will have its own theme.{styl,css}
 bounce = cubic-bezier(0,1.72,0,.75)
 
-header-height           = 100px
-header-scrolled-height  = 35px
+header_height           = 100px
+header_scrolled_height  = 35px
 
-forum-header-height = 0
-footer-height       = 36px
-left-content-width  = 310px
+forum-header_height = 0
+footer_height       = 36px
+left_content_width  = 310px
 
 section
   box-sizing border-box
@@ -42,6 +42,21 @@ body.waiting
 .hidden
   display none
 
+//{{{  Background of entire window
+#forum_background_buffer
+  opacity 0
+  z-index 1
+#forum_background_color, #forum_background_buffer, #forum_background
+  position fixed
+  top -12px
+  right -40px
+  bottom -12px
+  left -40px
+  img
+    width 100%
+    min-height 100%
+//}}}
+
 //{{{ Header
 // TODO move this into app/stylus/pb.styl & re-create everything in css (after/before pseudo for text)
 .logo
@@ -55,11 +70,10 @@ body.waiting
     padding-left 35px
     padding-top 4px
     vertical-align top
-    font-size .75em
+    font-size .65em
     text-decoration none
     font-weight 200
-    letter-spacing -1px
-    font-style normal
+    font-style italic
     position fixed
     top 17px
     left 35px
@@ -67,13 +81,14 @@ body.waiting
     z-index 10
     strong
       color #555
+      font-size 1.1em
       letter-spacing -1px
-      font-style italic
+      font-style normal
       font-weight 600
       padding-left 3px
 header
   position fixed
-  height header-height
+  height header_height
   top 0
   z-index 10
   .container
@@ -228,9 +243,9 @@ body.paginator
   position fixed
   left 0
   bottom 0
-  top (header-height+2)
+  top (header_height+2)
   height auto
-  width left-content-width
+  width left_content_width
   z-index 8
   padding-top (grid*2)
   .photo
@@ -243,14 +258,14 @@ body.paginator
     height 32px
     width 32px
     margin-top 9px
-    top (header-height-20)
+    top (header_height-20)
     right -17px
     cursor pointer
     position absolute
     text-align center
     cursor pointer
     z-index 95
-    &::before
+    &::after, &::before
       position absolute
       content ''
       border-bottom 8px solid transparent
@@ -260,6 +275,8 @@ body.paginator
       width 0
       top 8px
       left -1px
+    &:before
+      left -2px
     &:hover
       right -15px
       transition right .1s ease-out
@@ -290,7 +307,7 @@ body.paginator
     a.page
       display block
       position absolute
-      height footer-height + (grid * 2)
+      height footer_height + (grid * 2)
       width 12px
     a.page.previous
       top 0
@@ -368,16 +385,16 @@ body.paginator
 
 .main-content
   grid(100%, 800px)
-  padding forum-header-height 0 0 0
-  padding-top (header-height+(grid*2))
+  padding forum-header_height 0 0 0
+  padding-top (header_height+(grid*2))
   z-index 5
   .breadcrumb
     position fixed
     top -100px
     text-align center
     z-index 100
-    border-bottom-left-radius 3px
-    border-bottom-right-radius 3px
+    border-bottom-left-radius 10px
+    border-bottom-right-radius 10px
     padding (grid/2+2) (grid*2.5) 3px (grid*2.5)
     font-size .9em
     margin-bottom (grid/2)
@@ -387,7 +404,7 @@ body.paginator
       padding-right (grid/2)
       margin-right 3px
   .resizable
-    padding-left (left-content-width+(grid*3))
+    padding-left (left_content_width+(grid*3))
   .onclick-scroll-top
     clear both
 //}}}
@@ -404,7 +421,7 @@ footer
   position fixed
   right 0
   //left 0
-  // bottom -(footer-height)
+  // bottom -(footer_height)
   bottom -(grid)
   height 0
   opacity 0
@@ -470,11 +487,11 @@ body.scrolled
   .logo
     a
       top 3px
-      font-size .62em
+      font-size .6em
       transition all .1s ease-out
       padding-top 4px
   header
-    height header-scrolled-height
+    height header_scrolled_height
     .container
       .tools
         top 15px
@@ -513,9 +530,9 @@ body.scrolled
         right -85px
         transition all .2s bounce
   #left_content
-    top (header-scrolled-height+5)
+    top (header_scrolled_height+3)
     padding-top (grid * 1.5)
-    transition padding-top .3s ease-out, top .2s ease-out!important
+    transition padding-top .4s ease-out, top .1s ease-out!important
     .handle
       transition top .2s ease-out
     #paginator
@@ -525,11 +542,11 @@ body.scrolled
         bottom 10px
   .main-content
     .breadcrumb
-      top (header-scrolled-height+2)
-      transition top .2s ease-out
+      top (header_scrolled_height+2)
+      transition top .25s ease-out
   footer
     opacity 1
-    height footer-height
+    height footer_height
     transition height .1s ease-out
 //}}}
 //{{{ Collapsed left nav
@@ -537,15 +554,24 @@ body.collapsed
   #left_content
     width 0!important
     transition width .1s
-    .handle::before
-      transform rotate(180deg)
-      top 8px
-      left 14px
-      transition all .2s ease-out
     .handle
       right -25px
+      background-color #bbb
+      background radial-gradient(circle closest-corner at 45% 35%, #d0d0d0 40%, #999 100%)
+      border 1px solid #888
+      box-shadow 0 0 3px 1px light
+      &::before, &::after
+        transform rotate(180deg)
+        top 8px
+        left 14px
+        transition all .2s ease-out
+      &::after
+        top 7px
+        left 15px
     .create a
       display none!important
+    .thread.active .arrow
+      display none
   .main-content
     .resizable
       padding-left (grid*5)!important
@@ -554,6 +580,7 @@ body.collapsed
     left 0!important
 //}}}
 
+// homepage
 //{{{ Background layer
 img.bg
   position fixed
@@ -571,7 +598,6 @@ img.bg.active
   //opacity 1
   //display block
 //}}}
-
 //{{{ Masonry
 .masonry, .masonry .masonry-brick
   transition-duration 0.1s

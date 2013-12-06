@@ -211,6 +211,20 @@ load-css = (href) ->
 
 @respond-resize = ~>
   w = $ window
+  # augment stylus for height
+  if e = $ \.thread.active
+    switch e.height!
+    | 49 => # one-liner title
+      e.add-class \small
+      e.remove-class 'medium large'
+    | 71 => # most variations fit into medium
+      e.add-class \medium
+      e.remove-class 'small large'
+    | 93 => # long title & narrow nav
+      e.add-class \large
+      e.remove-class 'small medium'
+    e.remove-class \hidden
+
   unless window.mutator is \admin # FIXME improve responsive.styl
     if w.width! <= 800px then $ \body .add-class \collapsed
 
@@ -248,7 +262,7 @@ load-css = (href) ->
 
 timers = {}
 @show-tooltip = ($tooltip, msg, duration=4500ms) ~>
-  unless msg?length then return # guard
+  unless msg?length then $tooltip.remove-class \hover; return # hide & guard
   timer = timers[msg]
   if timer then clear-timeout timer
   if $tooltip?length then $tooltip.html msg .add-class \hover # show

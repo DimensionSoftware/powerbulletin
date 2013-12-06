@@ -11,6 +11,7 @@ require! {
   fs
   mkdirp
   stylus
+  pagedown
 }
 
 const base-css = \public/sites
@@ -34,12 +35,13 @@ is-locked-forum = (m, forum-id) ->
     (err, r) <- rights.can-edit-user req.user, user_id
     if err then return next err
     if r # can edit, so--
-      (err, alias) <- db.aliases.select1 {user_id, site_id}  # fetch current config
+      (err, alias) <- db.aliases.select-one {user_id, site_id}  # fetch current config
+      c = new pagedown.Converter
       config={}
-      alias.config <<< req.body?config or {}                 # & merge
-      for k in <[title sig]>
-        config[k]=alias.config[k]                            # & scrub
-      err <- db.aliases.updatex {config}, {user_id, site_id} # & update!
+      alias.config <<< req.body?config or {}                      # & merge
+      for k in <[title sig]> then config[k]=alias.config[k]       # & scrub
+      if config.sig then config.sig-html = c.make-html config.sig # & scrub harder + render sig
+      err <- db.aliases.update {config}, {user_id, site_id}       # & update!
       announce.in(site_id).emit \new-profile-title, { id:user_id, title:config?title } # broadcast title everywhere
       (err, user) <~ db.usr { id:user_id, site_id }
       delete user.auths
@@ -273,7 +275,7 @@ is-locked-forum = (m, forum-id) ->
       user_id : id
       site_id : site.id
 
-    err, new-alias <- db.aliases.update1 alias
+    err, new-alias <- db.aliases.update alias
     if err
       res.json success: false, errors: [ "Could not sove user." ]
     else
@@ -360,7 +362,7 @@ is-locked-forum = (m, forum-id) ->
 @products =
   show: (req, res, next) ->
     return next 404 unless id = req.params.product
-    err, product <- db.products.select1 { id }
+    err, product <- db.products.select-one { id }
     if err then return next err
     if product
       res.json product

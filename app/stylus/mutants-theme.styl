@@ -59,14 +59,14 @@ html.homepage
 //}}}
 //{{{ - forum, profile, search & moderation
 html.forum, html.profile, html.search, html.moderation
-  #forum_background_buffer::after, #forum_background::after
+  #forum_background_color::after, #forum_background_buffer::after, #forum_background::after
     content ''
     position absolute
     top 0
     right 0
     bottom 0
     left 0
-    background-color tint-color
+    background-color tint_color
   .main-content
     .forum, .threads, .search
       .post.censored
@@ -92,14 +92,13 @@ html.forum, html.profile, html.search, html.moderation
               transition none
               z-index 2
               border-left 5px solid light
-          p.body::after
-            border-bottom 1px solid rgba(0,0,0,.1)
-        .username
-          font-weight 500
-          color dark_text
-          text-transform capitalize
-        p.body
-          position relative
+        .profile-container
+          .username
+            font-weight 500
+            color dark_text
+            text-transform capitalize
+        .container
+          background-color #fff
           &::after
             content ''
             position absolute
@@ -108,7 +107,8 @@ html.forum, html.profile, html.search, html.moderation
             bottom 0
             height 0
             box-shadow 0 0 10px 1px tint-color
-            border-bottom 1px solid rgba(0,0,0,.06)
+          .body
+            position relative
         .post-edit
           .summary::before
             border-left 4px solid #ccc
@@ -126,35 +126,19 @@ html.forum, html.profile, html.search, html.moderation
       // 2nd children and thereafter are comments
       .children
         .children
-          p.body, .user span
+          .body
             color #666
-          .container
-            max-width 450px
-          .container, .actions
-            margin-left 52px
-          .username
-            color #444
-          .user
-            .profile.photo
-              position absolute
           .post-content, .cke_editable
             p
               color #444
               margin-top 0
           .date
-            color #999
+            color #888
       .actions
         position relative
         z-index 2
         a
-          &:active, &:focus
-            background radial-gradient(circle closest-corner at 55% 65%, light2 85%, dark2 100%)
-          &:hover
-            background radial-gradient(circle closest-corner at 45% 35%, light2 55%, dark2 100%)
-          color dark
-          background-color light2
-          background-image linear-gradient(to top, dark2 10%, light2 100%)
-          border-radius 27px
+          color dark_text
           .s-reply::after, .s-permalink::after, .s-censor::after
             position absolute
             content ''
@@ -201,8 +185,6 @@ html.forum, html.profile, html.search, html.moderation
           border-top 1px solid transparent
         &:first-child:hover
           border-top 1px solid rgba(250,250,250,.2)
-        &:hover::after
-          border-bottom 1px solid rgba(0,0,0,.2)
         &:hover
           background-color rgba(255,255,255,.2)
           .created
@@ -216,11 +198,46 @@ html.forum, html.profile, html.search, html.moderation
           width 0
           bottom -1px
           content ''
+        .arrow
+          position fixed
+          content ''
+          right -51px
+          top 0
+          z-index 1
+          &:after
+            position absolute
+            content ''
+            right -42px
+            top -42px
+            z-index 2
       .thread.active
-        &::after
-          height 0
-          border none
-        &::before
+        .arrow
+          border 43px solid transparent
+          border-left 12px solid light
+          right -55px
+          &:after
+            border 42px solid transparent
+            border-left 12px solid #fff
+            right -41px
+        &.small .arrow
+          border 30px solid transparent
+          border-left 12px solid light
+          right -43px
+          &:after
+            border 32px solid transparent
+            border-left 12px solid #fff
+            margin-top 9px
+            right -30px
+        &.large .arrow
+          border 53px solid transparent
+          border-left 12px solid light
+          right -64px
+          &:after
+            border 54px solid transparent
+            border-left 12px solid #fff
+            margin-top -12px
+            right -53px
+        &:before
           background-image linear-gradient(to top, dark 10%, light 100%)
           width 5px
       .thread.active:last-child, .thread.active
@@ -260,9 +277,9 @@ html.admin
       &.feature.upgrade
         font-size .75em
       &.feature.upgrade.active::after
-        border-left-color dark2
+        border-left-color dark
       &.feature.upgrade.active
-        background-color dark2
+        background-color dark
       &.feature
         position relative
         margin-top (grid*3)

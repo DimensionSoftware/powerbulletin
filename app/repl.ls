@@ -25,6 +25,7 @@ global.m   = require \./pb-models
 
 global.sioa     = require \socket.io-announce
 global.announce = sioa.create-client!
+global.chat     = require \./chat
 
 require! \./payments
 require! \./validate-cc

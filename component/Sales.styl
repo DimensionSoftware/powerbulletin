@@ -2,8 +2,9 @@ blend = rgba(0,0,0,.5)
 
 //{{{ Sales is a site component that owns <body> and it can define initial style:
 body
+  background-color #000
   margin 0
-  height 5700px
+  height 4900px
   position relative
   .body-bg
     position fixed
@@ -11,15 +12,7 @@ body
     left 0
     right 0
     bottom 0
-    &::before
-      background-image radial-gradient(ellipse closest-corner at 45% 50%, rgba(0,0,0,.5) 70%, rgba(0,0,0,.6) 100%)
-      content ''
-      position absolute
-      top -235px
-      bottom 0
-      left 0
-      right 0
-      height 5000px
+    opacity 1
     img
       width 100%
       min-height 1015px
@@ -31,14 +24,15 @@ body
 //}}}
 //{{{ - Site Scrolled behaviors
 body.scrolled
+  background-color #fff
   .body-bg
     opacity 0
     transition opacity .5s ease-out
   header
     border-bottom 0
-    height 0
+    height 53px
     box-shadow none
-    background rgba(255,255,255,.65)
+    background rgba(255,255,255,.5)
     ul
       li
         margin-top 15px
@@ -116,6 +110,8 @@ body.scrolled
         font-style italic
         margin-left 1px
         letter-spacing 1px
+  section
+    opacity 1
   #features::after
     border-top-color light
   nav
@@ -134,13 +130,13 @@ body.scrolled
 //{{{ - Site Responsive (mobile)
 @media screen and (max-width: 800px)
   body.homepage
-    height 2685px!important
+    height 2515px!important
     .Sales
       font-size .85em
       .Sales-content
         padding-top 60px
-      .body-bg
-        display none
+      //.body-bg
+      //  display none
       .logo
         left 15px!important
       #imagine
@@ -167,6 +163,13 @@ body.scrolled
         article
           transform translateX(35px)
           width 90%!important
+          .arrow
+            display none
+          img
+            display none
+          ul
+            opacity 1
+            text-indent 0
       section.last
         .SiteRegister
           padding-left 50px!important
@@ -174,6 +177,7 @@ body.scrolled
         article h4
           margin-left 250px!important
       section.faq
+        margin-bottom 25px
         article
           h3::after
             left 29%
@@ -196,7 +200,7 @@ body.scrolled
       z-index 9
       transition top .3s ease-out
       &:hover:before
-        background-color rgba(0,0,0,.3)
+        background-color rgba(150,150,150,.3)
       &:before
         content ''
         position absolute
@@ -204,7 +208,7 @@ body.scrolled
         top 36px
         padding 30px
         border-radius 100%
-        background-color rgba(0,0,0,.2)
+        background-color rgba(150,150,150,.2)
         transition all .2s ease-out
       .s-down-arrow
         position absolute
@@ -265,6 +269,7 @@ body.scrolled
     font-weight bold
     color #fff
     margin-top 155px
+    z-index 2
     ul
       font-size .55em
       color #eee
@@ -282,6 +287,7 @@ body.scrolled
   #register_top
     margin-top -60px
     opacity 0
+    z-index 2
   #register_top.show
     transform translateX(25px)
     opacity 1
@@ -295,6 +301,7 @@ body.scrolled
     margin 40px auto 0 auto
     font-size 1.15em
     width 370px
+    z-index 2
     animation-name none
     span
       padding 0 3px
@@ -379,7 +386,7 @@ body.scrolled
         content ''
         position absolute
         right 0
-        top 9px
+        top 6px
         height 4px
         width 4px
         border-radius 5px
@@ -394,21 +401,25 @@ body.scrolled
           letter-spacing 1px
       .name
         cursor pointer
-        padding 1px 23px 1px 8px
-        border-radius 3px
-        color #444
+        padding 2px 23px 2px 8px
+        border-radius 5px
+        color #333
         position relative
         margin-right -25px
         letter-spacing -5px
         opacity 0
-        background rgba(255,255,255,.2)
+        background rgba(255,255,255,.4)
         font-size .8em
+  .container.visible
+    visibility visible
+    &:after
+      display block
   .container
     position relative
-    height 600px
-    //height 1150px
+    height 500px
     width 100%
     overflow hidden
+    visibility hidden
     img.bg
       position absolute
       left 0
@@ -423,15 +434,19 @@ body.scrolled
     border-top 1px solid #777
   section#support.feature
     background-image none
-    box-shadow 0
+    box-shadow none
+    border none
     article
-      transform translateX(-120px)
       h4
-        margin-left 350px
+        margin-left 0
       p
         width 100%
+        text-align left
   section.feature.shown
     article
+      img
+        opacity 1
+        transition opacity .3s ease-out .1s
       ul
         opacity 1
         text-indent 0
@@ -445,7 +460,7 @@ body.scrolled
     border-top 1px solid #777
     border-bottom 1px solid #777
     box-shadow 0 0 28px -2px blend
-    background-image radial-gradient(ellipse closest-corner at 50% 50%, #fff 70%, #000 150%)
+    background-image radial-gradient(ellipse closest-corner at 50% 50%, #fff 85%, #000 160%)
     transition box-shadow 1s ease-out .5s
     overflow visible
     .down-arrow
@@ -456,6 +471,12 @@ body.scrolled
     //  transition none
     article
       transform translateX(150px)
+      img
+        position absolute
+        top -74px
+        left -388px
+        opacity 0
+        outline none
       h4
         color light
         font-weight 600
@@ -473,7 +494,7 @@ body.scrolled
           color #222
           margin-top 5px
     .arrow
-      top -40px
+      top 30px
       width 100%
       height 30px
       font-size .7em
@@ -490,8 +511,9 @@ body.scrolled
     display block
     top 0
     left 0
-    height 280px
+    height 400px
     width 100%
+    opacity 0
     overflow hidden
   section.last
     position absolute
@@ -513,6 +535,11 @@ body.scrolled
         position absolute
         padding-left 0
         bottom 10px
+  #realtime img
+    top 0
+    left -450px
+  #responsive img
+    left -510px
   //}}}
   //{{{ FAQ
   section.faq
@@ -546,8 +573,8 @@ body.scrolled
 
   section
     article
-      max-width 700px
-      margin 70px auto 0 auto
+      max-width 600px
+      margin 120px auto 0 auto
       h3
         position relative
         letter-spacing 2px
