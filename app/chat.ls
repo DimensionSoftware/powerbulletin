@@ -8,9 +8,8 @@ announce = sioa.create-client!
 #
 # @param  Number  c-id      conversation
 # @param  Number  from-id   user id of sender
-# @param  Number  to-id     user id of recipient
 # @param  String  message   text of the message
-@send = (c-id, from-id, to-id, message, cb) ->
+@send = (c-id, from-id, message, cb) ->
   err, c <- db.conversations.select-one id: c-id
   if err then return cb err
   if not c then return cb new Error("conversation #c-id not found")
@@ -24,12 +23,13 @@ announce = sioa.create-client!
     user_id         : from-id
     body            : message
 
-  err, m <- db.messages.upsert m
+  err, r <- db.messages.upsert m
   if err then return cb err
+  if not r.length then return cb new Error("db.messages.upsert failed")
 
   for p in ppl
-    announce.in("#{c.site_id}/user/#{p.user_id}").emit \chat-message, m
+    announce.in("#{c.site_id}/users/#{p.user_id}").emit \chat-message, r.0
 
-  cb null, m
+  cb null, r.0
 
 # vim:fdm=indent
