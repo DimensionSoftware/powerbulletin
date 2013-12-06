@@ -766,6 +766,10 @@ mk-post-pnum-to-href = (post-uri) ->
     (window, next) ->
       scroll-to-top!
       next!
+  on-personalize:
+    (w, u, next) ->
+      layout-on-personalize w, u
+      next!
 
 # this mutant pre-empts any action for private sites where user is not logged in
 # it means the site owner has specified that the site is private therefore we show a skeleton
