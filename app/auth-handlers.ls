@@ -3,6 +3,7 @@ require! {
   async
   jade
   querystring
+  url
   sioa: \socket.io-announce
   pg:   \./postgres
   auth: \./auth
@@ -393,7 +394,7 @@ auth-finisher = (req, res, next) ->
     req.logout!
     err <- db.aliases.update-last-activity-for-user { user_id, site_id }
     if err then return next err
-    redirect-url = req.param(\redirect-url) or req.header(\Referer) or '/'
+    redirect-url = url.parse(req.param(\redirect-url) or req.header(\Referer) or '/').pathname
     res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '').replace(is-auth, '')
   else
     res.redirect '/'
