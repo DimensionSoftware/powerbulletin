@@ -55,21 +55,22 @@ left-offset = 50px
 
 #{{{ UI Interactions
 # ui save state
-sep = \-
+const sep = \-
+const k-ui = "#{window.user?id}-ui"
 window.save-ui = -> # serialize ui state to local storage
   min-width = 200px
   w = $ \#left_content .width!
-  s = storage.get \s
+  s = storage.get k-ui
   if s then [_, last] = s.split sep
   w = if w > min-width then w else last or min-width # default
   vals =
     if $ \body .has-class(\collapsed) then 1 else 0
     w
-  storage.set \s, vals.join(sep),
+  storage.set k-ui, vals.join(sep),
     path:   \/
     secure: true
 window.load-ui = -> # restore ui state from local storage
-  s  = storage.get \s
+  s  = storage.get k-ui
   $l = $ \#left_content
 
   if s # restore
@@ -287,7 +288,7 @@ $d.on \click 'header .onclick-close' (e) ->
   History.back!
 #{{{ - left_nav handle
 $d.on \click \#handle ->
-  s  = storage.get \s
+  s  = storage.get k-ui
   $l = $ \#left_content
   if s then [collapsed, w] = s.split sep
   $ \body .toggle-class \collapsed
