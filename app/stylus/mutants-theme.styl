@@ -167,7 +167,7 @@ html.forum, html.profile, html.search, html.moderation
           border-bottom 1px solid rgba(0,0,0,.1)
           background-color rgba(255,255,255,.3)
           height 1px
-          margin-top 10px
+          margin-top 8px
           left 10%
           width 80%
         .title
@@ -191,9 +191,10 @@ html.forum, html.profile, html.search, html.moderation
             opacity .8
           a
             color #222
+      .thread.active
         &::before
           position absolute
-          top -1px
+          margin-top -1px
           left 0
           width 0
           bottom -1px
@@ -202,15 +203,14 @@ html.forum, html.profile, html.search, html.moderation
           position fixed
           content ''
           right -51px
-          top 0
+          margin-top 0
           z-index 1
           &:after
             position absolute
             content ''
             right -42px
-            top -42px
+            margin-top -42px
             z-index 2
-      .thread.active
         .arrow
           border 43px solid transparent
           border-left 12px solid light
@@ -226,7 +226,7 @@ html.forum, html.profile, html.search, html.moderation
           &:after
             border 32px solid transparent
             border-left 12px solid #fff
-            margin-top 9px
+            margin-top -33px
             right -30px
         &.large .arrow
           border 53px solid transparent
@@ -235,13 +235,12 @@ html.forum, html.profile, html.search, html.moderation
           &:after
             border 54px solid transparent
             border-left 12px solid #fff
-            margin-top -12px
+            margin-top -54px
             right -53px
         &:before
           background-image linear-gradient(to top, dark 10%, light 100%)
           width 5px
       .thread.active:last-child, .thread.active
-        position relative
         z-index 9
         background-color #fff
         border-right 1px solid light
