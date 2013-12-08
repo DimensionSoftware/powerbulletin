@@ -390,9 +390,13 @@ html.forum, html.profile, html.search, html.moderation
           margin-left 193px
           margin-bottom 35px
           padding 23px 30px 30px 35px
-          border-bottom-right-radius 20px
-          border-bottom-left-radius 20px
-          border-top-right-radius 20px
+          border-bottom-right-radius 35px
+          border-bottom-left-radius 35px
+          border-top-right-radius 35px
+          transition box-shadow .1s ease-out .1s
+          &:hover
+            box-shadow 1px 0 2px 1px rgba(0,0,0,.08)
+            transition none
           .s-chat-bubble
             position absolute
             top 0
@@ -429,6 +433,7 @@ html.forum, html.profile, html.search, html.moderation
           text-transform capitalize
         .actions
           opacity 0
+          margin-left -13px
           position absolute
           left 225px
           bottom -26px
@@ -454,7 +459,7 @@ html.forum, html.profile, html.search, html.moderation
         .social
           position absolute
           overflow hidden
-          right 0
+          right (grid*1.5)
           bottom -30px
           height 25px
           min-width 200px
@@ -462,10 +467,13 @@ html.forum, html.profile, html.search, html.moderation
           div
             max-width 95px!important
             vertical-align top
+            overflow hidden
+          div:last-child
+            max-width 59px!important
           > iframe
             max-width 90px!important
           .fb_iframe_widget
-            margin-right 10px!important
+            margin-right 16px!important
             margin-top -3px!important
             vertical-align top
       .page-loaded:last-child, #listview div[data-infinity-pageid]
@@ -787,11 +795,41 @@ html.admin
     .handle
       display none
     #left_container
+      h2
+        position absolute
+        margin-left 30px
+        bottom 20px
+        font-size .9em
+        font-style italic
+        font-weight 400
+        max-height 20px
+        overflow hidden
+        color #444
+        cursor pointer
+        display block
+        z-index 10
+        &:hover
+          color #333
+          max-height 600px
+          .dialog
+            max-height 600px
+            padding 6px 12px
+            transition max-height .2s ease-out .3s, padding .1s ease-out .3s
+        .dialog
+          max-height 0
+          background-color #eee
+          border 1px solid #ddd
+          border-radius 5px
+          min-width 175px
+          transition max-height .1s ease-out .2s
+        a
+          display block
+          font-size .9em
       menu
         float right
         list-style none
         padding 18px
-        margin 0 0 0 3px
+        margin 28px 0 0 3px
         transition all .2s ease-out
         li.active
           a
@@ -911,6 +949,7 @@ html.admin
           padding-right 5px
           margin-top 20px
           overflow hidden
+          transition all 0 ease-out .3s
         &:hover
           border-bottom 1px solid #ddd
           background-color #f8f8f8

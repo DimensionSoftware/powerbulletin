@@ -463,8 +463,10 @@ function profile-paths user, uploaded-file, base=\avatar
   site = res.vars.site
   res.locals.action = req.param \action
 
+  user = req.user
   tasks =
     site: db.site-by-id site.id, _
+    sites: db.sites.owned-by-user user.id, _
 
   if req.surfing
     delete-unnecessary-surf-data res
