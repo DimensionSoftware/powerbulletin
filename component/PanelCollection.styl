@@ -7,6 +7,17 @@ z = 100
   right 0
   z-index z
 
+  .toggler
+    position fixed
+    top 0.5em
+    right 0.5em
+    cursor pointer
+    z-index 1
+  .toggler.off:after
+    content "☰ "
+  .toggler.on:after
+    content "x "
+
   .panel-togglers
     position relative
     float left

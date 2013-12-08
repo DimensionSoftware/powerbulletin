@@ -32,8 +32,24 @@ module.exports =
       @ease-in  = \easeInBack
       @ease-out = \easeOutBack
 
+      @local \selected, ''
+
     on-attach: ->
-      @$ul      = @$.find('ul:first')
+      @$ul = @$.find('ul:first')
+      @$toggler = @$.find('.toggler')
+
+      @$toggler.click (ev) ~>
+        if @$toggler.has-class \on
+          @off!
+        else
+          @on!
+
+      @@$R((name) ~>
+        if name
+          @$toggler.remove-class \off .add-class \on
+        else
+          @$toggler.remove-class \on .add-class \off
+      ).bind-to @state.selected
 
     # add a panel to the collection
     add: (name, panel) ->
@@ -85,23 +101,23 @@ module.exports =
       $togglers = @$.find \.panel-togglers
       if @selected is name
         selected-panel.hide!
-        @selected = null
+        @last-selected = @selected
         @$ul.find \li .remove-class \selected
+        @state.selected(@selected = null)
         $togglers .animate { left: 0 }, @delay, @ease-in
       else if @selected is null
         selected-panel.show!
+        @state.selected(@selected = name)
         $togglers .animate { left: -(selected-panel.local \width) }, @delay, @ease-out
-        @selected = name
       else if @selected != name
         unselected-panel = @find @selected
         unselected-panel.hide!
         selected-panel.show!
+        @state.selected(@selected = name)
         $togglers .animate { left: -(selected-panel.local \width) }, @delay
-        @selected = name
       @selected
 
     select-force: (name) ->
-      console.log name
       selected-panel = @find name
       $togglers = @$.find \.panel-togglers
       if @selected != name and @selected isnt null
@@ -109,7 +125,27 @@ module.exports =
         unselected-panel.hide!
       selected-panel.show!
       $togglers .animate { left: -(selected-panel.local \width) }, @delay
-      @selected = name
+      @state.selected(@selected = name)
+
+    off: ->
+      return unless  @selected
+      (@find @selected).hide!
+      @last-selected = @selected
+      @state.selected(@selected = null)
+      $togglers = @$.find \.panel-togglers
+      $togglers .animate { left: 0 }, @delay, @ease-in
+
+    on: ->
+      return if @selected
+      selected-panel = if @last-selected
+        @find @last-selected
+      else
+        @default-panel
+      return unless selected-panel
+      $togglers = @$.find \.panel-togglers
+      selected-panel.show!
+      $togglers .animate { left: -(selected-panel.local \width) }, @delay, @ease-out
+      @state.selected(@selected = @last-selected)
 
     resize: ->
       if @selected
@@ -117,12 +153,12 @@ module.exports =
         selected-panel.resize!
 
     hide: (sel) ->
-      @@$(sel).add-class \hidden
+      #@@$(sel).add-class \hidden
       @@$(sel).hide(@delay, @ease-in)
 
     show: (sel) ->
       hi = $(window).height!
-      @@$(sel).remove-class \hidden
+      #@@$(sel).remove-class \hidden
       @@$(sel).css(height: "#{hi}px").show @delay, @ease-out
 
 # vim:fdm=indent
