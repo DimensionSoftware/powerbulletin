@@ -4,7 +4,7 @@ blend = rgba(0,0,0,.5)
 body
   background-color #000
   margin 0
-  height 4900px
+  height 4960px
   position relative
   .body-bg
     position fixed
@@ -337,20 +337,27 @@ body.scrolled
     height 30px
     padding-left 35px
     padding-top 4px
+    &:hover
+      animation-name tiny-grow
+      animation-duration .1s
+      h1
+        text-shadow 0 0 2px light
+        transition none
     h1
       font-size 1.5em
-      font-weight 200
+      margin-left 3px
+      font-weight 300
       margin 0
-      color #666
-      letter-spacing -1px
-      text-shadow 1px 1px 1px #ddd
+      color #555
       font-style italic
+      transition text-shadow .2s ease-out .5s
       b
+        text-shadow none
         font-style normal
         letter-spacing 0
         margin-left 4px
         font-weight 500
-        color #444
+        color #333
     em
       display block
       margin-top 23px
@@ -532,6 +539,8 @@ body.scrolled
         position absolute
         padding-left 0
         bottom 10px
+        .hostname
+          padding-left 33px
   #realtime img
     top 0
     left -450px
