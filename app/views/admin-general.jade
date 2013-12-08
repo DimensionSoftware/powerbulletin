@@ -7,6 +7,13 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
     label(for='posts_per_page') Posts per Page
     input(id='posts_per_page', class='posts-per-page', name='postsPerPage', type='text', value=site.config.postsPerPage, maxlength=4)
     .break
+    label Social
+    .box
+      input#social(type='checkbox', value='checked', name='social', checked=site.config.social)
+      label.switch-control(for='social')
+        .switch
+    .note Embed share links for Facebook, Twitter &amp; Google+
+    .break
     label Privacy
     .box
       input#private(type='checkbox', value='checked', name='private', checked=site.config.private)

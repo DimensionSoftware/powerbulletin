@@ -451,6 +451,23 @@ html.forum, html.profile, html.search, html.moderation
               text-decoration none
           .edit, .censor
             display none
+        .social
+          position absolute
+          overflow hidden
+          right 0
+          bottom -30px
+          height 25px
+          min-width 200px
+          max-width 300px
+          div
+            max-width 95px!important
+            vertical-align top
+          > iframe
+            max-width 90px!important
+          .fb_iframe_widget
+            margin-right 10px!important
+            margin-top -3px!important
+            vertical-align top
       .page-loaded:last-child, #listview div[data-infinity-pageid]
         padding-bottom (grid*4) !important
       .children
@@ -892,9 +909,9 @@ html.admin
           width 305px
           height 100px
           font-size 1em
-        #invite_only:checked + label::after, #private:checked + label::after
+        #invite_only:checked + label::after, #private:checked + label::after, #social:checked + label::after
           content 'On'
-        #invite_only + label::after, #private + label::after
+        #invite_only + label::after, #private + label::after, #social + label::after
           content 'Off'
       button
         display block
