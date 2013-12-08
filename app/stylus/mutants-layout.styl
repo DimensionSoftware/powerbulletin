@@ -889,6 +889,38 @@ html.admin
         clear both
       .break.double
         padding-top (grid*2.5)
+      fieldset.collapse
+        cursor pointer
+        position relative
+        margin-top grid
+        margin-bottom 0
+        border-bottom 1px solid #eee
+        background-color #fafafa
+        overflow hidden
+        legend
+          top 0
+          left 0
+          margin -10px
+          color #777!important
+          letter-spacing 1px
+          text-align center
+          font-weight bold
+          width 100%
+        .dialog
+          max-height 0
+          padding-right 5px
+          margin-top 20px
+          overflow hidden
+        &:hover
+          border-bottom 1px solid #ddd
+          background-color #f8f8f8
+          legend
+            color #555!important
+          .dialog
+            margin-top 35px
+            max-height 500px
+            padding-bottom (grid*1.5)
+            transition all .2s ease-out .3s
       fieldset
         padding grid (grid*3) grid (grid*4)
         border 0

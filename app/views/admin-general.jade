@@ -7,37 +7,44 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
     label(for='posts_per_page') Posts per Page
     input(id='posts_per_page', class='posts-per-page', name='postsPerPage', type='text', value=site.config.postsPerPage, maxlength=4)
     .break
-    label Social
-    .box
-      input#social(type='checkbox', value='checked', name='social', checked=site.config.social)
-      label.switch-control(for='social')
-        .switch
-    .note Embed share links for Facebook, Twitter &amp; Google+
-    .break
-    label Privacy
-    .box
-      input#private(type='checkbox', value='checked', name='private', checked=site.config.private)
-      label.switch-control(for='private')
-        .switch
-    .note Hide content from search engines &amp; the public
-    .break
-    label Invite Only
+    label(for='invite_only') Invite Only
     .box
       input#invite_only(type='checkbox', value='checked', name='inviteOnly', checked=site.config.inviteOnly)
       label.switch-control(for='invite_only')
         .switch
     .note Disallow the public from registering - 
       a.mutant(href='/admin/invites') Invites
+    .break
+    fieldset.collapse
+      legend SEO Options
+      .dialog
+        label(for='social') Social
+        .box
+          input#social(type='checkbox', value='checked', name='social', checked=site.config.social)
+          label.switch-control(for='social')
+            .switch
+        .note Embed share links for Facebook, Twitter &amp; Google+
+        .break
+        label(for='private') Privacy
+        .box
+          input#private(type='checkbox', value='checked', name='private', checked=site.config.private)
+          label.switch-control(for='private')
+            .switch
+        .note Hide content from search engines &amp; the public
+        .break.double
+        label(for='keywords') Keywords
+        textarea(id='keywords', name='metaKeywords')= site.config.metaKeywords
+        .note Separate meta keywords with commas
+        .break
+        label(for='analytics') Analytics
+        textarea(id='analytics', name='analytics')= analytics
+        .note Paste Javascript code above, excluding &lt;script&gt; tags
 
     //-.break
     //-label(for='theme') Base Theme
     //-select(id='theme', name='theme')
     //-  each t in themes
     //-    option(value=t.id)= t.name
-    .break.double
-    label(for='keywords') Keywords
-    textarea(id='keywords', name='metaKeywords')= site.config.metaKeywords
-    .note Separate meta keywords with commas
     .break
     label(for='style') Style
     textarea(id='style', name='style')= site.config.style
@@ -46,10 +53,6 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
       | or 
       a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
       | code in above
-    .break
-    label(for='analytics') Analytics
-    textarea(id='analytics', name='analytics')= analytics
-    .note Paste Javascript code above, excluding &lt;script&gt; tags
   button(type='submit', value='Save') Save
   input(type='hidden', name='action', value='general')
 a.menu-link.mutant(href='/admin/menu') Continue building your menu here
