@@ -5,6 +5,7 @@ form.site-register
   fieldset
     input.SiteRegister-subdomain(type='text', name='subdomain', value=typeof subdomain != 'undefined' ? subdomain : '', autocomplete="off")
       t
+    span.hostname-hidden
     span.hostname= hostname
     span.SiteRegister-available
       //- unicode checkmark

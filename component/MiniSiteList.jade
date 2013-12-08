@@ -1,7 +1,6 @@
 h1 My Communities
 if sites.length
   a.new.top.onclick-first-site(href='#', title='Start a new community!') +
-    b New
   ul.communities
     each s in sites
       li
@@ -18,7 +17,7 @@ if sites.length
               a(href="https://#{d}/auth/once-admin", target="_blank") admin
               | )
   p.new
-    a.onclick-first-site(href='#') Start a new community
+    a.onclick-first-site(href='#') ... Start a New Community
       i ! &nbsp;
 else
   p

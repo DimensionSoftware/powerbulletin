@@ -79,10 +79,12 @@ module.exports =
       var last-val
       @$.on \click, \.hostname (ev) -> $ ev.target .prev \.SiteRegister-subdomain .focus!
       @$.on \keydown, \input.SiteRegister-subdomain, -> $ \.hostname .css \opacity, 0
-      @$.on \keyup, \input.SiteRegister-subdomain, debounce ->
-        new-input = $(@).val!
+      @$.on \keyup, \input.SiteRegister-subdomain, debounce (ev) ~>
+        new-input = $ ev.target .val!
         if new-input.length
-          $ \.hostname .animate {opacity:1, left:new-input.length * 27px + 32px}, 150ms # assume fixed-width font
+          w = (@$.find \.hostname-hidden .html new-input).width! # px width of input
+          $ \.hostname .transition {opacity:1, left:w}, 300ms, \easeOutExpo
+          console.log w
           unless new-input is last-val
             # only signal changes on _different_ input
             component.state.subdomain new-input
