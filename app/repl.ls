@@ -27,6 +27,14 @@ global.sioa     = require \socket.io-announce
 global.announce = sioa.create-client!
 global.chat     = require \./chat
 
+global.reload = (m) ->
+  paths = require.resolve m
+  if typeof paths == \string
+    delete require.cache[paths]
+  else
+    paths.for-each (p) -> delete require.cache[p]
+  require m
+
 require! \./payments
 require! \./validate-cc
 global <<< {db: {}, pay: payments, vcc: validate-cc}
