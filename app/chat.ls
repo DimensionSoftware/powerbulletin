@@ -26,10 +26,15 @@ announce = sioa.create-client!
   err, r <- db.messages.upsert m
   if err then return cb err
   if not r.length then return cb new Error("db.messages.upsert failed")
+  msg = r.0
+
+  # sender of message has already seen then message.
+  err, r <- db.messages.mark-read msg.id, from-id
+  if err then return cb err
 
   for p in ppl
-    announce.in("#{c.site_id}/users/#{p.user_id}").emit \chat-message, r.0
+    announce.in("#{c.site_id}/users/#{p.user_id}").emit \chat-message, msg
 
-  cb null, r.0
+  cb null, msg
 
 # vim:fdm=indent
