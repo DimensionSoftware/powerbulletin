@@ -535,6 +535,49 @@ query-dictionary =
       '''
       postgres.query sql, [c-id], cb), rights: JSON.parse, config: JSON.parse
 
+    # past conversations by site-id and user-id
+    past: (site-id, user-id, cb) ->
+      sql = '''
+      SELECT c.id
+        FROM conversations c
+             JOIN users_conversations uc ON c.id = uc.conversation_id
+       WHERE c.site_id = $1
+             AND uc.user_id = $2
+      '''
+      # TODO - ORDER BY MAX(m.created) DESC ?
+      # TODO - unwrap the object, just the ids
+      postgres.query sql, [site-id, user-id], cb
+
+    # grab a conversation + related info
+    by-id: (id, cb) ->
+      err, c <~ @select-one { id }
+      if err then return cb err
+      err, c.participants <~ @participants id
+      if err then return cb err
+      # TODO - also grab last few messages?
+      cb err, c
+
+    # unread message counts grouped by conversation
+    unread-summary-by-user: (site-id, user-id, cb) ->
+      sql = '''
+      SELECT c.id,
+             COUNT(m.id) - COUNT(mr.id) AS unread
+        FROM conversations c
+             JOIN messages m               ON c.id = m.conversation_id
+             JOIN users_conversations uc   ON c.id = uc.conversation_id
+             LEFT JOIN messages_read mr    ON (m.id = mr.message_id AND uc.user_id = mr.user_id)
+       WHERE c.site_id = $1 AND uc.user_id = $2
+       GROUP BY c.id
+      '''
+      # TODO - ORDER BY MAX(m.created) DESC ?
+      # TODO - expose this data to the client side
+      postgres.query sql, [site-id, user-id], cb
+
+  messages:
+    # mark a message as read
+    mark-read: (id, user-id, cb) ->
+      db.messages_read.upsert { message_id: id, user_id: user-id }, cb
+
 serializers-for =
   json: JSON.stringify
 
