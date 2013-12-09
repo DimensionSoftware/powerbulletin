@@ -486,6 +486,10 @@ function profile-paths user, uploaded-file, base=\avatar
   fdoc.title = \Admin
   fdoc.menu = site.config.menu
 
+  # reject current site
+  tmp = fdoc.sites |> reject (.id is site.id)
+  fdoc.sites = tmp # mutate
+
   res.locals fdoc
 
   if res.locals.action is \users
