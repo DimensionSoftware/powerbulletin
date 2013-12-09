@@ -14,12 +14,16 @@ html.profile .wmd-preview
   min-width 800px
   min-height height
   position relative
+  overflow hidden
   //{{{ Preview pane
   &.has-preview
   // - when the preview is visible
     .wmd-panel
+      min-width 50%
       width 50%
       transition none
+      .wmd-input
+        width 98%
     .wmd-preview 
       width 50%
       transition none
@@ -34,6 +38,7 @@ html.profile .wmd-preview
     bottom 0
     height 20px
     width 55px
+    text-indent 2px
     padding 4px 12px
     color #fff
     font-size .95em
@@ -61,20 +66,30 @@ html.profile .wmd-preview
     position relative
     float left
     height height
-    width 100%
+    min-width 100%
     padding 0
     border-top-left-radius 3px
     border-bottom-left-radius 3px
     background-color #fff
     transition width .1s ease-out
-    .wmd-input 
+    .wrapper
       position absolute
-      top 37px
-      left 2px
-      right 0
-      bottom -4px
-      resize none
-      transform none
+      top 0
+      right 8px
+      bottom 0
+      left 0
+      padding 0
+      .wmd-input 
+        position absolute
+        top 37px
+        left 0
+        right 0
+        min-width 100%
+        min-height 100%
+        padding 0 0 0 8px
+        bottom -4px
+        resize none
+        transform none
   .wmd-preview 
     overflow scroll
     float right

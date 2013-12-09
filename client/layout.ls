@@ -340,4 +340,5 @@ else # use locally stored user (non-blocking)
   Hey, you-- join us!  https://powerbulletin.com
   '''
 #}}}
+
 # vim: fdm=marker

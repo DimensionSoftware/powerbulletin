@@ -74,7 +74,7 @@ is-locked-forum = (m, forum-id) ->
     switch req.body.action
     | \general =>
       should-ban = false # varnish
-      for f in [\style \postsPerPage \inviteOnly \private \analytics]
+      for f in [\style \postsPerPage \inviteOnly \private \social \analytics]
         if site.config[f] isnt req.body[f] then should-ban = true
 
       css-dir = "#base-css/#{site.id}"
@@ -91,8 +91,8 @@ is-locked-forum = (m, forum-id) ->
       # update site
       site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
-        <[ postsPerPage metaKeywords inviteOnly private analytics style ]> }
-      for c in <[ inviteOnly  private ]> # uncheck checkboxes?
+        <[ postsPerPage metaKeywords inviteOnly private social analytics style ]> }
+      for c in <[ inviteOnly  social private ]> # uncheck checkboxes?
         delete site.config[c] unless req.body[c]
       for s in <[ private analytics ]> # subscription tampering
         delete site.config[s] unless s in site.subscriptions

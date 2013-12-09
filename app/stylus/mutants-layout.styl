@@ -150,7 +150,6 @@ html.forum, html.profile, html.search, html.moderation
       margin 0
       padding-top grid
       .thread
-        position relative
         padding 0 38px 10px 38px
         .title
           margin 7px 0 0 0
@@ -391,9 +390,13 @@ html.forum, html.profile, html.search, html.moderation
           margin-left 193px
           margin-bottom 35px
           padding 23px 30px 30px 35px
-          border-bottom-right-radius 20px
-          border-bottom-left-radius 20px
-          border-top-right-radius 20px
+          border-bottom-right-radius 35px
+          border-bottom-left-radius 35px
+          border-top-right-radius 35px
+          transition box-shadow .1s ease-out .1s
+          &:hover
+            box-shadow 1px 0 2px 1px rgba(0,0,0,.08)
+            transition none
           .s-chat-bubble
             position absolute
             top 0
@@ -430,6 +433,7 @@ html.forum, html.profile, html.search, html.moderation
           text-transform capitalize
         .actions
           opacity 0
+          margin-left -13px
           position absolute
           left 225px
           bottom -26px
@@ -443,6 +447,7 @@ html.forum, html.profile, html.search, html.moderation
             margin-right 12px
             margin-left -1px
             display inline-block
+            animation-name none
             // div is the sprite icon
             div
               position absolute
@@ -451,6 +456,26 @@ html.forum, html.profile, html.search, html.moderation
               text-decoration none
           .edit, .censor
             display none
+        .social
+          position absolute
+          overflow hidden
+          right (grid*1.5)
+          bottom -30px
+          height 25px
+          min-width 200px
+          max-width 300px
+          div
+            max-width 95px!important
+            vertical-align top
+            overflow hidden
+          div:last-child
+            max-width 59px!important
+          > iframe
+            max-width 90px!important
+          .fb_iframe_widget
+            margin-right 16px!important
+            margin-top -3px!important
+            vertical-align top
       .page-loaded:last-child, #listview div[data-infinity-pageid]
         padding-bottom (grid*4) !important
       .children
@@ -494,10 +519,10 @@ html.forum, html.profile, html.search, html.moderation
               bottom 19px
             .profile-container
               margin 0
-              .user, .date
-                display inline
               .user
+                display inline-block
                 font-size .92em
+                margin-top -5px
                 .profile.photo
                   position absolute
                   font-weight bold
@@ -770,11 +795,41 @@ html.admin
     .handle
       display none
     #left_container
+      h2
+        position absolute
+        margin-left 30px
+        bottom 20px
+        font-size .9em
+        font-style italic
+        font-weight 400
+        max-height 20px
+        overflow hidden
+        color #444
+        cursor pointer
+        display block
+        z-index 10
+        &:hover
+          color #333
+          max-height 600px
+          .dialog
+            max-height 600px
+            padding 6px 12px
+            transition max-height .2s ease-out .3s, padding .1s ease-out .3s
+        .dialog
+          max-height 0
+          background-color #eee
+          border 1px solid #ddd
+          border-radius 5px
+          min-width 175px
+          transition max-height .1s ease-out .2s
+        a
+          display block
+          font-size .9em
       menu
         float right
         list-style none
         padding 18px
-        margin 0 0 0 3px
+        margin 28px 0 0 3px
         transition all .2s ease-out
         li.active
           a
@@ -872,6 +927,39 @@ html.admin
         clear both
       .break.double
         padding-top (grid*2.5)
+      fieldset.collapse
+        cursor pointer
+        position relative
+        margin-top grid
+        margin-bottom 0
+        border-bottom 1px solid #eee
+        background-color #fafafa
+        overflow hidden
+        legend
+          top 0
+          left 0
+          margin -10px
+          color #777!important
+          letter-spacing 1px
+          text-align center
+          font-weight bold
+          width 100%
+        .dialog
+          max-height 0
+          padding-right 5px
+          margin-top 20px
+          overflow hidden
+          transition all 0 ease-out .3s
+        &:hover
+          border-bottom 1px solid #ddd
+          background-color #f8f8f8
+          legend
+            color #555!important
+          .dialog
+            margin-top 35px
+            max-height 500px
+            padding-bottom (grid*1.5)
+            transition all .2s ease-out .3s
       fieldset
         padding grid (grid*3) grid (grid*4)
         border 0
@@ -892,9 +980,9 @@ html.admin
           width 305px
           height 100px
           font-size 1em
-        #invite_only:checked + label::after, #private:checked + label::after
+        #invite_only:checked + label::after, #private:checked + label::after, #social:checked + label::after
           content 'On'
-        #invite_only + label::after, #private + label::after
+        #invite_only + label::after, #private + label::after, #social + label::after
           content 'Off'
       button
         display block
