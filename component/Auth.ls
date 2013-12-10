@@ -286,10 +286,13 @@ module.exports =
       s.attr \disabled \disabled
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
-          $.fancybox.close!
-          $ \#username .val '' # blank username
-          @after-login!
-          window.location.hash = ''
+          if window.initial-mutant is \privateSite
+            window.location.reload!
+          else
+            $.fancybox.close!
+            $ \#username .val '' # blank username
+            @after-login!
+            window.location.hash = ''
         else
           $form.find \input:first .focus!
           ch.show-tooltip $form.find(\.tooltip), r.msg # display error
