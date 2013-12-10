@@ -29,7 +29,7 @@ global.chat     = require \./chat
 
 global.reload = (m) ->
   paths = require.resolve m
-  if typeof paths == \string
+  if is-type \String, paths
     delete require.cache[paths]
   else
     paths.for-each (p) -> delete require.cache[p]
