@@ -4,7 +4,7 @@ blend = rgba(0,0,0,.5)
 body
   background-color #000
   margin 0
-  height 4960px
+  height 5408px
   position relative
   .body-bg
     position fixed
@@ -32,7 +32,7 @@ body.scrolled
     border-bottom 0
     height 53px
     box-shadow none
-    background rgba(255,255,255,.5)
+    background rgba(255,255,255,0.7)
     ul
       li
         margin-top 15px
@@ -465,7 +465,7 @@ body.scrolled
       opacity 1
       transition opacity .5s ease-out .4s
   section.feature
-    padding-left 100px
+    padding-left 80px
     border-top 1px solid #777
     border-bottom 1px solid #777
     box-shadow 0 0 28px -2px blend
@@ -473,19 +473,19 @@ body.scrolled
     transition box-shadow 1s ease-out .5s
     overflow visible
     article
-      transform translateX(150px)
+      transform translateX(160px)
       img
         position absolute
-        top -74px
+        top -67px
         left -388px
         opacity 0
         outline none
       h4
         color light
-        font-weight 600
-        font-size 2em
+        margin-bottom 38px
+        font-weight bold
+        font-size 3em
         letter-spacing 1px
-        font-style italic
         text-shadow 1px 1px 0 dark
         text-align left
       ul
@@ -494,8 +494,10 @@ body.scrolled
         text-indent -200px
         opacity 0
         li
-          color #222
+          color #333
           margin-top 5px
+          line-height 1.6em
+          font-size 1.1em
     .arrow
       top 87px
       left -100px
@@ -515,7 +517,7 @@ body.scrolled
     display block
     top 0
     left 0
-    height 400px
+    height 500px
     width 100%
     opacity 0
     overflow hidden
@@ -541,11 +543,17 @@ body.scrolled
         bottom 10px
         .hostname
           padding-left 33px
+  #responsive article img
+    margin-top 8px
+    left -520px
   #realtime img
-    top 0
+    top 6px
     left -450px
   #responsive img
     left -510px
+  #support img
+    margin-top 33px
+    margin-left -19px
   //}}}
   //{{{ FAQ
   section.faq
@@ -580,7 +588,8 @@ body.scrolled
   section
     article
       max-width 600px
-      margin 120px auto 0 auto
+      margin 171px auto 0 auto
+      font-size 1.1em
       h3
         position relative
         letter-spacing 2px
