@@ -637,10 +637,9 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
   forum  = forumf(forum_id)
 
   sort-sql =
-    switch sort or \recent
-    | \recent   => 'p.created DESC, p.id ASC'
+    switch sort
     | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id) DESC, p.created DESC'
-    | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
+    | otherwise => 'p.created DESC, p.id ASC' # recent
 
   # This query can be moved into its own proc and generalized so that it can
   # provide a flat view of a thread.
@@ -662,10 +661,9 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.site_summary(site_id JSON, thread_limit JSON, sort JSON) RETURNS JSON AS $$
   sort-sql =
-    switch sort or \recent
-    | \recent   => 'created DESC, id ASC'
+    switch sort
     | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE forum_id=id GROUP BY forum_id) DESC, created DESC'
-    | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
+    | otherwise => 'created DESC, id ASC' # recent
   site-ids = plv8.execute "SELECT id FROM forums WHERE site_id=$1::bigint ORDER BY #sort-sql", [site_id]
   fn = plv8.find_function \procs.forum_summary
   return site-ids.map (-> fn(it.id, thread_limit, sort).0)
