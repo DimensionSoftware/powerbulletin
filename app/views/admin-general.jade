@@ -42,10 +42,10 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
     fieldset.collapse
       legend Look &amp; Feel
       .dialog
-        label(for='theme') Base Theme
-        select(id='theme', name='theme')
-          each t in themes
-            option(value=t.id)= t.name
+        //-label(for='theme') Base Theme
+        //-select(id='theme', name='theme')
+        //-  each t in themes
+        //-    option(value=t.id)= t.name
         .break
         label(for='style') Style
         textarea(id='style', name='style')= site.config.style
