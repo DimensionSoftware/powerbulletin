@@ -1,0 +1,5 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_1='/Users/beppu/src/github.com/powerbulletin/log'
+let g:netrw_dirhist_2='/Users/beppu/src/bavl.org/metanotes-node/public/js'
+let g:netrw_dirhist_3='/Users/beppu/src/github.com/powerbulletin/log'
