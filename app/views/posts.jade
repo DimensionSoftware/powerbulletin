@@ -45,7 +45,7 @@ if typeof(post) !== 'undefined'
             .s-dark-permalink
           a.censor.onclick-censor-post(title='Censor') Censor
             .s-dark-censor
-        if social
+        if typeof(social) !== 'undefined' && social
           .social
             .fb-share-button(data-type='button_count')
             a.twitter-share-button(href='https://twitter.com/share')
