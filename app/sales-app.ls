@@ -96,11 +96,24 @@ s-app.get '/ajax/sites-and-memberships', sales-personal-mw, (req, res, next) ->
   err, r <- async.auto tasks
   if err then return res.json success: false, errors: [ err ]
   {sites, memberships} = r
-  uniq-memberships = memberships
-  |> filter (m) -> # remove memberships we own
-    !find ((s) -> m.site_id is s.id), sites
-  |> map -> delete it.config; it # remove config for client
-  res.json {success:true, sites, memberships:uniq-memberships}
+  best    = []
+  grouped = memberships
+    |> filter (m) -> # remove memberships we own
+      !find ((s) -> m.site_id is s.id), sites
+    |> map -> delete it.config; it # remove config for client
+    |> group-by (.site_id)
+
+  # remove PB domains where possible
+  for k of grouped
+    domains = grouped[k]
+    if domains.length is 1 # single domain for site, so use it
+      best.push domains.0
+    else
+      # only push custom domains
+      [pb, custom] = partition (.domain.match /(powerbulletin\.com)|(pb\.com)/), domains
+      if custom.length then best.push custom # all custom domains
+      else best.push pb.0 # only first PB domain
+  res.json {success:true, sites, memberships:Obj.values best}
 
 # /auth/*
 auth-handlers.apply-to s-app, sales-personal-mw

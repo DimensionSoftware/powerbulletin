@@ -39,21 +39,21 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
         label(for='analytics') Analytics
         textarea(id='analytics', name='analytics')= analytics
         .note Paste Javascript code above, excluding &lt;script&gt; tags
-
-    //-.break
-    //-label(for='theme') Base Theme
-    //-select(id='theme', name='theme')
-    //-  each t in themes
-    //-    option(value=t.id)= t.name
-    .break
-    label(for='style') Style
-    textarea(id='style', name='style')= site.config.style
-    .note Paste
-      a(href='http://www.w3schools.com/cssref/', target='_blank') CSS
-      | or 
-      a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
-      | code in above
+    fieldset.collapse
+      legend Look &amp; Feel
+      .dialog
+        label(for='theme') Base Theme
+        select(id='theme', name='theme')
+          each t in themes
+            option(value=t.id)= t.name
+        .break
+        label(for='style') Style
+        textarea(id='style', name='style')= site.config.style
+        .note Paste
+          a(href='http://www.w3schools.com/cssref/', target='_blank') CSS
+          | or 
+          a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
+          | code in above
   button(type='submit', value='Save') Save
   input(type='hidden', name='action', value='general')
-a.menu-link.mutant(href='/admin/menu') Continue building your menu here
-  i !
+a.menu-link.mutant(href='/admin/menu') Continue to Menu &rarr;

@@ -382,6 +382,7 @@ query-dictionary =
              p.views,
              p.created,
              p.user_id,
+             p.media_url,
              a.name,
              last.id        AS last_post_id,
              last.user_id   AS last_post_user_id,
@@ -410,7 +411,18 @@ query-dictionary =
         thread.participants = participants
         cb null, thread
 
-      async.map r, add-participants, cb
+      add-images = (thread, cb) ->
+        err, images <- db.images.select thread_id: thread.id
+        if err then return cb err
+        thread.images = images
+        cb null, thread
+
+      add-multi = (thread, cb) ->
+        err, t1 <- add-participants thread
+        if err then return cb err
+        add-images t1, cb
+
+      async.map r, add-multi, cb
 
   sites:
     user-is-member-of: (user-id, cb) ->

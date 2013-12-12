@@ -921,17 +921,18 @@ html.admin
         display inline-block
         vertical-align top
         margin-top grid
-        letter-spacing -1px
       .break
         padding-bottom (grid*2.5)
         clear both
       .break.double
         padding-top (grid*2.5)
       fieldset.collapse
+        display block
         cursor pointer
         position relative
         margin-top grid
         margin-bottom 0
+        margin-left -10px
         border-bottom 1px solid #eee
         background-color #fafafa
         overflow hidden
@@ -942,15 +943,15 @@ html.admin
           color #777!important
           letter-spacing 1px
           text-align center
-          font-weight bold
+          font-weight 200
           width 100%
         .dialog
           max-height 0
           padding-right 5px
           margin-top 20px
           overflow hidden
-          transition all 0 ease-out .3s
-        &:hover
+          transition all 0 ease-out .5s
+        &:hover, &.hover
           border-bottom 1px solid #ddd
           background-color #f8f8f8
           legend
@@ -959,7 +960,7 @@ html.admin
             margin-top 35px
             max-height 500px
             padding-bottom (grid*1.5)
-            transition all .2s ease-out .3s
+            transition all .2s ease-out .5s
       fieldset
         padding grid (grid*3) grid (grid*4)
         border 0
