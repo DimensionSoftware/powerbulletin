@@ -94,7 +94,7 @@ with-posts = (max, t, cb) --> # {{{1
     t.posts = flatten posts
     t.body = t.posts?0?body || "\n"
     t.html = t.posts?0?html || "\n"
-    t.media_url = t.post?0?media_url
+    t.media_url = t.posts?0?media-url
     t.posts.shift!
     cb null, t
 
