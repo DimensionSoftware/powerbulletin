@@ -82,7 +82,7 @@ window.load-ui = -> # restore ui state from local storage
     w = parse-int w
     $l.transition({width: w} 600ms \easeOutExpo -> set-wide!)
     $ '#main_content .resizable' .transition({padding-left: w+left-offset} 300ms \easeOutExpo)
-  set-timeout (-> set-wide!; align-ui!), 1000ms
+  set-timeout (-> set-wide!; align-ui!; respond-resize!), 500ms
 
 # waypoints
 $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 800ms)
