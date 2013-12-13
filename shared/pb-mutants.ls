@@ -12,7 +12,7 @@ if window?
   {respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
-{flip-background, is-editing, is-email, is-forum-homepage} = require \./shared-helpers
+{is-editing, is-email, is-forum-homepage} = require \./shared-helpers
 {last, sort-by} = require \prelude-ls
 
 require! {
@@ -166,11 +166,6 @@ layout-on-personalize = (w, u) ->
   static:
     (window, next) ->
       window.render-mutant \main_content \homepage
-      # handle active forum background
-#      window.$ \.bg-set .remove!
-#      window.$ \.bg .each ->
-#        e = window.$ this .add-class \bg-set .remove!
-#        window.$ \body .prepend e
       layout-static.call @, window, \homepage
       next!
   on-personalize: (w, u, next) ->
@@ -179,77 +174,18 @@ layout-on-personalize = (w, u) ->
   on-load:
     (window, next) ->
       try # reflow masonry content
-        window.$ '.forum .container' .masonry(
+        window.$ \.homepage .masonry(
           item-selector: \.post
           is-animated:   true
           animation-options:
-            duration: 200ms
+            duration: 100ms
           is-fit-width:  true
-          is-resizable:  true)
-
-      # fill-in extra
-      active = window.location.search.match(/order=(\w+)/)?1 or \recent
-      window.jade.render $(\.extra:first).0, \order-control, active: active
-
-      #{{{ Waypoints
-      set-timeout (->
-        # TODO use breadcrumb for sticky forum headers
-        #$ = window.$
-        #$ '.forum .header' .waypoint \sticky { offset: -70 }
-
-        # forum switches
-        $ \.forum .waypoint {
-          offset  : \25%,
-          handler : (direction) ->
-            e   = $ this
-            eid = e.attr \id
-
-            # handle menu active
-            id = if direction is \down then eid else
-              $ "\##{eid}" .prev-all \.forum:first .attr \id
-            return unless id # guard
-            $ 'header .menu' .find \.active .remove-class \active # remove prev
-            cur = $ 'header .menu'
-              .find ".#{id.replace /_/ \-}"
-              .add-class \active # ...and activate!
-
-            # handle forum headers
-            $ '.forum .stuck' .remove-class \stuck
-            # TODO if direction is \up stick last forum
-
-            flip-background window, cur, direction
-        }
-
-        reorder = __.debounce(( -> History.push-state {}, '', it), 100ms)
-        window.current-order = false
-        $ '#order li' .waypoint {
-          context: \ul
-          offset : 30px
-          handler: (direction) ->
-            e = $ this # figure active element
-            if direction is \up
-              e = e.prev!
-            e = $ this unless e.length
-
-            $ '#order li.active' .remove-class \active
-            e .add-class \active # set!
-            order = e.data \value
-            path = "/?order=#order"
-            if window.current-order then reorder path else window.current-order=order
-        }), 100ms
-
-      #window.awesome-scroll-to "forum_#{}"
-      #}}}
+          is-resizable:  true).bind-resize!
       next!
   on-unload:
     (window, next-mutant, next) ->
       try
-        window.$ '.forum .container' .masonry(\destroy)
-        window.$ '.forum .header' .waypoint(\destroy)
-        window.$ \.forum .waypoint(\destroy)
-        window.$ '#order li' .waypoint(\destroy)
-        window.$ \.bg .remove!
-        window.$ $(\.extra:first) .html ''
+        window.$ \.homepage .masonry(\destroy)
       next!
 
 # this function meant to be shared between static and on-initial
@@ -316,7 +252,6 @@ layout-on-personalize = (w, u) ->
   on-load:
     (window, next) ->
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
-      flip-background window, cur
       $ = window.$
 
       align-ui!
