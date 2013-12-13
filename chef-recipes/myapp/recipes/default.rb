@@ -51,6 +51,7 @@ unless File.file? '/etc/NPM_GLOBAL_PACKAGES_COMPLETED'
       touch /etc/NPM_GLOBAL_PACKAGES_COMPLETED
     EOH
   end
+end
 
 # copy our editing settings
 cookbook_file '/root/.vimrc' do
