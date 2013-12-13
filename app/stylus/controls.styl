@@ -74,11 +74,24 @@ input[type="checkbox"]:checked ~ label .switch
 input[type="checkbox"]:checked ~ label
   background-color light
   transition background-color .4s ease-out
+// these are placeholders for switch state text, eg: "On" "Off"
+input[type="checkbox"]:checked + label::after
+  color #444
+  font-weight 400
+input[type="checkbox"] + label::after
+  position absolute
+  top 14px
+  left 60px
+  color #aaa
+  font-weight 200
+  letter-spacing 1px
+  font-size .9em
 label.switch-control
   display inline-block!important
   width 50px!important
   height 30px
   padding 1px
+  letter-spacing 1px
   margin 0 10px 8px 0
   border-radius 30px
   background rgba(0,0,0,.03)
@@ -88,6 +101,7 @@ label.switch-control
     transition box-shadow .1s ease-out
 // box is the surround container
 .box
+  position relative
   display inline-block
   margin-top 0
 .switch 
@@ -103,8 +117,9 @@ label.switch-control
 //}}}
 //{{{ Buttons
 .button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
-  animation-name tiny-grow
-  animation-duration .03s
+  // XXX is this affecting clicks?
+  //animation-name tiny-grow
+  //animation-duration .03s
   //background-image linear-gradient(bottom, dark 12px, light 87%, dark 90%)
   background-color light
   border-color #777
@@ -118,7 +133,7 @@ button:disabled:hover::before, input[type="submit"]:disabled:hover::before, inpu
 button:disabled::before, input[type="submit"]:disabled::before, input[type="button"]:disabled::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.05) 0%, rgba(255,255,255,.1) 80%)
 button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
-  cursor wait
+  cursor default
   color #fafafa
   opacity .85
   text-shadow 0 1px 0 rgba(0,0,0,.3),1px 1px 0 rgba(100,100,100,.1)
@@ -178,7 +193,6 @@ input[type="submit"]::before, button::before, .button::before
   position relative
   text-shadow 0 1px 0 #444,1px 1px 0 rgba(100,100,100,.5)
   letter-spacing 1px
-  //background-image linear-gradient(bottom, light 10px, light 85%, dark2 90%)
   background-color light
   box-shadow 0px 0px 3px light
   border 1px solid #666
@@ -190,6 +204,6 @@ input[type="submit"]::before, button::before, .button::before
   font-weight 600
   padding 6px 15px
   text-align center
-  border-radius 5px / 1px
+  border-radius 6px/5px
 //}}}
 // vim: fdm=marker

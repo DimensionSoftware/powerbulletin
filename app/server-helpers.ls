@@ -6,6 +6,8 @@ require! {
   crypto
   bbcode
   nodemailer
+  strftime
+  h: \../shared/shared-helpers
   auth:  \./auth
   cvars: \./load-cvars
 }
@@ -123,8 +125,14 @@ process-cached-data = {}
     err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
     if err                then return cb err
     if r.success is false then return cb r
-    #@login(req, res, cb) # on successful registration, automagically @login, too
+
     u.id = r.id
+
+    default-site-ids = global.cvars.default-site-ids |> filter (-> it is not site.id)
+    err <~ db.aliases.add-to-user r.id, default-site-ids, { name: username, +verified }
+    if err then return cb err
+
+    #@login(req, res, cb) # on successful registration, automagically @login, too
     cb null, u
 
 @format =
@@ -167,5 +175,17 @@ process-cached-data = {}
     err2 <- fs.unlink src
     cb(err)
   _is.pipe(_os)
+
+@dev-log-format = (tokens, req, res) ->
+  status = res.status-code
+  len    = parse-int res.get-header(\Content-Length), 10
+  color  = switch
+  | status >= 500 => 31
+  | status >= 400 => 33
+  | status >= 300 => 36
+  | otherwise     => 32
+
+  len = if is-NaN len then '' else len
+  "\x1b[90m#{req.method} \x1b[#{color}m#{res.status-code} \x1b[1;37m#{req.host}#{req.originalUrl} \x1b[90m#{new Date - req._start-time}ms - #{len}\x1b[0m"
 
 # vim:fdm=marker

@@ -6,10 +6,12 @@ require! {
   sioa: \socket.io-announce
   auth: \./auth
   menu: \./menu
+  rights: \./rights
   async
   fs
   mkdirp
   stylus
+  pagedown
 }
 
 const base-css = \public/sites
@@ -25,6 +27,28 @@ ban-all-domains = (site-id) ->
 # Return true if forum-id is a locked forum according to the menu m.
 is-locked-forum = (m, forum-id) ->
   menu.flatten(m) |> find (-> f = it.form; f.dialog is \forum and f.dbid is forum-id and f.locked)
+
+@aliases =
+  update: (req, res, next) ->
+    site_id = req.user?site_id # only allow updating on auth'd site
+    user_id = req.params.alias
+    (err, r) <- rights.can-edit-user req.user, user_id
+    if err then return next err
+    if r # can edit, so--
+      (err, alias) <- db.aliases.select-one {user_id, site_id}  # fetch current config
+      c = new pagedown.Converter
+      config={}
+      alias.config <<< req.body?config or {}                      # & merge
+      for k in <[title sig]> then config[k]=alias.config[k]       # & scrub
+      if config.sig then config.sig-html = c.make-html config.sig # & scrub harder + render sig
+      err <- db.aliases.update {config}, {user_id, site_id}       # & update!
+      announce.in(site_id).emit \new-profile-title, { id:user_id, title:config?title } # broadcast title everywhere
+      (err, user) <~ db.usr { id:user_id, site_id }
+      delete user.auths
+      announce.in("#site_id/users/#user_id").emit \set-user, user # brodcast new user object to all of my browsers
+      res.json {+success}
+    else
+      res.json {-success}
 
 @sites =
   create: (req, res, next) ->
@@ -50,24 +74,25 @@ is-locked-forum = (m, forum-id) ->
     switch req.body.action
     | \general =>
       should-ban = false # varnish
-      for f in [\style \postsPerPage \inviteOnly \private \analytics]
+      for f in [\style \postsPerPage \inviteOnly \private \social \analytics]
         if site.config[f] isnt req.body[f] then should-ban = true
 
+      css-dir = "#base-css/#{site.id}"
       # save css to disk for site
       if site.config.style isnt req.body.style # only on change
         site.config.cache-buster = h.cache-buster!
-        err <- mkdirp base-css
-        if err then return next err
-        (err, css) <- stylus.render site.config.style, {compress:true}
-        if err then return res.json {success:false, msg:'CSS must be valid!'}
-        err <- fs.write-file "#base-css/#{site.id}.css" css
-        if err then return next err
+        err <- db.sites.save-style site
+        if err
+          if err?msg?match /CSS/i
+            return res.json {success:false, msg:'CSS must be valid!'}
+          else
+            return next err
 
       # update site
       site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
-        <[ postsPerPage metaKeywords inviteOnly private analytics style ]> }
-      for c in <[ inviteOnly  private ]> # uncheck checkboxes?
+        <[ postsPerPage metaKeywords inviteOnly private social analytics style ]> }
+      for c in <[ inviteOnly  social private ]> # uncheck checkboxes?
         delete site.config[c] unless req.body[c]
       for s in <[ private analytics ]> # subscription tampering
         delete site.config[s] unless s in site.subscriptions
@@ -188,9 +213,10 @@ is-locked-forum = (m, forum-id) ->
       delete auth.passports[domain.name]
 
       # save css to disk
-      err <- mkdirp base-css
+      css-dir = "#base-css/#{domain.site_id}"
+      err <- mkdirp css-dir
       if err then return next err
-      err <- fs.write-file "#base-css/#{domain.site_id}.auth.css" domain.config.style
+      err <- fs.write-file "#css-dir/#{domain.id}.auth.css" domain.config.style
 
       res.json success:true
 
@@ -230,13 +256,31 @@ is-locked-forum = (m, forum-id) ->
       (err, user) <- db.find-or-create user
       res.json user
   update: (req, res, next) ->
-    # XXX: fill in this stub
     # RIGHTS: can only edit users on sites you are an admin of
-    # need this db function: db.users.can-edit-user uid -> boolean
-    id = req.params.user
+    admin = req.user
+    site  = res.vars.site
+    id    = req.params.user
+    err, can-edit-user <- rights.can-edit-user admin, id
+    if err
+      return next err
+    if not can-edit-user
+      return res.json success: false, errors: [ "#{admin.name} may not edit this user." ]
+
     user = {} <<< req.body <<< {id}
     console.warn \STUB, 'handle user PUT from UserEditor'
     console.warn \STUBUSER, user
+
+    alias =
+      name    : user.name
+      user_id : id
+      site_id : site.id
+
+    err, new-alias <- db.aliases.update alias
+    if err
+      res.json success: false, errors: [ "Could not sove user." ]
+    else
+      res.json success: true, alias: new-alias
+
 @posts =
   index   : (req, res) ->
     res.locals.fid = req.query.fid
@@ -318,13 +362,9 @@ is-locked-forum = (m, forum-id) ->
 @products =
   show: (req, res, next) ->
     return next 404 unless id = req.params.product
-    err, product <- db.products.find-one {
-      criteria: {id}
-      columns: [\id \description \price \config]
-    }
+    err, product <- db.products.select-one { id }
     if err then return next err
     if product
-      product.config = JSON.parse product.config # p00f--json'ify
       res.json product
     else
       next 404

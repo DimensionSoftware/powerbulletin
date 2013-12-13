@@ -5,13 +5,11 @@
     img(src="#{cacheUrl}#{photo}?#{cacheBuster}")
   div
     form(method="POST", action="#{endpointUrl}", enctype="multipart/form-data")
-      div.button 
-        span Upload Image
+      button Upload Image
         input(type="file", name="avatar")
 
 .crop
-  h1= title + " (crop)"
+  h1 Drag to Crop
   div
     img(src="#{cacheUrl}#{photo}?#{cacheBuster}")
-  div.button
-    span Crop Image
+  button Save

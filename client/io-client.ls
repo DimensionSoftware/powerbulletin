@@ -2,13 +2,13 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  ch: './client-helpers'
   Chat: '../component/Chat'
   \./globals
   mutants: \../shared/pb-mutants
 }
 
 {render-and-append} = require \../shared/shared-helpers
+{lazy-load-socketio, set-online-user, storage} = require \./client-helpers
 
 ####  main  ;,.. ___  _
 init = -> # export socket to window + init
@@ -16,10 +16,10 @@ init = -> # export socket to window + init
     init-with-socket sock
   sock
 main = ->
-  <- ch.lazy-load-socketio # first try
+  <- lazy-load-socketio # first try
   unless init!
     set-timeout (-> # static crashed or otherwise 50x'd--try again:
-      <- ch.lazy-load-socketio
+      <- lazy-load-socketio
       init!) 3000ms
 main!
 
@@ -36,7 +36,7 @@ function init-with-socket s
 
   s.on \enter-site, (message, cb) ->
     #console.warn \enter-site, message
-    ch.set-online-user message?id
+    set-online-user message?id
 
   s.on \leave-site, (message, cb) ->
     #console.warn \leave-site, message
@@ -70,6 +70,7 @@ function init-with-socket s
       # & render new post
       sel = "\#post_#{post.parent_id} + .children"
       animate-in = (e) -> $ e .add-class \post-animate-in
+      if post.user_id is user?id then post.is_comment=true # hide sig., etc... on our own posts
       render-and-append(
         window, $(sel), \post, post:post, (new-post) ->
           if post.user_id is user?id # & scroll-to
@@ -111,20 +112,20 @@ function init-with-socket s
     $ \#new_hits .html realtime-html
     $ \#breadcrumb .slide-down 300ms
 
-  s.on \new-profile-photo, (user) ->
-    $("div.post[data-user-id=#{user.id}]").find('div.profile img').attr(\src, "#{cache-url}#{user.photo}")
-    $("li.thread[data-user-id=#{user.id}]").find('div.profile img').attr(\src, "#{cache-url}#{user.photo}")
-    $("div.profile[data-user-id=#{user.id}]").find('div.avatar img').attr(\src, "#{cache-url}#{user.photo}")
+  # <profile-related updates>
+  s.on \set-user, (user) ->
+    storage.set \user, window.user = user           # local storage
+    if window.r-user then window.r-user window.user # react
+  s.on \new-profile-title, (user) ->
+    $ "[data-user-id=#{user.id}] .user-title" .html user.title
+  s.on \new-profile-photo, (user) -> # TODO smoothly load image
+    $ "[data-user-id=#{user.id}]" .find('.profile img').attr \src, "#{cache-url}#{user.photo}"
     if window?user?id is user.id
-      $('#profile').attr(\src, "#{cache-url}#{user.photo}")
-
-    # TODO
-    # add data-user-id to posts on the homepage
+      $ \#profile .attr \src, "#{cache-url}#{user.photo}"
 
   s.on \debug, (message, cb) ->
     console?log \debug, message
 
   Chat.client-socket-init s
-
 
 # vim:fdm=indent

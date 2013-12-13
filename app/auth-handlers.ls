@@ -3,6 +3,7 @@ require! {
   async
   jade
   querystring
+  url
   sioa: \socket.io-announce
   pg:   \./postgres
   auth: \./auth
@@ -27,11 +28,50 @@ announce = sioa.create-client!
       console.warn \auth-response, err, user, info unless env is \production
       if err then return next(err)
       if not user then return res.json { success: false } <<< info
-      req.login user, (err) ->
+
+      extra = {}
+
+      maybe-join-site = if user and not user.name
+        (cb) ->
+          console.error "joining site for first time"
+          # grab default user (site_id 1)
+          email = req.body.username
+          err, default-alias <- db.aliases.most-recent-for-user user.id
+          if err then return cb err
+
+          # create unique name based on default user's name
+          err, unique-name <- db.unique-name name: default-alias.name, site_id: site.id
+          if err then return cb err
+
+          # create an alias for this site
+          alias =
+            user_id : default-alias.user_id
+            site_id : site.id
+            name    : unique-name
+            rights  : {}
+            photo   : default-alias.photo
+          err <- db.alias-create-preverified alias
+          if err then cb err
+
+          # make client choose alias.name
+          extra.choose-name = true
+          extra.name        = unique-name
+          new-user = user <<< alias
+          cb null, new-user
+      else
+        (cb) -> cb null, user
+
+      err, maybe-new-user <- maybe-join-site
+      console.log \maybe-join-site err
+      if err then res.json success: false
+
+      req.login maybe-new-user, (err) ->
         if err then return next(err)
         console.warn "emitting enter-site #{JSON.stringify(user)}" unless env is \production
         announce.in(site-room).emit \enter-site, user
-        res.json { success: true }
+        err <- db.aliases.update-last-activity-for-user user
+        if err then return next(err)
+        res.json { success: true } <<< extra
 
     passport.authenticate('local', auth-response)(req, res, next)
   else
@@ -60,6 +100,9 @@ announce = sioa.create-client!
     res.json success: true, token: r.login_token
   else
     res.json success: false
+
+@once-admin = (req, res, next) ->
+  res.render \once-admin
 
 @register = (req, res, next) ~>
   site     = res.vars.site
@@ -102,6 +145,11 @@ announce = sioa.create-client!
       auth.send-registration-email u, site, (err, r) ->
         console.warn 'registration email', err, r
       #res.json success:true, errors:[]   # <- just register
+
+      err <~ db.aliases.update-last-activity-for-user u
+      if err then next err
+
+      req.body.username = email           # give passport what it wants, where it wants it
       @login req, res, next               # <- autologin
                                           # pick one
 
@@ -131,10 +179,10 @@ do-verify = (req, res, next) ~>
   email = req.body.email
 
   if not email
-    res.json success: false, errors: [ msg:'Blank email' ]
+    res.json success: false, errors: [ 'Blank email' ]
     return
 
-  err, user <- db.usr { email, site_id: site.id }
+  err, user <- db.users.by-email-and-site email, site.id
   if err
     res.json success: false, errors: [ err ]
     return
@@ -177,8 +225,8 @@ do-verify = (req, res, next) ~>
   if user
     auths-local = user.auths.local
     auths-local.password = auth.hash password
-    auths-json = JSON.stringify auths-local
-    err <- db.auths.update criteria: { type: \local, user_id: user.id }, data: { profile: auths-json }
+    # TODO if alias doesn't exist, ask for username and insert (register)
+    err <- db.auths.update { profile: auths-local }, { type: \local, user_id: user.id }
     if err
       console.warn \auths-update, err
       return res.json success: false, errors: [ err ]
@@ -198,14 +246,15 @@ do-verify = (req, res, next) ~>
   site  = res.vars.site
   email = req.body.email
 
-  err, user <- db.usr { email, site_id: site.id }
+  err, user <- db.users.by-email-and-site email, site.id
   if err then return res.json success: false, when: \db.usr
 
   err, verify <- auth.unique-hash \verify, site.id
   if err then return res.json success: false, when: \auth.unique-hash
   user.verify = verify
 
-  err <- db.aliases.update criteria: { user_id: user.id, site_id: site.id }, data: { verify }
+  # TODO if alias doesn't exist, ask for username and insert (register)
+  err <- db.aliases.update { verify }, { user_id: user.id, site_id: site.id }
   if err then return res.json success: false, when: \db.aliases.update
 
   err <- auth.send-registration-email user, site
@@ -218,6 +267,7 @@ do-verify = (req, res, next) ~>
 # - then build a setting in general admin to user-specify
 @choose-username = (req, res, next) ->
   user = req.user
+  site = res.vars.site
   if not user then return res.json success:false
   db   = pg.procs
   usr  =
@@ -226,7 +276,19 @@ do-verify = (req, res, next) ~>
     name    : req.body.username
   (err, r) <- db.change-alias usr
   if err then return res.json {success:false, msg:'Name in-use!'}
-  console.warn "Changed name to #{req.body.username}"
+
+
+  maybe-add-aliases = if site.id is 1
+    (cb) ->
+      cvars = global.cvars
+      default-site-ids = cvars.default-site-ids |> filter (-> it is not user.site_id)
+      db.aliases.add-to-user user.id, default-site-ids, { name: req.body.username, +verified }, cb
+  else
+    (cb) -> cb null
+
+  err <- maybe-add-aliases
+  if err then return res.json success: false
+
   req.session?passport?user = "#{req.body.username}:#{user.site_id}"
   res.json success:true
 
@@ -253,6 +315,8 @@ do-verify = (req, res, next) ~>
 auth-finisher = (req, res, next) ->
   user = req.user
   first-visit = user.created_human.match /just now/i
+  err <- db.aliases.update-last-activity-for-user user
+  if err then return next err
   if first-visit
     res.send """
     <script type="text/javascript">
@@ -323,9 +387,14 @@ auth-finisher = (req, res, next) ->
 @login-twitter-finish = auth-finisher
 
 @logout = (req, res, next) ->
+  user = req.user
+  user_id = user?id
+  site_id = res.vars.site.id
   if req.user # guard
     req.logout!
-    redirect-url = req.param(\redirect-url) or req.header(\Referer) or '/'
+    err <- db.aliases.update-last-activity-for-user { user_id, site_id }
+    if err then return next err
+    redirect-url = url.parse(req.param(\redirect-url) or req.header(\Referer) or '/').pathname
     res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '').replace(is-auth, '')
   else
     res.redirect '/'
@@ -345,6 +414,7 @@ auth-finisher = (req, res, next) ->
   app.all  /^\/auth\/.*$/,              @no-cache
   app.post '/auth/login',           mw, @login
   app.post '/auth/once',            mw, @once
+  app.get  '/auth/once-admin'       mw, @once-admin
   app.post '/auth/register',        mw, @register
   app.post '/auth/choose-username', mw, @choose-username
   app.get  '/auth/user',            mw, @user

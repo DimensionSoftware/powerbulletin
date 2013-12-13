@@ -2,7 +2,6 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! Component: yacomponent
-require \jqueryCookie if window? # client-only require
 {templates} = require \../build/component-jade
 {join, map, sort-with, Obj} = require \prelude-ls
 
@@ -23,21 +22,21 @@ module.exports =
     template: templates.Chat
 
     remember-chat: ->
-      chats = JSON.parse( $.cookie('chats') || '[]' )
+      chats = [] #JSON.parse( $.cookie('chats') || '[]' )
       id = @conversation?id
       if chats.index-of(id) == -1 and id
         chats.push id
-        $.cookie 'chats', JSON.stringify(chats), { path: '/' }
+        #$.cookie 'chats', JSON.stringify(chats), { path: '/' }
       else
         console.warn chats.index-of(id), id
 
     forget-chat: ->
-      chats = JSON.parse( $.cookie('chats') || '[]' )
+      chats = [] #JSON.parse( $.cookie('chats') || '[]' )
       id = @conversation?id
       i = chats.index-of(id)
       if i != -1 and id
         chats.splice i, 1
-        $.cookie 'chats', JSON.stringify(chats), { path: '/' }
+        #$.cookie 'chats', JSON.stringify(chats), { path: '/' }
       else
         console.warn chats.index-of(id), id
 
@@ -190,7 +189,7 @@ Chat.reorganize = ->
     $(e).transition({ right }, @duration, @easing)
 
 Chat.remember = ->
-  ids = JSON.parse( $.cookie('chats') || '[]' )
+  ids = [] #JSON.parse( $.cookie('chats') || '[]' )
   x = 0 + 8
   y = $(\footer).height! - 14
 

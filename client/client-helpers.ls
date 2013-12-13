@@ -117,7 +117,7 @@ render = (sel, locals, cb=(->)) ~>
     render \#post_new, data, ~> # init form
       <- @lazy-load-editor
       unless CKEDITOR.instances.post_new
-        CKEDITOR.replace ($ '#post_new textarea' .0)#, {startup-focus:true}
+        CKEDITOR.replace ($ '#post_new textarea' .0), {startup-focus:true}
       e.find 'form.post-new input[name="forum_id"]' .val window.active-forum-id
       e.find 'form.post-new input[name="parent_id"]' .val window.active-thread-id
 
@@ -153,7 +153,7 @@ load-css = (href) ->
   b.add-class \waiting
   unless test!
     if css then load-css css
-    <- headjs script
+    <- require [script]
     b .remove-class \waiting
     cb!
   else
@@ -179,17 +179,28 @@ load-css = (href) ->
     "#cache-url/local/editor/ckeditor.js",
     null,
     cb
+@lazy-load-complexify = (cb) ~>
+  @lazy-load (-> window.$.fn.complexify),
+    "#cache-url/local/jquery.complexify.min.js"
+    null,
+    cb
 @lazy-load-fancybox = (cb) ~>
   @lazy-load (-> window.$!fancybox?length),
     "#cache-url/fancybox/jquery.fancybox.pack.js",
     "#cache-url/fancybox/jquery.fancybox.css",
     cb
 @lazy-load-socketio = (cb) ~>
-  @lazy-load (-> window.io),
-    "#cache-url/local/socket.io.min.js?#{window.CHANGESET}",
+  @lazy-load (-> window.$!fancybox?length),
+    "#cache-url/local/socket.io.min.js",
     null,
     cb
 #}}}
+
+@storage = # use local storage
+  del: (k)    -> local-storage.remove-item k
+  get: (k)    -> try local-storage.get-item k |> JSON.parse
+  has: (k)    -> local-storage.has-own-property k
+  set: (k, v) -> local-storage.set-item k, JSON.stringify v
 
 @fancybox-params =
   close-effect: \elastic
@@ -200,6 +211,20 @@ load-css = (href) ->
 
 @respond-resize = ~>
   w = $ window
+  # augment stylus for height
+  if e = $ \.thread.active
+    switch e.height!
+    | 49 => # one-liner title
+      e.add-class \small
+      e.remove-class 'medium large'
+    | 71 => # most variations fit into medium
+      e.add-class \medium
+      e.remove-class 'small large'
+    | 93 => # long title & narrow nav
+      e.add-class \large
+      e.remove-class 'small medium'
+    e.remove-class \hidden
+
   unless window.mutator is \admin # FIXME improve responsive.styl
     if w.width! <= 800px then $ \body .add-class \collapsed
 
@@ -236,11 +261,11 @@ load-css = (href) ->
   false
 
 timers = {}
-@show-tooltip = ($tooltip, msg, duration=4000ms) ~>
-  unless msg?length then return # guard
+@show-tooltip = ($tooltip, msg, duration=4500ms) ~>
+  unless msg?length then $tooltip.remove-class \hover; return # hide & guard
   timer = timers[msg]
   if timer then clear-timeout timer
-  $tooltip.html msg .add-class \hover # show
+  if $tooltip?length then $tooltip.html msg .add-class \hover # show
   timers[msg] = set-timeout (-> timers[msg]=void; $tooltip.remove-class \hover), duration # remove
 
 @switch-and-focus = (remove, add, focus-on) ~>
@@ -255,8 +280,8 @@ timers = {}
     ..add-class \online
     ..attr \title, \Online!
 
-@set-profile = (src) ~>
-  $ \.photo
+@set-profile = (src) ~> # top-right profile/login area
+  $ '.tools > .photo'
     ..attr \href "/user/#{user.name}"
     ..add-class \online # set online!
     ..attr \title user.name

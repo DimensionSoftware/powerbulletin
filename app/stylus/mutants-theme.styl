@@ -14,10 +14,6 @@ html.homepage
       margin 0 auto
     .forum
       .post
-        .profile
-          background-color #fafafa
-          border 1px solid #555
-          font-weight bold
         .post-edit
           .title
             border-bottom-left-radius 0
@@ -63,25 +59,16 @@ html.homepage
 //}}}
 //{{{ - forum, profile, search & moderation
 html.forum, html.profile, html.search, html.moderation
-  #forum_background_buffer::after, #forum_background::after
+  #forum_background_color::after, #forum_background_buffer::after, #forum_background::after
     content ''
     position absolute
     top 0
     right 0
     bottom 0
     left 0
-    background-color tint-color
+    background-color tint_color
   .main-content
     .forum, .threads, .search
-      .post:hover
-        color #111
-        .post-edit:hover
-          .summary::before
-            transition none
-            z-index 2
-            border-left 5px solid light
-        p.body
-          border-bottom 1px solid rgba(0,0,0,.05)
       .post.censored
         .body, blockquote, p
           text-decoration line-through
@@ -98,13 +85,30 @@ html.forum, html.profile, html.search, html.moderation
       .post
         overflow visible
         color #333
-        .username
-          font-weight 500
-          color dark_text
-          text-transform capitalize
-        p.body
-          background-color rgba(0,0,0,.015)
-          border-bottom 1px solid transparent
+        &:hover
+          color #111
+          .post-edit:hover
+            .summary::before
+              transition none
+              z-index 2
+              border-left 5px solid light
+        .profile-container
+          .username
+            font-weight 500
+            color dark_text
+            text-transform capitalize
+        .container
+          background-color #fff
+          &::after
+            content ''
+            position absolute
+            left 0
+            right 0
+            bottom 0
+            height 0
+            box-shadow 0 0 10px 1px tint-color
+          .body
+            position relative
         .post-edit
           .summary::before
             border-left 4px solid #ccc
@@ -122,35 +126,19 @@ html.forum, html.profile, html.search, html.moderation
       // 2nd children and thereafter are comments
       .children
         .children
-          p.body, .user span
+          .body
             color #666
-          .container
-            max-width 450px
-          .container, .actions
-            margin-left 52px
-          .username
-            color #444
-          .user
-            .profile.photo
-              position absolute
           .post-content, .cke_editable
             p
               color #444
               margin-top 0
           .date
-            color #999
-            text-transform lowercase
-            padding-right (grid*2.5)
+            color #888
       .actions
-        a:active, a:focus
-          background radial-gradient(circle closest-corner at 55% 65%, light2 85%, dark2 100%)
-        a:hover
-          background radial-gradient(circle closest-corner at 45% 35%, light2 55%, dark2 100%)
+        position relative
+        z-index 2
         a
-          color dark
-          background-color light2
-          background-image linear-gradient(to top, dark2 10%, light2 100%)
-          border-radius 27px
+          color dark_text
           .s-reply::after, .s-permalink::after, .s-censor::after
             position absolute
             content ''
@@ -179,7 +167,7 @@ html.forum, html.profile, html.search, html.moderation
           border-bottom 1px solid rgba(0,0,0,.1)
           background-color rgba(255,255,255,.3)
           height 1px
-          margin-top 10px
+          margin-top 8px
           left 10%
           width 80%
         .title
@@ -193,48 +181,73 @@ html.forum, html.profile, html.search, html.moderation
         a
           color #333
           text-decoration none
-      .thread:first-child
-        border-top 1px solid transparent
-      .thread:first-child:hover
-        border-top 1px solid rgba(250,250,250,.2)
-      .thread:hover::after
-        border-bottom 1px solid rgba(0,0,0,.2)
-      .thread:hover
-        //border-bottom 1px solid rgba(90,90,90,.2)
-        background-color rgba(255,255,255,.2)
-        //transition border-bottom .5s ease-out, background-color .3s ease-out
-        .created
-          opacity .8
-          transition opacity .3s ease-out
-        a
-          color #222
-      .thread.active::after
-        height 0
-        border none
-      .thread::before
-        position absolute
-        top -1px
-        bottom -1px
-        left 0
-        width 0
-        content ''
-      .thread.active::before
-        background-image linear-gradient(to top, dark 10%, light 100%)
-        width 6px
-        transition all .2s ease-out
-      .thread.active:hover
-        a #fff
+        &:first-child
+          border-top 1px solid transparent
+        &:first-child:hover
+          border-top 1px solid rgba(250,250,250,.2)
+        &:hover
+          background-color rgba(255,255,255,.2)
+          .created
+            opacity .8
+          a
+            color #222
+      .thread.active
+        &::before
+          position absolute
+          margin-top -1px
+          left 0
+          width 0
+          bottom -1px
+          content ''
+        .arrow
+          position fixed
+          content ''
+          right -51px
+          margin-top 0
+          z-index 1
+          &:after
+            position absolute
+            content ''
+            right -42px
+            margin-top -42px
+            z-index 2
+        .arrow
+          border 43px solid transparent
+          border-left 12px solid light
+          right -55px
+          &:after
+            border 42px solid transparent
+            border-left 12px solid #fff
+            right -41px
+        &.small .arrow
+          border 30px solid transparent
+          border-left 12px solid light
+          right -43px
+          &:after
+            border 32px solid transparent
+            border-left 12px solid #fff
+            margin-top -33px
+            right -30px
+        &.large .arrow
+          border 53px solid transparent
+          border-left 12px solid light
+          right -64px
+          &:after
+            border 54px solid transparent
+            border-left 12px solid #fff
+            margin-top -54px
+            right -53px
+        &:before
+          background-image linear-gradient(to top, dark 10%, light 100%)
+          width 5px
       .thread.active:last-child, .thread.active
-        position relative
         z-index 9
         background-color #fff
         border-right 1px solid light
         border-bottom 1px solid light
         border-top 1px solid #fff
         border-left 0
-        background-image linear-gradient(to top, #e2e2e2 0, #fff 100%)
         box-shadow 0 0 4px 0 light
-        transition box-shadow .2s ease-out
         .title
           color dark_text
           font-style italic
@@ -246,16 +259,11 @@ html.forum, html.profile, html.search, html.moderation
 //}}}
 //{{{ - profile
 html.profile
-  h1
-    color #222
-  .left-content.editable
-    .avatar img
-      cursor copy
   .main-content
     .forum
       .heading
         .title
-          color dark
+          color dark_text
 //}}}
 //{{{ - admin
 html.admin
@@ -268,9 +276,9 @@ html.admin
       &.feature.upgrade
         font-size .75em
       &.feature.upgrade.active::after
-        border-left-color dark2
+        border-left-color dark
       &.feature.upgrade.active
-        background-color dark2
+        background-color dark
       &.feature
         position relative
         margin-top (grid*3)
@@ -347,22 +355,29 @@ html.privateSite
   .fancybox-overlay .fancybox-wrap .fancybox-skin, .fancybox-overlay .fancybox-wrap .fancybox-inner
     background-color transparent
     background-image none
+  .fancybox-overlay.fancybox-overlay-fixed
+    background radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,.3) 20%, rgba(0,0,0,.75) 100%)!important
   .fancybox-skin
-    background radial-gradient(circle closest-corner at 50% 50%, rgba(255,255,255,.95) 80%, rgba(255,255,255,.7) 100%)!important
+    background-color #111!important
+    opacity .8
+    &:hover, &.hover
+      opacity .95
+      transition none
     fieldset
-      border 1px solid rgba(120,120,120,.1)!important
-      background-color transparent!important
+      border 1px solid #222!important
+      background-color #181818!important
+  //#forum_background
+  //  animation-name translate-and-scale
+  //  animation-duration 20s
+  //  animation-iteration-count infinite
+  //  animation-direction alternate
 
 // hover fx for links
-.stylish:hover
-   //background-color dark
-   //color #fff!important
-   //color #000!important
-   text-decoration none!important
-   border-radius 4px / 2px
-   background-image linear-gradient(bottom, transparent 99%, dark)
-   border-bottom 1px solid dark!important
-   transform scale(1.04)
-   text-indent -1px
-   transition all .1s ease-out .05s
+.stylish
+   //transition all .1s ease-out .05s
+   &:hover
+     transition none
+     text-decoration none!important
+     //border-radius 9px
+     //background-color light
 // vim:fdm=marker

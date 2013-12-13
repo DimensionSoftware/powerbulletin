@@ -10,6 +10,7 @@ require! {
 module.exports =
   class MainMenu extends Component
 
+    # XXX renders in mutant static app/views/menu.jade
     #template: templates.MainMenu
 
     init: !~>
@@ -44,8 +45,8 @@ module.exports =
 
       @$.on \mouseleave ~> # mouse-hover-intent'd out
         intent-timer := set-timeout (~>
-          remove-hover!
-          @$.find \.active:first .add-class \hover), 400ms
+          remove-hover!), 400ms
+          #@$.find \.active:first .add-class \hover), 400ms
 
     on-detach: -> @$.off!
 

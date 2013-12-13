@@ -15,7 +15,7 @@ require! {
     return [ ...p, menu.index-of(menu-item) ]
   else
     #console.log \not-found
-    ndx-menu-pairs = menu |> map (.children) |> zip [0 to 1000] |> filter (-> it.1)
+    ndx-menu-pairs = menu |> map (.children) |> zip [0 to 200] |> filter (-> it.1)
     if ndx-menu-pairs.length
       #console.log \child-menus
       f = null
@@ -173,7 +173,7 @@ require! {
       site_id     : null
       path        : form.page-slug
       title       : title
-      config      : JSON.stringify(main_content: form.content)
+      config      : { main_content: form.content, content-only: form.content-only }
   | \link =>
     type = \link
     data = {}

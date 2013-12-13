@@ -24,8 +24,6 @@
     display none!important
 .on-register
   #auth
-    input[name="username"], input[name="password"]
-      background #fff
     input[name="email"]:focus
       border-top-left-radius 4px
       border-top-right-radius 4px
@@ -64,6 +62,7 @@
       opacity 1!important
       transition height .5s, opacity 1s
 #auth
+  padding 15px
   .strength-meter
     position absolute
     transform rotate(180deg)
@@ -86,8 +85,7 @@
     .tooltip
       width 210px
       bottom auto
-      margin-top -42px
-      font-size 1em
+      margin-top -55px
   .login .tooltip
     width 100px
     margin-left -60px
@@ -112,7 +110,7 @@
     display none
   h2
     text-align center
-    margin 20px 0 20px 0
+    margin 0 0 20px 0
     letter-spacing 3px
     font-weight 200
     font-style italic
@@ -120,7 +118,7 @@
   h3
     margin 0 5px 10px 0
   .social
-    margin 20px auto
+    margin 15px auto 15px auto
     width 313px
     height 55px
     a
@@ -134,18 +132,16 @@
     padding 10px
     margin -6px 0 5px 0
     position relative
-  input[name="username"]
+  input[name="username"], input[name="login-email"]
     width 300px
     display block
   input[name="password"]
     width 300px
   button[type="submit"]
     height 42px
-    width 315px
-    margin-left 2px
+    width 318px
     margin-top 5px
     margin-bottom 8px
     display block
-
 //}}}
 

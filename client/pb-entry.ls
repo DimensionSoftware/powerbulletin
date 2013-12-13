@@ -18,7 +18,6 @@ require! {
 #XXX : more legacy, assumed to be globally present always, should be
 # refactored so that each jquery plugin is only required where needed
 # in the future... as opposed to using global-ness
-require \jqueryCookie
 require \jqueryHistory
 require \jqueryMasonry
 require \jqueryTransit
@@ -28,20 +27,21 @@ require \raf
 
 require \layout
 
-{set-imgs, align-ui, ck-submit-form, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
+{storage, set-imgs, align-ui, ck-submit-form, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
 {render-and-append, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
-window.MainMenu = require \../component/MainMenu
-window.Chat     = require \../component/Chat
-window.Auth     = require \../component/Auth
-window.Pager    = require \./pager
+window.MainMenu        = require \../component/MainMenu
+window.Chat            = require \../component/Chat
+window.Auth            = require \../component/Auth
+window.PhotoCropper    = require \../component/PhotoCropper
+window.PanelCollection = require \../component/PanelCollection
+window.ChatPanel       = require \../component/ChatPanel
+
 window.furl     = require \../shared/forum-urls
 window.tasks    = require \./tasks
 window.ioc      = require \./io-client
 window <<< {ck-submit-form}
-
-window.PhotoCropper = require \../component/PhotoCropper
 
 # components
 require! \../component/Buy
@@ -56,32 +56,33 @@ left-offset = 50px
 
 #{{{ UI Interactions
 # ui save state
-sep = \-
-window.save-ui = -> # serialize ui state to cookie
+const sep = \-
+const k-ui = "#{window.user?id}-ui"
+window.save-ui = -> # serialize ui state to local storage
   min-width = 200px
   w = $ \#left_content .width!
-  s = $.cookie \s
-  if s then [_, _, prev] = s.split sep
-  w = if w > min-width then w else prev or min-width # default
+  s = storage.get k-ui
+  if s then [_, last] = s.split sep
+  w = if w > min-width then w else last or min-width # default
   vals =
     if $ \body .has-class(\collapsed) then 1 else 0
     w
-  $.cookie \s, vals.join(sep),
+  storage.set k-ui, vals.join(sep),
     path:   \/
     secure: true
-window.load-ui = -> # restore ui state from cookie
-  s  = $.cookie \s
+window.load-ui = -> # restore ui state from local storage
+  s  = storage.get k-ui
   $l = $ \#left_content
 
   if s # restore
     [collapsed, w] = s.split sep
     if collapsed is \1 and not $ \html .has-class \admin
       $ \body .add-class \collapsed # only collapse on non-admin mutants
+    # animate build-in
     w = parse-int w
-    $l.transition({width: w} 500ms \easeOutExpo -> set-wide!)
-    set-timeout (-> # ... & snap
-      $ '#main_content .resizable' .transition({padding-left: w+left-offset} 450ms \snap)), 300ms
-  set-timeout (-> set-wide!; align-ui!), 500ms
+    $l.transition({width: w} 600ms \easeOutExpo -> set-wide!)
+    $ '#main_content .resizable' .transition({padding-left: w+left-offset} 300ms \easeOutExpo)
+  set-timeout (-> set-wide!; align-ui!), 1000ms
 
 # waypoints
 $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 800ms)
@@ -89,9 +90,7 @@ $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 80
 # show reply ui
 append-reply-ui = (ev) ->
   focus = !($ ev.target .data \no-focus) # take focus?
-
   $p = $ ev.target .parents \.post:first # post div
-
   # append dom for reply ui
   unless $p.find('.reply .post-edit:visible').length
     render-and-append window,  $p.find(\.reply:first), \post-edit, (post:
@@ -99,8 +98,9 @@ append-reply-ui = (ev) ->
       forum_id:   $p.data(\forum-id) or window.active-forum-id
       parent_id:  $p.data \post-id
       is_comment: true), ->
-        #if ev.original-event then $p.find('textarea[name="body"]').focus! # user clicked
-        if focus then $p.find('textarea[name="body"]').focus!
+        editor = $p.find 'textarea[name="body"]'
+        editor.autosize!
+        if focus then editor.focus!
   else
     $p.find('.reply .cancel').click!
 
@@ -235,7 +235,7 @@ $d.on \click \.edit.no-surf Auth.require-login((ev) ->
   edit-post $(ev.target).data \edit)
 $d.on \click '.onclick-submit .cancel' (ev) ->
   f = $(ev.target).closest(\.post-edit)  # form
-  f.hide 350ms \easeOutExpo
+  f.slide-up 100ms \easeOutExpo
   meta = furl.parse window.location.pathname
   switch meta.type
   | \new-thread => History.back!
@@ -253,7 +253,7 @@ submit = Auth.require-login(
       # render updated post
       p.find \.title .html data.0?title
       p.find \.body  .html data.0?body
-      f.remove-class \fadein .hide 200ms # & hide
+      f.remove-class \fadein .slide-up 100ms \easeOutExpo # & hide
       meta = furl.parse window.location.pathname
       window.last-statechange-was-user = false # flag that this was programmer, not user
       switch meta.type
@@ -273,7 +273,7 @@ submit-selectors =
   * "html.forum .onclick-submit button[type='submit']"
   * "html.search .onclick-submit button[type='submit']"
 $d.on \click, submit-selectors.join(', '), post-submit
-$d.on \keydown \.onshiftenter-submit ~> if it.which is 13 and it.shift-key then post-submit it
+$d.on \keydown \.onenter-submit ~> if it.which is 13 and not it.shift-key then post-submit it; it.target?blur!
 
 $d.on \click \.onclick-append-reply-ui Auth.require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post Auth.require-login(censor)
@@ -289,11 +289,14 @@ $d.on \click 'header .onclick-close' (e) ->
   History.back!
 #{{{ - left_nav handle
 $d.on \click \#handle ->
+  s  = storage.get k-ui
   $l = $ \#left_content
+  if s then [collapsed, w] = s.split sep
   $ \body .toggle-class \collapsed
   $ '#main_content .resizable'
-    .css(\padding-left, ($l.width! + left-offset))
+    .css(\padding-left, ($l.width! + w? + left-offset))
   save-ui!
+  set-wide!
 #}}}
 
 # {{{ Mocha testing harness
@@ -326,10 +329,10 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
 )
 #}}}
 #{{{ - admin
-$d.on \click 'html.admin .onclick-submit button[type="submit"]' (ev) ->
+$d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin [type="checkbox"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form
-    t = $(f.find \.tooltip)
+    t = $ \#warning
     inputs = # class to apply & which input
       saved: f.find 'input, textarea'
 
@@ -349,6 +352,8 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"]' (ev) ->
     else # indicated failure
       show-tooltip t, data?msg
   )
+  true
+
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
   #console.log \parsed_id, id
@@ -388,6 +393,10 @@ window.do-buy = (product-id) ->
 
 # kick-off main menu
 window.component.main-menu = new MainMenu {-auto-render, locals:{}}, $ \#menu
+
+# panels
+window.component.panels = new PanelCollection {}
+$ \body .append window.component.panels.$
 #}}}
 
 # vim:fdm=marker

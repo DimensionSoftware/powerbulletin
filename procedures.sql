@@ -54,12 +54,13 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
     # fetch thread & forum context
     thread-sql = """
       SELECT p.id,p.title,p.uri, a.user_id,a.name, f.uri furi,f.title ftitle
-      FROM posts p
+       FROM posts p
         LEFT JOIN aliases a ON a.user_id=p.user_id
         LEFT JOIN forums f ON f.id=p.forum_id
       WHERE p.id IN (#{(u.unique [p.thread_id for p,i in posts]).join(', ')})
+        AND a.site_id = $1
     """
-    ctx = plv8.execute(thread-sql, [])
+    ctx = plv8.execute(thread-sql, [usr.site_id])
 
     # hash for o(n) + o(1) * posts -> thread mapping
     lookup = {[v.id, v] for k,v of ctx}
@@ -447,9 +448,10 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
 
   sql = """
   SELECT
-    u.id, u.email,
-    a.photo, a.verified, a.rights, a.name, a.created, a.site_id,
+    u.id, u.email, u.rights AS sys_rights,
+    a.photo, a.verified, a.rights, a.name, a.created, a.site_id, a.last_activity, a.config AS config,
     (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2) AS post_count,
+    (SELECT SUM(count) FROM (SELECT DISTINCT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2 GROUP BY thread_id) AS tc) AS thread_count,
     auths.type, auths.profile 
   FROM users u
   JOIN aliases a ON a.user_id = u.id
@@ -464,16 +466,21 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
     memo.auths[auth.type] = auth.profile
     memo
   u =
-    auths      : {}
-    id         : auths.0?id
-    site_id    : auths.0?site_id
-    name       : auths.0?name
-    photo      : auths.0?photo
-    email      : auths.0?email
-    rights     : auths.0?rights
-    verified   : auths.0?verified
-    created    : auths.0?created
-    post_count : auths.0?post_count
+    auths         : {}
+    title         : auths.0?config?title
+    sig           : auths.0?config?sig
+    id            : auths.0?id
+    site_id       : auths.0?site_id
+    name          : auths.0?name
+    photo         : auths.0?photo
+    email         : auths.0?email
+    rights        : auths.0?rights
+    sys_rights    : auths.0?sys_rights
+    verified      : auths.0?verified
+    last_activity : auths.0?last_activity
+    created       : auths.0?created
+    post_count    : auths.0?post_count
+    thread_count  : auths.0?thread_count or 0
   user = auths.reduce make-user, u
   return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
@@ -482,7 +489,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- @param String domain
 CREATE FUNCTION procs.site_by_domain(domain JSON) RETURNS JSON AS $$
   sql = """
-  SELECT s.*, d.config AS domain_config, d.name AS current_domain
+  SELECT s.*, d.id AS domain_id, d.config AS domain_config, d.name AS current_domain
   FROM sites s JOIN domains d ON s.id = d.site_id
   WHERE d.name = $1
   """
@@ -605,7 +612,7 @@ CREATE FUNCTION procs.bans_for_post(post_id JSON, user_id JSON) RETURNS JSON AS 
 
   for b in bans
     b.url = '^' + b.url
-  
+
   # ban associated profile, too
   profiles = bans.map (b) ->
     {host:b.host, url:"^/user/#user_id"}
@@ -630,10 +637,9 @@ CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON)
   forum  = forumf(forum_id)
 
   sort-sql =
-    switch sort or \recent
-    | \recent   => 'p.created DESC, p.id ASC'
+    switch sort
     | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id) DESC, p.created DESC'
-    | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
+    | otherwise => 'p.created DESC, p.id ASC' # recent
 
   # This query can be moved into its own proc and generalized so that it can
   # provide a flat view of a thread.
@@ -655,10 +661,9 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.site_summary(site_id JSON, thread_limit JSON, sort JSON) RETURNS JSON AS $$
   sort-sql =
-    switch sort or \recent
-    | \recent   => 'created DESC, id ASC'
+    switch sort
     | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE forum_id=id GROUP BY forum_id) DESC, created DESC'
-    | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
+    | otherwise => 'created DESC, id ASC' # recent
   site-ids = plv8.execute "SELECT id FROM forums WHERE site_id=$1::bigint ORDER BY #sort-sql", [site_id]
   fn = plv8.find_function \procs.forum_summary
   return site-ids.map (-> fn(it.id, thread_limit, sort).0)

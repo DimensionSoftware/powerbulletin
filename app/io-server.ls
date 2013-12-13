@@ -10,8 +10,10 @@ require! {
   '../component/Chat'
   sio: \socket.io
   pg: \./postgres
+  m: \./pb-models
 }
 
+global <<< require \prelude-ls
 
 log = debug 'io-server'
 
@@ -20,10 +22,13 @@ user-from-session = (s, cb) ->
     return cb null, {id:0, name:\Anonymous, guest:true}
   [name, site_id] = s?passport?user?split \:
   if name and site_id
-    (err, user) <~ db.usr {name, site_id}
+    (err, user) <~ db.usr { name, site_id }
     if err
       log \user-from-session, \db.usr, err
       return cb err
+    if not user
+      console.log \no-user
+      return cb new Error("couldn't find user")
     delete user.auths
     cb null, user
   else
@@ -39,6 +44,13 @@ site-by-domain = (domain, cb) ->
   err <- pg.init
   if err then throw err
   global.db = pg.procs
+
+  # initialize models
+  err <~ m.init
+  if err then throw err
+
+  # mixing additional keys into 'db' namespace
+  do -> pg.procs <<< { [k,v] for k,v of m when k not in <[orm client driver]> }
 
   io  = sio.listen server
   io.set \transports, [
@@ -89,6 +101,11 @@ site-by-domain = (domain, cb) ->
       log err
       return
 
+    err <- db.aliases.update-last-activity-for-user user
+    if err
+      log err
+      return
+
     err, site <- site-by-domain socket.handshake.domain
     if err
       log err
@@ -126,6 +143,8 @@ site-by-domain = (domain, cb) ->
       if search-room
         socket.leave search-room
       if user and site
+        err <- db.aliases.update-last-activity-for-user user
+        if err then return log \db.aliases.update-last-activity-for-user, err
         err <- presence.users-client-remove socket.id, user
         if err then return log \presence.users-client-remove, err
         err, cids <- presence.cids-by-uid user.id
@@ -139,7 +158,7 @@ site-by-domain = (domain, cb) ->
       err, users <- presence.in "#{site.id}"
       unless err then try # guard
         users |> filter (-> it) |> each (u) ->
-          socket.in("#{site.id}").emit \enter-site, u # not braoadcast
+          socket.in("#{site.id}").emit \enter-site, u # not broadcast
 
     socket.on \debug, ->
       socket.emit \debug, socket.manager.rooms

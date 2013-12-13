@@ -28,24 +28,19 @@ html
       for obj in cssUrls
         link(rel='stylesheet',type='text/css',href=obj.url)
     if domainStyle
-      link(href="#{cache3Url}/sites/#{siteId}.auth.css?#{cacheBuster}", rel='stylesheet', type='text/css')
+      link(href="#{cache3Url}/sites/#{siteId}/#{domainId}.auth.css?#{cacheBuster}", rel='stylesheet', type='text/css')
     if style
-      link(href="#{cache2Url}/sites/#{siteId}.css?#{cacheBuster}", rel='stylesheet', type='text/css')
-
-    if env == 'production'
-      //- in this case we preload most libraries, as opposed to fetching them all separately
-      script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
-      script(src="#{cacheUrl}/pb-optimized.js")
-    else
-      script(type='text/javascript', src="#{cache4Url}/local/require.js") //- offline
+      link(href="#{cache2Url}/sites/#{siteId}/master.css?#{cacheBuster}", rel='stylesheet', type='text/css')
 
     //- the only .js in our <head> 
-    if cvars.env != 'production'
-      script(type='text/javascript', src="#{cache5Url}/local/head-0.99.load.min.js") //- offline
+    if env == 'production'
+      //- in this case we preload most libraries, as opposed to fetching them all separately
+      script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
+      script(type='text/javascript', src="#{cacheUrl}/pb-optimized.js")
     else
-      script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
-    script(type="text/javascript")
-      window.CHANGESET=!{JSON.stringify(CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.cache2Url=!{JSON.stringify(cvars.cache2Url)};window.cache3Url=!{JSON.stringify(cvars.cache3Url)};window.cache4Url=!{JSON.stringify(cvars.cache4Url)};window.cache5Url=!{JSON.stringify(cvars.cache5Url)};window.authDomain="!{cvars.authDomain}";window.headjs=head.js;window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cacheUrl+'/client',urlArgs:!{JSON.stringify(CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
+      script(type='text/javascript', src="#{cache4Url}/local/require.js") //- offline
+    script(type="text/javascript").
+      window.CHANGESET=!{JSON.stringify(CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.cache2Url=!{JSON.stringify(cvars.cache2Url)};window.cache3Url=!{JSON.stringify(cvars.cache3Url)};window.cache4Url=!{JSON.stringify(cvars.cache4Url)};window.cache5Url=!{JSON.stringify(cvars.cache5Url)};window.authDomain="!{cvars.authDomain}";window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cacheUrl+'/client',urlArgs:!{JSON.stringify(CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
   body
 
     header.header.toggler

@@ -1,42 +1,375 @@
 blend = rgba(0,0,0,.5)
-.Sales::before
-  //background-image linear-gradient(top, #ccc 10%, #fff 100%)
-  background-image radial-gradient(ellipse closest-corner at 45% 50%, #fff 70%, #bbb 200%)
-  content ''
-  position absolute
-  top -235px
-  bottom 0
-  left 0
-  right 0
-  height 5000px
+
+//{{{ Sales is a site component that owns <body> and it can define initial style:
+body
+  background-color #000
+  margin 0
+  height 5408px
+  position relative
+  .body-bg
+    position fixed
+    top 0
+    left 0
+    right 0
+    bottom 0
+    opacity 1
+    img
+      width 100%
+      min-height 1015px
+      min-width 1542px
+  .container.first
+    border-top-width 0!important
+  .bg, .feature
+    opacity 0
+//}}}
+//{{{ - Site Scrolled behaviors
+body.scrolled
+  background-color #fff
+  .body-bg
+    opacity 0
+    transition opacity .5s ease-out
+  header
+    border-bottom 0
+    height 53px
+    box-shadow none
+    background rgba(255,255,255,0.7)
+    ul
+      li
+        margin-top 15px
+        a
+          color #444
+          font-weight 600
+  header::after
+    display none
+    bottom -1px
+    border-bottom-color #eee
+    box-shadow none
+  .container.first
+    border-top-width 1px!important
+  .down-arrow
+    &:hover:before
+      background-color rgba(255,255,255,.5)!important
+    &:before
+      background-color rgba(255,255,255,.4)!important
+      padding 37px 40px!important
+      left 147px!important
+      top 35px!important
+    .s-down-arrow
+      top 75px!important
+  .bg, .feature
+    opacity 1
+    transition opacity .3s ease-out
+  #logo
+    opacity 0
+    transition all .4s ease-out
+  #imagine p, #imagine ul, #register_top
+    opacity 1
+    transition opacity 1s ease-out
+  #imagine
+    p, ul
+      opacity 0
+      transform translateX(25px)
+      transition all .2s ease-out
+    .logo-icon
+      opacity 1
+      transform translate(0, 0) rotate(0deg)
+      transition all .5s ease-out
+  #register_top.show
+    transform translateX(-25px)
+    opacity 0
+    transition all .25s ease-out
+  #features
+    font-size 1.7em
+    .down-arrow
+      top 57px
+    .why
+      opacity 0
+      transition .2s ease-out
+    .love
+      display none
+      font-size .8em
+      letter-spacing 0
+      transform translate(23px, -29px)
+      opacity .5
+      color dark
+      transition .2s ease-out
+    .pb
+      display none
+      //font-weight 500
+      //text-transform uppercase
+      transform translateX(-85px)
+      color dark
+      text-shadow 1px 1px 0 light
+      letter-spacing 1px
+      font-style normal
+      font-weight 300
+      text-transform none
+      letter-spacing 0
+      b
+        font-weight 500
+        font-style italic
+        margin-left 1px
+        letter-spacing 1px
+  section
+    opacity 1
+  #features::after
+    border-top-color light
+  nav
+    right 44px
+    opacity 1
+    transition right .2s ease-out
+  footer::before, footer:hover::before
+    border-top none
+    box-shadow none
+  footer
+    opacity 1
+    bottom -20px
+    box-shadow none
+    transition all .4s ease-out
+//}}}
+//{{{ - Site Responsive (mobile)
+@media screen and (max-width: 800px)
+  body.homepage
+    height 2515px!important
+    .Sales
+      font-size .85em
+      .Sales-content
+        padding-top 60px
+      //.body-bg
+      //  display none
+      .logo
+        left 15px!important
+      #imagine
+        display none
+      nav
+        display none
+      #start_now
+        display none
+      .SiteRegister
+        left 0!important
+        h3
+          left 149px!important
+        .SiteRegister-subdomain
+          width 300px
+        .SiteRegister-create
+          right 247px
+      .container
+        height auto!important
+        .bg
+          display none
+      section.feature
+        h4
+          font-size 1.5em!important
+        article
+          transform translateX(35px)
+          width 90%!important
+          .arrow
+            display none
+          img
+            display none
+          ul
+            opacity 1
+            text-indent 0
+      section.last
+        .SiteRegister
+          padding-left 50px!important
+      section#support
+        article h4
+          margin-left 250px!important
+      section.faq
+        margin-bottom 25px
+        article
+          h3::after
+            left 29%
+          p
+            padding 0
+          menu
+            width 80%
+//}}}
+
 .Sales
-  //position relative
+  overflow hidden
+  //{{{ Common
   text-align center
-  margin-top 235px
-  .arrow:hover
-    letter-spacing 4px
-    color #999
-    transition all .1s ease-out
+  margin-top 100px
   .arrow
     cursor pointer
     display block
     position relative
-    animation-name move-down
-    animation-duration 1s
-    animation-iteration-count infinite
-    animation-direction alternate
-  .arrow::after
-    border 9px solid transparent
-    border-top 9px solid #ccc
-    content ''
-    position absolute
-    bottom -10px
-    left 64px
-  .arrow:hover::after
-    border-top 12px solid #aaa
-    bottom -12px
-    transition all .1s ease-out
-
+    .down-arrow
+      position relative
+      z-index 9
+      transition top .3s ease-out
+      &:hover:before
+        background-color rgba(150,150,150,.3)
+      &:before
+        content ''
+        position absolute
+        left 157px
+        top 36px
+        padding 30px
+        border-radius 100%
+        background-color rgba(150,150,150,.2)
+        transition all .2s ease-out
+      .s-down-arrow
+        position absolute
+        top 55px
+        left 170px
+        animation-name move-down
+        animation-duration 1s
+        animation-iteration-count infinite
+        animation-direction alternate
+    &:hover
+      letter-spacing 4px
+      color #fff
+      transition all .1s ease-out
+  //}}}
+  //{{{ Header
+  header
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 45px
+    text-align right
+    border-bottom-color #cfcfcf
+    z-index 20!important
+    background rgba(255,255,255,.55)
+    ul
+      list-style none
+      margin 0 50px
+      li
+        display inline-block
+        margin-top 12px
+        margin-left 48px
+        font-weight 200
+        cursor pointer
+        #start_now
+          margin-top -5px
+          height 34px
+          font-size 14px
+          border-radius 6px / 5px
+        .my-sites
+          display none
+        a
+          display block
+          color #666
+          font-weight 400
+          &:hover
+            color #111
+            transform scale(1.08)
+            transition all .08s ease-out
+        &:last-child
+          width 125px
+  //}}}
+  //{{{ Intro (below header)
+  #imagine
+    position relative
+    font-size 3em
+    letter-spacing 1px
+    font-weight bold
+    color #fff
+    margin-top 155px
+    z-index 2
+    ul
+      font-size .55em
+      color #eee
+      line-height 1.3em
+      padding-top 20px
+      list-style none
+    .logo-icon
+      background-image url(cache-url + '/images/pb_icon_logo.png')
+      background-repeat no-repeat
+      margin -100px auto 180px auto
+      width 81px
+      height 96px
+      opacity 0
+      transform rotate(90deg) translate(15px, 35px)
+  #register_top
+    margin-top -60px
+    opacity 0
+    z-index 2
+  #register_top.show
+    transform translateX(25px)
+    opacity 1
+    transition all .4s ease-out
+  #features
+    opacity 0
+    font-style italic
+    font-weight 300
+    color #ddd
+    padding-bottom 80px
+    margin 40px auto 0 auto
+    font-size 1.15em
+    width 370px
+    z-index 2
+    animation-name none
+    span
+      padding 0 3px
+    b
+      font-weight inherit
+    &::after
+      animation-name move-down
+      animation-duration 1s
+      animation-iteration-count infinite
+      animation-direction alternate
+      left 170px
+      top 35px
+    &:hover
+      letter-spacing 0
+      color #fff
+      transform scale(1.02)
+      transition all .08s ease-out
+  h2
+    font-size 1.45em
+    font-weight 400
+    color #888
+  //}}}
+  //{{{ Logo
+  .logo
+    position fixed
+    top 8px
+    left 100px
+    z-index 20
+    text-align left
+    background-image url('//muscache.pb.com/images/pb_icon_logo_sm.png')
+    background-repeat no-repeat
+    height 30px
+    padding-left 35px
+    padding-top 4px
+    &:hover
+      animation-name tiny-grow
+      animation-duration .1s
+      h1
+        text-shadow 0 0 2px light
+        transition none
+    h1
+      font-size 1.5em
+      margin-left 3px
+      font-weight 300
+      margin 0
+      color #555
+      font-style italic
+      transition text-shadow .2s ease-out .5s
+      b
+        text-shadow none
+        font-style normal
+        letter-spacing 0
+        margin-left 4px
+        font-weight 500
+        color #333
+    em
+      display block
+      margin-top 23px
+      text-transform uppercase
+      font-weight 200
+      font-style normal
+      font-size 1em
+      letter-spacing 3px
+      color #999
+  //}}}
+  //{{{ Sections
+  // section navigator
   nav
     list-style none
     position fixed
@@ -55,126 +388,46 @@ blend = rgba(0,0,0,.5)
       border-radius 6px
     li.active::before
       background-color #777
-    li::before
-      content ''
-      position absolute
-      right 0
-      top 9px
-      height 4px
-      width 4px
-      border-radius 5px
-      background-color #666
-      transition all .1s ease-out
-    li:hover
-      .name
-        opacity 1
-        margin-right -10px
-        transition opacity .4s ease-out, margin-right .1s ease-out, letter-spacing .13s ease-out
-        letter-spacing 1px
     li
       position relative
+      &::before
+        content ''
+        position absolute
+        right 0
+        top 6px
+        height 4px
+        width 4px
+        border-radius 5px
+        background-color #666
+        font-weight 300
+        transition all .1s ease-out
+      &:hover
+        .name
+          opacity 1
+          margin-right -10px
+          transition opacity .4s ease-out, margin-right .1s ease-out, letter-spacing .13s ease-out
+          letter-spacing 1px
       .name
         cursor pointer
-        padding 1px 23px 1px 8px
-        border-radius 3px
-        color #444
+        padding 2px 23px 2px 8px
+        border-radius 5px
+        color #333
         position relative
         margin-right -25px
         letter-spacing -5px
         opacity 0
-        background rgba(255,255,255,.2)
+        background rgba(255,255,255,.4)
         font-size .8em
-
-  //{{{ Intro (below header)
-  #imagine
-    position relative
-    font-size 1.75em
-    letter-spacing 1px
-    font-weight 300
-    .logo-icon
-      background-image url(cache-url + '/images/pb_icon_logo.png')
-      background-repeat no-repeat
-      margin 40px auto 0 auto
-      width 81px
-      height 96px
-      opacity 0
-      transform rotate(90deg) translate(15px, 35px)
-  #register_top
-    margin-top 65px
-    opacity 0
-  #register_top.show
-    transform translateX(25px)
-    opacity 1
-    transition all .4s ease-out
-  #features
-    opacity 0
-    font-style italic
-    font-weight 200
-    color #aaa
-    padding-bottom 20px
-    margin 70px auto 0 auto
-    font-size 1.15em
-    width 370px
-    animation-name none
-    span
-      padding 0 3px
-    b
-      font-weight inherit
-  #features::after
-    animation-name move-down
-    animation-duration 1s
-    animation-iteration-count infinite
-    animation-direction alternate
-    left 170px
-    top 35px
-  #features:hover
-    letter-spacing 0
-    color #888
-    transform scale(1.02)
-    transition all .08s ease-out
-  h2
-    font-size 1.45em
-    font-weight 400
-    color #888
-  //}}}
-  //{{{ Logo
-  .logo
-    position fixed
-    top 0
-    left 100px
-    z-index 0
-    margin-top 100px
-    text-align left
-    h1
-      font-size 3em
-      font-weight 200
-      margin 0
-      color #666
-      letter-spacing -1px
-      text-shadow 1px 1px 1px #ddd
-      b
-        letter-spacing 0
-        font-style italic
-        margin-left 4px
-        font-weight 500
-        color #444
-    em
+  .container.visible
+    visibility visible
+    &:after
       display block
-      margin-top 23px
-      text-transform uppercase
-      font-weight 200
-      font-style normal
-      font-size 1em
-      letter-spacing 3px
-      color #999
-  //}}}
-  //{{{ Sections
   .container
     position relative
-    height 600px
-    //height 1150px
+    height 500px
     width 100%
     overflow hidden
+    visibility hidden
     img.bg
       position absolute
       left 0
@@ -183,54 +436,77 @@ blend = rgba(0,0,0,.5)
       width 100%
       min-width 1200px
   .container.first
-    margin-top 100px
+    margin-top 25px
     border-top 1px solid #888
   .container.fifth + section
     border-top 1px solid #777
   section#support.feature
     background-image none
-    box-shadow 0
+    box-shadow none
+    border none
+    article
+      h4
+        margin-left 0
+      p
+        width 100%
+        text-align left
   section.feature.shown
     article
-      p
+      img
+        opacity 1
+        transition opacity .8s ease-out .1s
+      ul
         opacity 1
         text-indent 0
-        transition all .2s ease-out .1s
+        transition all .3s ease-out .1s
     .arrow
+      position relative
+      z-index 10
       opacity 1
       transition opacity .5s ease-out .4s
   section.feature
+    padding-left 80px
     border-top 1px solid #777
     border-bottom 1px solid #777
     box-shadow 0 0 28px -2px blend
-    background-image radial-gradient(ellipse closest-corner at 50% 50%, #fff 70%, #000 150%)
+    background-image radial-gradient(ellipse closest-corner at 50% 50%, #fff 85%, #000 160%)
     transition box-shadow 1s ease-out .5s
-    &:hover
-      border-color #555
-      box-shadow 0 0 30px 0 blend
-      transition none
+    overflow visible
     article
-      transform scale(1.02)
-      transition all .1s ease-out
-    h4
-      text-transform uppercase
-      color light
-      font-weight 600
-      font-size 2em
-      letter-spacing 1px
-      font-style italic
-      text-shadow 1px 1px 0 dark
-    article
-      p
+      transform translateX(160px)
+      img
+        position absolute
+        top -67px
+        left -388px
+        opacity 0
+        outline none
+      h4
+        color light
+        margin-bottom 38px
+        font-weight bold
+        font-size 3em
+        letter-spacing 1px
+        text-shadow 1px 1px 0 dark
+        text-align left
+      ul
+        list-style-type circle
+        text-align left
         text-indent -200px
         opacity 0
-        padding 0 105px
+        li
+          color #333
+          margin-top 5px
+          line-height 1.6em
+          font-size 1.1em
     .arrow
-      width 150px
+      top 87px
+      left -100px
+      width 100%
       height 30px
       font-size .7em
       letter-spacing 3px
-      margin 35px auto 0 auto
+      padding-right 200px
+      margin 5px auto 0 auto
       text-transform uppercase
       opacity 0
       color #bbb
@@ -241,33 +517,45 @@ blend = rgba(0,0,0,.5)
     display block
     top 0
     left 0
-    height 300px
+    height 500px
     width 100%
+    opacity 0
     overflow hidden
   section.last
     position absolute
     bottom 400px
     top auto
     min-height 100px
+    min-width 900px
     height 195px
-    border-top 1px solid #f5f5f5
+    border-top 1px solid #eee
+    background-image linear-gradient(bottom, light -650px, #fff 180px)
     article
       width 530px
       h3
         left 130px
+        color #000
       h3::after
         display none
       #register_bottom
         position absolute
+        padding-left 0
         bottom 10px
+        .hostname
+          padding-left 33px
+  #responsive article img
+    margin-top 8px
+    left -520px
+  #realtime img
+    top 6px
+    left -450px
+  #responsive img
+    left -510px
+  #support img
+    margin-top 33px
+    margin-left -19px
   //}}}
   //{{{ FAQ
-  section.faq:hover
-    box-shadow 0 -1px 0px 0px #777 inset,0 6px 12px 5px #eee inset
-    transition all .2s ease-out
-    h3
-      color #222
-      transition all .1s ease-out
   section.faq
     position absolute
     bottom 0
@@ -275,18 +563,16 @@ blend = rgba(0,0,0,.5)
     z-index 0
     min-height 100px
     height 350px
-    background #ccc
-    background-image linear-gradient(top, #ddd 10%, #fff 100%)
     margin 0
     padding 0
-    border-top 1px solid #ddd
-    box-shadow 0 -1px 0px 0px #666 inset,0 6px 12px 3px #eee inset
+    border-top 1px solid #eee
     article
-      max-width 800px
+      max-width 900px
       margin 80px auto 0 auto
+      padding-left 40px
       h3
         color #555
-        text-indent -30px
+        text-indent -65px
       menu
         text-align left
         float left
@@ -301,22 +587,12 @@ blend = rgba(0,0,0,.5)
 
   section
     article
-      max-width 900px
-      margin 70px auto 0 auto
+      max-width 600px
+      margin 171px auto 0 auto
+      font-size 1.1em
       h3
         position relative
         letter-spacing 2px
-        &::after
-          content ''
-          position absolute
-          top 38px
-          left 34%
-          width 200px
-          height 1px
-          background #eee
-          border-bottom 1px solid #ddd
-          border-radius 100px / 1px
-          box-shadow 0 0 3px 0px #eee
       p
         margin auto
         color #555
@@ -352,7 +628,7 @@ footer
   left auto
   right -20px
   width 117px
-  background #555
+  background #555!important
   border-radius 30px / 20px
   border 1px solid #222
   &:hover
@@ -383,37 +659,5 @@ footer
     letter-spacing 2px
     padding 0 23px 0 30px
     //}}}
-
-//{{{ Responsive (mobile)
-@media screen and (max-width: 800px)
-  .SalesApp
-    font-size .85em
-    height 2300px
-    .logo
-      left 115px!important
-    #imagine
-      display none
-    .SiteRegister
-      h3
-        left 149px!important
-    .container
-      height auto
-      .bg
-        display none
-    section
-      article
-        width 85%!important
-    .feature
-      h4
-        font-size 1.5em!important
-    section.faq
-      article
-        h3::after
-          left 29%
-        p
-          padding 0
-        menu
-          width 80%
-//}}}
 
 // vim:fdm=marker

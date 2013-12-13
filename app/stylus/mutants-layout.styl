@@ -10,8 +10,29 @@ html.homepage, html.page, html.moderation
     transform translateX(-600px)
     opacity 0
     transition all .2s cubic-bezier(1,.01,.69,1)
+html.homepage
+  #order
+    position relative
+    box-sizing border-box
+    padding (grid) (grid) (grid*7) (grid*2)
+    text-align center
+    overflow-y scroll
+    display none
+    height 109px
+    margin 0
+    list-style none
+    li
+      font-size .8em
+      padding 0 0 1px 0
+      margin 0 0 5px 0
+  .indicator
+    top 21px
+    position absolute
+    left 0
+    width 140px
+    height 1px
   .main-content
-    padding-top header-height
+    padding-top header_height
     .forum
       .title
         text-align center
@@ -63,14 +84,25 @@ html.homepage, html.page, html.moderation
 html.forum .homepage .forum > .title
   display none
 html.homepage, html.forum
-  .homepage
-    .post
-      max-height 200px
-      overflow hidden
-      margin-bottom (grid*2)
-    .subpost
-      .username
-        display none
+  .main-content
+    .forum.homepage
+      .post
+        width 100%
+        margin-bottom (grid*2)
+        &:hover
+          .body
+            max-height none
+            min-height 65px
+            transition 0 ease-out 1s
+        .body
+          max-height 65px
+          overflow hidden
+        .profile.photo
+          height 45px
+          width 45px
+      .subpost
+        .username
+          display none
 //}}}
 //{{{ - forum, profile, search & moderation
 html.forum, html.profile, html.search, html.moderation
@@ -101,7 +133,6 @@ html.forum, html.profile, html.search, html.moderation
       display none
     .photo
       margin 5px 11px 7px 0
-      border-radius 45px
     .create
       margin (grid/2) (grid*3.5) (grid/2) (grid*3.5)
       .button
@@ -115,12 +146,10 @@ html.forum, html.profile, html.search, html.moderation
       overflow-y scroll
       height 100%
     .threads
-      //overflow-y scroll
       height 100%
       margin 0
       padding-top grid
       .thread
-        position relative
         padding 0 38px 10px 38px
         .title
           margin 7px 0 0 0
@@ -173,7 +202,6 @@ html.forum, html.profile, html.search, html.moderation
     .forum, .search
       position relative
       clear both
-      min-height 650px
       margin-bottom (grid*2)
       p
         margin 0
@@ -183,9 +211,6 @@ html.forum, html.profile, html.search, html.moderation
         position absolute
         right 0
         bottom -30px
-      .post:hover
-        position relative
-        z-index 4
       #post_new
         display none
       #cke_post_new
@@ -207,12 +232,12 @@ html.forum, html.profile, html.search, html.moderation
           opacity 1
           transition none
       .reply
-        .fadein
-          margin-top 8px
+        margin-left 172px
         width 405px
         .post-edit form
           clear both
           vertical-align top
+          margin -25px 0 30px 0
           .close
             right -9px
             top -10px
@@ -229,6 +254,7 @@ html.forum, html.profile, html.search, html.moderation
             vertical-align top
             display inline-block
           button
+            display none
             bottom 46px
             right 8px
             height 27px
@@ -240,7 +266,6 @@ html.forum, html.profile, html.search, html.moderation
       .post-edit
         position relative
         margin-bottom (grid*2)
-        margin-top (grid/2)
         .tooltip
           bottom 85px
         form
@@ -266,7 +291,6 @@ html.forum, html.profile, html.search, html.moderation
           transition all .2s ease-out .4s
           .profile.photo
             margin-left 3px
-            border-radius 45px
             height 45px
             width 45px
             margin-top (grid/2)
@@ -287,151 +311,361 @@ html.forum, html.profile, html.search, html.moderation
           display block
           width 50%
         #cke_body, textarea.body
+          vertical-align top
           width 102%
           min-height 40px
           resize vertical
           display block
           margin grid 0
           min-height 40px
-      .post.head
-        padding-top (grid/2)
-      .post:first-child
-        padding-top (grid*1.5)
       .post.censored
         .onclick-censor-post
           display none!important
+      .post.head
+        padding-top (grid/2)
+        position relative
+        > .title
+          padding-bottom 25px
+          font-weight 500
+          border-bottom 1px solid rgba(0,0,0,.15)
+        .post-reply
+          position absolute
+          right 69px
+          top 35px
+          left auto
+          font-size .9em
+          color dark_text
       .post
         position relative
         clear both
         margin-right (grid*4)
         padding-top (grid*2)
+        margin-bottom (grid*2)
+        &:hover
+          position relative
+          z-index 4
+          .actions
+            opacity 1
+            transition opacity .3s
+        &:first-child
+          padding-top (grid*1.5)
         .breadcrumb
           margin-bottom (grid*2)
           span, em
             display none
-        .profile
-          width 70px
-          height 70px
-          border-radius 70px
-          margin-bottom (grid)
-        img
-          max-width 100%
-        .title
-          margin 0 0 15px -1px
-          font-size 1.5em
-          color #444
-        .user
-          font-weight bold
+        .profile-container
+          position absolute
+          width 160px
+          text-align right
+          .user-title
+            text-transform capitalize
+          .user
+            clear both
+            font-weight bold
+            position relative
+            .profile
+              width 80px
+              height 80px
+              margin-bottom (grid)
+              margin-right -5px
+              float right
+              img
+                max-width 100%
+            .username
+              clear both
+              display block
+          .date
+            clear both
+            font-size .85em
+            color #999
+            font-style italic
+            padding-left 13px
+            display block
+            text-indent 1px
+            margin-top -1px
+            b
+              color #777
+        .container
+          position relative
+          margin-left 193px
+          margin-bottom 35px
+          padding 23px 30px 30px 35px
+          border-bottom-right-radius 35px
+          border-bottom-left-radius 35px
+          border-top-right-radius 35px
+          transition box-shadow .1s ease-out .1s
+          &:hover
+            box-shadow 1px 0 2px 1px rgba(0,0,0,.08)
+            transition none
+          .s-chat-bubble
+            position absolute
+            top 0
+            left -34px
+          .title
+            margin 0 0 15px -1px
+            padding-bottom 15px
+            font-size 1.5em
+            color #444
+            border-bottom 1px solid #eee
+            text-transform capitalize
+          textarea.body
+            font-size 1.1em
+          .body
+            color #444
+            line-height 1.5em
+            clear both
+            font-size 1.05em
+          .sig
+            font-size .85em
+            color #999
+            border-top 1px solid rgba(0,0,0,.15)
+            max-width 75%
+            margin-top 20px
+            padding-top 10px
+            // the idea is to not let users uglify their sigs
+            hr
+              display none
+            img
+              max-width 80%
+              max-height 125px
         .title, .user
           font-weight 400
           text-transform capitalize
-        textarea.body
-          font-size 1.1em
-        .date
-          font-size .9em
-          color #aaa
-          font-style italic
-          padding-left 13px
-          display block
-          text-indent 1px
-          margin-top -1px
-        p.body
-          color #444
-          line-height 1.5em
-          margin (grid/2) 0 grid -17px
-          border-bottom-right-radius 20px
-          border-bottom-left-radius 20px
-          padding 10px 15px 15px 15px
-          clear both
-          font-size 1.05em
         .actions
           opacity 0
-          clear both
-          margin-top -25px
-          margin-bottom 2px
-          line-height 15px
-          margin-left -6px
+          margin-left -13px
+          position absolute
+          left 225px
+          bottom -26px
+          padding-top 20px
+          z-index 9
           a
+            text-indent 20px
+            vertical-align bottom
             font-size .9em
             font-weight 400
-            margin-right 2px
-            margin-left 2px
+            margin-right 12px
+            margin-left -1px
             display inline-block
-            //padding 1px 5px
+            animation-name none
+            // div is the sprite icon
+            div
+              position absolute
+              bottom 0
+            &:hover
+              text-decoration none
           .edit, .censor
             display none
+        .social
+          position absolute
+          overflow hidden
+          right (grid*1.5)
+          bottom -30px
+          height 25px
+          min-width 200px
+          max-width 300px
+          div
+            max-width 95px!important
+            vertical-align top
+            overflow hidden
+          div:last-child
+            max-width 59px!important
+          > iframe
+            max-width 90px!important
+          .fb_iframe_widget
+            margin-right 16px!important
+            margin-top -3px!important
+            vertical-align top
       .page-loaded:last-child, #listview div[data-infinity-pageid]
         padding-bottom (grid*4) !important
-      .post:hover
-        .actions
-          opacity 1
-          //letter-spacing 0
-          transition opacity .3s
       .children
         font-size .95em
-        .profile.photo
-          width 55px
-          height 55px
+        .profile-container .user
+          .profile.photo
+            width 60px
+            height 60px
+        .container
+          min-height 90px
+          // slightly lighter & smaller
+          .sig
+            font-size .8em
+            color #aaa
+            max-width 55%
+            margin-top 10px
+            padding-top 5px
+            img
+              max-height 100px
         .children
-          margin-left (grid*3)
-          .body
-            line-height 20px
+          margin-left (grid*3.5)
           .load-more
-            margin-left -28px
+            width 100%
+            text-align center
+            display block
+            color dark_text
           .post
-            padding-top grid
+            padding-top 0
+            .container, .actions
+              margin-left 31px
+            .container
+              min-height 48px
+              margin-left 222px
+              padding 25px 37px 0 37px
+              .post-content
+                .body
+                  line-height 20px
+                  margin 0
+                  padding-bottom 20px
             .button
               bottom 19px
-            .user, .date
-              display inline
-              font-size .92em
-            .user
-              font-weight bold
-            .date
-              margin-left (grid/2)
-            .profile
-              border-radius 45px
-              width 45px
-              height 45px
+            .profile-container
+              margin 0
+              .user
+                display inline-block
+                font-size .92em
+                margin-top -5px
+                .profile.photo
+                  position absolute
+                  font-weight bold
+                .username
+                  margin 10px 12px 0 0!important
+              .user-title
+                display none
+              .date
+                margin 7px -36px 0 0
+                display block
+                font-size .95em
+              .profile
+                width 35px
+                height 35px
 //}}}
 //{{{ - profile
 html.profile
+  // hide Back button on "change password" dialog
+  .msg.onclick-show-login
+    display none
+  .left-content.editable
+    .avatar
+      img
+        cursor copy
+    .change-profile, .onclick-show-forgot, .onclick-change-sig, .change-title
+      opacity 1
+      display block
+      height auto
+      width auto
+      font-size 1em
+      transition opacity .3s ease-out
+    h3, .onclick-chat, .title
+      display none
+    .onclick-change-sig
+      opacity 1
   .left-content
-    .container
-      margin 0 (grid*2)
-      overflow hidden
-      button
-        margin 12px 2px 2px 2px
-    .avatar img
-      width 100%
-      max-width 255px
-    ul
-      font-weight 300
+    max_width = 225px
+    .onclick-chat
+      margin 8px 3px
+      max-width 250px
+      width 98%
     h1, h2, h3
       text-transform capitalize
       margin-top 0
       margin-left 0
+    h2
+      margin 15px 0 5px 3px
+    h3
+      padding 0 4px
+      font-size 1.1em
+      font-weight normal
+    h3, .change-title
+      text-transform capitalize
+      margin 0 0 9px 0
+    .change-title
+      display none
+      width 100%
+      margin-left 2px
+      padding 8px 4px
+      max-width max_width
+    .container
+      margin 0 (grid*3.5) 0 (grid*2)
+      overflow hidden
+      button
+        margin 12px 2px 2px 2px
+    .avatar
+      position relative
+      overflow hidden
+      // keep aspect
+      max-width max_width
+      max-height max_width
+      .drag
+        display none
+      img
+        width 100%
+    ul
+      margin 10px 3px
+      font-weight 300
+      color #777
+      li
+        margin-bottom 3px
+        b
+          color #444
+          font-weight 400
+        .date
+          display inline-block
+    .profile-actions
+      position relative
+      margin-top 25px
+      max-width max_width
+      &::before
+        content ''
+        position absolute
+        top -12px
+        left 0
+        right 0
+        height 1px
+        background-color #eee
+    .change-profile, .onclick-show-forgot, .onclick-change-sig
+      opacity 0
+      font-size 0
+      display block
+      height 0
+      width 0
+      margin 3px 0
   .main-content
     .forum
+      .overview
+        text-transform capitalize
+        margin 18px 0 20px -5px
+        color #555
+        font-size 1em
+        border-bottom 1px solid #ddd
+        padding-bottom 7px
+        .right
+          color #999
+          float right
+          font-size .95em
+          margin-right 5px
+          font-weight 300
+          b
+            font-weight 500
+            span
+              font-weight 300
       .heading
-        margin grid 0 0 0
+        margin grid 0 grid 0
         padding 0
         font-size 1em
         color #000
         text-transform none
-        a
-          text-decoration none
-        b
-          font-weight 500
-          text-transform capitalize
         .title
-          margin 0 1px 0 -1px
-          padding 1px 5px
+          margin 0 1px 0 6px
+          padding 1px 3px 3px 0
           font-size 1.12em
+          &:hover
+            text-decoration none
+          b
+            font-weight 400
+            text-transform capitalize
         .by, .forum-link
           margin-right 1px
           font-size .8em
-          font-weight 200
+          font-weight 500
           b
             font-size 1.1em
       .reply
@@ -442,11 +676,14 @@ html.profile
         padding-top 0
         margin-left (grid/2)
         margin-top 2px
+        .user-title
+          display none
         b
           margin-left 1px
-        .title
+        > h4.title
           font-size 1.4em
           letter-spacing -1px
+          display none
         .body
           margin-top 0
         .profile
@@ -455,7 +692,7 @@ html.profile
           .username
             display none
           .date
-            margin 0 grid 0 -3px
+            margin 0 grid grid 0
             padding 0
             font-weight 200
             font-style italic
@@ -499,6 +736,26 @@ html.search
       color #888
       font-size .8em
       border-bottom 1px solid #ccc
+    // setup default
+    #new_hit_count
+      display none
+      font-size 1.2em
+      font-weight 300
+      p
+        display inline
+        margin-left 8px
+        font-style italic
+        font-size .75em
+        .count
+          margin 0 3px
+    // new posts look slightly different on search page
+    #new_posts
+      .post
+        h4
+          padding 10px 5px
+          border-bottom 3px solid #F38437 !important
+        h4:after
+          content: " ( New! )"
     #breadcrumb
       display none
     .search
@@ -519,7 +776,7 @@ html.search
           border-radius 12px
       .advanced
         right 80px
-        top (header-height + 5)
+        top (header_height + 5)
         transition right .2s ease-out
         .check, label
           cursor pointer
@@ -535,15 +792,44 @@ html.admin
   .left-content
     max-width 150px
     background-color #fafafa
-    border-right 1px solid #e8e8e8
     .handle
       display none
     #left_container
+      h2
+        position absolute
+        margin-left 30px
+        bottom 20px
+        font-size .9em
+        font-style italic
+        font-weight 400
+        max-height 20px
+        overflow hidden
+        color #444
+        cursor pointer
+        display block
+        z-index 10
+        &:hover
+          color #333
+          max-height 600px
+          .dialog
+            max-height 600px
+            padding 6px 12px
+            transition max-height .2s ease-out .3s, padding .1s ease-out .3s
+        .dialog
+          max-height 0
+          background-color #eee
+          border 1px solid #ddd
+          border-radius 5px
+          min-width 175px
+          transition max-height .1s ease-out .2s
+        a
+          display block
+          font-size .9em
       menu
         float right
         list-style none
         padding 18px
-        margin 0 0 0 3px
+        margin 28px 0 0 3px
         transition all .2s ease-out
         li.active
           a
@@ -564,6 +850,7 @@ html.admin
   .main-content
     padding-left 200px
     padding-bottom 50px
+    background-color #fdfdfd
     .note
       color #aaa
       font-size .75em
@@ -604,6 +891,12 @@ html.admin
       margin-top (grid*2)
       max-width 1300px
       position relative
+      h3
+        color #aaa
+        letter-spacing 2px
+        margin 0 0 40px 39px
+        font-weight 200
+        font-style italic
       select
         margin 10px 0
       .emails
@@ -628,12 +921,46 @@ html.admin
         display inline-block
         vertical-align top
         margin-top grid
-        letter-spacing -1px
       .break
         padding-bottom (grid*2.5)
         clear both
       .break.double
         padding-top (grid*2.5)
+      fieldset.collapse
+        display block
+        cursor pointer
+        position relative
+        margin-top grid
+        margin-bottom 0
+        margin-left -10px
+        border-bottom 1px solid #eee
+        background-color #fafafa
+        overflow hidden
+        legend
+          top 0
+          left 0
+          margin -10px
+          color #777!important
+          letter-spacing 1px
+          text-align center
+          font-weight 200
+          width 100%
+        .dialog
+          max-height 0
+          padding-right 5px
+          margin-top 20px
+          overflow hidden
+          transition all 0 ease-out .5s
+        &:hover, &.hover
+          border-bottom 1px solid #ddd
+          background-color #f8f8f8
+          legend
+            color #555!important
+          .dialog
+            margin-top 35px
+            max-height 500px
+            padding-bottom (grid*1.5)
+            transition all .2s ease-out .5s
       fieldset
         padding grid (grid*3) grid (grid*4)
         border 0
@@ -654,16 +981,16 @@ html.admin
           width 305px
           height 100px
           font-size 1em
+        #invite_only:checked + label::after, #private:checked + label::after, #social:checked + label::after
+          content 'On'
+        #invite_only + label::after, #private + label::after, #social + label::after
+          content 'Off'
       button
         display block
         width 420px
         height 40px
         margin-top 35px
         margin-left 85px
-      .tooltip
-        left 350px
-        bottom 60px
-
       span
         color #888
         font-size 18px
@@ -671,15 +998,12 @@ html.admin
         line-height 47px
         label
           width 60px
-      .menu-link
-        margin 20px 85px
-        display block
-        color dark
-        font-size .9em
-        animation-name none
-      input[type="checkbox"]:checked ~ span[class*="checked"]
-        color #444
-        font-weight 400
+    .menu-link
+     margin 20px 85px
+     display block
+     color dark
+     font-size .9em
+     animation-name none
   footer
     left 150px!important
 //}}}
@@ -690,9 +1014,10 @@ html.forum
     display none
     cursor pointer
     position absolute
+    z-index 9
     padding-right 20px
     left 12px
-    top 3px
+    top 4px
     color #666
     background-color #bbb
     background-image linear-gradient(to bottom, light 0px, light 100%)
@@ -700,10 +1025,10 @@ html.forum
     border-radius 30px
     width 5px
     height 24px
+    color dark_text
     .s-reply
       opacity .9
     &:hover
-      color #333
       .s-reply
         opacity 1
     &::after
@@ -713,16 +1038,21 @@ html.forum
       left 12px
       top 0
   .main-content
+    opacity 1
+    transition opacity .15s
+    &.transparent
+      opacity 0
+      transition none
     .post-reply.onclick-footer-toggle:hover
       transition none
     .post-reply.onclick-footer-toggle
-      transition all .5s ease-out .5s
+      //transition all .5s ease-out .5s
       position relative
       display block
       cursor pointer
       font-weight 200
       margin 0 auto
-      margin-bottom 70px
+      margin-bottom 30px
   footer.expanded
     cursor s-resize
     height 320px
@@ -763,6 +1093,7 @@ html.forum
         text-align left
         .title
           width 60%
+          display none
         .title:focus
           transform none
         .tooltip
@@ -773,12 +1104,30 @@ html.forum
           right 12px
           bottom 32px
         .summary
-          display none
+          .profile.photo
+            position absolute
+            top -51px
+            left 5px
+            height 45px
+            width 45px
+          .cke_chrome
+            margin-top 55px
 //}}}
 html.page
-  footer
-    left 0!important
+  body.minimized
+    .logo
+      display none
+    header
+      display none
+    footer
+      left 0!important
+    .main-content
+      padding grid
 html.forum.new
+  .main-content .forum #post_edit .summary
+    display block
+    .photo.online
+      display none
   footer
     cursor default
     .onclick-footer-toggle
@@ -791,7 +1140,10 @@ html.moderation
   footer
     left 0!important
 
-// <mutant layout defaults>
+// <mutant layout defaults> {{{
+.bottom
+  clear both
+  margin-bottom (grid*7)
 #left_container
   height 100%
   overflow hidden
@@ -799,48 +1151,6 @@ html.moderation
 footer
   .post-reply
     display none
-
-#order
-  position relative
-  box-sizing border-box
-  padding (grid) (grid) (grid*7) (grid*2)
-  text-align center
-  overflow-y scroll
-  display none
-  height 109px
-  margin 0
-  list-style none
-  li
-    font-size .8em
-    padding 0 0 1px 0
-    margin 0 0 5px 0
-.indicator
-  top 21px
-  position absolute
-  left 0
-  width 140px
-  height 1px
-
-// setup default
-#new_hit_count
-  display none
-  font-size 1.2em
-  font-weight 300
-  p
-    display inline
-    margin-left 8px
-    font-style italic
-    font-size .75em
-    .count
-      margin 0 3px
-
-// new posts look slightly different on search page
-#new_posts
-  .post
-    h4
-      padding 10px 5px
-      border-bottom 3px solid #F38437 !important
-    h4:after
-      content: " ( New! )"
+//}}}
 
 // vim:fdm=marker

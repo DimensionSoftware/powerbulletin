@@ -29,23 +29,24 @@ module.exports =
         s.rows
         s.qty
         s.active-page
+        s.step
       }
       @children = {table: new Table {locals, pnum-to-href} \.SuperAdminUsers-table @}
     on-attach: ->
       dollarish = @@$
-      @$.on \click 'button[data-edit-user]' ->
-        user = dollarish @ .data \edit-user
-
-        finish = (UserEditor) ->
-          window.$.fancybox (new UserEditor {locals: {user}}).$
-          false
-
-        <- lazy-load-fancybox
-
-        # lazy load at moment that user clicks on item
-        #XXX:  WHYYYYYY?!?!?
-        # workaround for weird requirejs issue with async api
-        try
-          require [\./UserEditor], finish
-        catch
-          require [\./UserEditor], finish
+#      @$.on \click 'a[data-edit-user]' ->
+#        user = dollarish @ .data \edit-user
+#
+#        finish = (UserEditor) ->
+#          window.$.fancybox (new UserEditor {locals: {user}}).$
+#          false
+#
+#        <- lazy-load-fancybox
+#
+#        # lazy load at moment that user clicks on item
+#        #XXX:  WHYYYYYY?!?!?
+#        # workaround for weird requirejs issue with async api
+#        try
+#          require [\./UserEditor], finish
+#        catch
+#          require [\./UserEditor], finish

@@ -20,6 +20,7 @@ require! {
 
 announce = require(\socket.io-announce).create-client!
 
+# FIXME how about fixing instead of littering our codebase with these comments?
 global <<< require \./server-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
 global <<< require \../shared/shared-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
 
@@ -247,11 +248,11 @@ function background-for-forum m, active-forum-id
   background = req.files.background
 
   # mkdirp public/sites/ID
-  dst = "public/sites/#{site.id}"
+  dst = "public/sites/#{site.id}/bg"
   err <- mkdirp dst
   if err then return res.json {-success, msg:err}
 
-  # atomic write to public/sites/SITE-ID/FORUM-ID.jpg
+  # atomic write to public/sites/SITE-ID/bg/FORUM-ID.jpg
   forum-id  = parse-int req.params.id
   ext       = background.name.match(/\.(\w+)$/)?1 or ""
   file-name = if ext then "#forum-id.#ext" else forum-id
@@ -263,7 +264,7 @@ function background-for-forum m, active-forum-id
   item = menu.flatten m |> find -> it.form.dbid is forum-id
   unless item then return res.json {-success} # guard
   path = menu.path-for-upsert m, item.id.to-string!
-  item.form.background = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
+  item.form.background = "#{site.id}/bg/#file-name?#{h.cache-buster!}".to-lower-case!
   site.config.menu     = menu.struct-upsert m, path, item
 
   err, r <- db.site-update site # save!
@@ -303,11 +304,13 @@ function background-for-forum m, active-forum-id
 
   err, fdoc <- async.auto tasks
   unless fdoc.profile then return next 404 # guard
-  fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
-  fdoc.menu  = site.config.menu
-  fdoc.page  = parse-int page
-  fdoc.title = name
-  fdoc.profile.human_post_count = add-commas(fdoc.qty)
+  fdoc.profile = add-dates fdoc.profile, [ \last_activity ]
+  fdoc.furl    = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
+  fdoc.menu    = site.config.menu
+  fdoc.page    = parse-int page
+  fdoc.title   = name
+  fdoc.profile.human_post_count   = add-commas(fdoc.qty)
+  fdoc.profile.human_thread_count = add-commas(fdoc.profile.thread_count)
 
   res.locals fdoc
   res.locals.step = ppp
@@ -460,8 +463,10 @@ function profile-paths user, uploaded-file, base=\avatar
   site = res.vars.site
   res.locals.action = req.param \action
 
+  user = req.user
   tasks =
     site: db.site-by-id site.id, _
+    sites: db.sites.owned-by-user user.id, _
 
   if req.surfing
     delete-unnecessary-surf-data res
@@ -480,6 +485,10 @@ function profile-paths user, uploaded-file, base=\avatar
   fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')
   fdoc.title = \Admin
   fdoc.menu = site.config.menu
+
+  # reject current site
+  tmp = fdoc.sites |> reject (.id is site.id)
+  fdoc.sites = tmp # mutate
 
   res.locals fdoc
 
@@ -569,16 +578,18 @@ function profile-paths user, uploaded-file, base=\avatar
 
 @page = (req, res, next) ->
   site = res.vars.site
-  err, page <- db.pages.find-one criteria: { site_id: site.id, path: req.path }
+  err, page <- db.pages.select-one { site_id: site.id, path: req.path }
   if err then return next err
   if page
-    page.config = JSON.parse page.config
     if req.surfing then delete-unnecessary-surf-data res
     fdoc ||= {}
     fdoc.menu = site.config.menu
-    fdoc.page = page
+    item = fdoc.menu |> find -> it.form.dialog is \page and it.form.dbid is page.id
+    fdoc.page            = page
     fdoc.active-forum-id = page.id
+    fdoc.content-only    = item?form?content-only is \checked
     res.locals fdoc
+    caching-strategies.etag res, sha1(JSON.stringify page.config), 60s
     res.mutant \page
   else
     next!
@@ -588,10 +599,7 @@ function profile-paths user, uploaded-file, base=\avatar
   product-id = req.params.product-id
   errors     = []
 
-  err, existing-subscription <- db.subscriptions.find-one {
-    criteria: {site_id: site-id, product_id: product-id}
-    columns: [\product_id]
-  }
+  err, existing-subscription <- db.subscriptions.select1 {site_id: site-id, product_id: product-id}
   if err then return next err
   if existing-subscription then errors.push 'You\'re already subscribed'
 

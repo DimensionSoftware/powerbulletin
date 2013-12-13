@@ -5,15 +5,14 @@ require! {
   Component: yacomponent
   \./Uploader
 }
-ch = require \../client/client-helpers if window?
-
+{show-tooltip, submit-form, storage} = require \../client/client-helpers if window?
 {templates} = require \../build/component-jade
 {each, map, maximum} = require \prelude-ls
 
 module.exports =
   class AdminMenu extends Component
     const prefix = \list_
-    const opts =
+    const opts   =
       handle: \div
       items:  \li
       max-levels: 3
@@ -24,13 +23,13 @@ module.exports =
       tab-size: 25
       revert: 200
       expand-on-hover: 800ms
-      start-collapsed: true
+      #start-collapsed: true
       opacity: 0.8
       force-placeholder-size: true
       is-allowed: (item, parent) ->
         # only move items with a type
         unless (item.find \.row .data \form)?dialog
-          ch.show-tooltip ($ \#warning), 'Select a Type First!'
+          show-tooltip ($ \#warning), 'Select a Type First!'
           return false
         true
 
@@ -178,31 +177,37 @@ module.exports =
             $ol.append($item)
           # if item has children, create a sub $ol and recurse
           if item.children?length
-            $item?add-class \mjs-nestedSortable-collapsed
+            $item?add-class \mjs-nestedSortable-collapsed # default collapsed
             $sub-ol = $('<ol/>')
             $item?append $sub-ol
             @build-nested-sortable $sub-ol, item.children
 
     on-attach: !->
       #{{{ Event Delegates
-      @$.on \click \.disclose ->
-        $ this .closest \li
+      @$.on \click \.disclose (ev) ~>
+        $ ev.target .closest \li
           ..toggle-class \mjs-nestedSortable-collapsed
           ..toggle-class \mjs-nestedSortable-expanded
+        @store-sortable-tree!
 
       @$.on \change 'input[name="dialog"]' ~> # type was selected
         # TODO - make sure current-restore has the right data to restore; when adding a new item, it often does not.
+        $ \#warning .remove-class \hover # hide tooltip
         # TODO - create slug out of title
         @$.find \fieldset .add-class \has-dialog .find \input:visible .focus!
 
       @$.on \keyup, 'input.active', @store-title
+      @$.on \keypress, \form, -> # disable form submit on enter press
+        if (it.key-code or it.which) is 13
+          it.prevent-default!
+          false
 
       @$.on \click \.onclick-close (ev) ~>
         @delete ($ ev.target .prev \.row) # extract row
 
       @$.on \click \.onclick-add (ev) ~>
         @show!
-        ch.show-tooltip ($ \#warning), 'Select a type below!'
+        show-tooltip ($ \#warning), 'Select a type below!', 20000ms # closes early when selected
 
         s = @$.find \.sortable
         # generate id & add new menu item!
@@ -231,6 +236,7 @@ module.exports =
           ..append e
           ..nested-sortable { stop: @resort } <<< opts
           ..find \.disclose .on \click, ~> # bind expand/collapse behavior
+            @store-sortable-tree!
             $ @ .closest \li
               ..toggle-class \mjs-nestedSortable-collapsed
               ..toggle-class \mjs-nestedSortable-expanded
@@ -251,14 +257,13 @@ module.exports =
           .attr \type, \hidden
           .attr \name, \menu
           .val JSON.stringify menu)
-        ch.submit-form ev, (data) ~>
+        submit-form ev, (data) ~>
           data-form = @current.data \form   # FIXME - Even though I try to set a new dbid, it gets blasted away somewhere.
           data-form.dbid = data.id
           @$.find 'input[name=dbid]' .val data.id
           @current.data \form, data-form
           f = $ this # form
-          t = $(form.find \.tooltip)
-          ch.show-tooltip t, unless data.success then (data?errors?join \<br>) else \Saved!
+          show-tooltip $(\#warning), unless data.success then (data?errors?join \<br>) else \Saved!
 
       @$.on \change \form (ev) ~> @current-store! # save active title & form
       @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore! # load active row
@@ -276,11 +281,21 @@ module.exports =
         @build-nested-sortable s, menu
 
       @show! # bring in ui
-      set-timeout (-> # activate first
+      set-timeout (~> # activate first
+        @restore-sortable-tree!
         unless s.find \input:first .length then @$ \.onclick-add .click! # add unless exists
         s.find \input:first .focus!), 200ms
       s.nested-sortable { stop: @resort } <<< opts # init
 
     on-detach: -> @$.off!
+
+    const skey = \admin-sortable
+    store-sortable-tree: -> # store tree state: [id, classes]
+      storage.set skey, (@$.find '.sortable li' |> map -> [it.id, it.class-name])
+    restore-sortable-tree: -> # restore tree state
+      if state = storage.get skey
+        state |> each ->
+          [id, classes] = it
+          @@$ "\##id" .attr \class, classes
 
 # vim:fdm=marker

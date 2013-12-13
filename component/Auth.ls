@@ -19,13 +19,13 @@ module.exports =
     # helper to construct an Auth component and show it
     @show-login-dialog = (cb=(->)) ->
       <~ ch.lazy-load-fancybox
-      <~ ch.lazy-load (-> window.$.fn.complexify), "#{window.cache-url}/local/jquery.complexify.min.js", null
+      <~ ch.lazy-load-complexify
       if not window._auth
         window._auth             = new Auth locals: {site-name: window.site-name, invite-only:window.invite-only}, $ \#auth
         window._auth.after-login = Auth.after-login if Auth.after-login
 
       $.fancybox.open \#auth, window.fancybox-params unless $ \.fancybox-overlay:visible .length
-      set-timeout (-> $ '#auth input[name=username]' .focus! ), 200ms
+      set-timeout (-> $ '#auth input[name=login-email]' .focus! ), 200ms
       # password complexity ui
       window.COMPLEXIFY_BANLIST = [\god \money \password \love]
       $ '#auth [name="password"]' .complexify({}, (pass, percent) ->
@@ -53,11 +53,11 @@ module.exports =
       ch.switch-and-focus '', \on-reset, '#auth .reset input:first'
       hash = location.hash.split('=')[1]
       $form.find('input[type=hidden]').val(hash)
-      console.log hash, $form, $auth
       $.post '/auth/forgot-user', { forgot: hash }, (r) ->
         if r.success
+          $ \#password .val '' # blank password
           $form .find 'h2:first' .html 'Choose a New Password'
-          $form .find('input').prop('disabled', false)
+          $form .find('button,input').prop('disabled', false)
         else
           $form .find 'h2:first' .html "Couldn't find you. :("
 
@@ -112,9 +112,12 @@ module.exports =
       @$.on \click '.dialog a.resend' @resend
 
       @$.on \click \.onclick-close-fancybox ->
-        $.fancybox.close!
+        if window.mutator is \privateSite # back to login dialog
+          ch.switch-and-focus 'on-dialog on-forgot on-register on-reset' \on-login '#auth input[name=login-email]'
+        else
+          $.fancybox.close!
       @$.on \click \.onclick-show-login ->
-        ch.switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=username]'
+        ch.switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=login-email]'
       @$.on \click \.onclick-show-forgot ->
         ch.switch-and-focus \on-error \on-forgot '#auth input[name=email]'
       @$.on \click \.onclick-show-choose ->
@@ -122,11 +125,8 @@ module.exports =
       @$.on \click \.onclick-show-register ->
         ch.switch-and-focus \on-login \on-register '#auth input[name=username]'
 
-      # catch esc key events on input boxes for login box
-      @$.on \keyup '.fancybox-inner input' ->
-        if it.which is 27 # esc
-          $.fancybox.close!
-          false
+      # catch esc key events on input boxes for Auth
+      @$.on \keydown \input -> if it.which is 27 then $.fancybox.close!; false
 
     on-detach: !~>
 
@@ -139,7 +139,7 @@ module.exports =
     # handler for login form
     login: (ev) ~>
       $form = $ ev.target
-      u = $form.find 'input[name=username]'
+      u = $form.find 'input[name=login-email]'
       p = $form.find 'input[name=password]'
       s = $form.find 'input[type=submit]'
       params =
@@ -148,13 +148,21 @@ module.exports =
       s.attr \disabled \disabled
       $.post $form.attr(\action), params, (r) ~>
         if r.success
-          $.fancybox.close!
-          @after-login! if @after-login
-          if Auth.require-login-cb
-            Auth.require-login-cb!
-            Auth.require-login-cb = null
-          # reload page XXX I know its not ideal but the alternative is painful >.<
-          if window.initial-mutant is \privateSite then window.location.reload!
+          if r.choose-name
+            @after-login! if @after-login
+            if Auth.require-login-cb
+              Auth.require-login-cb!
+              Auth.require-login-cb = null
+            $ '.choose input:first' .val r.name
+            ch.switch-and-focus '', \on-choose, '.choose input:first'
+          else
+            $.fancybox.close!
+            @after-login! if @after-login
+            if Auth.require-login-cb
+              Auth.require-login-cb!
+              Auth.require-login-cb = null
+            # reload page XXX I know its not ideal but the alternative is painful >.<
+            if window.initial-mutant is \privateSite then window.location.reload!
         else
           if r.type is \unverified-user
             resend = """
@@ -213,6 +221,7 @@ module.exports =
       s.attr \disabled \disabled
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
+          $ \#email .val '' # blank email
           Auth.show-info-dialog 'Check your inbox for reset link!', '', \on-forgot
         else
           $form.find \input:first .focus!
@@ -234,6 +243,7 @@ module.exports =
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
           $form.find('input').prop(\disabled, true)
+          $form.find \#email .val '' # blank email
           ch.show-tooltip $form.find(\.tooltip), "Password changed!"
           location.hash = ''
           $form.find('input[name=password]').val('')
@@ -276,9 +286,13 @@ module.exports =
       s.attr \disabled \disabled
       $.post $form.attr(\action), $form.serialize!, (r) ~>
         if r.success
-          $.fancybox.close!
-          @after-login!
-          window.location.hash = ''
+          if window.initial-mutant is \privateSite
+            window.location.reload!
+          else
+            $.fancybox.close!
+            $ \#username .val '' # blank username
+            @after-login!
+            window.location.hash = ''
         else
           $form.find \input:first .focus!
           ch.show-tooltip $form.find(\.tooltip), r.msg # display error

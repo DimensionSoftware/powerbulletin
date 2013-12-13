@@ -3,4 +3,5 @@
 , "port": "3000"
 , "tmp": "/tmp"
 , "tStep": 100
+, "defaultSiteIds": [1, 4]
 }

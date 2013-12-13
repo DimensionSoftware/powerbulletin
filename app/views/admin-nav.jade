@@ -1,5 +1,9 @@
 
 .container
+  h2.sites Go Admin &rarr;
+    .dialog
+      each s,i in sites
+        a(href="//#{s.domains[0]}/auth/once-admin")!= s.name
   menu
     li.general
       a.mutant(href="/admin") General
