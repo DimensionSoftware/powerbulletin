@@ -26,6 +26,7 @@ include_recipe 'mon'
 include_recipe 'elasticsearch'
 
 # XXX this should perhaps go somewhere else, but for now, i like having this always
+package 'ack-grep'
 package 'tmux'
 package 'vim'
 package 'figlet'
