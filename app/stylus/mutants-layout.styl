@@ -11,72 +11,17 @@ html.homepage, html.page, html.moderation
     opacity 0
     transition all .2s cubic-bezier(1,.01,.69,1)
 html.homepage
-  #order
-    position relative
-    box-sizing border-box
-    padding (grid) (grid) (grid*7) (grid*2)
-    text-align center
-    overflow-y scroll
-    display none
-    height 109px
-    margin 0
-    list-style none
-    li
-      font-size .8em
-      padding 0 0 1px 0
-      margin 0 0 5px 0
-  .indicator
-    top 21px
-    position absolute
-    left 0
-    width 140px
-    height 1px
   .main-content
-    padding-top header_height
-    .forum
-      .title
-        text-align center
-      clear both
-      padding-left (grid*2)
-      transition padding-left .4s ease-out
+    padding-top (header_height+50)
+    margin 0 auto
+    margin-left 6%
+    margin-right 200px
+    .homepage
+      width 80%
+      margin-bottom (grid*9)
       .post
-        float left
-  .extra
-    right 0
-    z-index 7
-    bottom (grid*8)
-    width 175px
-    height 100px
-    position fixed
-    .orderer::before
-      content ''
-      width 1px
-      height 1px
-      position absolute
-      left 0
-      top 11px
-      z-index 3
-      border-top-color transparent
-      border-right-color transparent
-      border-bottom-color transparent
-    .orderer
-      position relative
-      height 95px
-      overflow hidden
-      cursor pointer
-      #order
-        display block
-      .onclick-scroll-top
-        position absolute
-        right 1px
-        bottom 0
-        border-left 8px solid transparent
-        border-right 8px solid transparent
-  body.scrolled
-    .main-content
-      #left_chrome
-        right -2px
-        transition right .4s ease-out
+        width 33%
+        //float left
   footer
     left 0!important
 //}}}
