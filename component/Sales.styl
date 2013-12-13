@@ -4,7 +4,7 @@ blend = rgba(0,0,0,.5)
 body
   background-color #000
   margin 0
-  height 5408px
+  height 6220px
   position relative
   .body-bg
     position fixed
@@ -130,7 +130,7 @@ body.scrolled
 //{{{ - Site Responsive (mobile)
 @media screen and (max-width: 800px)
   body.homepage
-    height 2515px!important
+    height 3000px!important
     .Sales
       font-size .85em
       .Sales-content
@@ -158,6 +158,7 @@ body.scrolled
         .bg
           display none
       section.feature
+        padding-left 0!important
         h4
           font-size 1.5em!important
         article
@@ -171,8 +172,10 @@ body.scrolled
             opacity 1
             text-indent 0
       section.last
-        .SiteRegister
+        #register_bottom
           padding-left 50px!important
+          .hostname
+            padding-left 75px
       section#support
         article h4
           margin-left 250px!important
@@ -424,7 +427,7 @@ body.scrolled
       display block
   .container
     position relative
-    height 500px
+    height 700px
     width 100%
     overflow hidden
     visibility hidden
@@ -458,7 +461,7 @@ body.scrolled
       ul
         opacity 1
         text-indent 0
-        transition all .3s ease-out .1s
+        transition all .2s ease-out .1s
     .arrow
       position relative
       z-index 10
@@ -499,7 +502,7 @@ body.scrolled
           line-height 1.6em
           font-size 1.1em
     .arrow
-      top 87px
+      top 99px
       left -100px
       width 100%
       height 30px
