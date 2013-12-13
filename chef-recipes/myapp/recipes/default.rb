@@ -68,6 +68,12 @@ remote_directory '/root/.vim' do
   mode 00755
 end
 
+#tmux config
+cookbook_file '/root/.tmux.conf' do
+  source 'dotfiles/_tmux.conf'
+  mode '0644'
+end
+
 # SYMLINK CITY! these settings differ between prod and dev
 if ENV['NODE_ENV'] == 'production'
   project_dir = '/pb'
