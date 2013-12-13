@@ -20,11 +20,11 @@ git clone \
 || (cd /pb; git checkout $CI_BRANCH; git pull)
 "
 
-BOOT_COMMAND='echo "booting PowerBulletin...";(cd /pb; bin/launch; bin/powerbulletin)'
-
 PROVISION_COMMAND='echo "provisioning...";(cd /pb; bin/provision)'
 
 ENV_COMMAND='echo "setting environment...";(grep "NODE_ENV" /etc/environment || echo "NODE_ENV=production" >> /etc/environment)'
+
+BOOT_COMMAND='echo "booting PowerBulletin...";(cd /pb && bin/site-config-menu-default -a && grunt)'
 
 # update, install & boot in a single step!
 ssh root@$TARGET -p 3733 "$ENV_COMMAND;$GIT_INSTALL_COMMAND;($REMOTE_GIT_COMMAND);$PROVISION_COMMAND;$BOOT_COMMAND"
