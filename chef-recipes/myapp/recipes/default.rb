@@ -69,6 +69,10 @@ end
 # SYMLINK CITY! these settings differ between prod and dev
 if ENV['NODE_ENV'] == 'production'
   project_dir = '/pb'
+  # more setup symlinks for plv8
+  link "/pb" do
+    to "/vagrant"
+  end
 else
   project_dir = '/vagrant'
 end
