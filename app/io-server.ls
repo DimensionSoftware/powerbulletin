@@ -67,7 +67,7 @@ site-by-domain = (domain, cb) ->
   io.set \store, redis-store
 
   io.set \authorization, (handshake, accept) ->
-    if not handshake
+    if not handshake or handshake?domain
       return accept("null handshake", false)
     handshake.domain = handshake.headers.host
     if handshake.headers.cookie
@@ -121,6 +121,8 @@ site-by-domain = (domain, cb) ->
     if err then log \presence.enter, err
     log "joining #site-room"
     socket.join site-room
+    if user?guest # logged out user
+      socket.emit \logout, {}
     if user
       err <- presence.users-client-add socket.id, user
       if err then log \presence.users-client-add, err

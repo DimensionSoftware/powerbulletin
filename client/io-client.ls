@@ -34,6 +34,9 @@ function init-with-socket s
   s.on \disconnect, ->
     #console.log \disconnected
 
+  s.on \logout, ->
+    storage.del \user
+
   s.on \enter-site, (message, cb) ->
     #console.warn \enter-site, message
     set-online-user message?id

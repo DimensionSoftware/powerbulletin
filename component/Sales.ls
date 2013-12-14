@@ -10,7 +10,7 @@ require! {
   ch: \../client/client-helpers
   sh: \../shared/shared-helpers
 }
-{show-tooltip} = require \../client/client-helpers
+{storage, show-tooltip} = require \../client/client-helpers
 {templates}    = require \../build/component-jade
 
 debounce = lodash.debounce _, 250ms
@@ -74,8 +74,10 @@ module.exports =
         msl = new MiniSiteList({locals: r}, $div)
         $.fancybox.open $div
       else
-        # error
-        #
+        # error, client/server out-of-sync--so:
+        storage.del \user
+        @logout!
+
     scroll-to-top: ->
       unless @@$ \window .scroll-top is 0 # scroll to top
         @@$ 'html,body' .animate {scroll-top:0}, 50ms
