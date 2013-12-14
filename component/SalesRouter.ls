@@ -62,7 +62,10 @@ module.exports =
         res.send body
     template: templates.SalesRouter # shared with forum app
     init: ->
-      @local \stylesheets, ["/dynamic/css/master-sales.styl?#{CHANGESET}"]
+      @local \stylesheets, if process.env.NODE_ENV is \production
+        ["#{cvars.cache-url}/master-sales.css?#CHANGESET"] # pre-computed
+      else
+        ["/dynamic/css/master-sales.styl?#CHANGESET"]
 
       # top components
       @top-components = {}
