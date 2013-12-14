@@ -138,7 +138,7 @@ module.exports =
             root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
 
             # on server-side, preload initial locals in html data attribute 'locals'
-            root-el.attr \data-locals, JSON.stringify(locals) unless @is-client
+            #root-el.attr \data-locals, JSON.stringify(locals) unless @is-client
 
             b.append root-el
 
