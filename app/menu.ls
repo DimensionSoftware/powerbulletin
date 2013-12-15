@@ -177,6 +177,10 @@ require! {
   | \link =>
     type = \link
     data = {}
+  | \placeholder =>
+    type = \placeholder
+    data =
+      title: title
   | otherwise =>
     type = null
     data = {}
@@ -268,6 +272,7 @@ require! {
         err.message = "Slug is already taken."
       cb err, data
   | \link          => cb null, []
+  | \placeholder   => cb null, []
   | otherwise      => cb new Error("menu.upsert unknown type #type"), data
 
 # Delete an object referenced by a menu-item from the database.
@@ -283,6 +288,7 @@ require! {
   | \page          => db.pages.delete data, cb
   | \forum         => db.forums.delete data, cb
   | \link          => cb null, []
+  | \placeholder   => cb null, []
   | otherwise      => cb null, []
 
 # vim:fdm=indent
