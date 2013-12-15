@@ -46,7 +46,7 @@ $w .on \scroll, (->
 
   # top animations
   if offset < 430px # save cpu for top pieces
-    $ \#imagine .css {y:"#{0+(offset*0.8)}px"}
+    $ \#imagine .css {y:"#{0+(offset*0.5)}px"}
 
   if offset > 40px
     # move background images in view
@@ -102,4 +102,13 @@ window.r-user = $R((user) ->
 )
 #}}}
 <- require [\./layout]
+
+# register action
+# get the user after a successful login
+Auth.after-login = ->
+  window.user <- $.getJSON \/auth/user
+  if window.r-user then window.r-user window.user
+  onload-personalize!
+  socket?disconnect!
+  socket?socket?connect!
 # vim:fdm=marker
