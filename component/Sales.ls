@@ -36,6 +36,7 @@ module.exports =
           c.update-subdomain subdomain
       ).bind-to @state.subdomain
 
+      @@$ \.onclick-logout .click ~> @logout!; false # overriding layout.ls'
       @@$ \.onclick-my-sites .click @show-my-sites
       @@$ \#start_now .click ~>
         @scroll-to-top window
@@ -54,13 +55,17 @@ module.exports =
     login: (user) ->
       # use user later
       @$.find 'li.auth a.onclick-login' .hide!
-      @$.find 'li.auth a.onclick-logout' .show!
+      @$.find 'li.auth a.onclick-logout' .show 200ms, \easeOutExpo
       @$.find 'li.my-sites' .show!
       @$.find 'li.community' .hide!
       @show-my-sites!
 
     logout: ->
-      @$.find 'li.auth a.onclick-login' .show!
+      @@$ '[name="password"]' .val '' # clear password fields
+      @@$.get \/auth/logout           # ajax server-side, like b00m
+      storage.del \user               # logout client-side ui
+      window.user = void
+      @$.find 'li.auth a.onclick-login' .show 200ms, \easeOutExpo
       @$.find 'li.auth a.onclick-logout' .hide!
       @$.find 'li.community' .show!
       @$.find 'li.my-sites' .hide!
@@ -75,7 +80,6 @@ module.exports =
         $.fancybox.open $div
       else
         # error, client/server out-of-sync--so:
-        storage.del \user
         @logout!
 
     scroll-to-top: ->

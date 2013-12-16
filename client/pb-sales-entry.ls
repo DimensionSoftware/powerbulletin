@@ -28,8 +28,8 @@ window.do-buy = ->
 #}}}
 
 # "global" window/layout behaviors below
-focus-last  = -> set-timeout (-> $ \.SiteRegister-subdomain:last .focus!), 500ms
-focus-first = -> set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 500ms
+focus-last  = -> set-timeout (-> $ \.SiteRegister-subdomain:last .focus!), 300ms
+focus-first = -> set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 300ms
 cur-id      = void # waypoint id of current scrolled-to-section
 
 # focus events
@@ -42,7 +42,7 @@ bh = $ \body .height!
 $w .on \scroll, (->
   offset  = $w.scroll-top!
   if offset is 0 then focus-first!
-  if Math.abs(bh - (offset + $w.height!)) < 5px then focus-last!
+  if Math.abs(bh - (offset + $w.height!)) < 10px then focus-last!
 
   # top animations
   if offset < 430px # save cpu for top pieces
