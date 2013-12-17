@@ -11,7 +11,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- Posts {{{
 CREATE FUNCTION procs.owns_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
   return unless post_id and user_id # guard
-  return plv8.execute('SELECT id, parent_id, forum_id FROM posts WHERE id=$1 AND user_id=$2', [post_id, user_id])
+  return plv8.execute('SELECT id, parent_id, forum_id, title FROM posts WHERE id=$1 AND user_id=$2', [post_id, user_id])
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.post(site_id JSON, id JSON) RETURNS JSON AS $$

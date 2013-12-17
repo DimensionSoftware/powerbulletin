@@ -340,6 +340,7 @@ is-locked-forum = (m, forum-id) ->
     post.user_id   = req.user.id
     post.forum_id  = op.forum_id
     post.parent_id = op.parent_id
+    post.title     = op.title             # FIXME - allows saving of top post, but post.html on next line is still corrupted
     post.html      = h.html req.body.body # FIXME - for top posts, the title and body are mixed together into one string which is wrong.
     console.log \post, post
     err, r <- db.edit-post(req.user, post)
