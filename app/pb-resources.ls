@@ -332,12 +332,16 @@ is-locked-forum = (m, forum-id) ->
     # is_owner req?user
     err, owns-post <- db.owns-post req.body.id, req.user?id
     if err then return next err
-    return next 404 unless owns-post?length
+    return next 404 unless owns-post?length and owns-post.0.forum_id
     # TODO secure & csrf
     # save post
-    req.body.user_id = req.user.id
-    req.body.html = h.html req.body.body
-    post = req.body
+    op = owns-post.0
+    post           = req.body
+    post.user_id   = req.user.id
+    post.forum_id  = op.forum_id
+    post.parent_id = op.parent_id
+    post.html      = h.html req.body.body # FIXME - for top posts, the title and body are mixed together into one string which is wrong.
+    console.log \post, post
     err, r <- db.edit-post(req.user, post)
     if err then return next err
 
