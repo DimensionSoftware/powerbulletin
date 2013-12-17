@@ -2,7 +2,7 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  Chat: '../component/Chat'
+  \../component/ChatPanel
   \./globals
   mutants: \../shared/pb-mutants
 }
