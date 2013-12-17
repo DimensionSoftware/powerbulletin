@@ -157,6 +157,7 @@ site-by-domain = (domain, cb) ->
       if user and site
         err <- db.aliases.update-last-activity-for-user user
         if err then return log \db.aliases.update-last-activity-for-user, err
+      io.sockets.in(site-room).emit \enter-site, { user.id }
       if cb
         cb null, \pong
 

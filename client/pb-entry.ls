@@ -34,7 +34,6 @@ require \layout
 
 #XXX: end legacy
 window.MainMenu        = require \../component/MainMenu
-window.Chat            = require \../component/Chat
 window.Auth            = require \../component/Auth
 window.PhotoCropper    = require \../component/PhotoCropper
 window.PanelCollection = require \../component/PanelCollection
@@ -472,6 +471,7 @@ if window.location.host not in [\powerbulletin.com, \pb.com]
             mutant.run mutants[r.mutant], {locals, window.user}, ->
               onload-resizable!
               window.hints.current.mutator = window.mutator
+              socket.emit \ping
               spin false
           #else
           #  console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
