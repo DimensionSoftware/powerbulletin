@@ -472,6 +472,7 @@ if window.location.host not in [\powerbulletin.com, \pb.com]
               onload-resizable!
               window.hints.current.mutator = window.mutator
               socket.emit \ping
+              window.time-updater!
               spin false
           #else
           #  console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"

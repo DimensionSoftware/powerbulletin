@@ -194,7 +194,7 @@ time-updater = ->
     if not $el.has-class 'time-title'
       $el.html hr
 
-window.time-updater = time-updater # XXX remove me
+window.time-updater = time-updater
 time-updater!
 set-interval time-updater, 30000ms
 #}}}
