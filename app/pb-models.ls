@@ -437,8 +437,8 @@ query-dictionary =
 
   forums:
     # new forum summary
-    summary: (site-id, forum-id, sort, cb) ->
-      thread-summary(site-id, forum-id, sort, 8, cb) 
+    summary: (site-id, forum-id, sort, limit, cb) ->
+      thread-summary(site-id, forum-id, sort, limit, cb)
 
   sites:
     user-is-member-of: (user-id, cb) ->
@@ -495,8 +495,8 @@ query-dictionary =
       if err then return cb {success:false, msg:'CSS must be valid!'}
       fs.write-file "#css-dir/master.css" css, cb
 
-    summary: (site-id, sort, cb) ->
-      thread-summary(site-id, null, sort, 8, cb)
+    summary: (site-id, sort, limit, cb) ->
+      thread-summary(site-id, null, sort, limit, cb)
 
   subscriptions:
     list-for-site: (site-id, cb) ->
