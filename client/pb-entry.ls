@@ -13,7 +13,9 @@ require! {
   $R: \./reactivejs
 }
 
-{find} = require \prelude-ls
+mutants = require \../shared/pb-mutants
+mutant  = require \mutant
+{find}  = require \prelude-ls
 
 #XXX : more legacy, assumed to be globally present always, should be
 # refactored so that each jquery plugin is only required where needed
@@ -323,8 +325,13 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
     name   : $p.data \user-name
   icon = $p.find \img .attr \src
   panels = window.component.panels
+
+  # XXX - this is wrong.  It needs to ask the server for a chat id.
   id = "chat-#{$p.data \user-id}"
+
+  # XXX - it needs to ask the ChatPanel if a panel exists for the given chat id.
   chat-panel-exists = $ "\##{id}" .length
+
   if chat-panel-exists
     panels.select-force id
   else
@@ -403,5 +410,89 @@ window.component.main-menu = new MainMenu {-auto-render, locals:{}}, $ \#menu
 window.component.panels = new PanelCollection {}
 $ \body .append window.component.panels.$
 #}}}
+#{{{ - bootstrap mutant
+#XXX DIRTY DIRTY DIRTY HACK ALERT! (need more decoupling love here)
+if window.location.host not in [\powerbulletin.com, \pb.com]
 
+  # setup click hijackers for forum app only
+  # this should be moved into a forum-only module (not a shared module)
+  $d.on \click \a.mutant mutate # hijack urls
+  $d.on \click \button.mutant mutate # hijack urls
+
+window.last-statechange-was-user = true # default state
+last-req-id = 0
+
+#XXX DIRTY DIRTY DIRTY HACK ALERT! (need more decoupling love here)
+if window.location.host not in [\powerbulletin.com, \pb.com]
+  # FIXME there's a bug here where statechange binds to external links and causes a security exception!
+  History.Adapter.bind window, \statechange, (e) -> # history manipulaton
+    statechange-was-user = window.last-statechange-was-user
+    window.last-statechange-was-user = true # reset default state
+
+    url    = History.get-page-url!replace /\/$/, ''
+    params = History.get-state!data
+
+    window.hints.last    <<< window.hints.current
+    window.hints.current <<< { pathname: window.location.pathname, mutator: null }
+
+    # if the previous and next mutations are between forum...
+    #   generate recommendations
+    if window.hints.last.mutator is \forum and not window.location.pathname.match /^\/(auth|admin|resources)/
+      rc = window.tasks.recommendation window.location.pathname, window.hints.last.pathname
+
+    unless params?no-surf # DOM update handled outside mutant
+      spin true
+
+      surf-params =
+        _surf      : window.mutator
+        _surf-data : params?surf-data
+      if rc?keep?length
+        surf-params._surf-tasks = rc.keep.sort!map( (-> tasks.cc it) ).join ','
+
+      req-id = ++last-req-id
+      jqxhr = $.get url, surf-params, (r) ->
+        return if not r.mutant
+        $d.attr \title, r.locals.title if r.locals?title # set title
+        on-unload = mutants[window.mutator]?on-unload or (w, next-mutant, cb) -> cb null
+        on-unload window, r.mutant, -> # cleanup & run next mutant
+          # this branch will prevent queue pileups if someone hits the back/forward button very quickly
+          # yeah we already requested the data but lets not needlessly update the dom when the user has
+          # already specified they want to go to yet another url
+          #
+          # this fixes a bug where a slow loading page like the homepage for instance would update the dom
+          # even after a new url had been specified with html history.. i.e. a forum page showed the homepage
+          # because the homepage takes a lot longer to download and hence updated the dom after the forum
+          # mutant had already done its thing
+          if req-id is last-req-id # only if a new request has not been kicked off, can we run the mutant
+            locals = {statechange-was-user} <<< r.locals
+
+            mutant.run mutants[r.mutant], {locals, window.user}, ->
+              onload-resizable!
+              window.hints.current.mutator = window.mutator
+              spin false
+          #else
+          #  console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
+
+      # capture error
+      jqxhr.fail (xhr, status, error) ->
+        show-tooltip $(\#warning), "Page Not Found", 8000ms
+        History.back!
+        window.spin false
+#}}}
+#
+# register action
+# get the user after a successful login
+Auth.after-login = ->
+  window.user <- $.getJSON \/auth/user
+  if window.r-user then window.r-user window.user
+  onload-personalize!
+  if user and mutants?[window.mutator]?on-personalize
+    set-profile user.photo
+    mutants?[window.mutator]?on-personalize window, user, ->
+      socket?disconnect!
+      socket?socket?connect!
+
+# run initial mutant
+if window.initial-mutant
+  <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
 # vim:fdm=marker

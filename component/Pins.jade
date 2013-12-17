@@ -1,0 +1,33 @@
+include _post-profile
+
+//- mixin media-post(f, i)
+//-   img(src=f.media_url)
+//- mixin html-post(f, t, i)
+//-   p.body!= f.html
+mixin post(p)
+  .post(id="post_#{p.id}", class=p.reason ? 'censored' : '', data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id, data-forum-id=p.forum_id)
+    .profile-container
+      mixin _post-profile(p)
+      a.user.mutant(href="/user/#{p.user_name}")
+        span.username= p.user_name
+      .date(data-time=p.created_iso, title=p.created_friendly)
+    .container
+      .post-content
+        if p.title
+          if p.thread_uri
+            h3.title
+              a.mutant(href=p.thread_uri)= p.title
+          else
+            h3.title= p.title
+        if p.html
+          .body!= p.html
+
+//- XXX forums distinction should disappear
+if forums
+  .homepage(class=activeForumId!='homepage'?'resizable forum':'')
+    each f,i in forums
+      each p,i in f.posts
+        +post(p,i)
+else
+  p Create a forum first
+    i !

@@ -31,11 +31,11 @@ paths:
   #socketio              : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min else \../local/socket.io.min
   pd-converter          : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.min else \../local/pagedown/Markdown.Converter
   pd-sanitizer          : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.min else \../local/pagedown/Markdown.Sanitizer
-  raf                   : "../local/raf"
+  raf                   : \../local/raf
+  strftime              : \../local/strftime
+  powerbulletin         : \../powerbulletin
+  powerbulletin-sales   : \../powerbulletin-sales
   #pagedown              : ["../local/Markdown.Converter", "../local/Markdown.Sanitizer"]
-  strftime              : "../local/strftime"
-  powerbulletin         : "../powerbulletin"
-  powerbulletin-sales   : "../powerbulletin-sales"
 shim:
   lodash:
     exports: \_

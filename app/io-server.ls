@@ -67,7 +67,7 @@ site-by-domain = (domain, cb) ->
   io.set \store, redis-store
 
   io.set \authorization, (handshake, accept) ->
-    if not handshake
+    if not handshake or handshake?domain
       return accept("null handshake", false)
     handshake.domain = handshake.headers.host
     if handshake.headers.cookie
@@ -121,6 +121,8 @@ site-by-domain = (domain, cb) ->
     if err then log \presence.enter, err
     log "joining #site-room"
     socket.join site-room
+    if user?guest # logged out user
+      socket.emit \logout, {}
     if user
       err <- presence.users-client-add socket.id, user
       if err then log \presence.users-client-add, err
@@ -132,6 +134,7 @@ site-by-domain = (domain, cb) ->
     #ChatServer
     chat-server = new ChatServer(io, socket, presence, site, user)
     socket.on \chat-message, chat-server.message
+    socket.on \chat-between, chat-server.between
 
     socket.on \disconnect, ->
       log \disconnected
@@ -149,7 +152,6 @@ site-by-domain = (domain, cb) ->
         log "#{user.name}'s cids", cids
         if cids.length is 0
           io.sockets.in(site-room).emit \leave-site, user
-        chat-server.disconnect!
 
     socket.on \online-now, ->
       err, users <- presence.in "#{site.id}"

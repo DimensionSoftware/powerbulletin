@@ -395,7 +395,10 @@ auth-finisher = (req, res, next) ->
     err <- db.aliases.update-last-activity-for-user { user_id, site_id }
     if err then return next err
     redirect-url = url.parse(req.param(\redirect-url) or req.header(\Referer) or '/').pathname
-    res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '').replace(is-auth, '')
+    if req.headers['x-requested-with'] # jquery doesn't need another page
+      res.json {+success}
+    else
+      res.redirect redirect-url.replace(is-editing, '').replace(is-admin, '').replace(is-auth, '')
   else
     res.redirect '/'
 

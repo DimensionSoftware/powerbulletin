@@ -8,6 +8,8 @@ require! {
   mutants: \../shared/pb-mutants
 }
 
+window.ChatPanel = ChatPanel
+
 {render-and-append} = require \../shared/shared-helpers
 {lazy-load-socketio, set-online-user, storage} = require \./client-helpers
 
@@ -34,6 +36,9 @@ function init-with-socket s
 
   s.on \disconnect, ->
     #console.log \disconnected
+
+  s.on \logout, ->
+    storage.del \user
 
   s.on \enter-site, (message, cb) ->
     #console.warn \enter-site, message
@@ -127,6 +132,9 @@ function init-with-socket s
   s.on \debug, (message, cb) ->
     console?log \debug, message
 
-  ChatPanel.client-socket-init s
+  s.on \chat-message, (message) ->
+    # if conversation does not exist on the client side, create it .
+    # add message to current conversation
+    console.log \chat-message, message
 
 # vim:fdm=indent

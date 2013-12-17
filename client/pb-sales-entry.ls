@@ -5,7 +5,6 @@ require! $R:reactivejs
 
 require! {
   \../component/Sales
-#  \../component/SalesRouter
   \../component/Buy
 }
 
@@ -15,10 +14,8 @@ require \jqueryTransit
 require \jqueryUi
 require \jqueryWaypoints
 {partition} = require \prelude-ls
-{throttle}  = require \lodash
 
 # components
-#window.router = new SalesRouter
 #{{{ components
 window.component =
   sales: (new Sales {-auto-render} \body).attach!
@@ -31,8 +28,8 @@ window.do-buy = ->
 #}}}
 
 # "global" window/layout behaviors below
-focus-last  = -> set-timeout (-> $ \.SiteRegister-subdomain:last .focus!), 500ms
-focus-first = -> set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 500ms
+focus-last  = -> set-timeout (-> $ \.SiteRegister-subdomain:last .focus!), 300ms
+focus-first = -> set-timeout (-> $ \.SiteRegister-subdomain:first .focus!), 300ms
 cur-id      = void # waypoint id of current scrolled-to-section
 
 # focus events
@@ -40,18 +37,22 @@ $ '#products .onclick-scroll-to' .click -> focus-last!
 #{{{ parallax
 last=void
 last-visible=[]
-$ window .on \scroll, (->
-  offset  = $ window .scroll-top!
+$w = $ window
+bh = $ \body .height!
+$w .on \scroll, (->
+  offset  = $w.scroll-top!
   if offset is 0 then focus-first!
+  if Math.abs(bh - (offset + $w.height!)) < 10px then focus-last!
 
   # top animations
   if offset < 430px # save cpu for top pieces
-    $ \#imagine .css {y:"#{0+(offset*0.8)}px"}
+    $ \#imagine .css {y:"#{0+(offset*0.5)}px"}
 
   if offset > 40px
     # move background images in view
     const all = <[.first .second .third .fifth]>
     # <optimization> -- save work on invisible sections
+    # TODO precompute jquery elements
     if cur-id
       if last isnt cur-id # new section in view, so-- show & hide
         cur = switch cur-id # given cur-id, these must be visible:
@@ -69,7 +70,7 @@ $ window .on \scroll, (->
       else # same section, so parallax visible sections!
         for v in last-visible
           dy = -($ v .offset!?top)
-          $ "#v .bg" .transition {y:"#{(dy+offset)*0.6}px"}, 0)
+          $ "#v .bg" .transition {y:"#{parse-int (dy+offset)*0.65}px"}, 0)
 #}}}
 #{{{ waypoints
 fn = (direction) ->
@@ -101,4 +102,13 @@ window.r-user = $R((user) ->
 )
 #}}}
 <- require [\./layout]
+
+# register action
+# get the user after a successful login
+Auth.after-login = ->
+  window.user <- $.getJSON \/auth/user
+  if window.r-user then window.r-user window.user
+  onload-personalize!
+  socket?disconnect!
+  socket?socket?connect!
 # vim:fdm=marker

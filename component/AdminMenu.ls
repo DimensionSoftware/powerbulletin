@@ -23,7 +23,6 @@ module.exports =
       tab-size: 25
       revert: 200
       expand-on-hover: 800ms
-      #start-collapsed: true
       opacity: 0.8
       force-placeholder-size: true
       is-allowed: (item, parent) ->

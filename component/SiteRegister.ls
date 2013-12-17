@@ -84,7 +84,6 @@ module.exports =
         if new-input.length
           w = (@$.find \.hostname-hidden .html new-input).width! # px width of input
           $ \.hostname .transition {opacity:1, left:w}, 300ms, \easeOutExpo
-          console.log w
           unless new-input is last-val
             # only signal changes on _different_ input
             component.state.subdomain new-input

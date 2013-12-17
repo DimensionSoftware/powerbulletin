@@ -4,10 +4,8 @@ require, exports, module <- define
 require \jqueryHistory
 require \jqueryUi
 
-# XXX layout-specific client-side, and stuff we wanna reuse between mutant-powered sites
+# XXX layout-specific client-side, and stuff we wanna reuse between sites
 helpers = require \../shared/shared-helpers
-mutants = require \../shared/pb-mutants
-mutant  = require \mutant
 
 {respond-resize, storage, switch-and-focus, mutate, show-tooltip, set-profile} = require \./client-helpers
 require! globals
@@ -63,74 +61,6 @@ const threshold = 15px # snap
 #### main   ###############>======-- -   -
 ##
 #{{{ Bootstrap Mutant Common
-
-#XXX DIRTY DIRTY DIRTY HACK ALERT! (need more decoupling love here)
-if window.location.host not in [\powerbulletin.com, \pb.com]
-
-  # setup click hijackers for forum app only
-  # this should be moved into a forum-only module (not a shared module)
-  $d.on \click \a.mutant mutate # hijack urls
-  $d.on \click \button.mutant mutate # hijack urls
-
-window.last-statechange-was-user = true # default state
-last-req-id = 0
-
-#XXX DIRTY DIRTY DIRTY HACK ALERT! (need more decoupling love here)
-if window.location.host not in [\powerbulletin.com, \pb.com]
-  # FIXME there's a bug here where statechange binds to external links and causes a security exception!
-  History.Adapter.bind window, \statechange, (e) -> # history manipulaton
-    statechange-was-user = window.last-statechange-was-user
-    window.last-statechange-was-user = true # reset default state
-
-    url    = History.get-page-url!replace /\/$/, ''
-    params = History.get-state!data
-
-    window.hints.last    <<< window.hints.current
-    window.hints.current <<< { pathname: window.location.pathname, mutator: null }
-
-    # if the previous and next mutations are between forum...
-    #   generate recommendations
-    if window.hints.last.mutator is \forum and not window.location.pathname.match /^\/(auth|admin|resources)/
-      rc = window.tasks.recommendation window.location.pathname, window.hints.last.pathname
-
-    unless params?no-surf # DOM update handled outside mutant
-      spin true
-
-      surf-params =
-        _surf      : window.mutator
-        _surf-data : params?surf-data
-      if rc?keep?length
-        surf-params._surf-tasks = rc.keep.sort!map( (-> tasks.cc it) ).join ','
-
-      req-id = ++last-req-id
-      jqxhr = $.get url, surf-params, (r) ->
-        return if not r.mutant
-        $d.attr \title, r.locals.title if r.locals?title # set title
-        on-unload = mutants[window.mutator]?on-unload or (w, next-mutant, cb) -> cb null
-        on-unload window, r.mutant, -> # cleanup & run next mutant
-          # this branch will prevent queue pileups if someone hits the back/forward button very quickly
-          # yeah we already requested the data but lets not needlessly update the dom when the user has
-          # already specified they want to go to yet another url
-          #
-          # this fixes a bug where a slow loading page like the homepage for instance would update the dom
-          # even after a new url had been specified with html history.. i.e. a forum page showed the homepage
-          # because the homepage takes a lot longer to download and hence updated the dom after the forum
-          # mutant had already done its thing
-          if req-id is last-req-id # only if a new request has not been kicked off, can we run the mutant
-            locals = {statechange-was-user} <<< r.locals
-
-            mutant.run mutants[r.mutant], {locals, window.user}, ->
-              onload-resizable!
-              window.hints.current.mutator = window.mutator
-              spin false
-          #else
-          #  console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
-
-      # capture error
-      jqxhr.fail (xhr, status, error) ->
-        show-tooltip $(\#warning), "Page Not Found", 8000ms
-        History.back!
-        window.spin false
 #}}}
 #{{{ Personalizing behaviors
 window.onload-personalize = ->
@@ -235,18 +165,6 @@ window.shake-dialog = ($form, time) ->
   $fancybox = $form.parents(\.fancybox-wrap:first) .remove-class \shake
   set-timeout (-> $fancybox.add-class(\shake)), 100ms
 
-# register action
-# get the user after a successful login
-Auth.after-login = ->
-  window.user <- $.getJSON \/auth/user
-  if window.r-user then window.r-user window.user
-  onload-personalize!
-  if user and mutants?[window.mutator]?on-personalize
-    set-profile user.photo
-    mutants?[window.mutator]?on-personalize window, user, ->
-      socket?disconnect!
-      socket?socket?connect!
-
 # logout
 window.logout = ->
   storage.del \user
@@ -305,14 +223,13 @@ window.spin = (loading = true) ->
 
 onload-resizable!
 
-# run initial mutant & personalize ( based on parameters from user obj )
+# run initial personalize ( based on parameters from user obj )
 if not (window.user = storage.get \user) # fetch (blocking)
   window.user <- $.getJSON \/auth/user
   storage.set \user, window.user # set latest
   after-user!
 else # use locally stored user (non-blocking)
   after-user!
-
 !function after-user #{{{
   if window.r-user then window.r-user window.user
 
@@ -328,8 +245,6 @@ else # use locally stored user (non-blocking)
     History.push-state null, null, \/admin
 
   onload-personalize!
-  if window.initial-mutant # XXX sales-app doesn't have a mutant
-    <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
   $ '.tools .profile' .show! # show default avatar
   # advertise
   console?log '''

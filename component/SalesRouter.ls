@@ -62,7 +62,10 @@ module.exports =
         res.send body
     template: templates.SalesRouter # shared with forum app
     init: ->
-      @local \stylesheets, ["/dynamic/css/master-sales.styl?#{CHANGESET}"]
+      @local \stylesheets, if process.env.NODE_ENV is \production
+        ["#{cvars.cache-url}/master-sales.css?#CHANGESET"] # pre-computed
+      else
+        ["/dynamic/css/master-sales.styl?#CHANGESET"]
 
       # top components
       @top-components = {}
@@ -135,7 +138,7 @@ module.exports =
             root-el = @@$("<div class=\"#css-class\"/>") # root for component, never been on page before
 
             # on server-side, preload initial locals in html data attribute 'locals'
-            root-el.attr \data-locals, JSON.stringify(locals) unless @is-client
+            #root-el.attr \data-locals, JSON.stringify(locals) unless @is-client
 
             b.append root-el
 
