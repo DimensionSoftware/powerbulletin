@@ -197,7 +197,7 @@ export create-passport = (domain, cb) ->
   pass.use new passport-local.Strategy (email, password, done) ~>
     console.log email, site.id
     (err, user) <~ db.users.by-email-and-site email, site.id
-    console.log \db.users.by-email-and-site, user
+    #console.log \db.users.by-email-and-site, user
     errors = [ "Invalid login" ] # vague message on purpose
     if err then return done(err)
     if not user
