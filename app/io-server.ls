@@ -153,6 +153,13 @@ site-by-domain = (domain, cb) ->
         if cids.length is 0
           io.sockets.in(site-room).emit \leave-site, user
 
+    socket.on \ping, (data, cb) ->
+      if user and site
+        err <- db.aliases.update-last-activity-for-user user
+        if err then return log \db.aliases.update-last-activity-for-user, err
+      if cb
+        cb null, \pong
+
     socket.on \online-now, ->
       err, users <- presence.in "#{site.id}"
       unless err then try # guard
