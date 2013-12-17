@@ -64,15 +64,14 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 @homepage = (req, res, next) ->
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
   site = res.vars.site
-  site-id = res.vars.site.id
   tasks =
-    forums: db.site-summary site-id, 6threads, (req.query?order or \recent), _
+    forums: db.sites.summary site.id, (req.query?order or \recent), 8, _
 
   if req.surfing then delete-unnecessary-surf-data res
 
   err, doc <- async.auto tasks
   doc.menu            = site.config.menu
-  doc.forums          = filter (.posts.length), doc.forums
+  #doc.forums          = filter (.posts.length), doc.forums
   doc.title           = res.vars.site.name
   doc.active-forum-id = \homepage
   res.locals doc
@@ -142,7 +141,7 @@ function background-for-forum m, active-forum-id
     res.mutant \moderation
     return
 
-  else if post_part # post
+  else if post_part # thread view
     err, post <- db.uri-to-post site.id, meta.thread-uri
     if err then return next err
     if !post then return next 404
@@ -188,13 +187,13 @@ function background-for-forum m, active-forum-id
 
     finish fdoc
 
-  else # forum
+  else # forum & forum homepage
     err, forum-id <- db.uri-to-forum-id res.vars.site.id, meta.forum-uri
     if err then return next err
     if !forum-id then return next 404
     tasks =
+      forums      : db.sites.summary site.id, (req.query?order or \recent), 8, _
       forum       : db.forum forum-id, _
-      forums      : db.forum-summary forum-id, 10threads, \recent, _
       top-threads : db.top-threads site.id, forum-id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
       t-qty       : db.thread-qty forum-id, _
 

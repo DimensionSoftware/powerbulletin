@@ -625,51 +625,6 @@ CREATE FUNCTION procs.menu(site_id JSON) RETURNS JSON AS $$
   return u.menu site_id
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
-CREATE FUNCTION procs.homepage_forums(forum_id JSON, sort JSON) RETURNS JSON AS $$
-  unless sort in [\popular \recent] then sort = \recent # guard
-  require! u
-  return u.homepage-forums forum_id, sort
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON) RETURNS JSON AS $$
-  require! u
-  forumf = plv8.find_function('procs.forum')
-  forum  = forumf(forum_id)
-
-  sort-sql =
-    switch sort
-    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id) DESC, p.created DESC'
-    | otherwise => 'p.created DESC, p.id ASC' # recent
-
-  # This query can be moved into its own proc and generalized so that it can
-  # provide a flat view of a thread.
-  # XXX non-null media url sorted first/top in list
-  sql = """
-  SELECT
-    p.*,
-    #{u.user-fields \p.user_id, forum.site_id}
-  FROM posts p
-  LEFT JOIN moderations m ON m.post_id = p.id
-  WHERE p.forum_id = $1
-    AND p.parent_id IS NULL
-  ORDER BY (LENGTH(p.media_url) > 1) DESC, #sort-sql
-  LIMIT $2
-  """
-  forum.posts = plv8.execute(sql, [forum_id, thread_limit])
-  return [forum]
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.site_summary(site_id JSON, thread_limit JSON, sort JSON) RETURNS JSON AS $$
-  sort-sql =
-    switch sort
-    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE forum_id=id GROUP BY forum_id) DESC, created DESC'
-    | otherwise => 'created DESC, id ASC' # recent
-  site-ids = plv8.execute "SELECT id FROM forums WHERE site_id=$1::bigint ORDER BY #sort-sql", [site_id]
-  fn = plv8.find_function \procs.forum_summary
-  return site-ids.map (-> fn(it.id, thread_limit, sort).0)
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-
 CREATE FUNCTION procs.top_threads(site_id JSON, forum_id JSON, sort JSON, lim JSON, _off JSON) RETURNS JSON AS $$
   require! u
   # default / work around bug in plv8 where 0 in json becomes false for some reason

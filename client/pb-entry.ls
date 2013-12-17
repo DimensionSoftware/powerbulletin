@@ -21,7 +21,6 @@ mutant  = require \mutant
 # refactored so that each jquery plugin is only required where needed
 # in the future... as opposed to using global-ness
 require \jqueryHistory
-require \jqueryMasonry
 require \jqueryTransit
 require \jqueryUi
 require \jqueryWaypoints

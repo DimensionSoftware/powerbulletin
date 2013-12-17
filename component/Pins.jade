@@ -29,9 +29,7 @@ mixin pin(p)
 if forums
   .homepage(class=activeForumId!='homepage'?'resizable forum':'')
     each f,i in forums
-      each p,i in f.posts
-        +pin(p,i)
+      +pin(f,i)
 else
   p Create a forum first
-    A
     i !

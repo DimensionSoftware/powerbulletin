@@ -4,23 +4,23 @@ require, exports, module <- define
 require! {
   Component: yacomponent
 }
-require \jqueryMasonry
 {throttle}  = require \lodash
 {templates} = require \../build/component-jade
 
 const max-retry = 3failures
 
 module.exports =
-  class Editor extends Component
+  class Pins extends Component
     template: templates.Pins
 
     init: ->
       # defaults
 
     on-attach: ->
+      <- requirejs [\jqueryMasonry] # lazy
       ####  main  ;,.. ___  _
       try # reflow masonry content
-        window.$ \.homepage .masonry(
+        @@$ \.homepage .masonry(
           item-selector: \.post
           is-animated:   true
           animation-options:
@@ -30,7 +30,7 @@ module.exports =
 
     on-detach: ~> # XXX ensure detach is called
       # cleanup
-      try window.$ \.homepage .masonry(\destroy)
+      try @@$ \.homepage .masonry(\destroy)
       @$.off!remove!
 
 # vim: fdm=marker
