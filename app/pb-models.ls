@@ -166,6 +166,68 @@ _alias-deserializers =
   rights: JSON.parse
   config: JSON.parse
 
+thread-summary = (site-id, forum-id, sort, limit, cb) ->
+  sort-criteria = switch sort
+  | \popular  => "(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id) DESC, last_post_created DESC"
+  | otherwise => "last_post_created DESC"
+
+  site-forum = if forum-id
+    { clause: "f.site_id = $1 AND p.forum_id = $2", args: [ site-id, forum-id ] }
+  else
+    { clause: "f.site_id = $1", args: [ site-id ] }
+
+  sql = """
+  SELECT p.id,
+         f.site_id,
+         p.forum_id,
+         p.title,
+         p.views,
+         p.created,
+         p.user_id,
+         p.media_url,
+         a.name,
+         last.id        AS last_post_id,
+         last.user_id   AS last_post_user_id,
+         last.name      AS last_post_name,
+         last.html      AS last_html,
+         last.created   AS last_post_created
+    FROM posts p
+    JOIN forums  f ON p.forum_id = f.id
+    JOIN aliases a ON (p.user_id = a.user_id AND f.site_id = a.site_id)
+    JOIN (SELECT p2.id, p2.user_id, a2.name, p2.html, p2.thread_id, p2.created
+            FROM posts   p2
+            JOIN forums  f2 ON p2.forum_id = f2.id
+            JOIN aliases a2 ON (p2.user_id = a2.user_id AND f2.site_id = a2.site_id)
+           WHERE p2.id IN (SELECT MAX(id) FROM posts GROUP BY thread_id)
+             AND  a2.site_id = f2.site_id
+         ) last ON last.thread_id = p.id
+   WHERE a.site_id = f.site_id
+     AND p.parent_id is NULL AND #{site-forum.clause}
+   ORDER BY #sort-criteria
+   LIMIT #limit
+  """
+  err, r <- postgres.query sql, site-forum.args
+  if err then return cb err
+
+  add-participants = (thread, cb) ->
+    err, participants <- db.aliases.participants-for-thread thread.id
+    if err then return cb err
+    thread.participants = participants
+    cb null, thread
+
+  add-images = (thread, cb) ->
+    err, images <- db.images.select thread_id: thread.id
+    if err then return cb err
+    thread.images = images
+    cb null, thread
+
+  add-multi = (thread, cb) ->
+    err, t1 <- add-participants thread
+    if err then return cb err
+    add-images t1, cb
+
+  async.map r, add-multi, cb
+
 # This is for queries that don't need to be stored procedures.
 # Base the top-level key for the table name from the FROM clause of the SQL query.
 query-dictionary =
@@ -375,54 +437,8 @@ query-dictionary =
 
   forums:
     # new forum summary
-    summary: (id, cb) ->
-      sql = '''
-      SELECT p.id,
-             p.title,
-             p.views,
-             p.created,
-             p.user_id,
-             p.media_url,
-             a.name,
-             last.id        AS last_post_id,
-             last.user_id   AS last_post_user_id,
-             last.name      AS last_post_name,
-             last.created   AS last_post_created
-        FROM posts p
-        JOIN forums  f ON p.forum_id = f.id
-        JOIN aliases a ON (p.user_id = a.user_id AND f.site_id = a.site_id)
-        JOIN (SELECT p2.id, p2.user_id, a2.name, p2.thread_id, p2.created
-                FROM posts   p2
-                JOIN forums  f2 ON p2.forum_id = f2.id
-                JOIN aliases a2 ON (p2.user_id = a2.user_id AND f2.site_id = a2.site_id)
-               WHERE p2.id IN (SELECT MAX(id) FROM posts GROUP BY thread_id)
-                 AND  a2.site_id = f2.site_id
-             ) last ON last.thread_id = p.id
-       WHERE a.site_id = f.site_id
-         AND p.parent_id is NULL AND p.forum_id = $1
-       ORDER BY last_post_created DESC
-      '''
-      err, r <- postgres.query sql, [id]
-      if err then return cb err
-
-      add-participants = (thread, cb) ->
-        err, participants <- db.aliases.participants-for-thread thread.id
-        if err then return cb err
-        thread.participants = participants
-        cb null, thread
-
-      add-images = (thread, cb) ->
-        err, images <- db.images.select thread_id: thread.id
-        if err then return cb err
-        thread.images = images
-        cb null, thread
-
-      add-multi = (thread, cb) ->
-        err, t1 <- add-participants thread
-        if err then return cb err
-        add-images t1, cb
-
-      async.map r, add-multi, cb
+    summary: (site-id, forum-id, sort, cb) ->
+      thread-summary(site-id, forum-id, sort, 8, cb) 
 
   sites:
     user-is-member-of: (user-id, cb) ->
@@ -478,6 +494,9 @@ query-dictionary =
       (err, css) <- stylus.render site.config.style, {compress:true}
       if err then return cb {success:false, msg:'CSS must be valid!'}
       fs.write-file "#css-dir/master.css" css, cb
+
+    summary: (site-id, sort, cb) ->
+      thread-summary(site-id, null, sort, 8, cb)
 
   subscriptions:
     list-for-site: (site-id, cb) ->

@@ -134,9 +134,7 @@ site-by-domain = (domain, cb) ->
     #ChatServer
     chat-server = new ChatServer(io, socket, presence, site, user)
     socket.on \chat-message, chat-server.message
-    socket.on \chat-join, chat-server.join
-    socket.on \chat-leave, chat-server.leave
-    socket.on \chat-debug, chat-server.debug
+    socket.on \chat-between, chat-server.between
 
     socket.on \disconnect, ->
       log \disconnected
@@ -154,7 +152,6 @@ site-by-domain = (domain, cb) ->
         log "#{user.name}'s cids", cids
         if cids.length is 0
           io.sockets.in(site-room).emit \leave-site, user
-        chat-server.disconnect!
 
     socket.on \online-now, ->
       err, users <- presence.in "#{site.id}"

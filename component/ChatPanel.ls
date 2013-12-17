@@ -11,6 +11,15 @@ module.exports =
   class ChatPanel extends Component
     template: templates.ChatPanel
 
+    # management of all chats
+    @chats = {}
+
+    @find = (c-id) ->
+      if @chats[c-id]
+        @chats[cid]
+      else
+        @chats[cid] = new ChatPanel
+
     init: ->
       @p = @local \p
       @css = @local(\css) || {}
