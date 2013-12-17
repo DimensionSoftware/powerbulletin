@@ -166,10 +166,17 @@ _alias-deserializers =
   rights: JSON.parse
   config: JSON.parse
 
+# Helper function for generating thread summaries by site and/or forum
+#
+# @param  Number    site-id
+# @param  Number    forum-id
+# @param  String    sort      \popular or \recent
+# @param  Number    limit     max number of items desired in result set
+# @param  Function  cb
 thread-summary = (site-id, forum-id, sort, limit, cb) ->
   sort-criteria = switch sort
   | \popular  => "(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id) DESC, last_post_created DESC"
-  | otherwise => "last_post_created DESC"
+  | otherwise => "last_post_created DESC" # aka recent
 
   site-forum = if forum-id
     { clause: "f.site_id = $1 AND p.forum_id = $2", args: [ site-id, forum-id ] }

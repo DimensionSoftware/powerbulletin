@@ -192,7 +192,7 @@ function background-for-forum m, active-forum-id
     if err then return next err
     if !forum-id then return next 404
     tasks =
-      forums      : db.sites.summary site.id, (req.query?order or \recent), 8, _
+      forums      : db.forums.summary site.id, forum-id, (req.query?order or \recent), 8, _
       forum       : db.forum forum-id, _
       top-threads : db.top-threads site.id, forum-id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
       t-qty       : db.thread-qty forum-id, _
