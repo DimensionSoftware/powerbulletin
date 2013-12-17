@@ -134,7 +134,7 @@ is-locked-forum = (m, forum-id) ->
       if err then return res.json success: false, hint: \db.site-update
 
       ban-all-domains site.id # varnish ban
-      announce.emit \menu-update, site.config.menu
+      announce.in(site.id).emit \menu-update, site.config.menu
       res.json success:true, id: dbid
 
     # delete a menu
@@ -158,7 +158,7 @@ is-locked-forum = (m, forum-id) ->
       if err then return res.json success: false, hint: \db-site-update, err: err, errors: [ "Item could not be deleted." ]
 
       ban-all-domains site.id # varnish ban
-      announce.emit \menu-update, site.config.menu
+      announce.in(site.id).emit \menu-update, site.config.menu
       res.json success: true
 
     # resort a menu
@@ -176,7 +176,7 @@ is-locked-forum = (m, forum-id) ->
       if err then return res.json success: false, hint: \menu-resort
 
       ban-all-domains site.id # varnish ban
-      announce.emit \menu-update, site.config.menu
+      announce.in(site.id).emit \menu-update, site.config.menu
       res.json success:true
 
     | \domains =>
@@ -310,12 +310,12 @@ is-locked-forum = (m, forum-id) ->
     unless post.parent_id
       err, new-post <- db.post site.id, post.id
       if err then return next err
-      announce.emit \thread-create new-post
+      announce.in(site.id).emit \thread-create new-post
     else
       err, new-post <- db.post site.id, post.id
       if err then return next err
       new-post.posts = []
-      announce.emit \post-create new-post
+      announce.in(site.id).emit \post-create new-post
 
     res.json ap-res
   show    : (req, res, next) ->
