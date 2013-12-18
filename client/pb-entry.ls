@@ -328,17 +328,21 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
   panels = window.component.panels
 
   # XXX - this is wrong.  It needs to ask the server for a chat id.
-  id = "chat-#{$p.data \user-id}"
+  err, c <- socket.emit \chat-between, [user.id, $p.data \user-id]
+  if err then return
 
-  # XXX - it needs to ask the ChatPanel if a panel exists for the given chat id.
+  id = "chat-#{c.id}"
+  console.warn \chat, c
+
   chat-panel-exists = $ "\##{id}" .length
 
   if chat-panel-exists
     panels.select-force id
   else
-    chat-panel = new ChatPanel locals: { id, icon, to: t, width: 300px, css: { background: '#544', opacity: 0.85 }, p: panels }
+    chat-panel = new ChatPanel locals: { id, icon, width: 300px, css: { background: '#fff', opacity: 0.85 }, p: panels }
     panels.add id, chat-panel
     panels.select-force id
+
 )
 #}}}
 #{{{ - admin
