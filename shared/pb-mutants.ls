@@ -308,13 +308,19 @@ layout-on-personalize = (w, u) ->
         ``
         (function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}})(document, 'script', 'twitter-wjs');
         ``
-      # FIXME this is a race condition (on-static/on-load isn't finished when this runs)
       set-timeout (-> # scroll active thread on left nav into view
-        threads = $ '#left_container .threads'
+        threads = $ '#left_container .scrollable'
         offset  = -125px
         cur = threads.scroll-top!
         dst = Math.round($ '#left_container .threads > .active' .position!?top)
         if dst then threads.animate {scroll-top:cur+dst+offset}, 500ms, \easeOutExpo), 500ms
+
+      # FIXME move arrow on scroll
+      #orig = $ '#left_container .active' .offset!top
+      #$ '#left_container .scrollable' .on \scroll.Forum ->
+      #  e   = $ '#left_container .active'
+      #  cur = e.offset!top
+      #e.find \.arrow .transition {y:cur - orig}, 0
 
       render-thread-paginator-component window, window.t-qty, window.t-step
       next!
@@ -341,6 +347,7 @@ layout-on-personalize = (w, u) ->
       # cleanup
       w.$ \body .off \click
       w.$ \#main_content .add-class \transparent
+      #$ '#left_container .scrollable' .off \scroll.Forum
       try w.$ \#left_container .resizable(\destroy)
       unless next-mutant is \forum
         w.$ \#forum_background .remove!
