@@ -598,7 +598,7 @@ function profile-paths user, uploaded-file, base=\avatar
   product-id = req.params.product-id
   errors     = []
 
-  err, existing-subscription <- db.subscriptions.select1 {site_id: site-id, product_id: product-id}
+  err, existing-subscription <- db.subscriptions.select-one {site_id: site-id, product_id: product-id}
   if err then return next err
   if existing-subscription then errors.push 'You\'re already subscribed'
 
