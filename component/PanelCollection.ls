@@ -37,7 +37,7 @@ module.exports =
         @list.push [name, panel]
         @seen[name] = @list.length - 1
         # dom
-        $icon = @@$ '<li class="panel-icon"><img title="" /></li>'
+        $icon = @@$ '<li class="panel-icon photo"><img title="" /></li>'
         $icon.find 'img' .attr { src: panel.local(\icon), title: panel.local(\title) }
         @$ul.append $icon
         @$.append panel.$
@@ -107,5 +107,9 @@ module.exports =
     show: (sel) ->
       hi = $(window).height!
       @@$(sel).css(height: "#{hi}px").show @delay, @ease-out
+
+    select-force: (name) ->
+      if @selected is null or @selected isnt name
+        @select name
 
 # vim:fdm=indent
