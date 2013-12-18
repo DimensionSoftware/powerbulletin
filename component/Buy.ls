@@ -31,13 +31,13 @@ module.exports =
           code:    @$.find \.Buy-card-code .val!
         product = @local \product .id
         re-enable = -> $ ev.target .attr \disabled null
-        ch.show-tooltip (@$.find \.tooltip), 'Securing connection'
+        show-tooltip (@$.find \.tooltip), 'Securing connection', 30000ms
         @@$.post "/ajax/checkout/#product", data, (r) ~>
           if r.success
             site.subscriptions.push product # subscribe!
             site.has_stripe = true
             $ "\##product" .focus!
-            ch.show-tooltip (@$.find \.tooltip), (['Sincere thanks!', "Awesome.  Go ahead!", 'You got it!', 'Thank you!'][parse-int Math.random!*5])
+            show-tooltip (@$.find \.tooltip), (['Sincere thanks!', "Awesome.  Go ahead!", 'You got it!', 'Thank you!'][parse-int Math.random!*5])
             set-timeout (->
               re-enable!
               # show new product
@@ -46,7 +46,7 @@ module.exports =
               $.fancybox.close!), 2000ms
 
           else # error handling
-            ch.show-tooltip (@$.find \.tooltip), if r.errors?length then r.errors.join "\n" else 'Invalid payment!'
+            show-tooltip (@$.find \.tooltip), if r.errors?length then r.errors.join "\n" else 'Invalid payment!'
             card-number = @$.find \.Buy-card-number
             for e in [card-number, @@$ \.Buy-card-code] then e.add-class \has-error
 
