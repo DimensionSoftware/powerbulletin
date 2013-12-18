@@ -273,7 +273,7 @@ timers = {}
   $e.remove-class("#remove shake slide").add-class(add)
   set-timeout (-> # animate & yield before focus, so smooth!
     $e.add-class \slide
-    set-timeout (-> $ focus-on .focus!), 250ms), 50ms
+    set-timeout (-> $ focus-on .focus!select!), 250ms), 50ms
 
 @set-online-user = (id) ~>
   $ "[data-user-id=#{id}] .profile.photo"
