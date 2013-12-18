@@ -11,7 +11,7 @@ mixin _thread(t)
         span.username
           em= t.user_name // XXX weird things happened when I tried to turn this into an anchor
         span.created(data-time=t.created_iso)!= t.created_human
-        .clear
+        .clear-right
         span.post-count= t.post_count
           i posts
         span.views= t.views
