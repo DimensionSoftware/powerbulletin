@@ -10,9 +10,6 @@ require! {
 
 log = debug 'io-chat-server'
 
-# Redis Keys
-# chats-by-connection:$sid = hash conversation.id => JSON.stringify(conversation)
-
 module.exports = class ChatServer
 
   (@io, @socket, @presence, @site, @user) ->
