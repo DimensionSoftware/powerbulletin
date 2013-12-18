@@ -40,6 +40,11 @@ site-by-domain = (domain, cb) ->
   else
     db.site-by-domain domain, cb
 
+# This is intended to be run on startup to clear stale data out of redis.
+# TODO - make this less heavy handed
+clear-stale-redis-data = (r, cb) ->
+  r.flushall cb
+
 @init = (server) ->
   err <- pg.init
   if err then throw err
@@ -65,6 +70,8 @@ site-by-domain = (domain, cb) ->
   redis-client = redis.create-client!
   redis-store  = new RedisStore({ redis, redis-pub, redis-sub, redis-client })
   io.set \store, redis-store
+
+  err <- clear-stale-redis-data redis-client
 
   io.set \authorization, (handshake, accept) ->
     if not handshake or handshake?domain
