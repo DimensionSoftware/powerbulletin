@@ -2,17 +2,15 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  Component: yacomponent
+  \./PBComponent
   \./Paginator
 }
-{templates} = require \../build/component-jade
 
 module.exports =
-  class Table extends Component
+  class Table extends PBComponent
     ({@pnum-to-href} = {}) ->
       super ...
 
-    template: templates.Table
     init: ->
       # mandatory variables
 

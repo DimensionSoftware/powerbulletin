@@ -1,14 +1,11 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! {
-  Component: yacomponent
-}
-{templates}    = require \../build/component-jade
+require! \./PBComponent
 {show-tooltip} = require \../client/client-helpers
 
 module.exports =
-  class PanelCollection extends Component
+  class PanelCollection extends PBComponent
     # in browser repl:
     # x = PanelCollection.x()
     # x.p.select('a')
@@ -21,8 +18,6 @@ module.exports =
       b = new ChatPanel({locals: { id: 'b', icon: 'https://muscache.pb.com/images/twitter_32.png', width: 400px, css: { background: '#88c', opacity: 0.75 }, p: p}})
       p.add 'b', b
       {p, a, b}
-
-    template: templates.PanelCollection
 
     init: ->
       @list     = []

@@ -1,17 +1,12 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! {
-  Component: yacomponent
-}
-
-{templates} = require \../build/component-jade
+require! \./PBComponent
 
 module.exports =
-  class MainMenu extends Component
+  class MainMenu extends PBComponent
 
     # XXX renders in mutant static app/views/menu.jade
-    #template: templates.MainMenu
 
     init: !~>
       @menu = @@$R((new-menu) ~>

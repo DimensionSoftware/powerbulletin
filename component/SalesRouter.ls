@@ -2,14 +2,12 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  Component: yacomponent
+  \./PBComponent
   sh: \../shared/shared-helpers
   surl: \../shared/sales-urls
 }
 
 require \jqueryHistory if window?
-
-{templates} = require \../build/component-jade
 
 function kill-trailing-slash path
   if path.match /\/$/
@@ -27,7 +25,7 @@ function parse-path url
     kill-trailing-slash path
 
 module.exports =
-  class SalesRouter extends Component
+  class SalesRouter extends PBComponent
     # only intended to be used in express
     @middleware = (req, res, next) ->
       path = sh.parse-url(req.url).pathname
@@ -60,7 +58,6 @@ module.exports =
 
         res.content-type \html
         res.send body
-    template: templates.SalesRouter # shared with forum app
     init: ->
       @local \stylesheets, if process.env.NODE_ENV is \production
         ["#{cvars.cache-url}/master-sales.css?#CHANGESET"] # pre-computed

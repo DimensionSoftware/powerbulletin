@@ -1,14 +1,10 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! {
-  Component: yacomponent
-}
-{templates} = require \../build/component-jade
+require! \./PBComponent
 
 module.exports =
-  class UserEditor extends Component
-    template: templates.UserEditor
+  class UserEditor extends PBComponent
     on-attach: ->
       c = @
       dollarish = @@$

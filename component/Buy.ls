@@ -1,23 +1,18 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! {
-  ch: \../client/client-helpers
-  Component: yacomponent
-}
-
-{templates} = require \../build/component-jade
+require! \./PBComponent
+{show-tooltip} = require \../client/client-helpers
 
 module.exports =
-  class Buy extends Component
-    template: templates.Buy
+  class Buy extends PBComponent
     init: ->
       @local \cardNeeded, true if @local(\cardNeeded) is void
     on-attach: ->
       set-timeout (-> @@$ \.Buy-card-number .focus!), 100ms
       @$.on \click \.Buy-change-card ~>
         @local \cardNeeded, true
-        @detach!render!attach!
+        @reload!
         $fb = @@$ \.fancybox-wrap:first # animate switch
         $fb.remove-class \slide
         set-timeout (-> $fb.add-class \slide), 10ms

@@ -2,17 +2,15 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  Component: yacomponent
+  \./PBComponent
   \./Table
 }
-{templates} = require \../build/component-jade
 
 {lazy-load-fancybox} = require \../client/client-helpers
 
 # responsible for url token superUsers
 module.exports =
-  class SuperAdminUsers extends Component
-    template: templates.SuperAdminUsers
+  class SuperAdminUsers extends PBComponent
     title: 'Edit Users'
     init: ->
       pnum-to-href = (pg) ~>

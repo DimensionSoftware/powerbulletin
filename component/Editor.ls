@@ -2,22 +2,19 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  Component: yacomponent
+  \./PBComponent
   #pagedown # XXX pull in converter + sanitizer if needed on server
 }
-{throttle}  = require \lodash
-{templates} = require \../build/component-jade
+{throttle} = require \lodash
 {storage, lazy-load-fancybox} = require \../client/client-helpers
 
 const watch-every   = 2500ms
 const max-retry     = 3failures
 
 module.exports =
-  class Editor extends Component
+  class Editor extends PBComponent
     retry:  0
     editor: void
-
-    template: templates.Editor
 
     init: ->
       # defaults

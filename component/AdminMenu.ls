@@ -2,15 +2,14 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  Component: yacomponent
+  \./PBComponent
   \./Uploader
 }
 {show-tooltip, submit-form, storage} = require \../client/client-helpers if window?
-{templates} = require \../build/component-jade
 {each, map, maximum} = require \prelude-ls
 
 module.exports =
-  class AdminMenu extends Component
+  class AdminMenu extends PBComponent
     const prefix = \list_
     const opts   =
       handle: \div
@@ -32,7 +31,6 @@ module.exports =
           return false
         true
 
-    template: templates.AdminMenu
     current:  null # active "selected" menu item
 
     show: ->

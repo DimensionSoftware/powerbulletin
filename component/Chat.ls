@@ -1,8 +1,7 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! Component: yacomponent
-{templates} = require \../build/component-jade
+require! \./PBComponent
 {join, map, sort-with, Obj} = require \prelude-ls
 
 add-message = (fn, m) -->
@@ -13,13 +12,12 @@ add-message = (fn, m) -->
   @$.find \textarea .val ''
 
 module.exports =
-  class Chat extends Component
+  class Chat extends PBComponent
     @duration  = 300ms
     @easing    = \easeOutExpo
     @chats     = {}
 
     conversation: null
-    template: templates.Chat
 
     remember-chat: ->
       chats = [] #JSON.parse( $.cookie('chats') || '[]' )
