@@ -22,7 +22,7 @@ require! {
   \../component/Paginator
   \../component/PhotoCropper
   \../component/Editor
-  \../component/Pins
+  \../component/Homepage
   \../client/globals
   __: lodash
   $R: reactivejs
@@ -155,7 +155,7 @@ layout-on-personalize = (w, u) ->
   static:
     (window, next) ->
       layout-static.call @, window, \homepage
-      render-component window, \#main_content, \Pins, Pins, {-auto-attach, locals:@}
+      render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
       window.marshal locals:@
       next!
   on-personalize: (w, u, next) ->
@@ -163,7 +163,7 @@ layout-on-personalize = (w, u) ->
     next!
   on-load:
     (window, next) ->
-      render-component window, \#main_content, \Pins, Pins, {-auto-render}
+      render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
       next!
   on-unload:
     (window, next-mutant, next) ->
@@ -193,7 +193,7 @@ layout-on-personalize = (w, u) ->
       if is-editing(@furl.path) is true
         window.render-mutant \main_content, \post-new
       else if is-forum-homepage @furl.path
-        render-component window, \#main_content, \Pins, Pins, {-auto-attach, locals:@}
+        render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
       else
         window.render-mutant \main_content, \posts
 
@@ -229,8 +229,8 @@ layout-on-personalize = (w, u) ->
   on-load:
     (window, next) ->
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
-      if is-forum-homepage window.location.to-string! # render pins
-        render-component window, \#main_content, \Pins, Pins, {-auto-render}
+      if is-forum-homepage window.location.to-string! # render homepage
+        render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
       $ = window.$
 
       align-ui!

@@ -1,21 +1,9 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
-
-require! {
-  Component: yacomponent
-}
-{throttle}  = require \lodash
-{templates} = require \../build/component-jade
-
-const max-retry = 3failures
+require! \./PBComponent
 
 module.exports =
-  class Pins extends Component
-    template: templates.Pins
-
-    init: ->
-      # defaults
-
+  class Pins extends PBComponent
     on-attach: ->
       <- requirejs [\jqueryMasonry] # lazy
       ####  main  ;,.. ___  _
@@ -23,14 +11,14 @@ module.exports =
         @@$ \.homepage .masonry(
           item-selector: \.post
           is-animated:   true
-          animation-options:
-            duration: 100ms
           is-fit-width:  true
-          is-resizable:  true).bind-resize!
+          is-resizable:  true
+          animation-options:
+            duration: 100ms).bind-resize!
 
     on-detach: ~> # XXX ensure detach is called
+      super ...
       # cleanup
       try @@$ \.homepage .masonry(\destroy)
-      @$.off!remove!
 
 # vim: fdm=marker
