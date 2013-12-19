@@ -25,10 +25,10 @@ module.exports =
       opacity: 0.8
       force-placeholder-size: true
       is-allowed: (item, parent) ->
-        # only move items with a type
-        unless (item.find \.row .data \form)?dialog
-          show-tooltip ($ \#warning), 'Select a Type First!'
-          return false
+      #  # only move items with a type
+      #  unless (item.find \.row .data \form)?dialog
+      #    show-tooltip ($ \#warning), 'Select a Type First!'
+      #    return false
         true
 
     current:  null # active "selected" menu item
@@ -264,6 +264,7 @@ module.exports =
 
       @$.on \change \form (ev) ~> @current-store! # save active title & form
       @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore! # load active row
+      @$.on \blur   \.row (ev) ~> show-tooltip ($ \#warning) # hide
       #}}}
 
       ####  main  ;,.. ___  _
