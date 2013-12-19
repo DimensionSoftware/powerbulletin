@@ -2,12 +2,12 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  Component: yacomponent
+  \./PBComponent
   $R:reactivejs
 }
 
 module.exports =
-  class ParallaxButton extends Component
+  class ParallaxButton extends PBComponent
     template: ({title}) -> "<button>#{title}</button>"
     ({@on-click = (->)}) ->
       super ...

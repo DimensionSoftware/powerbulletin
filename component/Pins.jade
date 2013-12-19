@@ -1,13 +1,16 @@
-include _post-profile
+mixin post-profile(p)
+  .post-profile
+    a.user.mutant(href="/user/#{p.user_name}", data-user-id=p.user_id)
+      .profile.photo
+        if p.user_photo && p.user_photo.match(/^http/)
+          img(title=p.user_name, src="#{p.user_photo}")
+        else
+          img(src="#{cacheUrl}#{p.user_photo}")
 
-//- mixin media-post(f, i)
-//-   img(src=f.media_url)
-//- mixin html-post(f, t, i)
-//-   p.body!= f.html
-mixin post(p)
-  .post(id="post_#{p.id}", class=p.reason ? 'censored' : '', data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id, data-forum-id=p.forum_id)
+mixin pin(p)
+  .post(id="post_#{p.id}", class=p.reason?'censored':'', data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id, data-forum-id=p.forum_id)
     .profile-container
-      mixin _post-profile(p)
+      mixin post-profile(p)
       a.user.mutant(href="/user/#{p.user_name}")
         span.username= p.user_name
       .date(data-time=p.created_iso, title=p.created_friendly)
@@ -26,8 +29,7 @@ mixin post(p)
 if forums
   .homepage(class=activeForumId!='homepage'?'resizable forum':'')
     each f,i in forums
-      each p,i in f.posts
-        +post(p,i)
+      +pin(f,i)
 else
   p Create a forum first
     i !

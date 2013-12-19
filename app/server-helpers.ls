@@ -176,16 +176,28 @@ process-cached-data = {}
     cb(err)
   _is.pipe(_os)
 
+@rpad = (n, str) ->
+  if str.length >= n
+    str
+  else
+    str + Str.repeat(n - str.length, ' ')
+
+@lpad = (n, str) ->
+  if str.length >= n
+    str
+  else
+    Str.repeat(n - str.length, ' ') + str
+
 @dev-log-format = (tokens, req, res) ->
   status = res.status-code
   len    = parse-int res.get-header(\Content-Length), 10
   color  = switch
   | status >= 500 => 31
-  | status >= 400 => 33
+  | status >= 400 => 31
   | status >= 300 => 36
   | otherwise     => 32
 
   len = if is-NaN len then '' else len
-  "\x1b[90m#{req.method} \x1b[#{color}m#{res.status-code} \x1b[1;37m#{req.host}#{req.originalUrl} \x1b[90m#{new Date - req._start-time}ms - #{len}\x1b[0m"
+  "\x1b[38;5;222m#{@lpad 7, req.method} \x1b[90m(\x1b[#{color}m#{res.status-code}\x1b[90m) \x1b[38;5;255m#{req.host}#{req.originalUrl} \x1b[38;5;197m#{new Date - req._start-time}ms - #{len}\x1b[0m"
 
 # vim:fdm=marker

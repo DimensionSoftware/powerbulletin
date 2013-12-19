@@ -2,8 +2,7 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  ch: './client-helpers'
-  ChatPanel: '../component/ChatPanel'
+  \../component/ChatPanel
   \./globals
   mutants: \../shared/pb-mutants
 }
@@ -133,8 +132,6 @@ function init-with-socket s
     console?log \debug, message
 
   s.on \chat-message, (message) ->
-    # if conversation does not exist on the client side, create it .
-    # add message to current conversation
-    console.log \chat-message, message
+    ChatPanel.add-message message
 
 # vim:fdm=indent

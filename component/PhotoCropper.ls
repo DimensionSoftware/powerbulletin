@@ -2,14 +2,13 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  Component: yacomponent
+  \./PBComponent
   sh: \../shared/shared-helpers
 }
-{templates} = require \../build/component-jade
 {lazy-load-fancybox, lazy-load-jcrop} = require \../client/client-helpers
 
 module.exports =
-  class PhotoCropper extends Component
+  class PhotoCropper extends PBComponent
     # only one photocropper on screen at a time
     @pc = null
 
@@ -30,9 +29,6 @@ module.exports =
     ({title, aspect-ratio, @endpoint-url}) ->
       @aspect-ratio = parse-float aspect-ratio
       super ...
-
-    #
-    template: templates.PhotoCropper
 
     # jcrop object
     jcrop: null

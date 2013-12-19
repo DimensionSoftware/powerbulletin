@@ -1,21 +1,15 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! {
-  Component: yacomponent
-}
-
-{templates} = require \../build/component-jade
+require! \./PBComponent
 
 # XXX this component must be rendered inside a <form enctype="multipart/form-data">
 
 module.exports =
-  class Uploader extends Component
+  class Uploader extends PBComponent
     default-locals =
       post-url:   ''
       on-success: (->)
-
-    template: templates.Uploader
 
     init: !->
       for k,v of default-locals when @local(k) is void

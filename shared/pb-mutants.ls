@@ -22,6 +22,7 @@ require! {
   \../component/Paginator
   \../component/PhotoCropper
   \../component/Editor
+  \../component/Homepage
   \../client/globals
   __: lodash
   $R: reactivejs
@@ -47,7 +48,8 @@ require! {
   # always instantiate using 'internal' dom by not passing a target at instantiation
   c = wc[name] = new klass(first-klass-arg)
 
-  win.$(target).html('').append c.$ # render
+  # unless auto-render is explicitly false, render
+  unless first-klass-arg.auto-render is false then win.$(target).html('').append c.$
 
 !function paginator-component w, locals, pnum-to-href
   wc = w.component ||= {}
@@ -149,43 +151,22 @@ layout-on-personalize = (w, u) ->
         Auth.show-login-dialog!
         switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
 
-# initialize pager
-#pager-init = (w) ->
-#  pager-opts =
-#    current  : parse-int w.page
-#    last     : parse-int w.pages-count
-#    forum-id : parse-int w.active-forum-id
-#  if w.pager
-#    w.pager <<< pager-opts
-#    w.pager.init!
-#  else
-#    w.pager = new w.Pager \#paginator pager-opts
-#  w.pager.set-page(w.page, false) if w.page
-
 @homepage =
   static:
     (window, next) ->
-      window.render-mutant \main_content \homepage
       layout-static.call @, window, \homepage
+      render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
+      window.marshal locals:@
       next!
   on-personalize: (w, u, next) ->
     layout-on-personalize w, u
     next!
   on-load:
     (window, next) ->
-      try # reflow masonry content
-        window.$ \.homepage .masonry(
-          item-selector: \.post
-          is-animated:   true
-          animation-options:
-            duration: 100ms
-          is-fit-width:  true
-          is-resizable:  true).bind-resize!
+      render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
       next!
   on-unload:
     (window, next-mutant, next) ->
-      try
-        window.$ \.homepage .masonry(\destroy)
       next!
 
 # this function meant to be shared between static and on-initial
@@ -209,21 +190,19 @@ layout-on-personalize = (w, u) ->
       const prev-mutant = window.mutator
 
       # render main content
-      window.render-mutant \main_content if is-editing(@furl.path) is true
-        \post-new
+      if is-editing(@furl.path) is true
+        window.render-mutant \main_content, \post-new
       else if is-forum-homepage @furl.path
-        \homepage
+        render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
       else
-        \posts
+        window.render-mutant \main_content, \posts
 
       # render left content
       if @top-threads
         window.render-mutant \left_container \nav # refresh on forum & mutant change
-
         render-thread-paginator-component window, @t-qty, @t-step
         window.marshal \tQty, @t-qty
         window.marshal \tStep, @t-step
-
 
       window.marshal \activeForumId @active-forum-id
       window.marshal \activeThreadId @active-thread-id
@@ -231,8 +210,6 @@ layout-on-personalize = (w, u) ->
       window.marshal \pagesCount @pages-count
       window.marshal \prevPages @prev-pages
       window.marshal \social @social
-
-      #window.$ \.bg .remove! # XXX kill background (for now)
 
       do ~>
         if not @post then return
@@ -252,6 +229,8 @@ layout-on-personalize = (w, u) ->
   on-load:
     (window, next) ->
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
+      if is-forum-homepage window.location.to-string! # render homepage
+        render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
       $ = window.$
 
       align-ui!
@@ -329,13 +308,19 @@ layout-on-personalize = (w, u) ->
         ``
         (function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}})(document, 'script', 'twitter-wjs');
         ``
-      # FIXME this is a race condition (on-static/on-load isn't finished when this runs)
       set-timeout (-> # scroll active thread on left nav into view
-        threads = $ '#left_container .threads'
+        threads = $ '#left_container .scrollable'
         offset  = -125px
         cur = threads.scroll-top!
         dst = Math.round($ '#left_container .threads > .active' .position!?top)
         if dst then threads.animate {scroll-top:cur+dst+offset}, 500ms, \easeOutExpo), 500ms
+
+      # FIXME move arrow on scroll
+      #orig = $ '#left_container .active' .offset!top
+      #$ '#left_container .scrollable' .on \scroll.Forum ->
+      #  e   = $ '#left_container .active'
+      #  cur = e.offset!top
+      #e.find \.arrow .transition {y:cur - orig}, 0
 
       render-thread-paginator-component window, window.t-qty, window.t-step
       next!
@@ -362,6 +347,7 @@ layout-on-personalize = (w, u) ->
       # cleanup
       w.$ \body .off \click
       w.$ \#main_content .add-class \transparent
+      #$ '#left_container .scrollable' .off \scroll.Forum
       try w.$ \#left_container .resizable(\destroy)
       unless next-mutant is \forum
         w.$ \#forum_background .remove!
@@ -547,7 +533,6 @@ same-profile = (hints) ->
       $ \.domain .trigger \change # fill-in authorization
       # no pager (for now)
       window.pages-count = 0
-      #pager-init window
       <~ lazy-load-html5-uploader
       <~ lazy-load-fancybox
       <~ lazy-load-nested-sortable
@@ -706,7 +691,6 @@ mk-post-pnum-to-href = (post-uri) ->
       window.$new-hits = w.$('<div/>')  # reset new-hit div
 
       align-ui!
-      #pager-init w
 
       # avoid stacking up search join requests
       # only pay attention to last one

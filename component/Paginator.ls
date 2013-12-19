@@ -1,8 +1,7 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! Component: yacomponent
-{templates} = require \../build/component-jade
+require! \./PBComponent
 
 function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-href
   active-page = parse-int active-page
@@ -47,7 +46,7 @@ function calc-pages active-page, step, qty, page-distance, page-qty, pnum-to-hre
   pages
 
 module.exports =
-  class Paginator extends Component
+  class Paginator extends PBComponent
     default-locals =
       active-page: 1
       step: 8
@@ -82,7 +81,6 @@ module.exports =
           * @pnum-to-href
 
         @state.pages = @@$R(calc-pages).bind-to ...bindings
-    template: templates.Paginator
     on-attach: ->
       @$.show!
       # attach optional click handlers

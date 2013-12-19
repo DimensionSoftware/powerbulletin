@@ -3,7 +3,7 @@ require, exports, module <- define
 
 require! {
   lodash
-  Component: yacomponent
+  \./PBComponent
   \./ParallaxButton
   \./Auth
   sh: \../shared/shared-helpers
@@ -12,15 +12,13 @@ require! {
 
 {show-tooltip} = require \../client/client-helpers if window?
 {each} = require \prelude-ls
-{templates} = require \../build/component-jade
 
 debounce = lodash.debounce _, 250ms
 
 module.exports =
-  class SiteRegister extends Component
+  class SiteRegister extends PBComponent
     @last-subdomain = ''
 
-    template: templates.SiteRegister
     init: ->
       # mandatory state
       @local \hostname, if env is \production then \.powerbulletin.com else \.pb.com

@@ -3,7 +3,7 @@ require, exports, module <- define
 
 require! {
   lodash
-  Component: yacomponent
+  \./PBComponent
   \./Auth
   \./SiteRegister
   \./MiniSiteList
@@ -11,13 +11,11 @@ require! {
   sh: \../shared/shared-helpers
 }
 {storage, show-tooltip} = require \../client/client-helpers
-{templates}    = require \../build/component-jade
 
 debounce = lodash.debounce _, 250ms
 
 module.exports =
-  class Sales extends Component
-    template: templates.Sales
+  class Sales extends PBComponent
     init: ->
       # mandatory state
       @local \subdomain ''  # make sure reactive variable exists

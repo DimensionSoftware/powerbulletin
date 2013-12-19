@@ -1,24 +1,26 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! {
-  Component: yacomponent
-}
-{templates}    = require \../build/component-jade
+require! \./PBComponent
 {show-tooltip} = require \../client/client-helpers
 
 module.exports =
-  class ChatPanel extends Component
-    template: templates.ChatPanel
+  class ChatPanel extends PBComponent
 
     # management of all chats
     @chats = {}
 
-    @find = (c-id) ->
-      if @chats[c-id]
-        @chats[cid]
+    @add-message = (message) ->
+      id = message.coversation_id
+      icon = "#cache-url/images/profile.jpg" # TODO - where's a good place to get this info from?
+      chat-panel = if @chats[id]
+        @chats[id]
       else
-        @chats[cid] = new ChatPanel
+        panels = window.component.panels
+        @chats[id] = new ChatPanel locals: { id, icon, width: 300px, css: { background: '#fff', opacity: 0.85 }, p: panels }
+        panels.add id, @chats[id]
+        @chats[id]
+      chat-panel.add-new-message message
 
     init: ->
       @p = @local \p
@@ -29,6 +31,9 @@ module.exports =
     on-attach: ->
       @$.attr id: @local \id
       @$.css @css
+
+    add-new-message: (message) ->
+      @$.append "<li>#{message.body}</li>" # TODO - do this right
 
     show: ->
       hi = $(window).height!

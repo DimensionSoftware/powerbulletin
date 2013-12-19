@@ -65,8 +65,7 @@ require! {
   site    = res.vars.site
   site-id = site.id
   tasks =
-    menu:   db.menu site-id, _
-    forums: db.site-summary site-id, 6threads, (req.query?order or \recent), _
+    menu: db.menu site-id, _
 
   err, async-locals <- async.auto tasks
   if err then return next err

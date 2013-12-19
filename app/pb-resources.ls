@@ -134,7 +134,7 @@ is-locked-forum = (m, forum-id) ->
       if err then return res.json success: false, hint: \db.site-update
 
       ban-all-domains site.id # varnish ban
-      announce.emit \menu-update, site.config.menu
+      announce.in(site.id).emit \menu-update, site.config.menu
       res.json success:true, id: dbid
 
     # delete a menu
@@ -158,7 +158,7 @@ is-locked-forum = (m, forum-id) ->
       if err then return res.json success: false, hint: \db-site-update, err: err, errors: [ "Item could not be deleted." ]
 
       ban-all-domains site.id # varnish ban
-      announce.emit \menu-update, site.config.menu
+      announce.in(site.id).emit \menu-update, site.config.menu
       res.json success: true
 
     # resort a menu
@@ -176,7 +176,7 @@ is-locked-forum = (m, forum-id) ->
       if err then return res.json success: false, hint: \menu-resort
 
       ban-all-domains site.id # varnish ban
-      announce.emit \menu-update, site.config.menu
+      announce.in(site.id).emit \menu-update, site.config.menu
       res.json success:true
 
     | \domains =>
@@ -310,12 +310,12 @@ is-locked-forum = (m, forum-id) ->
     unless post.parent_id
       err, new-post <- db.post site.id, post.id
       if err then return next err
-      announce.emit \thread-create new-post
+      announce.in(site.id).emit \thread-create new-post
     else
       err, new-post <- db.post site.id, post.id
       if err then return next err
       new-post.posts = []
-      announce.emit \post-create new-post
+      announce.in(site.id).emit \post-create new-post
 
     res.json ap-res
   show    : (req, res, next) ->
@@ -332,12 +332,17 @@ is-locked-forum = (m, forum-id) ->
     # is_owner req?user
     err, owns-post <- db.owns-post req.body.id, req.user?id
     if err then return next err
-    return next 404 unless owns-post?length
+    return next 404 unless owns-post?length and owns-post.0.forum_id
     # TODO secure & csrf
     # save post
-    req.body.user_id = req.user.id
-    req.body.html = h.html req.body.body
-    post = req.body
+    op = owns-post.0
+    post           = req.body
+    post.user_id   = req.user.id
+    post.forum_id  = op.forum_id
+    post.parent_id = op.parent_id
+    post.title     = op.title             # FIXME - allows saving of top post, but post.html on next line is still corrupted
+    post.html      = h.html req.body.body # FIXME - for top posts, the title and body are mixed together into one string which is wrong.
+    console.log \post, post
     err, r <- db.edit-post(req.user, post)
     if err then return next err
 

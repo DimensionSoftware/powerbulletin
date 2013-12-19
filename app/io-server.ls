@@ -40,6 +40,11 @@ site-by-domain = (domain, cb) ->
   else
     db.site-by-domain domain, cb
 
+# This is intended to be run on startup to clear stale data out of redis.
+# TODO - make this less heavy handed
+clear-stale-redis-data = (r, cb) ->
+  r.flushall cb
+
 @init = (server) ->
   err <- pg.init
   if err then throw err
@@ -65,6 +70,8 @@ site-by-domain = (domain, cb) ->
   redis-client = redis.create-client!
   redis-store  = new RedisStore({ redis, redis-pub, redis-sub, redis-client })
   io.set \store, redis-store
+
+  err <- clear-stale-redis-data redis-client
 
   io.set \authorization, (handshake, accept) ->
     if not handshake or handshake?domain
@@ -152,6 +159,14 @@ site-by-domain = (domain, cb) ->
         log "#{user.name}'s cids", cids
         if cids.length is 0
           io.sockets.in(site-room).emit \leave-site, user
+
+    socket.on \ping, (data, cb) ->
+      if user and site
+        err <- db.aliases.update-last-activity-for-user user
+        if err then return log \db.aliases.update-last-activity-for-user, err
+      io.sockets.in(site-room).emit \enter-site, { user.id }
+      if cb
+        cb null, \pong
 
     socket.on \online-now, ->
       err, users <- presence.in "#{site.id}"
