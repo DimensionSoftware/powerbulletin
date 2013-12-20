@@ -144,6 +144,7 @@ html.forum, html.profile, html.search, html.moderation
   #left_chrome
     display none
   .main-content
+    overflow hidden
     .forum, .search
       position relative
       clear both
@@ -1086,6 +1087,11 @@ html.moderation
     left 0!important
 
 // <mutant layout defaults> {{{
+// so social embedded iframes don't affect our dom
+iframe[id^="oauth2relay"]
+  position fixed!important
+  width 0!important
+  height 0!important
 .bottom
   clear both
   margin-bottom (grid*7)
