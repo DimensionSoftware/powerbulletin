@@ -284,9 +284,11 @@ require! {
   if not data.id
     cb new Error("no id in data")
 
+  query = { data.id }
+
   switch type
-  | \page          => db.pages.delete data, cb
-  | \forum         => db.forums.delete data, cb
+  | \page          => db.pages.delete query, cb
+  | \forum         => db.forums.delete query, cb
   | \link          => cb null, []
   | \placeholder   => cb null, []
   | otherwise      => cb null, []
