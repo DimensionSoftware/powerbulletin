@@ -320,12 +320,12 @@ if mocha? and window.location.search.match /test=1/
 $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
   $p = $ \div.profile:first
   t  =
-    id     : $p.data \user-id
-    name   : $p.data \user-name
+    id   : $p.data \user-id
+    name : $p.data \user-name
   icon = $p.find \img .attr \src
   panels = window.component.panels
 
-  err, c <- socket.emit \chat-between, [user.id, $p.data \user-id]
+  err, c <- socket.emit \chat-between, [user.id, t.id]
   if err then return
 
   id = "chat-#{c.id}"
