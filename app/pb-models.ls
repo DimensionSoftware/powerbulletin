@@ -639,7 +639,7 @@ export-model = ([t, cs]) ->
       update-one : (deserialized-fn (serialized-fn (update1-fn t), (serializers cs)), (deserializers cs))
       update     : (deserialized-fn (serialized-fn (updatex-fn t), (serializers cs)), (deserializers cs))
       upsert     : (deserialized-fn (serialized-fn (upsert-fn t), (serializers cs)), (deserializers cs))
-      delete     : (serialized-fn (upsert-fn t), (serializers cs))
+      delete     : (serialized-fn (delete-fn t), (serializers cs))
     }
   else
     #console.error \no-model, t
