@@ -126,7 +126,7 @@ seconds-to-human-readable = (secs) ->
   $t[fn] $b
   w.jade.render $b.0, tmpl, params
   $b.show!add-class \fadein
-  set-timeout (-> cb $b), 100ms # XXX race condition
+  if cb then cb $b
 @render-and-append  = @render-and \append
 @render-and-prepend = @render-and \prepend
 
