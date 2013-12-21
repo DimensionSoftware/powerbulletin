@@ -194,7 +194,7 @@ module.exports =
         # TODO - make sure current-restore has the right data to restore; when adding a new item, it often does not.
         $ \#warning .remove-class \hover # hide tooltip
         # TODO - create slug out of title
-        @$.find \fieldset .add-class \has-dialog .find \input:visible .focus!
+        @$.find \fieldset .add-class \has-dialog .find \input:visible:first .focus!
 
       @$.on \keyup, 'input.active', @store-title
       @$.on \keypress, \form, -> # disable form submit on enter press
@@ -242,7 +242,7 @@ module.exports =
               ..toggle-class \mjs-nestedSortable-expanded
 
         e.find \input .data default-data
-        e.find \input .focus!
+        e.find \input:first .focus!
         false
 
       # save menu
