@@ -264,12 +264,14 @@ load-css = (href) ->
   false
 
 timers = {}
-@show-tooltip = ($tooltip, msg, duration=4500ms) ~>
-  unless msg?length then $tooltip.remove-class \hover; return # hide & guard
-  timer = timers[msg]
-  if timer then clear-timeout timer
-  if $tooltip?length then $tooltip.html msg .add-class \hover # show
-  timers[msg] = set-timeout (-> timers[msg]=void; $tooltip.remove-class \hover), duration # remove
+@show-tooltip = ($tt, msg, duration=4500ms) ~>
+  key = $tt.attr \id # keyed to tooltip id
+  if $tt?length
+    unless msg?length then $tt.remove-class \hover; return # hide & guard
+    timer = timers[key]
+    if timer then clear-timeout timer
+    $tt.html msg .add-class \hover # show
+    timers[key] = set-timeout (-> timers[key]=void; $tt.remove-class \hover), duration # remove
 
 @switch-and-focus = (remove, add, focus-on) ~>
   $e = $ \.fancybox-wrap
