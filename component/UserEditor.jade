@@ -14,13 +14,13 @@ form
   fieldset
     legend Settings
     .box
-      input#UserEditor-verified(name='verified', type='checkbox', checked=user.verified)
+      input#UserEditor-verified.stylish(name='verified', type='checkbox', checked=user.verified)
       label.switch-control(for='UserEditor-verified')
         .switch
       span.label.checked Verified
       .note Toggle user verified status
     .box
-      input#UserEditor-disabled(name='disabled', type='checkbox', checked=user.disabled)
+      input#UserEditor-disabled.stylish(name='disabled', type='checkbox', checked=user.disabled)
       label.switch-control(for='UserEditor-disabled')
         .switch
       span.label.checked Disabled
@@ -28,13 +28,13 @@ form
   fieldset
     legend Rights
     .box
-      input#UserEditor-site_admin(name='site_admin', type='checkbox', checked=user.site_admin)
+      input#UserEditor-site_admin.stylish(name='site_admin', type='checkbox', checked=user.site_admin)
       label.switch-control(for='UserEditor-site_admin')
         .switch
       span.label.checked Site Admin
       .note Toggle user as a site-wide administrator
     .box
-      input#UserEditor-sys_admin(name='sys_admin', type='checkbox', checked=user.sys_admin)
+      input#UserEditor-sys_admin.stylish(name='sys_admin', type='checkbox', checked=user.sys_admin)
       label.switch-control(for='UserEditor-sys_admin')
         .switch
       span.label.checked System Admin

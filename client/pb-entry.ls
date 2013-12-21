@@ -341,7 +341,7 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
 )
 #}}}
 #{{{ - admin
-$d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin [type="checkbox"]' (ev) ->
+$d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save[type="checkbox"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form
     t = $ \#warning

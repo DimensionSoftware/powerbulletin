@@ -24,19 +24,22 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             input#forum_slug(type='text', name='forumSlug', placeholder='/path/to/forum')
             .note URL suffix for this page
             .break
+            label(for='posts_per_page') Posts per Page
+            input(id='posts_per_page', placeholder='30', class='posts-per-page', name='postsPerPage', type='text', value='30', maxlength=4)
+            .break
             //- XXX html5-uploader works inside parent <form>
             #uploader_component
             .break
             label(for='locked') Admin Only
             .box
-              input#locked(type='checkbox', value='checked', name='locked')
+              input.stylish#locked(type='checkbox', value='checked', name='locked')
               label.switch-control(for='locked')
                 .switch
             .note Lock entire forum (read-only except admin)
             .break
             label(for='comments') Comments
             .box
-              input#comments(type='checkbox', value='checked', name='comments')
+              input.stylish#comments(type='checkbox', value='checked', name='comments')
               label.switch-control(for='comments')
                 .switch
             .note Commentable forums are threaded like Reddit
@@ -52,7 +55,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .break
             label Content Only
             .box
-              input#content_only(type='checkbox', value='checked', name='contentOnly')
+              input.stylish#content_only(type='checkbox', value='checked', name='contentOnly')
               label.switch-control(for='content_only')
                 .switch
             .note Hide the header, side-bar &amp; footer for this page
@@ -71,7 +74,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .break
             label(for='separate_tab') Separate Tab
             .box
-              input#separate_tab(type='checkbox', value='checked', name='separateTab')
+              input.stylish#separate_tab(type='checkbox', value='checked', name='separateTab')
               label.switch-control(for='separate_tab')
                 .switch
             .note Open link in separate window

@@ -65,20 +65,20 @@ textarea:focus, select:focus
   letter-spacing 0
 //}}}
 //{{{ Checkboxes (switch)
-input[type="checkbox"]
+input.stylish[type="checkbox"]
   display none
-input[type="checkbox"]:checked ~ label .switch
+input.stylish[type="checkbox"]:checked ~ label .switch
   margin-left 20px
   padding 5px
   box-shadow -1px 1px 1px 0 #777
-input[type="checkbox"]:checked ~ label
+input.stylish[type="checkbox"]:checked ~ label
   background-color light
   transition background-color .4s ease-out
 // these are placeholders for switch state text, eg: "On" "Off"
-input[type="checkbox"]:checked + label::after
+input.stylish[type="checkbox"]:checked + label::after
   color #444
   font-weight 400
-input[type="checkbox"] + label::after
+input.stylish[type="checkbox"] + label::after
   position absolute
   top 14px
   left 60px
