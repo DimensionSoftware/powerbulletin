@@ -13,8 +13,8 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
       a.mutant(href='/admin/invites') Invites
     .break
     input.collapse(id='seo', type='checkbox')
-    label(for='seo')
-      legend SEO Options
+    label(for='seo', title='Click to Hold Open')
+      h4 SEO Options
       .dialog
         label(for='social') Social
         .box
@@ -37,9 +37,11 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
         label(for='analytics') Analytics
         textarea.save(id='analytics', name='analytics')= analytics
         .note Paste Javascript code above, excluding &lt;script&gt; tags
-    input.collapse(id='style', type='checkbox')
-    label(for='style')
-      legend Look &amp; Feel
+        .break
+    div
+    input.collapse(id='lookandfeel', type='checkbox')
+    label(for='lookandfeel', title='Click to Hold Open')
+      h4 Look &amp; Feel
       .dialog
         //-label(for='theme') Base Theme
         //-select(id='theme', name='theme')
@@ -53,6 +55,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
           | or 
           a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
           | code in above
+        .break
   button(type='submit', value='Save') Save
   input(type='hidden', name='action', value='general')
 a.menu-link.mutant(href='/admin/menu') Continue to Menu &rarr;

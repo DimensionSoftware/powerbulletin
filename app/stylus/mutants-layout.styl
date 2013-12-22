@@ -754,6 +754,7 @@ html.admin
         overflow hidden
         color #444
         cursor pointer
+        max-width 150px
         display block
         z-index 10
         &:hover
@@ -761,18 +762,16 @@ html.admin
           max-height 600px
           .dialog
             max-height 600px
-            padding 6px 12px
             transition max-height .2s ease-out .3s, padding .1s ease-out .3s
         .dialog
           max-height 0
-          background-color #eee
-          border 1px solid #ddd
           border-radius 5px
           min-width 175px
           transition max-height .1s ease-out .2s
         a
           display block
-          font-size .9em
+          font-size .8em
+          padding-botom 2px
       menu
         float right
         list-style none
@@ -874,8 +873,11 @@ html.admin
         clear both
       .break.double
         padding-top (grid*2.5)
-      fieldset.collapse
+      .collapse
+        display none
+      .collapse ~ label
         display block
+        min-width 550px
         cursor pointer
         position relative
         margin-top grid
@@ -883,8 +885,9 @@ html.admin
         margin-left -10px
         border-bottom 1px solid #eee
         background-color #fafafa
-        overflow hidden
-        legend
+        //overflow hidden
+        h4
+          padding-top 15px
           top 0
           left 0
           margin -10px
@@ -895,20 +898,27 @@ html.admin
           width 100%
         .dialog
           max-height 0
-          padding-right 5px
-          margin-top 20px
+          padding 20px 35px 5px 35px
           overflow hidden
-          transition all 0 ease-out .5s
-        &:hover, &.hover
-          border-bottom 1px solid #ddd
-          background-color #f8f8f8
-          legend
-            color #555!important
-          .dialog
-            margin-top 35px
-            max-height 500px
-            padding-bottom (grid*1.5)
-            transition all .2s ease-out .5s
+          transition all 0 ease-out .3s
+          .note
+            overflow hidden
+            opacity 0
+            max-height 0
+      .collapse:checked ~ label, .collapse ~ label:hover
+        border-bottom 1px solid #ddd
+        legend
+          color #555!important
+        .dialog
+          max-height 500px
+          padding-bottom (grid*1.5)
+          transition all .2s ease-out 1s
+          .note
+            max-height 100%
+            opacity 1
+            transition all .3s ease-out 1s
+      .collapse:checked ~ label
+        background-color #f6f6f6
       fieldset
         padding grid (grid*3) grid (grid*4)
         border 0
