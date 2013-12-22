@@ -159,7 +159,7 @@ module.exports =
               $container.remove!
               $cursor.focus!
             else # handle error
-              show-tooltip ($ \#warning), data.errors.join "\n"
+              show-tooltip ($ \#warning), data?errors?join \<br>
           .fail (jqxhr, status, err) ~>
             console?warn status, err
 
