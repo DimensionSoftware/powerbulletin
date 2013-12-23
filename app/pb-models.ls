@@ -439,9 +439,11 @@ query-dictionary =
 
     toggle-locked: (id, cb) ->
       sql = '''
-      UPDATE posts SET is_locked = (NOT is_sticky) WHERE id = $1 RETURNING *
+      UPDATE posts SET is_locked = (NOT is_locked) WHERE id = $1 RETURNING *
       '''
-      postgres.query sql, [id], cb
+      postgres.query sql, [id], (err, r) ->
+        if err then return cb err
+        cb err, r.0
 
   products: {}
 
