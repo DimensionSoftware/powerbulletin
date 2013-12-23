@@ -47,6 +47,9 @@ window <<< {ck-submit-form}
 require! \../component/Buy
 require! \../component/Paginator
 
+# reactive vars
+window.r-user = $R.state window.user
+
 # XXX client-side entry
 # shortcuts
 $w = $ window
@@ -109,6 +112,25 @@ censor = (ev) ->
   post-id = $p.data \post-id
   $.post "/resources/posts/#post-id/censor", (r) ->
     if r?success then $p.add-class \censored
+
+# thread stickiness admin
+sticky = (ev) ->
+  $t = $ ev.target .parents \.post:first
+  thread-id = $t.data \id
+  $.post "/resources/posts/#thread-id/sticky", (r) ->
+    if r?success
+      if r.sticky
+        $t.add-class \sticky
+      else
+        $t.remove-class \sticky
+
+window.r-show-thread-admin-ui = $R((user) ->
+  if user and (user.sys_rights?super or user.rights?super)
+    $ \ul.threads .add-class \admin
+  else
+    $ \ul.threads .remove-class \admin
+).bind-to(window.r-user)
+window.r-user window.user if window.r-user  # after-user has already happened so force it to run once
 #}}}
 
 #.
@@ -264,7 +286,7 @@ submit = Auth.require-login(
 # editing & posting
 # - ckeditor
 ck-submit = Auth.require-login((ev) ->
-  ck-submit-form({element:{$:{id:\editor}}}, (data) -> post-success ev, data); false)
+  ck-submit-form({ element:{$:{id:\editor}} }, (data) -> post-success ev, data); false)
 # - standard form
 post-submit = Auth.require-login((ev) -> submit-form(ev, (data) -> post-success ev, data); false)
 
@@ -287,6 +309,7 @@ $d.on \click 'html header .menu a.title' mutate
 $d.on \click 'header .onclick-close' (e) ->
   $ \#query .val('').focus!
   History.back!
+#}}}
 #{{{ - left_nav handle
 $d.on \click \#handle ->
   s  = storage.get k-ui
@@ -298,8 +321,7 @@ $d.on \click \#handle ->
   save-ui!
   set-wide!
 #}}}
-
-# {{{ Mocha testing harness
+# {{{ - Mocha testing harness
 if mocha? and window.location.search.match /test=1/
   cleanup-output = ->
     $('body > *:not(#mocha)').remove!
@@ -314,7 +336,6 @@ if mocha? and window.location.search.match /test=1/
     run = ->
       mocha.run cleanup-output
     set-timeout run, 2000ms # gotta give time for tests to load
-#}}}
 #}}}
 #{{{ - chat
 $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
