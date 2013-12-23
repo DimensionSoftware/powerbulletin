@@ -443,6 +443,20 @@ function profile-paths user, uploaded-file, base=\avatar
   if r?success then c.invalidate-post req.params.id, req.user.name # blow cache!
   res.json r
 
+@sticky = (req, res, next) ->
+  return next 404 unless req.user
+  return next 403 unless req.user.sys_rights?super or req.user.rights?super
+  thread-id = req.params.id
+
+  err, r <- db.posts.toggle-sticky thread-id
+  if err then return next err
+
+  new-sticky-state =
+    success : true
+    sticky  : !!r.is_sticky
+
+  res.json new-sticky-state
+
 @sub-posts = (req, res, next) ->
   post-id = parse-int(req.params.id) || null
   if post-id is null then return next(404)

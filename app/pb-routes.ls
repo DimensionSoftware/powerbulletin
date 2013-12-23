@@ -37,6 +37,7 @@ app.resource \resources/threads,            resources.threads
 app.get  \/resources/posts/:id/sub-posts,   handlers.sub-posts
 app.post \/resources/posts/:id/impression,  handlers.add-impression
 app.post \/resources/posts/:id/censor,      handlers.censor
+app.post \/resources/posts/:id/sticky,      handlers.sticky
 app.post \/resources/users/:id/avatar,      handlers.profile-avatar
 app.post   \/resources/forums/:id/background, handlers.forum-background
 app.delete \/resources/forums/:id/background, handlers.forum-background-delete

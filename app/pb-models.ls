@@ -433,7 +433,9 @@ query-dictionary =
       sql = '''
       UPDATE posts SET is_sticky = (NOT is_sticky) WHERE id = $1 RETURNING *
       '''
-      postgres.query sql, [id], cb
+      postgres.query sql, [id], (err, r) ->
+        if err then return cb err
+        cb err, r.0
 
     toggle-locked: (id, cb) ->
       sql = '''
