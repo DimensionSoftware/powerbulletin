@@ -141,8 +141,23 @@ html.forum, html.profile, html.search, html.moderation
               font-weight 100
               font-size .9em
               margin 0 grid 0 (grid/2)
+        .sticky-toggle
+          display none
       .pad
         height grid*8
+    .threads.admin
+      .thread
+        .sticky-toggle
+          position absolute
+          display block
+          top 8px
+          left 16px
+          cursor pointer
+          &::after
+            content "☐"
+      .thread.sticky
+        .sticky-toggle::after
+          content: "☑"
   #left_chrome
     display none
   .main-content
