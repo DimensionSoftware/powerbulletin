@@ -328,11 +328,11 @@ is-locked-forum = (m, forum-id) ->
     else
       return next 404
   update  : (req, res, next) ->
-    if not req?user?rights?super then return next 404 # guard
+    # if not req?user?rights?super then return next 404 # guard
     # is_owner req?user
     err, owns-post <- db.owns-post req.body.id, req.user?id
     if err then return next err
-    return next 404 unless owns-post?length and owns-post.0.forum_id
+    return next 403 unless (req?user?rights?super) or (owns-post?length and owns-post.0.forum_id)
     # TODO secure & csrf
     # save post
     op = owns-post.0
@@ -349,6 +349,7 @@ is-locked-forum = (m, forum-id) ->
     if r.success
       # blow cache !
       c.invalidate-post post.id, req.user.name
+      # TODO broadcast post update
 
     res.json r
   destroy : (req, res, next) ->
