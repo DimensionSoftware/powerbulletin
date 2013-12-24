@@ -151,13 +151,24 @@ html.forum, html.profile, html.search, html.moderation
           position absolute
           display block
           top 8px
-          left 16px
+          left 22px
+          cursor pointer
+          &::after
+            content "☐"
+        .locked-toggle
+          position absolute
+          display block
+          top 8px
+          left 6px
           cursor pointer
           &::after
             content "☐"
       .thread.sticky
         .sticky-toggle::after
-          content: "☑"
+          content "☑"
+      .thread.locked
+        .locked-toggle::after
+          content "✖" // ☒
   #left_chrome
     display none
   .main-content
