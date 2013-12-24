@@ -106,6 +106,44 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       err, r <- db.site-update site # save!
       if err then return next err
 
+      # save domains
+      err, domain <- db.domain-by-id req.body.domain
+      if err then return next err
+
+      # does site own domain?
+      err, domains <- db.domains-by-site-id domain.site_id
+      if err then return next err
+      unless find (.site_id is domain.site_id) domains then return next 404
+
+      # extract specific keys
+      auths = [
+        \facebookClientId
+        \facebookClientSecret
+        \twitterConsumerKey
+        \twitterConsumerSecret
+        \googleConsumerKey
+        \googleConsumerSecret]
+      domain.config <<< { [k, v] for k, v of req.body when k in auths}
+
+      # save domain config
+      const suffix = \Secret
+      domain.config.style = auths
+        |> filter (-> it.index-of(suffix) isnt -1 and req.body[it])                # only auths with values
+        |> map (-> ".has-#{take-while (-> it in [\a to \z]), it}{display:inline}") # make css selectors
+        |> join ''
+      if domain.config.style.length then domain.config.style += '.has-auth{display:block}'
+      err, r <- db.domain-update domain # save!
+      if err then return next err
+
+      # delete existing passport for domain so new one can be created
+      delete auth.passports[domain.name]
+
+      # save css to disk
+      css-dir = "#base-css/#{domain.site_id}"
+      err <- mkdirp css-dir
+      if err then return next err
+      err <- fs.write-file "#css-dir/#{domain.id}.auth.css" domain.config.style
+
       # varnish ban
       ban-all-domains site.id if should-ban
       res.json success:true
@@ -186,47 +224,6 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       announce.in(site.id).emit \menu-update, site.config.menu
       res.json success:true
 
-    | \domains =>
-      # find domain
-      err, domain <- db.domain-by-id req.body.domain
-      if err then return next err
-
-      # does site own domain?
-      err, domains <- db.domains-by-site-id domain.site_id
-      if err then return next err
-      unless find (.site_id is domain.site_id) domains then return next 404
-
-      # extract specific keys
-      auths = [
-        \facebookClientId
-        \facebookClientSecret
-        \twitterConsumerKey
-        \twitterConsumerSecret
-        \googleConsumerKey
-        \googleConsumerSecret]
-      domain.config <<< { [k, v] for k, v of req.body when k in auths}
-
-      # save domain config
-      const suffix = \Secret
-      domain.config.style = auths
-        |> filter (-> it.index-of(suffix) isnt -1 and req.body[it])                # only auths with values
-        |> map (-> ".has-#{take-while (-> it in [\a to \z]), it}{display:inline}") # make css selectors
-        |> join ''
-      if domain.config.style.length then domain.config.style += '.has-auth{display:block}'
-      err, r <- db.domain-update domain # save!
-      if err then return next err
-
-      # delete existing passport for domain so new one can be created
-      delete auth.passports[domain.name]
-
-      # save css to disk
-      css-dir = "#base-css/#{domain.site_id}"
-      err <- mkdirp css-dir
-      if err then return next err
-      err <- fs.write-file "#css-dir/#{domain.id}.auth.css" domain.config.style
-
-      res.json success:true
-
 @users =
   create : (req, res, next) ->
     user   = req.user
@@ -284,7 +281,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
 
     err, new-alias <- db.aliases.update alias
     if err
-      res.json success: false, errors: [ "Could not sove user." ]
+      res.json success: false, errors: [ 'Unable to save User' ]
     else
       res.json success: true, alias: new-alias
 

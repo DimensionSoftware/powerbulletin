@@ -824,12 +824,14 @@ html.admin
     padding-left 200px
     padding-bottom 50px
     background-color #fdfdfd
+    label .note
+      left 179px
     .note
       color #aaa
       font-size .75em
       position absolute
       margin-top -4px
-      left 183px
+      left 153px
       a
         margin 0 6px
     .menus
@@ -926,33 +928,47 @@ html.admin
           max-height 0
           padding 20px 35px 5px 35px
           overflow hidden
-          transition all 0 ease-out .3s
-      .collapse:checked ~ label, .collapse ~ label:hover
-        border-bottom 1px solid #ddd
+          font-size .8em
+          transition max-height 0 ease-out .3s
+      // this label toggles the .dialog
+      .collapse + label:hover
+        border-bottom 1px solid #dfdfdf
+        border-left 1px solid #eee
+      // for expansion
+      .collapse:checked + label
+        border-top 1px solid #eee
+        border-left 1px solid #dfdfdf
+        background-color #f9f9f9
+        h4
+          color #333!important
         legend
           color #555!important
         .dialog
           max-height 500px
           padding-bottom (grid*1.5)
-          transition all .2s ease-out 1s
-      .collapse:checked ~ label
-        background-color #f9f9f9
+          transition all .2s ease-out
       fieldset
-        padding grid (grid*3) grid (grid*4)
+        //padding grid (grid*3) grid (grid*4)
         border 0
         margin -(grid*2) (grid*2) (grid*3) 0
         display inline-block
         position relative
+        img
+          display block
         select
           padding 5px
         legend
-          margin -20px
-          padding 20px
+          //margin -20px
+          //padding 20px
           font-weight 100
           font-size 1.4em
           position absolute
-          top -35px
-          left (grid*4)
+          //top -35px
+          //left (grid*4)
+          top 10px
+          left 55px
+        input
+          width 250px
         textarea
           width 305px
           height 100px
@@ -975,7 +991,7 @@ html.admin
         label
           width 60px
     .menu-link
-     margin 20px 85px
+     margin 0 95px
      display block
      color dark
      font-size .9em

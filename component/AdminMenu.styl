@@ -142,6 +142,10 @@
       .type, .dialog
         position absolute
         left 0
+      .type
+        font-weight bold
+        letter-spacing -1px
+        margin-left -50px
       .options
         list-style none
         margin 0
@@ -149,8 +153,7 @@
         li:first-child .header
           margin-left 105px
         input[type='radio'] + label.header
-          font-weight 400
-          font-weight 600
+          font-weight 300
           font-size 1.1em
         li
           float left
@@ -165,6 +168,7 @@
         li, input[type='radio'] + label
           font-weight 400
           display inline-block
+          transition color .1s ease-out .1s
         li > div, input[type='radio']
           position absolute
           left 0
