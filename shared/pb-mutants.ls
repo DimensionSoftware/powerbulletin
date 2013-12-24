@@ -331,6 +331,7 @@ layout-on-personalize = (w, u) ->
       window.socket?emit \online-now
       next!
   on-personalize: (w, u, next) ->
+    w.r-user u
     if u
       layout-on-personalize w, u
       # enable edit actions

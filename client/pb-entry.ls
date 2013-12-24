@@ -120,7 +120,6 @@ window.r-show-thread-admin-ui = $R((user) ->
   else
     $ \ul.threads .remove-class \admin
 ).bind-to(window.r-user)
-window.r-user window.user if window.r-user  # after-user has already happened so force it to run once
 #}}}
 
 #.
