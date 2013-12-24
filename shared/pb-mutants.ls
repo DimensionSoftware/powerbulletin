@@ -352,6 +352,7 @@ layout-on-personalize = (w, u) ->
       try w.$ \#left_container .resizable(\destroy)
       unless next-mutant is \forum
         w.$ \#forum_background .remove!
+        w.$ \#forum_background_color .remove!
         w.$ \#forum_background_buffer .remove!
         reset-paginator w
       next!
