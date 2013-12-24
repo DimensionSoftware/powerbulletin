@@ -19,16 +19,18 @@ module.exports =
       tolerance-element: '> div'
       placeholder: \placeholder
       is-tree: true
+      start-collapsed: true
       tab-size: 25
-      revert: 200
+      revert: 100
       expand-on-hover: 800ms
       opacity: 0.8
       force-placeholder-size: true
       is-allowed: (item, parent) ->
-      #  # only move items with a type
-      #  unless (item.find \.row .data \form)?dialog
-      #    show-tooltip ($ \#warning), 'Select a Type First!'
-      #    return false
+        # only move items with a type
+        unless (item.find \.row .data \form)?dialog
+          show-tooltip ($ \#warning), 'Select a Type First!'
+          item.find \input .add-class \has-error
+          return false
         true
 
     current:  null # active "selected" menu item
@@ -67,6 +69,7 @@ module.exports =
                   v
         data.background = (html-form.find \.background).data \src
         e # store
+          ..remove-class \has-error
           ..data \id,    e.data!id.replace /list_/ ''
           ..data \form,  data
           ..data \title, e.val!
@@ -101,7 +104,7 @@ module.exports =
                 @current-store!
               on-success: (xhr, file, r-json) ~>
                 @current-store!}, \#uploader_component
-
+          # set input values
           html-form.find 'input,textarea' |> each (input) ->
             $i = @$ input
             n = $i?attr \name
@@ -242,7 +245,7 @@ module.exports =
               ..toggle-class \mjs-nestedSortable-expanded
 
         e.find \input .data default-data
-        e.find \input:first .focus!
+        e.find \input:first .focus!0.scroll-into-view!
         false
 
       # save menu
@@ -257,8 +260,8 @@ module.exports =
           .attr \type, \hidden
           .attr \name, \menu
           .val JSON.stringify menu)
-        submit-form ev, (data) ~>
-          data-form = @current.data \form   # FIXME - Even though I try to set a new dbid, it gets blasted away somewhere.
+        submit-form ev, (data) ~> # save to server
+          data-form = @current.data \form # FIXME - Even though I try to set a new dbid, it gets blasted away somewhere.
           data-form.dbid = data.id
           @$.find 'input[name=dbid]' .val data.id
           @current.data \form, data-form
