@@ -457,6 +457,20 @@ function profile-paths user, uploaded-file, base=\avatar
 
   res.json new-sticky-state
 
+@locked = (req, res, next) ->
+  return next 404 unless req.user
+  return next 403 unless req.user.sys_rights?super or req.user.rights?super
+  thread-id = req.params.id
+
+  err, r <- db.posts.toggle-locked thread-id
+  if err then return next err
+
+  new-locked-state =
+    success : true
+    locked  : !!r.is_locked
+
+  res.json new-locked-state
+
 @sub-posts = (req, res, next) ->
   post-id = parse-int(req.params.id) || null
   if post-id is null then return next(404)

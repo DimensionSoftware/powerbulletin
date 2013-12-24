@@ -113,7 +113,7 @@ censor = (ev) ->
   $.post "/resources/posts/#post-id/censor", (r) ->
     if r?success then $p.add-class \censored
 
-# thread stickiness admin ui
+# left nav thread admin ui
 window.r-show-thread-admin-ui = $R((user) ->
   if user and (user.sys_rights?super or user.rights?super)
     $ \ul.threads .add-class \admin
@@ -320,6 +320,17 @@ $d.on \click '.thread .sticky-toggle' (ev) ->
         $t.add-class \sticky
       else
         $t.remove-class \sticky
+
+# thread locked toggle
+$d.on \click '.thread .locked-toggle' (ev) ->
+  $t = $(this).parents \.thread
+  thread-id = $t.data \id
+  $.post "/resources/posts/#thread-id/locked", (r) ->
+    if r?success
+      if r.locked
+        $t.add-class \locked
+      else
+        $t.remove-class \locked
 #}}}
 # {{{ - Mocha testing harness
 if mocha? and window.location.search.match /test=1/

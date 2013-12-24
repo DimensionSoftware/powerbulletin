@@ -445,6 +445,15 @@ query-dictionary =
         if err then return cb err
         cb err, r.0
 
+    # given a post-id, find the thread it belongs to and return whether the thread is locked or not
+    is-thread-locked: (post-id, cb) ->
+      sql = '''
+      SELECT id, is_locked FROM posts WHERE id IN (SELECT thread_id FROM posts WHERE id=$1)
+      '''
+      postgres.query sql, [post-id], (err, r) ->
+        if err then return cb err
+        cb err, r.0
+
   products: {}
 
   forums:

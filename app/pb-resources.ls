@@ -28,6 +28,13 @@ ban-all-domains = (site-id) ->
 is-locked-forum = (m, forum-id) ->
   menu.flatten(m) |> find (-> f = it.form; f.dialog is \forum and f.dbid is forum-id and f.locked)
 
+# cb(null, true) if current thread is locked
+is-locked-thread-by-parent-id = (parent-id, cb) ->
+  return cb(null, false) if not parent-id
+  err, r <- db.posts.is-thread-locked parent-id
+  if err then return cb err
+  cb null, r.is_locked
+
 @aliases =
   update: (req, res, next) ->
     site_id = req.user?site_id # only allow updating on auth'd site
@@ -296,6 +303,11 @@ is-locked-forum = (m, forum-id) ->
 
     if is-locked-forum(site.config.menu, parse-int(post.forum_id)) and (not req.user.rights?super)
       return res.json success: false, errors: [ "The forum is locked." ]
+
+    err, is-locked-thread <- is-locked-thread-by-parent-id post.parent_id
+    if err then return next err
+    if is-locked-thread and not (req.user?rights?super or req?user?sys_rights?super)
+      return res.json success: false, errors: [ "This thread is locked." ]
 
     err, ap-res <- db.add-post post
     if err then return next err
