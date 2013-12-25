@@ -64,15 +64,16 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
         .dialog
           .break
           .domain
-            label(for='domain') Select a Domain
             select(id='domain', name='domain')
+              option(disabled='disabled') - Select a Domain -
               each d in site.domains
                 option(value=d.id)= d.name
+          p Enable users to login from the respective social network
           .break
           fieldset
             img(src="#{cacheUrl}/images/facebook_32.png")
             legend
-              a(href="https://developer.facebook.com/", target="_blank") Facebook
+              a(href="https://developer.facebook.com/", target="_blank", title="What is this?") Facebook
             label(for="facebook_client_id") ID
             input.first(id="facebook_client_id", type='text', name='facebookClientId', placeholder='Facebook API ID ...',
             value=site.config.facebookClientId)
@@ -82,7 +83,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
           fieldset
             img(src="#{cacheUrl}/images/twitter_32.png")
             legend
-              a(href="https://dev.twitter.com/", target="_blank") Twitter
+              a(href="https://dev.twitter.com/", target="_blank", title="What is this?") Twitter
             label(for="twitter_key") Key
             input.first(id="twitter_key", type='text', name='twitterConsumerKey', placeholder='Twitter API key ...',
             value=site.config.twitterConsumerKey)
@@ -92,7 +93,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
           fieldset
             img(src="#{cacheUrl}/images/google_32.png")
             legend
-              a(href="https://code.google.com/apis/console/", target="_blank") Google+
+              a(href="https://code.google.com/apis/console/", target="_blank", title="What is this?") Google+
             label(for="google_key") Key
             input.first(id="google_key", type='text', name='googleConsumerKey', placeholder='Google+ API key ...', value=site.config.googleConsumerKey)
             label(for="google_secret") Secret

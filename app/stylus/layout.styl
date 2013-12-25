@@ -16,7 +16,6 @@ section
 
 body
   grid(90%,100%)
-  overflow visible!important
   a
     cursor pointer
   .scroll-to, .onclick-scroll-top
@@ -203,6 +202,15 @@ header
             height 0
             opacity 0
             overflow hidden
+          .onclick-logout
+            margin-top 2px
+            &:hover
+              background none!important
+              a
+                color dark_text!important
+            a
+              padding-top 2px
+              font-size .95em
     #warning
       bottom 8px
     .search

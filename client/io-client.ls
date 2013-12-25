@@ -64,6 +64,8 @@ function init-with-socket s
     # only real-time posts for users':
     # - currently active thread
     # - own posts on profile pages
+    # TODO let user specify if they want real-time updates
+    # - if they don't, inform them how many are new
     window.active-thread-id ||= -1
     if post.thread_id is window.active-thread-id or (post.user_id is user.id and window.mutator is \profile)
       return if $ "post_#{post.id}" .length # guard (exists)

@@ -315,12 +315,14 @@ html.forum, html.profile, html.search, html.moderation
         margin-right (grid*4)
         padding-top (grid*2)
         margin-bottom (grid*2)
+        .actions
+          transition .1s ease-out
         &:hover
           position relative
           z-index 4
           .actions
             opacity 1
-            transition opacity .3s
+            transition none
         &:first-child
           padding-top (grid*1.5)
         .breadcrumb
@@ -369,7 +371,7 @@ html.forum, html.profile, html.search, html.moderation
           border-top-right-radius 35px
           transition box-shadow .1s ease-out .1s
           &:hover
-            box-shadow 1px 0 2px 1px rgba(0,0,0,.08)
+            box-shadow 1px 1px 2px 1px rgba(0,0,0,.06)
             transition none
           .s-chat-bubble
             position absolute
@@ -479,7 +481,7 @@ html.forum, html.profile, html.search, html.moderation
           .post
             padding-top 0
             .container, .actions
-              margin-left 31px
+              margin-left 13px
             .container
               min-height 48px
               margin-left 222px
@@ -492,7 +494,7 @@ html.forum, html.profile, html.search, html.moderation
             .button
               bottom 19px
             .profile-container
-              margin 0
+              margin -11px 0 0 -20px
               .user
                 display inline-block
                 font-size .92em
@@ -866,12 +868,6 @@ html.admin
       margin-top (grid*2)
       max-width 1300px
       position relative
-      h3
-        color #aaa
-        letter-spacing 2px
-        margin 0 0 40px 39px
-        font-weight 200
-        font-style italic
       select
         margin 10px 0
       .emails
@@ -930,6 +926,9 @@ html.admin
           overflow hidden
           font-size .8em
           transition max-height 0 ease-out .3s
+          p
+            font-size .9em
+            margin 30px 0 5px 10px
       // this label toggles the .dialog
       .collapse + label:hover
         border-bottom 1px solid #dfdfdf
@@ -944,13 +943,13 @@ html.admin
         legend
           color #555!important
         .dialog
-          max-height 500px
+          max-height 650px
           padding-bottom (grid*1.5)
           transition all .2s ease-out
       fieldset
         //padding grid (grid*3) grid (grid*4)
         border 0
-        margin -(grid*2) (grid*2) (grid*3) 0
+        margin -(grid*2) 0 (grid*3) 0
         display inline-block
         position relative
         img
@@ -958,17 +957,21 @@ html.admin
         select
           padding 5px
         legend
-          //margin -20px
-          //padding 20px
           font-weight 100
           font-size 1.4em
           position absolute
-          //top -35px
-          //left (grid*4)
           top 10px
           left 55px
+          label
+            font-size .95em
+          a
+            font-weight 400
+            font-size .9em
+            cursor help
+            &:hover
+              text-decoration none
         input
-          width 250px
+          width 300px
         textarea
           width 305px
           height 100px
