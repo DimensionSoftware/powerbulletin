@@ -150,25 +150,21 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
 
     | \menu =>
       # save site config
-      m = site.config?menu or []
-      dbid = null
+      m    = site.config?menu or []
+      id   = req.body.id.to-string! # client-id
+      dbid = null # server-id
 
-      if id = req.body.id # active form
+      if id # active form
         form = { [k, v] for k,v of req.body when k in
-          <[ id dbid title dialog forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
+          <[ id dbid postsPerPage title dialog forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
         menu-item = { id, form.title, form }
-        m-path = menu.path-for-upsert(m, id.to-string!)
+        menu-item = { id, form.title, form }
+        m-path = menu.path-for-upsert m, id
         site.config.menu = menu.struct-upsert m, m-path, menu-item
-
-      # XXX - the upsert can only insert unless database id is propagated here
-      console.warn \form, form
-      console.warn \menu-item, menu-item
-      console.warn \extracted, menu.extract menu-item
 
       err, r <- menu.db-upsert site, menu-item
       return res.json {-success, errors: err?errors} if err?errors
 
-      console.log \r, r
       if err then return res.json success: false, hint: \menu.upsert, err: err, errors: [ err.message ]
       if r.length
         menu-item.form.dbid = dbid = r.0.id

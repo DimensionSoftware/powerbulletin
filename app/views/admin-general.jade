@@ -4,6 +4,10 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
     label(for='name') Title
     input(id='name', class='name', name='name', type='text', value=site.name)
     .break
+    label(for='posts_per_page') Posts per Page
+    input(id='posts_per_page', placeholder='30', class='posts-per-page', name='postsPerPage', type='text', value='30', maxlength=4)
+    .note Applies to Profile &amp; Forum default pages
+    .break
     label(for='invite_only') Invite Only
     .box
       input.stylish.save#invite_only(type='checkbox', value='checked', name='inviteOnly', checked=site.config.inviteOnly)
@@ -11,6 +15,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
         .switch
     .note Disallow the public from registering - 
       a.mutant(href='/admin/invites') Invites
+    .break
     .break
     input.collapse(id='seo', type='checkbox')
     label(for='seo')

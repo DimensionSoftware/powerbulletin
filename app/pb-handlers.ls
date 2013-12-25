@@ -149,7 +149,10 @@ function background-for-forum m, active-forum-id
     page = meta.page || 1
     if page < 1 then return next 404
 
-    limit = site.config?posts-per-page or posts-per-page
+    # fetch forum settings
+    item   = menu.flatten site.config.menu |> find -> it.form.dbid is post.forum_id
+    ppp    = item.form?posts-per-page
+    limit  = ppp or posts-per-page
     offset = (page - 1) * limit
 
     tasks =
