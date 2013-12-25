@@ -398,7 +398,7 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
   )
   true
 
-$d.on \click 'html.admin .dialog textarea, html.admin .dialog input' -> false # discard event
+$d.on \click 'html.admin .dialog textarea, html.admin .dialog input[type="text"], html.admin .dialog select' -> false # discard event
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
   #console.log \parsed_id, id
