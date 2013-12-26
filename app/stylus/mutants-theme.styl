@@ -224,6 +224,15 @@ html.forum, html.profile, html.search, html.moderation
           display block
       .thread.sticky
         background-color lighta
+      .thread.locked
+        .locked-toggle
+          position absolute
+          display block
+          top 8px
+          left 6px
+          cursor pointer
+          &::after
+            content "✖" // ☒
 //}}}
 //{{{ - profile
 html.profile
