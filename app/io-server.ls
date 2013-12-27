@@ -99,6 +99,10 @@ clear-stale-redis-data = (r, cb) ->
     var search-room
     var presence
 
+    if not socket
+      log "no socket; bailing to prevent crash"
+      return
+
     if not socket.handshake
       log "no socket.handshake; bailing to prevent crash"
       return

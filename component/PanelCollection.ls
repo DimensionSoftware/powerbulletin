@@ -162,8 +162,7 @@ module.exports =
 
     # helper for adding a new chat panel to collection
     add-chat-panel: (opts) ->
-      console.warn opts
-      chat-panel = new ChatPanel locals: { opts.id, opts.icon, width: 300px, css: { background: '#fff', opacity: 0.85 }, p: @ }
+      chat-panel = ChatPanel.chats[opts.id] = new ChatPanel locals: { opts.id, opts.icon, width: 300px, css: { background: '#fff', opacity: 0.85 }, p: @ }
       @add opts.id, chat-panel
 
 # vim:fdm=indent

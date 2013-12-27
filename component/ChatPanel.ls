@@ -7,19 +7,22 @@ require! \./PBComponent
 module.exports =
   class ChatPanel extends PBComponent
 
-    # management of all chats
+    # management of all current chats in window
     @chats = {}
 
+    # chat-panels are autovivified via ChatPanel.add-message(message)
     @add-message = (message) ->
-      id = message.coversation_id
+      id = message.conversation_id
+      css-id = "chat-#id"
       icon = "#cache-url/images/profile.jpg" # TODO - where's a good place to get this info from?
-      chat-panel = if @chats[id]
-        @chats[id]
+      console.warn @chats, css-id, @chats[css-id]
+      chat-panel = if @chats[css-id]
+        @chats[css-id]
       else
         panels = window.component.panels
-        @chats[id] = new ChatPanel locals: { id, icon, width: 300px, css: { background: '#fff', opacity: 0.85 }, p: panels }
-        panels.add id, @chats[id]
-        @chats[id]
+        @chats[css-id] = new ChatPanel locals: { id: css-id, icon: icon, width: 300px, css: { background: '#fff', opacity: 0.85 }, p: panels }
+        panels.add id, @chats[css-id]
+        @chats[css-id]
       chat-panel.add-new-message message
 
     init: ->
@@ -31,9 +34,26 @@ module.exports =
     on-attach: ->
       @$.attr id: @local \id
       @$.css @css
+      @$.on \keyup, \.message-box, @message-box-key-handler
+
+    cid: ~>
+      (@local \id).replace /^chat-/, '' |> parse-int
 
     add-new-message: (message) ->
-      @$.append "<li>#{message.body}</li>" # TODO - do this right
+      @$.find(\.container).append "<li>#{message.body}</li>" # TODO - do this right
+
+    message-box-key-handler: (ev) ~>
+      if ev.key-code is 13
+        message =
+          conversation_id : @cid!
+          user_id         : window.user.id
+          body            : @$.find('.message-box textarea').val!
+        @send-message message
+        @$.find('.message-box textarea').val('')
+
+    send-message: (message) ->
+      console.log \send-message, message
+      window.socket.emit \chat-message, message
 
     show: ->
       hi = $(window).height!
@@ -48,12 +68,4 @@ module.exports =
       @p.hide @$
 
     resize: ->
-
-
-    @client-socket-init = (socket) ->
-      socket.on \chat-message, (message, cb) ->
-        # do we have a panel for the conversation this message belongs to?
-        # if not, create one
-        # show the panel
-        # add the message to the chat panel
 
