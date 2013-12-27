@@ -14,7 +14,7 @@ module.exports =
     @add-message = (message) ->
       id = message.conversation_id
       css-id = "chat-#id"
-      icon = "#cache-url/images/profile.jpg" # TODO - where's a good place to get this info from?
+      icon = "#cache-url#{message.user.photo}"
       console.warn @chats, css-id, @chats[css-id]
       chat-panel = if @chats[css-id]
         @chats[css-id]
@@ -52,7 +52,6 @@ module.exports =
         @$.find('.message-box textarea').val('')
 
     send-message: (message) ->
-      console.log \send-message, message
       window.socket.emit \chat-message, message
 
     show: ->
