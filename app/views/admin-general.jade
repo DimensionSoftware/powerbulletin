@@ -4,9 +4,10 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
     label(for='name') Title
     input(id='name', class='name', name='name', type='text', value=site.name)
     .break
-    label(for='posts_per_page') Posts per Page
+    label(for='posts_per_page') Replies 
+      small per page
     input(id='posts_per_page', placeholder='30', class='posts-per-page', name='postsPerPage', type='text', value='30', maxlength=4)
-    .note Applies to Profile &amp; Forum default pages
+    .note Default applies to Profile &amp; Forum pages
     .break
     label(for='invite_only') Invite Only
     .box

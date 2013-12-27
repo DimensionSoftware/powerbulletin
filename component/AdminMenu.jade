@@ -24,8 +24,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             input#forum_slug(type='text', name='forumSlug', placeholder='/path/to/forum')
             .note URL suffix for this page
             .break
-            label(for='posts_per_page') Posts per Page
+            label(for='posts_per_page') Replies 
+              small per page
             input(id='posts_per_page', placeholder='30', class='posts-per-page', name='postsPerPage', type='text', value='30', maxlength=4)
+            .note Override the default
             .break
             //- XXX html5-uploader works inside parent <form>
             #uploader_component
