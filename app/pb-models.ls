@@ -6,11 +6,14 @@ require! {
   mkdirp
   \fs
   postgres: \./postgres
+  sioa: \socket.io-announce
 }
 
 {filter, join, keys, values, sort-by} = require \prelude-ls
 
 const base-css = \public/sites
+
+announce = sioa.create-client!
 
 # Generate a function that takes another function and transforms its first parameter
 # according to the rules in serializers
@@ -629,6 +632,21 @@ query-dictionary =
     # mark a message as read
     mark-read: (id, user-id, cb) ->
       db.messages_read.upsert { message_id: id, user_id: user-id }, cb
+    send: (message, cb=(->)) ~>
+      err, c <~ db.conversations.select-one id: message.conversation_id
+      if err then return cb err
+      if not c then return cb { -success, messages: [ "No conversation" ] }
+      err, c.participants <~ db.conversations.participants c.id
+      if err then return cb err
+      me = c.participants |> find (.user_id is message.user_id)
+      if not me then return cb { -success, messages: [ "User not a participant in conversation." ] }
+      err, msgs <~ db.messages.upsert message
+      if err then return cb { -success, messages: [ "Couldn't send message." ] }
+      msg      = msgs.0
+      msg.user = me
+      for alias in c.participants
+        announce.in("#{c.site_id}/users/#{alias.user_id}").emit \chat-message, msg
+      cb null, msg
 
 serializers-for =
   json: JSON.stringify

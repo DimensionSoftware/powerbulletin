@@ -23,17 +23,5 @@ module.exports = class ChatServer
     cb null, c
 
   message: (message, cb=(->)) ~>
-    err, c <~ db.conversations.select-one id: message.conversation_id
-    if err then return cb err
-    if not c then return cb { -success, messages: [ "No conversation" ] }
-    err, c.participants <~ db.conversations.participants c.id
-    if err then return cb err
-    me = c.participants |> find (.user_id is message.user_id)
-    if not me then return cb { -success, messages: [ "User not a participant in conversation." ] }
-    err, msgs <~ db.messages.upsert message
-    if err then return cb { -success, messages: [ "Couldn't send message." ] }
-    msg      = msgs.0
-    msg.user = me
-    for alias in c.participants
-      @io.sockets.in("#{@site.id}/users/#{alias.user_id}").emit \chat-message, msg
+    err, msg <~ db.messages.send message
     cb null, msg
