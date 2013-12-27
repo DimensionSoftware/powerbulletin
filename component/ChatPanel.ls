@@ -61,8 +61,7 @@ module.exports =
         @$.find \textarea .css(width: @local \width)
         @local \virgin, false
       @$.css(height: "#{hi}px")
-      @p.show @$
-      @$.find('.message-box textarea').focus!
+      @p.show @$, (~> @$.find('.message-box textarea').focus!)
 
     hide: ->
       @p.hide @$

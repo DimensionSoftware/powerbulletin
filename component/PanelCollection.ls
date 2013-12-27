@@ -151,10 +151,10 @@ module.exports =
       #@@$(sel).add-class \hidden
       @@$(sel).hide(@delay, @ease-in)
 
-    show: (sel) ->
+    show: (sel, cb=(->)) ->
       hi = $(window).height!
       #@@$(sel).remove-class \hidden
-      @@$(sel).css(height: "#{hi}px").show @delay, @ease-out
+      @@$(sel).css(height: "#{hi}px").show @delay, @ease-out, cb
 
     select-force: (name) ->
       if @selected is null or @selected isnt name
