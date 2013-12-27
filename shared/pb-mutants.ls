@@ -161,6 +161,9 @@ layout-on-personalize = (w, u) ->
   on-personalize: (w, u, next) ->
     layout-on-personalize w, u
     next!
+  on-mutate: 
+    (window, next) ->
+      scroll-to-top!
   on-load:
     (window, next) ->
       render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
