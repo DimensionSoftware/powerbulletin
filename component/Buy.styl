@@ -1,15 +1,16 @@
 .Buy
-  min-width 650px
+  min-width 580px
   .clear
     clear both
   h1
     color #777
-    min-width 650px
+    min-width 580px
     letter-spacing 2px
     text-align center
     font-weight 200
-    font-size 2.5em
+    font-size 1.5em
     font-style italic
+    margin-bottom 40px
   .features
     text-align right
     margin-right 30px
@@ -20,9 +21,9 @@
       font-size 1.4em
       b
         color light
-        letter-spacing -3px
-        font-size 2.4em
-        font-weight bold
+        letter-spacing -2px
+        font-size 2em
+        font-weight 500
     menu
       list-style none
       margin 15px 0 0 0
@@ -34,19 +35,20 @@
         padding-left 5px
         margin-bottom 6px
         span
-          color #777
+          color #aaa
   label
     vertical-align middle
     display inline-block
     width 120px
-    color #bbb
+    color #eee
+    font-size 1.05em
   .right
     float right
   .notice
     float right
     clear both
     margin 6px 20px 0
-    color #bbb
+    color #666
     font-size .8em
     font-weight 200
   .cards
@@ -81,7 +83,8 @@
   .ccinfo
     position relative
     padding 20px 20px 10px 20px
-    border 1px solid rgba(255,255,255,.08)
+    border 1px solid rgba(255,255,255,.05)
+    background-color rgba(0,0,0,.1)
     border-radius 12px / 8px
     button.Buy-checkout
       float right
@@ -117,17 +120,9 @@
     top -69px
     bottom auto
     box-shadow 0 0 3px 1px #999
-  .code:hover
-    border 1px solid #666
-    .cvvinfo
-      opacity 1
-      height 85px
-      padding 10px
-      top -119px
-      transition top .2s ease-out .1s, height .2s ease-in-out .2s, opacity .6s ease-in-out .1s
   .code
     font-weight bold
-    border 1px solid #555
+    border 1px solid #444
     padding 1px 4px
     border-radius 8px / 3px
     transform rotate(10deg)
@@ -137,12 +132,20 @@
     cursor pointer
     position relative
     z-index 99
+    &:hover
+      border 1px solid #555
+      .cvvinfo
+        opacity 1
+        height 85px
+        padding 10px
+        top -119px
+        transition top .2s ease-out .1s, height .2s ease-in-out .2s, opacity .6s ease-in-out .1s
     .cvvinfo
       border-radius 12px / 8px
       top 0
       left -96px
-      background-color #eee
-      border 1px solid #ccc
+      background-color #000
+      border 1px solid #222
       padding 0
       margin 0
       opacity 0

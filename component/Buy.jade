@@ -5,10 +5,10 @@ h1 #{product.description}
     .tooltip
     if cardNeeded
       .clear
-      label(for='card_number') Card Number
+      label(for='card_number') Card
       input#card_number.Buy-card-number(type='text', placeholder='XXXX - XXXX - XXXX - XXXX', maxlength=19)
       .clear
-      label(for='card_month') Expiration
+      label(for='card_month') Expires
       select#card_month.Buy-card-month
         option(disabled=true, selected=true) - Month -
         option(value=1) Jan - 1
