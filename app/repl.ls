@@ -25,7 +25,6 @@ global.m   = require \./pb-models
 
 global.sioa     = require \socket.io-announce
 global.announce = sioa.create-client!
-global.chat     = require \./chat
 global.menu     = require \./menu
 
 global.reload = (m) ->
