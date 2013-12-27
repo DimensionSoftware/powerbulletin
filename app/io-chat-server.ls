@@ -23,7 +23,6 @@ module.exports = class ChatServer
     cb null, c
 
   message: (message, cb=(->)) ~>
-    console.warn \server-recv, message
     err, c <~ db.conversations.select-one id: message.conversation_id
     if err then return cb err
     if not c then return cb { -success, messages: [ "No conversation" ] }
@@ -35,6 +34,5 @@ module.exports = class ChatServer
     if err then return cb { -success, messages: [ "Couldn't send message." ] }
     msg = msgs.0
     for alias in c.participants
-      console.warn "#{alias.user_id} #{alias.name} #{msg.body}"
       @io.sockets.in("#{@site.id}/users/#{alias.user_id}").emit \chat-message, msg
     cb null, msg

@@ -134,7 +134,6 @@ function init-with-socket s
     console?log \debug, message
 
   s.on \chat-message, (message) ->
-    console.log "received: ", message
     ChatPanel.add-message message
 
 # vim:fdm=indent
