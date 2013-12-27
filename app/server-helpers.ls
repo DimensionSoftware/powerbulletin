@@ -157,11 +157,7 @@ process-cached-data = {}
       options =
         compress: true
       stylus(buffer.to-string!, options) # build css
-        .define \cache-url  cvars.cache-url
-        .define \cache2-url cvars.cache2-url
-        .define \cache3-url cvars.cache3-url
-        .define \cache4-url cvars.cache4-url
-        .define \cache5-url cvars.cache5-url
+        .define \cache-url  cvars.cache4-url # consolidate & mv assets to lesser-used-domain (browser speed)
         .set \paths [\app/stylus]
         .use fluidity!
         .render cb

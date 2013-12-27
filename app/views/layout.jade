@@ -19,10 +19,10 @@ html
     meta(name='viewport', content='user-scalable=0, initial-scale=1, maximum-scale=1, width=device-width')
 
     //- links first
-    link(href="#{cacheUrl}/images/favicon.ico",rel='shortcut icon',type='image/x-icon')
+    link(href="#{cache2Url}/images/favicon.ico",rel='shortcut icon',type='image/x-icon')
     link(href="#{cache2Url}/images/apple-touch-icon.png", rel='apple-touch-icon')
-    link(href="#{cache3Url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
-    link(href="#{cache4Url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
+    link(href="#{cache2Url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
+    link(href="#{cache2Url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
     //-link(href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400', rel='stylesheet', type='text/css')
     if cssUrls
       for obj in cssUrls
@@ -30,17 +30,17 @@ html
     if domainStyle
       link(href="#{cache3Url}/sites/#{siteId}/#{domainId}.auth.css?#{cacheBuster}", rel='stylesheet', type='text/css')
     if style
-      link(href="#{cache2Url}/sites/#{siteId}/master.css?#{cacheBuster}", rel='stylesheet', type='text/css')
+      link(href="#{cache3Url}/sites/#{siteId}/master.css?#{cacheBuster}", rel='stylesheet', type='text/css')
 
     //- the only .js in our <head> 
     if env == 'production'
       //- in this case we preload most libraries, as opposed to fetching them all separately
       script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
-      script(type='text/javascript', src="#{cacheUrl}/pb-optimized.js")
+      script(type='text/javascript', src="#{cache5Url}/pb-optimized.js")
     else
-      script(type='text/javascript', src="#{cache4Url}/local/require.js") //- offline
+      script(type='text/javascript', src="#{cache3Url}/local/require.js") //- offline
     script(type="text/javascript").
-      window.CHANGESET=!{JSON.stringify(CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.cache2Url=!{JSON.stringify(cvars.cache2Url)};window.cache3Url=!{JSON.stringify(cvars.cache3Url)};window.cache4Url=!{JSON.stringify(cvars.cache4Url)};window.cache5Url=!{JSON.stringify(cvars.cache5Url)};window.authDomain="!{cvars.authDomain}";window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cacheUrl+'/client',urlArgs:!{JSON.stringify(CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
+      window.CHANGESET=!{JSON.stringify(CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.cache2Url=!{JSON.stringify(cvars.cache2Url)};window.cache3Url=!{JSON.stringify(cvars.cache3Url)};window.cache4Url=!{JSON.stringify(cvars.cache4Url)};window.cache5Url=!{JSON.stringify(cvars.cache5Url)};window.authDomain="!{cvars.authDomain}";window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cache5Url+'/client',urlArgs:!{JSON.stringify(CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
   body
 
     header.header.toggler
@@ -59,7 +59,7 @@ html
             +_menu(0, menu)
         .tools
           a.profile.photo.mutant
-            img#profile(src="#{cacheUrl}/images/profile.jpg")
+            img#profile(src="#{cache3Url}/images/profile.jpg")
           .bubble
           .bubble2
           .container
