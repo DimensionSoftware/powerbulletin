@@ -71,7 +71,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   err, doc <- async.auto tasks
   doc.menu            = site.config.menu
-  #doc.forums          = filter (.posts.length), doc.forums
+  doc.menu-summary    = menu.flatten site.config.menu
   doc.title           = res.vars.site.name
   doc.active-forum-id = \homepage
   res.locals doc
@@ -211,13 +211,18 @@ function background-for-forum m, active-forum-id
     if err then return next err
     if !fdoc then return next 404
 
+    # get active menu item
+    m    = site.config.menu
+    item = menu.flatten m |> find -> it.form.dbid is forum-id
+
     fdoc <<< {forum-id, cvars.t-step}
-    fdoc.menu            = site.config.menu
+    fdoc.menu            = m
+    fdoc.menu-summary    = menu.flatten ((menu.item m, (menu.path m, item.id))?children or [])
     fdoc.active-forum-id = fdoc.forum-id
     fdoc.title           = fdoc?forum?title
     fdoc.background      = background-for-forum fdoc.menu, fdoc.active-forum-id
 
-    finish fdoc
+    finish fdoc, \homepage
 
 @forum-background-delete = (req, res, next) ->
   # get site

@@ -1,0 +1,26 @@
+mixin _item(depth, item)
+  klass = (depth > 0) ? 'indent' : 'submenu'
+  if item && item.form
+    //- row -> out!
+    li.row
+      if item.form.dialog == 'placeholder'
+        .title= item.title
+      //- forum, link & page
+      else
+        a.mutant.title(
+          data-surf=item.form.dbid,
+          class="forum-#{item.form.dbid}",
+          href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
+          target=(item.form.separateTab ? '_blank' : '_self'))= item.title
+
+      //- stylize depth & recurse
+      if item.children
+        div(class=klass)
+          ul
+            +_item(++depth, item.children)
+
+//- render menu items in long format
+menu
+  if typeof(menuSummary) == 'object'
+    each item,i in menuSummary
+      +_item(0, item)

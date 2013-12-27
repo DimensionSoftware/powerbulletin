@@ -8,8 +8,8 @@ module.exports =
       <- requirejs [\jqueryMasonry] # lazy
       ####  main  ;,.. ___  _
       try # reflow masonry content
-        @@$ \.homepage .masonry(
-          item-selector: \.post
+        @@$ \.Pins .masonry(
+          item-selector: \.pin
           is-animated:   true
           is-fit-width:  true
           is-resizable:  true
@@ -19,6 +19,6 @@ module.exports =
     on-detach: ~> # XXX ensure detach is called
       super ...
       # cleanup
-      try @@$ \.homepage .masonry(\destroy)
+      try @@$ \.Pins .masonry \destroy
 
 # vim: fdm=marker
