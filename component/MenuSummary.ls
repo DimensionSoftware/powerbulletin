@@ -3,7 +3,7 @@ require, exports, module <- define
 require! \./PBComponent
 
 module.exports =
-  class ThreadSummary extends PBComponent
+  class MenuSummary extends PBComponent
     init: ->
       # defaults
 

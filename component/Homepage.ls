@@ -4,7 +4,7 @@ require, exports, module <- define
 require! {
   \./PBComponent
   \./Pins
-  \./ThreadSummary
+  \./MenuSummary
 }
 
 # XXX rename Homepage -> Layout-Split-Horizontal?
@@ -15,6 +15,6 @@ module.exports =
       # add children
       @children =
         pins:    new Pins {locals:@locals!} \.Pins @
-        summary: new ThreadSummary {locals:@locals!} \.ThreadSummary @
+        summary: new MenuSummary {locals:@locals!} \.MenuSummary @
 
 # vim: fdm=marker

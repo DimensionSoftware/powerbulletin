@@ -27,9 +27,9 @@ mixin pin(p)
 
 //- XXX forums distinction should disappear
 if forums
-  .homepage(class=activeForumId!='homepage'?'resizable forum':'')
-    each f,i in forums
-      +pin(f,i)
+  each f,i in forums
+    +pin(f,i)
 else
   p Create a forum first
     i !
+.clear
