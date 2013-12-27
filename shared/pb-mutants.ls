@@ -98,7 +98,7 @@ set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
     bc.remove!
   else if background # set bg
     bc.remove!
-    ch.set-imgs!
+    set-imgs!
   else if bg.length # no background passed in, so--reap bg + buffer & use color!
     bf.remove!
     bg.remove!
@@ -398,7 +398,7 @@ same-profile = (hints) ->
       # forgot password delegate
       window.$ \body .on \click \.onclick-show-forgot ->
         <- Auth.show-login-dialog
-        ch.switch-and-focus \on-error \on-forgot '#auth input[name=email]'
+        switch-and-focus \on-error \on-forgot '#auth input[name=email]'
       <- require ["#cache-url/local/jquery.autosize.min.js"]
       next!
   on-mutate:
