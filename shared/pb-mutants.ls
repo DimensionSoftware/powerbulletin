@@ -154,9 +154,9 @@ layout-on-personalize = (w, u) ->
 @homepage =
   static:
     (window, next) ->
-      layout-static.call @, window, \homepage
       render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
       window.marshal locals:@
+      layout-static.call @, window, \homepage
       next!
   on-personalize: (w, u, next) ->
     layout-on-personalize w, u
