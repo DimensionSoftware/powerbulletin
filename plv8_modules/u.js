@@ -130,7 +130,7 @@
     return merge(f, {
       forums: (function(){
         var i$, ref$, len$, results$ = [];
-        for (i$ = 0, len$ = (ref$ = subForums(f.id, 'id,title,slug,uri,description,media_url')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = subForums(f.id, 'id,title,slug,uri,media_url')).length; i$ < len$; ++i$) {
           sf = ref$[i$];
           results$.push(decorateMenu(sf));
         }
@@ -181,7 +181,7 @@
   };
   forumTree = function(forumId, topPostsFun){
     var sql, f;
-    sql = 'SELECT id,site_id,parent_id,title,slug,description,media_url,classes FROM forums WHERE id=$1 LIMIT 1';
+    sql = 'SELECT id,site_id,parent_id,title,slug,media_url,classes FROM forums WHERE id=$1 LIMIT 1';
     if (f = plv8.execute(sql, [forumId])[0]) {
       return decorateForum(f, topPostsFun);
     }
@@ -225,7 +225,7 @@
   };
   out$.menu = menu = function(siteId){
     var topMenuFun, i$, ref$, len$, f, results$ = [];
-    topMenuFun = topForums(siteId, null, 'id,title,slug,uri,description,media_url');
+    topMenuFun = topForums(siteId, null, 'id,title,slug,uri,media_url');
     for (i$ = 0, len$ = (ref$ = topMenuFun(siteId)).length; i$ < len$; ++i$) {
       f = ref$[i$];
       results$.push(decorateMenu(f, topMenuFun));

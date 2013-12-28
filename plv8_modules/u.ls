@@ -117,7 +117,7 @@ posts-tree = (site-id, forum-id, top-posts, fields) ->
   [merge(p, {posts: sub-posts-tree(site-id, p.id, fields, 10, 0)}) for p in top-posts]
 
 decorate-menu = (f) ->
-  merge f, {forums: [decorate-menu(sf) for sf in sub-forums(f.id, 'id,title,slug,uri,description,media_url')]}
+  merge f, {forums: [decorate-menu(sf) for sf in sub-forums(f.id, 'id,title,slug,uri,media_url')]}
 
 decorate-forum = (f, top-posts-fun) ->
   # XXX - we needed to pass fields all the way down to sub-posts()
@@ -149,7 +149,7 @@ export put-doc = (...args) ->
 
 # single forum
 forum-tree = (forum-id, top-posts-fun) ->
-  sql = 'SELECT id,site_id,parent_id,title,slug,description,media_url,classes FROM forums WHERE id=$1 LIMIT 1'
+  sql = 'SELECT id,site_id,parent_id,title,slug,media_url,classes FROM forums WHERE id=$1 LIMIT 1'
   if f = plv8.execute(sql, [forum-id])[0]
     decorate-forum(f, top-posts-fun)
 
@@ -182,7 +182,7 @@ export uri-for-post = (post-id, first-slug = null) ->
 export menu = (site-id) ->
   # XXX: forums should always list in the same order, get rid of top-forums, and list in static order
   # TODO use site.config.menu to build!
-  top-menu-fun = top-forums(site-id, null, 'id,title,slug,uri,description,media_url')
+  top-menu-fun = top-forums(site-id, null, 'id,title,slug,uri,media_url')
   [decorate-menu(f, top-menu-fun) for f in top-menu-fun(site-id)]
 
 export top-threads = (site-id, forum-id, sort, limit, offset) ->

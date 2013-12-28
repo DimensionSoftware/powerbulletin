@@ -166,7 +166,6 @@ require! {
       title       : title
       uri         : form.forum-slug
       slug        : p.basename form.forum-slug
-      description : ''
   | \page =>
     type = \page
     data =
@@ -179,8 +178,7 @@ require! {
     data = {}
   | \placeholder =>
     type = \placeholder
-    data =
-      title: title
+    data = {}
   | otherwise =>
     type = null
     data = {}

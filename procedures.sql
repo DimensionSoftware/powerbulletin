@@ -753,14 +753,13 @@ CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
     site_id
     title: 'General Forum'
     slug: 'general'
-    description: 'General Discussion'
   }
   sql = '''
-  INSERT INTO forums (site_id, title, slug, uri, description)
-    VALUES ($1,$2,$3,$4,$5)
+  INSERT INTO forums (site_id, title, slug, uri)
+    VALUES ($1,$2,$3,$4)
     RETURNING id
   '''
-  forum_id = plv8.execute(sql, [f.site_id, f.title, f.slug, f.uri, f.description]).0.id
+  forum_id = plv8.execute(sql, [f.site_id, f.title, f.slug, f.uri]).0.id
 
   # set forum uri
   uri = u.uri-for-forum forum_id
