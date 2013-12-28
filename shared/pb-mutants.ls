@@ -200,6 +200,13 @@ layout-on-personalize = (w, u) ->
       else
         window.render-mutant \main_content, \posts
 
+      # add locked class to body (@item is the current forum)
+      is-locked = !!if @post
+        (@post.is_locked or @item.form.locked)
+      else
+        @item.form.locked
+      window.$ \body .toggle-class \locked, is-locked
+
       # render left content
       if @top-threads
         window.render-mutant \left_container \nav # refresh on forum & mutant change
@@ -345,6 +352,9 @@ layout-on-personalize = (w, u) ->
         $ \.censor .css \display \inline-block
       # - post editing
       set-inline-editor.call ch, u.id
+      # remove body.locked if super
+      if u.rights?super or u.sys_rights?super
+        w.$ \body .remove-class \locked
     next!
   on-unload:
     (w, next-mutant, next) ->

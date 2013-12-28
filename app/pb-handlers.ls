@@ -177,6 +177,7 @@ function background-for-forum m, active-forum-id
 
     # attach sub-post to fdoc, among other things
     fdoc <<< {post, forum-id:post.forum_id, page, cvars.t-step}
+    fdoc.item  = item
     fdoc.menu  = site.config.menu
     fdoc.title = post.title
     # attach sub-posts-tree to sub-post toplevel item
@@ -216,6 +217,7 @@ function background-for-forum m, active-forum-id
     item = menu.flatten m |> find -> it.form.dbid is forum-id
 
     fdoc <<< {forum-id, cvars.t-step}
+    fdoc.item            = item
     fdoc.menu            = m
     fdoc.menu-summary    = menu.flatten ((menu.item m, (menu.path m, item.id))?children or [])
     fdoc.active-forum-id = fdoc.forum-id
