@@ -23,4 +23,4 @@ mixin _menu(depth, menu)
                 if klass == 'submenu'
                   .col-sep
                   .col-sep2
-                +_menu(++depth, item.children)
+                +_menu(depth+1, item.children)
