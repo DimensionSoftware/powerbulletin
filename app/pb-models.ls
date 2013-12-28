@@ -7,6 +7,7 @@ require! {
   \fs
   postgres: \./postgres
   sioa: \socket.io-announce
+  sh: \../shared/shared-helpers
 }
 
 {filter, join, keys, values, sort-by} = require \prelude-ls
@@ -28,7 +29,11 @@ serialized-fn = (fn, serializers) ->
         object[k] = sz object[k]
     fn object, ...rest
 
-# Generate a function that wraps an existing functions cb and deserializes its results
+# Generate a function that wraps an existing functions cb and deserializes its callback's results
+#
+# @param  Function  fn              function to wrap
+# @param  Object    deserializers   field => transform-fn
+# @return Function                  wrapped function
 deserialized-fn = (fn, deserializers) ->
   (object, ...rest, cb) ->
     fn object, ...rest, (err, r) ->
@@ -46,6 +51,19 @@ deserialized-fn = (fn, deserializers) ->
           if item?[k]
             item[k] = dsz item[k]
         cb null, item
+
+# Generate a function that wraps an existing function and augments its callback's results
+# @param  Function  fn              function to wrap
+# @param  Function  transform-fn    function to transform result
+# @return Function                  wrapped function
+augmented-fn = (fn, transform-fn) ->
+  (object, ...rest, cb) ->
+    fn object, ...rest, (err, r) ->
+      return cb err if err
+      if r?length
+        cb null, (map transform-fn, r)
+      else
+        cb null, (transform-fn r)
 
 where-x = (criteria, n=1) ->
   where-sql = "WHERE " + (keys criteria
@@ -630,8 +648,8 @@ query-dictionary =
 
   messages:
     # mark a message as read
-    mark-read: (id, user-id, cb) ->
-      db.messages_read.upsert { message_id: id, user_id: user-id }, cb
+    mark-read: (id, user-id, cb) -> db.messages_read.upsert { message_id: id, user_id: user-id }, cb
+
     send: (message, cb=(->)) ~>
       err, c <~ db.conversations.select-one id: message.conversation_id
       if err then return cb err
@@ -665,11 +683,11 @@ export-model = ([t, cs]) ->
     #console.log \model, t, cs
     {
       attrs      : cs
-      select-one : (deserialized-fn (serialized-fn (select1-fn t), (serializers cs)), (deserializers cs))
-      select     : (deserialized-fn (serialized-fn (selectx-fn t), (serializers cs)), (deserializers cs))
-      update-one : (deserialized-fn (serialized-fn (update1-fn t), (serializers cs)), (deserializers cs))
-      update     : (deserialized-fn (serialized-fn (updatex-fn t), (serializers cs)), (deserializers cs))
-      upsert     : (deserialized-fn (serialized-fn (upsert-fn t), (serializers cs)), (deserializers cs))
+      select-one : (augmented-fn (deserialized-fn (serialized-fn (select1-fn t), (serializers cs)), (deserializers cs)), sh.add-dates)
+      select     : (augmented-fn (deserialized-fn (serialized-fn (selectx-fn t), (serializers cs)), (deserializers cs)), sh.add-dates)
+      update-one : (augmented-fn (deserialized-fn (serialized-fn (update1-fn t), (serializers cs)), (deserializers cs)), sh.add-dates)
+      update     : (augmented-fn (deserialized-fn (serialized-fn (updatex-fn t), (serializers cs)), (deserializers cs)), sh.add-dates)
+      upsert     : (augmented-fn (deserialized-fn (serialized-fn (upsert-fn t), (serializers cs)), (deserializers cs)), sh.add-dates)
       delete     : (serialized-fn (delete-fn t), (serializers cs))
     }
   else
