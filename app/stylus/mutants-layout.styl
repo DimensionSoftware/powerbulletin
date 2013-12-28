@@ -1127,6 +1127,10 @@ html.forum.new
     cursor default
     .onclick-footer-toggle
       display none
+html.forum
+  body.locked
+    .create, .reply, .post-reply, [title=Reply], [title=Comment]
+      display none !important
 html.moderation
   .moderations
     padding-left: 40px

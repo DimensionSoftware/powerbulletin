@@ -98,7 +98,9 @@ render = (sel, locals, cb=(->)) ~>
 @toggle-post = (ev) ~>
   # guards
   unless $ ev?target .has-class \onclick-footer-toggle then return
-  if $ \html .has-class \new then return
+  if $ \html .has-class \new    then return
+  unless (window.user?rights?super or window.user?sys_rights?super)
+    if $ \body .has-class \locked then return
   unless user then Auth.show-login-dialog!; return
 
   data =

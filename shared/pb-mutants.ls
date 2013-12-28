@@ -352,6 +352,9 @@ layout-on-personalize = (w, u) ->
         $ \.censor .css \display \inline-block
       # - post editing
       set-inline-editor.call ch, u.id
+      # remove body.locked if super
+      if u.rights?super or u.sys_rights?super
+        w.$ \body .remove-class \locked
     next!
   on-unload:
     (w, next-mutant, next) ->
