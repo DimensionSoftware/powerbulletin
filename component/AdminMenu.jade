@@ -24,6 +24,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             input#forum_slug(type='text', name='forumSlug', placeholder='/path/to/forum')
             .note URL suffix for this page
             .break
+            label(for='forum_description') Description
+            input#forum_description(type='text', name='forumDescription')
+            .note Descriptions show on homepage views
+            .break
             label(for='posts_per_page') Replies 
               small per page
             input(id='posts_per_page', placeholder='30', class='posts-per-page', name='postsPerPage', type='text', value='30', maxlength=4)
@@ -55,6 +59,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             input#page_slug(type='text', name='pageSlug', placeholder='/path/to/page')
             .note URL suffix for this page
             .break
+            label(for='page_description') Description
+            input#page_description(type='text', name='pageDescription')
+            .note Descriptions show on homepage views
+            .break
             label Content Only
             .box
               input.stylish#content_only(type='checkbox', value='checked', name='contentOnly')
@@ -74,6 +82,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             label(for='url') Url
             input(id='url', type='text', name='url', placeholder='http://')
             .break
+            label(for='link_description') Description
+            input#link_description(type='text', name='linkDescription')
+            .note Descriptions show on homepage views
+            .break
             label(for='separate_tab') Separate Tab
             .box
               input.stylish#separate_tab(type='checkbox', value='checked', name='separateTab')
@@ -86,6 +98,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
           input.option(id='placeholder', type='radio', name='dialog', value='placeholder')
           label.header(for='placeholder') Placeholder
           .dialog
+            label(for='placeholder_description') Description
+            input#placeholder_description(type='text', name='placeholderDescription')
+            .note Descriptions show on homepage views
+            .break
             h3 Blank the Title for a Spacer
             .break
             button(type='submit', value='Save') Save

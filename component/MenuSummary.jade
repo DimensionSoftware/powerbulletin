@@ -11,8 +11,9 @@ mixin _item(depth, item)
           data-surf=item.form.dbid,
           class="forum-#{item.form.dbid}",
           href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
-          target=(item.form.separateTab ? '_blank' : '_self'))= item.title
-
+          target=(item.form.separateTab ? '_blank' : '_self'))
+          .title= item.title
+          .description= item.form.forumDescription || item.form.pageDescription || item.form.placeholderDescription || item.form.linkDescription
       //- stylize depth & recurse
       if item.children
         div(class=klass)
