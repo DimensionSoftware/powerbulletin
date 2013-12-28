@@ -156,7 +156,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
 
       if id # active form
         form = { [k, v] for k,v of req.body when k in
-          <[ id dbid postsPerPage title dialog forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
+          <[ id dbid title placeholderDescription linkDescription forumDescription pageDescription dialog postsPerPage forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
         menu-item = { id, form.title, form }
         menu-item = { id, form.title, form }
         m-path = menu.path-for-upsert m, id
