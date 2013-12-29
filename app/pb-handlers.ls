@@ -63,7 +63,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
 @homepage = (req, res, next) ->
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
-  site = res.vars.site
+  site  = res.vars.site
   tasks =
     forums: db.sites.summary site.id, (req.query?order or \recent), 8, _
 
@@ -72,6 +72,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   err, doc <- async.auto tasks
   doc.menu            = doc.menu-summary = site.config.menu
   doc.title           = res.vars.site.name
+  doc.description     = ''
   doc.active-forum-id = \homepage
   res.locals doc
 
@@ -177,7 +178,7 @@ function background-for-forum m, active-forum-id
     fdoc <<< {post, forum-id:post.forum_id, page, cvars.t-step}
     fdoc.item  = item
     fdoc.menu  = site.config.menu
-    fdoc.title = post.title
+    fdoc.title = "#{res.vars.site.name} - #{post.title}"
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.post.posts = delete fdoc.sub-posts-tree
     fdoc.qty = parse-int(delete fdoc.sub-posts-count)
@@ -219,7 +220,8 @@ function background-for-forum m, active-forum-id
     fdoc.menu            = m
     fdoc.menu-summary    = (menu.item m, (menu.path m, item?id))?children or []
     fdoc.active-forum-id = fdoc.forum-id
-    fdoc.title           = fdoc?forum?title
+    fdoc.title           = "#{res.vars.site.name} - #{fdoc?forum?title}"
+    fdoc.description     = item.form?forum-description or ''
     fdoc.background      = background-for-forum fdoc.menu, fdoc.active-forum-id
 
     finish fdoc
@@ -315,7 +317,7 @@ function background-for-forum m, active-forum-id
   fdoc.furl    = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
   fdoc.menu    = site.config.menu
   fdoc.page    = parse-int page
-  fdoc.title   = name
+  fdoc.title   = "#{res.vars.site.name} - #name"
   fdoc.profile.human_post_count   = add-commas(fdoc.qty)
   fdoc.profile.human_thread_count = add-commas(fdoc.profile.thread_count)
 
@@ -518,7 +520,7 @@ function profile-paths user, uploaded-file, base=\avatar
     meta-keywords:  "#{site.name}, PowerBulletin"
   fdoc.site.config = defaults <<< fdoc.site.config
   fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')
-  fdoc.title = \Admin
+  fdoc.title   = "#{res.vars.site.name} - Admin"
   fdoc.menu = site.config.menu
 
   # reject current site
