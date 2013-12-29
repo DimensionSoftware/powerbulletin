@@ -1,5 +1,5 @@
 .body-bg
-  img(src="#{cacheUrl}/images/pb_sales_main_bg.jpg")
+  img(src="#{cache5Url}/images/pb_sales_main_bg.jpg")
 header
   ul
     li
@@ -49,10 +49,9 @@ nav
   li.support
     a.name.onclick-scroll-to(data-scroll-to='#support') Support
 .container.first
-  img.bg(src="#{cacheUrl}/images/live_support.jpg")
 section#navigation.feature
   article
-    img(src="#{cacheUrl}/images/navigation-icon.jpg")
+    img(src="#{cache2Url}/images/navigation-icon.jpg")
     h4 Seamless Navigation
     ul
       li SEO technology transmits page delta vs. browser reloads
@@ -62,10 +61,9 @@ section#navigation.feature
       .down-arrow
         .s-down-arrow
 .container.second
-  img.bg(src="#{cacheUrl}/images/navigation.jpg")
 section#responsive.feature
   article
-    img(src="#{cacheUrl}/images/responsiveness-icon.jpg")
+    img(src="#{cache3Url}/images/responsiveness-icon.jpg")
     h4 Device Responsive
     ul
       li Modern interface that scales across all devices
@@ -75,10 +73,9 @@ section#responsive.feature
       .down-arrow
         .s-down-arrow
 .container.third
-  img.bg(src="#{cacheUrl}/images/responsiveness.jpg")
 section#realtime.feature
   article
-    img(src="#{cacheUrl}/images/real_time_flow-icon.jpg")
+    img(src="#{cache4Url}/images/real_time_flow-icon.jpg")
     h4 Real-Time Flow
     ul
       li Ultrafast PowerBulletin is built on a real-time engine
@@ -89,7 +86,6 @@ section#realtime.feature
       .down-arrow
         .s-down-arrow
 //-.container.fourth
-//-  img.bg(src="#{cacheUrl}/images/products_ecommerce.jpg")
 //-section#products.feature
 //-  article
 //-    h4 Products &amp; e-Commerce
@@ -102,10 +98,9 @@ section#realtime.feature
 //-      .down-arrow
 //-        .s-down-arrow
 .container.fifth
-  img.bg(src="#{cacheUrl}/images/real_time_flow.jpg")
 section#support.feature.shown
   article
-    img(src="#{cacheUrl}/images/live_support-icon.jpg")
+    img(src="#{cache5Url}/images/live_support-icon.jpg")
     h4 Live Support
     p
       | Knowledge is PowerBulletin!  With
@@ -140,3 +135,10 @@ section#faq.faq
           a(href='mailto:support@powerbulletin.com') support@powerbulletin.com
 footer
   .onclick-scroll-top Top
+
+//- background images last (fixed)
+img.bg.first(src="#{cache2Url}/images/live_support.jpg")
+img.bg.second(src="#{cache3Url}/images/navigation.jpg")
+img.bg.third(src="#{cache4Url}/images/responsiveness.jpg")
+//-img.bg.fourth(src="#{cacheUrl}/images/products_ecommerce.jpg")
+img.bg.fifth(src="#{cache5Url}/images/real_time_flow.jpg")

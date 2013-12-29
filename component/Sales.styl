@@ -155,8 +155,6 @@ body.scrolled
           right 247px
       .container
         height auto!important
-        .bg
-          display none
       section.feature
         padding-left 0!important
         h4
@@ -188,6 +186,8 @@ body.scrolled
             padding 0
           menu
             width 80%
+      .bg
+        display none
 //}}}
 
 .Sales
@@ -421,23 +421,13 @@ body.scrolled
         opacity 0
         background rgba(255,255,255,.4)
         font-size .8em
-  .container.visible
-    visibility visible
-    &:after
-      display block
   .container
     position relative
     height 700px
     width 100%
     overflow hidden
     visibility hidden
-    img.bg
-      position absolute
-      left 0
-      top 0
-      right 0
-      width 100%
-      min-width 1200px
+    z-index 1
   .container.first
     margin-top 25px
     border-top 1px solid #888
@@ -662,5 +652,18 @@ footer
     letter-spacing 2px
     padding 0 23px 0 30px
     //}}}
+
+// fixed images
+img.bg.visible
+  visibility visible
+img.bg
+  position fixed
+  z-index 0
+  top 0
+  left 0
+  right 0
+  width 100%
+  min-width 1200px
+  visibility hidden
 
 // vim:fdm=marker

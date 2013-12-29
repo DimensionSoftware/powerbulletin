@@ -57,20 +57,22 @@ $w .on \scroll, (->
       if last isnt cur-id # new section in view, so-- show & hide
         cur = switch cur-id # given cur-id, these must be visible:
         | \features   => <[.first .second]>
-        | \navigation => <[.first .second .third]>
-        | \responsive => all
-        | \realtime   => <[.second .third .fifth]>
+        | \navigation => <[.second .third]>
+        | \responsive => <[.third .fifth]>
+        | \realtime   => <[.third .fifth]>
         #| \products   => <[.third .fifth]>
-        | \support    => <[.third .fifth]>
+        | \support    => <[.fifth]>
         [visible, hide] = partition (-> it in cur), all
-        for h in hide then $ h .remove-class \visible # hide these
-        for v in visible then $ v .add-class \visible # show these
+        for h in hide then $ "#h.bg" .remove-class \visible # hide these
+        for v in visible then $ "#v.bg" .add-class \visible # show these
         last         := cur-id
         last-visible := visible
       else # same section, so parallax visible sections!
         for v in last-visible
           dy = -($ v .offset!?top)
-          $ "#v .bg" .transition {y:"#{parse-int (dy+offset)*0.65}px"}, 0)
+          margin-top = -300px
+          #$ "#v .bg" .transition {y:"#{parse-int (dy+offset)*0.65}px"}, 0)
+          $ "#v.bg" .transition {y:"#{parse-int(dy+offset+margin-top)*-0.65}px"}, 0)
 #}}}
 #{{{ waypoints
 fn = (direction) ->
