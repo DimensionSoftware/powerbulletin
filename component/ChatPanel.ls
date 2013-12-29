@@ -35,6 +35,7 @@ module.exports =
       @$.attr id: @local \id
       @$.css @css
       @$.on \keyup, \.message-box, @message-box-key-handler
+      @$.find '.message-box textarea' .autosize!
 
     cid: ~>
       (@local \id).replace /^chat-/, '' |> parse-int
@@ -43,13 +44,18 @@ module.exports =
       @$.find(\.container).append "<li>#{message.body}</li>" # TODO - do this right
 
     message-box-key-handler: (ev) ~>
-      if ev.key-code is 13
+      e = @$.find('.message-box textarea')
+      if ev.key-code is 27 # close panel
+        window.component.panels?off!
+      if ev.key-code is 13 and not ev.shift-key
         message =
           conversation_id : @cid!
           user_id         : window.user.id
-          body            : @$.find('.message-box textarea').val!
+          body            : e.val!
+        e # clear & shrink
+          ..val ''
+          ..css \height \auto
         @send-message message
-        @$.find('.message-box textarea').val('')
 
     send-message: (message) ->
       window.socket.emit \chat-message, message

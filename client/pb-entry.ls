@@ -423,7 +423,7 @@ $d.on \click 'html.admin #analytics' -> subscribe \analytics
 #}}}
 # {{{ - components
 window.component = {}
-
+$d.on \click \.onclick-messages (ev) -> window.component.panels?on!
 $d.on \click \.onclick-buy (ev) -> do-buy($ ev.target .data \product)
 window.do-buy = (product-id) ->
   throw new Error "window.do-buy must specify a product-id" unless product-id
