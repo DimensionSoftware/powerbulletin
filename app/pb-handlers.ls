@@ -91,8 +91,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 function background-for-forum m, active-forum-id
   return unless m?length # guard
   item = menu.flatten m |> find -> it.form.dbid is active-forum-id
-  if b = item.form.background
-    b
+  item?form?background
 
 @forum = (req, res, next) ->
   user = req.user
@@ -218,7 +217,7 @@ function background-for-forum m, active-forum-id
     fdoc <<< {forum-id, cvars.t-step}
     fdoc.item            = item
     fdoc.menu            = m
-    fdoc.menu-summary    = (menu.item m, (menu.path m, item.id))?children or []
+    fdoc.menu-summary    = (menu.item m, (menu.path m, item?id))?children or []
     fdoc.active-forum-id = fdoc.forum-id
     fdoc.title           = fdoc?forum?title
     fdoc.background      = background-for-forum fdoc.menu, fdoc.active-forum-id
