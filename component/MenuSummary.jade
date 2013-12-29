@@ -1,5 +1,5 @@
 
-mixin _summary_item(depth, items)
+mixin menu-item(depth, items)
   each item,i in items
     klass = (depth > 0) ? 'indent' : 'submenu'
     if item && item.form
@@ -22,9 +22,11 @@ mixin _summary_item(depth, items)
         if item.children
           div(class=klass)
             ul
-              +_summary_item(depth+1, item.children)
+              +menu-item(depth+1, item.children)
 
 //- render menu items in long format
-ul
-  if typeof(menuSummary) == 'object'
-    +_summary_item(0, menuSummary)
+//----------
+if typeof(menuSummary) == 'object'
+  ul
+    +menu-item(0, menuSummary)
+.clear

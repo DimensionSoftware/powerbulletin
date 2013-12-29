@@ -12,10 +12,10 @@ html.homepage, html.page, html.moderation
     transition all .2s cubic-bezier(1,.01,.69,1)
 html.homepage
   .main-content
+    width auto
     padding-top (header_height+50)
     margin 0 auto
     margin-left 6%
-    margin-right 200px
     .homepage
       width 80%
       margin-bottom (grid*9)
@@ -84,6 +84,7 @@ html.forum, html.profile, html.search, html.moderation
         display block
         padding 8px 10px
     .scrollable
+      padding-top grid
       overflow hidden
       overflow-y scroll
       height 100%

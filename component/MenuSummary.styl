@@ -1,7 +1,34 @@
 .MenuSummary
-  menu
+  margin-top grid
+  ul
+    margin 0
+    padding 0
     list-style-type none
+    .row
+      font-weight 300
+      min-width 300px
+      float left
+      .title
+        font-weight 500
+        font-size 1.1em
+      .description
+        font-weight 200
+        color #999
     .submenu
-      font-size .9em
-      margin grid
-
+      border-top 1px solid #eee
+      font-size .75em
+      margin (grid/2) grid (grid*2) 0
+      padding-top grid
+      float left
+      max-height 90px
+      overflow hidden
+      transition max-height .1s ease-out .3s
+      //&:hover
+      //  max-height 999px
+      //  transition max-height .2s ease-out .5s
+      .row
+        width 250px
+        overflow hidden
+        text-overflow ellipsis
+        .title
+          font-weight 300

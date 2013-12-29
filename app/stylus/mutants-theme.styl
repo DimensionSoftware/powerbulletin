@@ -8,6 +8,14 @@ a.mutant:hover
 // Mutant-specific States
 //{{{ - homepage
 html.homepage
+  #forum_background_color::after, #forum_background_buffer::after, #forum_background::after
+    content ''
+    position absolute
+    top 0
+    right 0
+    bottom 0
+    left 0
+    background-color tint_color
   .main-content
     .container
       width 90%
@@ -62,7 +70,7 @@ html.forum, html.profile, html.search, html.moderation
             right 0
             bottom 0
             height 0
-            box-shadow 0 0 10px 1px tint-color
+            box-shadow 0 0 10px 1px tint_color
           .body
             position relative
         .post-edit
@@ -156,6 +164,7 @@ html.forum, html.profile, html.search, html.moderation
           bottom -1px
           content ''
         .arrow
+          display none
           position fixed
           content ''
           top 0
