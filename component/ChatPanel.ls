@@ -2,7 +2,7 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! \./PBComponent
-{show-tooltip} = require \../client/client-helpers
+{lazy-load-autosize, show-tooltip} = require \../client/client-helpers
 
 module.exports =
   class ChatPanel extends PBComponent
@@ -34,6 +34,7 @@ module.exports =
       @$.attr id: @local \id
       @$.css @css
       @$.on \keyup, \.message-box, @message-box-key-handler
+      <~ lazy-load-autosize
       @$.find '.message-box textarea' .autosize!
 
     cid: ~>
