@@ -12,10 +12,10 @@ module.exports =
 
     # chat-panels are autovivified via ChatPanel.add-message(message)
     @add-message = (message) ->
+      console.warn message
       id = message.conversation_id
       css-id = "chat-#id"
       icon = "#cache-url#{message.user.photo}"
-      console.warn @chats, css-id, @chats[css-id]
       chat-panel = if @chats[css-id]
         @chats[css-id]
       else

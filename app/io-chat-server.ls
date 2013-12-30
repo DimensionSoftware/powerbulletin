@@ -4,8 +4,6 @@ require! {
   redis
 }
 
-{format} = require \./server-helpers
-
 {map} = require \prelude-ls
 
 log = debug 'io-chat-server'

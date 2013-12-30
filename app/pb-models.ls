@@ -8,6 +8,7 @@ require! {
   postgres: \./postgres
   sioa: \socket.io-announce
   sh: \../shared/shared-helpers
+  format: \../shared/format
 }
 
 {filter, join, keys, values, sort-by} = require \prelude-ls
@@ -658,6 +659,7 @@ query-dictionary =
       if err then return cb err
       me = c.participants |> find (.user_id is message.user_id)
       if not me then return cb { -success, messages: [ "User not a participant in conversation." ] }
+      message.html = format.render message.body
       err, msgs <~ db.messages.upsert message
       if err then return cb { -success, messages: [ "Couldn't send message." ] }
       msg      = msgs.0

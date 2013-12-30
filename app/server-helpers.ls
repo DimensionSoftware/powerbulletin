@@ -135,20 +135,6 @@ process-cached-data = {}
     #@login(req, res, cb) # on successful registration, automagically @login, too
     cb null, u
 
-@format =
-  chat-message: (s, options={}) ->
-    t0 = @replace-urls(s, @embedded)
-    t1 = sanitize(t0).xss!
-  url-pattern: /(\w+:\/\/[\w\.\?\&=\%\/-]+[\w\?\&=\%\/-])/g
-  replace-urls: (s, fn) ->
-    s.replace @url-pattern, fn
-  embedded: (url) ->
-    if url.match /\.(jpe?g|png|gif)$/i
-      """<img src="#{url}" />"""
-    else
-      """<a href="#{url}" target="_blank">#{url}</a>"""
-
-
 @render-css = (file-name, cb) ->
   if file-name in global.cvars.acceptable-stylus-files
     fs.read-file "app/stylus/#{file-name}", (err, buffer) ->
