@@ -3,12 +3,30 @@
   top 0
   right 0
   margin 0
+  background #eee
+
   &.hidden
+
+  ul.messages
+    position absolute
+    margin 0
+    padding 0
+    bottom 32px
+    left 0
+    width 100%
+    list-style-type none
+  ul.messages > li
+    margin 0.5em
+    padding 0.5em
+    border-radius 8px
+  ul.messages > li.other
+    text-align right
 
   .footer
     position fixed
     bottom 0
     right 0
+    height 32px
     textarea
       padding 0
       border 0

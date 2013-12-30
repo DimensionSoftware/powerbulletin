@@ -41,7 +41,10 @@ module.exports =
       (@local \id).replace /^chat-/, '' |> parse-int
 
     add-new-message: (message) ->
-      @$.find(\.container).append "<li>#{message.body}</li>" # TODO - do this right
+      $msg = @@$(jade.templates._chat_message(message))
+      if message.user_id isnt window.user.id
+        $msg.add-class \other
+      @$.find(\.messages).append $msg
 
     message-box-key-handler: (ev) ~>
       e = @$.find('.message-box textarea')
