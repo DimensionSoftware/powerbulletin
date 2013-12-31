@@ -9,7 +9,7 @@ require! { $R: \reactivejs }
 @r-user = $R.state!
 @r-t = $R.state!
 
-@r-chats = window.r-chats  = $R((socket, t) ->
+@r-chats = window?r-chats  = $R((socket, t) ->
   console.warn \r-chats, socket, t
   return unless socket
   err, unread <- socket.emit \chat-unread
@@ -17,7 +17,8 @@ require! { $R: \reactivejs }
     window.ChatPanel.add-conversation c, window.user
 ).bind-to @r-socket, @r-t
 
-window <<< @
+if window?
+  window <<< @
 
 @
 # vim:fdm=marker
