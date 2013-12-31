@@ -645,7 +645,14 @@ query-dictionary =
       '''
       # TODO - ORDER BY MAX(m.created) DESC ?
       # TODO - expose this data to the client side
-      postgres.query sql, [site-id, user-id], cb
+      err, unread <- postgres.query sql, [site-id, user-id]
+      if err then return cb err
+
+      add-participants = (c, cb) ->
+        err, c.participants <- db.conversations.participants c.id
+        cb err, c
+
+      async.map unread, add-participants, cb
 
   messages:
     # mark a message as read
