@@ -19,11 +19,10 @@ module.exports = class ChatServer
     cb null, c
 
   unread: (cb=(->)) ~>
+    console.warn \unread
     err, unread <~ db.conversations.unread-summary-by-user @site.id, @user.id
     if err then return cb err
-    console.warn \unread, unread
-    @socket.emit \chat-unread, unread
-    cb null
+    cb null, unread
 
   message: (message, cb=(->)) ~>
     err, msg <~ db.messages.send message

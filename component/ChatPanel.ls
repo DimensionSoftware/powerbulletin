@@ -3,6 +3,7 @@ require, exports, module <- define
 
 require! \./PBComponent
 {lazy-load-autosize, show-tooltip} = require \../client/client-helpers
+{find} = require \prelude-ls
 
 module.exports =
   class ChatPanel extends PBComponent
@@ -10,19 +11,34 @@ module.exports =
     # management of all current chats in window
     @chats = {}
 
-    # chat-panels are autovivified via ChatPanel.add-message(message)
-    @add-message = (message) ->
-      id = message.conversation_id
+    # chat-panel add if not already existing
+    @add = (id, icon, name) ->
       css-id = "chat-#id"
-      icon = "#cache-url#{message.user.photo}"
-      chat-panel = if @chats[css-id]
+      panels = window.component.panels
+      if @chats[css-id]
         @chats[css-id]
       else
         panels = window.component.panels
-        @chats[css-id] = new ChatPanel locals: { id: css-id, name: message.user.name, icon: icon, width: 300px, p: panels }
+        @chats[css-id] = new ChatPanel locals: { id: css-id, name: name, icon: icon, width: 300px, css:{}, p: panels }
         panels.add id, @chats[css-id]
         @chats[css-id]
+
+    # chat-panels are autovivified via ChatPanel.add-message(message)
+    @add-message = (message) ->
+      id = message.conversation_id
+      icon = "#cache-url#{message.user.photo}"
+      chat-panel = @add id, icon, message.user.name
       chat-panel.add-new-message message
+      chat-panel
+
+    # add chat-panel using converstation info (but no message)
+    @add-conversation = (c, user) ->
+      console.warn \a-c, c, user
+      id     = c.id
+      not-me = c.participants |> find (-> it.user_id isnt user.id) # later on, use filter
+      icon   = "#cache-url#{not-me.photo}"
+      console.log \add-conversation, id, icon, not-me
+      @add id, icon, not-me.name
 
     init: ->
       @p = @local \p

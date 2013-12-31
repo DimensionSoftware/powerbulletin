@@ -5,7 +5,10 @@ require! {
   \../component/ChatPanel
   \./globals
   mutants: \../shared/pb-mutants
+  $R: \reactivejs
 }
+
+window.globals = globals
 
 window.ChatPanel = ChatPanel
 
@@ -16,6 +19,7 @@ window.ChatPanel = ChatPanel
 init = -> # export socket to window + init
   if sock = window.socket = io?connect!
     init-with-socket sock
+  globals.r-socket sock
   sock
 main = ->
   <- lazy-load-socketio # first try
@@ -32,6 +36,10 @@ function init-with-socket s
   s.on \connect, ->
     globals.r-socket s
     #console.log \connected
+
+  s.on \reconnect ->
+    globals.r-socket s
+    console.log \reconnected
 
   s.on \disconnect, ->
     #console.log \disconnected
@@ -135,8 +143,5 @@ function init-with-socket s
 
   s.on \chat-message, (message) ->
     ChatPanel.add-message message
-
-  s.on \chat-unread, (unread) ->
-    console.warn \unread, unread
 
 # vim:fdm=indent

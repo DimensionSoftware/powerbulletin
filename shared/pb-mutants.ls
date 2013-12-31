@@ -145,11 +145,14 @@ layout-on-personalize = (w, u) ->
     set-profile u.photo
 
     # hash actions
-    switch window.location.hash
+    switch w.location.hash
     | \#choose   =>
       if is-email user?name
-        Auth.show-login-dialog!
-        switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
+        w.Auth.show-login-dialog!
+        w.switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
+
+    # unread messages
+    globals.r-t(1)
 
 @homepage =
   static:
