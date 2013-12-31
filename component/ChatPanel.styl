@@ -1,38 +1,57 @@
+body.scrolled
+  .footer
+    bottom 65px
+
 .ChatPanel
-  position fixed
+  position absolute
   top 0
   right 0
   margin 0
-  background #eee
+  background-color #fff
+  border-left 1px solid #fafafa
 
   &.hidden
 
-  ul.messages
-    position absolute
-    margin 0
-    padding 0
-    bottom 32px
-    left 0
-    width 100%
-    list-style-type none
+  .middle
+    position relative
+    height 100%
+    .messages
+      position absolute
+      margin 0
+      padding 0
+      left 0
+      height 100%
+      width 100%
+      list-style-type none
+      overflow-y scroll
 
-    img
-      width 90%
+      img
+        width 90%
 
-  ul.messages > li
-    margin 0.5em
-    padding 0.5em
-    border-radius 8px
-  ul.messages > li.other
-    text-align right
+    .messages > li
+      position relative
+      margin 0.5em
+      padding 0.5em
+      border-radius 8px
+      &:after
+        content ''
+        position absolute
+        bottom 0
+        width 70%
+        left 15%
+        height 1px
+        background-color #f3f3f3
+    .messages > li.other
+      text-align right
+      background-color #fafafa
 
   .footer
-    position fixed
-    bottom 0
+    position absolute
+    bottom 97px
     right 0
-    height 32px
-    textarea
-      padding 0
+    .message-box
+      padding 5px 0 5px 5px
       border 0
       font-size 12px
       resize none
+      bottom 0

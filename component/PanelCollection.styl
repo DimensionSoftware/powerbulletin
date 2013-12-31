@@ -1,17 +1,23 @@
-z = 100
+z = 8
+
+body.scrolled
+  .PanelCollection
+    top header_scrolled_height
+    bottom footer_height
 
 .PanelCollection
   position fixed
-  height: 100%
-  top 0
+  top header_height
+  padding-top grid
+  bottom 0
   right 0
   width 10px
   z-index z
 
   .toggler
-    position fixed
-    top 0.5em
-    right 0.5em
+    position absolute
+    top 0.8em
+    right 0.8em
     cursor pointer
     z-index 1
   .toggler.off:after
@@ -23,7 +29,7 @@ z = 100
   .panel-togglers
     position relative
     float left
-    margin 0
+    margin grid 0 0 0
     top 50%
     left 0
 

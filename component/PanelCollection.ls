@@ -10,14 +10,6 @@ module.exports =
     # x = PanelCollection.x()
     # x.p.select('a')
     # x.p.select('b')
-    @x = ->
-      p = new PanelCollection
-      $('body').append p.$
-      a = new ChatPanel({locals: { id: 'a', icon: 'https://muscache.pb.com/images/twitter_32.png', width: 300px, css: { background: '#544', opacity: 0.85 }, p: p}})
-      p.add 'a', a
-      b = new ChatPanel({locals: { id: 'b', icon: 'https://muscache.pb.com/images/twitter_32.png', width: 400px, css: { background: '#88c', opacity: 0.75 }, p: p}})
-      p.add 'b', b
-      {p, a, b}
 
     init: ->
       @list     = []
@@ -54,6 +46,8 @@ module.exports =
         @seen[name] = @list.length - 1
         # dom
         $icon = @@$ '<li class="panel-icon photo"><img title="" /></li>'
+        if n = panel.local \name # set title
+          $icon.find \img .attr \title n
         $icon.find 'img' .attr { src: panel.local(\icon), title: panel.local(\title) }
         @$ul.append $icon
         @$.append panel.$
@@ -162,7 +156,7 @@ module.exports =
 
     # helper for adding a new chat panel to collection
     add-chat-panel: (opts) ->
-      chat-panel = ChatPanel.chats[opts.id] = new ChatPanel locals: { opts.id, opts.icon, width: 300px, css: { background: '#fff', opacity: 0.85 }, p: @ }
+      chat-panel = ChatPanel.chats[opts.id] = new ChatPanel locals: { opts.id, opts.icon, width: 300px, p: @ }
       @add opts.id, chat-panel
 
 # vim:fdm=indent

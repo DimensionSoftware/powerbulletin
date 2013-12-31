@@ -19,7 +19,7 @@ module.exports =
         @chats[css-id]
       else
         panels = window.component.panels
-        @chats[css-id] = new ChatPanel locals: { id: css-id, icon: icon, width: 300px, css: { background: '#fff', opacity: 0.85 }, p: panels }
+        @chats[css-id] = new ChatPanel locals: { id: css-id, name: message.user.name, icon: icon, width: 300px, p: panels }
         panels.add id, @chats[css-id]
         @chats[css-id]
       chat-panel.add-new-message message
@@ -35,7 +35,7 @@ module.exports =
       @$.css @css
       @$.on \keyup, \.message-box, @message-box-key-handler
       <~ lazy-load-autosize
-      @$.find '.message-box textarea' .autosize!
+      @$.find \.message-box .autosize!
 
     cid: ~>
       (@local \id).replace /^chat-/, '' |> parse-int
@@ -47,7 +47,7 @@ module.exports =
       @$.find(\.messages).append $msg
 
     message-box-key-handler: (ev) ~>
-      e = @$.find('.message-box textarea')
+      e = @$.find \.message-box
       if ev.key-code is 27 # close panel
         window.component.panels?off!
       if ev.key-code is 13 and not ev.shift-key
@@ -67,10 +67,10 @@ module.exports =
       hi = $(window).height!
       if @local \virgin
         @$.css(width: @local \width)
-        @$.find \textarea .css(width: @local \width)
+        @$.find \.message-box .css(width: @local \width)
         @local \virgin, false
       @$.css(height: "#{hi}px")
-      @p.show @$, (~> @$.find('.message-box textarea').focus!)
+      @p.show @$, (~> @$.find \.message-box .focus!)
 
     hide: ->
       @p.hide @$
