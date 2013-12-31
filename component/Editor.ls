@@ -23,9 +23,9 @@ module.exports =
 
     # keys for local storage (must bind later, after the user exists)
     k-has-preview: ~>
-      "#{(storage.get \user)?id}-editer-has-preview"
+      "#{(storage.get \user or window.user)?id}-editer-has-preview"
     k-sig: ~>
-      "#{(storage.get \user)?id}-sig"
+      "#{(storage.get \user or window.user)?id}-sig"
 
     body: ~> @editor?val!
     save: (to-server=false) ~>
