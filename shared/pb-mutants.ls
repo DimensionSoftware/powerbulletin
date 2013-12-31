@@ -9,7 +9,7 @@ purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
-  {respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
+  {respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -269,7 +269,7 @@ layout-on-personalize = (w, u) ->
       # handle forum background
       set-background-onload window, window.background
 
-      <- require ["#cache-url/local/jquery.autosize.min.js"]
+      <- lazy-load-autosize
 
       window.$ \#main_content .remove-class \transparent # fade content in
 
@@ -415,7 +415,7 @@ same-profile = (hints) ->
       window.$ \body .on \click \.onclick-show-forgot ->
         <- Auth.show-login-dialog
         switch-and-focus \on-error \on-forgot '#auth input[name=email]'
-      <- require ["#cache-url/local/jquery.autosize.min.js"]
+      <- lazy-load-autosize
       next!
   on-mutate:
     (window, next) ->
