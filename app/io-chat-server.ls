@@ -1,7 +1,6 @@
 require! {
   async
   debug
-  redis
 }
 
 {map} = require \prelude-ls
@@ -11,7 +10,6 @@ log = debug 'io-chat-server'
 module.exports = class ChatServer
 
   (@io, @socket, @presence, @site, @user) ->
-    @r = redis.create-client!
 
   between: (user-ids, cb=(->)) ~>
     unless @user.id in user-ids
@@ -20,6 +18,15 @@ module.exports = class ChatServer
     if err then return cb err
     cb null, c
 
+  unread: (cb=(->)) ~>
+    err, unread <~ db.conversations.unread-summary-by-user @site.id, @user.id
+    if err then return cb err
+    console.warn \unread, unread
+    @socket.emit \chat-unread, unread
+    cb null
+
   message: (message, cb=(->)) ~>
     err, msg <~ db.messages.send message
     cb null, msg
+
+# vim:fdm=indent

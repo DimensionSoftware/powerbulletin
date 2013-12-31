@@ -136,4 +136,7 @@ function init-with-socket s
   s.on \chat-message, (message) ->
     ChatPanel.add-message message
 
+  s.on \chat-unread, (unread) ->
+    console.warn \unread, unread
+
 # vim:fdm=indent
