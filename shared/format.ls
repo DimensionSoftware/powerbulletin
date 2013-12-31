@@ -1,3 +1,6 @@
+define = window?define or require(\amdefine) module
+require, exports, module <- define
+
 @render = (s, options={}) ->
   t0 = @replace-urls(s, @embedded)
   # TODO sanitize
@@ -13,3 +16,5 @@
     """<img src="#{url}" />"""
   else
     """<a href="#{url}" target="_blank">#{url}</a>"""
+
+@
