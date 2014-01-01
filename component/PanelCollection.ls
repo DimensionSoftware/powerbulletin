@@ -82,28 +82,31 @@ module.exports =
     # make the named panel active
     select: (name) ->
       selected-panel = @find name
+      $togglers      = @$.find \.panel-togglers
       if not selected-panel
         throw "#name has not been added"
       if selected-panel.exec
         return selected-panel.exec!
 
-      $togglers = @$.find \.panel-togglers
+      set-height = -> # set height for scrolling messages
+        selected-panel.$.find \.middle .css \height, (selected-panel.$.height! - 214px)
+
       if @selected is name
         selected-panel.hide!
         @last-selected = @selected
         @$ul.find \li .remove-class \selected
         @state.selected(@selected = null)
-        $togglers .animate { left: 0 }, @delay, @ease-in
+        $togglers .transition { left: 0 }, @delay, @ease-in, set-height
       else if @selected is null
         selected-panel.show!
         @state.selected(@selected = name)
-        $togglers .animate { left: -(selected-panel.local \width) }, @delay, @ease-out
+        $togglers .transition { left: -(selected-panel.local \width) }, @delay, @ease-out, set-height
       else if @selected != name
         unselected-panel = @find @selected
         unselected-panel.hide!
         selected-panel.show!
         @state.selected(@selected = name)
-        $togglers .animate { left: -(selected-panel.local \width) }, @delay
+        $togglers .transition { left: -(selected-panel.local \width) }, @delay, set-height
       @selected
 
     select-force: (name) ->
@@ -113,16 +116,17 @@ module.exports =
         unselected-panel = @find @selected
         unselected-panel.hide!
       selected-panel.show!
-      $togglers .animate { left: -(selected-panel.local \width) }, @delay
+      $togglers .transition { left: -(selected-panel.local \width) }, @delay
       @state.selected(@selected = name)
 
     off: ->
       return unless  @selected
+      @$.find \.selected .remove-class \selected
       (@find @selected).hide!
       @last-selected = @selected
       @state.selected(@selected = null)
       $togglers = @$.find \.panel-togglers
-      $togglers .animate { left: 0 }, @delay, @ease-in
+      $togglers .transition { left: 0 }, @delay, @ease-in
 
     on: ->
       return if @selected
@@ -133,7 +137,7 @@ module.exports =
       return unless selected-panel
       $togglers = @$.find \.panel-togglers
       selected-panel.show!
-      $togglers .animate { left: -(selected-panel.local \width) }, @delay, @ease-out
+      $togglers .transition { left: -(selected-panel.local \width) }, @delay, @ease-out
       @state.selected(@selected = @last-selected)
 
     resize: ->

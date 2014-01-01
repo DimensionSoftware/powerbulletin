@@ -56,11 +56,20 @@ module.exports =
     cid: ~>
       (@local \id).replace /^chat-/, '' |> parse-int
 
+    scroll-to-latest: ~>
+      set-timeout (~>
+        e = @$.find \.messages
+        e.scroll-top(e.height!+200px)), 50ms # bottom
+
     add-new-message: (message) ->
       $msg = @@$(jade.templates._chat_message(message))
       if message.user_id isnt window.user.id
         $msg.add-class \other
+      e = @$.find \.messages
+      # FIXME only scroll if already at bottom
+      should-scroll = true #Math.abs(e.offset!top - e.scroll-top!) < 15px
       @$.find(\.messages).append $msg
+      if should-scroll then @scroll-to-latest!
 
     message-box-key-handler: (ev) ~>
       e = @$.find \.message-box
@@ -73,20 +82,21 @@ module.exports =
           body            : e.val!
         e # clear & shrink
           ..val ''
-          ..css \height \auto
+          ..css \height \14px
         @send-message message
 
-    send-message: (message) ->
-      window.socket.emit \chat-message, message
+    send-message: (message, cb=(->)) ->
+      window.socket.emit \chat-message, message, cb
 
     show: ->
       hi = $(window).height!
       if @local \virgin
         @$.css(width: @local \width)
-        @$.find \.message-box .css(width: @local \width)
+        @$.find \.message-box .css(width: (@local \width)-8px)
         @local \virgin, false
       @$.css(height: "#{hi}px")
       @p.show @$, (~> @$.find \.message-box .focus!)
+      @scroll-to-latest!
 
     hide: ->
       @p.hide @$

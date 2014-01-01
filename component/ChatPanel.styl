@@ -12,13 +12,15 @@ body.scrolled
 
   &.hidden
 
+  .header
+    h5
+      margin-left 15px
+      text-transform capitalize
   .middle
     position relative
-    height 100%
     .messages
-      position absolute
       margin 0
-      padding 0
+      padding 35px 0 0 0
       left 0
       height 100%
       width 100%
@@ -33,25 +35,29 @@ body.scrolled
       margin 0.5em
       padding 0.5em
       border-radius 8px
-      &:after
-        content ''
-        position absolute
-        bottom 0
-        width 70%
-        left 15%
-        height 1px
-        background-color #f3f3f3
-    .messages > li.other
-      text-align right
       background-color #fafafa
+      color #666
+      font-size .9em
+      text-align right
+    .messages > li.other
+      text-align left
+      background-color #fff
+      color #333
+      font-size 1em
 
   .footer
     position absolute
     bottom 97px
     right 0
+    left 1px
+    overflow hidden
+    border-top 1px solid #eee
     .message-box
+      overflow hidden
       padding 5px 0 5px 5px
       border 0
       font-size 12px
+      height 15px
       resize none
       bottom 0
+      left 1px

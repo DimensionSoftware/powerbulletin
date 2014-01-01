@@ -20,6 +20,7 @@ body.scrolled
     right 0.8em
     cursor pointer
     z-index 1
+    color #aaa
   .toggler.off:after
     content "☰ "
     display none
@@ -32,7 +33,9 @@ body.scrolled
     margin grid 0 0 0
     top 50%
     left 0
-
+    .selected.photo
+      transform scale(1.1)
+      margin-left -55px
     li
       list-style none
       cursor pointer
