@@ -190,6 +190,11 @@ layout-on-personalize = (w, u) ->
   locals = {qty, step, active-page: 1}
   render-component win, \#thread-paginator, \threadPaginator, Paginator, {locals, on-page}
 
+!function remove-backgrounds w
+  w.$ \#forum_background .remove!
+  w.$ \#forum_background_color .remove!
+  w.$ \#forum_background_buffer .remove!
+
 @forum =
   static:
     (window, next) ->
@@ -369,10 +374,8 @@ layout-on-personalize = (w, u) ->
       w.$ \#main_content .add-class \transparent
       #$ '#left_container .scrollable' .off \scroll.Forum
       try w.$ \#left_container .resizable(\destroy)
-      unless next-mutant is \forum
-        w.$ \#forum_background .remove!
-        w.$ \#forum_background_color .remove!
-        w.$ \#forum_background_buffer .remove!
+      unless next-mutant is \forum_background
+        remove-backgrounds w
         reset-paginator w
       next!
 
@@ -533,6 +536,7 @@ same-profile = (hints) ->
       window.marshal \action @action
       window.marshal \site @site
       layout-static.call @, window, \admin
+      remove-backgrounds window
       next!
   on-personalize:
     (w, u, next) ->
@@ -738,6 +742,7 @@ mk-post-pnum-to-href = (post-uri) ->
       window.replace-html window.$(\#main_content), @page.config.main_content
       window.marshal \activeForumId, @active-forum-id
       window.marshal \contentOnly, @content-only
+      remove-backgrounds window
       layout-static.call @, window, \page, @active-forum-id
       next!
   on-load:
