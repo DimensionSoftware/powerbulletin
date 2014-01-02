@@ -50,6 +50,7 @@ module.exports =
       @$.attr id: @local \id
       @$.css @css
       @$.on \keyup, \.message-box, @message-box-key-handler
+      @$.on \keydown, \.message-box, -> if it.key-code is 13 and not it.shift-key then false # eat returns
       <~ lazy-load-autosize
       @$.find \.message-box .autosize!
 
@@ -73,16 +74,20 @@ module.exports =
 
     message-box-key-handler: (ev) ~>
       e = @$.find \.message-box
-      if ev.key-code is 27 # close panel
-        window.component.panels?off!
-      if ev.key-code is 13 and not ev.shift-key
-        message =
-          conversation_id : @cid!
-          user_id         : window.user.id
-          body            : e.val!
+      clear = ->
         e # clear & shrink
           ..val ''
           ..css \height \14px
+      if ev.key-code is 27 # close panel
+        window.component.panels?off!
+      if ev.key-code is 13 and not ev.shift-key
+        v = e.val!
+        if v.match /^\n*$/ then clear!; return false # guard
+        message =
+          conversation_id : @cid!
+          user_id         : window.user.id
+          body            : v
+        clear!
         @send-message message
 
     send-message: (message, cb=(->)) ->
