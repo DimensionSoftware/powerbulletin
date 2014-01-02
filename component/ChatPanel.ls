@@ -59,7 +59,7 @@ module.exports =
     scroll-to-latest: ~>
       set-timeout (~>
         e = @$.find \.messages
-        e.scroll-top(e.height!+200px)), 50ms # bottom
+        e.scroll-top(e.0.scroll-height)), 50ms # bottom
 
     add-new-message: (message) ->
       $msg = @@$(jade.templates._chat_message(message))
