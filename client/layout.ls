@@ -8,7 +8,6 @@ require \jqueryUi
 helpers = require \../shared/shared-helpers
 
 {respond-resize, storage, switch-and-focus, mutate, show-tooltip, set-profile} = require \./client-helpers
-require! globals
 window.Auth  = require \../component/Auth
 window.switch-and-focus = switch-and-focus
 

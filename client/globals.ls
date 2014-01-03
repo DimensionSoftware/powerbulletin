@@ -4,21 +4,26 @@ require, exports, module <- define
 require! { $R: \reactivejs }
 
 # globals we want at beginning of application load (initial page load)
-@r-searchopts = $R.state window?searchopts
-@r-socket = $R.state!
-@r-user = $R.state!
-@r-t = $R.state!
+#@r-searchopts = $R.state window?searchopts
+@r-searchopts = window?r-searchopts ?= $R.state window?searchopts
+@r-socket = window?r-socket ?= $R.state!
+@r-user = window?r-user ?= $R.state!
+@r-t = window?r-t ?= $R.state!
 
-@r-chats = window?r-chats  = $R((socket, t) ->
-  console.warn \r-chats, socket, t
+@r-chats = window?r-chats ?= $R((socket, t) ->
+  #console.warn \r-chats, socket, t
+  #console.warn socket, !!socket
   return unless socket
-  err, unread <- socket.emit \chat-unread
-  for c in unread
-    window.ChatPanel.add-conversation c, window.user
+  #console.warn \got-past-return
+  set-timeout (->
+    err, unread <- socket.emit \chat-unread
+    #console.warn 'after socket.emit', err, unread
+    for c in unread
+      window.ChatPanel.add-conversation c, window.user
+  ), 250ms
 ).bind-to @r-socket, @r-t
 
-if window?
-  window <<< @
+#console.trace \in-globals
 
 @
 # vim:fdm=marker

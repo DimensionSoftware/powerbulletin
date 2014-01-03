@@ -35,10 +35,11 @@ module.exports =
     @add-conversation = (c, user) ->
       console.warn \a-c, c, user
       id     = c.id
+      css-id = "chat-#id"
       not-me = c.participants |> find (-> it.user_id isnt user.id) # later on, use filter
       icon   = "#cache-url#{not-me.photo}"
-      console.log \add-conversation, id, icon, not-me
-      @add id, icon, not-me.name
+      #console.log \add-conversation, css-id, icon, not-me
+      @add css-id, icon, not-me.name
 
     init: ->
       @p = @local \p
