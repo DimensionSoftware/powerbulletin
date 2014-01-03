@@ -41,7 +41,7 @@ function init-with-socket s
     console.warn \ready
     err, unread <- socket.emit \chat-unread
     for c in unread
-      window.ChatPanel.add-conversation c, window.user
+      window.ChatPanel.add-from-conversation c, window.user
 
   s.on \reconnect ->
     globals.r-socket s
@@ -148,6 +148,6 @@ function init-with-socket s
     console?log \debug, message
 
   s.on \chat-message, (message) ->
-    ChatPanel.add-message message
+    ChatPanel.add-from-message message
 
 # vim:fdm=indent

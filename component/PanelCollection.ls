@@ -45,17 +45,18 @@ module.exports =
         @list.push [name, panel]
         @seen[name] = @list.length - 1
         # dom
-        $icon = @@$ '<li class="panel-icon photo"><img title="" /></li>'
+        $icon = @@$ '<li class="panel-icon"><img class="profile photo" title="" /></li>'
         if n = panel.local \name # set title
           $icon.find \img .attr \title n
-        $icon.find 'img' .attr { src: panel.local(\icon), title: panel.local(\title) }
+        $icon.find \img .attr { src: panel.local(\icon), title: panel.local(\title) }
+        $icon.attr \data-user-id, panel.local(\uid)
         @$ul.append $icon
         @$.append panel.$
         $ul = @$ul
         self = @
         $icon.click (ev) ->
           $ul.find \li .remove-class \selected
-          $(@).add-class \selected
+          $ @ .add-class \selected
           self.select name
       else
         throw "#name has already been added"
@@ -66,7 +67,7 @@ module.exports =
       if i
         @list.splice i, 1
         delete @seen[name]
-        $icon = @$ul.find('li')[i]
+        $icon = @$ul.find(\li)[i]
         $panel = @$.find('.panel')[i]
         $icon.remove!
         $panel.remove!
@@ -77,7 +78,7 @@ module.exports =
 
     # find a panel by name
     find: (name) ->
-      @list[@seen[name]][1]
+      @list[@seen[name]]?1
 
     # make the named panel active
     select: (name) ->
