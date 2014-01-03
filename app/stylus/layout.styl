@@ -509,24 +509,24 @@ body.scrolled
       .tools
         top 15px
         .bubble, .bubble2
-          top 2px
-          right 18px
+          top 5px
+          right 22px
         .container menu
           padding 0
           margin 0
-      .tools::after
-        top 0
-        right 32px
-        border-top-color light
-      .tools:hover
-        .container
-          padding-top 35px!important
-          menu
-            padding 5px
-            right -72px
-            margin-top 12px
-      .tools::before
-        display none
+        &::after
+          top 0
+          right 32px
+          border-top-color light
+        &::before
+          display none
+        &:hover
+          .container
+            padding-top 37px!important
+            menu
+              padding 5px
+              margin-top 15px
+              right 50px
       .search
         top -200px!important
         opacity 0
@@ -540,7 +540,7 @@ body.scrolled
         height 30px
         width 30px
         top -14px
-        right -45px
+        right 75px
         transition all .2s bounce
   #left_content
     top (header_scrolled_height+3)
