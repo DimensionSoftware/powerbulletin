@@ -151,9 +151,6 @@ layout-on-personalize = (w, u) ->
         w.Auth.show-login-dialog!
         w.switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
 
-    # unread messages
-    globals.r-t(1)
-
 @homepage =
   static:
     (window, next) ->

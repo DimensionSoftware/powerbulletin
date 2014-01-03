@@ -210,3 +210,5 @@ clear-stale-redis-data = (r, cb) ->
 
       # register search with the search notifier
       io.sockets.emit \register-search, {searchopts, site-id: site.id, room: search-room}
+
+    socket.emit \ready

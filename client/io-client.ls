@@ -37,6 +37,12 @@ function init-with-socket s
     globals.r-socket s
     #console.log \connected
 
+  s.on \ready, ->
+    console.warn \ready
+    err, unread <- socket.emit \chat-unread
+    for c in unread
+      window.ChatPanel.add-conversation c, window.user
+
   s.on \reconnect ->
     globals.r-socket s
     console.log \reconnected
