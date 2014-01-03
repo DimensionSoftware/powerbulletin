@@ -12,34 +12,33 @@ module.exports =
     @chats = {}
 
     # chat-panel add if not already existing
-    @add = (id, icon, name) ->
-      css-id = "chat-#id"
+    @add = (cid, alias) ->
+      css-id = "chat-#cid"
       panels = window.component.panels
       if @chats[css-id]
         @chats[css-id]
       else
         panels = window.component.panels
-        @chats[css-id] = new ChatPanel locals: { id: css-id, name: name, icon: icon, width: 300px, css:{}, p: panels }
-        panels.add id, @chats[css-id]
+        @chats[css-id] = new ChatPanel locals: { id:css-id, uid:alias.user_id, name:alias.name, icon:alias.icon, width:300px, css:{}, p:panels }
+        panels.add css-id, @chats[css-id]
         @chats[css-id]
 
-    # chat-panels are autovivified via ChatPanel.add-message(message)
-    @add-message = (message) ->
+    # chat-panels are autovivified via ChatPanel.add-from-message(message)
+    @add-from-message = (message) ->
       id = message.conversation_id
-      icon = "#cache-url#{message.user.photo}"
-      chat-panel = @add id, icon, message.user.name
+      message.user.icon = "#cache-url#{message.user.photo}"
+      chat-panel = @add id, message.user
       chat-panel.add-new-message message
       chat-panel
 
     # add chat-panel using converstation info (but no message)
-    @add-conversation = (c, user) ->
+    @add-from-conversation = (c, user) ->
       console.warn \a-c, c, user
       id     = c.id
-      css-id = "chat-#id"
       not-me = c.participants |> find (-> it.user_id isnt user.id) # later on, use filter
-      icon   = "#cache-url#{not-me.photo}"
-      #console.log \add-conversation, css-id, icon, not-me
-      @add css-id, icon, not-me.name
+      #console.log \add-from-conversation, id, icon, not-me
+      not-me.icon = "#cache-url#{not-me.photo}"
+      @add id, not-me
 
     init: ->
       @p = @local \p
