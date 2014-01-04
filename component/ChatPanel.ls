@@ -33,7 +33,7 @@ module.exports =
 
     # add chat-panel using converstation info (but no message)
     @add-from-conversation = (c, user) ->
-      console.warn \a-c, c, user
+      #console.warn \a-c, c, user
       id     = c.id
       not-me = c.participants |> find (-> it.user_id isnt user.id) # later on, use filter
       #console.log \add-from-conversation, id, icon, not-me

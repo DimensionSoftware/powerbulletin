@@ -38,7 +38,6 @@ function init-with-socket s
     #console.log \connected
 
   s.on \ready, ->
-    console.warn \ready
     err, unread <- socket.emit \chat-unread
     for c in unread
       window.ChatPanel.add-from-conversation c, window.user
