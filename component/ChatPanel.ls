@@ -64,8 +64,10 @@ module.exports =
         e = @$.find \.messages
         e.scroll-top(e.0.scroll-height)), 50ms # bottom
 
-    add-new-message: (message) ->
+    add-new-message: (message, should-scroll) ->
       $msg = @@$(jade.templates._chat_message(message))
+      if should-scroll
+        $msg.find \img .load @scroll-to-latest
       if message.user_id isnt window.user.id
         $msg.add-class \other
       e = @$.find \.messages
@@ -98,10 +100,10 @@ module.exports =
     load-initial-messages: (cb=(->)) ->
       url = "/resources/conversations/#{@id}"
       @@$.get url, { limit: 20 }, (r) ~>
-        console.log \msgs, r
         if r.success
-          for i,msg of r.messages
-            @add-new-message msg
+          for i,msg of r.messages.reverse!
+            @add-new-message msg, true
+          scroll-to-latest!
 
     show: ->
       hi = $(window).height!
