@@ -72,9 +72,9 @@ module.exports =
         $msg.add-class \other
       e = @$.find \.messages
       # FIXME only scroll if already at bottom
-      should-scroll = true #Math.abs(e.offset!top - e.scroll-top!) < 15px
+      near-bottom = true #Math.abs(e.offset!top - e.scroll-top!) < 15px
       @$.find(\.messages).append $msg
-      if should-scroll then @scroll-to-latest!
+      if near-bottom then @scroll-to-latest!
 
     message-box-key-handler: (ev) ~>
       e = @$.find \.message-box
