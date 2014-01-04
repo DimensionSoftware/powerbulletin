@@ -656,8 +656,16 @@ query-dictionary =
       async.map unread, add-participants, cb
 
   messages:
-    # mark a message as read
-    mark-read: (id, user-id, cb) -> db.messages_read.upsert { message_id: id, user_id: user-id }, cb
+    # mark all user's messages as read
+    mark-read: (id, user-id, cb) ->
+      db.messages_read.upsert { message_id: id, user_id: user-id }, cb
+
+    mark-read-since: (first-unread-mid, cid, user-id, cb) ->
+      sql = """
+      INSERT INTO messages_read (message_id, user_id)
+        SELECT id AS message_id, #{parse-int user-id} FROM messages WHERE conversation_id = $1 AND id >= $2
+      """
+      postgres.query sql, [cid, first-unread-mid], cb
 
     by-cid: (augmented-fn ((cid, last, limit, cb) ->
       sql = """
