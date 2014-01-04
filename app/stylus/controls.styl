@@ -117,7 +117,6 @@ label.switch-control
 //}}}
 //{{{ Buttons
 .button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
-  // XXX is this affecting clicks?
   //animation-name tiny-grow
   //animation-duration .03s
   //background-image linear-gradient(bottom, dark 12px, light 87%, dark 90%)
@@ -143,13 +142,12 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   text-indent 1px
   border-left 1px solid #666
   box-shadow 0 0 1px #777, 1px 1px 1px light inset,0 1px 3px #aaa
-  text-shadow 0 1px 1px black,1px 1px 1px rgba(100,100,100,.5)
+  text-shadow 0 1px 2px black inset,1px 1px 1px rgba(100,100,100,.5)
   //border-bottom 1px solid dark
   //border-right 1px solid dark
   border-bottom-color #888
-  border-bottom-color #888
   transform translateY(2px)
-  border-radius 8px / 2px
+  border-radius 8px / 4px
   opacity .9
 // bottom "darken" fx
 input[type="submit"]:active::after, button:active::after, .button:active::after
@@ -158,7 +156,7 @@ input[type="submit"]:hover::after, button:hover::after, .button:hover::after
   opacity .65!important
   height 3px
   background-image linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.3) 100%)
-  transition opacity .08s ease-out, height .05s ease-out
+  //transition opacity .08s ease-out, height .05s ease-out
 input[type="submit"]::after, button::after, .button::after
   position absolute
   content ''
@@ -168,25 +166,26 @@ input[type="submit"]::after, button::after, .button::after
   background-image linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.25) 100%)
   opacity .75
   height 4px
+// XXX this is stealing clicks!  (...but it looks so good ;/)
 //- top gloss fx
-input[type="submit"]:active::before, button:active::before, .button:active::before
-  height 53%!important
-  opacity .7
-input[type="submit"]:hover::before, button:hover::before, .button:hover::before
-  background-image linear-gradient(to bottom, rgba(255,255,255,.33) 0%, rgba(255,255,255,.28) 100%)
-  opacity .9
-  height 48%
-  transition opacity .08s ease-out, height .02s ease-out
-input[type="submit"]::before, button::before, .button::before
-  position absolute
-  content ''
-  height 50%
-  top -1px
-  left -1px
-  right -1px
-  border-radius .5em .5em 6em 6em/.1em .1em 1em 1em
-  background-image linear-gradient(to bottom, rgba(255,255,255,.3) 0%, rgba(255,255,255,.25) 100%)
-  opacity .75
+//input[type="submit"]:active::before, button:active::before, .button:active::before
+//  height 53%!important
+//  opacity .7
+//input[type="submit"]:hover::before, button:hover::before, .button:hover::before
+//  background-image linear-gradient(to bottom, rgba(255,255,255,.33) 0%, rgba(255,255,255,.28) 100%)
+//  opacity .9
+//  height 48%
+//  transition opacity .08s ease-out, height .02s ease-out
+//input[type="submit"]::before, button::before, .button::before
+//  position absolute
+//  content ''
+//  height 50%
+//  top -1px
+//  left -1px
+//  right -1px
+//  border-radius .5em .5em 6em 6em/.1em .1em 1em 1em
+//  background-image linear-gradient(to bottom, rgba(255,255,255,.3) 0%, rgba(255,255,255,.25) 100%)
+//  opacity .75
 .button, input[type="button"], input[type="submit"], button
   outline none
   white-space nowrap
@@ -198,6 +197,7 @@ input[type="submit"]::before, button::before, .button::before
   border 1px solid #666
   border-top 1px solid dark
   border-left 1px solid dark
+  border-right 1px solid dark
   border-bottom-color #444
   color #fff
   font-size 1.25em

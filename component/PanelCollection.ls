@@ -71,7 +71,7 @@ module.exports =
         $panel = @$.find('.panel')[i]
         $icon.remove!
         $panel.remove!
-        for key in this.seen
+        for key in @seen
           if @seen[key] > i then @seen[key]--
       else
         throw "#name has not been added."
