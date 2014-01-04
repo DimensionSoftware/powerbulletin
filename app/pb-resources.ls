@@ -405,24 +405,25 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       return res.json success: false # not allowed to chat without a user
 
     id    = req.params.conversation
-    limit = 30
+    limit = req.query.limit or 30
 
-    err, c <~ db.conversation-by-id id
+    err, c <~ db.conversations.by-id id
     if err
       console.error \conversations-show, req.path, err
       res.json success: false
       return
     if c
       # TODO be sure to check participants too
-      may-participate = c?particpants?some (-> it.id is user.id)
+      may-participate = any (-> it.user_id is user.id), c.participants
       unless may-participate
+        console.log \c, c
         return res.json success: false, type: \non-particant
-      err, messages <- db.messages-by-cid c.id, (req.query.last || null), limit
+      err, messages <- db.messages.by-cid c.id, (req.query.last || null), limit
       if err
         console.error \conversations-show, req.path, err
         res.json success: false
         return
-      c.messages = messages |> map (-> it.body = format.chat-message it.body; it)
+      c.messages = messages
       c.success = true
       res.json c
     else
