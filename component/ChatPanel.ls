@@ -103,7 +103,7 @@ module.exports =
         if r.success
           for i,msg of r.messages.reverse!
             @add-new-message msg, true
-          scroll-to-latest!
+          @scroll-to-latest!
 
     show: ->
       hi = $(window).height!
