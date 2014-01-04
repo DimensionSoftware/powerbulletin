@@ -63,17 +63,22 @@ module.exports =
         throw "#name has already been added"
 
     # remove a panel from the collection
-    remove: (name) ->
+    remove: (name) ~>
       i = @seen[name]
       if i?
-        @list.splice i, 1
-        $icon  = @$ul.find(\li)[i]
-        $panel = @$.find(\.panel)[i]
-        $icon.remove!
-        $panel.remove!
-        for key of @seen # reindex
-          if @seen[key] > i then @seen[key]--
-        delete @seen[name]
+        remove-fn = ~> # critical region
+          @list.splice i, 1
+          $icon  = @$ul.find(\li)[i]
+          $panel = @$.find(\.panel)[i]
+          $icon.remove!
+          $panel.remove!
+          for key of @seen # reindex
+            if @seen[key] > i then @seen[key]--
+          delete @seen[name]
+        if @selected is name
+          <~ @off remove-fn # close first
+        else
+          remove-fn!
       else
         throw "#name has not been added."
 
@@ -121,14 +126,14 @@ module.exports =
       $togglers .transition { left: -(selected-panel.local \width) }, @delay
       @state.selected(@selected = name)
 
-    off: ->
-      return unless  @selected
+    off: (cb=(->)) ->
+      return unless @selected
       @$.find \.selected .remove-class \selected
       (@find @selected).hide!
       @last-selected = @selected
       @state.selected(@selected = null)
       $togglers = @$.find \.panel-togglers
-      $togglers .transition { left: 0 }, @delay, @ease-in
+      $togglers.transition { left: 0 }, @delay, @ease-in, cb
 
     on: ->
       return if @selected
@@ -157,7 +162,7 @@ module.exports =
       @@$(sel).css(height: "#{hi}px").show @delay, @ease-out, cb
 
     select-force: (name) ->
-      if @selected is null or @selected isnt name
+      if @selected is void or @selected isnt name
         @select name
 
     # helper for adding a new chat panel to collection
