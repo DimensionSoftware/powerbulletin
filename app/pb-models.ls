@@ -577,7 +577,12 @@ query-dictionary =
       #console.log sql
       err, r <~ postgres.query sql, [...users, site-id]
       if err then return cb err
-      if r.length then return cb null, r.0
+      if r.length
+        c = r.0
+        db.conversations.participants c.id, (err, ps) ->
+          c.participants = ps
+          cb err, c
+        return
 
       # first time chatting together on this site
       insert-ppl-sql = (n) ->
@@ -591,7 +596,9 @@ query-dictionary =
       #console.log new-sql
       err, r <~ postgres.query new-sql, [site-id, ...users]
       if err then return cb err
-      return cb null, r.0
+      c = r.0
+      err, c.participants <~ db.conversations.participants c.id
+      return cb err, c
 
     # list of aliases for a given c-id
     participants: deserialized-fn ((c-id, cb) ->

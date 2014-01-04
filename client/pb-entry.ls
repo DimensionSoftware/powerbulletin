@@ -360,15 +360,8 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
   err, c <- socket.emit \chat-between, [user.id, t.id]
   if err then return
 
-  id = "chat-#{c.id}"
-
-  chat-panel-exists = $ "\##{id}" .length
-
-  if chat-panel-exists
-    panels.select-force id
-  else
-    panels.add-chat-panel {id, icon}
-    panels.select-force id
+  chat-panel = ChatPanel.add-from-conversation c, window.user
+  panels.select-force "chat-#{c.id}"
 
 )
 #}}}

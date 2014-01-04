@@ -56,6 +56,9 @@ module.exports =
       <~ lazy-load-autosize
       @$.find \.message-box .autosize!
 
+    on-detach: ->
+      delete @@chats[@local \id]
+
     cid: ~>
       (@local \id).replace /^chat-/, '' |> parse-int
 

@@ -67,7 +67,7 @@ module.exports =
       i = @seen[name]
       if i?
         remove-fn = ~> # critical region
-          @list.splice i, 1
+          panel = (@list.splice i, 1).0.1
           $icon  = @$ul.find(\li)[i]
           $panel = @$.find(\.panel)[i]
           $icon.remove!
@@ -75,6 +75,7 @@ module.exports =
           for key of @seen # reindex
             if @seen[key] > i then @seen[key]--
           delete @seen[name]
+          panel?on-detach!
         if @selected is name
           <~ @off remove-fn # close first
         else
