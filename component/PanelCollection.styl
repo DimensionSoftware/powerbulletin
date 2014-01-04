@@ -14,6 +14,10 @@ body.scrolled
   width 10px
   z-index z
 
+  // template
+  .panel-tmpl
+    display none
+
   .toggler
     position absolute
     top 0.8em
@@ -35,11 +39,19 @@ body.scrolled
     left 0
     .selected
       transform scale(1.1)
-    li
+    .panel-icon
+      position relative
       list-style none
       cursor pointer
       margin-bottom 8px
-
+      .cancel
+        position absolute
+        left -15px
+        top -5px
+      &:hover
+        .cancel
+          display block
+          opacity 1
     .photo
       margin-left -51px
       width 55px

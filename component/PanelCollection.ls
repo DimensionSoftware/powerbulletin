@@ -22,8 +22,8 @@ module.exports =
       @local \selected, ''
 
     on-attach: ->
-      @$ul = @$.find('ul:first')
-      @$toggler = @$.find('.toggler')
+      @$ul      = @$.find \ul:first
+      @$toggler = @$.find \.toggler
 
       @$toggler.click (ev) ~>
         if @$toggler.has-class \on
@@ -45,7 +45,7 @@ module.exports =
         @list.push [name, panel]
         @seen[name] = @list.length - 1
         # dom
-        $icon = @@$ '<li class="panel-icon"><img class="profile photo" title="" /></li>'
+        $icon = @@$ '.panel-tmpl .panel-icon' .clone!
         if n = panel.local \name # set title
           $icon.find \img .attr \title n
         $icon.find \img .attr { src: panel.local(\icon), title: panel.local(\title) }
@@ -54,6 +54,7 @@ module.exports =
         @$.append panel.$
         $ul = @$ul
         self = @
+        $icon.find \.onclick-close .click -> self.remove name; false
         $icon.click (ev) ->
           $ul.find \li .remove-class \selected
           $ @ .add-class \selected
@@ -64,15 +65,15 @@ module.exports =
     # remove a panel from the collection
     remove: (name) ->
       i = @seen[name]
-      if i
+      if i?
         @list.splice i, 1
-        delete @seen[name]
-        $icon = @$ul.find(\li)[i]
-        $panel = @$.find('.panel')[i]
+        $icon  = @$ul.find(\li)[i]
+        $panel = @$.find(\.panel)[i]
         $icon.remove!
         $panel.remove!
-        for key in @seen
+        for key of @seen # reindex
           if @seen[key] > i then @seen[key]--
+        delete @seen[name]
       else
         throw "#name has not been added."
 

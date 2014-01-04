@@ -48,6 +48,7 @@ module.exports =
       @id = (@local \id).replace(/chat-/, '')
 
     on-attach: ->
+      @$.add-class \panel
       @$.attr id: @local \id
       @$.css @css
       @$.on \keyup, \.message-box, @message-box-key-handler
