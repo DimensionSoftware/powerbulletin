@@ -635,7 +635,8 @@ query-dictionary =
     unread-summary-by-user: (site-id, user-id, cb) ->
       sql = '''
       SELECT c.id,
-             COUNT(m.id) - COUNT(mr.id) AS unread
+             COUNT(m.id) - COUNT(mr.id) AS unread,
+             MIN(m.id) AS first_unread_message_id
         FROM conversations c
              JOIN messages m               ON c.id = m.conversation_id
              JOIN users_conversations uc   ON c.id = uc.conversation_id
