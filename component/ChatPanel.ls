@@ -45,6 +45,7 @@ module.exports =
       @css = @local(\css) || {}
       @css.display = \none
       @local \virgin, true
+      @id = (@local \id).replace(/chat-/, '')
 
     on-attach: ->
       @$.attr id: @local \id
@@ -93,12 +94,21 @@ module.exports =
     send-message: (message, cb=(->)) ->
       window.socket.emit \chat-message, message, cb
 
+    load-initial-messages: (cb=(->)) ->
+      url = "/resources/conversations/#{@id}"
+      @@$.get url, { limit: 20 }, (r) ~>
+        console.log \msgs, r
+        if r.success
+          for i,msg of r.messages
+            @add-new-message msg
+
     show: ->
       hi = $(window).height!
       if @local \virgin
         @$.css(width: @local \width)
         @$.find \.message-box .css(width: (@local \width)-8px)
         @local \virgin, false
+        @load-initial-messages!
       @$.css(height: "#{hi}px")
       @p.show @$, (~> @$.find \.message-box .focus!)
       @scroll-to-latest!

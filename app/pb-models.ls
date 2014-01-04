@@ -658,6 +658,17 @@ query-dictionary =
     # mark a message as read
     mark-read: (id, user-id, cb) -> db.messages_read.upsert { message_id: id, user_id: user-id }, cb
 
+    by-cid: (augmented-fn ((cid, last, limit, cb) ->
+      sql = """
+      SELECT *
+        FROM messages
+       WHERE conversation_id = $1 #{if last then "AND id < $2" else ''}
+       ORDER BY id DESC
+       LIMIT #{unless last then "$2" else "$3"}
+      """
+      params = if last then [cid, last, limit] else [cid, limit]
+      postgres.query sql, params, cb), sh.add-dates)
+
     send: (message, cb=(->)) ~>
       err, c <~ db.conversations.select-one id: message.conversation_id
       if err then return cb err
