@@ -65,7 +65,7 @@ module.exports =
     scroll-to-latest: ~>
       set-timeout (~>
         e = @$.find \.messages
-        e.scroll-top(e.0.scroll-height)), 50ms # bottom
+        e.scroll-top(e.0.scroll-height)), 10ms # bottom
 
     add-new-message: (message, should-scroll) ->
       $msg = @@$(jade.templates._chat_message(message))
@@ -76,7 +76,7 @@ module.exports =
       e = @$.find \.messages
       # FIXME only scroll if already at bottom
       near-bottom = true #Math.abs(e.offset!top - e.scroll-top!) < 15px
-      @$.find(\.messages).append $msg
+      @$.find \.messages .append $msg
       if near-bottom then @scroll-to-latest!
 
     message-box-key-handler: (ev) ~>
@@ -116,8 +116,9 @@ module.exports =
         @local \virgin, false
         @load-initial-messages!
       @$.css(height: "#{hi}px")
-      @p.show @$, (~> @$.find \.message-box .focus!)
-      @scroll-to-latest!
+      @p.show @$, (~>
+        @scroll-to-latest!
+        @$.find \.message-box .focus!)
 
     hide: ->
       @p.hide @$
