@@ -1,9 +1,9 @@
 include _menu
 - var invite = (inviteOnly) ? "window.inviteOnly='true';" : ''
 |<!DOCTYPE html><!--
-░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
-░█▀▀░█░█░█▄█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░░█░░░█░░█░█
-░▀░░░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀▀▀░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀.com (jsb,mae,kh) ~-->
+|░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
+|░█▀▀░█░█░█▄█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░░█░░░█░░█░█
+|░▀░░░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀▀▀░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀.com (jsb,mae,kh) ~-->
 html
   head
     if typeof(title) !== 'undefined'
@@ -38,9 +38,9 @@ html
       script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
       script(type='text/javascript', src="#{cache5Url}/pb-optimized.js")
     else
-      script(type='text/javascript', src="#{cache3Url}/local/require.js") //- offline
+      script(type='text/javascript', src="#{cache3Url}/local/require.js")
     script(type="text/javascript").
-      window.CHANGESET=!{JSON.stringify(CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.cache2Url=!{JSON.stringify(cvars.cache2Url)};window.cache3Url=!{JSON.stringify(cvars.cache3Url)};window.cache4Url=!{JSON.stringify(cvars.cache4Url)};window.cache5Url=!{JSON.stringify(cvars.cache5Url)};window.authDomain="!{cvars.authDomain}";window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cache5Url+'/client',urlArgs:!{JSON.stringify(CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
+      window.CHANGESET=!{JSON.stringify(global.CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cacheUrl)};window.cache2Url=!{JSON.stringify(cache2Url)};window.cache3Url=!{JSON.stringify(cache3Url)};window.cache4Url=!{JSON.stringify(cache4Url)};window.cache5Url=!{JSON.stringify(cache5Url)};window.authDomain="!{cvars.authDomain}";window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cache5Url+'/client',urlArgs:!{JSON.stringify(global.CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
   body
 
     header.header.toggler
@@ -108,7 +108,7 @@ html
     section#auth(style="display:none;")
 
     //- for mocha testing
-    if cvars.env != 'production'
+    if env != 'production'
       #mocha
 
     footer.onclick-footer-toggle

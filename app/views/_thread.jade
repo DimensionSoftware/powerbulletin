@@ -9,7 +9,8 @@ mixin _thread(t)
         img(src="#{cacheUrl}#{t.user_photo}")
       .container
         span.username
-          em= t.user_name // XXX weird things happened when I tried to turn this into an anchor
+          //- XXX weird things happened when I tried to turn this into an anchor
+          em= t.user_name
         span.created(data-time=t.created_iso)!= t.created_human
         .clear-right
         span.post-count= t.post_count

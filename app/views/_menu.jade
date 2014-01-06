@@ -15,7 +15,7 @@ mixin _menu(depth, menu)
               class="forum-#{item.form.dbid}",
               href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
               target=(item.form.separateTab ? '_blank' : '_self'))= item.title
-            //- stylize depth & recurse
+          //- stylize depth & recurse
           if item.children
             div(class=klass)
               ul
