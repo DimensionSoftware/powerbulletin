@@ -1,7 +1,7 @@
 //- main menu
 mixin _menu(depth, menu)
+  - var klass = (depth > 0) ? 'indent' : 'submenu'
   if (typeof(menu) == 'object')
-    klass = (depth > 0) ? 'indent' : 'submenu'
     each item,i in menu
       if item && item.form
         //- row -> out!
