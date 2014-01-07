@@ -144,9 +144,11 @@ clear-stale-redis-data = (r, cb) ->
 
     #ChatServer
     chat-server = new ChatServer(io, socket, presence, site, user)
-    socket.on \chat-message, chat-server.message
-    socket.on \chat-between, chat-server.between
-    socket.on \chat-unread, chat-server.unread
+    socket.on  \chat-message,            chat-server.message
+    socket.on  \chat-between,            chat-server.between
+    socket.on  \chat-unread,             chat-server.unread
+    socket.on  \chat-previous-messages,  chat-server.previous-messages
+    socket.on  \chat-mark-read,          chat-server.mark-read
 
     socket.on \disconnect, ->
       log \disconnected

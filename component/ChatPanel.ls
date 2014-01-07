@@ -31,7 +31,7 @@ module.exports =
       chat-panel.add-new-message message
       chat-panel
 
-    # add chat-panel using converstation info (but no message)
+    # add chat-panel using conversation info (but no message)
     @add-from-conversation = (c, user) ->
       #console.warn \a-c, c, user
       id     = c.id
@@ -101,12 +101,12 @@ module.exports =
       window.socket.emit \chat-message, message, cb
 
     load-initial-messages: (cb=(->)) ->
-      url = "/resources/conversations/#{@id}"
-      @@$.get url, { limit: 20 }, (r) ~>
-        if r.success
-          for i,msg of r.messages.reverse!
-            @add-new-message msg, true
-          @scroll-to-latest!
+      err, r <~socket.emit \chat-previous-messages, @id, {}
+      if err then return err
+      if r.success
+        for i,msg of r.messages.reverse!
+          @add-new-message msg, true
+        @scroll-to-latest!
 
     show: ->
       hi = $(window).height!
