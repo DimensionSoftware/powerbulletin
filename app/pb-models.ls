@@ -650,6 +650,7 @@ query-dictionary =
              LEFT JOIN messages_read mr    ON (m.id = mr.message_id AND uc.user_id = mr.user_id)
        WHERE c.site_id = $1 AND uc.user_id = $2
        GROUP BY c.id
+      HAVING (COUNT(m.id) - COUNT(mr.id)) > 0
       '''
       # TODO - ORDER BY MAX(m.created) DESC ?
       # TODO - expose this data to the client side
