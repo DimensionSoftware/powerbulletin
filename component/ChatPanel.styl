@@ -8,11 +8,14 @@ body.scrolled
   right 0
   margin 0
   background-color #fff
-  border-left 1px solid #fafafa
+  border-left 1px solid #eee
 
   &.hidden
 
   .header
+    background-color overlay_color_secondary
+    padding 1px
+    border-bottom 1px solid #f6f6f6
     h5
       margin-left 15px
       text-transform capitalize
@@ -32,18 +35,20 @@ body.scrolled
 
     .messages > li
       position relative
+      padding .1em 0.5em
       margin 0.5em
-      padding 0.5em
-      border-radius 8px
-      background-color #fafafa
       color #666
       font-size .9em
       text-align right
+    .messages li:last-child
+      margin-bottom grid
     .messages > li.other
       text-align left
       background-color #fff
       color #333
       font-size 1em
+    .messages > li:not(.other) + li.other
+      border-top 1px solid #eee
 
   .footer
     position absolute
