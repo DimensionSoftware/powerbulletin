@@ -2,8 +2,11 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! \./PBComponent
+require! \lodash
 {lazy-load-autosize, show-tooltip} = require \../client/client-helpers
 {find, reverse} = require \prelude-ls
+
+debounce = lodash.debounce _, 250ms
 
 module.exports =
   class ChatPanel extends PBComponent
@@ -55,7 +58,7 @@ module.exports =
       @$.on \keydown, \.message-box, -> if it.key-code is 13 and not it.shift-key then false # eat returns
       <~ lazy-load-autosize
       @$.find \.message-box .autosize!
-      @$.find \.messages .scroll @load-more-messages-scroll-handler
+      @$.find \.messages .scroll (debounce @load-more-messages-scroll-handler)
 
     on-detach: ->
       delete @@chats[@local \id]
@@ -74,11 +77,16 @@ module.exports =
         $msg.find \img .load @scroll-to-latest
       if message.user_id isnt window.user.id
         $msg.add-class \other
-      e = @$.find \.messages
       # FIXME only scroll if already at bottom
       near-bottom = true #Math.abs(e.offset!top - e.scroll-top!) < 15px
       @$.find \.messages .append $msg
       if near-bottom then @scroll-to-latest!
+
+    add-old-message: (message) ->
+      $msg = @@$(jade.templates._chat_message(message))
+      if message.user_id isnt window.user.id
+        $msg.add-class \other
+      @$.find \.messages .prepend $msg
 
     message-box-key-handler: (ev) ~>
       e = @$.find \.message-box
@@ -116,7 +124,12 @@ module.exports =
       return unless scroll-top <= 10
       #console.warn "id: #{@id}, last-mid: #{@last-mid}"
       err, r <~ socket.emit \chat-previous-messages, @id, { last: @last-mid }
-      #console.info err, r
+      if r.messages.length
+        for i,msg of r.messages
+          @add-old-message msg
+        @last-mid = r.messages[*-1].id
+      else
+        @scrolled-to-beginning = true
 
     show: ->
       hi = $(window).height!
