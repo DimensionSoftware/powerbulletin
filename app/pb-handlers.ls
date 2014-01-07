@@ -24,6 +24,7 @@ announce = require(\socket.io-announce).create-client!
 global <<< require \./server-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
 global <<< require \../shared/shared-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
 
+{each} = require \prelude-ls
 {is-editing, is-admin, is-auth} = require \./path-regexps
 
 const posts-per-page = 30
@@ -71,6 +72,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   err, doc <- async.auto tasks
   doc.menu            = doc.menu-summary = site.config.menu
+    |> each (-> delete it.children)
   doc.title           = res.vars.site.name
   doc.description     = ''
   doc.active-forum-id = \homepage
@@ -219,6 +221,7 @@ function background-for-forum m, active-forum-id
     fdoc.item            = item
     fdoc.menu            = m
     fdoc.menu-summary    = (menu.item m, (menu.path m, item?id))?children or []
+      |> each (-> delete it.children) # only top-level at this depth
     fdoc.active-forum-id = fdoc.forum-id
     fdoc.title           = "#{res.vars.site.name} - #{fdoc?forum?title}"
     fdoc.description     = item.form?forum-description or ''
