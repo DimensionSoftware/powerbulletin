@@ -55,4 +55,9 @@ module.exports = class ChatServer
     err <~ db.messages.mark-read-since mid, cid, @user.id
     cb err, { sucess: !!err }
 
+  # figure out the first unread message and mark all read
+  mark-all-read: (cid, cb=(->)) ~>
+    err <~ db.messages.mark-all-read cid, @user.id
+    cb err, { sucess: !!err }
+
 # vim:fdm=indent
