@@ -35,7 +35,7 @@ main!
 function init-with-socket s
   s.on \connect, ->
     globals.r-socket s
-    #console.log \connected
+    $ \html .remove-class \disconnected
 
   s.on \ready, ->
     err, unread <- socket.emit \chat-unread
@@ -44,10 +44,9 @@ function init-with-socket s
 
   s.on \reconnect ->
     globals.r-socket s
-    console.log \reconnected
 
   s.on \disconnect, ->
-    #console.log \disconnected
+    $ \html .add-class \disconnected
 
   s.on \logout, ->
     storage.del \user
