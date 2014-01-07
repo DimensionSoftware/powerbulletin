@@ -696,8 +696,8 @@ query-dictionary =
                  (mr.message_id IS NOT NULL) AS is_read
             FROM messages m
                  LEFT JOIN messages_read mr ON (mr.message_id = m.id AND mr.user_id = $2)
-           WHERE conversation_id = $1 AND id < $3
-           ORDER BY id DESC
+           WHERE m.conversation_id = $1 AND m.id < $3
+           ORDER BY m.id DESC
            LIMIT $4
           """,
           [cid, uid, last, limit]]
@@ -707,8 +707,8 @@ query-dictionary =
                  (mr.message_id IS NOT NULL) AS is_read
             FROM messages m
                  LEFT JOIN messages_read mr ON (mr.message_id = m.id AND mr.user_id = $2)
-           WHERE conversation_id = $1
-           ORDER BY id DESC
+           WHERE m.conversation_id = $1
+           ORDER BY m.id DESC
            LIMIT $3
           """,
           [cid, uid, limit]]

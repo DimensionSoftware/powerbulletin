@@ -3,7 +3,7 @@ require, exports, module <- define
 
 require! \./PBComponent
 {lazy-load-autosize, show-tooltip} = require \../client/client-helpers
-{find} = require \prelude-ls
+{find, reverse} = require \prelude-ls
 
 module.exports =
   class ChatPanel extends PBComponent
@@ -55,6 +55,7 @@ module.exports =
       @$.on \keydown, \.message-box, -> if it.key-code is 13 and not it.shift-key then false # eat returns
       <~ lazy-load-autosize
       @$.find \.message-box .autosize!
+      @$.find \.messages .scroll @load-more-messages-scroll-handler
 
     on-detach: ->
       delete @@chats[@local \id]
@@ -104,12 +105,18 @@ module.exports =
       err, r <~ socket.emit \chat-previous-messages, @id, {}
       if err then return err
       if r.success
-        for i,msg of r.messages.reverse!
+        for i,msg of (reverse r.messages)
           @add-new-message msg, true
         @scroll-to-latest!
+        @last-mid = r.messages[*-1].id
 
     load-more-messages-scroll-handler: (ev) ~>
-      err, r <~ socket.emit \chat-previous-messages, @id, { @last-mid }
+      scroll-top = $(ev.target).scroll-top!
+      #console.info scroll-top
+      return unless scroll-top <= 10
+      #console.warn "id: #{@id}, last-mid: #{@last-mid}"
+      err, r <~ socket.emit \chat-previous-messages, @id, { last: @last-mid }
+      #console.info err, r
 
     show: ->
       hi = $(window).height!
