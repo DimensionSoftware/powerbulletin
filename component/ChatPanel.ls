@@ -101,12 +101,15 @@ module.exports =
       window.socket.emit \chat-message, message, cb
 
     load-initial-messages: (cb=(->)) ->
-      err, r <~socket.emit \chat-previous-messages, @id, {}
+      err, r <~ socket.emit \chat-previous-messages, @id, {}
       if err then return err
       if r.success
         for i,msg of r.messages.reverse!
           @add-new-message msg, true
         @scroll-to-latest!
+
+    load-more-messages-scroll-handler: (ev) ~>
+      err, r <~ socket.emit \chat-previous-messages, @id, { @last-mid }
 
     show: ->
       hi = $(window).height!

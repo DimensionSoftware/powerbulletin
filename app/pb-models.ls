@@ -674,15 +674,29 @@ query-dictionary =
       """
       postgres.query sql, [cid, first-unread-mid], cb
 
-    by-cid: (augmented-fn ((cid, last, limit, cb) ->
-      sql = """
-      SELECT *
-        FROM messages
-       WHERE conversation_id = $1 #{if last then "AND id < $2" else ''}
-       ORDER BY id DESC
-       LIMIT #{unless last then "$2" else "$3"}
-      """
-      params = if last then [cid, last, limit] else [cid, limit]
+    by-cid: (augmented-fn ((cid, uid, last, limit, cb) ->
+      [sql, params] = if last
+        [ """
+          SELECT m.*,
+                 (mr.message_id IS NOT NULL) AS is_read
+            FROM messages m
+                 LEFT JOIN messages_read mr ON (mr.message_id = m.id AND mr.user_id = $2)
+           WHERE conversation_id = $1 AND id < $3
+           ORDER BY id DESC
+           LIMIT $4
+          """,
+          [cid, uid, last, limit]]
+      else
+        [ """
+          SELECT m.*,
+                 (mr.message_id IS NOT NULL) AS is_read
+            FROM messages m
+                 LEFT JOIN messages_read mr ON (mr.message_id = m.id AND mr.user_id = $2)
+           WHERE conversation_id = $1
+           ORDER BY id DESC
+           LIMIT $3
+          """,
+          [cid, uid, limit]]
       postgres.query sql, params, cb), sh.add-dates)
 
     send: (message, cb=(->)) ~>

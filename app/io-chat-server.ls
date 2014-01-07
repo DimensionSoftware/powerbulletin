@@ -37,7 +37,7 @@ module.exports = class ChatServer
       may-participate = any (~> it.user_id is @user.id), c.participants
       unless may-participate
         return cb { -success, errors: [ "#{@user.id} is not a participant of cid #cid" ] }
-      err, messages <~ db.messages.by-cid cid, last, limit
+      err, messages <~ db.messages.by-cid cid, @user.id, last, limit
       if err then return cb { -success, err }
       c.messages = messages
       c.success = true
