@@ -12,14 +12,14 @@ module.exports =
     @chats = {}
 
     # chat-panel add if not already existing
-    @add = (cid, alias) ->
+    @add = (cid, alias, notices=0) ->
       css-id = "chat-#cid"
       panels = window.component.panels
       if @chats[css-id]
         @chats[css-id]
       else
         panels = window.component.panels
-        @chats[css-id] = new ChatPanel locals: { id:css-id, uid:alias.user_id, name:alias.name, icon:alias.icon, width:300px, css:{}, p:panels }
+        @chats[css-id] = new ChatPanel locals: { id:css-id, uid:alias.user_id, name:alias.name, notices:notices, icon:alias.icon, width:300px, css:{}, p:panels }
         panels.add css-id, @chats[css-id]
         @chats[css-id]
 
@@ -38,7 +38,7 @@ module.exports =
       not-me = c.participants |> find (-> it.user_id isnt user.id) # later on, use filter
       #console.log \add-from-conversation, id, icon, not-me
       not-me.icon = "#cache-url#{not-me.photo}"
-      @add id, not-me
+      @add id, not-me, c.unread
 
     init: ->
       @p = @local \p

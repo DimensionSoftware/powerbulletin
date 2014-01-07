@@ -50,28 +50,37 @@ module.exports =
           $icon.find \img .attr \title n
         $icon.find \img .attr { src: panel.local(\icon), title: panel.local(\title) }
         $icon.attr \data-user-id, panel.local(\uid)
+        $icon.attr \id, name
         @$ul.append $icon
         @$.append panel.$
-        $ul = @$ul
+        $ul  = @$ul
         self = @
         $icon.find \.onclick-close .click -> self.remove name; false
         $icon.click (ev) ->
           $ul.find \li .remove-class \selected
           $ @ .add-class \selected
           self.select name
+        @set-notice(name, panel.local \notices)
       else
         throw "#name has already been added"
+
+    set-notice: (id, n) ~>
+      v = parse-int n
+      @$.find "##id .notices"
+        ..html v
+        ..toggle-class \hidden (v <= 0)
 
     # remove a panel from the collection
     remove: (name) ~>
       i = @seen[name]
       if i?
         remove-fn = ~> # critical region
-          panel = (@list.splice i, 1).0.1
+          panel  = (@list.splice i, 1).0.1
           $icon  = @$ul.find(\li)[i]
           $panel = @$.find(\.panel)[i]
           $icon.remove!
           $panel.remove!
+          # cleanup
           for key of @seen # reindex
             if @seen[key] > i then @seen[key]--
           delete @seen[name]
