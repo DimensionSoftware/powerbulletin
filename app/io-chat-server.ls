@@ -45,8 +45,14 @@ module.exports = class ChatServer
     else
       return cb { -success }
 
-  # mark messages read for combination of cid and @user.id
-  mark-read: (cid, cb=(->)) ~>
-    cb null, { -success }
+  # mark one message unread for @user
+  mark-read: (mid, cb=(->)) ~>
+    err <~ db.messages.mark-read mid, @user.id
+    cb err, { success: !!err }
+
+  # mark all messages read for combination of cid and @user.id
+  mark-read-since: (mid, cid, cb=(->)) ~>
+    err <~ db.messages.mark-read-since mid, cid, @user.id
+    cb err, { sucess: !!err }
 
 # vim:fdm=indent

@@ -664,8 +664,8 @@ query-dictionary =
 
   messages:
     # mark all user's messages as read
-    mark-read: (id, user-id, cb) ->
-      db.messages_read.upsert { message_id: id, user_id: user-id }, cb
+    mark-read: (mid, user-id, cb) ->
+      db.messages_read.upsert { message_id: mid, user_id: user-id }, cb
 
     mark-read-since: (first-unread-mid, cid, user-id, cb) ->
       sql = """

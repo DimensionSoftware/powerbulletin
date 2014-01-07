@@ -149,6 +149,7 @@ clear-stale-redis-data = (r, cb) ->
     socket.on  \chat-unread,             chat-server.unread
     socket.on  \chat-previous-messages,  chat-server.previous-messages
     socket.on  \chat-mark-read,          chat-server.mark-read
+    socket.on  \chat-mark-read-since,    chat-server.mark-read-since
 
     socket.on \disconnect, ->
       log \disconnected
