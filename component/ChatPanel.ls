@@ -143,6 +143,7 @@ module.exports =
         @local \virgin, false
         @load-initial-messages!
       @$.css(height: "#{hi}px")
+      socket.emit 'chat-mark-all-read', @cid!, (~> @p.set-notice (@local \id), 0)
       @p.show @$, (~>
         @scroll-to-latest!
         @$.find \.message-box .focus!)
