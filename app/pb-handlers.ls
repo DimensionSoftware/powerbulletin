@@ -71,8 +71,9 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   if req.surfing then delete-unnecessary-surf-data res
 
   err, doc <- async.auto tasks
-  doc.menu            = doc.menu-summary = site.config.menu
-    |> each (-> delete it.children)
+  doc.menu            = site.config.menu
+  doc.menu-summary    = doc.menu # only top-level items
+    |> map (-> {[k,v] for k,v of it when k isnt \children})
   doc.title           = res.vars.site.name
   doc.description     = ''
   doc.active-forum-id = \homepage
