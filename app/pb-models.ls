@@ -201,7 +201,7 @@ thread-summary = (site-id, forum-ids, sort, limit, cb) ->
   | otherwise => "last_post_created DESC" # aka recent
 
   placeholders = ["$#{i+2}" for i to forum-ids?length-1]
-  site-forum = if forum-ids
+  site-forum = if forum-ids?length
     { clause: "f.site_id = $1 AND p.forum_id IN (#placeholders)", args: [ site-id, ...forum-ids ] }
   else
     { clause: "f.site_id = $1", args: [ site-id ] }
