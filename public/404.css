@@ -1,5 +1,5 @@
 body{font-family:'Source Sans Pro','Open Sans Condensed','Ubuntu','Helvetica Neue',sans-serif;cursor:pointer;}
-body .logo{position:fixed;display:block;top:30%;left:50%;margin:0 -190px;background-image:url("//muscache2.pb.com/images/pb_icon_logo.png");background-repeat:no-repeat;height:100px;text-indent:100px;padding:15px 0;font-size:3em;font-weight:300;border-bottom:1px solid #f4f4f4;animation-name:buildin;animation-duration:2s;}
+body .logo{position:fixed;display:block;top:30%;left:50%;margin:0 -190px;background-image:url("//muscache2.powerbulletin.com/images/pb_icon_logo.png");background-repeat:no-repeat;height:100px;text-indent:100px;padding:15px 0;font-size:3em;font-weight:300;border-bottom:1px solid #f4f4f4;animation-name:buildin;animation-duration:5s;}
 body .logo a{color:#666;text-decoration:none;font-style:italic;}
 body .logo a b{color:#333;font-style:normal}
 body .logo .note{font-size:.5em;color:#999;text-align:center;margin:75px 0 0 -80px;}

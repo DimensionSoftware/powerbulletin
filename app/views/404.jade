@@ -1,6 +1,3 @@
-- cacheUrl  = '//muscache.pb.com'
-- cache2Url = '//muscache2.pb.com'
-
 |<!DOCTYPE html><!--
 |░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
 |░█▀▀░█░█░█▄█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░░█░░░█░░█░█
@@ -18,15 +15,15 @@ html
     link(href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400', rel='stylesheet', type='text/css')
 
     //- links first
-    link(href="#{cacheUrl}/images/favicon.ico",rel='shortcut icon',type='image/x-icon')
-    link(href="#{cacheUrl}/images/apple-touch-icon.png", rel='apple-touch-icon')
-    link(href="#{cacheUrl}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
-    link(href="#{cacheUrl}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
-    link(href="#{cache2Url}/404.css", rel='stylesheet', type='text/css')
-  body(onclick='window.location="https://powerbulletin.com"')
+    link(href="//musccache.#{domain}/images/favicon.ico",rel='shortcut icon',type='image/x-icon')
+    link(href="//musccache.#{domain}/images/apple-touch-icon.png", rel='apple-touch-icon')
+    link(href="//muscache.#{domain}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
+    link(href="//muscache.#{domain}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
+    link(href="//muscache2.#{domain}/404.css", rel='stylesheet', type='text/css')
+  body(onclick="window.location='https://#{domain}'")
     h1.logo
-      a(href='https://powerbulletin.com') Power 
+      a(href="https://#{domain}") Power 
         b Bulletin
-      .note Oops- bad request;
-        small we still love you
+      .note Bad request, 
+        small but we still love you
           i !

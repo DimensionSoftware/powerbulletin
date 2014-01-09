@@ -1,7 +1,13 @@
 #!/bin/bash -e
 
+if [ "${NODE_ENV}" == 'production' ]; then
+  DOMAIN='powerbulletin.com'
+else
+  DOMAIN='pb.com'
+fi
+
 # 404 -> out!
-node_modules/.bin/jade app/views/404.jade --out public
+node_modules/.bin/jade app/views/404.jade --obj "{domain:'$DOMAIN'}" --out public
 node_modules/.bin/stylus -c app/stylus/404.styl --out public
 
 # 50x same as 404 (for now)
