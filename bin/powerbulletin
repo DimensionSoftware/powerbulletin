@@ -4,6 +4,7 @@
 # ---------
 if [ "$NODE_ENV" = 'production' ] ; then
   grunt css procs clientJade componentJade uglify
+  ./bin/build-static-pages
   mkdir -p logs
 
   # compile js once

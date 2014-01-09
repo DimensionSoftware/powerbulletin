@@ -8,7 +8,7 @@ fi
 
 # 404 -> out!
 node_modules/.bin/jade app/views/404.jade --obj "{domain:'$DOMAIN'}" --out public
-node_modules/.bin/stylus -c app/stylus/404.styl --out public
+node_modules/.bin/stylus --use ./node_modules/fluidity/lib/fluidity -c app/stylus/404.styl --out public
 
 # 50x same as 404 (for now)
 /bin/cp public/404.html public/50x.html
