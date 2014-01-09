@@ -732,7 +732,7 @@ query-dictionary =
       if err then return cb { -success, err, messages: [ "Couldn't send message." ] }
       msg      = msgs.0
       msg.user = me
-      err <~ db.messages.mark-read msg.id, me.id
+      err <~ db.messages.mark-read msg.id, me.user_id
       if err then return cb { -success, err, messages: [ "Couldn't mark message read." ] }
       for alias in c.participants
         announce.in("#{c.site_id}/users/#{alias.user_id}").emit \chat-message, msg
