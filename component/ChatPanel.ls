@@ -29,9 +29,13 @@ module.exports =
     # chat-panels are autovivified via ChatPanel.add-from-message(message)
     @add-from-message = (message) ->
       id = message.conversation_id
+      panels = window.component.panels
       message.user.icon = "#cache-url#{message.user.photo}"
       chat-panel = @add id, message.user
       chat-panel.add-new-message message
+      if not panels.selected
+        n = ($ "\#chat-#id .notices" .text!) |> parse-int
+        panels.set-notice "chat-#id", n+1
       chat-panel
 
     # add chat-panel using conversation info (but no message)
