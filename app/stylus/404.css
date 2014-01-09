@@ -1,0 +1,16 @@
+.logo {
+  background-image: url("#cacheUrl/images/pb_icon_logo.png");
+  background-repeat: no-repeat;
+  height: 100px;
+  text-indent: 100px;
+  padding-top: 15px;
+  font-size: 3em;
+}
+.logo a {
+  color: #333;
+  text-decoration: none;
+  font-style: italic;
+}
+.logo a strong {
+  color: #666;
+}

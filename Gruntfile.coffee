@@ -50,7 +50,7 @@ module.exports = (grunt) ->
         options:
           debounceDelay: 50
           interrupt: true
-  
+
   #{{{ daemonize a command
   # - possibly not needed anymore, bin/powerbulletin wipes :)
   daemon = (command, pidFile, logFile) ->
