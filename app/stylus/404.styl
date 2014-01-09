@@ -4,9 +4,17 @@
 
 vendors = webkit moz official
 
+bounce = cubic-bezier(0,1.72,0,.75)
+
+@keyframes fade-in
+  0%
+    opacity 0
+  100%
+    opacity 1
+
 @keyframes rotate-in
   0%
-    transform rotate(-60deg)
+    transform rotate(-120deg)
   100%
     transform rotate(0deg)
 
@@ -16,51 +24,55 @@ vendors = webkit moz official
     opacity 0
   100%
     transform translate(-30px, -30px), scale(1.1)
+    text-indent 100px
     opacity 1
 
 body
   font-family 'Source Sans Pro','Open Sans Condensed','Ubuntu','Helvetica Neue',sans-serif
   cursor pointer
 
-  .logo 
+  .container
     position fixed
-    display block
     top 30%
     left 50%
     margin 0 -190px
     height 100px
-    text-indent 100px
-    padding 15px 0
-    font-size 3em
-    font-weight 300
-    border-bottom 1px solid #f4f4f4
-    line-height 53px
-    animation build-in .4s ease-out 1 forwards
-    &:after
-      position absolute
+    .logo 
       display block
-      top 0
-      left 0
-      content ''
-      height 100px
-      width 100px
-      background-image url("//muscache2.powerbulletin.com/images/pb_icon_logo.png")
-      background-repeat no-repeat
-      transform rotate(-60deg)
-      animation rotate-in .4s ease-out 1 forwards
-    a 
-      color #666
-      text-decoration none
-      font-style italic
-      b 
-        color #333
-        font-style normal
+      text-indent 140px
+      padding 15px 0 60px 0
+      margin-bottom 15px
+      font-size 3em
+      font-weight 300
+      border-bottom 1px solid #f4f4f4
+      line-height 53px
+      transform scale(.5)
+      animation build-in .6s bounce 1 forwards
+      &:after
+        position absolute
+        display block
+        top 0
+        left 0
+        content ''
+        height 100px
+        width 100px
+        background-image url("//muscache2.powerbulletin.com/images/pb_icon_logo.png")
+        background-repeat no-repeat
+        transform rotate(-120deg)
+        animation rotate-in .4s ease-out 1 forwards
+      a 
+        color #666
+        text-decoration none
+        font-style italic
+        b 
+          color #333
+          font-style normal
     .note
-      font-size .5em
-      color #999
+      font-size 1.5em
+      font-weight 200
+      letter-spacing 2px
+      color #3199b0
       text-align center
-      margin 75px 0 0 -80px
-      small
-        letter-spacing 1px
-        font-size .8em
-        margin-left 7px
+      margin-left -50px
+      opacity 0
+      animation fade-in .4s ease-out 1 forwards .1s
