@@ -729,9 +729,11 @@ query-dictionary =
       if not me then return cb { -success, messages: [ "User not a participant in conversation." ] }
       message.html = format.render message.body
       err, msgs <~ db.messages.upsert message
-      if err then return cb { -success, messages: [ "Couldn't send message." ] }
+      if err then return cb { -success, err, messages: [ "Couldn't send message." ] }
       msg      = msgs.0
       msg.user = me
+      err <~ db.messages.mark-read msg.id, me.id
+      if err then return cb { -success, err, messages: [ "Couldn't mark message read." ] }
       for alias in c.participants
         announce.in("#{c.site_id}/users/#{alias.user_id}").emit \chat-message, msg
       cb null, msg
