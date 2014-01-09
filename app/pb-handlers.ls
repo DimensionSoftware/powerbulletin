@@ -20,9 +20,8 @@ require! {
 
 announce = require(\socket.io-announce).create-client!
 
-# FIXME how about fixing instead of littering our codebase with these comments?
-global <<< require \./server-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
-global <<< require \../shared/shared-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
+global <<< require \./server-helpers
+global <<< require \../shared/shared-helpers
 
 {each} = require \prelude-ls
 {is-editing, is-admin, is-auth} = require \./path-regexps
@@ -49,6 +48,7 @@ delete-unnecessary-surf-data = (res) ->
      \cache5Url
      \jsUrls
      \cssUrls
+     \menu
   for i in unnecessary
     delete locals[i]
   locals
@@ -68,8 +68,6 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   tasks =
     forums: db.sites.summary site.id, (req.query?order or \recent), 8, _
 
-  if req.surfing then delete-unnecessary-surf-data res
-
   err, doc <- async.auto tasks
   doc.menu            = site.config.menu
   doc.menu-summary    = doc.menu # only top-level items
@@ -77,6 +75,9 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   doc.title           = res.vars.site.name
   doc.description     = ''
   doc.active-forum-id = \homepage
+
+  if req.surfing then delete-unnecessary-surf-data res
+
   res.locals doc
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
@@ -127,6 +128,8 @@ function background-for-forum m, active-forum-id
     unless res.locals.private
       # only cache if not a private site, private sites must never be cached
       res.header \x-varnish-ttl \24h # we cache for a very long ttl in varnish because we control this cache
+
+    if req.surfing then delete-unnecessary-surf-data res
     res.mutant \forum
 
   if meta.type is \moderation
@@ -204,7 +207,6 @@ function background-for-forum m, active-forum-id
       t-qty       : db.thread-qty forum-id, _
 
     if req.surfing
-      delete-unnecessary-surf-data res
       if req.query._surf-tasks
         tasks = delete-unnecessary-surf-tasks tasks, req.query._surf-tasks
       else
