@@ -70,8 +70,9 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   err, doc <- async.auto tasks
   doc.menu            = site.config.menu
-  doc.menu-summary    = doc.menu # only top-level items
-    |> map (-> {[k,v] for k,v of it when k isnt \children})
+  doc.menu-summary    = site.config.menu
+    |> map (item) -> # only top-level items
+      decorate-menu-item {[k,v] for k,v of item when k isnt \children}, doc.forums
   doc.title           = res.vars.site.name
   doc.description     = ''
   doc.active-forum-id = \homepage
@@ -200,8 +201,15 @@ function background-for-forum m, active-forum-id
     err, forum-id <- db.uri-to-forum-id res.vars.site.id, meta.forum-uri
     if err then return next err
     if !forum-id then return next 404
+
+    # get active menu item
+    m        = site.config.menu
+    item     = menu.flatten m |> find -> it.form.dbid is forum-id
+    children = (menu.item m, (menu.path m, item?id))?children or []
+    forum-ids = children |> map (.form.dbid) |> filter (-> it)
+
     tasks =
-      forums      : db.forums.summary site.id, forum-id, (req.query?order or \recent), 8, _
+      forums      : db.forums.summary site.id, forum-ids, (req.query?order or \recent), 8, _
       forum       : db.forum forum-id, _
       top-threads : db.top-threads site.id, forum-id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
       t-qty       : db.thread-qty forum-id, _
@@ -216,15 +224,12 @@ function background-for-forum m, active-forum-id
     if err then return next err
     if !fdoc then return next 404
 
-    # get active menu item
-    m    = site.config.menu
-    item = menu.flatten m |> find -> it.form.dbid is forum-id
-
     fdoc <<< {forum-id, cvars.t-step}
     fdoc.item            = item
     fdoc.menu            = m
-    fdoc.menu-summary    = (menu.item m, (menu.path m, item?id))?children or []
-      |> each (-> delete it.children) # only top-level at this depth
+    fdoc.menu-summary    = children
+      |> map (child) -> # only top-level
+        decorate-menu-item {[k,v] for k,v of child when k isnt \children}, fdoc.forums
     fdoc.active-forum-id = fdoc.forum-id
     fdoc.title           = "#{res.vars.site.name} - #{fdoc?forum?title}"
     fdoc.description     = item.form?forum-description or ''
@@ -662,5 +667,14 @@ function profile-paths user, uploaded-file, base=\avatar
     finish!
   else
     finish!
+
+function decorate-menu-item item, forums
+  switch item.form.dialog
+  | \forum =>
+    forum = forums |> find ->
+      it.forum_id is item.form.dbid
+    if forum
+      item.views = forum.views
+  item
 
 # vim:fdm=indent

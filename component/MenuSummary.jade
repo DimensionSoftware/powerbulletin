@@ -8,7 +8,17 @@ mixin menu-item(depth, items)
       li.row
         if item.form.dialog == 'placeholder'
           .title= item.title
-        //- forum, link & page
+        else if item.form.dialog == 'forum'
+          a.mutant.title(
+            data-surf=item.form.dbid,
+            class="forum-#{item.form.dbid}",
+            href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
+            target=(item.form.separateTab ? '_blank' : '_self'))
+            .title= item.title
+            if desc
+              .description= desc
+          .stats #{item.views} Views
+        //- link & page
         else
           a.mutant.title(
             data-surf=item.form.dbid,
