@@ -36,6 +36,7 @@ window.MainMenu        = require \../component/MainMenu
 window.Auth            = require \../component/Auth
 window.PhotoCropper    = require \../component/PhotoCropper
 window.PanelCollection = require \../component/PanelCollection
+window.ChatList        = require \../component/ChatList
 window.ChatPanel       = require \../component/ChatPanel
 
 window.furl     = require \../shared/forum-urls
@@ -416,7 +417,13 @@ $d.on \click 'html.admin #analytics' -> subscribe \analytics
 #}}}
 # {{{ - components
 window.component = {}
-$d.on \click \.onclick-messages (ev) -> window.component.panels?on!
+$d.on \click \.onclick-messages (ev) ->
+  p = window.component.panels
+  unless p.find \chat-list
+    p.add \chat-list, window.component.chat-list
+  p.select-force \chat-list
+  return false
+
 $d.on \click \.onclick-buy (ev) -> do-buy($ ev.target .data \product)
 window.do-buy = (product-id) ->
   throw new Error "window.do-buy must specify a product-id" unless product-id
@@ -434,6 +441,7 @@ window.component.main-menu = new MainMenu {-auto-render, locals:{}}, $ \#menu
 
 # panels
 window.component.panels = new PanelCollection {}
+window.component.chat-list = new ChatList { locals: { p: window.component.panels, width: 350, css: { background: '#222' } } }
 $ \body .append window.component.panels.$
 #}}}
 #{{{ - bootstrap mutant

@@ -33,7 +33,7 @@ module.exports =
       message.user.icon = "#cache-url#{message.user.photo}"
       chat-panel = @add id, message.user
       chat-panel.add-new-message message
-      if not panels.selected
+      if panels.selected isnt chat-panel.local \id
         n = ($ "\#chat-#id .notices" .text!) |> parse-int
         panels.set-notice "chat-#id", n+1
       chat-panel
@@ -114,7 +114,7 @@ module.exports =
       window.socket.emit \chat-message, message, cb
 
     load-initial-messages: (cb=(->)) ->
-      err, r <~ socket.emit \chat-previous-messages, @id, {}
+      err, r <~ socket.emit \chat-previous-messages, @id, { limit: 50 }
       if err then return err
       if r.success
         for i,msg of (reverse r.messages)

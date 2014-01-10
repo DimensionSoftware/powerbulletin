@@ -45,6 +45,8 @@ module.exports =
         @list.push [name, panel]
         @seen[name] = @list.length - 1
         # dom
+        @$.append panel.$
+        return unless panel.local \icon
         $icon = @@$ '.panel-tmpl .panel-icon' .clone!
         if n = panel.local \name # set title
           $icon.find \img .attr \title n
@@ -52,7 +54,6 @@ module.exports =
         $icon.attr \data-user-id, panel.local(\uid)
         $icon.attr \id, name
         @$ul.append $icon
-        @$.append panel.$
         $ul  = @$ul
         self = @
         $icon.find \.onclick-close .click ->
