@@ -194,22 +194,12 @@ _alias-deserializers =
 # @param  String    sort      \popular or \recent
 # @param  Number    limit     max number of items desired in result set
 # @param  Function  cb
-# select
-# f.id,
-# f.title,
-# count(t.id),
-# (select count(id) from posts p where p.forum_id = 3) as post_count
-# from forums f
-# join posts t on (t.forum_id = f.id and t.parent_id is null)
-# where f.id in (3)
-# group by f.id
 forum-summary  = (site-id, forum-ids, cb) ->
-  offset       = 1
-  placeholders = ["$#{i+offset+1}" for i to forum-ids?length-1]
+  placeholders = ["$#{i+2}" for i to forum-ids?length-1]
   site-forum   = if forum-ids?length
-    { clause: "f.site_id = $#offset AND f.id IN (#placeholders)", args: [ site-id, ...forum-ids ] }
+    { clause: "f.site_id = $1 AND f.id IN (#placeholders)", args: [ site-id, ...forum-ids ] }
   else
-    { clause: "f.site_id = $#offset", args: [ site-id ] }
+    { clause: "f.site_id = $1", args: [ site-id ] }
   sql = """
   SELECT f.id,
          f.site_id,
@@ -245,12 +235,11 @@ forum-summary  = (site-id, forum-ids, cb) ->
 # @param  Number    limit     max number of items desired in result set
 # @param  Function  cb
 thread-summary = (site-id, forum-ids, sort, limit, cb) ->
-  offset       = 1
-  placeholders = ["$#{i+offset+1}" for i to forum-ids?length-1]
+  placeholders = ["$#{i+2}" for i to forum-ids?length-1]
   site-forum   = if forum-ids?length
-    { clause: "f.site_id = $#offset AND p.forum_id IN (#placeholders)", args: [ site-id, ...forum-ids ] }
+    { clause: "f.site_id = $1 AND p.forum_id IN (#placeholders)", args: [ site-id, ...forum-ids ] }
   else
-    { clause: "f.site_id = $#offset", args: [ site-id ] }
+    { clause: "f.site_id = $1", args: [ site-id ] }
   sort-criteria = switch sort
   | \popular  => "(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id) DESC, last_post_created DESC"
   | otherwise => "last_post_created DESC" # aka recent
