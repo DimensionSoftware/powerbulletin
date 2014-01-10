@@ -66,13 +66,14 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
   site  = res.vars.site
   tasks =
-    forums: db.sites.summary site.id, (req.query?order or \recent), 8, _
+    forums:  db.sites.thread-summary site.id, (req.query?order or \recent), 8, _
+    summary: db.sites.forum-summary site.id, _
 
   err, doc <- async.auto tasks
   doc.menu            = site.config.menu
   doc.menu-summary    = site.config.menu
     |> map (item) -> # only top-level items
-      decorate-menu-item {[k,v] for k,v of item when k isnt \children}, doc.forums
+      decorate-menu-item {[k,v] for k,v of item when k isnt \children}, doc.summary
   doc.title           = res.vars.site.name
   doc.description     = ''
   doc.active-forum-id = \homepage
@@ -209,7 +210,8 @@ function background-for-forum m, active-forum-id
     forum-ids = children |> map (.form.dbid) |> filter (-> it)
 
     tasks =
-      forums      : db.forums.summary site.id, forum-ids, (req.query?order or \recent), 8, _
+      forums      : db.forums.thread-summary site.id, forum-ids, (req.query?order or \recent), 8, _
+      summary     : db.forums.forum-summary site.id, forum-ids, _
       forum       : db.forum forum-id, _
       top-threads : db.top-threads site.id, forum-id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
       t-qty       : db.thread-qty forum-id, _
@@ -229,7 +231,7 @@ function background-for-forum m, active-forum-id
     fdoc.menu            = m
     fdoc.menu-summary    = children
       |> map (child) -> # only top-level
-        decorate-menu-item {[k,v] for k,v of child when k isnt \children}, fdoc.forums
+        decorate-menu-item {[k,v] for k,v of child when k isnt \children}, fdoc.summary
     fdoc.active-forum-id = fdoc.forum-id
     fdoc.title           = "#{res.vars.site.name} - #{fdoc?forum?title}"
     fdoc.description     = item.form?forum-description or ''
@@ -671,10 +673,10 @@ function profile-paths user, uploaded-file, base=\avatar
 function decorate-menu-item item, forums
   switch item.form.dialog
   | \forum =>
-    forum = forums |> find ->
-      it.forum_id is item.form.dbid
+    forum = forums |> find -> it.id is item.form.dbid
     if forum
-      item.views = forum.views
+      item.thread_count = add-commas forum.thread_count
+      item.post_count   = add-commas forum.post_count
   item
 
 # vim:fdm=indent

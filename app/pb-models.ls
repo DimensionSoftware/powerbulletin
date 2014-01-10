@@ -188,24 +188,72 @@ _alias-deserializers =
   rights: JSON.parse
   config: JSON.parse
 
+# Helper function for generating forum summaries by site and/or forum
+# @param  Number    site-id
+# @param  Array     forum-ids
+# @param  String    sort      \popular or \recent
+# @param  Number    limit     max number of items desired in result set
+# @param  Function  cb
+# select
+# f.id,
+# f.title,
+# count(t.id),
+# (select count(id) from posts p where p.forum_id = 3) as post_count
+# from forums f
+# join posts t on (t.forum_id = f.id and t.parent_id is null)
+# where f.id in (3)
+# group by f.id
+forum-summary  = (site-id, forum-ids, cb) ->
+  offset       = 1
+  placeholders = ["$#{i+offset+1}" for i to forum-ids?length-1]
+  site-forum   = if forum-ids?length
+    { clause: "f.site_id = $#offset AND f.id IN (#placeholders)", args: [ site-id, ...forum-ids ] }
+  else
+    { clause: "f.site_id = $#offset", args: [ site-id ] }
+  sql = """
+  SELECT f.id,
+         f.site_id,
+         f.title,
+         MAX(last.id)        AS last_post_id,
+         MAX(last.user_id)   AS last_post_user_id,
+         MAX(last.name)      AS last_post_name,
+         MAX(last.html)      AS last_html,
+         MAX(last.created)   AS last_post_created,
+         COUNT(t.id)         AS thread_count,
+         (SELECT count(id) FROM posts WHERE posts.forum_id=f.id) AS post_count
+    FROM forums f
+    LEFT JOIN posts t ON (t.forum_id=f.id AND t.parent_id IS NULL)
+    JOIN (SELECT p2.id, p2.user_id, a2.name, p2.html, p2.thread_id, p2.created
+            FROM posts   p2
+            JOIN forums  f2 ON p2.forum_id = f2.id
+            JOIN aliases a2 ON (p2.user_id = a2.user_id AND f2.site_id = a2.site_id)
+           WHERE p2.id IN (SELECT MAX(id) FROM posts GROUP BY thread_id)
+             AND  a2.site_id = f2.site_id
+         ) last ON last.thread_id = t.id
+   WHERE t.parent_id is NULL AND #{site-forum.clause}
+   GROUP BY f.id
+  """
+  err, r <- postgres.query sql, site-forum.args
+  if err then return cb err
+  cb null, r
+
 # Helper function for generating thread summaries by site and/or forum
 #
 # @param  Number    site-id
-# @param  Number    forum-id
+# @param  Array     forum-ids
 # @param  String    sort      \popular or \recent
 # @param  Number    limit     max number of items desired in result set
 # @param  Function  cb
 thread-summary = (site-id, forum-ids, sort, limit, cb) ->
+  offset       = 1
+  placeholders = ["$#{i+offset+1}" for i to forum-ids?length-1]
+  site-forum   = if forum-ids?length
+    { clause: "f.site_id = $#offset AND p.forum_id IN (#placeholders)", args: [ site-id, ...forum-ids ] }
+  else
+    { clause: "f.site_id = $#offset", args: [ site-id ] }
   sort-criteria = switch sort
   | \popular  => "(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id) DESC, last_post_created DESC"
   | otherwise => "last_post_created DESC" # aka recent
-
-  placeholders = ["$#{i+2}" for i to forum-ids?length-1]
-  site-forum = if forum-ids?length
-    { clause: "f.site_id = $1 AND p.forum_id IN (#placeholders)", args: [ site-id, ...forum-ids ] }
-  else
-    { clause: "f.site_id = $1", args: [ site-id ] }
-
   sql = """
   SELECT p.id,
          f.site_id,
@@ -481,8 +529,10 @@ query-dictionary =
 
   forums:
     # new forum summary
-    summary: (site-id, forum-ids, sort, limit, cb) ->
+    thread-summary: (site-id, forum-ids, sort, limit, cb) ->
       thread-summary(site-id, forum-ids, sort, limit, cb)
+    forum-summary: (site-id, forum-ids, cb) ->
+      forum-summary(site-id, forum-ids, cb)
 
   sites:
     user-is-member-of: (user-id, cb) ->
@@ -539,8 +589,10 @@ query-dictionary =
       if err then return cb {success:false, msg:'CSS must be valid!'}
       fs.write-file "#css-dir/master.css" css, cb
 
-    summary: (site-id, sort, limit, cb) ->
+    thread-summary: (site-id, sort, limit, cb) ->
       thread-summary(site-id, null, sort, limit, cb)
+    forum-summary: (site-id, cb) ->
+      forum-summary(site-id, null, cb)
 
   subscriptions:
     list-for-site: (site-id, cb) ->

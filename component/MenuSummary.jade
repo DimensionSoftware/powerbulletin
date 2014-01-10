@@ -17,7 +17,10 @@ mixin menu-item(depth, items)
             .title= item.title
             if desc
               .description= desc
-          .stats #{item.views} Views
+          if item.thread_count
+            .stats #{item.thread_count} threads
+          if item.post_count
+            .stats #{item.post_count} posts
         //- link & page
         else
           a.mutant.title(
