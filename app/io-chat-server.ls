@@ -60,4 +60,8 @@ module.exports = class ChatServer
     err <~ db.messages.mark-all-read cid, @user.id
     cb err, { sucess: !!err }
 
+  # info on past conversations
+  past: (cb=(->)) ~>
+    db.conversations.past @site.id, @user.id, cb
+
 # vim:fdm=indent
