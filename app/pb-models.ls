@@ -620,15 +620,27 @@ query-dictionary =
     # past conversations by site-id and user-id
     past: (site-id, user-id, cb) ->
       sql = '''
-      SELECT c.id
+      SELECT c.id,
+             MAX(m.created)
         FROM conversations c
              JOIN users_conversations uc ON c.id = uc.conversation_id
+             LEFT JOIN messages m ON c.id = m.conversation_id
        WHERE c.site_id = $1
              AND uc.user_id = $2
+       GROUP BY c.id
+       ORDER BY MAX(m.created) DESC
       '''
-      # TODO - ORDER BY MAX(m.created) DESC ?
-      # TODO - unwrap the object, just the ids
-      postgres.query sql, [site-id, user-id], cb
+      err, r <- postgres.query sql, [site-id, user-id]
+      if err then return cb err
+
+      add-participants = (c, cb) ->
+        err, participants <- db.conversations.participants c.id
+        if err then return cb err
+        c.participants = participants
+        cb null, c
+
+      async.map r, add-participants, cb
+
 
     # grab a conversation + related info
     by-id: (id, cb) ->
