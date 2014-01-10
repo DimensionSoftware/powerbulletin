@@ -28,18 +28,15 @@ module.exports =
     load-initial: ~>
       err, chats <~ socket.emit \chat-past
       @chats = chats
-      console.log @chats
       if err then return err
-      console.warn chats
       for i,c of chats
         @add c
 
     select-chat-panel-handler: (ev) ~>
-      #console.log \ev, ev
       id = $(ev.current-target).data \id
       c = find (-> it.id is id), @chats
-      #console.log \c, c
-      ChatPanel.add-from-conversation c
+      panel = ChatPanel.add-from-conversation c, window.user
+      @p.select panel.local \id
 
     show: ->
       hi = $(window).height!
