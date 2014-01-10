@@ -673,10 +673,17 @@ function profile-paths user, uploaded-file, base=\avatar
 function decorate-menu-item item, forums
   switch item.form.dialog
   | \forum =>
-    forum = forums |> find -> it.id is item.form.dbid
-    if forum
-      item.thread_count = add-commas forum.thread_count
-      item.post_count   = add-commas forum.post_count
+    if forums?length # match menu w/ forum data
+      forum = forums |> find -> it.id is item.form.dbid
+      if forum
+        item.thread_count = add-commas forum.thread_count
+        item.post_count   = add-commas forum.post_count
+        item.slug         = forum.slug # TODO es correcto?
+        item.latest_post  =
+          html:     forum.last_html
+          created:  forum.last_post_created
+          username: forum.last_post_name
+          user_id:  forum.last_post_user_id
   item
 
 # vim:fdm=indent

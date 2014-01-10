@@ -141,7 +141,7 @@ textarea{overflow:auto;vertical-align:top}
 table{border-collapse:collapse;border-spacing:0}
 body{font-family:'Source Sans Pro','Open Sans Condensed','Ubuntu','Helvetica Neue',sans-serif;cursor:pointer;}
 body .container{position:fixed;top:30%;left:50%;margin:0 -190px;height:100px;}
-body .container .logo{display:block;text-indent:140px;padding:15px 0 60px 0;margin-bottom:15px;font-size:3em;font-weight:300;border-bottom:1px solid #f4f4f4;line-height:53px;-webkit-transform:scale(.5);-moz-transform:scale(.5);transform:scale(.5);-webkit-animation:build-in .6s cubic-bezier(0,1.72,0,.75) 1 forwards;-moz-animation:build-in .6s cubic-bezier(0,1.72,0,.75) 1 forwards;animation:build-in .6s cubic-bezier(0,1.72,0,.75) 1 forwards;}
+body .container .logo{display:block;text-indent:140px;padding:15px 0 60px 0;margin-bottom:15px;font-size:3em;font-weight:300;border-bottom:1px solid #f4f4f4;line-height:53px;-webkit-transform:scale(.5);-moz-transform:scale(.5);transform:scale(.5);-webkit-animation:build-in .3s ease-out 1 forwards;-moz-animation:build-in .3s ease-out 1 forwards;animation:build-in .3s ease-out 1 forwards;}
 body .container .logo:after{position:absolute;display:block;top:0;left:0;content:'';height:100px;width:100px;background-image:url("//muscache2.powerbulletin.com/images/pb_icon_logo.png");background-repeat:no-repeat;-webkit-transform:rotate(-120deg);-moz-transform:rotate(-120deg);transform:rotate(-120deg);-webkit-animation:rotate-in .4s ease-out 1 forwards;-moz-animation:rotate-in .4s ease-out 1 forwards;animation:rotate-in .4s ease-out 1 forwards}
 body .container .logo a{color:#666;text-decoration:none;font-style:italic;}
 body .container .logo a b{color:#333;font-style:normal}
