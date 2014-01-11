@@ -70,21 +70,25 @@ module.exports =
     cid: ~>
       (@local \id).replace /^chat-/, '' |> parse-int
 
-    scroll-to-latest: ~>
+    scroll-to-latest: ({animate=true,time=50ms}={}) ~>
+      console.log \time, 50ms
       set-timeout (~>
         e = @$.find \.messages
-        e.scroll-top(e.0.scroll-height)), 10ms # bottom
+        if animate
+          e.animate { scroll-top: e.0.scroll-height }
+        else
+          e.scroll-top(e.0.scroll-height)), time # bottom
 
     add-new-message: (message, should-scroll) ->
       $msg = @@$(jade.templates._chat_message(message))
       if should-scroll
-        $msg.find \img .load @scroll-to-latest
+        $msg.find \img .load (~> @scroll-to-latest {-animate})
       if message.user_id isnt window.user.id
         $msg.add-class \other
       # FIXME only scroll if already at bottom
       near-bottom = true #Math.abs(e.offset!top - e.scroll-top!) < 15px
       @$.find \.messages .append $msg
-      if near-bottom then @scroll-to-latest!
+      if near-bottom then @scroll-to-latest {-animate}
 
     add-old-message: (message) ->
       $msg = @@$(jade.templates._chat_message(message))
