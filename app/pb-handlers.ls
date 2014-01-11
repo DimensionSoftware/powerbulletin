@@ -58,7 +58,7 @@ delete-unnecessary-surf-data = (res) ->
 # @param String keep-string   comma-separated list of tasks to be kept
 # @returns Object             a new, smaller set of tasks
 delete-unnecessary-surf-tasks = (tasks, keep-string) ->
-  always-keep = <[ subPostsCount tStep tQty ]>
+  always-keep = <[ summary subPostsCount tStep tQty ]>
   keep = always-keep ++ keep-string.split ','
   t = { [k, v] for k, v of tasks when k in keep }
 
