@@ -48,6 +48,25 @@ window <<< {ck-submit-form}
 require! \../component/Buy
 require! \../component/Paginator
 
+# custom History.pushState function to get around statechange bug {{{
+hostname = (url) ->
+  url.match(/^https?:\/\/(.*?)\//)?1
+
+original-push-state = History.push-state
+
+History.push-state = (a, b, url, c) ->
+  h = hostname url
+  if h and h isnt window.location.hostname
+    link = $("a[href='#url'][target=_blank]")
+    console.log link
+    if link.length
+      window.open url
+    else
+      window.location.href = url
+  else
+    original-push-state.call History, a, b, url, c
+#}}}
+
 # reactive vars
 window.r-user = $R.state window.user
 
