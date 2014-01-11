@@ -15,6 +15,7 @@ module.exports =
       @local \virgin, true
 
     on-attach: ~>
+      @$.add-class \panel
       @$.hide!
       @$.on \click, \.chat, @select-chat-panel-handler
 

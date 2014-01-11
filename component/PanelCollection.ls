@@ -79,10 +79,11 @@ module.exports =
       i = @seen[name]
       if i?
         remove-fn = ~> # critical region
-          panel  = (@list.splice i, 1).0.1
-          $icon  = @$ul.find(\li)[i]
+          panel = (@list.splice i, 1).0.1
+          if panel.local \icon
+            $icon = @$ul.find("\##{panel.local \id}")
+            $icon.remove!
           $panel = @$.find(\.panel)[i]
-          $icon.remove!
           $panel.remove!
           # cleanup
           for key of @seen # reindex
