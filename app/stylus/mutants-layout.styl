@@ -29,15 +29,8 @@ html.homepage, html.forum
   .main-content
     .forum.homepage
       .post
-        width 100%
         margin-bottom (grid*2)
-        &:hover
-          .body
-            max-height none
-            min-height 65px
-            transition 0 ease-out 1s
         .body
-          max-height 65px
           overflow hidden
         .profile.photo
           height 45px
@@ -151,16 +144,16 @@ html.forum, html.profile, html.search, html.moderation
         .sticky-toggle
           position absolute
           display block
-          top 8px
-          left 22px
+          top 5px
+          right 32px
           cursor pointer
           &::after
             content "☐"
         .locked-toggle
           position absolute
           display block
-          top 8px
-          left 6px
+          top 5px
+          right 16px
           cursor pointer
           &::after
             content "☐"

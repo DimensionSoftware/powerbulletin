@@ -2,6 +2,7 @@
 mixin menu-item(depth, items)
   each item,i in items
     klass = (depth > 0) ? 'indent' : 'submenu'
+    slug  = item.form.forumSlug || item.form.pageSlug || item.form.url
     if item && item.form
       //- row -> out!
       desc = item.form.forumDescription || item.form.pageDescription || item.form.placeholderDescription || item.form.linkDescription
@@ -12,23 +13,28 @@ mixin menu-item(depth, items)
           a.mutant.title(
             data-surf=item.form.dbid,
             class="forum-#{item.form.dbid}",
-            href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
+            href=slug,
             target=(item.form.separateTab ? '_blank' : '_self'))
-            .title= item.title
+            span.name= item.title
             if desc
-              .description= desc
+              span.description= desc
           if item.thread_count
-            .stats #{item.thread_count} threads
-          if item.post_count
-            .stats #{item.post_count} posts
+            .summary
+              .threads #{item.thread_count} threads
+              if item.post_count
+                .posts #{item.post_count} posts
+              latest = item.latest_post
+              if latest
+                .last-post
+                  a.mutant.body(href=slug)= latest.html
+                  a.mutant.username(href="/user/#{latest.username}")= latest.username
         //- link & page
         else
           a.mutant.title(
             data-surf=item.form.dbid,
             class="forum-#{item.form.dbid}",
             href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
-            target=(item.form.separateTab ? '_blank' : '_self'))
-            .title= item.title
+            target=(item.form.separateTab ? '_blank' : '_self'))= item.title
             if desc
               .description= desc
         //- stylize depth & recurse

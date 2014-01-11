@@ -678,7 +678,6 @@ function decorate-menu-item item, forums
       if forum
         item.thread_count = add-commas forum.thread_count
         item.post_count   = add-commas forum.post_count
-        item.slug         = forum.slug # TODO es correcto?
         item.latest_post  =
           html:     forum.last_html
           created:  forum.last_post_created
