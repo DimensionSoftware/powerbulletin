@@ -58,7 +58,7 @@ delete-unnecessary-surf-data = (res) ->
 # @param String keep-string   comma-separated list of tasks to be kept
 # @returns Object             a new, smaller set of tasks
 delete-unnecessary-surf-tasks = (tasks, keep-string) ->
-  always-keep = <[ subPostsCount tStep tQty ]>
+  always-keep = <[ summary subPostsCount tStep tQty ]>
   keep = always-keep ++ keep-string.split ','
   t = { [k, v] for k, v of tasks when k in keep }
 
@@ -66,7 +66,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
   site  = res.vars.site
   tasks =
-    forums:  db.sites.thread-summary site.id, (req.query?order or \recent), 8, _
+    #forums:  db.sites.thread-summary site.id, (req.query?order or \recent), 8, _
     summary: db.sites.forum-summary site.id, _
 
   err, doc <- async.auto tasks
@@ -210,7 +210,7 @@ function background-for-forum m, active-forum-id
     forum-ids = children |> map (.form.dbid) |> filter (-> it)
 
     tasks =
-      forums      : db.forums.thread-summary site.id, forum-ids, (req.query?order or \recent), 8, _
+      #forums      : db.forums.thread-summary site.id, forum-ids, (req.query?order or \recent), 8, _
       summary     : db.forums.forum-summary site.id, forum-ids, _
       forum       : db.forum forum-id, _
       top-threads : db.top-threads site.id, forum-id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
