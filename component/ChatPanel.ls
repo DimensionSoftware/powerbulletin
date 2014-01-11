@@ -71,7 +71,6 @@ module.exports =
       (@local \id).replace /^chat-/, '' |> parse-int
 
     scroll-to-latest: ({animate=true,time=50ms}={}) ~>
-      console.log \time, 50ms
       set-timeout (~>
         e = @$.find \.messages
         if animate
