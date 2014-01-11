@@ -14,7 +14,7 @@ module.exports =
     init: ->
       # add children
       @children =
-        pins:    new Pins {locals:@locals!} \.Pins @
+        #pins:    new Pins {locals:@locals!} \.Pins @
         summary: new MenuSummary {locals:@locals!} \.MenuSummary @
 
 # vim: fdm=marker
