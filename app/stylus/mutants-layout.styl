@@ -161,6 +161,12 @@ html.forum, html.profile, html.search, html.moderation
         .sticky-toggle::after
           content "☑"
       .thread.locked
+        .locked-toggle
+          position absolute
+          display block
+          top 6px
+          &::after
+            content "✖" // ☒
         .locked-toggle::after
           content "✖" // ☒
   #left_chrome
