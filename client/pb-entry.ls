@@ -58,7 +58,6 @@ History.push-state = (a, b, url, c) ->
   h = hostname url
   if h and h isnt window.location.hostname
     link = $("a[href='#url'][target=_blank]")
-    console.log link
     if link.length
       window.open url
     else
