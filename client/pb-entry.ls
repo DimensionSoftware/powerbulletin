@@ -409,8 +409,36 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
       show-tooltip t, data?msg
   )
   true
-
-$d.on \click 'html.admin .dialog textarea, html.admin .dialog input[type="text"], html.admin .dialog select' -> false # discard event
+$d.on \click \#add_custom_domain (ev) ->
+  e = $ \#custom_domain
+  n = e.val! # domain name to add
+  unless n.length then return # guard
+  $.ajax {
+    url: \/resources/domains
+    type: \post
+    data:
+      name: n
+    complete: (data) ->
+      t = $ \#warning
+      focus = -> e.focus!select!
+      if data.responseJSON?success is true
+        e.val '' # clear
+        # add domain to dropdown/select input
+        domain = data.responseJSON?domain
+        site.domains.push domain # append
+        o = new Option n, domain.id
+        $ o .html n
+        $ \#domain
+          ..append o
+          ..val domain.id # select
+          ..change!
+        focus!
+        show-tooltip t, "Congratulations, added #n!"
+      else
+        focus!
+        show-tooltip t, data.responseJSON.errors?0
+  }
+$d.on \click 'html.admin .dialog textarea, html.admin .dialog button, html.admin .dialog input[type="text"], html.admin .dialog select' -> false # discard event
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
   #console.log \parsed_id, id
@@ -430,8 +458,9 @@ $d.on \change 'html.admin .domain' -> # set keys
 subscribe = (what) -> unless what in site.subscriptions
   do-buy what
   false
-$d.on \click 'html.admin #private'   -> subscribe \private
-$d.on \click 'html.admin #analytics' -> subscribe \analytics
+$d.on \click 'html.admin #private'           -> subscribe \private
+$d.on \click 'html.admin #analytics'         -> subscribe \analytics
+$d.on \click 'html.admin #add_custom_domain' -> subscribe \custom_domain
 #}}}
 # {{{ - components
 window.component = {}

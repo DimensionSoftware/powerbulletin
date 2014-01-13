@@ -506,7 +506,7 @@ same-profile = (hints) ->
 # this function meant to be shared between static and on-initial
 !function render-admin-components action, site, win
   switch action
-  | \domains  => try win.render-mutant \main_content, \admin-domains
+  | \domains  => try win.render-mutant \main_content, \admin-general
   | \invites  => try win.render-mutant \main_content, \admin-invites
   | \users    => render-component win, \#main_content, \admin-users, SuperAdminUsers, {locals: {} <<< win.admin-users-locals <<< {purl.gen}}
   | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site:site}}
@@ -553,6 +553,10 @@ same-profile = (hints) ->
       current-domain = (window.site.domains.filter (-> it.name is window.location.hostname))?0
       $('.domain select').val current-domain.id.to-string! if current-domain
       $ \.domain .trigger \change # fill-in authorization
+      if window.location.to-string!match \domains
+        $ \#domains .attr \checked, true
+        $ 'label[for="domains"]' .effect \highlight
+        awesome-scroll-to \#domains
       # no pager (for now)
       window.pages-count = 0
       <~ lazy-load-html5-uploader

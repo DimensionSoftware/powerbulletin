@@ -70,6 +70,15 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
         .dialog
           .break
           .domain
+            input#custom_domain(type='text', placeholder='Custom-Domain.com')
+            button#add_custom_domain Add
+            span.q ?
+              .message
+                h5 Add your own domain
+                p Purchase from your favorite registrar and point to
+                  b 50.116.30.21
+                p For help, contact 
+                  a(href='mailto:support@powerbulletin.com') support@powerbulletin.com
             select(id='domain', name='domain')
               option(disabled='disabled') - Select a Domain -
               each d in site.domains

@@ -281,6 +281,25 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
     else
       res.json success: true, alias: new-alias
 
+@domains =
+  create: (req, res, next) ->
+    if not req?user?rights?super then return next 404 # guard
+
+    # get site
+    site = res.vars.site
+    err, site <- db.site-by-id site.id
+    if err then return next err
+
+    unless \custom_domain in site.subscriptions # prevent tampering
+      res.json {success:false, errors:['Subscribe to custom domain first']}
+      return false
+
+    # add domain
+    # TODO validation
+    err, r <- db.domains.upsert {site_id:site.id, name:req.body.name}
+    if err then res.json success:false, errors:['Domain in use']
+    res.json {success:true, domain:r.0}
+
 @posts =
   index   : (req, res) ->
     res.locals.fid = req.query.fid

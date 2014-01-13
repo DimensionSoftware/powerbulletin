@@ -34,6 +34,7 @@ app.resource \resources/aliases,            resources.aliases
 app.resource \resources/products,           resources.products
 app.resource \resources/conversations,      resources.conversations
 app.resource \resources/threads,            resources.threads
+app.resource \resources/domains,            resources.domains
 app.get  \/resources/posts/:id/sub-posts,   handlers.sub-posts
 app.post \/resources/posts/:id/impression,  handlers.add-impression
 app.post \/resources/posts/:id/censor,      handlers.censor
