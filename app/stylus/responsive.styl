@@ -4,6 +4,13 @@
   .main-content
     .forum, .search
       margin 0 150px 0 10px
+
+// oneliner titles on left pane
+@media screen and (max-height: 450px)
+  .left-content
+    .threads
+      .post-count, .views, .profile, .username
+        display none!important
 @media screen and (max-width: 800px)
   .logo
     font-size 1.1em!important
