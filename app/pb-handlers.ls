@@ -158,8 +158,7 @@ function background-for-forum m, active-forum-id
 
     # fetch forum settings
     item   = menu.flatten site.config.menu |> find -> it.form.dbid is post.forum_id
-    ppp    = item.form?posts-per-page
-    limit  = ppp or posts-per-page
+    limit  = item?form?posts-per-page or posts-per-page
     offset = (page - 1) * limit
 
     tasks =
@@ -234,7 +233,7 @@ function background-for-forum m, active-forum-id
         decorate-menu-item {[k,v] for k,v of child when k isnt \children}, fdoc.summary
     fdoc.active-forum-id = fdoc.forum-id
     fdoc.title           = "#{res.vars.site.name} - #{fdoc?forum?title}"
-    fdoc.description     = item.form?forum-description or ''
+    fdoc.description     = item?form?forum-description or ''
     fdoc.background      = background-for-forum fdoc.menu, fdoc.active-forum-id
 
     finish fdoc
