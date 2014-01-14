@@ -413,6 +413,7 @@ $d.on \click \#add_custom_domain (ev) ->
   e = $ \#custom_domain
   n = e.val! # domain name to add
   unless n.length then return # guard
+  unless \custom_domain in site.subscriptions then return # guard
   $.ajax {
     url: \/resources/domains
     type: \post
