@@ -81,7 +81,7 @@ module.exports =
         remove-fn = ~> # critical region
           panel = (@list.splice i, 1).0.1
           if panel.local \icon
-            $icon = @$ul.find("\##{panel.local \id}")
+            $icon = @$ul.find("\#icon-#{panel.local \id}")
             $icon.remove!
           $panel = @$.find(\.panel)[i]
           $panel.remove!
