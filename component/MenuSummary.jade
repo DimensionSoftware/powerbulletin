@@ -8,7 +8,9 @@ mixin menu-item(depth, items)
       tr
         //- placeholder
         if item.form.dialog == 'placeholder'
-          td.title(colspan=4)= item.title
+          td.title(colspan=4)
+            span.name= item.title
+            span.description
         //- forum
         else if item.form.dialog == 'forum'
           td.title
@@ -18,8 +20,7 @@ mixin menu-item(depth, items)
               href=slug,
               target=(item.form.separateTab ? '_blank' : '_self'))
               span.name= item.title
-              if desc
-                span.description= desc
+              span.description= desc
           td.last-post
             latest = item.latest_post
             if latest
@@ -36,8 +37,7 @@ mixin menu-item(depth, items)
               class="forum-#{item.form.dbid}",
               href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
               target=(item.form.separateTab ? '_blank' : '_self'))= item.title
-              if desc
-                .description= desc
+            .description= desc
 
 //- render menu items in long format
 //----------

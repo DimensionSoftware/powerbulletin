@@ -23,25 +23,11 @@
         border-bottom none
       &:hover
         color #000
-        background-color tint_color
+        //background-color tint_color
         transition all 0
       td
-        padding (grid - 2)
+        padding (grid - 2) grid
         vertical-align top
-      .body, .username
-        margin 0 3px
-      .body
-        font-size 1.2em
-        font-weight 400
-      .username
-        position relative
-        margin-left grid
-        color dark_text
-        text-transform capitalize
-        &:before
-          content '-'
-          position absolute
-          left -6px
       .title
         font-weight 500
         font-size 1.1em
@@ -54,9 +40,24 @@
         font-weight 300
         font-size .9em
         color #666
+        min-height 25px
         display block
       .last-post
         font-size .9em
+        padding 8px 25px 8px 8px
+        &:first-letter
+          text-transform uppercase
+        .body, .username
+          margin 0 3px
+        .username
+          position relative
+          margin-left grid
+          color dark_text
+          text-transform capitalize
+          &:before
+            content '-'
+            position absolute
+            left -6px
         .date
           position relative
           font-style italic
