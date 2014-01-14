@@ -3,8 +3,6 @@ require, exports, module <- define
 
 @render = (s, options={}) ->
   t0 = @replace-urls(s, @embedded)
-  # TODO sanitize
-  # https://code.google.com/p/pagedown/wiki/PageDown
 
 @url-pattern = /(\w+:\/\/[\w\.\?\&=\%\/-]+[\w\?\&=\%\/-])/g
 
