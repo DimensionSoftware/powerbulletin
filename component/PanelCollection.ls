@@ -60,7 +60,7 @@ module.exports =
           self.remove name
           window.socket.emit \chat-mark-all-read, panel.id
           false
-        $icon.mousedown (ev) ->
+        $icon.click (ev) ->
           $ul.find \li .remove-class \selected
           $ @ .add-class \selected
           self.select name
