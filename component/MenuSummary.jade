@@ -1,51 +1,51 @@
 
 mixin menu-item(depth, items)
   each item,i in items
-    klass = (depth > 0) ? 'indent' : 'submenu'
     slug  = item.form.forumSlug || item.form.pageSlug || item.form.url
     if item && item.form
       //- row -> out!
       desc = item.form.forumDescription || item.form.pageDescription || item.form.placeholderDescription || item.form.linkDescription
-      li.row
+      tr
+        //- placeholder
         if item.form.dialog == 'placeholder'
-          .title= item.title
+          td.title(colspan=4)= item.title
+        //- forum
         else if item.form.dialog == 'forum'
-          a.mutant.title(
-            data-surf=item.form.dbid,
-            class="forum-#{item.form.dbid}",
-            href=slug,
-            target=(item.form.separateTab ? '_blank' : '_self'))
-            span.name= item.title
-            if desc
-              span.description= desc
-          if item.thread_count
-            .summary
-              .threads #{item.thread_count} threads
-              if item.post_count
-                .posts #{item.post_count} posts
-              latest = item.latest_post
-              if latest
-                .last-post
-                  a.mutant.body(href=slug)= latest.html
-                  a.mutant.username(href="/user/#{latest.username}")= latest.username
+          td.title
+            a.mutant(
+              data-surf=item.form.dbid,
+              class="forum-#{item.form.dbid}",
+              href=slug,
+              target=(item.form.separateTab ? '_blank' : '_self'))
+              span.name= item.title
+              if desc
+                span.description= desc
+          td.last-post
+            latest = item.latest_post
+            if latest
+              a.mutant.body(href=slug)= latest.html
+              a.mutant.username(href="/user/#{latest.username}")= latest.username
+          td.threads #{item.thread_count}
+          td.posts #{item.post_count}
         //- link & page
         else
-          a.mutant.title(
-            data-surf=item.form.dbid,
-            class="forum-#{item.form.dbid}",
-            href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
-            target=(item.form.separateTab ? '_blank' : '_self'))= item.title
-            if desc
-              .description= desc
-        //- stylize depth & recurse
-        if item.children
-          div(class=klass)
-            ul
-              +menu-item(depth+1, item.children)
+          td.title(colspan=4)
+            a.mutant(
+              data-surf=item.form.dbid,
+              class="forum-#{item.form.dbid}",
+              href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
+              target=(item.form.separateTab ? '_blank' : '_self'))= item.title
+              if desc
+                .description= desc
 
 //- render menu items in long format
 //----------
 if typeof(menuSummary) == 'object'
-  ul
+  table
+    tr
+      th.first Forums
+      th.second Latest Post
+      th.third Threads
+      th.foruth Posts
     +menu-item(0, menuSummary)
 .clear
