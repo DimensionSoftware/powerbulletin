@@ -1,51 +1,60 @@
 
 mixin menu-item(depth, items)
   each item,i in items
-    klass = (depth > 0) ? 'indent' : 'submenu'
     slug  = item.form.forumSlug || item.form.pageSlug || item.form.url
     if item && item.form
       //- row -> out!
       desc = item.form.forumDescription || item.form.pageDescription || item.form.placeholderDescription || item.form.linkDescription
-      li.row
+      tr
+        //- placeholder
         if item.form.dialog == 'placeholder'
-          .title= item.title
-        else if item.form.dialog == 'forum'
-          a.mutant.title(
-            data-surf=item.form.dbid,
-            class="forum-#{item.form.dbid}",
-            href=slug,
-            target=(item.form.separateTab ? '_blank' : '_self'))
+          td.title(colspan=4)
             span.name= item.title
-            if desc
+            span.description
+        //- forum
+        else if item.form.dialog == 'forum'
+          td.title
+            a.mutant(
+              data-surf=item.form.dbid,
+              class="forum-#{item.form.dbid}",
+              href=slug,
+              target=(item.form.separateTab ? '_blank' : '_self'))
+              span.name= item.title
               span.description= desc
-          if item.thread_count
-            .summary
-              .threads #{item.thread_count} threads
-              if item.post_count
-                .posts #{item.post_count} posts
-              latest = item.latest_post
-              if latest
-                .last-post
-                  a.mutant.body(href=slug)= latest.html
-                  a.mutant.username(href="/user/#{latest.username}")= latest.username
+          td.last-post
+            latest = item.latest_post
+            if latest
+              a.mutant.body(href=slug)= latest.html
+              a.mutant.username(href="/user/#{latest.username}")= latest.username
+              span.date(data-time=latest.created.last_post_created_iso, title=latest.created.last_post_created_friendly)- latest.created.last_post_created_human
+          td.threads= item.thread_count
+          td.posts= item.post_count
         //- link & page
         else
-          a.mutant.title(
-            data-surf=item.form.dbid,
-            class="forum-#{item.form.dbid}",
-            href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
-            target=(item.form.separateTab ? '_blank' : '_self'))= item.title
-            if desc
-              .description= desc
-        //- stylize depth & recurse
-        if item.children
-          div(class=klass)
-            ul
-              +menu-item(depth+1, item.children)
+          td.title(colspan=4)
+            a.mutant(
+              data-surf=item.form.dbid,
+              class="forum-#{item.form.dbid}",
+              href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
+              target=(item.form.separateTab ? '_blank' : '_self'))= item.title
+            .description= desc
 
 //- render menu items in long format
 //----------
 if typeof(menuSummary) == 'object'
-  ul
-    +menu-item(0, menuSummary)
+  table
+    tr
+      th.first Forums
+      th.second Latest Post
+      th.third Threads
+      th.foruth Posts
+    if menuSummary.length
+      +menu-item(0, menuSummary)
+    //- default
+    else
+      tr
+        td
+          p.create
+            a.mutant.no-surf.require-login(data-edit="true", data-href="/new") Create the first thread
+              i !
 .clear
