@@ -16,7 +16,7 @@ require! {
   res.locals.env = global.env
 
   # cacheUrls should always be available
-  res.locals {[k,v] for k,v of cvars when k.match /^cache\d?Url$/}
+  res.locals {[k,v] for k,v of cvars when (k.match /^cache\d?Url$/ or k.match /authDomain/)}
 
   next!
 
