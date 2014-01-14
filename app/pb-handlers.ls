@@ -331,7 +331,7 @@ function background-for-forum m, active-forum-id
   fdoc.page    = parse-int page
   fdoc.title   = "#{res.vars.site.name} - #name"
   fdoc.profile.human_post_count   = add-commas(fdoc.qty)
-  fdoc.profile.human_thread_count = add-commas(fdoc.profile.thread_count)
+  fdoc.profile.human_thread_count = add-commas(fdoc.profile.thread_count) or 0
 
   res.locals fdoc
   res.locals.step = ppp
@@ -675,13 +675,13 @@ function decorate-menu-item item, forums
     if forums?length # match menu w/ forum data
       forum = forums |> find -> it.id is item.form.dbid
       if forum
-        item.thread_count = add-commas forum.thread_count
-        item.post_count   = add-commas forum.post_count
+        item.thread_count = (add-commas forum.thread_count) or 0
+        item.post_count   = (add-commas forum.post_count) or 0
         item.latest_post  =
           html:     forum.last_html
-          created:  forum.last_post_created
           username: forum.last_post_name
           user_id:  forum.last_post_user_id
+          created:  add-dates forum, [ \last_post_created ]
   item
 
 # vim:fdm=indent

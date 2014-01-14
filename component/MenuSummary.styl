@@ -1,24 +1,30 @@
 .MenuSummary
-  margin-top grid
-  margin-bottom (grid*5)
+  padding 7px 20px 20px 20px
+  margin grid -25px (grid*5) -25px
+  border-radius 8px
+  background-color #fff
   table
+    width 100%
     th
       text-align left
       color dark_text
-      border-bottom 1px solid #e4e4e4
       padding grid
       font-size 1.1em
       font-weight 400
     .first
-      min-width 400px
+      min-width 300px
     tr
-      border-bottom 1px solid #e4e4e4
+      position relative
+      border-bottom 1px solid tint_color
+      transition all .1s ease-out .1s
+      &:first-child:hover
+        background-color transparent
+      &:last-child
+        border-bottom none
       &:hover
         color #000
-      &:nth-child(odd)
         background-color tint_color
-      &:first-child
-        background-color inherit
+        transition all 0
       td
         padding (grid - 2)
         vertical-align top
@@ -51,5 +57,14 @@
         display block
       .last-post
         font-size .9em
+        .date
+          position relative
+          font-style italic
+          color #666
+          margin-left 8px
+          &:before
+            content '-'
+            position absolute
+            left -6px
       .threads, .posts
         color #666
