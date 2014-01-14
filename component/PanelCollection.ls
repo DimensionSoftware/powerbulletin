@@ -15,9 +15,9 @@ module.exports =
       @list     = []
       @seen     = {}
       @selected = null
-      @delay    = 250ms
-      @ease-in  = \easeInBack
-      @ease-out = \easeOutBack
+      @delay    = 100ms
+      @ease-in  = \easeInExpo
+      @ease-out = \easeOutExpo
 
       @local \selected, ''
 
@@ -52,7 +52,7 @@ module.exports =
           $icon.find \img .attr \title n
         $icon.find \img .attr { src: panel.local(\icon), title: panel.local(\title) }
         $icon.attr \data-user-id, panel.local(\uid)
-        $icon.attr \id, name
+        $icon.attr \id, "icon-#name"
         @$ul.append $icon
         $ul  = @$ul
         self = @
@@ -60,7 +60,7 @@ module.exports =
           self.remove name
           window.socket.emit \chat-mark-all-read, panel.id
           false
-        $icon.click (ev) ->
+        $icon.mousedown (ev) ->
           $ul.find \li .remove-class \selected
           $ @ .add-class \selected
           self.select name
@@ -169,12 +169,14 @@ module.exports =
 
     hide: (sel) ->
       #@@$(sel).add-class \hidden
-      @@$(sel).hide(@delay, @ease-in)
+      panel = @find @selected
+      wd = panel.local \width
+      @@$(sel).transition { x: wd }, @delay/2, @ease-in
 
     show: (sel, cb=(->)) ->
       hi = $(window).height!
       #@@$(sel).remove-class \hidden
-      @@$(sel).css(height: "#{hi}px").show @delay, @ease-out, cb
+      @@$(sel).css(height: "#{hi}px").transition { x: 0 }, @delay, @ease-out, cb
 
     select-force: (name) ->
       if @selected is void or @selected isnt name

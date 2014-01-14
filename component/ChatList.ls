@@ -42,7 +42,9 @@ module.exports =
     show: ->
       hi = $(window).height!
       if @local \virgin
+        @$.transition { x: (@local \width) }
         @$.css(width: @local \width)
+        @$.show!
         @local \virgin, false
         @load-initial!
       @$.css(height: "#{hi}px")

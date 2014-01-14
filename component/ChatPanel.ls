@@ -34,8 +34,8 @@ module.exports =
       chat-panel = @add id, message.user
       chat-panel.add-new-message message
       if panels.selected isnt chat-panel.local \id
-        n = ($ "\#chat-#id .notices" .text!) |> parse-int
-        panels.set-notice "chat-#id", n+1
+        n = ($ "\#icon-chat-#id .notices" .text!) |> parse-int
+        panels.set-notice "icon-chat-#id", n+1
       chat-panel
 
     # add chat-panel using conversation info (but no message)
@@ -141,12 +141,15 @@ module.exports =
     show: ->
       hi = $(window).height!
       if @local \virgin
+        @$.transition { x: (@local \width) }
         @$.css(width: @local \width)
+        @$.show!
         @$.find \.message-box .css(width: (@local \width)-8px)
         @local \virgin, false
         @load-initial-messages!
       @$.css(height: "#{hi}px")
-      socket.emit 'chat-mark-all-read', @cid!, (~> @p.set-notice (@local \id), 0)
+      icon-id = "icon-#{@local \id}"
+      socket.emit 'chat-mark-all-read', @cid!, (~> @p.set-notice(icon-id, 0))
       @p.show @$, (~>
         @scroll-to-latest!
         @$.find \.message-box .focus!)
