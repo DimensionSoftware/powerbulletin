@@ -1,8 +1,15 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
+require! {
+  \pagedown
+}
+
+converter = pagedown.get-sanitizing-converter!
+
 @render = (s, options={}) ->
   t0 = @replace-urls(s, @embedded)
+  t1 = converter.make-html t0
 
 @url-pattern = /(\w+:\/\/[\w\.\?\&=\%\/-]+[\w\?\&=\%\/-])/g
 

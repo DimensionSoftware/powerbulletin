@@ -8,7 +8,7 @@ require! {
   postgres: \./postgres
   sioa: \socket.io-announce
   sh: \../shared/shared-helpers
-  format: \../shared/format
+  format: \./format
 }
 
 {filter, join, keys, values, sort-by} = require \prelude-ls
