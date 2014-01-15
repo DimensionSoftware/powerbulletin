@@ -7,11 +7,18 @@ require! {
   bbcode
   nodemailer
   strftime
+  v: \./varnish
   h: \../shared/shared-helpers
   auth:  \./auth
   cvars: \./load-cvars
 }
 sanitize = require('express-validator/node_modules/validator').sanitize
+
+@ban-all-domains = (site-id) ->
+  # varnish ban site's domains
+  err, domains <- db.domains-by-site-id site-id
+  if err then return next err
+  for d in domains then v.ban-domain d.name
 
 @cache-buster = ->
   crypto.create-hash \sha1 .update(Math.floor((new Date).get-time! * Math.random!).to-string!).digest \hex
