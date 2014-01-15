@@ -8,7 +8,7 @@ require! {
   postgres: \./postgres
   sioa: \socket.io-announce
   sh: \../shared/shared-helpers
-  format: \../shared/format
+  format: \./format
 }
 
 {filter, join, keys, values, sort-by} = require \prelude-ls
@@ -189,41 +189,52 @@ _alias-deserializers =
   config: JSON.parse
 
 # Helper function for generating forum summaries by site and/or forum
-# @param  Number    site-id
 # @param  Array     forum-ids
-# @param  String    sort      \popular or \recent
-# @param  Number    limit     max number of items desired in result set
 # @param  Function  cb
-forum-summary  = (site-id, forum-ids, cb) ->
-  placeholders = ["$#{i+2}" for i to forum-ids?length-1]
-  site-forum   = if forum-ids?length
-    { clause: "f.site_id = $1 AND f.id IN (#placeholders)", args: [ site-id, ...forum-ids ] }
-  else
-    { clause: "f.site_id = $1", args: [ site-id ] }
+forum-summary  = (forum-ids, cb) ->
+  if not forum-ids or forum-ids.length is 0
+    return cb null, []
+  unioned-recent-activity-sql = (forum-ids) ->
+    last-post-sql = (forum-id) ->
+      """
+      SELECT thread.forum_id,
+             thread.title,
+             thread.uri,
+             a.name,
+             a.user_id,
+             a.photo,
+             last_post.html,
+             last_post.created
+        FROM posts thread
+             JOIN posts last_post ON last_post.thread_id = thread.id
+             JOIN forums f ON f.id = thread.forum_id
+             JOIN aliases a ON a.user_id = last_post.user_id AND a.site_id = f.site_id
+       WHERE thread.id = (SELECT thread_id FROM posts WHERE forum_id = #forum-id ORDER BY id DESC LIMIT 1)
+             AND last_post.id = (SELECT id FROM posts WHERE forum_id = #forum-id ORDER BY id DESC LIMIT 1)
+      """
+    [ "(#{last-post-sql id})" for id in forum-ids ].join "\nUNION\n"
+
   sql = """
   SELECT f.id,
          f.site_id,
          f.title,
-         MAX(last.id)        AS last_post_id,
-         MAX(last.user_id)   AS last_post_user_id,
-         MAX(last.name)      AS last_post_name,
-         MAX(last.html)      AS last_html,
-         MAX(last.created)   AS last_post_created,
-         COUNT(t.id)         AS thread_count,
-         (SELECT count(id) FROM posts WHERE posts.forum_id=f.id) AS post_count
+         last.html    AS last_post_html,
+         last.title   AS last_post_title,
+         last.uri     AS last_post_uri,
+         last.name    AS last_post_user_name,
+         last.user_id AS last_post_user_id,
+         last.photo   AS last_post_user_photo,
+         last.created AS last_post_created,
+         (SELECT COUNT(id) FROM posts WHERE forum_id=f.id AND parent_id IS NULL)
+                      AS thread_count,
+         (SELECT COUNT(id) FROM posts WHERE forum_id=f.id)
+                      AS post_count
     FROM forums f
-    LEFT JOIN posts t ON (t.forum_id=f.id AND t.parent_id IS NULL)
-    JOIN (SELECT p2.id, p2.user_id, a2.name, p2.html, p2.thread_id, p2.created
-            FROM posts   p2
-            JOIN forums  f2 ON p2.forum_id = f2.id
-            JOIN aliases a2 ON (p2.user_id = a2.user_id AND f2.site_id = a2.site_id)
-           WHERE p2.id IN (SELECT MAX(id) FROM posts GROUP BY thread_id)
-             AND  a2.site_id = f2.site_id
-         ) last ON last.thread_id = t.id
-   WHERE t.parent_id is NULL AND #{site-forum.clause}
-   GROUP BY f.id
+         LEFT JOIN (#{unioned-recent-activity-sql forum-ids}) AS last ON last.forum_id = f.id
+   WHERE f.id IN (#forum-ids)
+   ORDER BY f.id
   """
-  err, r <- postgres.query sql, site-forum.args
+  err, r <- postgres.query sql, []
   if err then return cb err
   cb null, r
 
@@ -256,13 +267,14 @@ thread-summary = (site-id, forum-ids, sort, limit, cb) ->
          a.photo        AS user_photo,
          last.id        AS last_post_id,
          last.user_id   AS last_post_user_id,
-         last.name      AS last_post_name,
-         last.html      AS last_html,
+         last.name      AS last_post_user_name,
+         last.photo     AS last_post_user_photo,
+         last.html      AS last_post_html,
          last.created   AS last_post_created
     FROM posts p
     JOIN forums  f ON p.forum_id = f.id
     JOIN aliases a ON (p.user_id = a.user_id AND f.site_id = a.site_id)
-    JOIN (SELECT p2.id, p2.user_id, a2.name, p2.html, p2.thread_id, p2.created
+    JOIN (SELECT p2.id, p2.user_id, a2.name, a2.photo, p2.html, p2.thread_id, p2.created
             FROM posts   p2
             JOIN forums  f2 ON p2.forum_id = f2.id
             JOIN aliases a2 ON (p2.user_id = a2.user_id AND f2.site_id = a2.site_id)
@@ -520,8 +532,8 @@ query-dictionary =
     # new forum summary
     thread-summary: (site-id, forum-ids, sort, limit, cb) ->
       thread-summary(site-id, forum-ids, sort, limit, cb)
-    forum-summary: (site-id, forum-ids, cb) ->
-      forum-summary(site-id, forum-ids, cb)
+    forum-summary: (forum-ids, cb) ->
+      forum-summary(forum-ids, cb)
 
   sites:
     user-is-member-of: (user-id, cb) ->
@@ -580,8 +592,6 @@ query-dictionary =
 
     thread-summary: (site-id, sort, limit, cb) ->
       thread-summary(site-id, null, sort, limit, cb)
-    forum-summary: (site-id, cb) ->
-      forum-summary(site-id, null, cb)
 
   subscriptions:
     list-for-site: (site-id, cb) ->

@@ -1,6 +1,6 @@
 require! {
   \async
-  \../shared/format
+  \../app/format
 }
 
 @up = (pg, cb) ->
