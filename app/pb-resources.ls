@@ -18,12 +18,6 @@ const base-css = \public/sites
 
 announce = sioa.create-client!
 
-ban-all-domains = (site-id) ->
-  # varnish ban site's domains
-  err, domains <- db.domains-by-site-id site-id
-  if err then return next err
-  for d in domains then v.ban-domain d.name
-
 # Return true if forum-id is a locked forum according to the menu m.
 is-locked-forum = (m, forum-id) ->
   menu.flatten(m) |> find (-> f = it.form; f.dialog is \forum and f.dbid is forum-id and f.locked)
@@ -145,7 +139,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       err <- fs.write-file "#css-dir/#{domain.id}.auth.css" domain.config.style
 
       # varnish ban
-      ban-all-domains site.id if should-ban
+      h.ban-all-domains site.id if should-ban
       res.json success:true
 
     | \menu =>
@@ -174,7 +168,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       err, r <- db.site-update site
       if err then return res.json success: false, hint: \db.site-update
 
-      ban-all-domains site.id # varnish ban
+      h.ban-all-domains site.id # varnish ban
       announce.in(site.id).emit \menu-update, site.config.menu
       res.json success:true, id: dbid
 
@@ -198,7 +192,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       err, r <- db.site-update site
       if err then return res.json success: false, hint: \db-site-update, err: err, errors: [ "Item could not be deleted." ]
 
-      ban-all-domains site.id # varnish ban
+      h.ban-all-domains site.id # varnish ban
       announce.in(site.id).emit \menu-update, site.config.menu
       res.json success: true
 
@@ -216,7 +210,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       err, r <- db.site-update site
       if err then return res.json success: false, hint: \menu-resort
 
-      ban-all-domains site.id # varnish ban
+      h.ban-all-domains site.id # varnish ban
       announce.in(site.id).emit \menu-update, site.config.menu
       res.json success:true
 
