@@ -65,9 +65,10 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 @homepage = (req, res, next) ->
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
   site  = res.vars.site
+  forum-ids = site.config.menu |> filter (-> it.form.dialog is \forum) |> map (-> it.form.dbid)
   tasks =
     #forums:  db.sites.thread-summary site.id, (req.query?order or \recent), 8, _
-    summary: db.sites.forum-summary site.id, _
+    summary: db.forums.forum-summary forum-ids, _
 
   err, doc <- async.auto tasks
   doc.menu            = site.config.menu
@@ -210,7 +211,7 @@ function background-for-forum m, active-forum-id
 
     tasks =
       #forums      : db.forums.thread-summary site.id, forum-ids, (req.query?order or \recent), 8, _
-      summary     : db.forums.forum-summary site.id, forum-ids, _
+      summary     : db.forums.forum-summary forum-ids, _
       forum       : db.forum forum-id, _
       top-threads : db.top-threads site.id, forum-id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
       t-qty       : db.thread-qty forum-id, _
@@ -678,8 +679,11 @@ function decorate-menu-item item, forums
         item.thread_count = (add-commas forum.thread_count) or 0
         item.post_count   = (add-commas forum.post_count) or 0
         item.latest_post  =
-          html:     forum.last_html
-          username: forum.last_post_name
+          html:     forum.last_post_html
+          title:    forum.last_post_title
+          uri:      forum.last_post_uri
+          username: forum.last_post_user_name
+          photo:    forum.last_post_user_photo
           user_id:  forum.last_post_user_id
           created:  add-dates forum, [ \last_post_created ]
   item
