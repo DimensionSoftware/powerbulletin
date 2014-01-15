@@ -5,7 +5,7 @@ mixin menu-item(depth, items)
     if item && item.form
       //- row -> out!
       desc = item.form.forumDescription || item.form.pageDescription || item.form.placeholderDescription || item.form.linkDescription
-      tr
+      tr(class="item-#{item.form.dialog}")
         //- placeholder
         if item.form.dialog == 'placeholder'
           td.title(colspan=4)
