@@ -425,6 +425,7 @@ function profile-paths user, uploaded-file, base=\avatar
           console.error \change-avatar, err
           return res.json success: false, type: \db.change-avatar
         announce.in(site.id).emit \new-profile-photo, { id: user.id, photo: new-photo }
+        h.ban-all-domains site.id
         return res.json success: true
   res.json success: false
 
@@ -469,6 +470,7 @@ function profile-paths user, uploaded-file, base=\avatar
 @sticky = (req, res, next) ->
   return next 404 unless req.user
   return next 403 unless req.user.sys_rights?super or req.user.rights?super
+  site = res.vars.site
   thread-id = req.params.id
 
   err, r <- db.posts.toggle-sticky thread-id
@@ -478,11 +480,13 @@ function profile-paths user, uploaded-file, base=\avatar
     success : true
     sticky  : !!r.is_sticky
 
+  h.ban-all-domains site.id
   res.json new-sticky-state
 
 @locked = (req, res, next) ->
   return next 404 unless req.user
   return next 403 unless req.user.sys_rights?super or req.user.rights?super
+  site = res.vars.site
   thread-id = req.params.id
 
   err, r <- db.posts.toggle-locked thread-id
@@ -492,6 +496,7 @@ function profile-paths user, uploaded-file, base=\avatar
     success : true
     locked  : !!r.is_locked
 
+  h.ban-all-domains site.id
   res.json new-locked-state
 
 @sub-posts = (req, res, next) ->
