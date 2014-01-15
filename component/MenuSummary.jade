@@ -41,20 +41,13 @@ mixin menu-item(depth, items)
 
 //- render menu items in long format
 //----------
-if typeof(menuSummary) == 'object'
+if typeof(menuSummary) == 'object' && menuSummary.length
   table
     tr
       th.first Forums
       th.second Latest Post
       th.third Threads
       th.foruth Posts
-    if menuSummary.length
-      +menu-item(0, menuSummary)
-    //- default
-    else
-      tr
-        td
-          p.create
-            a.mutant.no-surf.require-login(data-edit="true", data-href="/new") Create the first thread
-              i !
+    +menu-item(0, menuSummary)
+
 .clear
