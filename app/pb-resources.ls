@@ -45,6 +45,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       err <- db.aliases.update {config}, {user_id, site_id}       # & update!
       announce.in(site_id).emit \new-profile-title, { id:user_id, title:config?title } # broadcast title everywhere
       (err, user) <~ db.usr { id:user_id, site_id }
+      user.sig = config.sig # ensure latest sig
       delete user.auths
       announce.in("#site_id/users/#user_id").emit \set-user, user # brodcast new user object to all of my browsers
       res.json {+success}
