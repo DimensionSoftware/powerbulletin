@@ -1,4 +1,6 @@
-height = 300px
+height       = 300px
+bg_color     = #f8f8f8
+border_color = #eee
 
 //{{{ special style for "Edit Signature" preview
 html.profile .wmd-preview
@@ -15,13 +17,24 @@ html.profile .wmd-preview
   min-height height
   position relative
   overflow hidden
+  border-top 1px solid border_color
   //{{{ Preview pane
   &.has-preview
   // - when the preview is visible
     .wmd-panel
+      position relative
       min-width 50%
       width 50%
       transition none
+      &:after
+        position absolute
+        z-index 20
+        content ''
+        top 0
+        bottom 0
+        right 0
+        background-color border_color
+        width 1px
       .wmd-input
         width 98%
     .wmd-preview 
@@ -70,7 +83,7 @@ html.profile .wmd-preview
     padding 0
     border-top-left-radius 3px
     border-bottom-left-radius 3px
-    background-color #fff
+    background-color bg_color
     transition width .1s ease-out
     .wrapper
       position absolute
@@ -86,17 +99,23 @@ html.profile .wmd-preview
         right 0
         min-width 100%
         min-height 100%
+        background bg_color
         padding 0 0 0 8px
         bottom -4px
         resize none
         transform none
+        border none
+        &:focus, &:hover
+          background bg_color
+          box-shadow none
+          border none
   .wmd-preview 
     overflow scroll
     float right
     width 0
     height height
     color #333
-    background-color #eee
+    background-color bg_color
     border-top-right-radius 3px
     border-bottom-right-radius 3px
     h1, h2, h3, h4, h5, h6
@@ -104,7 +123,7 @@ html.profile .wmd-preview
 
   .wmd-button-bar 
     width 100%
-    background-color #eee
+    background-color bg_color
 
   .wmd-button-row 
     position relative 
