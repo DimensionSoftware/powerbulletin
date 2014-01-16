@@ -455,7 +455,7 @@ $d.on \change 'html.admin .domain' -> # set keys
     \twitterConsumerSecret
     \googleConsumerKey
     \googleConsumerSecret]
-      $ "[name='#k']" .val domain.config[k]
+      $ "[name='#k']" .val domain?config[k]
 subscribe = (what) -> unless what in site.subscriptions
   do-buy what
   false
