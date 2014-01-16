@@ -40,6 +40,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       c = new pagedown.Converter
       config={}
       alias.config <<< req.body?config or {}                      # & merge
+      alias.config.sig = req.body.editor                          # merge from Editor
       for k in <[title sig]> then config[k]=alias.config[k]       # & scrub
       if config.sig then config.sig-html = c.make-html config.sig # & scrub harder + render sig
       err <- db.aliases.update {config}, {user_id, site_id}       # & update!

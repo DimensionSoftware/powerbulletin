@@ -18,26 +18,32 @@ module.exports =
 
     init: ->
       # defaults
-      @local \id,   '' unless @local \id
-      @local \body, '' unless @local \body
+      @local \id,       ''  unless @local \id
+      @local \body,     ''  unless @local \body
+      @local \onClose, (->) unless @local \onClose
+      @local \key, (storage.get \user or window.user)?id unless @local \key
 
     # keys for local storage (must bind later, after the user exists)
-    k-has-preview: ~>
-      "#{(storage.get \user or window.user)?id}-editer-has-preview"
-    k-sig: ~>
-      "#{(storage.get \user or window.user)?id}-sig"
+    k-has-preview: ~> "#{@local \key}-editor-has-preview"
+    k-tmp:         ~> "#{@local \key}-tmp"
 
-    body: ~> @editor?val!
+    body: (v=void) ~>
+      if v isnt void # save
+        @local \body v
+        @editor?val v
+      @editor?val!
+
     save: (to-server=false) ~>
       return unless @editor # guard
-      v = @editor.val!
-      unless v is storage.get @k-sig!
-        storage.set @k-sig!, v # update locally
+      k = @k-tmp! # local storage key
+      v = @body!
+      unless v is storage.get k
+        storage.set k, v # update locally
         if to-server
           data = {}
           @@$.ajax {
             type : \PUT
-            data : {config:sig:v}
+            data : {editor:v}
             url  : @local \url
           }
             ..done (r) ~> # saved, so reset--
@@ -50,7 +56,7 @@ module.exports =
       storage.set @k-has-preview!, !hidden
       @$.toggle-class \has-preview, !hidden
 
-    on-attach: ->
+    on-attach: ~>
       ####  main  ;,.. ___  _
       # lazy-load-pagedown on client
       window.Markdown ||= {}
@@ -66,9 +72,9 @@ module.exports =
       e.run!
       #{{{ - delegates
       @$.find \.onclick-toggle-preview .on \click @toggle-preview
-      @editor.on \keydown ~> if it.which is 27 then $.fancybox.close!; false # escape save & close
-      @editor.on \keyup   throttle (~> @save), watch-every # save to local storage
-      $ window .on \unload.Editor ~> @save true            # save to server
+      @editor.on \keydown ~> if it.which is 27 then (@local \onClose)!; false # 27 is escape
+      @editor.on \keyup, throttle @save, watch-every # save to local storage
+      $ window .on \unload.Editor ~> @save true          # save to server
       #}}}
       @$.toggle-class \has-preview, (storage.get @k-has-preview!) or true # default w/ preview
       set-timeout (~> @editor.focus!), 100ms # ... & focus!
