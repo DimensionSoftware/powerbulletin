@@ -79,11 +79,12 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
                   b 50.116.30.21
                 p For help, contact 
                   a(href='mailto:support@powerbulletin.com') support@powerbulletin.com
-            select(id='domain', name='domain')
-              option(disabled='disabled') - Select a Domain -
-              each d in site.domains
-                option(value=d.id)= d.name
+          .break
           p Enable users to login from the respective social network
+          select(id='domain', name='domain')
+            option(disabled='disabled') - Select a Domain -
+            each d in site.domains
+              option(value=d.id)= d.name
           .break
           fieldset
             img(src="#{cacheUrl}/images/facebook_32.png")

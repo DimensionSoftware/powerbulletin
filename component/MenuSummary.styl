@@ -8,9 +8,9 @@
     th
       text-align left
       color dark_text
-      padding grid
-      font-size 1.1em
-      font-weight 400
+      padding 2px 0 5px 8px
+      font-size .9
+      font-weight 500
     .first
       min-width 300px
     tr
@@ -19,23 +19,53 @@
       transition all .1s ease-out .1s
       &:first-child:hover
         background-color transparent
+      &:first-child
+        border-bottom 1px solid transparent
       &:last-child
-        border-bottom none
+        border-bottom 1px solid transparent
+      &:last-child:hover
+        border-bottom 1px solid tint_color
       &:hover
         color #000
-        //background-color tint_color
         transition all 0
+        .title:before
+          opacity .5
+          transition none
+      .title:before
+        content ''
+        opacity 0
+        z-index 5
+        height 1px
+        position absolute
+        left 0
+        right 4%
+        bottom -1px
+        box-shadow 0 0 3px light
+        transition .1s ease-out .05s
+      &.item-forum:hover
+        .name
+          padding 2px 9px
+          margin-left -9px
+          background-color light
+          border-radius 8px
+          color #fff
+          transition none
+      &.item-forum
+        .name
+          transition all .05s ease-out .03s
       td
         padding (grid - 2) grid
         vertical-align top
       .title
+        position relative
         font-weight 500
         font-size 1.1em
         max-height 1.3em
-        overflow hidden
-        text-overflow ellipsis
-        text-transform capitalize
         font-weight 400
+        a
+          overflow hidden
+          text-overflow ellipsis
+          text-transform capitalize
       .description
         font-weight 300
         font-size .9em
@@ -61,7 +91,8 @@
         .date
           position relative
           font-style italic
-          color #666
+          font-size .9em
+          color #999
           margin-left 8px
           &:before
             content '-'

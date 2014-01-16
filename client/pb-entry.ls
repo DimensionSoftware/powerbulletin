@@ -439,6 +439,11 @@ $d.on \click \#add_custom_domain (ev) ->
         focus!
         show-tooltip t, data.responseJSON.errors?0
   }
+$d.on \click 'html.admin .q' -> # close
+  e = $ \.message
+    ..css {max-height: 0, padding:0}
+  set-timeout (-> e.remove-attr \style), 2000ms # re-enable hovers
+  false
 $d.on \click 'html.admin .dialog textarea, html.admin .dialog button, html.admin .dialog input[type="text"], html.admin .dialog select' -> false # discard event
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
@@ -455,7 +460,7 @@ $d.on \change 'html.admin .domain' -> # set keys
     \twitterConsumerSecret
     \googleConsumerKey
     \googleConsumerSecret]
-      $ "[name='#k']" .val domain.config[k]
+      $ "[name='#k']" .val domain?config[k]
 subscribe = (what) -> unless what in site.subscriptions
   do-buy what
   false

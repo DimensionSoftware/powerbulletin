@@ -12,7 +12,7 @@ html.homepage, html.page, html.moderation
     transition all .2s cubic-bezier(1,.01,.69,1)
 html.homepage
   .main-content
-    width auto
+    width 94%
     padding-top (header_height+50)
     margin 0 auto
     margin-left 6%
@@ -866,27 +866,30 @@ html.admin
           margin-bottom -1px
       .domain
         max-height 75px
+        margin-left 41px
         #custom_domain
           display block
           margin 0 0 5px 12px
           width 360px
+          border-top-right-radius 8px
         button
           position absolute
           z-index 25
           margin 0
           padding 0
           top 69px
-          right 142px
+          right 100px
           height 37px
           width 67px
           font-size 1em
           line-height 16px
         .q
           position absolute
-          top 73px
-          right 100px
-          line-height 29px
-          background-color #f4f4f4
+          top 75px
+          right 180px
+          line-height 21px
+          background-color #fff
+          z-index 30
           border 1px solid @background-color
           padding 1px 4px
           border-radius 100%
@@ -902,7 +905,7 @@ html.admin
             z-index 30
             max-height 0
             top -36px
-            left -424px
+            left -342px
             width 475px
             overflow hidden
             color #444
@@ -985,7 +988,7 @@ html.admin
           transition max-height 0 ease-out .3s
           p
             font-size .9em
-            margin 30px 0 5px 10px
+            margin grid 0 5px grid
       // this label toggles the .dialog
       .collapse + label:hover
         border-bottom 1px solid #dfdfdf
@@ -1138,7 +1141,7 @@ html.forum
       opacity 0
       margin 0 auto
       width 80%
-      max-width 1100px
+      //max-width 1100px
       margin-top 30px
       form
         position relative
