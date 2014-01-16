@@ -38,6 +38,7 @@ window.PhotoCropper    = require \../component/PhotoCropper
 window.PanelCollection = require \../component/PanelCollection
 window.ChatList        = require \../component/ChatList
 window.ChatPanel       = require \../component/ChatPanel
+window.PostDrawer      = require \../component/PostDrawer
 
 window.furl     = require \../shared/forum-urls
 window.tasks    = require \./tasks
