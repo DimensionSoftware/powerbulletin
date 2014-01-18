@@ -146,7 +146,7 @@ body .container .logo:after{position:absolute;display:block;top:0;left:0;content
 body .container .logo a{color:#666;text-decoration:none;font-style:italic;}
 body .container .logo a b{color:#333;font-style:normal}
 body .container .note{font-size:1.5em;font-weight:200;letter-spacing:2px;color:#3199b0;text-align:center;margin-left:-65px;-webkit-opacity:0;-moz-opacity:0;opacity:0;-webkit-animation:fade-in .4s ease-out 1 forwards .1s;-moz-animation:fade-in .4s ease-out 1 forwards .1s;animation:fade-in .4s ease-out 1 forwards .1s;}
-body .container .note b{margin-left:8px;}
+body .container .note b{margin-left:4px;margin-right:8px;letter-spacing:0;font-size:1.1em;}
 body .container .note b:first-child{margin-right:10px;letter-spacing:0}
 @-webkit-keyframes fade-in{0%{-webkit-opacity:0;-moz-opacity:0;opacity:0}
 100%{-webkit-opacity:1;-moz-opacity:1;opacity:1}

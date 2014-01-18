@@ -5,18 +5,26 @@
   margin 0
   background-color #fff
   border-left 1px solid #eee
-
+  h5
+    margin 9px 0 10px 12px
+    color #666
   .chat
-    margin 0.25em
-    padding 0.2em
+    margin 0
+    padding 1px 0 0px 0
     cursor pointer
-    border-radius 8px
+    border-radius 3px
+    border-bottom 1px solid transparent
+    border-left 1px solid transparent
+    &:hover
+      border-bottom 1px solid light
+      border-left 1px solid light
+      background lighta
     .participants
       margin 0 20px
       list-style none
+    .photo
+      margin-top -3px
     h6
+      margin 9px 0 13px 0
       color dark_text
       text-transform capitalize
-
-  .chat:hover
-    background lighta

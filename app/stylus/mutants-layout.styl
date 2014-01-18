@@ -315,6 +315,11 @@ html.forum, html.profile, html.search, html.moderation
         margin-right (grid*4)
         padding-top (grid*2)
         margin-bottom (grid*2)
+        .post-content
+          img
+            max-width 260px
+            max-height 260px
+            float left
         .actions
           transition .1s ease-out
         &:hover
@@ -893,14 +898,16 @@ html.admin
           border 1px solid @background-color
           padding 1px 4px
           border-radius 100%
+          cursor default
           &:hover
             color #000
             border 1px solid #eee
             .message
               max-height 999px
               padding 5px 20px
-              transition max-height .1s ease-out .1s, padding .1s ease-out .1s
+              transition max-height .1s ease-out .6s, padding .1s ease-out .6s
           .message
+            cursor pointer
             position absolute
             z-index 30
             max-height 0
@@ -911,7 +918,7 @@ html.admin
             color #444
             background-color #f4f4f4
             border-radius 15px/10px
-            transition max-height 0 ease-out .5s, padding 0 ease-out .5s
+            transition max-height 0 ease-out .1s, padding 0 ease-out .1s
             h5
               text-transform capitalize
             h5, p
@@ -1071,7 +1078,7 @@ html.forum
     position absolute
     z-index 9
     padding-right 20px
-    left 12px
+    left 22px
     top 4px
     color #666
     background-color #bbb
@@ -1115,6 +1122,7 @@ html.forum
     transition height .3s bounce
     .post-reply
       margin-top 8px
+      left 39px
       &::after
         content 'Close'
       &:hover::before

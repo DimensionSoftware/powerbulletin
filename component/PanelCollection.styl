@@ -20,16 +20,22 @@ body.scrolled
 
   .toggler
     position absolute
-    top 0.8em
-    right 0.8em
+    top 8px
+    right 10px
+    background-image none
+    font-size 15px
     cursor pointer
     z-index 1
-    color #aaa
-  .toggler.off:after
-    content "☰ "
+  .toggler.off
     display none
-  .toggler.on:after
-    content "X "
+    &:after
+      content "☰ "
+      display none
+  .toggler.on
+    display block
+    opacity 1
+    &:after
+      content "X "
 
   .panel-togglers
     position relative
