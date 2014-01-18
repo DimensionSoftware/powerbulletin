@@ -1,6 +1,15 @@
 body.scrolled
   .footer
     bottom 65px
+  .ChatPanel
+    .middle
+      .messages
+        padding 101px 0 0 0
+    .footer
+      bottom 31px
+      .message-box
+        height 19px
+        padding-top 8px
 
 .ChatPanel
   position absolute
@@ -15,9 +24,10 @@ body.scrolled
   .header
     background-color overlay_color_secondary
     padding 1px
-    border-bottom 1px solid #f6f6f6
+    border-bottom 1px solid #eee
+    height 30px
     h5
-      margin-left 15px
+      margin 7px 0 0 10px
       text-transform capitalize
   .middle
     position relative
@@ -72,6 +82,7 @@ body.scrolled
     border-top 1px solid #eee
     .message-box
       overflow hidden
+      border-radius 0
       padding 5px 0 5px 5px
       border 0
       font-size 12px
@@ -79,3 +90,8 @@ body.scrolled
       resize none
       bottom 0
       left 1px
+      &:hover
+        border 0
+        box-shadow none
+        padding-left 7px
+        margin-left -2px
