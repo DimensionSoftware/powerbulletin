@@ -4,7 +4,8 @@
     div(id="wmd-button-bar#{id}")
     .wrapper
       textarea.wmd-input(id="wmd-input#{id}", name='body')!= body
-      input(type='hidden', name='forum_id')
+      input(type='hidden', name='forum_id', value=forumId)
+      input(type='hidden', name='parent_id', value=parentId)
   .wmd-preview
     div(id="wmd-preview#{id}")
     .onclick-toggle-preview

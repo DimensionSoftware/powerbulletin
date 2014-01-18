@@ -18,8 +18,10 @@ module.exports =
 
     init: ->
       # defaults
-      @local \id,       ''  unless @local \id
-      @local \body,     ''  unless @local \body
+      @local \id,        ''  unless @local \id
+      @local \body,      ''  unless @local \body
+      @local \forumId,   ''  unless @local \forumId
+      @local \parentId,  ''  unless @local \parentId
       @local \onClose, (->) unless @local \onClose
       @local \key, (storage.get \user or window.user)?id unless @local \key
 

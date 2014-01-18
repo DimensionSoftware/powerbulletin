@@ -1,7 +1,23 @@
+footer
+  .ui-resizable-n
+    position relative
+    cursor ns-resize!important
+    top -34px
+    height 10px
+    &:hover:after
+      content ''
+      background-color light
+      opacity .6
+      height 1px
+      position absolute
+      left 0
+      right 0
+      top 3px
+
 .PostDrawer
   //position absolute
   bottom 0
-  top 0
+  top 24px
   position relative
   height 100%
   #editor + .save

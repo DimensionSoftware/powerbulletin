@@ -12,7 +12,6 @@ module.exports =
     editor: void
 
     init: !~>
-      @footer = @@$ \footer
 
     on-attach: !~>
       #{{{ Event Delegates
@@ -24,14 +23,17 @@ module.exports =
       @editor.render!attach!
 
       @$.find \.save .on \click (ev) ~>
+        # XXX for now, always reply to active thread
         @$.find '[name="forum_id"]' .val active-forum-id
+        @$.find '[name="parent_id"]' .val active-thread-id
         ev = {target:@editor.$} # mock event
         submit-form ev, (data) ~> # ...and sumbit!
           post-success ev, data
 
       make-resizable = ~>
-        unless @footer.data \uiResizable # guard
-          @footer.resizable(
+        f = @@$ \footer
+        unless f.data \uiResizable # guard
+          f.resizable(
             handles: \n
             min-height: 100px
             max-height: 600px
@@ -41,20 +43,35 @@ module.exports =
 
       @@$ \.onclick-footer-toggle .on \click.post-drawer (ev) ~>
         if $ ev.target .has-class \ui-resizable-handle then return # guard
-        if @footer.data \uiResizable # cleanup
-          @footer.css {top:'', height:''}
-          try @footer.resizable \destroy
+        console.log \toggle
+        f = @@$ \footer
+        if f.has-class \expanded or f.data \uiResizable # cleanup
+          console.log \should-close
+          @close!
         else # re-create?
-          unless @footer .has-class \expanded
+          console.log \recreate
+          unless @is-open
+            console.log \yes
             make-resizable!
 
       # initially create
       make-resizable!
 
+    is-open: ~> @@$ \footer .has-class \expanded
+    close: ~>
+      if @is-open
+        console.log \closing
+        f = @@$ \footer
+        f
+          ..css {top:'', height:''}
+          ..remove-class \expanded
+        try f.resizable \destroy
+
     on-detach: ->
+      console.log \detach
       @@$ \.onclick-footer-toggle .off \click.post-drawer
+      @close!
       @editor.detach!
       @editor = void
-      super ...
-
+      try super ...
 # vim:fdm=marker

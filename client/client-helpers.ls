@@ -8,12 +8,13 @@ if window?
 
 #{{{ Editing Posts
 @post-success = (ev, data) ~>
-  f = $ ev.target .closest \.post-edit # form
+  e = $ ev.target
+  f = e.closest \.post-edit # form
   p = f.closest \.editing # post being edited
-  t = ev.target.find \.tooltip
+  t = e.find \.tooltip
   unless data.success
     @show-tooltip t, data?errors?join \<br>
-    ev.target.find \textarea:first .focus!
+    e.find \textarea:first .focus!
   else
     # render updated post
     p.find \.title .html data.0?title
@@ -25,8 +26,8 @@ if window?
     | \new-thread => History.replace-state {} '' data.uri
     | \edit       => @remove-editing-url meta
     # close drawer & cleanup
-    $ \footer .remove-class \expanded
-    $ \body   .remove-class \disabled
+    window.component.postdrawer?detach!
+    window.component.postdrawer = void
     $ '#post_new .fadein' .remove!
   false
 
@@ -101,19 +102,12 @@ render = (sel, locals, cb=(->)) ~>
   e = $ \footer
   if e.has-class \expanded # close drawer & cleanup
     e.remove-class \expanded
-    $ \body .remove-class \disabled
-    #try CKEDITOR.instances.post_new.destroy true
     $ '#post_new .fadein' .remove!
   else # bring out drawer & init+focus editor
     e.add-class \expanded
-    window.component.editor = new PostDrawer {locals:{}}, \#post_new
-#    $ \body .add-class \disabled
-#    render \#post_new, data, ~> # init form
-#      <- @lazy-load-editor
-#      unless CKEDITOR.instances.post_new
-#        CKEDITOR.replace ($ '#post_new textarea' .0), {startup-focus:true}
-#      e.find 'form.post-new input[name="forum_id"]' .val window.active-forum-id
-#      e.find 'form.post-new input[name="parent_id"]' .val window.active-thread-id
+    window.component.postdrawer = new PostDrawer {locals:{
+      forum-id:window.active-forum-id,
+      parent-id:window.active-thread-id}}, \#post_new
 
 @edit-post = (id, data={}) ~>
   if id is true # render new
