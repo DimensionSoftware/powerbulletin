@@ -125,7 +125,7 @@ CREATE FUNCTION procs.add_post(post JSON) RETURNS JSON AS $$
   require! <[u validations]>
   errors = validations.post(post)
   if !errors.length
-    if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])[0]?site_id
+    if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])?0?site_id
       [{nextval}] = plv8.execute("SELECT nextval('posts_id_seq')", [])
 
       forum-id = parse-int(post.forum_id) or null

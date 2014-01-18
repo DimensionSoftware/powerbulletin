@@ -100,7 +100,7 @@ module.exports =
       clear = ->
         e # clear & shrink
           ..val ''
-          ..css \height \14px
+          ..css \height \17px
       if ev.key-code is 27 # close panel
         window.component.panels?off!
       if ev.key-code is 13 and not ev.shift-key

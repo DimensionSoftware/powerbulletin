@@ -311,6 +311,8 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
     post.tags     = h.hash-tags post.body
     post.forum_id = post.forum_id
 
+    return res.json success:false, errors:['Incomplete post'] unless post.user_id and post.forum_id # guard
+
     if is-locked-forum(site.config.menu, parse-int(post.forum_id)) and (not req.user.rights?super)
       return res.json success: false, errors: [ "The forum is locked." ]
 
