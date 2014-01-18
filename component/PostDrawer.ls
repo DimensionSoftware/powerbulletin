@@ -12,6 +12,7 @@ module.exports =
     editor: void
 
     init: !~>
+      @footer = @@$ \footer
 
     on-attach: !~>
       #{{{ Event Delegates
@@ -28,10 +29,9 @@ module.exports =
         submit-form ev, (data) ~> # ...and sumbit!
           post-success ev, data
 
-      f = @@$ \footer
-      create-resizable = ~>
-        unless f.data \uiResizable
-          f.resizable(
+      make-resizable = ~>
+        unless @footer.data \uiResizable # guard
+          @footer.resizable(
             handles: \n
             min-height: 100px
             max-height: 600px
@@ -41,14 +41,15 @@ module.exports =
 
       @@$ \.onclick-footer-toggle .on \click.post-drawer (ev) ~>
         if $ ev.target .has-class \ui-resizable-handle then return # guard
-        if f.data \uiResizable # cleanup
-          f.css {top:'', height:''}
-          try f.resizable \destroy
-        else # re-create
-          create-resizable!
+        if @footer.data \uiResizable # cleanup
+          @footer.css {top:'', height:''}
+          try @footer.resizable \destroy
+        else # re-create?
+          unless @footer .has-class \expanded
+            make-resizable!
 
       # initially create
-      create-resizable!
+      make-resizable!
 
     on-detach: ->
       @@$ \.onclick-footer-toggle .off \click.post-drawer
