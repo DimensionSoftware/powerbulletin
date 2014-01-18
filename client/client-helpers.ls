@@ -10,10 +10,10 @@ if window?
 @post-success = (ev, data) ~>
   f = $ ev.target .closest \.post-edit # form
   p = f.closest \.editing # post being edited
-  t = $(f.find \.tooltip)
+  t = ev.target.find \.tooltip
   unless data.success
     @show-tooltip t, data?errors?join \<br>
-    f.find \textarea:first .focus!
+    ev.target.find \textarea:first .focus!
   else
     # render updated post
     p.find \.title .html data.0?title
@@ -52,18 +52,9 @@ if window?
       @post-success ev, data
 
 @submit-form = (ev, fn) ~>
-  $f = $ ev.target .closest(\form) # get event's form
-  $s = $ $f.find('[type=submit]:first')
+  $f = $ ev.target .closest \form # get event's form
+  $s = $ $f.find '[type=submit]:first'
   if $s then $s.attr \disabled \disabled
-
-  # is body in ckeditor?
-  body = $f.find \textarea.body
-  e    = CKEDITOR?instances?[body.attr \id]
-  if e
-    input = e.get-data!
-    if input?length
-      body.val input # fill-in
-      e.set-data ''  # clear
 
   $.ajax { # submit!
     url:       $f.attr \action

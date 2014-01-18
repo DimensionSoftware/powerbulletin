@@ -4,6 +4,8 @@ require, exports, module <- define
 require! \./PBComponent
 require! \./Editor
 
+{submit-form, post-success} = require \../client/client-helpers
+
 module.exports =
   class PostDrawer extends PBComponent
 
