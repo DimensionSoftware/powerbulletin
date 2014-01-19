@@ -425,7 +425,7 @@ function profile-paths user, uploaded-file, base=\avatar
           console.error \change-avatar, err
           return res.json success: false, type: \db.change-avatar
         announce.in(site.id).emit \new-profile-photo, { id: user.id, photo: new-photo }
-        h.ban-all-domains site.id
+        ban-all-domains site.id
         return res.json success: true
   res.json success: false
 
