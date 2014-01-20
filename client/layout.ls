@@ -80,7 +80,7 @@ window.onload-personalize = ->
 #}}}
 #{{{ Resizing behaviors
 window.onload-resizable = ->
-  left-offset = 50px
+  left-offset = 20px
 
   $l = $ \#left_content
   $r = $ '#main_content .resizable'

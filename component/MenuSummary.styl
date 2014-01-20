@@ -29,10 +29,10 @@
         &:hover
           color #000
           transition all 0
-          .title:before
+          .title:before, .last-post:before, .threads:before, .posts:before
             opacity .5
             transition none
-        .title:before
+        .title:before, .last-post:before, .threads:before, .posts:before
           content ''
           opacity 0
           z-index 5
@@ -74,6 +74,7 @@
           min-height 25px
           display block
         .last-post
+          position relative
           font-size .9em
           padding 8px 25px 8px 8px
           &:first-letter
@@ -100,4 +101,5 @@
               position absolute
               left -6px
         .threads, .posts
+          position relative
           color #666
