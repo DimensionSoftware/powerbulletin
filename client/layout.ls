@@ -69,7 +69,6 @@ window.onload-personalize = ->
     $ \.onclick-login    .hide!
     $ \.onclick-logout   .show!
     $ \.onclick-profile  .show!
-    $ \.onclick-messages .show!
     # admin
     if user?rights?super or user?rights?admin then $ \.admin-only .show! else $ \.admin-only .hide!
   else
@@ -81,7 +80,7 @@ window.onload-personalize = ->
 #}}}
 #{{{ Resizing behaviors
 window.onload-resizable = ->
-  left-offset = 50px
+  left-offset = 20px
 
   $l = $ \#left_content
   $r = $ '#main_content .resizable'

@@ -123,7 +123,7 @@ module.exports =
         for i,msg of (reverse r.messages)
           @add-new-message msg, true
         @scroll-to-latest!
-        @last-mid = r.messages[*-1].id
+        @last-mid = r.messages[*-1]?id
 
     load-more-messages-scroll-handler: (ev) ~>
       scroll-top = $(ev.target).scroll-top!

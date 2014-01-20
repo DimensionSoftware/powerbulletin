@@ -1,5 +1,5 @@
 include _menu
-- var invite = (inviteOnly) ? "window.inviteOnly='true';" : ''
+- var invite   = (inviteOnly) ? "window.inviteOnly='true';" : ''
 |<!DOCTYPE html><!--
 |░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
 |░█▀▀░█░█░█▄█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░░█░░░█░░█░█
@@ -10,8 +10,8 @@ html
       title= title
     if typeof(meta_description) !== 'undefined'
       meta(name='description',content=meta_description) 
-    if typeof(meta_keywords) !== 'undefined'
-      meta(name='keywords',content=meta_keywords.join(', '))
+    if metaKeywords !== ''
+      meta(name='keywords',content=metaKeywords)
     meta(http-equiv='X-UA-Compatible',content='IE=EmulateIE9,chrome=1')
     meta(name='robots',content='index, follow')
     meta(name='apple-mobile-web-app-capable', content='yes')
@@ -45,7 +45,7 @@ html
 
     header.header.toggler
       h1.logo
-        a.mutant(href='/') Power
+        a.mutant(href='/', title=metaKeywords) Power
           strong Bulletin
       .container
         .search
@@ -115,8 +115,9 @@ html
       .onclick-scroll-top Top
       #pb_paginator
       h6.onclick-footer-toggle
-        small &copy; #{siteName} &nbsp;
-        b= new Date().getFullYear()
+        a.mutant(href='/', title=metaKeywords)
+          small &copy; #{siteName} &nbsp;
+          b= new Date().getFullYear()
       .post-container
         form.post.post-new(action='/resources/posts', method='post')
           //-input.title(name='title', type='text', placeholder='Title')
