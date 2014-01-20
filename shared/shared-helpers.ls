@@ -68,13 +68,11 @@ seconds-to-human-readable = (secs) ->
     timestring += '1 hour'
 
   if minutes
-    if hours
-      timestring += ', '
-
-    if minutes > 1
-      timestring += minutes + ' minutes'
-    else if minutes == 1
-      timestring += '1 minute'
+    unless hours # only track minutes < an hr.
+      if minutes > 1
+        timestring += minutes + ' minutes'
+      else if minutes == 1
+        timestring += '1 minute'
   else if not hours
     if secs == 1
       timestring = "#{secs} second"
