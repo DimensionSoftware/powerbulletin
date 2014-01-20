@@ -18,6 +18,7 @@ module.exports =
       @$.add-class \panel
       @$.hide!
       @$.on \click, \.chat, @select-chat-panel-handler
+      @@$R((socket) ~> @load-initial!).bind-to(window.r-socket)
 
     on-detach: ~>
 
@@ -30,6 +31,7 @@ module.exports =
       err, chats <~ socket.emit \chat-past
       @chats = chats
       if err then return err
+      if chats.length then @@$ \.onclick-messages .show!
       for i,c of chats
         @add c
 
@@ -46,7 +48,6 @@ module.exports =
         @$.css(width: @local \width)
         @$.show!
         @local \virgin, false
-        @load-initial!
       @$.css(height: "#{hi}px")
       @p.show @$
 

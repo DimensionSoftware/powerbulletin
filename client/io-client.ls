@@ -19,7 +19,6 @@ window.ChatPanel = ChatPanel
 init = -> # export socket to window + init
   if sock = window.socket = io?connect!
     init-with-socket sock
-  globals.r-socket sock
   sock
 main = ->
   <- lazy-load-socketio # first try
@@ -38,6 +37,7 @@ function init-with-socket s
     $ \html .remove-class \disconnected
 
   s.on \ready, ->
+    globals.r-socket socket
     err, unread <- socket.emit \chat-unread
     for c in unread
       window.ChatPanel.add-from-conversation c, window.user
