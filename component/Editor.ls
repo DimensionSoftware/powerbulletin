@@ -22,7 +22,7 @@ module.exports =
       @local \body,      ''  unless @local \body
       @local \forumId,   ''  unless @local \forumId
       @local \parentId,  ''  unless @local \parentId
-      @local \onClose, (->) unless @local \onClose
+      @local \onClose, (->)  unless @local \onClose
       @local \key, (storage.get \user or window.user)?id unless @local \key
 
     # keys for local storage (must bind later, after the user exists)
@@ -58,6 +58,8 @@ module.exports =
       storage.set @k-has-preview!, !hidden
       @$.toggle-class \has-preview, !hidden
 
+    focus: -> set-timeout (~> @editor?focus!), 50ms # ... & focus!
+
     on-attach: ~>
       ####  main  ;,.. ___  _
       # lazy-load-pagedown on client
@@ -79,7 +81,7 @@ module.exports =
       $ window .on \unload.Editor ~> @save true          # save to server
       #}}}
       @$.toggle-class \has-preview, (storage.get @k-has-preview!) or true # default w/ preview
-      set-timeout (~> @editor.focus!), 100ms # ... & focus!
+      @focus!
 
     on-detach: ~> # XXX ensure detach is called
       # save to server & cleanup

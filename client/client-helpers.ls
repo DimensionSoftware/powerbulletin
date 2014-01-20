@@ -90,24 +90,18 @@ render = (sel, locals, cb=(->)) ~>
 @toggle-post = (ev) ~>
   # guards
   unless $ ev?target .has-class \onclick-footer-toggle then return
-  if $ \html .has-class \new    then return
+  if $ \html .has-class \new then return
   unless (window.user?rights?super or window.user?sys_rights?super)
     if $ \body .has-class \locked then return
   unless user then Auth.show-login-dialog!; return
 
-  data =
-    action: \/resources/posts
-    method: \post
-  # setup form
-  e = $ \footer
-  if e.has-class \expanded # close drawer & cleanup
-    e.remove-class \expanded
-    $ '#post_new .fadein' .remove!
-  else # bring out drawer & init+focus editor
-    e.add-class \expanded
+  if pd = window.component.postdrawer
+    pd.toggle!
+  else # create
     window.component.postdrawer = new PostDrawer {locals:{
       forum-id:window.active-forum-id,
       parent-id:window.active-thread-id}}, \#post_new
+      ..toggle!
 
 @edit-post = (id, data={}) ~>
   if id is true # render new
