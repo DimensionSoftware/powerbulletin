@@ -478,6 +478,7 @@ same-profile = (hints) ->
         change-sig-enable!
         change-title-enable!
         photocropper-enable!
+        window.$ \#change_title .focus!
       else
         photocropper-disable!
     else

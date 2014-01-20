@@ -42,12 +42,12 @@ mixin menu-item(depth, items)
 //- render menu items in long format
 //----------
 if typeof(menuSummary) == 'object' && menuSummary.length
-  table
-    tr
-      th.first Forums
-      th.second Latest Post
-      th.third Threads
-      th.foruth Posts
-    +menu-item(0, menuSummary)
-
+  .container
+    table
+      tr
+        th.first Forums
+        th.second Latest Post
+        th.third Threads
+        th.foruth Posts
+      +menu-item(0, menuSummary)
 .clear
