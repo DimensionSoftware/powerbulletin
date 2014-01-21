@@ -33,7 +33,7 @@ module.exports =
       #}}}
       ####  main  ;,.. ___  _
       # + Editor
-      @editor = new Editor {locals:{}}, \#editor, @
+      @editor = new Editor {locals:{id:active-thread-id}}, \#editor, @
       @editor.render!attach!
 
     toggle:  ~> if @is-open! then @close! else @open!
