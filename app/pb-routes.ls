@@ -70,9 +70,6 @@ common-js = [v for k,v of jsu when k in [
   \powerbulletin]]
 ##}}}
 
-# authorization for dreamcodez' blitz.io account
-app.get \/mu-d81b9b5a-572eee60-bc2ce3f6-e3fc404b (req, res) -> res.send \42
-
 # inject testing code in dev only
 app.configure \development ->
   entry = common-js.pop!
