@@ -73,12 +73,16 @@ function init-with-socket s
       $ui.trigger \thread-create, thread
 
     # look for menu summary and increment thread count
-    #console.log \thread-create
-    $threads = $(".MenuSummary .item-forum[data-db-id=#{thread.forum_id}] .threads")
-    return unless $threads.length
+    console.log \thread-create, thread
+    $forum = $(".MenuSummary .item-forum[data-db-id=#{thread.forum_id}]")
+    return unless $forum.length
+    $threads = $forum.find \.threads
     $threads.html(add-commas(1 + parse-int( $threads.text!replace /,/g, '' )))
+    $last-post = $forum.find \.last-post
+    $last-post.find \a.mutant.body .attr(href: thread.uri) .html(thread.title)
+    $last-post.find \a.mutant.username .attr(href: "/user/thread.user_name") .html(thread.user_name)
     # also inc posts because new threads have 1 post
-    $posts = $(".MenuSummary .item-forum[data-db-id=#{thread.forum_id}] .posts")
+    $posts = $forum.find \.posts
     $posts.html(add-commas(1 + parse-int( $posts.text!replace /,/g, '' )))
 
   s.on \post-create (post, cb) ->
@@ -110,9 +114,14 @@ function init-with-socket s
 
     # look for menu summary and increment post count
     #console.log \post-create
-    $posts = $(".MenuSummary .item-forum[data-db-id=#{post.forum_id}] .posts")
-    return unless $posts.length
+    $forum = $(".MenuSummary .item-forum[data-db-id=#{post.forum_id}]")
+    return unless $forum.length
+    $posts = $forum.find \.posts
     $posts.html(add-commas(1 + parse-int( $posts.text!replace /,/g, '' )))
+    $last-post = $forum.find \.last-post
+    # don't have enough data for this at the moment
+    #$last-post.find \a.mutant.body .attr(href: thread.uri) .html(thread.title)
+    #$last-post.find \a.mutant.username .attr(href: "/user/thread.user_name") .html(thread.user_name)
 
   s.on \new-hit, (hit) ->
     hs = hit._source
