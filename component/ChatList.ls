@@ -31,9 +31,11 @@ module.exports =
       err, chats <~ socket.emit \chat-past
       @chats = chats
       if err then return err
-      if chats.length then @@$ \.onclick-messages .show!
-      for i,c of chats
-        @add c
+      if chats.length
+        @@$ \.onclick-messages .show!
+        @$.find \.list .html '' # clear
+        for i,c of chats
+          @add c
 
     select-chat-panel-handler: (ev) ~>
       id = $(ev.current-target).data \id

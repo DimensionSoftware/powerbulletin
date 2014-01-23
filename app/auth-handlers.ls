@@ -120,8 +120,17 @@ announce = sioa.create-client!
   if err
     return res.json success:false, errors:[err]
   if user
+    console.log \email-exists, err, user, req.body.email, site.id
     return res.json success:false, errors:["This email address has already been registered."]
-  console.log \name-exists, \aka, \email-exists, err, user, req.body.email, site.id
+
+  err, alias <~ db.aliases.select-one site_id: site.id, name: req.body.username
+  if err
+    return res.json success:false, errors:[err]
+  if alias
+    console.log \name-exists err, alias, req.body.username, site.id
+    return res.json success:false, errors:["This name has already been registered on this site."]
+
+  console.log \wtf
 
   if errors = req.validation-errors!
     console.warn errors
