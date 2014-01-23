@@ -791,6 +791,7 @@ mk-post-pnum-to-href = (post-uri) ->
     window.$ \#left_content .remove!
     window.$ \#main_content .remove!
     window.$ \body .add-class \oval # fancybox theme
+    window.$ '[name="robots"]' .attr \content, 'noindex, nofollow'
     window.marshal \backgrounds, @backgrounds
     layout-static.call @, window, \privateSite
     next!

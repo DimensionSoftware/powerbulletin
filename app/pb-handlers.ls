@@ -25,6 +25,7 @@ global <<< require \../shared/shared-helpers
 
 {each} = require \prelude-ls
 {is-editing, is-admin, is-auth} = require \./path-regexps
+{title-case} = require \change-case
 
 const posts-per-page = 30
 
@@ -75,7 +76,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   doc.menu-summary    = site.config.menu
     |> map (item) -> # only top-level items
       decorate-menu-item {[k,v] for k,v of item when k isnt \children}, doc.summary
-  doc.title           = res.vars.site.name
+  doc.title           = title-case (res.vars.site?name or '')
   doc.description     = ''
   doc.active-forum-id = \homepage
 
@@ -186,7 +187,7 @@ function background-for-forum m, active-forum-id
     fdoc <<< {post, forum-id:post.forum_id, page, cvars.t-step}
     fdoc.item  = item
     fdoc.menu  = site.config.menu
-    fdoc.title = "#{res.vars.site.name} - #{post.title}"
+    fdoc.title = title-case "#{post.title} | #{res.vars.site.name}"
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.post.posts = delete fdoc.sub-posts-tree
     fdoc.qty = parse-int(delete fdoc.sub-posts-count)
@@ -233,7 +234,7 @@ function background-for-forum m, active-forum-id
       |> map (child) -> # only top-level
         decorate-menu-item {[k,v] for k,v of child when k isnt \children}, fdoc.summary
     fdoc.active-forum-id = fdoc.forum-id
-    fdoc.title           = "#{res.vars.site.name} - #{fdoc?forum?title}"
+    fdoc.title           = title-case "#{fdoc?forum?title} | #{res.vars.site?name}"
     fdoc.description     = item?form?forum-description or ''
     fdoc.background      = background-for-forum fdoc.menu, fdoc.active-forum-id
 
@@ -330,7 +331,7 @@ function background-for-forum m, active-forum-id
   fdoc.furl    = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
   fdoc.menu    = site.config.menu
   fdoc.page    = parse-int page
-  fdoc.title   = "#{res.vars.site.name} - #name"
+  fdoc.title   = title-case "#name | #{res.vars.site?name}"
   fdoc.profile.human_post_count   = add-commas(fdoc.qty)
   fdoc.profile.human_thread_count = add-commas(fdoc.profile.thread_count) or 0
 
@@ -538,7 +539,7 @@ function profile-paths user, uploaded-file, base=\avatar
     meta-keywords:  "#{site.name}, PowerBulletin"
   fdoc.site.config = defaults <<< fdoc.site.config
   fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')
-  fdoc.title   = "#{res.vars.site.name} - Admin"
+  fdoc.title   = "Admin | #{res.vars.site.name}"
   fdoc.menu = site.config.menu
 
   # reject current site
@@ -685,7 +686,7 @@ function decorate-menu-item item, forums
         item.post_count   = (add-commas forum.post_count) or 0
         item.latest_post  =
           html:     forum.last_post_html
-          title:    forum.last_post_title
+          title:    title-case (forum?last_post_title or '')
           uri:      forum.last_post_uri
           username: forum.last_post_user_name
           photo:    forum.last_post_user_photo
