@@ -12,7 +12,7 @@ window.globals = globals
 
 window.ChatPanel = ChatPanel
 
-{render-and-append} = require \../shared/shared-helpers
+{render-and-append, add-commas} = require \../shared/shared-helpers
 {lazy-load-socketio, set-online-user, storage} = require \./client-helpers
 
 ####  main  ;,.. ___  _
@@ -72,6 +72,15 @@ function init-with-socket s
     if window.active-forum-id is thread?forum_id
       $ui.trigger \thread-create, thread
 
+    # look for menu summary and increment thread count
+    #console.log \thread-create
+    $threads = $(".MenuSummary .item-forum[data-db-id=#{thread.forum_id}] .threads")
+    return unless $threads.length
+    $threads.html(add-commas(1 + parse-int( $threads.text!replace /,/g, '' )))
+    # also inc posts because new threads have 1 post
+    $posts = $(".MenuSummary .item-forum[data-db-id=#{thread.forum_id}] .posts")
+    $posts.html(add-commas(1 + parse-int( $posts.text!replace /,/g, '' )))
+
   s.on \post-create (post, cb) ->
     # only real-time posts for users':
     # - currently active thread
@@ -98,6 +107,12 @@ function init-with-socket s
             if window.mutator is \forum then awesome-scroll-to new-post, 300ms
           else
             animate-in new-post)
+
+    # look for menu summary and increment post count
+    #console.log \post-create
+    $posts = $(".MenuSummary .item-forum[data-db-id=#{post.forum_id}] .posts")
+    return unless $posts.length
+    $posts.html(add-commas(1 + parse-int( $posts.text!replace /,/g, '' )))
 
   s.on \new-hit, (hit) ->
     hs = hit._source
