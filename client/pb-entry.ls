@@ -81,15 +81,20 @@ left-offset = 50px
 # ui save state
 const sep = \-
 const k-ui = "#{window.user?id}-ui"
-window.save-ui = -> # serialize ui state to local storage
-  min-width = 200px
-  w = $ \#left_content .width!
+window.get-prefs = ->
   s = storage.get k-ui
-  if s then [_, last] = s.split sep
-  w = if w > min-width then w else last or min-width # default
+  if s then s.split sep else void
+window.save-ui = -> # serialize ui state to local storage
+  min = 200px
+  w = $ \#left_content .width!
+  h = $ \footer .height!
+  [_, last-w, last-h] = window.get-prefs!
+  w = if w > min then w else last-w or min # default
+  h = if h > min then h else last-h or min # default
   vals =
     if $ \body .has-class(\collapsed) then 1 else 0
     w
+    h
   storage.set k-ui, vals.join(sep),
     path:   \/
     secure: true
@@ -98,7 +103,7 @@ window.load-ui = -> # restore ui state from local storage
   $l = $ \#left_content
 
   if s # restore
-    [collapsed, w] = s.split sep
+    [collapsed, w, h] = window.get-prefs!
     if collapsed is \1 and not $ \html .has-class \admin
       $ \body .add-class \collapsed # only collapse on non-admin mutants
     # animate build-in
@@ -321,9 +326,8 @@ $d.on \click 'header .onclick-close' (e) ->
 #}}}
 #{{{ - left_nav handle
 $d.on \click \#handle ->
-  s  = storage.get k-ui
   $l = $ \#left_content
-  if s then [collapsed, w] = s.split sep
+  [collapsed, w, h] = window.get-prefs!
   $ \body .toggle-class \collapsed
   $ '#main_content .resizable'
     .css(\padding-left, ($l.width! + w? + left-offset))
