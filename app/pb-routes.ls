@@ -70,9 +70,6 @@ common-js = [v for k,v of jsu when k in [
   \powerbulletin]]
 ##}}}
 
-# authorization for dreamcodez' blitz.io account
-app.get \/mu-d81b9b5a-572eee60-bc2ce3f6-e3fc404b (req, res) -> res.send \42
-
 # inject testing code in dev only
 app.configure \development ->
   entry = common-js.pop!
@@ -123,6 +120,18 @@ app.get '/dynamic/css/:file' handlers.stylus # dynamic serving
 app.get '/favicon.ico', (req, res, next) ->
   # TODO - replace with real favicon
   next 404, \404
+
+app.get '/robots.txt', mw.multi-domain, (req, res, next) ->
+  res.send if res.locals.private
+    '''
+    User-agent: *
+    Disallow: /
+    '''
+  else
+    '''
+    User-agent: *
+    Allow: /
+    '''
 
 # page handler tries to match paths before forum handler
 app.get '*',
