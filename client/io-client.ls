@@ -73,7 +73,7 @@ function init-with-socket s
       $ui.trigger \thread-create, thread
 
     # look for menu summary and increment thread count
-    console.log \thread-create, thread
+    #console.log \thread-create, thread
     $forum = $(".MenuSummary .item-forum[data-db-id=#{thread.forum_id}]")
     return unless $forum.length
     $threads = $forum.find \.threads
@@ -81,6 +81,8 @@ function init-with-socket s
     $last-post = $forum.find \.last-post
     $last-post.find \a.mutant.body .attr(href: thread.uri) .html(thread.title)
     $last-post.find \a.mutant.username .attr(href: "/user/thread.user_name") .html(thread.user_name)
+    $date = $forum.find \span.date
+    $date.data(time: thread.created_iso, title: thread.created_friendly) .html(thread.created_human)
     # also inc posts because new threads have 1 post
     $posts = $forum.find \.posts
     $posts.html(add-commas(1 + parse-int( $posts.text!replace /,/g, '' )))
@@ -122,6 +124,8 @@ function init-with-socket s
     # don't have enough data for this at the moment
     #$last-post.find \a.mutant.body .attr(href: thread.uri) .html(thread.title)
     #$last-post.find \a.mutant.username .attr(href: "/user/thread.user_name") .html(thread.user_name)
+    $date = $forum.find \span.date
+    $date.data(time: post.created_iso, title: post.created_friendly) .html(post.created_human)
 
   s.on \new-hit, (hit) ->
     hs = hit._source
