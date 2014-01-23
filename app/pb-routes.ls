@@ -121,6 +121,18 @@ app.get '/favicon.ico', (req, res, next) ->
   # TODO - replace with real favicon
   next 404, \404
 
+app.get '/robots.txt', mw.multi-domain, (req, res, next) ->
+  res.send if res.locals.private
+    '''
+    User-agent: *
+    Disallow: /
+    '''
+  else
+    '''
+    User-agent: *
+    Allow: /
+    '''
+
 # page handler tries to match paths before forum handler
 app.get '*',
   personal-mw,
