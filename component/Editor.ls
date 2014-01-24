@@ -57,6 +57,7 @@ module.exports =
       if hidden is null then hidden = true # default w/ preview
       storage.set @k-has-preview!, !hidden
       @$.toggle-class \has-preview, !hidden
+      @focus!
 
     focus: -> set-timeout (~> @editor?focus!), 50ms # ... & focus!
 

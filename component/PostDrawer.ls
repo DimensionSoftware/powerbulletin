@@ -73,9 +73,9 @@ function make-resizable e
       max-height: 600px
       resize: (el, ui) ->
         h = ui.size.height - 40px
-        e # respond resize (TODO use css)
-          ..find \.wmd-panel .height h
-          ..find \.wmd-preview .height h
+        #e # respond resize (TODO use css)
+        #  ..find \.wmd-panel .height h
+        #  ..find \.wmd-preview .height h
         window.save-ui!)
 
 # vim:fdm=marker
