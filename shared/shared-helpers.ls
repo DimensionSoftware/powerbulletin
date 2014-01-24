@@ -8,13 +8,17 @@ require! {
 
 # XXX keep these functions pure as they're exported to the client & server
 
+{Str, filter} = require \prelude-ls
+{reverse,join,split} = Str
+
 #{{{ String functions
 @add-commas = (s) -> # 1234 -> 1,234
   s.to-string!
-    |> Str.reverse
+    |> reverse
     |> split /(\d{3})/
     |> filter (.length)
-    |> join \, |> Str.reverse
+    |> join \, 
+    |> reverse
 
 @title-case = (s) ->
   s?replace /[\w]\S*/g, (word) ->
