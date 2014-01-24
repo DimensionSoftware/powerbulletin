@@ -12,7 +12,7 @@ window.globals = globals
 
 window.ChatPanel = ChatPanel
 
-{render-and-append} = require \../shared/shared-helpers
+{render-and-append, add-commas} = require \../shared/shared-helpers
 {lazy-load-socketio, set-online-user, storage} = require \./client-helpers
 
 ####  main  ;,.. ___  _
@@ -72,6 +72,21 @@ function init-with-socket s
     if window.active-forum-id is thread?forum_id
       $ui.trigger \thread-create, thread
 
+    # look for menu summary and increment thread count
+    #console.log \thread-create, thread
+    $forum = $(".MenuSummary .item-forum[data-db-id=#{thread.forum_id}]")
+    return unless $forum.length
+    $threads = $forum.find \.threads
+    $threads.html(add-commas(1 + parse-int( $threads.text!replace /,/g, '' )))
+    $last-post = $forum.find \.last-post
+    $last-post.find \a.mutant.body .attr(href: thread.uri) .html(thread.title)
+    $last-post.find \a.mutant.username .attr(href: "/user/thread.user_name") .html(thread.user_name)
+    $date = $forum.find \span.date
+    $date.data(time: thread.created_iso, title: thread.created_friendly) .html(thread.created_human)
+    # also inc posts because new threads have 1 post
+    $posts = $forum.find \.posts
+    $posts.html(add-commas(1 + parse-int( $posts.text!replace /,/g, '' )))
+
   s.on \post-create (post, cb) ->
     # only real-time posts for users':
     # - currently active thread
@@ -98,6 +113,19 @@ function init-with-socket s
             if window.mutator is \forum then awesome-scroll-to new-post, 300ms
           else
             animate-in new-post)
+
+    # look for menu summary and increment post count
+    #console.log \post-create
+    $forum = $(".MenuSummary .item-forum[data-db-id=#{post.forum_id}]")
+    return unless $forum.length
+    $posts = $forum.find \.posts
+    $posts.html(add-commas(1 + parse-int( $posts.text!replace /,/g, '' )))
+    $last-post = $forum.find \.last-post
+    # don't have enough data for this at the moment
+    #$last-post.find \a.mutant.body .attr(href: thread.uri) .html(thread.title)
+    #$last-post.find \a.mutant.username .attr(href: "/user/thread.user_name") .html(thread.user_name)
+    $date = $forum.find \span.date
+    $date.data(time: post.created_iso, title: post.created_friendly) .html(post.created_human)
 
   s.on \new-hit, (hit) ->
     hs = hit._source
