@@ -74,7 +74,7 @@ module.exports = (grunt) ->
       daemon "./bin/powerbulletin", config.tmp + "/pb.pid"
     else
       #exec "bin/develop &", async:true
-      daemon "./bin/develop", config.tmp + "/develop.pid"
+      daemon "./bin/powerbulletin", config.tmp + "/develop.pid"
 
   grunt.registerTask "procs", "Compile stored procedures to JS", ->
     done = this.async()
@@ -107,7 +107,7 @@ module.exports = (grunt) ->
   if process.env.NODE_ENV is "production"
     grunt.registerTask "default", ["launch"] # launch handles everything
   else
-    grunt.registerTask "default", ["procs", "clientJade", "componentJade", "launch", "watch"]
+    grunt.registerTask "default", ["launch", "procs", "clientJade", "componentJade", "watch"]
 
 process.on 'SIGINT', ->
   exec "killall -s INT -r pb-worker"
