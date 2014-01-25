@@ -1,4 +1,4 @@
-min_height   = 280px
+min_height   = 200px
 bg_color     = #f8f8f8
 border_color = #eee
 
@@ -20,6 +20,7 @@ html.profile .wmd-preview
   border-top 1px solid border_color
   .tooltip
     top 5px
+    bottom auto
     left 51%
     font-size 1.5em
   //{{{ Preview pane
@@ -59,9 +60,8 @@ html.profile .wmd-preview
     z-index 10
     right 0
     bottom 0
-    height 30px
+    height 22px
     width 55px
-    text-indent -20px
     padding 4px 12px
     color #fff
     font-size .95em
@@ -77,6 +77,7 @@ html.profile .wmd-preview
       border-top 1px solid #555
       transition none
     &:after
+      right 20px
       position absolute
       content 'Preview'
   //}}}
