@@ -246,10 +246,10 @@ layout-on-personalize = (w, u) ->
       next!
   on-load:
     (window, next) ->
-      cur = window.$ "header .menu .forum-#{window.active-forum-id}"
+      $ = window.$
       if is-forum-homepage window.location.to-string! # render homepage
         render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
-      $ = window.$
+        $ 'footer [name="title"]' .show!
 
       align-ui!
 

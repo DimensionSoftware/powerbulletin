@@ -59,7 +59,9 @@ module.exports =
       @$.toggle-class \has-preview, !hidden
       @focus!
 
-    focus: -> set-timeout (~> @editor?focus!), 50ms # ... & focus!
+    focus: -> set-timeout (~>
+      e = @@$ 'footer [name="title"]:visible' # use title?
+      if e?length then e.focus! else @editor?focus!), 50ms # ... & focus!
 
     on-attach: ~>
       ####  main  ;,.. ___  _
