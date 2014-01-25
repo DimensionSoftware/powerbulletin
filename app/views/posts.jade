@@ -33,7 +33,7 @@ if typeof(post) !== 'undefined'
             h2.title= post.title
             if post.html
               .body!= post.html
-          if !post.is_comment && post.alias_config.sig
+          if !post.is_comment && post.alias_config && post.alias_config.sig
             .sig!= post.alias_config.sigHtml
         .reply
         //- actions for top-level posts are different from children's post-actions partial

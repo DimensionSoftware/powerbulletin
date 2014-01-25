@@ -23,7 +23,7 @@ mixin _post(p, i, moderatorMode)
           .body!= p.html
           .clear
         //- only print signatures for top-level posts
-        if !p.is_comment && i===0 && p.alias_config.sig
+        if !p.is_comment && i===0 && p.alias_config && p.alias_config.sig
           .sig!= p.alias_config.sigHtml
         .clear
     if !moderatorMode
