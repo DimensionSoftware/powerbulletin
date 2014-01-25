@@ -54,13 +54,21 @@ if window?
 
 @submit-form = (ev, fn) ~>
   $f = $ ev.target .closest \form # get event's form
+  unless $f?length then $f = $ ev.target .closest \.form
   $s = $ $f.find '[type=submit]:first'
   if $s then $s.attr \disabled \disabled
 
+  # XXX since PostDrawer's Editor is outside a <form>
+  serialized-form = $f.serialize!
+  serialized-post = [encodeURI("#k=#v&") for k,v of {
+    body:     ($ '[name="body"]' .val!)
+    parent_id:($ '[name="parent_id"]' .val!)
+    forum_id: ($ '[name="forum_id"]' .val!)}].join ''
+  data = if serialized-form.length then "#serialized-form,#serialized-post".replace /,$/, '' else serialized-post
   $.ajax { # submit!
-    url:       $f.attr \action
-    type:      $f.attr \method
-    data:      $f.serialize!
+    url:  $f.attr \action
+    type: $f.attr \method
+    data: data
     data-type: \json
     success:   (data) ~>
       $s.remove-attr \disabled
