@@ -1,4 +1,4 @@
-height       = 100%
+min_height   = 280px
 bg_color     = #f8f8f8
 border_color = #eee
 
@@ -14,8 +14,9 @@ html.profile .wmd-preview
 .Editor
   width 100%
   min-width 800px
-  min-height height
-  position absolute
+  min-height min_height
+  height 100%
+  position relative
   border-top 1px solid border_color
   .tooltip
     top 5px
@@ -58,7 +59,7 @@ html.profile .wmd-preview
     z-index 10
     right 0
     bottom 0
-    height 20px
+    height 30px
     width 55px
     text-indent -20px
     padding 4px 12px
@@ -86,8 +87,9 @@ html.profile .wmd-preview
 
   .wmd-panel
     position absolute
-    height height
+    min-height min_height
     min-width 100%
+    height 100%
     padding 0
     border-top-left-radius 3px
     border-bottom-left-radius 3px
@@ -121,7 +123,8 @@ html.profile .wmd-preview
     overflow scroll
     float right
     width 0
-    height height
+    min-height min_height
+    height 100%
     color #333
     background-color bg_color
     border-top-right-radius 3px
