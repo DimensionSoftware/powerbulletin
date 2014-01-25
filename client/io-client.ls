@@ -41,6 +41,7 @@ function init-with-socket s
     err, unread <- socket.emit \chat-unread
     for c in unread
       window.ChatPanel.add-from-conversation c, window.user
+    socket.emit \online-now
 
   s.on \reconnect ->
     globals.r-socket s
