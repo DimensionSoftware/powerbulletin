@@ -125,6 +125,16 @@ html.forum, html.profile, html.search, html.moderation
         border-top 1px solid transparent
         border-left 2px solid transparent
         border-right 2px solid transparent
+        transition box-shadow .3s ease-in .05s
+        &::before
+          position absolute
+          width 0
+          top -1px
+          left 0
+          height 101%
+          bottom -10px
+          content ''
+          background-image linear-gradient(to top, dark 10%, light 100%)
         &::after
           position absolute
           content ''
@@ -156,13 +166,10 @@ html.forum, html.profile, html.search, html.moderation
           a
             color #222
       .thread.active
+        border-radius 3px
+        transition none
         &::before
-          position absolute
-          margin-top -1px
-          left 0
-          width 0
-          bottom -1px
-          content ''
+          width 6px
         .arrow
           display none
           position fixed
@@ -212,9 +219,6 @@ html.forum, html.profile, html.search, html.moderation
             border-left 12px solid #fff
             margin-top -65px
             right -63px
-        &:before
-          background-image linear-gradient(to top, dark 10%, light 100%)
-          width 5px
       .thread.active:last-child, .thread.active
         z-index 9
         background-color #fff

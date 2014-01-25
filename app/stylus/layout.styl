@@ -103,6 +103,7 @@ header
       height 22px
       width 0
       z-index 50
+      // force closed state
       .bubble, .bubble2
         position absolute
         border-radius 30px
@@ -111,6 +112,8 @@ header
         right 5px
         top 60px
         opacity 0
+        &.close
+          display none
       .bubble2
         height 15px
         width 15px
@@ -139,6 +142,10 @@ header
           menu
             padding 5px
             transition padding .1s ease-out
+            &.close
+              opacity 0
+              height 0
+              transition opacity .2s ease-out, height .1s ease-in .1s
             li
               height 23px
               opacity 1
@@ -440,7 +447,7 @@ footer
   width auto
   font-size .95em
   padding 5px 0
-  transition left .08s ease-in .2s, height .08s ease-in .2s
+  transition left .08s ease-in, height .08s ease-in
   .onclick-scroll-top
     cursor default
     height 0
@@ -559,7 +566,7 @@ body.scrolled
   footer
     opacity 1
     height footer_height
-    transition height .1s ease-out
+    transition height .08s ease-out
 //}}}
 //{{{ Collapsed left nav
 body.collapsed

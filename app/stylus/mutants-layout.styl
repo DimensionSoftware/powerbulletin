@@ -3,6 +3,16 @@
 bounce = cubic-bezier(0,1.72,0,.75)
 
 // Mutant-specific States
+html.homepage, html.profile, html.admin
+  // restore footer
+  .PostDrawer
+    display none
+  footer.expanded
+    box-shadow 0 0 4px -1px light
+    max-height 39px!important
+    height 39px!important
+    .ui-resizable-handle
+      display none
 //{{{ - homepage
 // XXX add html. selector here for any single-column layout & the leftnav will animate out, etc...
 html.homepage, html.page, html.moderation
@@ -176,7 +186,7 @@ html.forum, html.profile, html.search, html.moderation
     .forum, .search
       position relative
       clear both
-      margin-bottom (grid*2)
+      margin-bottom 250px
       margin-left 50px
       p
         margin 0
@@ -932,6 +942,7 @@ html.admin
               font-style italic
               color dark_text
     form
+      height 300px
       margin-top (grid*2)
       max-width 1300px
       position relative

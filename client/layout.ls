@@ -220,6 +220,13 @@ window.spin = (loading = true) ->
   else
     hide!
 #}}}
+$ \.tools .on \click ->
+  t = $ '.tools menu' # close with force
+    ..add-class \close
+  b = $ '.tools .bubble, .tools .bubble2'
+    ..add-class \close
+  set-timeout (-> t.remove-class \close; b.remove-class \close), 2000ms # remove The Force
+
 
 onload-resizable!
 

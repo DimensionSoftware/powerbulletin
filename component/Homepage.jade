@@ -1,4 +1,4 @@
-mc = forum.moderation_count
+mc = typeof(forum) != "undefined" ? forum.moderation_count : 0
 .homepage(class=activeForumId!='homepage'?'resizable forum':'')
   if description.length
     h2= description
