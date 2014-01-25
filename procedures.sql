@@ -642,7 +642,7 @@ CREATE FUNCTION procs.uri_to_forum_id(site_id JSON, uri JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.forum(id JSON) RETURNS JSON AS $$
-  return plv8.execute('SELECT * FROM forums WHERE id=$1', [id])[0]
+  return plv8.execute('SELECT forums.*, (SELECT COUNT(m) FROM moderations m JOIN posts p ON p.id=m.post_id WHERE p.forum_id=$1) AS moderation_count FROM forums WHERE id=$1', [id])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
