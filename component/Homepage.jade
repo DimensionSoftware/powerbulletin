@@ -1,5 +1,8 @@
 .homepage(class=activeForumId!='homepage'?'resizable forum':'')
   if description.length
     h2= description
+  if item && item.form.dialog === 'forum'
+    h3.censored
+      a.mutant(href="#{item.form.forumSlug}/moderation") Moderation Log
   .MenuSummary
   .Pins

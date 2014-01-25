@@ -50,12 +50,12 @@ inputs =
 
 @type-of-part = (i) ->
   switch i
-  | \page     => \page
-  | \censored => \censored
-  | \t        => \t
-  | \edit     => \edit
-  | \new      => \new
-  | otherwise =>
+  | \page       => \page
+  | \moderation => \moderation
+  | \t          => \t
+  | \edit       => \edit
+  | \new        => \new
+  | otherwise   =>
     if i.match /[\.]/ then return \fbdn #forbidden
     if i.match /^\d+$/ then \number else \string
 
@@ -65,7 +65,7 @@ inputs =
     number   : \forum
     new      : \forum
     edit     : \forum
-    censored : \forum
+    moderation : \forum
     m        : \forum
     t        : \forum
     page     : \forum
@@ -75,7 +75,7 @@ inputs =
     number   : \forum
     new      : \new-thread
     edit     : \forum
-    censored : \moderation
+    moderation : \moderation
     t        : \-thread-marker
     page     : \forum
     fbdn     : \error
@@ -84,7 +84,7 @@ inputs =
     number   : \error
     new      : \error
     edit     : \error
-    censored : \error
+    moderation : \error
     m        : \error
     t        : \error
     page     : \error
@@ -94,7 +94,7 @@ inputs =
     number   : \error
     new      : \error
     edit     : \error
-    censored : \error
+    moderation : \error
     m        : \error
     t        : \error
     page     : \error
@@ -114,7 +114,7 @@ inputs =
     number   : \thread-permalink
     new      : \error
     edit     : \-edit-marker
-    censored : \error # instead of an error, this could point to a thread-level view of the moderation log
+    moderation : \error # instead of an error, this could point to a thread-level view of the moderation log
     m        : \thread-permalink
     t        : \error
     page     : \-page-marker
@@ -124,7 +124,7 @@ inputs =
     number   : \error
     new      : \error
     edit     : \-edit-marker
-    censored : \error
+    moderation : \error
     m        : \error
     t        : \error
     page     : \-permalink-page-marker
@@ -134,7 +134,7 @@ inputs =
     number   : \edit
     new      : \error
     edit     : \error
-    censored : \error
+    moderation : \error
     m        : \error
     t        : \error
     page     : \error
@@ -144,7 +144,7 @@ inputs =
     number   : \error
     new      : \error
     edit     : \error
-    censored : \error
+    moderation : \error
     m        : \error
     t        : \error
     page     : \error
@@ -154,7 +154,7 @@ inputs =
     number   : \thread-permalink-page
     new      : \error
     edit     : \error
-    censored : \error
+    moderation : \error
     m        : \error
     t        : \error
     page     : \error
@@ -164,7 +164,7 @@ inputs =
     number   : \error
     new      : \error
     edit     : \error
-    censored : \error
+    moderation : \error
     m        : \error
     t        : \error
     page     : \error
@@ -174,7 +174,7 @@ inputs =
     number   : \thread-page
     new      : \error
     edit     : \error
-    censored : \error
+    moderation : \error
     m        : \error
     t        : \error
     page     : \error
@@ -184,7 +184,7 @@ inputs =
     number   : \error
     new      : \error
     edit     : \error
-    censored : \error
+    moderation : \error
     m        : \error
     t        : \error
     page     : \error
@@ -194,7 +194,7 @@ inputs =
     number   : \error
     new      : \error
     edit     : \error
-    censored : \error
+    moderation : \error
     m        : \error
     t        : \error
     page     : \error
@@ -249,7 +249,7 @@ furl.parse '/otherground-forum/supportground/t/new'                             
 furl.parse '/otherground-forum/supportground/t/edit'                                # threads can be called "edit"
 furl.parse '/otherground-forum/supportground/t/edit/edit'                           # ...but we can still identify the edit marker
 furl.parse '/otherground-forum/supportground/t/edit/edit/1234'                      # and know this is an edit url
-furl.parse '/otherground-forum/supportground/t/new-thing'                  
+furl.parse '/otherground-forum/supportground/t/new-thing'
 furl.parse '/otherground-forum/supportground/t/new-thing/page/5'                    # pretty page urls are not a problem
 furl.parse '/otherground-forum/supportground/t/this-is-a-test/edit/2108'
 */
