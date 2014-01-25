@@ -46,6 +46,9 @@ module.exports =
       #@$.find('.upload input[type=file]').change ~>
       #  @upload!
 
+      @$.find \img:first .on \load ->
+        @@$.fancybox.update!
+
       @$.find('.upload input[type=file]').html5-uploader {
         name: \avatar
         post-url: @endpoint-url
