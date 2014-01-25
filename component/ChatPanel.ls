@@ -80,8 +80,8 @@ module.exports =
           e.scroll-top(e.0.scroll-height)), time # bottom
 
     add-new-message: (message, should-scroll) ->
-      return if @seen-message[message.id]
-      @seen-message[message.id] = 1
+      return if @seen-messages[message.id]
+      @seen-messages[message.id] = 1
       $msg = @@$(jade.templates._chat_message(message))
       if should-scroll
         $msg.find \img .load (~> @scroll-to-latest {-animate})
@@ -93,8 +93,8 @@ module.exports =
       if near-bottom then @scroll-to-latest {-animate}
 
     add-old-message: (message) ->
-      return if @seen-message[message.id]
-      @seen-message[message.id] = 1
+      return if @seen-messages[message.id]
+      @seen-messages[message.id] = 1
       $msg = @@$(jade.templates._chat_message(message))
       if message.user_id isnt window.user.id
         $msg.add-class \other
