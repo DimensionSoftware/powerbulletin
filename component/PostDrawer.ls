@@ -18,7 +18,7 @@ module.exports =
       @$.find \.save .on \click (ev) ~>
         # XXX for now, always reply to active thread
         @$.find '[name="forum_id"]' .val active-forum-id
-        @$.find '[name="parent_id"]' .val active-thread-id
+        @$.find '[name="parent_id"]' .val active-thread-id?
         ev = {target:@editor.$} # mock event
         submit-form ev, (data) ~> # ...and sumbit!
           post-success ev, data
@@ -34,7 +34,7 @@ module.exports =
       #}}}
       ####  main  ;,.. ___  _
       # + Editor
-      @editor = new Editor {locals:{id:active-thread-id}}, \#editor, @
+      @editor = new Editor {locals:{id:active-thread-id?}}, \#editor, @
       @editor.render!attach!
 
     toggle:  ~> if @is-open! then @close! else @open!
