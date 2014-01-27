@@ -103,7 +103,7 @@ function init-with-socket s
       pc.html ("#{(parse-int pc.text!) + 1} <i>posts</i>")
 
       # & render new post
-      sel = "\#post_#{post.parent_id} + .children"
+      sel = "\#post_#{post.parent_id} ~ .children:first"
       animate-in = (e) -> $ e .add-class \post-animate-in
       if post.user_id is user?id then post.is_comment=true # hide sig., etc... on our own posts
       render-and-append(
