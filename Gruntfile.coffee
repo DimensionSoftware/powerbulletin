@@ -37,6 +37,10 @@ module.exports = (grunt) ->
           debounceDelay: 50
           interrupt: true
 
+      socketIO:
+        files: ['app/io-chat-server.ls', 'app/pb-models.ls', 'app/io-server.ls']
+        tasks: ['socketIO']
+
       clientJade:
         files: ["app/views/*.jade"]
         tasks: ["clientJade", "launch"]
@@ -68,7 +72,7 @@ module.exports = (grunt) ->
     proc = cp.spawn(command, [], opts)
     fs.writeFileSync pidFile, proc.pid
   #}}}
-#{{{ Backend tasks
+  #{{{ Backend tasks
   grunt.registerTask "launch", "Launch PowerBulletin!", launch = ->
     if process.env.NODE_ENV is "production"
       daemon "./bin/powerbulletin", config.tmp + "/pb.pid"
@@ -82,7 +86,10 @@ module.exports = (grunt) ->
     exec "bin/psql pb < procedures.sql",
       silent: true
     done()
-#}}}
+
+  grunt.registerTask 'socketIO', 'Restart Socket IO', ->
+    exec 'bin/launch-pb-rt'
+  #}}}
   #{{{ Frontend tasks
   grunt.registerTask "clientJade", "compile regular jade", ->
     done = this.async()
