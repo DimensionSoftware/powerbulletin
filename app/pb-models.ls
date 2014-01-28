@@ -758,7 +758,6 @@ query-dictionary =
       postgres.query sql, [cid, user-id], cb
 
     by-cid: (augmented-fn ((cid, uid, last, limit, cb) ->
-      console.warn \messages.by-cid, { cid, uid, last, limit }
       [sql, params] = if last
         [ """
           SELECT m.*,
@@ -781,9 +780,7 @@ query-dictionary =
            LIMIT $3
           """,
           [cid, uid, limit]]
-      console.log {sql,params}
       err, r <- postgres.query sql, params
-      console.warn err, r
       return cb err, r), sh.add-dates)
 
     send: (message, cb=(->)) ~>
