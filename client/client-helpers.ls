@@ -54,27 +54,30 @@ if window?
 
 @submit-form = (ev, fn) ~>
   $f = $ ev.target .closest \form # get event's form
-  unless $f?length then $f = $ ev.target .closest \.form
+  form-data = if $f?length
+    $f.serialize!
+  else
+    # XXX since PostDrawer's Editor is outside a <form>
+    $f = $ ev.target.closest \.form
+    [encodeURI("#k=#v&") for k,v of {
+      body:     ($f.find '[name="body"]' .val!)
+      parent_id:($f.find '[name="parent_id"]' .val!)
+      forum_id: ($f.find '[name="forum_id"]' .val!)}].join('').replace /,$/, ''
+
+  # disable inputs
   $s = $ $f.find '[type=submit]:first'
   if $s then $s.attr \disabled \disabled
 
-  # XXX since PostDrawer's Editor is outside a <form>
-  serialized-form = $f.serialize!
-  serialized-post = [encodeURI("#k=#v&") for k,v of {
-    body:     ($ '[name="body"]' .val!)
-    parent_id:($ '[name="parent_id"]' .val!)
-    forum_id: ($ '[name="forum_id"]' .val!)}].join ''
-  data = if serialized-form.length then "#serialized-form,#serialized-post".replace /,$/, '' else serialized-post
   $.ajax { # submit!
     url:  $f.attr \action
     type: $f.attr \method
-    data: data
+    data: form-data
     data-type: \json
     success:   (data) ~>
-      $s.remove-attr \disabled
+      $s.remove-attr \disabled # re-enable
       if fn then fn.call $f, data
     error: (data) ~>
-      $s.remove-attr \disabled
+      $s.remove-attr \disabled # re-enable
       @show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
   }
   set-timeout (-> $f.find \input.title .focus!), 100ms # focus!

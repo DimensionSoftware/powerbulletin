@@ -17,8 +17,8 @@ module.exports =
       #{{{ Event Delegates
       @$.find \.save .on \click (ev) ~>
         # XXX for now, always reply to active thread
-        @$.find '[name="forum_id"]' .val active-forum-id
-        @$.find '[name="parent_id"]' .val active-thread-id?
+        @$.find '[name="forum_id"]' .val window.active-forum-id
+        @$.find '[name="parent_id"]' .val window.active-thread-id
         ev = {target:@editor.$} # mock event
         submit-form ev, (data) ~> # ...and sumbit!
           post-success ev, data
