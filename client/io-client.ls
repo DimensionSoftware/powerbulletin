@@ -105,6 +105,7 @@ function init-with-socket s
         .html "#{thread.views}<i>views</i>"
 
   s.on \thread-create (thread, cb) ->
+    unless thread then return # guard
     if window.active-forum-id is thread?forum_id
       $ui.trigger \thread-create, thread
 
