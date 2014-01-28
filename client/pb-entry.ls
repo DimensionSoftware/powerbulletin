@@ -50,7 +50,12 @@ require! \../component/Paginator
 
 # custom History.pushState function to get around statechange bug {{{
 hostname = (url) ->
-  url.match(/^https?:\/\/(.*?)\//)?1
+  m = url.match /^https?:\/\/(.*?)\/|^https?:\/\/(.*)$/
+  if m
+    [all, hs, hn] = m
+    hs or hn
+  else
+    null
 
 original-push-state = History.push-state
 
