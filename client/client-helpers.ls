@@ -76,7 +76,7 @@ if window?
     data-type: \json
     success:   (data) ~>
       $s.remove-attr \disabled # re-enable
-      $f.find '[name="title"]' .val '' # clear
+      if data?success then $f.find '[name="title"]' .val '' # clear
       if fn then fn.call $f, data
     error: (data) ~>
       $s.remove-attr \disabled # re-enable
