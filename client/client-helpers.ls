@@ -61,6 +61,7 @@ if window?
     $f = $ ev.target.closest \.form
     [encodeURI("#k=#v&") for k,v of {
       body:     ($f.find '[name="body"]' .val!)
+      title:    ($f.find '[name="title"]' .val!)
       parent_id:($f.find '[name="parent_id"]' .val!)
       forum_id: ($f.find '[name="forum_id"]' .val!)}].join('').replace /,$/, ''
 
@@ -75,6 +76,7 @@ if window?
     data-type: \json
     success:   (data) ~>
       $s.remove-attr \disabled # re-enable
+      $f.find '[name="title"]' .val '' # clear
       if fn then fn.call $f, data
     error: (data) ~>
       $s.remove-attr \disabled # re-enable

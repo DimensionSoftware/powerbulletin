@@ -167,6 +167,7 @@ layout-on-personalize = (w, u) ->
   on-load:
     (window, next) ->
       render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
+      $ \footer .remove-class \thread
       next!
   on-unload:
     (window, next-mutant, next) ->
@@ -247,9 +248,11 @@ layout-on-personalize = (w, u) ->
   on-load:
     (window, next) ->
       $ = window.$
-      if is-forum-homepage window.location.to-string! # render homepage
+      if is-forum-homepage window.location.pathname # render homepage
         render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
-        $ 'footer [name="title"]' .show!
+        $ \footer .add-class \thread # adds title
+      else
+        $ \footer .remove-class \thread
 
       align-ui!
 
@@ -419,6 +422,7 @@ same-profile = (hints) ->
         <- Auth.show-login-dialog
         switch-and-focus \on-error \on-forgot '#auth input[name=email]'
       <- lazy-load-autosize
+      $ \footer .remove-class \thread
       next!
   on-mutate:
     (window, next) ->
