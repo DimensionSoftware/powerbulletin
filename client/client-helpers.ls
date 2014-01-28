@@ -102,8 +102,8 @@ render = (sel, locals, cb=(->)) ~>
     focus $e
 @toggle-post = (ev) ~>
   # guards
-  unless $ ev?target .has-class \onclick-footer-toggle then return
-  if $ \html .has-class \new then return
+  if ev # XXX pass-through programatical calls
+    unless $ ev.target .has-class \onclick-footer-toggle then return
   unless (window.user?rights?super or window.user?sys_rights?super)
     if $ \body .has-class \locked then return
   unless user then Auth.show-login-dialog!; return
@@ -116,18 +116,18 @@ render = (sel, locals, cb=(->)) ~>
       parent-id:window.active-thread-id}}, \#post_new
       ..toggle!
 
+@thread-mode = (mode=true) -> $ \footer .toggle-class \thread, mode
+
 @edit-post = (id, data={}) ~>
   if id is true # render new
     scroll-to-top!
     $ \html .add-class \new # for stylus
-    data.action = \/resources/posts
-    data.method = \post
-    render \.forum, data, ~> # init editor on post
-      <- @lazy-load-editor
-      CKEDITOR.replace($ \#editor .0)
+    @thread-mode!
+    unless $ \footer .has-class \expanded then @toggle-post! # bring out thread-create
   else # fetch existing & edit
     sel = "\#post_#{id}"
     e   = $ sel
+    @thread-mode false
     unless e.find("\#post_edit_#{id}:visible").length # guard
       #awesome-scroll-to "\#post_#{id}" 600ms
       $.get "/resources/posts/#{id}" (p) ->

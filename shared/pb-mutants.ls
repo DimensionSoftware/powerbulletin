@@ -9,7 +9,7 @@ purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
-  {respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
+  {respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, thread-mode, toggle-post} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -199,9 +199,7 @@ layout-on-personalize = (w, u) ->
       const prev-mutant = window.mutator
 
       # render main content
-      if is-editing(@furl.path) is true
-        window.render-mutant \main_content, \post-new
-      else if is-forum-homepage @furl.path
+      if is-forum-homepage @furl.path
         render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
       else
         window.render-mutant \main_content, \posts
@@ -248,11 +246,22 @@ layout-on-personalize = (w, u) ->
   on-load:
     (window, next) ->
       $ = window.$
-      if is-forum-homepage window.location.pathname # render homepage
+
+      # setup initial views
+      editing-id = is-editing window.location.pathname
+      if is-forum-homepage window.location.pathname # attach homepage
         render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
-        $ \footer .add-class \thread # adds title
-      else
-        $ \footer .remove-class \thread
+        thread-mode!
+      else if editing-id is true # create new thread
+        thread-mode!
+        toggle-post!
+      else if editing-id # editing post
+        edit-post editing-id, forum_id:window.active-forum-id
+      else # default
+        thread-mode false
+
+      # FIXME will do something smarter -k
+      $ \body .on \click, toggle-post # expand & minimize drawer
 
       align-ui!
 
@@ -260,12 +269,6 @@ layout-on-personalize = (w, u) ->
       $l.find \.active .remove-class \active # set active post
       $l.find ".thread[data-id='#{window.active-thread-id}']" .add-class \active
       respond-resize!
-
-      # editing handler
-      id = is-editing window.location.pathname
-      if id then edit-post id, forum_id:window.active-forum-id
-      # FIXME will do something smarter -k
-      $ \body .on \click, toggle-post # expand & minimize drawer
 
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
