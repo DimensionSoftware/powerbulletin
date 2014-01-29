@@ -446,8 +446,11 @@ $d.on \click \#add_custom_domain (ev) ->
   }
 $d.on \click 'html.admin .q' -> # close
   e = $ \.message
-    ..css {max-height: 0, padding:0}
-  set-timeout (-> e.remove-attr \style), 2000ms # re-enable hovers
+  if e.css(\max-height) isnt \0px # hide
+    e.css {max-height: 0, padding:0}
+    set-timeout (-> e.remove-attr \style), 2000ms # re-enable hovers
+  else
+    e.css {max-height:9999}
   false
 $d.on \click 'html.admin .dialog textarea, html.admin .dialog button, html.admin .dialog input[type="text"], html.admin .dialog select' -> false # discard event
 $d.on \change 'html.admin .domain' -> # set keys
