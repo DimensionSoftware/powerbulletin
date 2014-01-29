@@ -33,7 +33,8 @@ force-reconnect = (s) ->
   s.socket.disconnect!
   s.socket.reconnect!
 
-test-socket = (s, timeout=1000ms, cb=(->)) ->
+const timeout = 1000ms
+test-socket = (s, timeout, cb=(->)) ->
   err = true
   s.emit \ok, (e, r) ->
     #console.warn \after-emit-ok, err
@@ -59,12 +60,12 @@ function init-with-socket s
 
   s.on \connect_failed ->
     #console.warn \connect_failed
-    err <- test-socket s
+    err <- test-socket s, timeout
     if err then force-reconnect s
 
   s.on \ready, ->
     #console.warn \ready
-    err <- test-socket s, 1000ms
+    err <- test-socket s, timeout
     if err
       force-reconnect s
     else
@@ -72,13 +73,13 @@ function init-with-socket s
 
   s.on \reconnect ->
     #console.log \reconnected
-    err <- test-socket s
+    err <- test-socket s, timeout
     #console.warn \reconnected-err, err
     if err then force-reconnect s
 
   s.on \reconnect_failed ->
     #console.warn \reconnect_failed
-    err <- test-socket s
+    err <- test-socket s, timeout
     if err then force-reconnect s
 
   s.on \disconnect, ->
