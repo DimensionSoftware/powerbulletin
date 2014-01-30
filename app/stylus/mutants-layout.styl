@@ -363,6 +363,7 @@ html.forum, html.profile, html.search, html.moderation
           margin-left -60px
           .user-title
             text-transform capitalize
+            font-style italic
           .user
             clear both
             font-weight bold
@@ -387,8 +388,17 @@ html.forum, html.profile, html.search, html.moderation
             display block
             text-indent 1px
             margin-top -1px
+            font-weight 200
+            &.created
+              text-transform capitalize
+              color #888
+              font-weight 500
+              b
+                color #777
+                font-weight 400
             b
-              color #777
+              color #666
+              font-weight 300
         .container
           position relative
           margin-left 185px
@@ -853,7 +863,6 @@ html.admin
   .main-content
     padding-left 200px
     padding-bottom 50px
-    background-color #fdfdfd
     label .note
       left 189px
     .note
