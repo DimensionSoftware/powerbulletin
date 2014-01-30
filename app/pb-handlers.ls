@@ -468,6 +468,18 @@ function profile-paths user, uploaded-file, base=\avatar
   if r?success then c.invalidate-post req.params.id, req.user.name # blow cache!
   res.json r
 
+@uncensor = (req, res, next) ->
+  return next 404 unless req.user
+  db = pg.procs
+  command = req.body <<< {
+    user_id: req.user.id
+    post_id: req.params.id
+  }
+  (err, r) <- db.posts.uncensor command
+  if err then next err
+  c.invalidate-post req.params.id, req.user.name # blow cache!
+  res.json {+success}
+
 @sticky = (req, res, next) ->
   return next 404 unless req.user
   return next 403 unless req.user.sys_rights?super or req.user.rights?super

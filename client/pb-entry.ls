@@ -131,6 +131,13 @@ append-reply-ui = (ev) ->
   else
     $p.find('.reply .cancel').click!
 
+uncensor = (ev) ->
+  $p = $ ev.target .parents \.post:first # find post div
+  post-id = $p.data \post-id
+  $.post "/resources/posts/#post-id/uncensor", (r) ->
+    if r?success then $p.remove-class \censored
+    if mutator is \moderation then $p.slide-up 300ms
+
 censor = (ev) ->
   $p = $ ev.target .parents \.post:first # find post div
   post-id = $p.data \post-id
@@ -314,6 +321,7 @@ $d.on \keydown \.onenter-submit ~> if it.which is 13 and not it.shift-key then p
 
 $d.on \click \.onclick-append-reply-ui Auth.require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post Auth.require-login(censor)
+$d.on \click \.onclick-uncensor-post Auth.require-login(uncensor)
 #}}}
 #{{{ - header (main menu)
 #$d.on \click 'html.homepage header .menu a.title' ->

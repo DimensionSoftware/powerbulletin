@@ -319,6 +319,8 @@ html.forum, html.profile, html.search, html.moderation
       .post.censored
         .onclick-censor-post
           display none!important
+        .onclick-uncensor-post
+          display inline-block!important
       .post.head
         padding-top (grid/2)
         position relative
@@ -468,7 +470,7 @@ html.forum, html.profile, html.search, html.moderation
               bottom 0
             &:hover
               text-decoration none
-          .edit, .censor
+          .edit, .censor, .uncensor
             display none
         .social
           position absolute
@@ -1240,6 +1242,12 @@ html.moderation
     padding-left 40px
   #left_content
     display none
+  #main_content
+    .actions
+      .censor
+        display none
+      .uncensor
+        display inline-block
   footer
     left 0!important
 

@@ -26,9 +26,8 @@ mixin _post(p, i, moderatorMode)
         if !p.is_comment && i===0 && p.alias_config && p.alias_config.sig
           .sig!= p.alias_config.sigHtml
         .clear
-    if !moderatorMode
-      +_post-actions(p)
-      .reply
+    +_post-actions(p, moderatorMode)
+    .reply
   .clear
   .children
     if p.posts && p.posts.length
