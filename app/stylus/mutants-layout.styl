@@ -157,28 +157,41 @@ html.forum, html.profile, html.search, html.moderation
           top 5px
           right 32px
           cursor pointer
-          &::after
-            content "☐"
+          // off
+          background url(cache-url + '/images/sprites.png') no-repeat -126px -54px
+          height 14px
+          width 10px
+          &:hover
+            background url(cache-url + '/images/sprites.png') no-repeat -149px -54px
         .locked-toggle
           position absolute
           display block
           top 5px
           right 16px
           cursor pointer
-          &::after
-            content "☐"
+          // off
+          background url(cache-url + '/images/sprites.png') no-repeat -138px -54px
+          height 14px
+          width 10px
+          &:hover
+            background url(cache-url + '/images/sprites.png') no-repeat -161px -55px
       .thread.sticky
-        .sticky-toggle::after
-          content "☑"
+        .sticky-toggle
+          // on
+          background url(cache-url + '/images/sprites.png') no-repeat -149px -54px
+          height 18px
+          width 10px
+          top 6px
       .thread.locked
         .locked-toggle
           position absolute
           display block
           top 6px
-          &::after
-            content "✖" // ☒
-        .locked-toggle::after
-          content "✖" // ☒
+          // on
+          content ''
+          background url(cache-url + '/images/sprites.png') no-repeat -161px -55px
+          height 14px
+          width 10px
   #left_chrome
     display none
   .main-content
