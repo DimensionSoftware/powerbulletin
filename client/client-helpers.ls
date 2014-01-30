@@ -85,14 +85,6 @@ if window?
   set-timeout (-> $f.find \input.title .focus!), 100ms # focus!
   false
 
-# makes entire page inline-editable for user-id
-@set-inline-editor = (user-id) ~>
-  $ ".post[data-user-id=#user-id] .post-content"
-    .attr \contentEditable true
-  <- @lazy-load-editor
-  for e in CKEDITOR.instances then e.destroy true # cleanup
-  try CKEDITOR.inline-all!
-
 # handle in-line editing
 focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 10ms
 render = (sel, locals, cb=(->)) ~>
@@ -100,7 +92,13 @@ render = (sel, locals, cb=(->)) ~>
   render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
     cb!
     focus $e
-@toggle-post = (ev) ~>
+
+function create-postdrower
+  window.component.postdrawer = new PostDrawer {locals:{
+    forum-id:window.active-forum-id,
+    parent-id:window.active-thread-id}}, \#post_new
+
+@toggle-postdrawer = (ev) ~>
   # guards
   if ev # XXX pass-through programatical calls
     unless $ ev.target .has-class \onclick-footer-toggle then return
@@ -108,13 +106,12 @@ render = (sel, locals, cb=(->)) ~>
     if $ \body .has-class \locked then return
   unless user then Auth.show-login-dialog!; return
 
-  if pd = window.component.postdrawer
-    pd.toggle!
-  else # create
-    window.component.postdrawer = new PostDrawer {locals:{
-      forum-id:window.active-forum-id,
-      parent-id:window.active-thread-id}}, \#post_new
-      ..toggle!
+  unless pd = window.component.postdrawer then create-postdrower!
+  pd.toggle!
+
+@open-postdrawer = (ev) ~>
+  unless pd = window.component.postdrawer then create-postdrower!
+  pd?open!
 
 @thread-mode = (mode=true) -> $ \footer .toggle-class \thread, mode
 
@@ -123,18 +120,14 @@ render = (sel, locals, cb=(->)) ~>
     scroll-to-top!
     $ \html .add-class \new # for stylus
     @thread-mode!
-    unless $ \footer .has-class \expanded then @toggle-post! # bring out thread-create
+    unless $ \footer .has-class \expanded then @toggle-postdrawer! # bring out thread-create
   else # fetch existing & edit
     sel = "\#post_#{id}"
     e   = $ sel
     @thread-mode false
-    unless e.find("\#post_edit_#{id}:visible").length # guard
-      #awesome-scroll-to "\#post_#{id}" 600ms
-      $.get "/resources/posts/#{id}" (p) ->
-        render sel, p
-        e .add-class \editing
-    else
-      focus e
+    $.get "/resources/posts/#{id}" (p) ~>
+      # TODO setup & open post drawer
+      @open-postdrawer!
 #}}}
 #{{{ Lazy loading
 load-css-cache = {}
