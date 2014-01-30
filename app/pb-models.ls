@@ -213,8 +213,8 @@ forum-summary  = (forum-ids, cb) ->
              JOIN posts last_post ON last_post.thread_id = thread.id
              JOIN forums f ON f.id = thread.forum_id
              JOIN aliases a ON a.user_id = last_post.user_id AND a.site_id = f.site_id
-       WHERE thread.id = (SELECT thread_id FROM posts WHERE forum_id = #forum-id ORDER BY id DESC LIMIT 1)
-             AND last_post.id = (SELECT id FROM posts WHERE forum_id = #forum-id ORDER BY id DESC LIMIT 1)
+       WHERE thread.id = (SELECT p.thread_id FROM posts p LEFT JOIN moderations m ON m.post_id = p.id WHERE p.forum_id = #forum-id AND m.post_id IS NULL ORDER BY id DESC LIMIT 1)
+             AND last_post.id = (SELECT p.id FROM posts p LEFT JOIN moderations m ON m.post_id = p.id WHERE p.forum_id = #forum-id AND m.post_id IS NULL ORDER BY id DESC LIMIT 1)
       """
     [ "(#{last-post-sql id})" for id in forum-ids ].join "\nUNION\n"
 
