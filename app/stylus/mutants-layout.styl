@@ -157,28 +157,41 @@ html.forum, html.profile, html.search, html.moderation
           top 5px
           right 32px
           cursor pointer
-          &::after
-            content "☐"
+          // off
+          background url(cache-url + '/images/sprites.png') no-repeat -126px -54px
+          height 14px
+          width 10px
+          &:hover
+            background url(cache-url + '/images/sprites.png') no-repeat -149px -54px
         .locked-toggle
           position absolute
           display block
           top 5px
           right 16px
           cursor pointer
-          &::after
-            content "☐"
+          // off
+          background url(cache-url + '/images/sprites.png') no-repeat -138px -54px
+          height 14px
+          width 10px
+          &:hover
+            background url(cache-url + '/images/sprites.png') no-repeat -161px -55px
       .thread.sticky
-        .sticky-toggle::after
-          content "☑"
+        .sticky-toggle
+          // on
+          background url(cache-url + '/images/sprites.png') no-repeat -149px -54px
+          height 18px
+          width 10px
+          top 6px
       .thread.locked
         .locked-toggle
           position absolute
           display block
           top 6px
-          &::after
-            content "✖" // ☒
-        .locked-toggle::after
-          content "✖" // ☒
+          // on
+          content ''
+          background url(cache-url + '/images/sprites.png') no-repeat -161px -55px
+          height 14px
+          width 10px
   #left_chrome
     display none
   .main-content
@@ -306,6 +319,8 @@ html.forum, html.profile, html.search, html.moderation
       .post.censored
         .onclick-censor-post
           display none!important
+        .onclick-uncensor-post
+          display inline-block!important
       .post.head
         padding-top (grid/2)
         position relative
@@ -350,6 +365,7 @@ html.forum, html.profile, html.search, html.moderation
           margin-left -60px
           .user-title
             text-transform capitalize
+            font-style italic
           .user
             clear both
             font-weight bold
@@ -374,8 +390,17 @@ html.forum, html.profile, html.search, html.moderation
             display block
             text-indent 1px
             margin-top -1px
+            font-weight 200
+            &.created
+              text-transform capitalize
+              color #888
+              font-weight 500
+              b
+                color #777
+                font-weight 400
             b
-              color #777
+              color #666
+              font-weight 300
         .container
           position relative
           margin-left 185px
@@ -445,7 +470,7 @@ html.forum, html.profile, html.search, html.moderation
               bottom 0
             &:hover
               text-decoration none
-          .edit, .censor
+          .edit, .censor, .uncensor
             display none
         .social
           position absolute
@@ -840,7 +865,6 @@ html.admin
   .main-content
     padding-left 200px
     padding-bottom 50px
-    background-color #fdfdfd
     label .note
       left 189px
     .note
@@ -915,7 +939,7 @@ html.admin
             .message
               max-height 999px
               padding 5px 20px
-              transition max-height .1s ease-out .6s, padding .1s ease-out .6s
+              transition max-height .1s ease-out .5s, padding .1s ease-out .5s
           .message
             cursor pointer
             position absolute
@@ -928,7 +952,7 @@ html.admin
             color #444
             background-color #f4f4f4
             border-radius 15px/10px
-            transition max-height 0 ease-out .1s, padding 0 ease-out .1s
+            transition none
             h5
               text-transform capitalize
             h5, p
@@ -1064,6 +1088,7 @@ html.admin
         height 40px
         margin-top 35px
         margin-left 85px
+        margin-bottom 50px
       span
         color #888
         font-size 18px
@@ -1217,6 +1242,12 @@ html.moderation
     padding-left 40px
   #left_content
     display none
+  #main_content
+    .actions
+      .censor
+        display none
+      .uncensor
+        display inline-block
   footer
     left 0!important
 

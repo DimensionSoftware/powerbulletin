@@ -489,6 +489,9 @@ query-dictionary =
   pages: {}
 
   posts:
+    uncensor: (command, cb) ->
+      postgres.query 'DELETE FROM moderations WHERE user_id=$1 AND post_id=$2',
+        [command.user_id, command.post_id], cb
     moderated: (forum-id, cb) ->
       postgres.query '''
       SELECT

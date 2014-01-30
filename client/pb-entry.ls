@@ -131,6 +131,13 @@ append-reply-ui = (ev) ->
   else
     $p.find('.reply .cancel').click!
 
+uncensor = (ev) ->
+  $p = $ ev.target .parents \.post:first # find post div
+  post-id = $p.data \post-id
+  $.post "/resources/posts/#post-id/uncensor", (r) ->
+    if r?success then $p.remove-class \censored
+    if mutator is \moderation then $p.slide-up 300ms
+
 censor = (ev) ->
   $p = $ ev.target .parents \.post:first # find post div
   post-id = $p.data \post-id
@@ -260,6 +267,8 @@ $ui.on \thread-create, (e, thread) ->
 $ui.on \nav-top-posts, (e, threads) ->
   #console.info \stub, threads
 
+$ '.search > .icon' .on \click ->
+  $ \#query .focus!
 #}}}
 # {{{ - generic form-handling ui
 $d.on \click '.create .no-surf' Auth.require-login((ev) ->
@@ -312,6 +321,7 @@ $d.on \keydown \.onenter-submit ~> if it.which is 13 and not it.shift-key then p
 
 $d.on \click \.onclick-append-reply-ui Auth.require-login(append-reply-ui)
 $d.on \click \.onclick-censor-post Auth.require-login(censor)
+$d.on \click \.onclick-uncensor-post Auth.require-login(uncensor)
 #}}}
 #{{{ - header (main menu)
 #$d.on \click 'html.homepage header .menu a.title' ->
@@ -446,8 +456,11 @@ $d.on \click \#add_custom_domain (ev) ->
   }
 $d.on \click 'html.admin .q' -> # close
   e = $ \.message
-    ..css {max-height: 0, padding:0}
-  set-timeout (-> e.remove-attr \style), 2000ms # re-enable hovers
+  if e.css(\max-height) isnt \0px # hide
+    e.css {max-height: 0, padding:0}
+    set-timeout (-> e.remove-attr \style), 2000ms # re-enable hovers
+  else
+    e.css {max-height:9999}
   false
 $d.on \click 'html.admin .dialog textarea, html.admin .dialog button, html.admin .dialog input[type="text"], html.admin .dialog select' -> false # discard event
 $d.on \change 'html.admin .domain' -> # set keys

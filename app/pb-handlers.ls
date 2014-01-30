@@ -59,7 +59,7 @@ delete-unnecessary-surf-data = (res) ->
 # @param String keep-string   comma-separated list of tasks to be kept
 # @returns Object             a new, smaller set of tasks
 delete-unnecessary-surf-tasks = (tasks, keep-string) ->
-  always-keep = <[ summary subPostsCount tStep tQty ]>
+  always-keep = <[ moderation_count summary subPostsCount tStep tQty ]>
   keep = always-keep ++ keep-string.split ','
   t = { [k, v] for k, v of tasks when k in keep }
 
@@ -467,6 +467,18 @@ function profile-paths user, uploaded-file, base=\avatar
   if err then next err
   if r?success then c.invalidate-post req.params.id, req.user.name # blow cache!
   res.json r
+
+@uncensor = (req, res, next) ->
+  return next 404 unless req.user
+  db = pg.procs
+  command = req.body <<< {
+    user_id: req.user.id
+    post_id: req.params.id
+  }
+  (err, r) <- db.posts.uncensor command
+  if err then next err
+  c.invalidate-post req.params.id, req.user.name # blow cache!
+  res.json {+success}
 
 @sticky = (req, res, next) ->
   return next 404 unless req.user
