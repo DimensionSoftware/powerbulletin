@@ -38,6 +38,7 @@ app.resource \resources/domains,            resources.domains
 app.get  \/resources/posts/:id/sub-posts,   handlers.sub-posts
 app.post \/resources/posts/:id/impression,  handlers.add-impression
 app.post \/resources/posts/:id/censor,      handlers.censor
+app.post \/resources/posts/:id/uncensor,    handlers.uncensor
 app.post \/resources/posts/:id/sticky,      handlers.sticky
 app.post \/resources/posts/:id/locked,      handlers.locked
 app.post \/resources/users/:id/avatar,      handlers.profile-avatar

@@ -28,23 +28,59 @@ main = ->
       init!) 3000ms
 main!
 
+force-reconnect = (s) ->
+  #console.log \force-reconnect
+  s.socket.disconnect!
+  s.socket.reconnect!
+
+const timeout = 1000ms
+test-socket = (s, timeout, cb=(->)) ->
+  err = true
+  s.emit \ok, (e, r) ->
+    #console.warn \after-emit-ok, err
+    err := e
+    cb e
+  <- set-timeout _, timeout
+  #console.warn \after-set-timeout, err
+  if err then cb err
+
+ready = (s) ->
+  globals.r-socket s
+  err, unread <- s.emit \chat-unread
+  for c in unread
+    window.ChatPanel.add-from-conversation c, window.user
+  s.emit \online-now
+  $ \html .remove-class \disconnected
 
 # https://github.com/LearnBoost/socket.io/wiki/Exposed-events
 # socket.on \event-name, (message, cb) ->
 function init-with-socket s
   s.on \connect, ->
-    globals.r-socket s
-    $ \html .remove-class \disconnected
+    #globals.r-socket s
+
+  s.on \connect_failed ->
+    #console.warn \connect_failed
+    err <- test-socket s, timeout
+    if err then force-reconnect s
 
   s.on \ready, ->
-    globals.r-socket socket
-    err, unread <- socket.emit \chat-unread
-    for c in unread
-      window.ChatPanel.add-from-conversation c, window.user
-    socket.emit \online-now
+    #console.warn \ready
+    err <- test-socket s, timeout
+    if err
+      force-reconnect s
+    else
+      ready s
 
   s.on \reconnect ->
-    globals.r-socket s
+    #console.log \reconnected
+    err <- test-socket s, timeout
+    #console.warn \reconnected-err, err
+    if err then force-reconnect s
+
+  s.on \reconnect_failed ->
+    #console.warn \reconnect_failed
+    err <- test-socket s, timeout
+    if err then force-reconnect s
 
   s.on \disconnect, ->
     $ \html .add-class \disconnected

@@ -62,7 +62,6 @@ module.exports = class ChatServer
 
   # info on past conversations
   past: (cb=(->)) ~>
-    console.warn \past
     db.conversations.past @site.id, @user.id, cb
 
 # vim:fdm=indent

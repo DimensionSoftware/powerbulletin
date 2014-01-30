@@ -25,7 +25,7 @@ if typeof(post) !== 'undefined'
             //- rely on client to out human-friendly time
             .date Active 
               span(data-time=post.user_last_activity)
-          .date(data-time=post.created_iso, title=post.created_friendly)
+          .date.created(data-time=post.created_iso, title=post.created_friendly)
         .edit-container
         .container
           .s-chat-bubble

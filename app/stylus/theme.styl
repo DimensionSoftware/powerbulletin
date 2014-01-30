@@ -69,16 +69,19 @@ header
   .container
     .search
       .icon
-        background radial-gradient(circle closest-corner at 50% 44%, light 55%, dark 100%)
+        cursor text
         position absolute
+        overflow hidden
         z-index 20
-        top -6px
-        left -10px
-        height 22px
-        width 22px
-        border-radius 22px
-        .s-search
-          margin-left 2px
+        top 0
+        right 10px
+        height 38px
+        width 97px
+        .s-big-search
+          background-position -251px -9px
+      .query:focus + .icon
+        top -2px
+        height 40px
       .query
         box-shadow 1px 1px 3px light inset
         border 0

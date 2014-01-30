@@ -145,7 +145,9 @@ header
             &.close
               opacity 0
               height 0
-              transition opacity .2s ease-out, height .1s ease-in .1s
+              transition opacity .1s ease-out, height 0, padding 0
+              li
+                transition none
             li
               height 23px
               opacity 1
@@ -228,8 +230,7 @@ header
       position absolute 
       z-index 8
       .query
-        width 400px
-        padding-right 45px
+        width 440px
         padding-top grid
         font-size 1.3em
         text-indent 8px
