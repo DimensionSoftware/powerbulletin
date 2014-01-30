@@ -229,9 +229,9 @@ forum-summary  = (forum-ids, cb) ->
          last.user_id AS last_post_user_id,
          last.photo   AS last_post_user_photo,
          last.created AS last_post_created,
-         (SELECT COUNT(id) FROM posts WHERE forum_id=f.id AND parent_id IS NULL)
+         (SELECT COUNT(p.id) FROM posts p LEFT JOIN moderations m ON m.post_id = p.id WHERE p.forum_id=f.id AND p.parent_id IS NULL AND m.post_id IS NULL)
                       AS thread_count,
-         (SELECT COUNT(id) FROM posts WHERE forum_id=f.id)
+         (SELECT COUNT(p.id) FROM posts p LEFT JOIN moderations m ON m.post_id = p.id WHERE p.forum_id=f.id AND m.post_id IS NULL)
                       AS post_count
     FROM forums f
          LEFT JOIN (#{unioned-recent-activity-sql forum-ids}) AS last ON last.forum_id = f.id
