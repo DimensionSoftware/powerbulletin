@@ -467,6 +467,12 @@ html.forum, html.profile, html.search, html.moderation
             div
               position absolute
               bottom 0
+              margin-left 1px
+            .s-edit
+              margin-left 4px
+              bottom 3px
+            .s-permalink
+              margin-left 3px
             &:hover
               text-decoration none
           .edit, .censor, .uncensor
@@ -562,6 +568,9 @@ html.forum, html.profile, html.search, html.moderation
         box-shadow none
         &:focus
           transform none
+          background none
+          box-shadow none
+          border none
 //}}}
 //{{{ - profile
 html.profile
@@ -1238,10 +1247,6 @@ html.forum.new
   .main-content .forum #post_edit .summary
     display block
     .photo.online
-      display none
-  footer
-    cursor default
-    .onclick-footer-toggle
       display none
 html.forum
   body.locked

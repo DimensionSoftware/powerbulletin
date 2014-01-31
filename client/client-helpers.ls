@@ -93,7 +93,8 @@ render = (sel, locals, cb=(->)) ~>
     cb!
     focus $e
 
-function create-postdrower
+function get-postdrawer
+  return pd if pd = window.component.postdrawer # guard
   window.component.postdrawer = new PostDrawer {locals:{
     forum-id:window.active-forum-id,
     parent-id:window.active-thread-id}}, \#post_new
@@ -105,13 +106,9 @@ function create-postdrower
   unless (window.user?rights?super or window.user?sys_rights?super)
     if $ \body .has-class \locked then return
   unless user then Auth.show-login-dialog!; return
+  get-postdrawer!toggle!
 
-  unless pd = window.component.postdrawer then create-postdrower!
-  pd.toggle!
-
-@open-postdrawer = (ev) ~>
-  unless pd = window.component.postdrawer then create-postdrower!
-  pd?open!
+@open-postdrawer = (ev) ~> get-postdrawer!open!
 
 @thread-mode = (mode=true) -> $ \footer .toggle-class \thread, mode
 
@@ -120,7 +117,7 @@ function create-postdrower
     scroll-to-top!
     $ \html .add-class \new # for stylus
     @thread-mode!
-    unless $ \footer .has-class \expanded then @toggle-postdrawer! # bring out thread-create
+    @open-postdrawer!
   else # fetch existing & edit
     sel = "\#post_#{id}"
     e   = $ sel

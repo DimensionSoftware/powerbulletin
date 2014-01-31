@@ -47,6 +47,7 @@ module.exports =
       # TODO trigger resize or use CSS?
       make-resizable f
       # setup Editor
+      <~ set-timeout _, 50ms
       @editor.focus!
     close: ~>
       set-timeout (~>

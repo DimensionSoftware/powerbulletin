@@ -278,7 +278,6 @@ $ '.search > .icon' .on \click ->
 #}}}
 # {{{ - generic form-handling ui
 $d.on \click '.create .no-surf' Auth.require-login((ev) ->
-  $ '#main_content .forum' .html '' # clear canvas
   e = $ ev.target
   edit-post e.data(\edit), forum_id:window.active-forum-id)
 $d.on \click \.edit.no-surf Auth.require-login((ev) ->
