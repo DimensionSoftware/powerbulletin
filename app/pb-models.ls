@@ -749,14 +749,10 @@ query-dictionary =
     mark-all-read: (cid, user-id, cb) ->
       sql = """
       INSERT INTO messages_read (message_id, user_id)
-        SELECT id AS message_id, #{parse-int user-id} FROM messages WHERE conversation_id = $1 AND id >= (
-          SELECT m.id
-            FROM messages m
-                 LEFT JOIN messages_read mr ON (mr.message_id = m.id AND mr.user_id = $2)
-           WHERE m.conversation_id = $1
-                 AND mr.message_id IS NULL
-           ORDER BY m.id
-           LIMIT 1)
+        SELECT id AS message_id, #{parse-int user-id} FROM messages WHERE conversation_id = $1 AND id IN (
+          (SELECT m.id FROM messages m WHERE m.conversation_id = $1)
+          EXCEPT
+          (SELECT mr.message_id FROM messages_read mr JOIN messages m ON m.id = mr.message_id WHERE m.conversation_id = $1 AND mr.user_id = $2))
       """
       postgres.query sql, [cid, user-id], cb
 

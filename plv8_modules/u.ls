@@ -69,13 +69,15 @@ export top-posts = (site-id, sort, limit = void, offset = 0, fields='p.*') ->
   SELECT
     #fields,
     #{user-fields \p.user_id, site-id},
-    COUNT(p.id) post_count
+    COUNT(p2.id) post_count
   FROM posts p
   LEFT JOIN posts p2 ON p2.thread_id=p.id
   LEFT JOIN moderations m ON m.post_id=p.id
+  LEFT JOIN moderations m2 ON m2.post_id=p2.id
   WHERE p.parent_id IS NULL
     AND p.forum_id=$1
     AND m.post_id IS NULL
+    AND m2.post_id IS NULL
   GROUP BY p.id
   ORDER BY #{sort-expr}
   LIMIT $2 OFFSET $3
