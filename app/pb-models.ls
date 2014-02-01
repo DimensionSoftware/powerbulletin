@@ -5,7 +5,6 @@ require! {
   stylus
   mkdirp
   pagedown
-  jsdom
   fs
   postgres: \./postgres
   sioa: \socket.io-announce
@@ -20,9 +19,7 @@ const base-css = \public/sites
 announce = sioa.create-client!
 
 # create the server-side markup rendering function
-cv = pagedown.get-sanitizing-converter!
-jq = (html, cb) -> jsdom.env html, [ '../public/local/jquery-1.10.2.min.js' ], cb
-r  = format.render-fn cv, jq
+cv = format.cv new pagedown.Converter
 
 # Generate a function that takes another function and transforms its first parameter
 # according to the rules in serializers
@@ -216,8 +213,8 @@ forum-summary  = (forum-ids, cb) ->
              JOIN posts last_post ON last_post.thread_id = thread.id
              JOIN forums f ON f.id = thread.forum_id
              JOIN aliases a ON a.user_id = last_post.user_id AND a.site_id = f.site_id
-       WHERE thread.id = (SELECT thread_id FROM posts WHERE forum_id = #forum-id ORDER BY id DESC LIMIT 1)
-             AND last_post.id = (SELECT id FROM posts WHERE forum_id = #forum-id ORDER BY id DESC LIMIT 1)
+       WHERE thread.id = (SELECT p.thread_id FROM posts p LEFT JOIN moderations m ON m.post_id = p.id WHERE p.forum_id = #forum-id AND m.post_id IS NULL ORDER BY id DESC LIMIT 1)
+             AND last_post.id = (SELECT p.id FROM posts p LEFT JOIN moderations m ON m.post_id = p.id WHERE p.forum_id = #forum-id AND m.post_id IS NULL ORDER BY id DESC LIMIT 1)
       """
     [ "(#{last-post-sql id})" for id in forum-ids ].join "\nUNION\n"
 
@@ -232,9 +229,9 @@ forum-summary  = (forum-ids, cb) ->
          last.user_id AS last_post_user_id,
          last.photo   AS last_post_user_photo,
          last.created AS last_post_created,
-         (SELECT COUNT(id) FROM posts WHERE forum_id=f.id AND parent_id IS NULL)
+         (SELECT COUNT(p.id) FROM posts p LEFT JOIN moderations m ON m.post_id = p.id WHERE p.forum_id=f.id AND p.parent_id IS NULL AND m.post_id IS NULL)
                       AS thread_count,
-         (SELECT COUNT(id) FROM posts WHERE forum_id=f.id)
+         (SELECT COUNT(p.id) FROM posts p LEFT JOIN moderations m ON m.post_id = p.id WHERE p.forum_id=f.id AND m.post_id IS NULL)
                       AS post_count
     FROM forums f
          LEFT JOIN (#{unioned-recent-activity-sql forum-ids}) AS last ON last.forum_id = f.id
@@ -492,6 +489,9 @@ query-dictionary =
   pages: {}
 
   posts:
+    uncensor: (command, cb) ->
+      postgres.query 'DELETE FROM moderations WHERE user_id=$1 AND post_id=$2',
+        [command.user_id, command.post_id], cb
     moderated: (forum-id, cb) ->
       postgres.query '''
       SELECT
@@ -749,19 +749,14 @@ query-dictionary =
     mark-all-read: (cid, user-id, cb) ->
       sql = """
       INSERT INTO messages_read (message_id, user_id)
-        SELECT id AS message_id, #{parse-int user-id} FROM messages WHERE conversation_id = $1 AND id >= (
-          SELECT m.id
-            FROM messages m
-                 LEFT JOIN messages_read mr ON (mr.message_id = m.id AND mr.user_id = $2)
-           WHERE m.conversation_id = $1
-                 AND mr.message_id IS NULL
-           ORDER BY m.id
-           LIMIT 1)
+        SELECT id AS message_id, #{parse-int user-id} FROM messages WHERE conversation_id = $1 AND id IN (
+          (SELECT m.id FROM messages m WHERE m.conversation_id = $1)
+          EXCEPT
+          (SELECT mr.message_id FROM messages_read mr JOIN messages m ON m.id = mr.message_id WHERE m.conversation_id = $1 AND mr.user_id = $2))
       """
       postgres.query sql, [cid, user-id], cb
 
     by-cid: (augmented-fn ((cid, uid, last, limit, cb) ->
-      console.warn \messages.by-cid, { cid, uid, last, limit }
       [sql, params] = if last
         [ """
           SELECT m.*,
@@ -784,9 +779,7 @@ query-dictionary =
            LIMIT $3
           """,
           [cid, uid, limit]]
-      console.log {sql,params}
       err, r <- postgres.query sql, params
-      console.warn err, r
       return cb err, r), sh.add-dates)
 
     send: (message, cb=(->)) ~>
@@ -797,7 +790,7 @@ query-dictionary =
       if err then return cb err
       me = c.participants |> find (.user_id is message.user_id)
       if not me then return cb { -success, messages: [ "User not a participant in conversation." ] }
-      err, message.html <- r message.body, {}
+      message.html = cv.make-html message.body, {}
       if err then return cb { -success, err, messages: [ "Couldn't render message." ] }
       err, msgs <~ db.messages.upsert message
       if err then return cb { -success, err, messages: [ "Couldn't send message." ] }

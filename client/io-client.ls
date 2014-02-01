@@ -12,7 +12,7 @@ window.globals = globals
 
 window.ChatPanel = ChatPanel
 
-{render-and-append} = require \../shared/shared-helpers
+{render-and-append, add-commas} = require \../shared/shared-helpers
 {lazy-load-socketio, set-online-user, storage} = require \./client-helpers
 
 ####  main  ;,.. ___  _
@@ -28,22 +28,59 @@ main = ->
       init!) 3000ms
 main!
 
+force-reconnect = (s) ->
+  #console.log \force-reconnect
+  s.socket.disconnect!
+  s.socket.reconnect!
+
+const timeout = 1000ms
+test-socket = (s, timeout, cb=(->)) ->
+  err = true
+  s.emit \ok, (e, r) ->
+    #console.warn \after-emit-ok, err
+    err := e
+    cb e
+  <- set-timeout _, timeout
+  #console.warn \after-set-timeout, err
+  if err then cb err
+
+ready = (s) ->
+  globals.r-socket s
+  err, unread <- s.emit \chat-unread
+  for c in unread
+    window.ChatPanel.add-from-conversation c, window.user
+  s.emit \online-now
+  $ \html .remove-class \disconnected
 
 # https://github.com/LearnBoost/socket.io/wiki/Exposed-events
 # socket.on \event-name, (message, cb) ->
 function init-with-socket s
   s.on \connect, ->
-    globals.r-socket s
-    $ \html .remove-class \disconnected
+    #globals.r-socket s
+
+  s.on \connect_failed ->
+    #console.warn \connect_failed
+    err <- test-socket s, timeout
+    if err then force-reconnect s
 
   s.on \ready, ->
-    globals.r-socket socket
-    err, unread <- socket.emit \chat-unread
-    for c in unread
-      window.ChatPanel.add-from-conversation c, window.user
+    #console.warn \ready
+    err <- test-socket s, timeout
+    if err
+      force-reconnect s
+    else
+      ready s
 
   s.on \reconnect ->
-    globals.r-socket s
+    #console.log \reconnected
+    err <- test-socket s, timeout
+    #console.warn \reconnected-err, err
+    if err then force-reconnect s
+
+  s.on \reconnect_failed ->
+    #console.warn \reconnect_failed
+    err <- test-socket s, timeout
+    if err then force-reconnect s
 
   s.on \disconnect, ->
     $ \html .add-class \disconnected
@@ -69,8 +106,24 @@ function init-with-socket s
         .html "#{thread.views}<i>views</i>"
 
   s.on \thread-create (thread, cb) ->
+    unless thread then return # guard
     if window.active-forum-id is thread?forum_id
       $ui.trigger \thread-create, thread
+
+    # look for menu summary and increment thread count
+    #console.log \thread-create, thread
+    $forum = $(".MenuSummary .item-forum[data-db-id=#{thread.forum_id}]")
+    return unless $forum.length
+    $threads = $forum.find \.threads
+    $threads.html(add-commas(1 + parse-int( $threads.text!replace /,/g, '' )))
+    $last-post = $forum.find \.last-post
+    $last-post.find \a.mutant.body .attr(href: thread.uri) .html(thread.title)
+    $last-post.find \a.mutant.username .attr(href: "/user/thread.user_name") .html(thread.user_name)
+    $date = $forum.find \span.date
+    $date.data(time: thread.created_iso, title: thread.created_friendly) .html(thread.created_human)
+    # also inc posts because new threads have 1 post
+    $posts = $forum.find \.posts
+    $posts.html(add-commas(1 + parse-int( $posts.text!replace /,/g, '' )))
 
   s.on \post-create (post, cb) ->
     # only real-time posts for users':
@@ -87,7 +140,7 @@ function init-with-socket s
       pc.html ("#{(parse-int pc.text!) + 1} <i>posts</i>")
 
       # & render new post
-      sel = "\#post_#{post.parent_id} + .children"
+      sel = "\#post_#{post.parent_id} ~ .children:first"
       animate-in = (e) -> $ e .add-class \post-animate-in
       if post.user_id is user?id then post.is_comment=true # hide sig., etc... on our own posts
       render-and-append(
@@ -98,6 +151,19 @@ function init-with-socket s
             if window.mutator is \forum then awesome-scroll-to new-post, 300ms
           else
             animate-in new-post)
+
+    # look for menu summary and increment post count
+    #console.log \post-create
+    $forum = $(".MenuSummary .item-forum[data-db-id=#{post.forum_id}]")
+    return unless $forum.length
+    $posts = $forum.find \.posts
+    $posts.html(add-commas(1 + parse-int( $posts.text!replace /,/g, '' )))
+    $last-post = $forum.find \.last-post
+    # don't have enough data for this at the moment
+    #$last-post.find \a.mutant.body .attr(href: thread.uri) .html(thread.title)
+    #$last-post.find \a.mutant.username .attr(href: "/user/thread.user_name") .html(thread.user_name)
+    $date = $forum.find \span.date
+    $date.data(time: post.created_iso, title: post.created_friendly) .html(post.created_human)
 
   s.on \new-hit, (hit) ->
     hs = hit._source

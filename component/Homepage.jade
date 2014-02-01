@@ -1,5 +1,13 @@
+mc = typeof(forum) != "undefined" ? forum.moderation_count : 0
 .homepage(class=activeForumId!='homepage'?'resizable forum':'')
   if description.length
     h2= description
+  if typeof(item) != "undefined" && item && item.form.dialog === 'forum'
+    if mc
+      .moderation-log
+        a.mutant(href="#{item.form.forumSlug}/moderation")
+          b= mc
+          | Moderation#{mc == 1 ? '' : 's'}
   .MenuSummary
+  | &nbsp;
   .Pins

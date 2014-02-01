@@ -25,7 +25,7 @@ if typeof(post) !== 'undefined'
             //- rely on client to out human-friendly time
             .date Active 
               span(data-time=post.user_last_activity)
-          .date(data-time=post.created_iso, title=post.created_friendly)
+          .date.created(data-time=post.created_iso, title=post.created_friendly)
         .edit-container
         .container
           .s-chat-bubble
@@ -33,7 +33,7 @@ if typeof(post) !== 'undefined'
             h2.title= post.title
             if post.html
               .body!= post.html
-          if !post.is_comment && post.alias_config.sig
+          if !post.is_comment && post.alias_config && post.alias_config.sig
             .sig!= post.alias_config.sigHtml
         .reply
         //- actions for top-level posts are different from children's post-actions partial
@@ -41,6 +41,7 @@ if typeof(post) !== 'undefined'
           a.onclick-footer-toggle(title='Reply') Reply
             .s-dark-reply.onclick-footer-toggle
           a.edit.mutant.no-surf(data-edit=post.id, href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
+            .s-edit
           a.permalink.mutant(href=post.uri, title='Permalink') Permalink
             .s-dark-permalink
           a.censor.onclick-censor-post(title='Censor') Censor

@@ -316,7 +316,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
     if is-locked-forum(site.config.menu, parse-int(post.forum_id)) and (not req.user.rights?super)
       return res.json success: false, errors: [ "The forum is locked." ]
 
-    err, is-locked-thread <- is-locked-thread-by-parent-id post.parent_id
+    err, is-locked-thread <- is-locked-thread-by-parent-id (parse-int post.parent_id or 0)
     if err then return next err
     if is-locked-thread and not (req.user?rights?super or req?user?sys_rights?super)
       return res.json success: false, errors: [ "This thread is locked." ]

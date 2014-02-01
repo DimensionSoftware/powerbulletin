@@ -1,4 +1,5 @@
 .MenuSummary
+  clear both
   .container
     padding 7px 20px 20px 20px
     margin grid -25px (grid*5) 0
@@ -14,24 +15,12 @@
         font-weight 500
       .first
         min-width 300px
+      tr:last-child, tr:first-child
+        border-bottom none
       tr
         position relative
         border-bottom 1px solid tint_color
         transition all .1s ease-out .1s
-        &:first-child:hover
-          background-color transparent
-        &:first-child
-          border-bottom 1px solid transparent
-        &:last-child
-          border-bottom 1px solid transparent
-        &:last-child:hover
-          border-bottom 1px solid tint_color
-        &:hover
-          color #000
-          transition all 0
-          .title:before, .last-post:before, .threads:before, .posts:before
-            opacity .5
-            transition none
         .title:before, .last-post:before, .threads:before, .posts:before
           content ''
           opacity 0
@@ -45,14 +34,14 @@
           transition .1s ease-out .05s
         &.item-forum:hover
           .name
-            padding 2px 9px
-            margin-left -9px
             background-color light
             border-radius 8px
             color #fff
             transition none
         &.item-forum
           .name
+            padding 2px 9px
+            margin-left -9px
             transition all .05s ease-out .03s
         td
           padding (grid - 2) grid

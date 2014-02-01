@@ -215,6 +215,9 @@ layout-on-personalize = (w, u) ->
         false # default
       window.$ \body .toggle-class \locked, is-locked
 
+      not-commentable = not @item?form?comments
+      window.$ \body .toggle-class \no-comments, not-commentable
+
       # render left content
       if @top-threads
         window.render-mutant \left_container \nav # refresh on forum & mutant change
@@ -434,7 +437,7 @@ same-profile = (hints) ->
         <~ lazy-load-fancybox
         e = w.component.editor = new Editor {locals:
           url:  "/resources/aliases/#{w.user.id}"
-          body: (storage.get \sig) or u.sig}
+          body: (storage.get \sig) or u?sig}
         w.$.fancybox e.$, {after-close:-> user <<< sig:e.body!; e.detach!} <<< fancybox-params # set sig & cleanup
 
     change-title-enable = ->

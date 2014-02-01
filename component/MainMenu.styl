@@ -15,6 +15,8 @@ body.scrolled
               top 28px
 
 .MainMenu
+  .close
+    display none
   //{{{ Structure-related
   .menu
     padding 0
@@ -42,6 +44,11 @@ body.scrolled
         margin-left -27px
         box-shadow 0 1px 15px -1px light
         transition padding .15s ease-out .25s, margin-left .15s ease-out .3s, box-shadow .15s ease-out .2s, max-height .15s ease-out .3s
+        &.hide
+          opacity 0
+          max-height 0
+          padding 0
+          transition opacity .1s ease-out, max-height .1s ease-in, padding .1s ease-out
         .col-sep
           left 270px
         .col-sep2

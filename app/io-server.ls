@@ -95,9 +95,22 @@ clear-stale-redis-data = (r, cb) ->
       log "no cookies found during socket.io authorization phase"
       return accept(null, true)
 
+  seen-socket-ids = {}
+
   io.on \connection, (socket) ->
     var search-room
     var presence
+
+    socket.on \ok, (cb) ->
+      console.warn "ok #{socket.id}"
+      if cb then cb null, \ok
+
+    console.warn { connecting: socket.id, pid: process.pid }
+    if seen-socket-ids[socket.id]
+      console.warn "#{socket.id} already connected"
+      return
+    else
+      seen-socket-ids[socket.id] = 1
 
     if not socket
       log "no socket; bailing to prevent crash"
@@ -154,6 +167,7 @@ clear-stale-redis-data = (r, cb) ->
     socket.on  \chat-past,               chat-server.past
 
     socket.on \disconnect, ->
+      delete seen-socket-ids[socket.id]
       log \disconnected
       err <- presence.leave-all socket.id
       if err then log \presence.leave-all, err
@@ -184,10 +198,6 @@ clear-stale-redis-data = (r, cb) ->
         users |> filter (-> it) |> each (u) ->
           socket.in("#{site.id}").emit \enter-site, u # not broadcast
 
-    socket.on \debug, ->
-      socket.emit \debug, socket.manager.rooms
-      io.sockets.in('1/users/3').emit \debug, 'hi again to 3'
-
     # client no longer needs realtime query updates (navigated away from search page)
     socket.on \search-end, ->
       if search-room
@@ -216,4 +226,10 @@ clear-stale-redis-data = (r, cb) ->
       # register search with the search notifier
       io.sockets.emit \register-search, {searchopts, site-id: site.id, room: search-room}
 
+    socket.on \debug, (args, cb=(->)) ->
+      console.warn \debug, args
+      socket.emit \debug, args
+      cb null, args
+
+    console.warn \ready, socket.id
     socket.emit \ready

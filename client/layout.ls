@@ -114,7 +114,7 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
   ms     = duration or 1000ms
   offset = 100px
 
-  return unless e.length # guard
+  return unless e.length and e.is \:visible # guard
   if is-ie or is-opera
     e.0.scroll-into-view!
     cb!
@@ -122,9 +122,7 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
     dst-scroll = Math.round(e.position!top) - offset
     cur-scroll = window.scroll-y
     if Math.abs(dst-scroll - cur-scroll) > (threshold*2)
-      bounce = threshold / 3
-      #<- $ 'html,body' .animate { scroll-top:dst-scroll+bounce }, ms, \easeOutExpo
-      <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms, \easeOutExpo
+      <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms, \easeInExpo
       cb!
     else
       cb!
@@ -220,6 +218,13 @@ window.spin = (loading = true) ->
   else
     hide!
 #}}}
+$ \.tools .on \click ->
+  t = $ '.tools menu' # close with force
+    ..add-class \close
+  b = $ '.tools .bubble, .tools .bubble2'
+    ..add-class \close
+  set-timeout (-> t.remove-class \close; b.remove-class \close), 2000ms # remove The Force
+
 
 onload-resizable!
 

@@ -37,6 +37,10 @@ module.exports = (grunt) ->
           debounceDelay: 50
           interrupt: true
 
+      socketIO:
+        files: ['app/io-chat-server.ls', 'app/pb-models.ls', 'app/io-server.ls']
+        tasks: ['socketIO']
+
       clientJade:
         files: ["app/views/*.jade"]
         tasks: ["clientJade", "launch"]
@@ -68,13 +72,13 @@ module.exports = (grunt) ->
     proc = cp.spawn(command, [], opts)
     fs.writeFileSync pidFile, proc.pid
   #}}}
-#{{{ Backend tasks
+  #{{{ Backend tasks
   grunt.registerTask "launch", "Launch PowerBulletin!", launch = ->
     if process.env.NODE_ENV is "production"
       daemon "./bin/powerbulletin", config.tmp + "/pb.pid"
     else
       #exec "bin/develop &", async:true
-      daemon "./bin/develop", config.tmp + "/develop.pid"
+      daemon "./bin/powerbulletin", config.tmp + "/develop.pid"
 
   grunt.registerTask "procs", "Compile stored procedures to JS", ->
     done = this.async()
@@ -82,7 +86,10 @@ module.exports = (grunt) ->
     exec "bin/psql pb < procedures.sql",
       silent: true
     done()
-#}}}
+
+  grunt.registerTask 'socketIO', 'Restart Socket IO', ->
+    exec 'bin/launch-pb-rt'
+  #}}}
   #{{{ Frontend tasks
   grunt.registerTask "clientJade", "compile regular jade", ->
     done = this.async()
@@ -107,7 +114,7 @@ module.exports = (grunt) ->
   if process.env.NODE_ENV is "production"
     grunt.registerTask "default", ["launch"] # launch handles everything
   else
-    grunt.registerTask "default", ["procs", "clientJade", "componentJade", "launch", "watch"]
+    grunt.registerTask "default", ["launch", "procs", "clientJade", "componentJade", "watch"]
 
 process.on 'SIGINT', ->
   exec "killall -s INT -r pb-worker"

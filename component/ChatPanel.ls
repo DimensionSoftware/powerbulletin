@@ -34,7 +34,11 @@ module.exports =
       chat-panel = @add id, message.user
       chat-panel.add-new-message message
       if panels.selected isnt chat-panel.local \id
-        n = ($ "\#icon-chat-#id .notices" .text!) |> parse-int
+        t = ($ "\#icon-chat-#id .notices" .text!)
+        n = if t.match /^\s*$/
+          0
+        else
+          parse-int t
         panels.set-notice "icon-chat-#id", n+1
       chat-panel
 
@@ -43,11 +47,15 @@ module.exports =
       #console.warn \a-c, c, user
       id     = c.id
       not-me = c.participants |> find (-> it.user_id isnt user.id) # later on, use filter
+      panels = window.component.panels
       #console.log \add-from-conversation, id, icon, not-me
       not-me.icon = "#cache-url#{not-me.photo}"
-      @add id, not-me, c.unread
+      cp = @add id, not-me, c.unread
+      panels.set-notice "icon-chat-#id", c.unread
+      cp
 
     init: ->
+      @seen-messages = {}
       @p = @local \p
       @css = @local(\css) || {}
       @css.display = \none
@@ -79,6 +87,8 @@ module.exports =
           e.scroll-top(e.0.scroll-height)), time # bottom
 
     add-new-message: (message, should-scroll) ->
+      return if @seen-messages[message.id]
+      @seen-messages[message.id] = 1
       $msg = @@$(jade.templates._chat_message(message))
       if should-scroll
         $msg.find \img .load (~> @scroll-to-latest {-animate})
@@ -90,6 +100,8 @@ module.exports =
       if near-bottom then @scroll-to-latest {-animate}
 
     add-old-message: (message) ->
+      return if @seen-messages[message.id]
+      @seen-messages[message.id] = 1
       $msg = @@$(jade.templates._chat_message(message))
       if message.user_id isnt window.user.id
         $msg.add-class \other
@@ -100,7 +112,7 @@ module.exports =
       clear = ->
         e # clear & shrink
           ..val ''
-          ..css \height \17px
+          ..css \height \19px
       if ev.key-code is 27 # close panel
         window.component.panels?off!
       if ev.key-code is 13 and not ev.shift-key
