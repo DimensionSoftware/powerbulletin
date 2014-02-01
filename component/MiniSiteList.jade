@@ -17,7 +17,7 @@ if sites.length
               a(href="https://#{d}/auth/once-admin", target="_blank") admin
               | )
   p.new
-    a.onclick-first-site(href='#') ... Start a New Community
+    a.onclick-first-site(href='#') Start a New Community
       i ! &nbsp;
 else
   p
@@ -40,7 +40,8 @@ if memberships.length
   h3 You're #{sites.length ? ' also ' : ''} a member of
   ul.memberships
     each m in memberships
-      li
-        a(href="https://#{m.domain}/#once", target="_blank") #{m.name}
-          small @ 
-          | #{m.domain}
+      if m && m.domain
+        li
+          a(href="https://#{m.domain}/#once", target="_blank") #{m.name}
+            small @ 
+            | #{m.domain}
