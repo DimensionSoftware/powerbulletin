@@ -4,8 +4,7 @@ require, exports, module <- define
 require! \./PBComponent
 require! \./Editor
 
-{submit-form, post-success} = require \../client/client-helpers
-{storage} = require \../client/client-helpers
+{thread-mode, storage, submit-form, post-success} = require \../client/client-helpers
 
 module.exports =
   class PostDrawer extends PBComponent
@@ -56,6 +55,16 @@ module.exports =
             ..css {top:'', height:''}
             ..remove-class \expanded
           try f.resizable \destroy), 50ms
+
+    set-post: (p) ~>
+      console.log \set:, p
+      @@$ '[name="body"]' .val p.body
+      if p.title # top-level post; so--bring out title
+        thread-mode!
+        @@$ '[name="title"]'     .val p.title
+        @@$ '[name="forum_id"]'  .val p.forum_id
+        @@$ '[name="parent_id"]' .val p.parent_id
+        @@$ '[name="id"]'        .val p.id
 
     on-detach: ->
       @@$ \.onclick-footer-toggle .off \click.post-drawer

@@ -36,6 +36,7 @@ if window?
   ev = {target:editor} # mock event
   unless editor?id # editing, so--build post
     $p = $ editor .closest \.post
+    # TODO use similar logic for PostDrawer edit post
     $.ajax {
       url: \/resources/posts/ + $p.data \post-id
       type: \put
@@ -93,7 +94,7 @@ render = (sel, locals, cb=(->)) ~>
     cb!
     focus $e
 
-function get-postdrawer
+function postdrawer
   return pd if pd = window.component.postdrawer # guard
   window.component.postdrawer = new PostDrawer {locals:{
     forum-id:window.active-forum-id,
@@ -106,9 +107,9 @@ function get-postdrawer
   unless (window.user?rights?super or window.user?sys_rights?super)
     if $ \body .has-class \locked then return
   unless user then Auth.show-login-dialog!; return
-  get-postdrawer!toggle!
+  postdrawer!toggle!
 
-@open-postdrawer = (ev) ~> get-postdrawer!open!
+@open-postdrawer = (ev) ~> postdrawer!open!
 
 @thread-mode = (mode=true) -> $ \footer .toggle-class \thread, mode
 
@@ -123,7 +124,8 @@ function get-postdrawer
     e   = $ sel
     @thread-mode false
     $.get "/resources/posts/#{id}" (p) ~>
-      # TODO setup & open post drawer
+      # setup & open post drawer
+      postdrawer!set-post p
       @open-postdrawer!
 #}}}
 #{{{ Lazy loading
