@@ -15,7 +15,7 @@ set -e
 echo Launching...
 while true ; do
   node_modules/.bin/lsc -cw app client shared component lib/mutant client/requirejs-config public/app plv8_modules &
-  grunt
+  grunt launch watch
   echo Restarting...
   sleep 0.25
   done

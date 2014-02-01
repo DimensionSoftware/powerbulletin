@@ -34,7 +34,11 @@ module.exports =
       chat-panel = @add id, message.user
       chat-panel.add-new-message message
       if panels.selected isnt chat-panel.local \id
-        n = ($ "\#icon-chat-#id .notices" .text!) |> parse-int
+        t = ($ "\#icon-chat-#id .notices" .text!)
+        n = if t.match /^\s*$/
+          0
+        else
+          parse-int t
         panels.set-notice "icon-chat-#id", n+1
       chat-panel
 
