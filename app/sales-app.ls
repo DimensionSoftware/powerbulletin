@@ -115,8 +115,7 @@ s-app.get '/ajax/sites-and-memberships', sales-personal-mw, (req, res, next) ->
       if custom.length
         best.push custom # all custom domains
       else
-        best.push(pb |> find
-          (.domain.match if process.env.NODE_ENV is \production then /powerbulletin.com$/ else /pb.com$/))
+        best.push (pb |> find  (.domain.match if process.env.NODE_ENV is \production then /powerbulletin.com$/ else /pb.com$/))
   res.json {success:true, sites, memberships:Obj.values best}
 
 # /auth/*
