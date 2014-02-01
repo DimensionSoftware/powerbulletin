@@ -100,7 +100,8 @@ s-app.get '/ajax/sites-and-memberships', sales-personal-mw, (req, res, next) ->
   grouped = memberships
     |> filter (m) -> # remove memberships we own
       !find ((s) -> m.site_id is s.id), sites
-    |> map -> delete it.config; it # remove config for client
+    #|> filter (m) -> # remove powerbulletin.com membership (leaving community.)
+    #  !m.site_id is 1
     |> group-by (.site_id)
 
   # remove PB domains where possible
@@ -110,9 +111,12 @@ s-app.get '/ajax/sites-and-memberships', sales-personal-mw, (req, res, next) ->
       best.push domains.0
     else
       # only push custom domains
-      [pb, custom] = partition (.domain.match /(powerbulletin\.com)|(pb\.com)/), domains
-      if custom.length then best.push custom # all custom domains
-      else best.push pb.0 # only first PB domain
+      [pb, custom] = partition (.domain.match /powerbulletin\.com|pb\.com/), domains
+      if custom.length
+        best.push custom # all custom domains
+      else
+        best.push(pb |> find
+          (.domain.match if process.env.NODE_ENV is \production then /powerbulletin.com$/ else /pb.com$/))
   res.json {success:true, sites, memberships:Obj.values best}
 
 # /auth/*
