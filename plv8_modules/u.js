@@ -78,7 +78,7 @@
         throw new Error("invalid sort for top-posts: " + sort);
       }
     }());
-    sql = "SELECT\n  " + fields + ",\n  " + userFields('p.user_id', siteId) + ",\n  COUNT(p.id) post_count\nFROM posts p\nLEFT JOIN posts p2 ON p2.thread_id=p.id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND m.post_id IS NULL\nGROUP BY p.id\nORDER BY " + sortExpr + "\nLIMIT $2 OFFSET $3";
+    sql = "SELECT\n  " + fields + ",\n  " + userFields('p.user_id', siteId) + ",\n  COUNT(p2.id) post_count\nFROM posts p\nLEFT JOIN posts p2 ON p2.thread_id=p.id\nLEFT JOIN moderations m ON m.post_id=p.id\nLEFT JOIN moderations m2 ON m2.post_id=p2.id\nWHERE p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND m.post_id IS NULL\n  AND m2.post_id IS NULL\nGROUP BY p.id\nORDER BY " + sortExpr + "\nLIMIT $2 OFFSET $3";
     f = function(){
       var args;
       args = slice$.call(arguments);
