@@ -111,7 +111,7 @@ s-app.get '/ajax/sites-and-memberships', sales-personal-mw, (req, res, next) ->
       best.push domains.0
     else
       # only push custom domains
-      [pb, custom] = partition (.domain.match /powerbulletin\.com|pb\.com/), domains
+      [pb, custom] = partition (.domain.match /(powerbulletin\.com)|(pb\.com)/), domains
       if custom.length
         best.push custom # all custom domains
       else
