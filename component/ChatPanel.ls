@@ -47,9 +47,12 @@ module.exports =
       #console.warn \a-c, c, user
       id     = c.id
       not-me = c.participants |> find (-> it.user_id isnt user.id) # later on, use filter
+      panels = window.component.panels
       #console.log \add-from-conversation, id, icon, not-me
       not-me.icon = "#cache-url#{not-me.photo}"
-      @add id, not-me, c.unread
+      cp = @add id, not-me, c.unread
+      panels.set-notice "icon-chat-#id", c.unread
+      cp
 
     init: ->
       @seen-messages = {}
