@@ -15,6 +15,8 @@
         font-weight 500
       .first
         min-width 300px
+      tr:last-child, tr:first-child
+        border-bottom none
       tr
         position relative
         border-bottom 1px solid tint_color
@@ -32,14 +34,14 @@
           transition .1s ease-out .05s
         &.item-forum:hover
           .name
-            padding 2px 9px
-            margin-left -9px
             background-color light
             border-radius 8px
             color #fff
             transition none
         &.item-forum
           .name
+            padding 2px 9px
+            margin-left -9px
             transition all .05s ease-out .03s
         td
           padding (grid - 2) grid
