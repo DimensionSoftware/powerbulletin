@@ -33,9 +33,7 @@ module.exports =
       message.user.icon = "#cache-url#{message.user.photo}"
       chat-panel = @add id, message.user
       chat-panel.add-new-message message
-      #console.log \panels.selected, panels.selected, \id, chat-panel.local \id
       if panels.selected isnt chat-panel.local \id
-        console.log "\#icon-chat-#id .notices"
         t = ($ "\#icon-chat-#id .notices" .text!)
         n = if t.match /^\s*$/
           0
