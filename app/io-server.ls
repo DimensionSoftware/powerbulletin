@@ -130,7 +130,7 @@ clear-stale-redis-data = (r, cb) ->
       log err
       return
 
-    err, site <- site-by-domain socket.handshake.domain
+    err, site <- site-by-domain socket.handshake?domain
     if err
       log err
       return

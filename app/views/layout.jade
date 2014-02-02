@@ -103,8 +103,6 @@ html
 
     section#main_content.main-content.container
 
-    section#auth(style="display:none;")
-
     //- for mocha testing
     if env != 'production'
       #mocha
@@ -126,6 +124,7 @@ html
           //-input(type='hidden', name='csrf')
 
     #chat_drawer
+    section#auth(style="display:none;")
 
     //- css not required for initial page render -- performance mod.
     link(href="#{cache5Url}/local/jquery-ui.min.css", rel='stylesheet', type='text/css')
