@@ -4,7 +4,7 @@ require, exports, module <- define
 require! \./PBComponent
 require! \./Editor
 
-{thread-mode, storage, submit-form, post-success} = require \../client/client-helpers
+{in-thread-mode, thread-mode, storage, submit-form, post-success} = require \../client/client-helpers
 
 module.exports =
   class PostDrawer extends PBComponent
@@ -24,12 +24,16 @@ module.exports =
 
       @@$ \.onclick-footer-toggle .on \click.post-drawer (ev) ~>
         if $ ev.target .has-class \onclick-footer-toggle # guard
-          f = @footer!
-          if f.has-class \expanded or f.data \uiResizable # cleanup
-            @close!
-          else # re-create?
-            unless @is-open
-              make-resizable f
+          if in-thread-mode! # keep drawer open & clear inputs
+            thread-mode false # replies don't have titles
+            @editor.clear!
+          else
+            f = @footer!
+            if f.has-class \expanded or f.data \uiResizable # cleanup & close
+              @close!
+            else # re-create?
+              unless @is-open
+                make-resizable f
       #}}}
       ####  main  ;,.. ___  _
       # + Editor
@@ -39,9 +43,10 @@ module.exports =
     toggle:  ~> if @is-open! then @close! else @open!
     is-open: ~> @footer!has-class \expanded
     open: ~>
-      [collapsed, w, h] = window.get-prefs!
+      p = window.get-prefs!
+      if p then [_, _, h?] = p
       f = @footer!
-        ..height h
+        ..height h? or \200 # default
         ..add-class \expanded
       # TODO trigger resize or use CSS?
       make-resizable f
@@ -57,7 +62,6 @@ module.exports =
           try f.resizable \destroy), 50ms
 
     set-post: (p) ~>
-      console.log \set:, p
       @@$ '[name="body"]' .val p.body
       if p.title # top-level post; so--bring out title
         thread-mode!

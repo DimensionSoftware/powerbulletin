@@ -18,7 +18,9 @@ module.exports =
 
     init: ->
       # defaults
-      @local \id,        ''  unless @local \id
+      id = @local \id
+      if id is true then id=''
+      @local \id,        ''  unless id
       @local \body,      ''  unless @local \body
       @local \forumId,   ''  unless @local \forumId
       @local \parentId,  ''  unless @local \parentId
@@ -34,6 +36,13 @@ module.exports =
         @local \body v
         @editor?val v
       @editor?val!
+
+    clear: ~>
+      @editor.val ''
+      # clear preview, too
+      id = @local \id
+      html-id = if id then "\#wmd-preview#id" else \#wmd-preview
+      $ html-id .html ''
 
     save: (to-server=false) ~>
       return unless @editor # guard

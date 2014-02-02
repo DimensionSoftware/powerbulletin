@@ -31,28 +31,6 @@ if window?
     $ '#post_new .fadein' .remove!
   false
 
-@ck-submit-form = (e) ~>
-  editor = e?element?$
-  ev = {target:editor} # mock event
-  unless editor?id # editing, so--build post
-    $p = $ editor .closest \.post
-    # TODO use similar logic for PostDrawer edit post
-    $.ajax {
-      url: \/resources/posts/ + $p.data \post-id
-      type: \put
-      data:
-        id:        $p.data \post-id
-        forum_id:  $p.data \forum-id
-        parent_id: $p.data \thread-id
-        body:      e.get-data!
-      success: (data) ->
-        e.fire \blur
-        $p.find '[contentEditable=true]' .blur!
-    }
-  else
-    @submit-form ev, (data) ~> # ...and sumbit!
-      @post-success ev, data
-
 @submit-form = (ev, fn) ~>
   $f = $ ev.target .closest \form # get event's form
   form-data = if $f?length
@@ -111,7 +89,24 @@ function postdrawer
 
 @open-postdrawer = (ev) ~> postdrawer!open!
 
-@thread-mode = (mode=true) -> $ \footer .toggle-class \thread, mode
+@thread-mode    = (mode=true) -> $ \footer .toggle-class \thread, mode; $ '[name="title"]' .val ''
+@in-thread-mode = -> ($ \footer .has-class \thread) and ($ \footer .has-class \expanded)
+
+@post-edit = (e) ~> # save edited post to server
+  p = postdrawer!get-post
+  # TODO use similar logic for PostDrawer edit post
+  $.ajax {
+    url: \/resources/posts/ + $p.data \post-id
+    type: \put
+    data:
+      id:        $p.data \post-id
+      forum_id:  $p.data \forum-id
+      parent_id: $p.data \thread-id
+      body:      e.get-data!
+    success: (data) ->
+      e.fire \blur
+      $p.find '[contentEditable=true]' .blur!
+  }
 
 @edit-post = (id, data={}) ~>
   if id is true # render new
