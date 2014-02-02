@@ -839,6 +839,10 @@ mk-post-pnum-to-href = (post-uri) ->
     w.render-mutant \main_content \moderation
     layout-static.call @, w, \moderation
     next!
+  on-personalize: (w, u, next) ->
+    if u.rights?super
+      $ \.uncensor .css \display \inline-block
+    next!
   on-load: (window, next) ->
     next!
 @
