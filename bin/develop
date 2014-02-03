@@ -8,9 +8,9 @@ pkill -9 '^pb-worker'
 
 set -e
 
-#echo compiling...
-#bin/build-client-jade
-#bin/build-component-jade
+echo compiling...
+bin/build-client-jade &
+bin/build-component-jade &
 
 echo Launching...
 while true ; do

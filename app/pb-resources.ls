@@ -12,6 +12,7 @@ require! {
   mkdirp
   stylus
   pagedown
+  \deep-equal
 }
 
 const base-css = \public/sites
@@ -87,14 +88,19 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
         err <- db.sites.save-style site
         if err
           if err?msg?match /CSS/i
-            return res.json {success:false, msg:'CSS must be valid!'}
+            return res.json {success:false, messages:['CSS must be valid!']}
           else
             return next err
+
+      # save color theme
+      if not deep-equal(site.config.color-theme, req.body.color-theme)
+        err <- db.sites.save-color-theme { id: site.id, config: { color-theme: req.body.color-theme } }
+        if err then res.json { -success, messages: [ "Could not save color theme." ] }
 
       # update site
       site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
-        <[ postsPerPage metaKeywords inviteOnly private social analytics style ]> }
+        <[ postsPerPage metaKeywords inviteOnly private social analytics style colorTheme ]> }
       for c in <[ inviteOnly  social private ]> # uncheck checkboxes?
         delete site.config[c] unless req.body[c]
       for s in <[ private analytics ]> # subscription tampering

@@ -1,0 +1,52 @@
+* Presence and Redis
+** Who
+   socket.io client ids
+   user ids
+
+*** Who is online?  (...or who is in this site?)
+*** Who is in this forum?
+*** Who is in this thread?
+*** What user is using this client id?
+*** What client ids are being used by a user?  (A user can have many client ids.)
+
+    Note, a client can only be in one room at a time.
+
+** Where
+   The room name format is as follows:
+
+   :site
+   :site/:forum
+   :site/:forum/:thread
+
+   I'm going to write code that understands these room formats,
+   so that the code can behave intelligently based on what kind of
+   room a person enters.
+
+   For example, entering a thread implies entering a forum and site as well.
+   However, leaving rooms is a little trickier.
+   Maybe leaving a room should be handled more explicitly.
+*** Should presence be applied to other types of pages?
+    Profile?
+    Search?
+    Page?
+
+** What are the capabilities of Redis that I might use?
+*** SELECT n
+    This lets me select a database using a numeric id.
+    I intend to give each site its own Redis database based on its site id.
+*** Sets
+    Each socket.io room will be represented as a set of user ids or socket.io client ids.  I'm not sure which, yet.  Maybe both.
+    Sets are useful for guaranteeing uniqueness of membership, but I don't see how I'd use any fancy set operations, yet.
+*** Hashes
+    If I want to treat something as a complex piece of data, hashes may help.
+
+** Sketching out the API
+   presence = new Presence $site-id
+   presence.in-site!
+   presence.in $room
+   presence.enter $room $client
+   presence.leave $room $client
+   presence.user-by-client-id $client-id
+   presence.clients-by-user-id $user-id
+   presence.user-add-client $client-id
+   presence.user-remove-client $client-id
