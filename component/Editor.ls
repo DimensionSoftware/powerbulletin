@@ -38,7 +38,7 @@ module.exports =
       @editor?val!
 
     clear: ~>
-      @editor.val ''
+      @editor?val ''
       # clear preview, too
       id = @local \id
       html-id = if id then "\#wmd-preview#id" else \#wmd-preview

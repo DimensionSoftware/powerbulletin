@@ -28,7 +28,7 @@ require \raf
 
 require \layout
 
-{storage, set-imgs, set-profile, align-ui, ck-submit-form, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
+{storage, set-imgs, set-profile, align-ui, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
 {render-and-append, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
@@ -43,7 +43,6 @@ window.PostDrawer      = require \../component/PostDrawer
 window.furl     = require \../shared/forum-urls
 window.tasks    = require \./tasks
 window.ioc      = require \./io-client
-window <<< {ck-submit-form}
 
 # components
 require! \../component/Buy
@@ -311,9 +310,6 @@ submit = Auth.require-login(
     false))
 
 # editing & posting
-# - ckeditor
-ck-submit = Auth.require-login((ev) ->
-  ck-submit-form({ element:{$:{id:\editor}} }, (data) -> post-success ev, data); false)
 # - standard form
 post-submit = Auth.require-login((ev) -> submit-form(ev, (data) -> post-success ev, data); false)
 

@@ -26,14 +26,16 @@ module.exports =
         if $ ev.target .has-class \onclick-footer-toggle # guard
           if in-thread-mode! # keep drawer open & clear inputs
             thread-mode false # replies don't have titles
-            @editor.clear!
+            @editor
+              ..clear!
+              ..focus!
           else
             f = @footer!
-            if f.has-class \expanded or f.data \uiResizable # cleanup & close
+            if f.has-class \expanded and f.data \uiResizable # cleanup & close
               @close!
             else # re-create?
-              unless @is-open
-                make-resizable f
+              make-resizable f
+        false
       #}}}
       ####  main  ;,.. ___  _
       # + Editor
@@ -48,7 +50,6 @@ module.exports =
       f = @footer!
         ..height h? or \200 # default
         ..add-class \expanded
-      # TODO trigger resize or use CSS?
       make-resizable f
       # setup Editor
       <~ set-timeout _, 50ms
@@ -59,16 +60,37 @@ module.exports =
           f = @footer!
             ..css {top:'', height:''}
             ..remove-class \expanded
-          try f.resizable \destroy), 50ms
+          try f.resizable \destroy
+          f.data \uiResizable, void), 50ms
+
+    clear: ~> # clear all inputs
+      @editor.clear!
+      @@$ '[name="title"]'     .val ''
+      @@$ '[name="forum_id"]'  .val ''
+      @@$ '[name="parent_id"]' .val ''
+      @@$ '[name="id"]'        .val ''
+      @set-edit-mode!
+    set-edit-mode: (id) ~>
+      $f = @@$ \.form:first # setup mock form for:
+      if id # edit mode
+        $f.attr \method, \put
+        $f.attr \action, "/resources/posts/#{id}"
+      else # reply mode
+        $f.attr \method, \post
+        $f.attr \action, \/resources/posts
 
     set-post: (p) ~>
+      @editor.clear! # reset preview, etc...
       @@$ '[name="body"]' .val p.body
+      $f = @@$ \.form:first # setup mock form for:
+      @set-edit-mode p.id
       if p.title # top-level post; so--bring out title
         thread-mode!
         @@$ '[name="title"]'     .val p.title
-        @@$ '[name="forum_id"]'  .val p.forum_id
-        @@$ '[name="parent_id"]' .val p.parent_id
-        @@$ '[name="id"]'        .val p.id
+
+      @@$ '[name="forum_id"]'  .val p.forum_id
+      @@$ '[name="parent_id"]' .val p.parent_id
+      @@$ '[name="id"]'        .val p.id
 
     on-detach: ->
       @@$ \.onclick-footer-toggle .off \click.post-drawer
@@ -81,6 +103,7 @@ module.exports =
 
 function make-resizable e
   unless e.data \uiResizable # guard
+    e.add-class \expanded
     e.resizable(
       handles: \n
       min-height: 100px

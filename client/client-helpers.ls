@@ -35,19 +35,18 @@ if window?
   $f = $ ev.target .closest \form # get event's form
   form-data = if $f?length
     $f.serialize!
-  else
-    # XXX since PostDrawer's Editor is outside a <form>
+  else # mock form (eg. PostDrawer's Editor is outside a <form>)
     $f = $ ev.target.closest \.form
     [encodeURI("#k=#v&") for k,v of {
       body:     ($f.find '[name="body"]' .val!)
       title:    ($f.find '[name="title"]' .val!)
+      id:       ($f.find '[name="id"]' .val!)
       parent_id:($f.find '[name="parent_id"]' .val!)
       forum_id: ($f.find '[name="forum_id"]' .val!)}].join('').replace /,$/, ''
 
   # disable inputs
   $s = $ $f.find '[type=submit]:first'
   if $s then $s.attr \disabled \disabled
-
   $.ajax { # submit!
     url:  $f.attr \action
     type: $f.attr \method
@@ -55,7 +54,7 @@ if window?
     data-type: \json
     success:   (data) ~>
       $s.remove-attr \disabled # re-enable
-      if data?success then $f.find '[name="title"]' .val '' # clear
+      @show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
       if fn then fn.call $f, data
     error: (data) ~>
       $s.remove-attr \disabled # re-enable
@@ -89,29 +88,17 @@ function postdrawer
 
 @open-postdrawer = (ev) ~> postdrawer!open!
 
-@thread-mode    = (mode=true) -> $ \footer .toggle-class \thread, mode; $ '[name="title"]' .val ''
+@thread-mode    = (mode=true) ->
+  $ \footer .toggle-class \thread, mode
+  $ '[name="title"]' .val ''
+  $ '[name="forum_id"]' .val active-forum-id # set forum
 @in-thread-mode = -> ($ \footer .has-class \thread) and ($ \footer .has-class \expanded)
 
-@post-edit = (e) ~> # save edited post to server
-  p = postdrawer!get-post
-  # TODO use similar logic for PostDrawer edit post
-  $.ajax {
-    url: \/resources/posts/ + $p.data \post-id
-    type: \put
-    data:
-      id:        $p.data \post-id
-      forum_id:  $p.data \forum-id
-      parent_id: $p.data \thread-id
-      body:      e.get-data!
-    success: (data) ->
-      e.fire \blur
-      $p.find '[contentEditable=true]' .blur!
-  }
-
-@edit-post = (id, data={}) ~>
+@edit-post = (id) ~>
   if id is true # render new
     scroll-to-top!
     $ \html .add-class \new # for stylus
+    postdrawer!clear!
     @thread-mode!
     @open-postdrawer!
   else # fetch existing & edit
