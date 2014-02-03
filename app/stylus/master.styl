@@ -16,6 +16,8 @@ light_text = #ddd
 // tint color is placed over the background among other images (translucent)
 tint_color = rgba(240,240,240,0.65)
 
+// site-specific variable override
+@import "public/sites/" + site-id + "/color-theme.styl"
 
 // base layout & theme
 @import "app/stylus/layout"

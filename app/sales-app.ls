@@ -73,6 +73,9 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
   err <- db.site-update new-site
   if err then return next err
 
+  err <- db.sites.save-color-theme { new-site.id, config: { color-theme: {} } }
+  if err then return next err
+
   done = -> res.json result
   if result.user_id
     alias =
@@ -115,8 +118,7 @@ s-app.get '/ajax/sites-and-memberships', sales-personal-mw, (req, res, next) ->
       if custom.length
         best.push custom # all custom domains
       else
-        best.push(pb |> find
-          (.domain.match if process.env.NODE_ENV is \production then /powerbulletin.com$/ else /pb.com$/))
+        best.push(pb |> find (.domain.match if process.env.NODE_ENV is \production then /powerbulletin.com$/ else /pb.com$/))
   res.json {success:true, sites, memberships:Obj.values best}
 
 # /auth/*
