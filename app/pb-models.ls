@@ -597,6 +597,15 @@ query-dictionary =
       if err then return cb {success:false, msg:'CSS must be valid!'}
       fs.write-file "#css-dir/master.css" css, cb
 
+    save-color-theme: (site, cb) ->
+      cb "no site.id"                   if not site?id
+      cb "no site.config.color-theme"   if not site?config?color-theme
+      css-dir  = "#base-css/#{site.id}"
+      err <- mkdirp css-dir
+      if err then return cb err
+      color-theme = [ "#k = #v" for k,v of site.config.color-theme when k in <[lighta light dark dark_text light_text tint_color]>].join "\n"
+      fs.write-file "#css-dir/color-theme.styl" color-theme, cb
+
     thread-summary: (site-id, sort, limit, cb) ->
       thread-summary(site-id, null, sort, limit, cb)
 
