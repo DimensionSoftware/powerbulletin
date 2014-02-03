@@ -431,9 +431,12 @@ function profile-paths user, uploaded-file, base=\avatar
   res.json success: false
 
 @stylus = (req, res, next) ->
+  site = res.vars.site
   r = req.route.params
   files = r.file.split ','
   if not files?length then return next 404
+
+  render-css = render-css-fn define: [ [ \site-id, site.id ] ]
 
   async.map files, render-css, (err, css-blocks) ->
     if err then return next err
