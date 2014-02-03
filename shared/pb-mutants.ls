@@ -561,6 +561,10 @@ same-profile = (hints) ->
         $ \#domains .attr \checked, true
         $ 'label[for="domains"]' .effect \highlight
         awesome-scroll-to \#domains
+
+      # XXX - having trouble loading iris
+      #$ \input.color-theme .iris!
+
       # no pager (for now)
       window.pages-count = 0
       <~ lazy-load-html5-uploader

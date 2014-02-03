@@ -24,6 +24,7 @@ require \jqueryHistory
 require \jqueryTransit
 require \jqueryUi
 require \jqueryWaypoints
+#require \jqueryIris
 require \raf
 
 require \layout
