@@ -352,19 +352,18 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
   update  : (req, res, next) ->
     # if not req?user?rights?super then return next 404 # guard
     # is_owner req?user
-    err, owns-post <- db.owns-post req.body.id, req.user?id
+    err, owns-post <- db.owns-post parse-int(req.body.id), req.user?id
     if err then return next err
     return next 403 unless (req?user?rights?super) or (owns-post?length and owns-post.0.forum_id)
     # TODO secure & csrf
     # save post
-    op = owns-post.0
+    unless op = owns-post?0 then return res.json {-success, errors:["You don't own this post"]}
     post           = req.body
     post.user_id   = req.user.id
     post.forum_id  = op.forum_id
     post.parent_id = op.parent_id
     post.title     = op.title             # FIXME - allows saving of top post, but post.html on next line is still corrupted
     post.html      = h.html req.body.body # FIXME - for top posts, the title and body are mixed together into one string which is wrong.
-    console.log \post, post
     err, r <- db.edit-post(req.user, post)
     if err then return next err
 
