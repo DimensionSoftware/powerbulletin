@@ -603,7 +603,7 @@ query-dictionary =
       css-dir  = "#base-css/#{site.id}"
       err <- mkdirp css-dir
       if err then return cb err
-      color-theme = [ "#k = #v" for k,v of site.config.color-theme when k in <[lighta light dark dark_text light_text tint_color]>].join "\n"
+      color-theme = [ "#k = #v" for k,v of site.config.color-theme when (k in <[lighta light dark dark_text light_text tint_color]>) and v.length].join "\n"
       fs.write-file "#css-dir/color-theme.styl" color-theme, cb
 
     thread-summary: (site-id, sort, limit, cb) ->
