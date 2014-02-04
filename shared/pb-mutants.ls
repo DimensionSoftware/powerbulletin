@@ -167,7 +167,6 @@ layout-on-personalize = (w, u) ->
   on-load:
     (window, next) ->
       render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
-      $ \footer .remove-class \thread
       next!
   on-unload:
     (window, next-mutant, next) ->
@@ -424,7 +423,6 @@ same-profile = (hints) ->
         <- Auth.show-login-dialog
         switch-and-focus \on-error \on-forgot '#auth input[name=email]'
       <- lazy-load-autosize
-      $ \footer .remove-class \thread
       next!
   on-mutate:
     (window, next) ->
@@ -841,6 +839,7 @@ mk-post-pnum-to-href = (post-uri) ->
   on-personalize: (w, u, next) ->
     if u.rights?super
       $ \.uncensor .css \display \inline-block
+    layout-on-personalize w, u
     next!
   on-load: (window, next) ->
     next!
