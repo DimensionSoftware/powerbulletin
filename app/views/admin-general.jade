@@ -69,7 +69,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
           label(for='tint_color') Tint color 
             small w/ Alpha
           input.color-theme(id='tint_color', name='colorTheme[tint_color]', type='text', value=ct.tint_color, placeholder='rgba(240,240,240,0.65)')
-        label(for='style') Style
+        label(for='style') Custom Style
         textarea.save(id='style', name='style')= site.config.style
         .note Paste
           a(href='http://www.w3schools.com/cssref/', target='_blank') CSS
