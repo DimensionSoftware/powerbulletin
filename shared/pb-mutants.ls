@@ -9,7 +9,7 @@ purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
-  {respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, thread-mode, toggle-postdrawer} = require \../client/client-helpers
+  {respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -362,17 +362,12 @@ layout-on-personalize = (w, u) ->
     if u
       layout-on-personalize w, u
       # enable edit actions
-      # - censor
-      $ ".post[data-user-id=#{u.id}] .censor"
-        .css \display \inline-block
-      if u.rights?super
-        $ \.censor .css \display \inline-block
-      # - post editing
-      $ ".post[data-user-id=#{u.id}] [data-edit]"
-        .css \display \inline-block
+      $ ".post[data-user-id=#{u.id}] .censor" .css \display \inline-block     # censor
+      $ ".post[data-user-id=#{u.id}] [data-edit]" .css \display \inline-block # post edit
+      if u.rights?super then $ \.censor .css \display \inline-block
       # remove body.locked if super
-      if u.rights?super or u.sys_rights?super
-        w.$ \body .remove-class \locked
+      # XXX shouldn't make the ui jump
+      if u.rights?super or u.sys_rights?super then w.$ \body .remove-class \locked
     next!
   on-unload:
     (w, next-mutant, next) ->

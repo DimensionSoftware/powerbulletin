@@ -21,7 +21,13 @@ module.exports =
         ev = {target:@editor.$} # mock event
         submit-form ev, (data) ~> # ...and sumbit!
           post-success ev, data
-
+          if @is-editing # update ui
+            if p = data.post?0
+              e = $ "[data-post-id='#{p.id}']"
+              if e.length # in DOM?
+                e.find \.title .html p.title
+                e.find \.body  .html p.body
+                @set-edit-mode false # back to default Reply mode
       @@$ \.onclick-footer-toggle .on \click.post-drawer (ev) ~>
         if $ ev.target .has-class \onclick-footer-toggle # guard
           if in-thread-mode! # keep drawer open & clear inputs
@@ -70,6 +76,7 @@ module.exports =
       @@$ '[name="parent_id"]' .val ''
       @@$ '[name="id"]'        .val ''
       @set-edit-mode!
+    is-editing: ~> (@@$ \.form:first .attr \method) is \put
     set-edit-mode: (id) ~>
       $f = @@$ \.form:first # setup mock form for:
       if id # edit mode
