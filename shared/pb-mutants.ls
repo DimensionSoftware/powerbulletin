@@ -433,12 +433,8 @@ same-profile = (hints) ->
         <~ lazy-load-fancybox
         e = w.component.editor = new Editor {locals:
           url:  "/resources/aliases/#{w.user.id}"
-          body: w.user.sig
-          on-close: (-> w.$.fancybox.close!)}
-        w.$.fancybox e.$, {after-close:-> # set sig & cleanup
-          storage.set \user, w.user <<< sig:e.body!
-          e.detach!
-          w.component.editor = void} <<< fancybox-params
+          body: (storage.get \sig) or u?sig}
+        w.$.fancybox e.$, {after-close:-> user <<< sig:e.body!; e.detach!} <<< fancybox-params # set sig & cleanup
 
     change-title-enable = ->
       var last
