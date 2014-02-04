@@ -560,7 +560,8 @@ same-profile = (hints) ->
         awesome-scroll-to \#domains
 
       # XXX - having trouble loading iris
-      #$ \input.color-theme .iris!
+      <~ requirejs [\jqueryIris]
+      $ \input.color-theme .iris!
 
       # no pager (for now)
       window.pages-count = 0
