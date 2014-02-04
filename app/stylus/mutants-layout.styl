@@ -385,7 +385,6 @@ html.forum, html.profile, html.search, html.moderation
             clear both
             font-size .85em
             color #999
-            font-style italic
             padding-left 13px
             display block
             text-indent 1px
@@ -468,6 +467,12 @@ html.forum, html.profile, html.search, html.moderation
             div
               position absolute
               bottom 0
+              margin-left 1px
+            .s-edit
+              margin-left 4px
+              bottom 3px
+            .s-permalink
+              margin-left 3px
             &:hover
               text-decoration none
           .edit, .censor, .uncensor
@@ -476,7 +481,7 @@ html.forum, html.profile, html.search, html.moderation
           position absolute
           overflow hidden
           right (grid*1.5)
-          bottom -30px
+          bottom -32px
           height 25px
           min-width 200px
           max-width 300px
@@ -553,6 +558,19 @@ html.forum, html.profile, html.search, html.moderation
               .profile
                 width 35px
                 height 35px
+  footer.thread
+    .post-new
+      .title
+        display block
+        height 18px
+        width 40%
+        border 1px solid #eee
+        box-shadow none
+        &:focus
+          transform none
+          background none
+          box-shadow none
+          border none
 //}}}
 //{{{ - profile
 html.profile
@@ -1187,10 +1205,13 @@ html.forum
     .onclick-footer-toggle
       display block
     .post-container
+      position absolute
+      top 0
+      bottom 0
+      left 10%
       opacity 0
       margin 0 auto
       width 80%
-      //max-width 1100px
       margin-top 30px
       form
         position relative
@@ -1231,10 +1252,6 @@ html.forum.new
   .main-content .forum #post_edit .summary
     display block
     .photo.online
-      display none
-  footer
-    cursor default
-    .onclick-footer-toggle
       display none
 html.forum
   body.locked

@@ -106,8 +106,7 @@ CREATE FUNCTION procs.edit_post(usr JSON, post JSON) RETURNS JSON AS $$
   res = {success: !errors.length, errors}
   if res.success
     sqlres = plv8.execute('UPDATE posts SET title=$1,body=$2,html=$3 WHERE id=$4 RETURNING id,title,body,forum_id', [post.title, post.body, post.html, post.id])
-
-    res <<< sqlres
+    res.post = sqlres
   return res
 $$ LANGUAGE plls IMMUTABLE STRICT;
 

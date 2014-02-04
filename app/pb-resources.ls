@@ -41,6 +41,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       c = new pagedown.Converter
       config={}
       alias.config <<< req.body?config or {}                      # & merge
+      alias.config.sig = req.body.editor                          # merge from Editor
       for k in <[title sig]> then config[k]=alias.config[k]       # & scrub
       if config.sig then config.sig-html = c.make-html config.sig # & scrub harder + render sig
       err <- db.aliases.update {config}, {user_id, site_id}       # & update!
@@ -315,7 +316,6 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
     post.html     = h.html post.body
     post.ip       = res.vars.remote-ip
     post.tags     = h.hash-tags post.body
-    post.forum_id = post.forum_id
 
     return res.json success:false, errors:['Incomplete post'] unless post.user_id and post.forum_id # guard
 
@@ -367,8 +367,8 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
     post.user_id   = req.user.id
     post.forum_id  = op.forum_id
     post.parent_id = op.parent_id
-    post.title     = op.title             # FIXME - allows saving of top post, but post.html on next line is still corrupted
-    post.html      = h.html req.body.body # FIXME - for top posts, the title and body are mixed together into one string which is wrong.
+    post.title     = h.html req.body.title
+    post.html      = h.html req.body.body
     err, r <- db.edit-post(req.user, post)
     if err then return next err
 

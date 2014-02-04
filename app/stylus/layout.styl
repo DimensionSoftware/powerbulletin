@@ -439,10 +439,9 @@ footer.active
   bottom -(grid * 1.4)
   font-size .85em
 footer
-  position fixed
+  position fixed!important
+  top auto!important
   right 0
-  //left 0
-  // bottom -(footer_height)
   bottom -(grid)
   height 0
   opacity 0
@@ -486,6 +485,14 @@ footer
       top 2px
       right 7px
       transition all .2s ease-out
+  .post-container
+    .post-new
+      .title
+        min-width 500px
+        display none
+        position relative
+        top -10px
+        z-index 20
 #chat_drawer
   position fixed
   height 0
