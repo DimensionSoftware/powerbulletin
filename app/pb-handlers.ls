@@ -547,8 +547,13 @@ function profile-paths user, uploaded-file, base=\avatar
 
   # default
   fdoc.themes =
-    * id:1 name:'PowerBulletin Minimal'
-    * id:0 name:\None
+    * id:0 name:'PowerBulletin'
+    * id:1 name:'Autumn'
+    * id:2 name:'Spring'
+    * id:3 name:'Winter'
+    * id:4 name:'Fall'
+    * id:5 name:'Summer'
+    * id:6 name:'Monsoon'
   defaults =
     posts-per-page: site.config?posts-per-page or posts-per-page
     meta-keywords:  "#{site.name}, PowerBulletin"
