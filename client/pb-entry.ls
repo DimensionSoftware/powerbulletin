@@ -269,7 +269,7 @@ $ui.on \nav-top-posts, (e, threads) ->
   #console.info \stub, threads
 
 $ '.search > .icon' .on \click ->
-  $ \#query .focus!
+  $ \#query .focus!select!
 #}}}
 # {{{ - generic form-handling ui
 $d.on \click '.create .no-surf' Auth.require-login((ev) ->
