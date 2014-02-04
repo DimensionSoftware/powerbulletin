@@ -71,7 +71,7 @@ render = (sel, locals, cb=(->)) ~>
     cb!
     focus $e
 
-function postdrawer
+@postdrawer = ~>
   return pd if pd = window.component.postdrawer # guard
   window.component.postdrawer = new PostDrawer {locals:{
     forum-id:window.active-forum-id,
@@ -84,9 +84,9 @@ function postdrawer
   unless (window.user?rights?super or window.user?sys_rights?super)
     if $ \body .has-class \locked then return
   unless user then Auth.show-login-dialog!; return
-  postdrawer!toggle!
+  @postdrawer!toggle!
 
-@open-postdrawer = (ev) ~> postdrawer!open!
+@open-postdrawer = (ev) ~> @postdrawer!open!
 
 @thread-mode    = (mode=true) ->
   $ \footer .toggle-class \thread, mode
@@ -98,7 +98,7 @@ function postdrawer
   if id is true # render new
     scroll-to-top!
     $ \html .add-class \new # for stylus
-    postdrawer!clear!
+    @postdrawer!clear!
     @thread-mode!
     @open-postdrawer!
   else # fetch existing & edit
@@ -107,7 +107,7 @@ function postdrawer
     @thread-mode false
     $.get "/resources/posts/#{id}" (p) ~>
       # setup & open post drawer
-      postdrawer!set-post p
+      @postdrawer!set-post p
       @open-postdrawer!
 #}}}
 #{{{ Lazy loading
