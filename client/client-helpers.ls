@@ -88,10 +88,12 @@ render = (sel, locals, cb=(->)) ~>
 
 @open-postdrawer = (ev) ~> @postdrawer!open!
 
-@thread-mode    = (mode=true) ->
+# thread mode toggles between top-level posts w/ a title
+@thread-mode = (mode=true) ~>
   $ \footer .toggle-class \thread, mode
   $ '[name="title"]' .val ''
-  $ '[name="forum_id"]' .val active-forum-id # set forum
+  $ '[name="forum_id"]' .val active-forum-id       # set forum
+  unless mode then @postdrawer!set-edit-mode false # disable edit mode
 @in-thread-mode = -> ($ \footer .has-class \thread) and ($ \footer .has-class \expanded)
 
 @edit-post = (id) ~>

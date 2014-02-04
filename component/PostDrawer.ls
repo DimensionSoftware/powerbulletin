@@ -3,6 +3,7 @@ require, exports, module <- define
 
 require! \./PBComponent
 require! \./Editor
+require! furl: \../shared/forum-urls
 
 {in-thread-mode, thread-mode, storage, submit-form, post-success} = require \../client/client-helpers
 
@@ -17,7 +18,7 @@ module.exports =
       @$.find \.save .on \click (ev) ~>
         # XXX for now, always reply to active thread
         @$.find '[name="forum_id"]' .val window.active-forum-id
-        @$.find '[name="parent_id"]' .val window.active-thread-id
+        @$.find '[name="parent_id"]' .val(if @is-creating-thread! then void else window.active-thread-id)
         ev = {target:@editor.$} # mock event
         submit-form ev, (data) ~> # ...and sumbit!
           post-success ev, data
@@ -59,7 +60,8 @@ module.exports =
       make-resizable f
       # setup Editor
       <~ set-timeout _, 50ms
-      @editor.focus!
+      unless @is-creating-thread! or @is-editing! then thread-mode false # remove title
+      @focus!
     close: ~>
       set-timeout (~>
         if @is-open!
@@ -69,6 +71,7 @@ module.exports =
           try f.resizable \destroy
           f.data \uiResizable, void), 50ms
 
+    focus: ~> @editor.focus!
     clear: ~> # clear all inputs
       @editor.clear!
       @@$ '[name="title"]'     .val ''
@@ -76,6 +79,7 @@ module.exports =
       @@$ '[name="parent_id"]' .val ''
       @@$ '[name="id"]'        .val ''
       @set-edit-mode!
+    is-creating-thread: ~> (furl.parse window.location.pathname)?type is \new-thread
     is-editing: ~> (@@$ \.form:first .attr \method) is \put
     set-edit-mode: (id) ~>
       $f = @@$ \.form:first # setup mock form for:

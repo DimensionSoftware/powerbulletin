@@ -9,7 +9,7 @@ purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
-  {postdrawer, respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
+  {postdrawer, respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, toggle-postdrawer} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -252,7 +252,6 @@ layout-on-personalize = (w, u) ->
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
       if is-forum-homepage window.location.to-string! # render homepage
         render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
-      postdrawer! # init
       $ = window.$
 
       align-ui!
@@ -266,7 +265,7 @@ layout-on-personalize = (w, u) ->
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
       # FIXME will do something smarter -k
-      $ \body .on \click, toggle-post # expand & minimize drawer
+      $ \body .on \click, toggle-postdrawer # expand & minimize drawer
 
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
