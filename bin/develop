@@ -8,13 +8,14 @@ pkill -9 '^pb-worker'
 
 set -e
 
-echo compiling...
+echo Compiling...
 bin/build-client-jade &
 bin/build-component-jade &
+bin/build-procs >/dev/null 2>&1 &
 
 echo Launching...
 while true ; do
-  node_modules/.bin/lsc -cw app client shared component lib/mutant client/requirejs-config public/app plv8_modules &
+  node_modules/.bin/lsc -cw app client shared component lib/mutant client/requirejs-config public/app plv8_modules >/dev/null &
   grunt launch watch
   echo Restarting...
   sleep 0.25
