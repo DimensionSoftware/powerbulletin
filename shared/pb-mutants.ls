@@ -545,7 +545,7 @@ same-profile = (hints) ->
       next!
   on-load:
     (window, next) ->
-      require \jqueryIris
+      #require \jqueryIris
       # expand left nav or not?
       $b = $ \body
       if window.admin-expanded = $b.has-class \collapsed
@@ -560,7 +560,7 @@ same-profile = (hints) ->
         awesome-scroll-to \#domains
 
       # XXX - having trouble loading iris
-      $ \input.color-theme .iris!
+      #$ \input.color-theme .iris!
 
       # no pager (for now)
       window.pages-count = 0
