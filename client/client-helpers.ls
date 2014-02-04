@@ -150,11 +150,6 @@ load-css = (href) ->
     "#cache-url/jcrop/js/jquery.Jcrop.min.js",
     "#cache-url/jcrop/css/jquery.Jcrop.min.css",
     cb
-@lazy-load-editor = (cb) ~>
-  @lazy-load (-> CKEDITOR?version),
-    "#cache-url/local/editor/ckeditor.js",
-    null,
-    cb
 @lazy-load-complexify = (cb) ~>
   @lazy-load (-> window.$.fn.complexify),
     "#cache-url/local/jquery.complexify.min.js"
