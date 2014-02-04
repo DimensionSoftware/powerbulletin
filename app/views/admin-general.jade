@@ -49,22 +49,26 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
     label(for='lookandfeel')
       h4 Look &amp; Feel
       .dialog
-        label(for='theme') Base Theme
+        label(for='theme') Theme
         select(id='theme', name='theme')
+          option(disabled=true, selected=true) - Choose a Theme -
           each t in themes
             option(value=t.id)= t.name
         .break
-        - var ct = site.config.colorTheme ? site.config.colorTheme : {}
-        label(for='light') Light
-        input.color-theme(id='light', name='colorTheme[light]', type='text', value=ct.light)
-        label(for='lighta') Light A
-        input.color-theme(id='lighta', name='colorTheme[lighta]', type='text', value=ct.lighta)
-        label(for='dark') Dark
-        input.color-theme(id='dark', name='colorTheme[dark]', type='text', value=ct.dark)
-        label(for='dark_text') Dark Text
-        input.color-theme(id='dark_text', name='colorTheme[dark_text]', type='text', value=ct.dark_text)
-        label(for='tint_color') Tint Color
-        input.color-theme(id='tint_color', name='colorTheme[tint_color]', type='text', value=ct.tint_color)
+        fieldset
+          - var ct = site.config.colorTheme ? site.config.colorTheme : {}
+          label(for='light') Solid Light
+          input.color-theme(id='light', name='colorTheme[light]', type='text', value=ct.light, placeholder='#4CCFEA')
+          label(for='lighta') Light 
+            small w/ Alpha
+          input.color-theme(id='lighta', name='colorTheme[lighta]', type='text', value=ct.lighta, placeholder='rgba(230,245,255,.7)')
+          label(for='dark') Solid Dark
+          input.color-theme(id='dark', name='colorTheme[dark]', type='text', value=ct.dark, placeholder='#3199B0')
+          label(for='dark_text') Dark Text
+          input.color-theme(id='dark_text', name='colorTheme[dark_text]', type='text', value=ct.dark_text, placeholder='#3199B0')
+          label(for='tint_color') Tint color 
+            small w/ Alpha
+          input.color-theme(id='tint_color', name='colorTheme[tint_color]', type='text', value=ct.tint_color, placeholder='rgba(240,240,240,0.65)')
         label(for='style') Style
         textarea.save(id='style', name='style')= site.config.style
         .note Paste

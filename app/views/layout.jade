@@ -45,11 +45,11 @@ html
   body
     header.header.toggler
       h1.logo
-        a.mutant(href='/', title=metaKeywords) Power
+        a.mutant(tabindex='-1', href='/', title=metaKeywords) Power
           strong Bulletin
       .container
         .search
-          input#query.query(type='text', placeholder='Search', autocomplete='off')
+          input#query.query(tabindex='1', type='text', placeholder='Search', autocomplete='off')
           .icon
             .s-big-search
           .onclick-close.toggler(title='Close!') x

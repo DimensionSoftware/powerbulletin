@@ -82,11 +82,12 @@ header
       .query:focus + .icon
         top -2px
         height 40px
+        opacity .75
       .query
-        box-shadow 1px 1px 3px light inset
+        box-shadow 0 1px 3px -1px light inset, 0px 1px 5px 0px light inset
         border 0
         background none
-        border-radius 6px
+        border-radius 10px/6px
         font-size 1.15em
         height 20px
         transition all .2s ease-in .1s
@@ -95,9 +96,9 @@ header
           background-color overlay_color_primary
           margin-top -1px
           height 21px
-          text-indent 13px
-          border-radius 5px
-          box-shadow 0 1px 2px 1px light
+          text-indent 8px
+          border-radius 6px
+          box-shadow 0 1px 2px 1px light, 0 1px 7px -1px light
           color #111
       .query::-webkit-input-placeholder
           color #ccc
