@@ -79,8 +79,8 @@ module.exports =
     update-preview: (coords) ~>
       if w = parse-int coords.w
         [boundx, boundy] = if @bounds.length then @bounds else [0, 0]
-        rx = 100 / coords.w
-        ry = 100 / coords.y
+        rx = 150 / coords.w
+        ry = 150 / coords.h
         $ \#preview .css {
           width:  "#{Math.round(rx * boundx)}px",
           height: "#{Math.round(ry * boundy)}px",
