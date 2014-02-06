@@ -2,7 +2,7 @@
   display none
 
   h1
-    margin 0 15px 15px 0
+    margin 0 15px 15px 3px
     font-weight 300
     letter-spacing 1px
     font-size 1.3em
@@ -12,13 +12,32 @@
     img
       max-width 100%
       margin-bottom 31px
+    input[type=file]
+      cursor pointer
+      position absolute
+      top -2px
+      left -2px
+      right -2px
+      bottom -2px
+      margin 0
+      padding 0
+      opacity 0
 
   .crop
     display none
-
-  .crop > h1 + div
-    padding-bottom 4px
-
+    padding-bottom 40px
+    .left
+      display inline-block
+      vertical-align top
+    .right
+      display inline-block
+      vertical-align top
+      .preview-wrapper
+        border-left 2px solid transparent
+        box-shadow 0 0 2px solid #000
+        overflow hidden
+        width 150px
+        height 150px
 
   button
     cursor pointer
@@ -32,14 +51,3 @@
     text-align center
     cursor pointer
     overflow hidden
-
-    input[type=file]
-      cursor pointer
-      position absolute
-      top -2px
-      left -2px
-      right -2px
-      bottom -2px
-      margin 0
-      padding 0
-      opacity 0
