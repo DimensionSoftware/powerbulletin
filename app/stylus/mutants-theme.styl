@@ -124,8 +124,9 @@ html.forum, html.profile, html.search, html.moderation
         list-style-type none
         border-top 1px solid transparent
         border-left 2px solid transparent
-        border-right 2px solid transparent
+        border-right 2px solid #fff
         transition box-shadow .3s ease-in .05s
+        background-image linear-gradient(to right, #f6f6f6 12%, #fff 30%)
         &::before
           position absolute
           width 0
@@ -138,10 +139,11 @@ html.forum, html.profile, html.search, html.moderation
         &::after
           position absolute
           content ''
-          border-bottom 1px solid rgba(0,0,0,.1)
+          border-bottom 1px solid rgba(0,0,0,.07)
           background-color rgba(255,255,255,.3)
           height 1px
-          margin-top 8px
+          margin-top 7px
+          z-index 2
           left 10%
           width 80%
         .title
@@ -168,8 +170,9 @@ html.forum, html.profile, html.search, html.moderation
       .thread.active
         border-radius 3px
         transition none
+        background-image none
         &::before
-          width 6px
+          width 7px
         .arrow
           display none
           position fixed
