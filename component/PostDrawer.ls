@@ -28,7 +28,7 @@ module.exports =
               if e.length # in DOM?
                 e.find \.title .html p.title
                 e.find \.body  .html p.body
-                @set-edit-mode false # back to default Reply mode
+                @edit-mode! # back to default Reply mode
       @@$ \.onclick-footer-toggle .on \click.post-drawer (ev) ~>
         if $ ev.target .has-class \onclick-footer-toggle # guard
           if in-thread-mode! # keep drawer open & clear inputs
@@ -78,24 +78,26 @@ module.exports =
       @@$ '[name="forum_id"]'  .val ''
       @@$ '[name="parent_id"]' .val ''
       @@$ '[name="id"]'        .val ''
-      @set-edit-mode!
+      @edit-mode! # back to reply mode
     is-creating-thread: ~> (furl.parse window.location.pathname)?type is \new-thread
     is-editing: ~> (@@$ \.form:first .attr \method) is \put
-    set-edit-mode: (id) ~>
+    edit-mode: (id) ~>
       $f = @@$ \.form:first # setup mock form for:
       if id # edit mode
         $f.attr \method, \put
         $f.attr \action, "/resources/posts/#{id}"
+        \edit
       else # reply mode
         $f.attr \method, \post
         $f.attr \action, \/resources/posts
+        \reply
 
     set-post: (p) ~>
       @editor.clear! # reset preview, etc...
       # FIXME set post using accessor
       @@$ '[name="body"]' .val p.body
       $f = @@$ \.form:first # setup mock form for:
-      @set-edit-mode p.id
+      @edit-mode p.id
       if p.title # top-level post; so--bring out title
         thread-mode!
         @@$ '[name="title"]'     .val p.title
