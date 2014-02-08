@@ -200,7 +200,7 @@ module.exports =
         @$.find \fieldset .add-class \has-dialog .find \input:visible:first .focus!
 
       @$.on \keyup, 'input.active', @store-title
-      @$.on \keypress, \form, -> # disable form submit on enter press
+      @$.on \keypress, 'form input', -> # disable form submit on enter press
         if (it.key-code or it.which) is 13
           it.prevent-default!
           false
@@ -274,6 +274,7 @@ module.exports =
       #}}}
 
       ####  main  ;,.. ___  _
+      <~ lazy-load-nested-sortable
       # pre-load nested sortable list + initial active
       # - safely assume 2 levels max for now)
       s    = @$.find \.sortable

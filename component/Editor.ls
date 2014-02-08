@@ -35,6 +35,7 @@ module.exports =
       if v isnt void # save
         @local \body v
         @editor?val v
+        @editor.pagedown.refresh-preview!
       @editor?val!
 
     clear: ~>
@@ -66,6 +67,7 @@ module.exports =
       if hidden is null then hidden = true # default w/ preview
       storage.set @k-has-preview!, !hidden
       @$.toggle-class \has-preview, !hidden
+      @editor.pagedown.refresh-preview!
       @focus!
 
     focus: -> set-timeout (~>
@@ -86,6 +88,7 @@ module.exports =
       c = new Markdown.Converter!
       e = new Markdown.Editor c, id
       e.run!
+      @editor.pagedown = e # store
       #{{{ - delegates
       @$.find \.onclick-toggle-preview .on \click @toggle-preview
       @editor.on \keydown ~> if it.which is 27 then (@local \onClose)!; false # 27 is escape
