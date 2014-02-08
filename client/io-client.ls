@@ -217,6 +217,12 @@ function init-with-socket s
 
   s.on \css-update, (message) ->
     $link = $('link[href*="master"]').not('link[href*="sites"]')
-    $link.attr(\href, $link.attr(\href) + \x)
+    new-link = document.create-element \link
+      ..type = \text/css
+      ..rel  = \stylesheet
+      ..href = $link.attr(\href) + \x
+      ..onload = -> # cleanup
+        $link.remove!
+    $ \head .append new-link
 
 # vim:fdm=indent

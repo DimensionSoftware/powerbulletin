@@ -60,10 +60,10 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
             - var ct = site.config.colorTheme ? site.config.colorTheme : {}
             label(for='light') Color
             input.color-theme(id='light', name='colorTheme[light]', type='text', value=ct.light, placeholder='#4CCFEA')
-            div.preview.light(style="background-color: #{ct.light || '#fff'};")
+            div.preview.light(title='Click to choose a Color!', style="background-color: #{ct.light || '#fff'};")
             label(for='light_text') Text
             input.color-theme(id='light_text', name='colorTheme[light_text]', type='text', value=ct.light_text, placeholder='#DDDDDD')
-            div.preview.light-text(style="background-color: #{ct.light_text || '#fff'};")
+            div.preview.light-text(title='Click to choose a Color!', style="background-color: #{ct.light_text || '#fff'};")
 
           label(for='style') Custom Style
           textarea.save(id='style', name='style')= site.config.style

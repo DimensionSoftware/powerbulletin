@@ -564,9 +564,9 @@ same-profile = (hints) ->
       <~ requirejs [\jqueryIris]
       $ \input.color-theme
         .iris({
-          width: 167
+          width: 167px
           target: '.theme .color-picker'
-          palettes: <[ #4ccfea #cc8888 #47df87 #ff8c00 #f24e4e ]>
+          palettes: <[ #4ccfea #cc8888 #a2ef2e #ff8c00 #f24e4e ]>
           change: (ev, ui) ->
             $(ev.target).next!css background-color: ui.color.to-string!
         })
