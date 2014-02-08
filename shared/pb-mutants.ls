@@ -562,7 +562,16 @@ same-profile = (hints) ->
 
       # XXX - having trouble loading iris
       <~ requirejs [\jqueryIris]
-      $ \input.color-theme .iris!
+      $ \input.color-theme
+        .iris({
+          width: 167
+          target: '.theme .color-picker'
+          palettes: <[ #4ccfea #cc8888 #47df87 #ff8c00 #f24e4e ]>
+          change: (ev, ui) ->
+            $(ev.target).next!css background-color: ui.color.to-string!
+        })
+        .focus((ev) -> 
+          $(ev.current-target).iris(\show))
 
       # no pager (for now)
       window.pages-count = 0

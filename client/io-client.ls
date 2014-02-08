@@ -215,4 +215,8 @@ function init-with-socket s
   s.on \chat-message, (message) ->
     ChatPanel.add-from-message message
 
+  s.on \css-update, (message) ->
+    $link = $('link[href*="master"]').not('link[href*="sites"]')
+    $link.attr(\href, $link.attr(\href) + \x)
+
 # vim:fdm=indent
