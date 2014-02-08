@@ -6,6 +6,22 @@ vendors = webkit moz official
 
 bounce = cubic-bezier(0,1.72,0,.75)
 
+
+// overwrite fluidity's box-shadow w/ vendor prefixes for working animations (below)
+box-shadow(arg1, arg2, arg3)
+  box-shadow arg1, arg2, arg3
+
+@keyframes r0
+  0%
+    box-shadow 0 0 8px 6px rgba(26, 255, 179, 0), 0 0 0 0 transparent, 0 0 0px 0px rgba(26, 255, 179, 0)
+
+  10%
+    box-shadow 0 0 8px 6px #1affb3, 0 0 12px 10px transparent, 0 0 12px 14px #1affb3
+
+  100%
+    box-shadow 0 0 8px 6px rgba(26, 255, 179, 0), 0 0 0px 40px transparent, 0 0 0px 40px rgba(26, 255, 179, 0)
+
+
 @keyframes fade-in
   0%
     opacity 0
@@ -38,6 +54,8 @@ body
     margin 0 -190px
     height 100px
     .logo 
+      position relative
+      z-index 100
       display block
       text-indent 140px
       padding 15px 0 60px 0
@@ -61,12 +79,21 @@ body
         transform rotate(-120deg)
         animation rotate-in .4s ease-out 1 forwards
       a 
-        color #666
+        color #444
         text-decoration none
         font-style italic
         b 
           color #333
           font-style normal
+    .beacon
+      width 50px
+      height 50px
+      left -5px
+      top 25px
+      border-radius 50%
+      position absolute
+      transition all .2s
+      animation r0 2s ease-out 1s infinite
     .note
       font-size 1.5em
       font-weight 200

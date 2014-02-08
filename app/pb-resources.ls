@@ -12,6 +12,7 @@ require! {
   mkdirp
   stylus
   pagedown
+  \deep-equal
 }
 
 const base-css = \public/sites
@@ -40,6 +41,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       c = new pagedown.Converter
       config={}
       alias.config <<< req.body?config or {}                      # & merge
+      alias.config.sig = req.body.editor                          # merge from Editor
       for k in <[title sig]> then config[k]=alias.config[k]       # & scrub
       if config.sig then config.sig-html = c.make-html config.sig # & scrub harder + render sig
       err <- db.aliases.update {config}, {user_id, site_id}       # & update!
@@ -86,14 +88,20 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
         err <- db.sites.save-style site
         if err
           if err?msg?match /CSS/i
-            return res.json {success:false, msg:'CSS must be valid!'}
+            return res.json {success:false, messages:['CSS must be valid!']}
           else
             return next err
+
+      # save color theme
+      if not deep-equal(site.config.color-theme, req.body.color-theme)
+        err <- db.sites.save-color-theme { id: site.id, config: { color-theme: req.body.color-theme } }
+        announce.in("#{site.id}/users/#{req.user.id}").emit \css-update, req.body.color-theme
+        if err then res.json { -success, messages: [ "Could not save color theme." ] }
 
       # update site
       site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
-        <[ postsPerPage metaKeywords inviteOnly private social analytics style ]> }
+        <[ postsPerPage metaKeywords inviteOnly private social analytics style colorTheme ]> }
       for c in <[ inviteOnly  social private ]> # uncheck checkboxes?
         delete site.config[c] unless req.body[c]
       for s in <[ private analytics ]> # subscription tampering
@@ -309,7 +317,6 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
     post.html     = h.html post.body
     post.ip       = res.vars.remote-ip
     post.tags     = h.hash-tags post.body
-    post.forum_id = post.forum_id
 
     return res.json success:false, errors:['Incomplete post'] unless post.user_id and post.forum_id # guard
 
@@ -332,11 +339,13 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       err, new-post <- db.post site.id, post.id
       if err then return next err
       announce.in(site.id).emit \thread-create new-post
+      db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
     else
       err, new-post <- db.post site.id, post.id
       if err then return next err
       new-post.posts = []
       announce.in(site.id).emit \post-create new-post
+      db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
 
     res.json ap-res
   show    : (req, res, next) ->
@@ -351,19 +360,18 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
   update  : (req, res, next) ->
     # if not req?user?rights?super then return next 404 # guard
     # is_owner req?user
-    err, owns-post <- db.owns-post req.body.id, req.user?id
+    err, owns-post <- db.owns-post parse-int(req.body.id), req.user?id
     if err then return next err
     return next 403 unless (req?user?rights?super) or (owns-post?length and owns-post.0.forum_id)
     # TODO secure & csrf
     # save post
-    op = owns-post.0
+    unless op = owns-post?0 then return res.json {-success, errors:["You don't own this post"]}
     post           = req.body
     post.user_id   = req.user.id
     post.forum_id  = op.forum_id
     post.parent_id = op.parent_id
-    post.title     = op.title             # FIXME - allows saving of top post, but post.html on next line is still corrupted
-    post.html      = h.html req.body.body # FIXME - for top posts, the title and body are mixed together into one string which is wrong.
-    console.log \post, post
+    post.title     = h.html req.body.title
+    post.html      = h.html req.body.body
     err, r <- db.edit-post(req.user, post)
     if err then return next err
 

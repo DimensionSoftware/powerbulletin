@@ -141,10 +141,11 @@ function init-with-socket s
 
       # & render new post
       sel = "\#post_#{post.parent_id} ~ .children:first"
+
       animate-in = (e) -> $ e .add-class \post-animate-in
       if post.user_id is user?id then post.is_comment=true # hide sig., etc... on our own posts
       render-and-append(
-        window, $(sel), \post, post:post, (new-post) ->
+        window, (window.$ sel), \post, post:post, (new-post) ->
           if post.user_id is user?id # & scroll-to
             mutants.forum.on-personalize window, user, (->) # enable edit, etc...
             set-timeout (-> animate-in new-post), 250ms
@@ -213,5 +214,15 @@ function init-with-socket s
 
   s.on \chat-message, (message) ->
     ChatPanel.add-from-message message
+
+  s.on \css-update, (message) ->
+    $link = $('link[href*="master"]').not('link[href*="sites"]')
+    new-link = document.create-element \link
+      ..type = \text/css
+      ..rel  = \stylesheet
+      ..href = $link.attr(\href) + \x
+      ..onload = -> # cleanup
+        $link.remove!
+    $ \head .append new-link
 
 # vim:fdm=indent

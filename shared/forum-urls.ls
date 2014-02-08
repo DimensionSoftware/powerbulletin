@@ -205,7 +205,7 @@ inputs =
 # @param String path
 # @returns Object info about the forum url
 @parse = (path) ->
-  parts  = path.split '/' |> reject (-> it is '')
+  parts  = path?split '/' |> reject (-> it is '')
   inputs = map @type-of-part, parts
   type   = fsm.new-state @machine, \initial, inputs
   meta   = switch type

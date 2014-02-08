@@ -9,7 +9,7 @@ purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
-  {respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
+  {postdrawer, respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, toggle-postdrawer} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -265,7 +265,7 @@ layout-on-personalize = (w, u) ->
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
       # FIXME will do something smarter -k
-      $ \body .on \click, toggle-post # expand & minimize drawer
+      $ \body .on \click, toggle-postdrawer # expand & minimize drawer
 
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
@@ -356,16 +356,12 @@ layout-on-personalize = (w, u) ->
     if u
       layout-on-personalize w, u
       # enable edit actions
-      # - censor
-      $ ".post[data-user-id=#{u.id}] .censor"
-        .css \display \inline-block
-      if u.rights?super
-        $ \.censor .css \display \inline-block
-      # - post editing
-      set-inline-editor.call ch, u.id
+      $ ".post[data-user-id=#{u.id}] .censor" .css \display \inline-block     # censor
+      $ ".post[data-user-id=#{u.id}] [data-edit]" .css \display \inline-block # post edit
+      if u.rights?super then $ \.censor .css \display \inline-block
       # remove body.locked if super
-      if u.rights?super or u.sys_rights?super
-        w.$ \body .remove-class \locked
+      # XXX shouldn't make the ui jump
+      if u.rights?super or u.sys_rights?super then w.$ \body .remove-class \locked
     next!
   on-unload:
     (w, next-mutant, next) ->
@@ -436,6 +432,7 @@ same-profile = (hints) ->
       w.$ \.onclick-change-sig .on \click ->
         <~ lazy-load-fancybox
         e = w.component.editor = new Editor {locals:
+          id:   \sig
           url:  "/resources/aliases/#{w.user.id}"
           body: (storage.get \sig) or u?sig}
         w.$.fancybox e.$, {after-close:-> user <<< sig:e.body!; e.detach!} <<< fancybox-params # set sig & cleanup
@@ -549,6 +546,7 @@ same-profile = (hints) ->
       next!
   on-load:
     (window, next) ->
+      #require \jqueryIris
       # expand left nav or not?
       $b = $ \body
       if window.admin-expanded = $b.has-class \collapsed
@@ -561,6 +559,20 @@ same-profile = (hints) ->
         $ \#domains .attr \checked, true
         $ 'label[for="domains"]' .effect \highlight
         awesome-scroll-to \#domains
+
+      # XXX - having trouble loading iris
+      <~ requirejs [\jqueryIris]
+      $ \input.color-theme
+        .iris({
+          width: 167px
+          target: '.theme .color-picker'
+          palettes: <[ #4ccfea #cc8888 #a2ef2e #ff8c00 #f24e4e ]>
+          change: (ev, ui) ->
+            $(ev.target).next!css background-color: ui.color.to-string!
+        })
+        .focus((ev) -> 
+          $(ev.current-target).iris(\show))
+
       # no pager (for now)
       window.pages-count = 0
       <~ lazy-load-html5-uploader
@@ -826,6 +838,11 @@ mk-post-pnum-to-href = (post-uri) ->
   static: (w, next) ->
     w.render-mutant \main_content \moderation
     layout-static.call @, w, \moderation
+    next!
+  on-personalize: (w, u, next) ->
+    if u.rights?super
+      $ \.uncensor .css \display \inline-block
+    layout-on-personalize w, u
     next!
   on-load: (window, next) ->
     next!

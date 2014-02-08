@@ -75,6 +75,19 @@ module.exports =
       @$.find \.crop .hide!
       @$.find \.upload .show!
 
+    bounds: []
+    update-preview: (coords) ~>
+      if w = parse-int coords.w
+        [boundx, boundy] = if @bounds.length then @bounds else [0, 0]
+        rx = 150 / coords.w
+        ry = 150 / coords.h
+        $ \#preview .css {
+          width:  "#{Math.round(rx * boundx)}px",
+          height: "#{Math.round(ry * boundy)}px",
+          margin-left: "-#{Math.round(rx * coords.x)}px",
+          margin-top:  "-#{Math.round(ry * coords.y)}px",
+        }
+
     # this is the mode for cropping an uploaded image
     crop-mode: (r) ->
       if r
@@ -85,12 +98,16 @@ module.exports =
       @jcrop.destroy! if @jcrop
       options =
         aspect-ratio: @aspect-ratio
+        on-change: @update-preview
+        on-select: @update-preview
       options <<< @box-dimensions!
       fb = @@$.fancybox
       save-jcrop = (j) ~> @jcrop = j
-      @$.find '.crop img' .Jcrop options, ->
+      component  = @
+      @$.find '.crop img:first' .Jcrop options, ->
         save-jcrop this
         fb.update!
+        component.bounds = @get-bounds!
 
     # constrain image size in case we have to crop an image bigger than the window
     box-dimensions: ->

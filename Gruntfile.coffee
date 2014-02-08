@@ -82,8 +82,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask "procs", "Compile stored procedures to JS", ->
     done = this.async()
-    exec "node_modules/.bin/lsc -c plv8_modules/*.ls"
-    exec "bin/psql pb < procedures.sql",
+    exec "./bin/build-procs"
       silent: true
     done()
 

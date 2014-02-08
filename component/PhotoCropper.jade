@@ -8,8 +8,12 @@
       button Upload Photo
         input(type="file", name="avatar")
 
+cropSrc = "#{cacheUrl}#{photo}?#{cacheBuster}"
 .crop
-  h1 Drag to Crop
-  div
-    img(src="#{cacheUrl}#{photo}?#{cacheBuster}")
-  button Save
+  h1 Crop your Photo by Dragging
+  .left
+    img(src=cropSrc)
+  .right
+    .preview-wrapper
+      img#preview(src=cropSrc)
+    button Save

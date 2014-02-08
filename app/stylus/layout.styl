@@ -64,6 +64,7 @@ body.waiting
   margin 0
   padding 0
   a
+    outline none
     text-shadow 0 0 1px #ccc
     color #888
     background-image url(cache-url + '/images/pb_icon_logo_sm.png')
@@ -237,9 +238,9 @@ header
       .onclick-close
         cursor pointer
         position absolute
-        right 11px
+        right 46px
         top -40px
-        z-index 14
+        z-index 20
         font-size 1.1em
         line-height 6px
         opacity 0
@@ -438,10 +439,9 @@ footer.active
   bottom -(grid * 1.4)
   font-size .85em
 footer
-  position fixed
+  position fixed!important
+  top auto!important
   right 0
-  //left 0
-  // bottom -(footer_height)
   bottom -(grid)
   height 0
   opacity 0
@@ -485,6 +485,14 @@ footer
       top 2px
       right 7px
       transition all .2s ease-out
+  .post-container
+    .post-new
+      .title
+        min-width 500px
+        display none
+        position relative
+        top -10px
+        z-index 20
 #chat_drawer
   position fixed
   height 0

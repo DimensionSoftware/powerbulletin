@@ -1,8 +1,30 @@
-.PostDrawer
-  position relative
-  #editor
-    .save
+footer
+  .ui-resizable-n
+    position absolute
+    cursor ns-resize!important
+    top -3px
+    height 10px
+    &:hover:after
+      content ''
+      background-color light
+      opacity .6
+      height 1px
       position absolute
-      bottom 0
-      right 40%
-      width 10px
+      left 0
+      right 0
+      top 3px
+
+.PostDrawer
+  position absolute
+  bottom 14px
+  top 24px
+  left 0
+  right 0
+  #editor + .save
+    position absolute
+    z-index 25
+    padding 5px 55px
+    bottom 0
+    right 44%
+  .onclick-toggle-preview
+    position fixed!important

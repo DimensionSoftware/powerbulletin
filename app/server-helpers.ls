@@ -142,20 +142,27 @@ process-cached-data = {}
     #@login(req, res, cb) # on successful registration, automagically @login, too
     cb null, u
 
-@render-css = (file-name, cb) ->
-  if file-name in global.cvars.acceptable-stylus-files
-    fs.read-file "app/stylus/#{file-name}", (err, buffer) ->
-      if err then return cb err
-      cvars = global.cvars
-      options =
-        compress: true
-      stylus(buffer.to-string!, options) # build css
-        .define \cache-url  cvars.cache4-url # consolidate & mv assets to lesser-used-domain (browser speed)
-        .set \paths [\app/stylus]
-        .use fluidity!
-        .render cb
-  else
-    cb "#file-name is not allowed"
+@render-css-fn = ({define=[],use=[],set=[]}) ->
+  (file-name, cb) ->
+    if file-name in global.cvars.acceptable-stylus-files
+      fs.read-file "app/stylus/#{file-name}", (err, buffer) ->
+        if err then return cb err
+        cvars = global.cvars
+        options =
+          compress: true
+        s = stylus(buffer.to-string!, options) # build css
+        for args in define
+          s.define.apply s, args
+        for args in set
+          s.set.apply s, args
+        for args in use
+          s.use.apply s, args
+        s.define \cache-url  cvars.cache4-url # consolidate & mv assets to lesser-used-domain (browser speed)
+          .set \paths [\app/stylus]
+          .use fluidity!
+          .render cb
+    else
+      cb "#file-name is not allowed"
 
 @move = (src, dst, cb) ->
   _is = fs.create-read-stream src

@@ -44,24 +44,35 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
         textarea.save(id='analytics', name='analytics')= analytics
         .note Paste Javascript code above, excluding &lt;script&gt; tags
         .break
-    div
-    input.collapse(id='lookandfeel', type='checkbox')
-    label(for='lookandfeel')
-      h4 Look &amp; Feel
-      .dialog
-        //-label(for='theme') Base Theme
-        //-select(id='theme', name='theme')
-        //-  each t in themes
-        //-    option(value=t.id)= t.name
-        .break
-        label(for='style') Style
-        textarea.save(id='style', name='style')= site.config.style
-        .note Paste
-          a(href='http://www.w3schools.com/cssref/', target='_blank') CSS
-          | or 
-          a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
-          | code in above
-        .break
+    .theme
+      .color-picker
+      input.collapse(id='lookandfeel', type='checkbox')
+      label(for='lookandfeel')
+        h4 Look &amp; Feel
+        .dialog
+          //-label(for='theme') Theme
+          //-select(id='theme', name='theme')
+          //-  option(disabled=true, selected=true) - Choose a Theme -
+          //-  each t in themes
+          //-    option(value=t.id)= t.name
+          .break
+          fieldset
+            - var ct = site.config.colorTheme ? site.config.colorTheme : {}
+            label(for='light') Color
+            input.color-theme(id='light', name='colorTheme[light]', type='text', value=ct.light, placeholder='#4CCFEA')
+            div.preview.light(title='Click to choose a Color!', style="background-color: #{ct.light || '#fff'};")
+            label(for='light_text') Text
+            input.color-theme(id='light_text', name='colorTheme[light_text]', type='text', value=ct.light_text, placeholder='#DDDDDD')
+            div.preview.light-text(title='Click to choose a Color!', style="background-color: #{ct.light_text || '#fff'};")
+
+          label(for='style') Custom Style
+          textarea.save(id='style', name='style')= site.config.style
+          .note Paste
+            a(href='http://www.w3schools.com/cssref/', target='_blank') CSS
+            | or 
+            a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
+            | code in above
+          .break
 
     .domains
       input.collapse(id='domains', type='checkbox')

@@ -82,20 +82,23 @@ header
       .query:focus + .icon
         top -2px
         height 40px
+        opacity .75
       .query
-        box-shadow 1px 1px 3px light inset
+        box-shadow 0 1px 1px -1px light inset,0 1px 3px 0 light inset
         border 0
         background none
-        border-radius 6px
+        border-radius 10px/6px
         font-size 1.15em
         height 20px
+        transition all .2s ease-in .1s
         &:focus
+          transition none
           background-color overlay_color_primary
           margin-top -1px
           height 21px
-          text-indent 13px
-          border-radius 5px
-          box-shadow 1px 1px 3px 1px light
+          text-indent 8px
+          border-radius 6px
+          box-shadow 0 1px 2px 1px light, 0 1px 7px -2px light
           color #111
       .query::-webkit-input-placeholder
           color #ccc
@@ -248,6 +251,7 @@ footer
   box-shadow 0 0 4px -1px light
   text-align center
   color #777
+  background-image linear-gradient(to top, overlay_tint_color 96%, rgba(255,255,255,.35))
   &::before
     //border-top 1px solid #eee
     top 0
@@ -257,7 +261,6 @@ footer
     position absolute
   &:hover
     color #666
-    background-image linear-gradient(to top, #f7f7f7 15px, rgba(255,255,255,1))
     box-shadow 0 0 3px 0 light
     transition all .3s ease-out
   h6
@@ -302,10 +305,8 @@ body.scrolled
   #left_content::after
     bottom (footer_height - 4)
   footer
-    background-image linear-gradient(to top, overlay_tint_color 96%, rgba(255,255,255,.35))
     &:hover
       box-shadow 0 0 4px 0 light
-      background-image linear-gradient(to top, #f7f7f7 10px, rgba(255,255,255,1))
 //}}}
 
 //{{{ Fancybox
