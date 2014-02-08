@@ -92,6 +92,8 @@ module.exports =
 
     set-post: (p) ~>
       @editor.clear! # reset preview, etc...
+      @editor.postdown.refresh-preview!
+      # FIXME set post using accessor
       @@$ '[name="body"]' .val p.body
       $f = @@$ \.form:first # setup mock form for:
       @set-edit-mode p.id
