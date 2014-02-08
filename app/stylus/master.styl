@@ -8,10 +8,10 @@ vendors = webkit moz official
 grid = 10px
 
 // theamable color defaults (cyan/blue)
-lighta = rgba(230,245,255,.7)
 light  = #4ccfea
-dark   = #3199b0
-dark_text  = #3199b0
+lighta = rgba(tint(light, 50%), .1)
+dark   = darken(light, 40%)
+dark_text  = darken(light, 60%)
 light_text = #ddd
 // tint color is placed over the background among other images (translucent)
 tint_color = rgba(240,240,240,0.65)
