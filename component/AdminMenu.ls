@@ -5,7 +5,7 @@ require! {
   \./PBComponent
   \./Uploader
 }
-{show-tooltip, submit-form, storage} = require \../client/client-helpers if window?
+{lazy-load-nested-sortable, show-tooltip, submit-form, storage} = require \../client/client-helpers if window?
 {each, map, maximum} = require \prelude-ls
 
 module.exports =
