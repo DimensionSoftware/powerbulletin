@@ -338,11 +338,13 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       err, new-post <- db.post site.id, post.id
       if err then return next err
       announce.in(site.id).emit \thread-create new-post
+      db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
     else
       err, new-post <- db.post site.id, post.id
       if err then return next err
       new-post.posts = []
       announce.in(site.id).emit \post-create new-post
+      db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
 
     res.json ap-res
   show    : (req, res, next) ->

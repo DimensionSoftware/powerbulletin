@@ -811,6 +811,17 @@ query-dictionary =
         announce.in("#{c.site_id}/users/#{alias.user_id}").emit \chat-message, msg
       cb null, msg
 
+  thread_subscriptions:
+    add: (site_id, user_id, thread_id, cb=(->)) ->
+      sub = { site_id, user_id, thread_id }
+      err, ts <- db.thread_subscriptions.select-one sub
+      if err then return cb err
+      if ts
+        cb null, ts
+      else
+        db.thread_subscriptions.upsert sub, cb
+
+
 serializers-for =
   json: JSON.stringify
 
