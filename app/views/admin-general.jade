@@ -60,7 +60,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
           label(for='light') Color
           input.color-theme(id='light', name='colorTheme[light]', type='text', value=ct.light, placeholder='#4CCFEA')
           label(for='light_text') Text
-          input.color-theme(id='light_text', name='colorTheme[light_text]', type='text', value=ct.light_text, placeholder='#3199B0')
+          input.color-theme(id='light_text', name='colorTheme[light_text]', type='text', value=ct.light_text, placeholder='#DDDDDD')
         label(for='style') Custom Style
         textarea.save(id='style', name='style')= site.config.style
         .note Paste
