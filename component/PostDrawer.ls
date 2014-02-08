@@ -92,7 +92,6 @@ module.exports =
 
     set-post: (p) ~>
       @editor.clear! # reset preview, etc...
-      @editor.postdown.refresh-preview!
       # FIXME set post using accessor
       @@$ '[name="body"]' .val p.body
       $f = @@$ \.form:first # setup mock form for:
@@ -104,6 +103,8 @@ module.exports =
       @@$ '[name="forum_id"]'  .val p.forum_id
       @@$ '[name="parent_id"]' .val p.parent_id
       @@$ '[name="id"]'        .val p.id
+
+      @editor.editor?pagedown?refresh-preview!
 
     on-detach: ->
       @@$ \.onclick-footer-toggle .off \click.post-drawer
