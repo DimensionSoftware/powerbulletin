@@ -78,7 +78,7 @@ export machine =
     '/': \text1
     '*': \text1
     '=': \text1
-    'X': \text1
+    'X': \-maybe-open-x-tag
   'open-x-tag':
     '[': '-maybe-tag-start-or-stop'
     ']': \text2
@@ -106,7 +106,7 @@ export machine =
     '/': \text2
     '*': \text2
     '=': \text2
-    'X': \text2
+    'X': \-maybe-close-x-tag
   text2: # text inside of a tag
     '[': '-maybe-tag-start-or-stop'
     ']': \text2
