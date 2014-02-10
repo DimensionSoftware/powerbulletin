@@ -21,7 +21,6 @@ inputs:
   /
   *
   =
-  XF
   letters -- I'm at a place where I need to figure out hierarchical fsm's or suffer.
     If I don't modularize this, the number of inputs in the main machine would be huge.
       I should be allowed to jump to a completely different state machine that takes completely different inputs.
@@ -29,6 +28,10 @@ inputs:
         I need to consume raw data and let each state machine categorize the inputs it consumes.
           One size DOES NOT fit all state machines.
           What's irrelevant to one state machine may be very relevant to another.
+
+inputs i forgot:
+  LF   -- linefeed is part of bbcode syntax because of [*] list item Shortcut
+  ' '  -- white space has meaning
 
 states:
   text
