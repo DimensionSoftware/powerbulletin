@@ -594,8 +594,8 @@ query-dictionary =
       fs.write-file "#css-dir/custom.css" css, cb
 
     save-color-theme: (site, cb) ->
-      cb "no site.id"                   if not site?id
-      cb "no site.config.color-theme"   if not site?config?color-theme
+      return cb "no site.id"                   if not site?id
+      return cb "no site.config.color-theme"   if not site?config?color-theme
       css-dir  = "#base-css/#{site.id}"
       err <- mkdirp css-dir
       if err then return cb err
