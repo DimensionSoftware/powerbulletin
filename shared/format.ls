@@ -2,7 +2,7 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  XBBCode: './xbbcode'
+  md: markdown.markdown
 }
 
 # regex to match urls
@@ -26,15 +26,12 @@ embedded = (url) ->
   else
     """<a href="#{url}" target="_blank">#{url}</a>"""
 
-@cv = (converter) ->
-  xbb = new XBBCode()
-  converter.hooks.chain \preConversion, (text) ->
-    console.log ">", text
-    r = xbb.process { text, +add-inline-breaks }
-    console.log "<", r
-    return r?html
-  converter.hooks.set \plainLinkText, embedded
-  converter
+# recurse through the tree and make transformations
+@transform = (tree) ->
+
+@render = (text) ->
+  tree = md.parse text |> md.to-HTML-tree
+  tree |> md.render-json-ML
 
 @
 
