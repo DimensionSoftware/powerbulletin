@@ -25,6 +25,10 @@ html
     link(href="#{cache2Url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
     link(href="#{cache2Url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
     link(href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400', rel='stylesheet', type='text/css')
+    if env == 'production'
+      link(href="#{cacheUrl}/sites/#{siteId}/master.css?#{cacheBuster}", rel='stylesheet', type='text/css')
+    else
+      link(href='/dynamic/css/master.styl', rel='stylesheet', type='text/css')
     if cssUrls
       for obj in cssUrls
         link(rel='stylesheet',type='text/css',href=obj.url)

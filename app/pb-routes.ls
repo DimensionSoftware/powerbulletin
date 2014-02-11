@@ -47,13 +47,6 @@ app.delete \/resources/forums/:id/background, handlers.forum-background-delete
 app.put \/resources/users/:id/avatar,       handlers.profile-avatar-crop
 #}}}
 
-# common for all pages within a site
-#{{{ Common CSS - TODO be specific by site's theme (default, minimal, etc....)
-common-css = if process.env.NODE_ENV is \production
-  ["#{cvars.cache2-url}/master.css"]
-else
-  [\/dynamic/css/master.styl] # refresh without building css
-#}}}
 #{{{ Common JS
 common-js = [v for k,v of jsu when k in [
   \jquery
@@ -83,7 +76,6 @@ app.get \/admin/:action?,
   personal-mw.concat(
     , mw.require-admin
     , mw.add-js(common-js)
-    , mw.add-css(common-css)
     , mmw.mutant-layout(\layout, mutants)
   ),
   handlers.admin
@@ -102,7 +94,6 @@ app.get '/u/:name', (req, res, next) ->
 app.get '/user/:name',
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.profile
@@ -110,7 +101,6 @@ app.get '/user/:name',
 app.get '/user/:name/page/:page',
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.profile
@@ -138,7 +128,6 @@ app.get '/robots.txt', mw.multi-domain, (req, res, next) ->
 app.get '*',
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.page
@@ -147,7 +136,6 @@ app.get '/',
   personal-mw,
   mw.geo,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.homepage
@@ -155,7 +143,6 @@ app.get '/',
 app.get \/search,
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.search
@@ -165,7 +152,6 @@ app.get '/hello', handlers.hello
 app.get '/:forum/most-active',
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.forum
@@ -188,7 +174,6 @@ app.get '/:forum/most-active',
 app.all new RegExp('^(.+)/t/([^/]+/edit/[^/]+)$'),
   personal-mw ++ [
     mw.add-js(common-js),
-    mw.add-css(common-css),
   ],
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
@@ -198,7 +183,6 @@ app.all new RegExp('^(.+)/t/([^/]+/edit/[^/]+)$'),
 app.all new RegExp('^(.+)/t/(.+)$'),
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.forum
@@ -207,7 +191,6 @@ app.all new RegExp('^(.+)/t/(.+)$'),
 app.all new RegExp('^(.+)/new$'),
   personal-mw ++ [
     mw.add-js(common-js),
-    mw.add-css(common-css),
   ],
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
@@ -217,7 +200,6 @@ app.all new RegExp('^(.+)/new$'),
 app.all new RegExp('^(.+)$'),
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.forum
