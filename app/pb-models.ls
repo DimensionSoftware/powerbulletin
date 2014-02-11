@@ -4,7 +4,6 @@ require! {
   debug
   stylus
   mkdirp
-  pagedown
   fs
   postgres: \./postgres
   sioa: \socket.io-announce
@@ -17,9 +16,6 @@ require! {
 const base-css = \public/sites
 
 announce = sioa.create-client!
-
-# create the server-side markup rendering function
-cv = format.cv new pagedown.Converter
 
 # Generate a function that takes another function and transforms its first parameter
 # according to the rules in serializers
@@ -799,7 +795,7 @@ query-dictionary =
       if err then return cb err
       me = c.participants |> find (.user_id is message.user_id)
       if not me then return cb { -success, messages: [ "User not a participant in conversation." ] }
-      message.html = cv.make-html message.body, {}
+      message.html = format.render message.body, {}
       if err then return cb { -success, err, messages: [ "Couldn't render message." ] }
       err, msgs <~ db.messages.upsert message
       if err then return cb { -success, err, messages: [ "Couldn't send message." ] }

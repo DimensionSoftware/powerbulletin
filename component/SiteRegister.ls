@@ -32,7 +32,7 @@ module.exports =
             if errors.length
               show-tooltip (@@$ \.SiteRegister-errors), errors.join \<br> if errors.length
             else
-              window.location = "http://#subdomain#{@local \hostname}\#once"
+              window.location = "https://#subdomain#{@local \hostname}\#once"
         after-registration = ~>
           set-timeout create-site, 2000ms
         on-click = ~>
