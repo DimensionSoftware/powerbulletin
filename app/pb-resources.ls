@@ -7,11 +7,12 @@ require! {
   auth: \./auth
   menu: \./menu
   rights: \./rights
+  format: \../shared/format
   async
   fs
   mkdirp
   stylus
-  pagedown
+  validator
   \deep-equal
 }
 
@@ -318,7 +319,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
     db = pg.procs
     post          = req.body
     post.user_id  = req.user.id
-    post.html     = h.html post.body
+    post.html     = format.render post.body
     post.ip       = res.vars.remote-ip
     post.tags     = h.hash-tags post.body
 
@@ -374,8 +375,8 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
     post.user_id   = req.user.id
     post.forum_id  = op.forum_id
     post.parent_id = op.parent_id
-    post.title     = h.html req.body.title
-    post.html      = h.html req.body.body
+    post.title     = validator.escape req.body.title
+    post.html      = format.render req.body.body
     err, r <- db.edit-post(req.user, post)
     if err then return next err
 
