@@ -216,7 +216,7 @@ function init-with-socket s
     ChatPanel.add-from-message message
 
   s.on \css-update, (message) ->
-    $link = $('link[href*="master"]').not('link[href*="sites"]')
+    $link = $ \#master-styl
     new-link = document.create-element \link
       ..type = \text/css
       ..rel  = \stylesheet
