@@ -584,8 +584,8 @@ query-dictionary =
 
     # save css to disk for site
     save-style: (site, cb) ->
-      cb "no site.id"             if not site?id
-      cb "no site.config.style"   if not site?config?style
+      return cb "no site.id"             if not site?id
+      return cb "no site.config.style"   if not site?config?style
       css-dir  = "#base-css/#{site.id}"
       err <- mkdirp css-dir
       if err then return cb err
