@@ -95,6 +95,9 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
       # save color theme
       if not deep-equal(site.config.color-theme, req.body.color-theme)
         err <- db.sites.save-color-theme { id: site.id, config: { color-theme: req.body.color-theme } }
+        # generate site-specific master.css
+        (err) <- h.render-css-to-file site.id, \master.styl
+        if err then return res.json {-success, messages:[err]}
         announce.in("#{site.id}/users/#{req.user.id}").emit \css-update, req.body.color-theme
         if err then res.json { -success, messages: [ "Could not save color theme." ] }
 

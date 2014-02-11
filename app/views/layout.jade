@@ -28,7 +28,7 @@ html
     if env == 'production'
       link(href="#{cacheUrl}/sites/#{siteId}/master.css?#{cacheBuster}", rel='stylesheet', type='text/css')
     else
-      link(href='/dynamic/css/master.styl', rel='stylesheet', type='text/css')
+      link(href='/dynamic/css/master.styl?#{cacheBuster}', rel='stylesheet', type='text/css')
     if cssUrls
       for obj in cssUrls
         link(rel='stylesheet',type='text/css',href=obj.url)
