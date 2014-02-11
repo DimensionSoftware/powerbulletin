@@ -105,7 +105,10 @@ module.exports = (grunt) ->
     fn = (id, cb) -> h.renderCssToFile id, 'master.styl', cb
     async.each [1, 2, 5], fn, (err) ->
       if err then console.log err
-      done()
+      h.renderCss 'master-sales.styl', (err, blocks) ->
+        fs.writeFile 'public/master-sales.css', blocks, (err) ->
+          if err then console.log err
+          done()
   #}}}
 
   # Default task(s).
