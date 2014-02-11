@@ -146,7 +146,8 @@ process-cached-data = {}
   fn = @render-css-fn define:[[\site-id, site-id]]
   fn file-name, (err, blocks) ->
     if err then return cb err
-    (err) <- fs.write-file "public/sites/#site-id/#file-name", blocks
+    css-file = "public/sites/#site-id/#file-name".replace /\.styl$/, \.css
+    (err) <- fs.write-file css-file, blocks
     if err then cb err
     cb null
 @render-css = (file-name, cb) ->
