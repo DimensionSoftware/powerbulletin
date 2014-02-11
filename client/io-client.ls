@@ -221,6 +221,7 @@ function init-with-socket s
       ..type = \text/css
       ..rel  = \stylesheet
       ..href = $link.attr(\href) + \x
+      ..id   = \master-styl
       ..onload = -> # cleanup
         $link.remove!
     $ \head .append new-link
