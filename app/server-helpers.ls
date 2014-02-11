@@ -142,9 +142,14 @@ process-cached-data = {}
     #@login(req, res, cb) # on successful registration, automagically @login, too
     cb null, u
 
-@render-css = (file-name, cb) ->
-  fn = @render-css-fn {} # no customization needed (called by grunt)
-  fn file-name, cb
+@render-css-to-file = (site-id, file-name, cb) -> # called by Grunt
+  fn = @render-css-fn define:[[\site-id, site-id]]
+  fn file-name, (err, blocks) ->
+    if err then return cb err
+    (err) <- fs.write-file "public/sites/#site-id/#file-name", blocks
+    if err then cb err
+    cb null
+
 @render-css-fn = ({define=[],use=[],set=[]}) ->
   (file-name, cb) ->
     if file-name in global.cvars.acceptable-stylus-files

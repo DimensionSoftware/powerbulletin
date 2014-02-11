@@ -100,13 +100,12 @@ module.exports = (grunt) ->
     exec "bin/build-component-jade"
     done()
 
-  grunt.registerTask 'css', 'Build master.css for all themes', ->
+  grunt.registerTask 'css', 'Build master.css for PB, Sales & Community', ->
     done = this.async()
-    h.renderCss('master.styl', (err, blocks) ->
-      fs.writeFileSync 'public/master.css', blocks
-      h.renderCss('master-sales.styl', (err, blocks) ->
-        fs.writeFileSync 'public/master-sales.css', blocks
-        done(true)))
+    fn = (id, cb) -> h.renderCssToFile id, 'master.styl', cb
+    async.each [1, 2, 5], fn, (err) ->
+      if err then console.log err
+      done()
   #}}}
 
   # Default task(s).
