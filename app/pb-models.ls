@@ -591,7 +591,7 @@ query-dictionary =
       if err then return cb err
       (err, css) <- stylus.render site.config.style, {compress:true}
       if err then return cb {success:false, msg:'CSS must be valid!'}
-      fs.write-file "#css-dir/master.css" css, cb
+      fs.write-file "#css-dir/custom.css" css, cb
 
     save-color-theme: (site, cb) ->
       cb "no site.id"                   if not site?id
