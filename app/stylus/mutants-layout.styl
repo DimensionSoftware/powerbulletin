@@ -196,6 +196,26 @@ html.forum, html.profile, html.search, html.moderation
     display none
   .main-content
     overflow hidden
+    .social
+      position absolute
+      overflow hidden
+      right (grid*1.5)
+      bottom -32px
+      height 25px
+      min-width 200px
+      max-width 300px
+      div
+        max-width 95px!important
+        vertical-align top
+        overflow hidden
+      div:last-child
+        max-width 59px!important
+      > iframe
+        max-width 90px!important
+      .fb_iframe_widget
+        margin-right 16px!important
+        margin-top -1px!important
+        vertical-align top
     .forum, .search
       position relative
       clear both
@@ -211,8 +231,6 @@ html.forum, html.profile, html.search, html.moderation
         bottom -30px
       #post_new
         display none
-      #cke_post_new
-        width 80%
       #post_edit
         width 80%
         .summary
@@ -308,7 +326,7 @@ html.forum, html.profile, html.search, html.moderation
         .title
           display block
           width 50%
-        #cke_body, textarea.body
+        textarea.body
           vertical-align top
           width 102%
           min-height 40px
@@ -479,26 +497,6 @@ html.forum, html.profile, html.search, html.moderation
               text-decoration none
           .edit, .censor, .uncensor
             display none
-        .social
-          position absolute
-          overflow hidden
-          right (grid*1.5)
-          bottom -32px
-          height 25px
-          min-width 200px
-          max-width 300px
-          div
-            max-width 95px!important
-            vertical-align top
-            overflow hidden
-          div:last-child
-            max-width 59px!important
-          > iframe
-            max-width 90px!important
-          .fb_iframe_widget
-            margin-right 16px!important
-            margin-top -1px!important
-            vertical-align top
       .page-loaded:last-child, #listview div[data-infinity-pageid]
         padding-bottom (grid*4) !important
       .children
@@ -560,6 +558,9 @@ html.forum, html.profile, html.search, html.moderation
               .profile
                 width 35px
                 height 35px
+       .post-bottom + .social
+         bottom 25px
+         right 55px
   footer.thread
     .post-new
       .title
@@ -1255,8 +1256,6 @@ html.forum
             left 5px
             height 45px
             width 45px
-          .cke_chrome
-            margin-top 55px
 //}}}
 html.page
   body.minimized
