@@ -75,6 +75,7 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
 
   # generate master.css & color
   err <- db.sites.save-color-theme { new-site.id, config: { color-theme: {} } }
+  if err then return next err
   err <- sh.render-css-to-file new-site.id, \master.styl
   if err then return next err
 
