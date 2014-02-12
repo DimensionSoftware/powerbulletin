@@ -4,6 +4,7 @@ require, exports, module <- define
 require! {
   md: markdown.markdown
 }
+{id, is-type} = require \prelude-ls
 
 # regex to match urls
 url-pattern = /(\w+:\/\/[\w\.\?\&=\%\/-]+[\w\?\&=\%\/-])/g
@@ -27,8 +28,29 @@ embedded = (url) ->
     """<a href="#{url}" target="_blank">#{url}</a>"""
 
 # recurse through the tree and make transformations
-@transform = (tree) ->
+@transform = (tree, fn=id) ->
+  [tag, attrs, children] = if is-type \String, tree
+    [void, void, tree]
+  else if is-type \Array, tree
+    if is-type \Object, tree.1
+      if tree.length > 3
+        [tree.0, tree.1, tree.slice(2)]
+      else
+        [tree.0, tree.1]
+    else
+      [tree.0, {}, tree.slice(1)]
 
+  if tag
+    if children and children.length
+      new-children = [@transform(c, fn) for c in children]
+      [tag, attrs, ...new-children]
+    else
+      [tag, attrs]
+  else
+    new-children = fn children
+
+
+# take text and apply markup rules to it
 @render = (text) ->
   tree = md.parse text |> md.to-HTML-tree
   tree |> md.render-json-ML
