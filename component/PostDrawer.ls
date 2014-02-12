@@ -91,7 +91,7 @@ module.exports =
     set-post: (p) ~>
       @editor.clear! # reset preview, etc...
       # FIXME set post using accessor
-      @@$ '[name="body"]' .val p.body
+      @@$ '.PostDrawer [name="body"]' .val p.body
       $f = @@$ \.form:first # setup mock form for:
       @edit-mode p.id
       if p.title # top-level post; so--bring out title
