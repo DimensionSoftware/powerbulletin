@@ -31,16 +31,19 @@ module.exports =
                 @edit-mode! # back to default Reply mode
       @@$ \.onclick-footer-toggle .on \click.post-drawer (ev) ~>
         if $ ev.target .has-class \onclick-footer-toggle # guard
-          if in-thread-mode! # keep drawer open & clear inputs
-            thread-mode false # replies don't have titles
-            @editor
-              ..clear!
-              ..focus!
-          else
+          if in-thread-mode!
+            if @is-editing! # if editing, hold drawer open & switch modes
+              thread-mode false # replies don't have titles
+              @editor
+                ..clear!
+                ..focus!
+            else # user indicated close
+              @close!
+          else # user indicated toggle
             f = @footer!
             if f.has-class \expanded and f.data \uiResizable # cleanup & close
               @close!
-            else # re-create?
+            else # open & re-create if necessary
               make-resizable f
         false
       #}}}
