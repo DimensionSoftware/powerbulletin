@@ -44,6 +44,7 @@ module.exports =
               make-resizable f
         false
       #}}}
+
       ####  main  ;,.. ___  _
       # + Editor
       @editor = new Editor {locals:{id:active-thread-id?}}, \#editor, @
@@ -51,13 +52,8 @@ module.exports =
 
     toggle:  ~> if @is-open! then @close! else @open!
     is-open: ~> @footer!has-class \expanded
-    open: ~>
-      p = window.get-prefs!
-      if p then [_, _, h?] = p
-      f = @footer!
-        ..height h? or \200 # default
-        ..add-class \expanded
-      make-resizable f
+    open: ->
+      make-resizable @footer!
       # setup Editor
       <~ set-timeout _, 50ms
       unless @is-creating-thread! or @is-editing! then thread-mode false # remove title
@@ -117,18 +113,18 @@ module.exports =
       try super ...
 
 
-function make-resizable e
-  unless e.data \uiResizable # guard
-    e.add-class \expanded
-    e.resizable(
-      handles: \n
-      min-height: 100px
-      max-height: 600px
-      resize: (el, ui) ->
-        h = ui.size.height - 40px
-        #e # respond resize (TODO use css)
-        #  ..find \.wmd-panel .height h
-        #  ..find \.wmd-preview .height h
-        window.save-ui!)
+function make-resizable footer
+  p = window?get-prefs!
+  if p then [_, _, h?] = p
+  footer # setup footer for "open state"
+    ..height h or \200 # default
+    ..add-class \expanded
+  unless footer.data \uiResizable # guard
+    footer # create initial state
+      ..resizable(
+        handles: \n
+        min-height: 100px
+        max-height: 600px
+        resize: (el, ui) -> window?save-ui!)
 
 # vim:fdm=marker
