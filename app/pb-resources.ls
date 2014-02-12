@@ -92,7 +92,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
             return next err
 
       # save color theme
-      if not site.config.color-theme === req.body.color-theme
+      if not (site.config.color-theme === req.body.color-theme)
         site.config.cache-buster = h.cache-buster!
         err <- db.sites.save-color-theme { id: site.id, config: { color-theme: req.body.color-theme } }
         if err then return res.json {-success, messages:[err]}
