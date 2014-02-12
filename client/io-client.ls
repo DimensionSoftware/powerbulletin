@@ -220,7 +220,7 @@ function init-with-socket s
     new-link = document.create-element \link
       ..type = \text/css
       ..rel  = \stylesheet
-      ..href = $link.attr(\href) + \x
+      ..href = $link.attr(\href).replace(/\?.*$/, ("?#{message.cache-buster}" || "?x"))
       ..id   = \master-styl
       ..onload = -> # cleanup
         $link.remove!
