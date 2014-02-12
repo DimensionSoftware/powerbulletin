@@ -39,13 +39,12 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
     if err then return next err
     if r # can edit, so--
       (err, alias) <- db.aliases.select-one {user_id, site_id}  # fetch current config
-      c = new pagedown.Converter
       config={}
-      alias.config <<< req.body?config or {}                      # & merge
-      alias.config.sig = req.body.editor                          # merge from Editor
-      for k in <[title sig]> then config[k]=alias.config[k]       # & scrub
-      if config.sig then config.sig-html = c.make-html config.sig # & scrub harder + render sig
-      err <- db.aliases.update {config}, {user_id, site_id}       # & update!
+      alias.config <<< req.body?config or {}                        # & merge
+      alias.config.sig = req.body.editor                            # merge from Editor
+      for k in <[title sig]> then config[k]=alias.config[k]         # & scrub
+      if config.sig then config.sig-html = format.render config.sig # & scrub harder + render sig
+      err <- db.aliases.update {config}, {user_id, site_id}         # & update!
       announce.in(site_id).emit \new-profile-title, { id:user_id, title:config?title } # broadcast title everywhere
       (err, user) <~ db.usr { id:user_id, site_id }
       user.sig = config.sig # ensure latest sig
