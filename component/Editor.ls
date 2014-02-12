@@ -25,6 +25,7 @@ module.exports =
       @local \forumId,   ''  unless @local \forumId
       @local \parentId,  ''  unless @local \parentId
       @local \onClose, (->)  unless @local \onClose
+      @local \autoSave false unless @local \autoSave
       @local \key, (storage.get \user or window.user)?id unless @local \key
 
     # keys for local storage (must bind later, after the user exists)
@@ -92,16 +93,17 @@ module.exports =
       #{{{ - delegates
       @$.find \.onclick-toggle-preview .on \click @toggle-preview
       @editor.on \keydown ~> if it.which is 27 then (@local \onClose)!; false # 27 is escape
-      @editor.on \keyup, throttle @save, watch-every # save to local storage
-      $ window .on \unload.Editor ~> @save true          # save to server
+      if @local \autoSave # bind save events:
+        @editor.on \keyup, throttle @save, watch-every # to local storage
+        $ window .on \unload.Editor ~> @save true      # to server
       #}}}
       @$.toggle-class \has-preview, (storage.get @k-has-preview!) or true # default w/ preview
       @focus!
 
     on-detach: ~> # XXX ensure detach is called
-      # save to server & cleanup
-      $ window .off \unload.Editor
-      @save true
-      @$.off!remove!
+      if @local \autoSave # unbind save events
+        $ window .off \unload.Editor
+        @save true
+      @$.off!remove! # cleanup
 
 # vim: fdm=marker

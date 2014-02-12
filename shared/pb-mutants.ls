@@ -434,7 +434,8 @@ same-profile = (hints) ->
         e = w.component.editor = new Editor {locals:
           id:   \sig
           url:  "/resources/aliases/#{w.user.id}"
-          body: (storage.get \sig) or u?sig}
+          body: (storage.get \sig) or u?sig
+          auto-save: true}
         w.$.fancybox e.$, {after-close:-> user <<< sig:e.body!; e.detach!} <<< fancybox-params # set sig & cleanup
 
     change-title-enable = ->
