@@ -439,7 +439,8 @@ function profile-paths user, uploaded-file, base=\avatar
   render-css = render-css-fn define: [ [ \site-id, site.id ] ]
 
   async.map files, render-css, (err, css-blocks) ->
-    if err then return next err
+    if err
+      return next 404
     body = css-blocks.join "\n"
     caching-strategies.etag res, sha1(body), 7200
     res.content-type \css
