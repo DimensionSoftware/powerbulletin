@@ -3,8 +3,8 @@ require, exports, module <- define
 
 require! {
   \./PBComponent
-  #pagedown # XXX pull in converter + sanitizer if needed on server
 }
+{render}   = require \../shared/format
 {throttle} = require \lodash
 {storage, lazy-load-fancybox} = require \../client/client-helpers
 
@@ -36,15 +36,13 @@ module.exports =
       if v isnt void # save
         @local \body v
         @editor?val v
-        @editor.pagedown.refresh-preview!
+        @refresh-preview!
       @editor?val!
 
     clear: ~>
       @editor?val ''
       # clear preview, too
-      id = @local \id
-      html-id = if id then "\#wmd-preview#id" else \#wmd-preview
-      $ html-id .html ''
+      $ preview-id-for(@local \id) .html ''
 
     save: (to-server=false) ~>
       return unless @editor # guard
@@ -63,12 +61,19 @@ module.exports =
               @retry=0
             ..fail (r) ~> # failed, so try again (to server) until max-retries
               if ++@retry <= max-retry then @save true
+
+    refresh-preview: ~>
+      @editor?pagedown?refresh-preview!
+      # FIXME broken
+      #$ preview-id-for(@local \id) .html render(@body)
+      @editor
+
     toggle-preview: ~>
       hidden = storage.get @k-has-preview!
       if hidden is null then hidden = true # default w/ preview
       storage.set @k-has-preview!, !hidden
       @$.toggle-class \has-preview, !hidden
-      @editor.pagedown.refresh-preview!
+      @refresh-preview!
       @focus!
 
     focus: -> set-timeout (~>
@@ -105,5 +110,8 @@ module.exports =
         $ window .off \unload.Editor
         @save true
       @$.off!remove! # cleanup
+
+function preview-id-for id
+  html-id = if id then "\#wmd-preview#id" else \#wmd-preview
 
 # vim: fdm=marker

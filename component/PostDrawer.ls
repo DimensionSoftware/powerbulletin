@@ -110,7 +110,7 @@ module.exports =
       @@$ '[name="parent_id"]' .val p.parent_id
       @@$ '[name="id"]'        .val p.id
 
-      @editor.editor?pagedown?refresh-preview!
+      @editor.refresh-preview!
 
     on-detach: ->
       @@$ \.onclick-footer-toggle .off \click.post-drawer
