@@ -65,7 +65,8 @@ if typeof(post) !== 'undefined'
     .onclick-footer-toggle.post-reply
       .s-reply
     .post-bottom
-    +social
+    if post.posts.length
+      +social
 //- placeholder
 else
   .forum.resizable
