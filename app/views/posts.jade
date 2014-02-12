@@ -2,6 +2,13 @@ include _post
 include _post-actions
 include _breadcrumb
 
+mixin social
+  if typeof(social) !== 'undefined' && social
+    .social
+      .fb-share-button(data-type='button_count')
+      a.twitter-share-button(href='https://twitter.com/share')
+      .g-plus(data-action='share')
+
 //- breadcrumb for posts
 if typeof(post) !== 'undefined'
   #breadcrumb.breadcrumb
@@ -46,11 +53,7 @@ if typeof(post) !== 'undefined'
             .s-dark-permalink
           a.censor.onclick-censor-post(title='Censor') Censor
             .s-dark-censor
-        if typeof(social) !== 'undefined' && social
-          .social
-            .fb-share-button(data-type='button_count')
-            a.twitter-share-button(href='https://twitter.com/share')
-            .g-plus(data-action='share')
+        +social
     .children
       if post.posts.length
         div(data-page=page)
@@ -62,6 +65,8 @@ if typeof(post) !== 'undefined'
     .onclick-footer-toggle.post-reply
       .s-reply
     .post-bottom
+    if post.posts.length
+      +social
 //- placeholder
 else
   .forum.resizable
