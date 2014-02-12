@@ -2,30 +2,47 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 
 require! {
-  md: markdown.markdown
+  markdown
 }
 {id, is-type} = require \prelude-ls
+md = if markdown.markdown then markdown.markdown else markdown
+
+@util = {}
 
 # regex to match urls
-url-pattern = /(\w+:\/\/[\w\.\?\&=\%\/-]+[\w\?\&=\%\/-])/g
+@util.url-pattern = /(\w+:\/\/[\w\.\?\&=\%\/-]+[\w\?\&=\%\/-])/g
 
-replace-urls = (s, fn) ->
-  s.replace url-pattern, fn
+@util.replace-urls = (s, fn) ->
+  s.replace @util.url-pattern, fn
 
 # given a url, return its hostname
-hostname = (url) ->
+@util.hostname = (url) ->
   url.match(/^https?:\/\/(.*?)\//)?1
 
 # given a url, find a way to embed it in html
-embedded = (url) ->
-  h = hostname url
-  #if url.match /\.(jpe?g|png|gif)$/i
-  #  """<a href="#{url}" target="_blank"><img src="#{url}" /></a>"""
+@util.embedded = (url) ->
+  h = @util.hostname url
+  if url.match /\.(jpe?g|png|gif)$/i
+    #"""<a href="#{url}" target="_blank"><img src="#{url}" /></a>"""
+    [ \a, { href: url, target: \_blank }, [ \img, { src: url } ] ]
   if h is \www.youtube.com and url.match(/v=(\w+)/)
     [m,v] = url.match(/v=(\w+)/)
     """<iframe width="560" height="315" src="//www.youtube.com/embed/#v" frameborder="0" allowfullscreen></iframe>"""
   else
     """<a href="#{url}" target="_blank">#{url}</a>"""
+    [ \a, { href: url, target: \_blank }, url ]
+
+@util.split = _split = (string, pattern, fn) ->
+  console.log string
+  m = string.match pattern
+  if m
+    if m.index is 0
+      [m.0, ...(_split string.substring(m.0.length), pattern)]
+    else if m.index > 0
+      [string.substring(0, m.index), m.0, ...(_split string.substring(m.index + m.0.length), pattern)]
+  else
+    []
+
 
 # recurse through the tree and make transformations
 @transform = (tree, fn=id) ->
