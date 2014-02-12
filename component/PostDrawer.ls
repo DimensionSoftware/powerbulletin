@@ -34,12 +34,15 @@ module.exports =
           if in-thread-mode!
             if @is-editing! # if editing, hold drawer open & switch modes
               thread-mode false # replies don't have titles
+              @edit-mode! # back to default Reply mode
               @editor
                 ..clear!
                 ..focus!
             else # user indicated close
               @close!
           else # user indicated toggle
+            @clear! # back to Reply mode
+            thread-mode false
             f = @footer!
             if f.has-class \expanded and f.data \uiResizable # cleanup & close
               @close!
@@ -83,10 +86,12 @@ module.exports =
     edit-mode: (id) ~>
       $f = @@$ \.form:first # setup mock form for:
       if id # edit mode
+        $ \.save .html \Edit
         $f.attr \method, \put
         $f.attr \action, "/resources/posts/#{id}"
         \edit
       else # reply mode
+        $ \.save .html \Reply
         $f.attr \method, \post
         $f.attr \action, \/resources/posts
         \reply
