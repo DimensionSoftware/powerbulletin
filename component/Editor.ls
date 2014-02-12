@@ -72,7 +72,7 @@ module.exports =
 
     focus: -> set-timeout (~>
       e = @@$ 'footer [name="title"]:visible' # use title?
-      if e?length then e.focus! else @editor?focus!), 50ms # ... & focus!
+      if e?length and not e.val!length then e.focus! else @editor?focus!), 50ms # ... & focus!
 
     on-attach: ~>
       ####  main  ;,.. ___  _

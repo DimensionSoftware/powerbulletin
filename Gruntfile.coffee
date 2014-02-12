@@ -31,8 +31,8 @@ module.exports = (grunt) ->
 
     watch:
       procs:
-        files: ["plv8_modules/*.ls", "procedures.sql"]
-        tasks: ["procs", "launch"]
+        files: ['plv8_modules/*.ls', 'procedures.sql']
+        tasks: ['procs', 'launch']
         options:
           debounceDelay: 50
           interrupt: true
@@ -42,15 +42,20 @@ module.exports = (grunt) ->
         tasks: ['socketIO']
 
       clientJade:
-        files: ["app/views/*.jade"]
-        tasks: ["clientJade", "launch"]
+        files: ['app/views/*.jade']
+        tasks: ['clientJade', 'launch']
         options:
           debounceDelay: 50
           interrupt: true
-
+      app:
+        files: ['app/*.ls']
+        tasks: ['launch']
+        options:
+          debounceDelay: 50
+          interrupt: true
       componentJade:
-        files: ["component/*.jade"]
-        tasks: ["componentJade", "launch"]
+        files: ['component/*.jade']
+        tasks: ['componentJade', 'launch']
         options:
           debounceDelay: 50
           interrupt: true

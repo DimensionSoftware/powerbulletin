@@ -488,11 +488,14 @@ footer
   .post-container
     .post-new
       .title
-        min-width 500px
         display none
         position relative
         top -10px
         z-index 20
+        width 18%
+        transform width .1s ease-in
+        &:focus, &:active
+          width 40%
 #chat_drawer
   position fixed
   height 0
