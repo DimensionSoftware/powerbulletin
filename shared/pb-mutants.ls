@@ -561,8 +561,11 @@ same-profile = (hints) ->
         $ 'label[for="domains"]' .effect \highlight
         awesome-scroll-to \#domains
 
-      # XXX - having trouble loading iris
-      <~ requirejs [\jqueryIris]
+      $ \#sprite_hue .on \keyup -> # live hue preview
+        $ '.sprite-hue .s-dark-chat'
+          .css {["#{k}filter", "hue-rotate(#{$ @ .val!})"] for k in ['', '-moz-', '-webkit-', '-o-']}
+
+      <~ requirejs [\jqueryIris] # live color preview
       $ \input.color-theme
         .iris({
           width: 167px

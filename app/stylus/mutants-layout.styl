@@ -158,6 +158,7 @@ html.forum, html.profile, html.search, html.moderation
           right 32px
           cursor pointer
           // off
+          filter hue-rotate(sprite_hue)
           background url(cache-url + '/images/sprites.png') no-repeat -126px -54px
           height 14px
           width 10px
@@ -170,6 +171,7 @@ html.forum, html.profile, html.search, html.moderation
           right 16px
           cursor pointer
           // off
+          filter hue-rotate(sprite_hue)
           background url(cache-url + '/images/sprites.png') no-repeat -138px -54px
           height 14px
           width 10px
@@ -178,6 +180,7 @@ html.forum, html.profile, html.search, html.moderation
       .thread.sticky
         .sticky-toggle
           // on
+          filter hue-rotate(sprite_hue)
           background url(cache-url + '/images/sprites.png') no-repeat -149px -54px
           height 18px
           width 10px
@@ -189,6 +192,7 @@ html.forum, html.profile, html.search, html.moderation
           top 11px
           // on
           content ''
+          filter hue-rotate(sprite_hue)
           background url(cache-url + '/images/sprites.png') no-repeat -161px -55px
           height 14px
           width 10px
@@ -909,11 +913,13 @@ html.admin
         display inline-block
         width 34px
         height 34px
-        border 1px solid #aaa
+        border 1px solid #ddd
         border-radius 4px
         margin-left 8px
         &:hover
-          border 1px solid #777
+          border 1px solid #bbb
+        .s-dark-chat
+          margin 9px
     .domains
       form
         fieldset
