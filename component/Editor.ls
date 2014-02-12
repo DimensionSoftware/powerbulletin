@@ -64,8 +64,7 @@ module.exports =
 
     refresh-preview: ~>
       @editor?pagedown?refresh-preview!
-      # FIXME broken
-      #$ preview-id-for(@local \id) .html render(@body)
+      $ preview-id-for(@local \id) .html render(@body)
       @editor
 
     toggle-preview: ~>
