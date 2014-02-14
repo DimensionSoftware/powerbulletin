@@ -17,13 +17,24 @@ html
     link(href="//muscache.#{domain}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
     link(href="//muscache.#{domain}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
     link(href="//muscache2.#{domain}/404.css", rel='stylesheet', type='text/css')
+    script(type='text/javascript', src='//muscache4.#{domain}/local/jquery-1.10.2.min.js')
+    script(src="//muscache3.#{domain}/local/plax.js", type='text/javascript')
+    script(type='text/javascript').
+      $(function() {
+        setTimeout(function() {
+          $('.bg').plaxify({xRange:40, invert:true});
+          $('.logo').plaxify({xRange:90});
+          $('.note').plaxify({xRange:40});
+          $.plax.enable();
+        }, 100);
+      })
   body(onclick="window.location='https://#{domain}'")
     img(src="//muscache.#{domain}/images/live_support.jpg" class="bg")
     .container
       h1.logo
         a(href="https://#{domain}") Power 
           b Bulletin
-      .beacon
+        .beacon
       .note
         span #
         b Invalid Request
