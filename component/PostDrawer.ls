@@ -6,6 +6,7 @@ require! \./Editor
 require! furl: \../shared/forum-urls
 
 {in-thread-mode, thread-mode, storage, submit-form, post-success} = require \../client/client-helpers
+{is-forum-homepage} = require \../shared/shared-helpers
 
 module.exports =
   class PostDrawer extends PBComponent
@@ -48,7 +49,7 @@ module.exports =
               @close!
             else # open & re-create if necessary
               make-resizable f
-        false
+          false
       #}}}
 
       ####  main  ;,.. ___  _
@@ -63,6 +64,7 @@ module.exports =
       # setup Editor
       <~ set-timeout _, 50ms
       unless @is-creating-thread! or @is-editing! then thread-mode false # remove title
+      if is-forum-homepage window.location.pathname then thread-mode! # new thread
       @focus!
     close: ~>
       set-timeout (~>
