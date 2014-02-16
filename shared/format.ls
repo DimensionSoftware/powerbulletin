@@ -136,3 +136,5 @@ md = if markdown.markdown then markdown.markdown else markdown
 # require! { \pagedown, \./shared/format }
 # cv = format.cv pagedown.get-sanitizing-converter!
 # cv.make-html "# http://foo.com/img.jpg\n\n* one\n* two\n* three", {}
+#
+# vim:fdm=indent
