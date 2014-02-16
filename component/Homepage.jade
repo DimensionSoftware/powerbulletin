@@ -1,3 +1,10 @@
+mixin social
+  if typeof(social) !== 'undefined' && social
+    .social
+      .fb-share-button(data-type='button_count')
+      a.twitter-share-button(href='https://twitter.com/share')
+      .g-plus(data-action='share')
+
 mc = typeof(forum) != "undefined" ? forum.moderation_count : 0
 .homepage(class=activeForumId!='homepage'?'resizable forum':'')
   if description.length
@@ -10,4 +17,5 @@ mc = typeof(forum) != "undefined" ? forum.moderation_count : 0
           | Moderation#{mc == 1 ? '' : 's'}
   .MenuSummary
   | &nbsp;
+  +social
   .Pins
