@@ -124,7 +124,7 @@ md = if markdown.markdown then markdown.markdown else markdown
 # create a custom render function
 @render-fn = (before-filters, transforms) ->
   (text) ->
-    filtered-text = before-filters |> fold ((text, filter) -> filter(text)), ''
+    filtered-text = before-filters |> fold ((text, filter) -> filter(text)), text
     tree          = filtered-text  |> md.parse |> md.to-HTML-tree
     tx-tree       = transforms     |> fold ((html-tree, tx) -> transform tx, html-tree), tree
     md.render-json-ML tx-tree
