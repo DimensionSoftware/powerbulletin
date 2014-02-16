@@ -62,7 +62,7 @@ url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3}
     [void, void, tree]
   else if is-type \Array, tree
     if is-type \Object, tree.1
-      if tree.length > 3
+      if tree.length > 2
         [tree.0, tree.1, tree.slice(2)]
       else
         [tree.0, tree.1]
@@ -89,10 +89,15 @@ url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3}
 
 @tx = tx = {}
 
-# take a string and return JsonHTML for embedded links
+# take a string and return JsonML for embedded links
 @tx.auto-embed-link = (s) ->
   r = util.split s, util.url-pattern
   |> map (-> if it.match(util.url-pattern) then [util.embedded(it)] else it)
+  |> concat # just flatten one level
+
+@tx.new-line = (s) ->
+  r = util.split s, /\n/
+  |> map (-> if it.match(/\n/) then [[\br {}]] else it)
   |> concat # just flatten one level
 
 # TODO - #tag support
@@ -113,6 +118,7 @@ url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3}
   tree = md.parse esc-text
   |> md.to-HTML-tree
   |> transform tx.auto-embed-link
+  |> transform tx.new-line
   |> md.render-json-ML
 
 # create a custom render function
