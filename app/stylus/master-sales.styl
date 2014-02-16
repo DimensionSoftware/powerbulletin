@@ -18,7 +18,6 @@ colored_text = #ddd
 @import "app/stylus/theme"
 @import "app/stylus/controls"
 @import "app/stylus/tooltip"
-@import "app/stylus/animations"
 @import "app/stylus/sprites"
 
 @import "component/SalesRouter"
@@ -33,3 +32,6 @@ colored_text = #ddd
 @import "component/Auth-layout"
 @import "component/Auth-theme"
 @import "component/MiniSiteList"
+
+// animations last since they override some of fluidity
+@import "app/stylus/animations"
