@@ -162,7 +162,10 @@ module.exports =
 
       #log-format = ":method :req[Host]:url :status :response-time - :res[Content-Length]"
 
-      app.use connect.logger(immediate: false, format: sh.dev-log-format) if (env is \development or env is void)
+      if (env is \development or env is void)
+        app.use connect.logger(immediate: false, format: sh.dev-log-format)
+      else
+        app.use connect.logger(immediate: false, format: sh.prod-log-format)
 
       for a in [app] # apply app defaults
         a.use mw.vars
