@@ -410,7 +410,7 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
     f.find \input:first .focus!select! unless f.has-class \no-focus
     if data?success
       # indicated saved
-      show-tooltip t, (t.data(\msg) or \Saved!)
+      show-tooltip t, (data?msg or t.data(\msg) or \Saved!)
       for k, v of inputs
         for e in v
           e = $ e

@@ -255,7 +255,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
 
       (err, r) <- async.each emails, register
       if err then return res.json {success:false, msg:err}
-      res.json success:true
+      res.json success:true, msg:'Invites Sent!'
 
     | otherwise =>
       user = req.params.user
