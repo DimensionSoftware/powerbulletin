@@ -42,9 +42,12 @@ app.post \/resources/posts/:id/uncensor,    handlers.uncensor
 app.post \/resources/posts/:id/sticky,      handlers.sticky
 app.post \/resources/posts/:id/locked,      handlers.locked
 app.post \/resources/users/:id/avatar,      handlers.profile-avatar
+app.put \/resources/users/:id/avatar,       handlers.profile-avatar-crop
+
 app.post   \/resources/forums/:id/background, handlers.forum-background
 app.delete \/resources/forums/:id/background, handlers.forum-background-delete
-app.put \/resources/users/:id/avatar,       handlers.profile-avatar-crop
+app.post   \/resources/sites/:id/logo,        handlers.forum-logo
+app.delete \/resources/sites/:id/logo,        handlers.forum-logo-delete
 #}}}
 
 #{{{ Common JS

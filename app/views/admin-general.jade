@@ -1,5 +1,5 @@
 analytics = unescape(site.config.analytics)
-form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
+form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", enctype="multipart/form-data")
   fieldset
     label(for='name') Title
     input(id='name', class='name', name='name', type='text', value=site.name)
@@ -13,11 +13,14 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
       a.mutant(href='/admin/invites') Invites
     .break
     .theme
-      .color-picker
       input.collapse(id='lookandfeel', type='checkbox')
       label(for='lookandfeel')
         h4 Look &amp; Feel
         .dialog
+          .break
+          //- XXX html5-uploader works inside parent <form>
+          #logo_uploader
+          .break
           //-label(for='theme') Theme
           //-select(id='theme', name='theme')
           //-  option(disabled=true, selected=true) - Choose a Theme -

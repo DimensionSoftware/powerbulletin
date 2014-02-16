@@ -240,6 +240,22 @@ function background-for-forum m, active-forum-id
 
     finish fdoc
 
+@forum-logo-delete = (req, res, next) ->
+  site = res.vars.site # get site
+  err, site <- db.site-by-id site.id
+  if err then return next err
+
+  # wipe file from disk
+  file-name = site.config.logo
+  err <- fs.unlink "public/sites/#{file-name.replace(/\?.*$/, '')}"
+  if err then return res.json {-success, msg:err}
+
+  # update config
+  site.config.logo = ''
+  err, r <- db.site-update site # save!
+  if err then return res.json {-success, msg:err}
+  res.json {+success}
+
 @forum-background-delete = (req, res, next) ->
   # get site
   site = res.vars.site
@@ -261,6 +277,34 @@ function background-for-forum m, active-forum-id
   if err then return res.json {-success, msg:err}
   res.json {+success}
 
+@forum-logo = (req, res, next) ->
+  site = res.vars.site
+  err, site <- db.site-by-id site.id
+  if err then return next err
+
+  # html5-uploader (save forum logo)
+  logo = req.files.logo
+
+  dst = "public/sites/#{site.id}"
+  err <- mkdirp dst
+  if err then return res.json {-success, msg:err}
+
+  # atomic write to public/sites/logo
+  ext = extention-for logo?name
+  if ext
+    file-name = "logo.#ext"
+    err <- move logo.path, "#dst/#file-name".to-lower-case!
+    if err then return res.json {-success, msg:err}
+
+    # update site.config
+    site.config.logo = "#file-name?#{h.cache-buster!}".to-lower-case!
+
+    err, r <- db.site-update site # save!
+    if err then return res.json {-success, msg:err}
+    res.json {+success, logo:"#{site.id}/#{site.config.logo}"}
+  else
+    res.json {-success, msg:'What kind of file is this?'}
+
 @forum-background = (req, res, next) ->
   # get site
   site = res.vars.site
@@ -277,22 +321,25 @@ function background-for-forum m, active-forum-id
 
   # atomic write to public/sites/SITE-ID/bg/FORUM-ID.jpg
   forum-id  = parse-int req.params.id
-  ext       = background.name.match(/\.(\w+)$/)?1 or ""
-  file-name = if ext then "#forum-id.#ext" else forum-id
-  err <- move background.path, "#dst/#file-name".to-lower-case!
-  if err then return res.json {-success, msg:err}
+  ext       = extention-for background.name
+  if ext
+    file-name = if ext then "#forum-id.#ext" else forum-id
+    err <- move background.path, "#dst/#file-name".to-lower-case!
+    if err then return res.json {-success, msg:err}
 
-  # update site.config.menu
-  m    = site.config.menu
-  item = menu.flatten m |> find -> it.form.dbid is forum-id
-  unless item then return res.json {-success} # guard
-  path = menu.path-for-upsert m, item.id.to-string!
-  item.form.background = "#{site.id}/bg/#file-name?#{h.cache-buster!}".to-lower-case!
-  site.config.menu     = menu.struct-upsert m, path, item
+    # update site.config.menu
+    m    = site.config.menu
+    item = menu.flatten m |> find -> it.form.dbid is forum-id
+    unless item then return res.json {-success} # guard
+    path = menu.path-for-upsert m, item.id.to-string!
+    item.form.background = "#{site.id}/bg/#file-name?#{h.cache-buster!}".to-lower-case!
+    site.config.menu     = menu.struct-upsert m, path, item
 
-  err, r <- db.site-update site # save!
-  if err then return res.json {-success, msg:err}
-  res.json {+success, background:item.form.background}
+    err, r <- db.site-update site # save!
+    if err then return res.json {-success, msg:err}
+    res.json {+success, background:item.form.background}
+  else
+    res.json {-success, msg:'What kind of file is this?'}
 
 # user profiles /user/:name
 @profile = (req, res, next) ->
@@ -714,5 +761,8 @@ function decorate-menu-item item, forums
           user_id:  forum.last_post_user_id
           created:  add-dates forum, [ \last_post_created ]
   item
+
+function extention-for file-name
+  file-name?match(/\.(\w+)$/)?1 or ""
 
 # vim:fdm=indent

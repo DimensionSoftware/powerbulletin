@@ -35,6 +35,7 @@ require! {
     res.locals.private        = config.private
     res.locals.social         = config.social
     res.locals.style          = config.style
+    res.locals.logo           = config.logo
     res.locals.meta-keywords  = config.meta-keywords or ''
     res.locals.domain-style   = domain_config.style
     res.locals.domain-id      = domain_id

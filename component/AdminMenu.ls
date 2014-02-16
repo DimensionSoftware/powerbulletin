@@ -96,7 +96,7 @@ module.exports =
           @uploader.detach! if @uploader # cleanup
           @uploader = new Uploader {
             locals:
-              background: form.background
+              preview: form.background
               post-url: "/resources/forums/#{form.dbid}/background"
               on-delete: ~>
                 # remove background from config
