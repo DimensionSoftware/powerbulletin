@@ -16,14 +16,14 @@
       .first
         min-width 300px
       tr:nth-child(odd)
-        background-color lighten(lighta, 75%)
+        background-color lighten(lighta, 60%)
       tr:last-child, tr:first-child
         background-color transparent
       tr:last-child
         border-bottom none
       tr
         position relative
-        border-bottom 1px solid lighten(lighta, 60%)
+        border-bottom 1px solid lighten(lighta, 30%)
         transition all .1s ease-out .1s
         .title:before, .last-post:before, .threads:before, .posts:before
           content ''
@@ -35,18 +35,43 @@
           right 4%
           bottom -1px
           box-shadow 0 0 3px light
-          transition .1s ease-out .05s
+          transition all .1s ease-out .05s
         &.item-forum:hover
           .name
+            display inline-block
+            transform scale(1.06)
             background-color light
             border-radius 8px
             color colored_text
             transition none
+          .last-post
+            .date
+              &:before
+                opacity 0
+                transition .1s ease-in
+              transform translate(-10px)
+              display inline-block
+              transition none
+              b
+                color #111
+          .threads, .posts
+            color #000
+            font-weight 500
         &.item-forum
           .name
+            position absolute
+            top 0
             padding 2px 9px
             margin-left -9px
             transition all .05s ease-out .03s
+          .description
+            margin-top 15px
+            font-size .95em
+          .last-post
+            .date
+              transition all .25s ease-out .05s
+            a
+              color #444
         td
           padding (grid - 2) grid
           vertical-align top
@@ -88,11 +113,14 @@
             font-style italic
             font-size .9em
             color #999
-            margin-left 8px
+            margin-left 15px
+            b
+              text-transform capitalize
             &:before
               content '-'
               position absolute
-              left -6px
+              left -8px
+              color #aaa
         .threads, .posts
           position relative
           color #666

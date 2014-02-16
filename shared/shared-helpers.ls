@@ -101,13 +101,13 @@ seconds-to-human-readable = (secs) ->
     bold(@pretty-day-name d.get-day!)
   else if secs-ago < 2628000s # within a month
     weeks = Math.floor secs-ago / 604800s
-    if weeks == 1 then "a week #{suffix}" else "#{weeks} weeks #{suffix}"
+    if weeks == 1 then "a #{bold \week} #{suffix}" else "#{weeks} weeks #{suffix}"
   else if secs-ago < 31446925s # within a year
     months = Math.floor secs-ago / 2628000s
-    if months == 1 then "a month #{suffix}" else "#{months} months #{suffix}"
+    if months == 1 then "a #{bold \month} #{suffix}" else "#{months} months #{suffix}"
   else
     years = Math.floor secs-ago / 31446925s
-    if years == 1 then "a year #{suffix}" else "#{years} years #{suffix}"
+    if years == 1 then "a #{bold \year} #{suffix}" else "#{years} years #{suffix}"
   human.replace /(\d+\s\w+)/g '<b>$1</b>' # bold numbers & metric
 
 # ported from http://erlycoder.com/49/javascript-hash-functions-to-convert-string-into-integer-hash-
