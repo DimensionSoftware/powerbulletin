@@ -61,9 +61,9 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
             label(for='light') Color
             input.color-theme(id='light', name='colorTheme[light]', type='text', value=ct.light, placeholder='#4CCFEA')
             div.preview.light(title='Click to choose a Color!', style="background-color: #{ct.light || '#fff'};")
-            label(for='light_text') Text Color
-            input.color-theme(id='light_text', name='colorTheme[light_text]', type='text', value=ct.light_text, placeholder='#DDDDDD')
-            div.preview.light-text(title='Click to choose a Color!', style="background-color: #{ct.light_text || '#fff'};")
+            label(for='colored_text') Text Color
+            input.color-theme(id='colored_text', name='colorTheme[colored_text]', type='text', value=ct.colored_text, placeholder='#DDDDDD')
+            div.preview.light-text(title='Click to choose a Color!', style="background-color: #{ct.colored_text || '#fff'};")
             label(for='sprite_hue') Sprite Hue
             input.color-hue(id='sprite_hue', name='colorTheme[sprite_hue]', type='text', value=ct.sprite_hue, placeholder='0deg')
             div.preview.sprite-hue(title='Rotate the Color pallette')

@@ -120,7 +120,7 @@ label.switch-control
   //animation-duration .03s
   //background-image linear-gradient(bottom, dark 12px, light 87%, dark 90%)
   background-color light
-  color light_text
+  color colored_text
   border-color #777
   border-top 1px solid light
   border-left 1px solid light
@@ -133,7 +133,7 @@ button:disabled::before, input[type="submit"]:disabled::before, input[type="butt
   background-image linear-gradient(to bottom, rgba(255,255,255,.05) 0%, rgba(255,255,255,.1) 80%)
 button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   cursor default
-  color lighten(light_text, 30%)
+  color lighten(colored_text, 30%)
   opacity .85
   text-shadow 0 1px 0 rgba(0,0,0,.3),1px 1px 0 rgba(100,100,100,.1)
   transition opacity .2s ease-in, color .1s ease-in
@@ -200,7 +200,7 @@ input[type="submit"]::before, button::before, .button::before
   border-left 1px solid dark
   border-right 1px solid dark
   border-bottom-color #444
-  color lighten(light_text, 10%)
+  color lighten(colored_text, 10%)
   font-size 1.25em
   font-weight 500
   padding 6px 15px
