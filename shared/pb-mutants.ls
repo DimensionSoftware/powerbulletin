@@ -566,11 +566,21 @@ same-profile = (hints) ->
           .css {["#{k}filter", "hue-rotate(#{$ @ .val!})"] for k in ['', '-moz-', '-webkit-', '-o-']}
 
       <~ requirejs [\jqueryIris] # live color preview
-      $ \input.color-theme
+      $ \#light
         .iris({
           width: 167px
           target: '.theme .color-picker'
           palettes: <[ #4ccfea #cc8888 #a2ef2e #ff8c00 #f24e4e ]>
+          change: (ev, ui) ->
+            $(ev.target).next!css background-color: ui.color.to-string!
+        })
+        .focus((ev) -> 
+          $(ev.current-target).iris(\show))
+      $ \#colored_text
+        .iris({
+          width: 167px
+          target: '.theme .color-picker'
+          palettes: <[ #222222 #444444 #777777 #dddddd #fffff ]>
           change: (ev, ui) ->
             $(ev.target).next!css background-color: ui.color.to-string!
         })

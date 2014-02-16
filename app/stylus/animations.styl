@@ -1,5 +1,24 @@
 
 // Animations!
+// overwrite fluidity's box-shadow w/ vendor prefixes for working animations (below)
+box-shadow(arg1, arg2, arg3)
+  box-shadow arg1, arg2, arg3
+
+@keyframes online
+  0%
+    box-shadow 0 0 4px 3px rgba(darken(light, 15%), 0), 0 0 0 0 transparent, 0 0 0 0 rgba(light, 0)
+
+  10%
+    box-shadow 0 0 4px 3px darken(light, 30%), 0 0 3px 6px transparent, 0 0 3px 6px lighten(light, 35%)
+
+  100%
+    box-shadow 0 0 4px 3px lighten(rgba(light, 0), 20%), 0 0 0 10px transparent, 0 0 0 15px rgba(light, 0)
+
+.online
+  animation-name online
+  animation-duration 1.5s
+  animation-timing-function ease-in
+
 @keyframes translate-and-scale
   0%
     transform translate(0, 0)

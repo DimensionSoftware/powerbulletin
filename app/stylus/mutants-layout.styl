@@ -904,9 +904,14 @@ html.admin
       .col1, .col2
         float left
     .theme
+      position relative
       .color-picker
         position absolute
         right -200px
+        top 0
+        display none
+      .collapse:checked ~ .color-picker
+        display block
       .preview
         cursor pointer
         position absolute
@@ -1144,7 +1149,7 @@ html.admin
         label
           width 60px
     .menu-link
-     margin 0 95px
+     margin 0 95px 20px 95px
      display block
      color dark
      font-size .9em

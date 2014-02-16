@@ -4,11 +4,6 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
     label(for='name') Title
     input(id='name', class='name', name='name', type='text', value=site.name)
     .break
-    label(for='posts_per_page') Replies 
-      small per page
-    input(id='posts_per_page', placeholder='30', class='posts-per-page', name='postsPerPage', type='text', value='30', maxlength=4)
-    .note Default applies to Profile &amp; Forum pages
-    .break
     label(for='invite_only') Invite Only
     .box
       input.stylish.save#invite_only(type='checkbox', value='checked', name='inviteOnly', checked=site.config.inviteOnly)
@@ -50,10 +45,17 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
             a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
             | code in above
           .break
+      .color-picker
     input.collapse(id='seo', type='checkbox')
     label(for='seo')
       h4 SEO Options
       .dialog
+        .break
+        label(for='posts_per_page') Replies 
+          small per page
+        input(id='posts_per_page', placeholder='30', class='posts-per-page', name='postsPerPage', type='text', value='30', maxlength=4)
+        .note Default applies to Profile &amp; Forum pages
+        .break
         label(for='social') Social
         .box
           input.stylish.save#social(type='checkbox', value='checked', name='social', checked=site.config.social)

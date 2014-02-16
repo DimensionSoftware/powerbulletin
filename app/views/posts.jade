@@ -53,6 +53,8 @@ if typeof(post) !== 'undefined'
             .s-dark-permalink
           a.censor.onclick-censor-post(title='Censor') Censor
             .s-dark-censor
+          a.uncensor.onclick-uncensor-post(title='Remove from Moderation Log') Uncensor
+            .s-dark-censor
         +social
     .children
       if post.posts.length
