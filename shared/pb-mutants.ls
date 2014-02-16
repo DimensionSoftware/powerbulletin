@@ -23,6 +23,7 @@ require! {
   \../component/PhotoCropper
   \../component/Editor
   \../component/Homepage
+  \../component/Uploader
   \../client/globals
   __: lodash
   $R: reactivejs
@@ -544,6 +545,7 @@ same-profile = (hints) ->
   on-unload:
     (window, next-mutant, next) ->
       if window.admin-expanded then $ \body .add-class \collapsed # restore
+      window.component.logo-uploader?detach!
       next!
   on-load:
     (window, next) ->
@@ -564,6 +566,20 @@ same-profile = (hints) ->
       $ \#sprite_hue .on \keyup -> # live hue preview
         $ '.sprite-hue .s-dark-chat'
           .css {["#{k}filter", "hue-rotate(#{$ @ .val!})"] for k in ['', '-moz-', '-webkit-', '-o-']}
+
+      # init-html5-uploader
+      logo    = window.site.config.logo
+      site-id = window.site.id
+      window.component.logo-uploader = new Uploader {
+        locals:
+          name:      \logo
+          preview:   "/#site-id/#logo"
+          post-url:  "/resources/sites/#site-id/logo"
+          on-delete: ~> # remove logo
+            $ 'header .logo' .remove!
+          on-success: (xhr, file, r-json) ~>
+            # TODO set logo
+      }, \#logo_uploader
 
       <~ requirejs [\jqueryIris] # live color preview
       $ \#light

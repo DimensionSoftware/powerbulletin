@@ -88,6 +88,14 @@ body.waiting
       font-style normal
       font-weight 600
       padding-left 3px
+.logo.custom-logo
+  a
+    display inline-block
+    background-image none
+    img
+      position absolute
+      top 0
+      left 0
 header
   position fixed
   height header_height
@@ -521,6 +529,10 @@ body.scrolled
       font-size .6em
       transition all .1s ease-out
       padding-top 4px
+  .logo.custom-logo
+    a
+      img
+        max-height 32px
   header
     height header_scrolled_height
     .container
