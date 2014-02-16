@@ -17,33 +17,6 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
     .note Disallow the public from registering - 
       a.mutant(href='/admin/invites') Invites
     .break
-    .break
-    input.collapse(id='seo', type='checkbox')
-    label(for='seo')
-      h4 SEO Options
-      .dialog
-        label(for='social') Social
-        .box
-          input.stylish.save#social(type='checkbox', value='checked', name='social', checked=site.config.social)
-          label.switch-control(for='social')
-            .switch
-        .note Embed share links for Facebook, Twitter &amp; Google+
-        .break
-        label(for='private') Privacy
-        .box
-          input.stylish.save#private(type='checkbox', value='checked', name='private', checked=site.config.private)
-          label.switch-control(for='private')
-            .switch
-        .note Hide content from search engines &amp; the public
-        .break.double
-        label(for='keywords') Keywords
-        textarea.save(id='keywords', name='metaKeywords')= site.config.metaKeywords
-        .note Separate meta keywords with commas
-        .break
-        label(for='analytics') Analytics
-        textarea.save(id='analytics', name='analytics')= analytics
-        .note Paste Javascript code above, excluding &lt;script&gt; tags
-        .break
     .theme
       .color-picker
       input.collapse(id='lookandfeel', type='checkbox')
@@ -77,7 +50,32 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
             a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
             | code in above
           .break
-
+    input.collapse(id='seo', type='checkbox')
+    label(for='seo')
+      h4 SEO Options
+      .dialog
+        label(for='social') Social
+        .box
+          input.stylish.save#social(type='checkbox', value='checked', name='social', checked=site.config.social)
+          label.switch-control(for='social')
+            .switch
+        .note Embed share links for Facebook, Twitter &amp; Google+
+        .break
+        label(for='private') Privacy
+        .box
+          input.stylish.save#private(type='checkbox', value='checked', name='private', checked=site.config.private)
+          label.switch-control(for='private')
+            .switch
+        .note Hide content from search engines &amp; the public
+        .break.double
+        label(for='keywords') Keywords
+        textarea.save(id='keywords', name='metaKeywords')= site.config.metaKeywords
+        .note Separate meta keywords with commas
+        .break
+        label(for='analytics') Analytics
+        textarea.save(id='analytics', name='analytics')= analytics
+        .note Paste Javascript code above, excluding &lt;script&gt; tags
+        .break
     .domains
       input.collapse(id='domains', type='checkbox')
       label(for='domains')
