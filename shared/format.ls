@@ -31,7 +31,7 @@ url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3}
   else if h is \www.youtube.com and url.match(/v=(\w+)/)
     [m,v] = url.match(/v=(\w+)/)
     #"""<iframe width="560" height="315" src="//www.youtube.com/embed/#v" frameborder="0" allowfullscreen></iframe>"""
-    [ \iframe { width: 560, height: 315, src: "//www.youtube.com/embed/#v", frameborder: 0, allowfullscreen: true } ] # TODO instead of an iframe, do something that delays loading flash
+    [ \iframe { width: '560', height: '315', src: "//www.youtube.com/embed/#v", frameborder: '0', allowfullscreen: 'true' } ] # TODO instead of an iframe, do something that delays loading flash
   else
     #"""<a href="#{url}" target="_blank">#{url}</a>"""
     [ \a, { href: url, target: \_blank }, url ]
