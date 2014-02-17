@@ -51,7 +51,7 @@ html
       if logo
         h1.logo.custom-logo
           a.mutant(tabindex='-1', href='/', title=metaKeywords)= siteName
-            img(src="#{cacheUrl}/sites/#{siteId}/#{logo}")
+            img(title=siteName, alt=metaKeywords, src="#{cacheUrl}/sites/#{siteId}/#{logo}")
       else
         h1.logo
           a.mutant(tabindex='-1', href='/', title=metaKeywords) Power

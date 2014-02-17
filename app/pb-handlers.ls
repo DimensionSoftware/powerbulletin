@@ -247,7 +247,7 @@ function background-for-forum m, active-forum-id
 
   # wipe file from disk
   file-name = site.config.logo
-  err <- fs.unlink "public/sites/#{file-name.replace(/\?.*$/, '')}"
+  err <- fs.unlink "public/sites/#{site.id}/#{file-name.replace(/\?.*$/, '')}"
   if err then return res.json {-success, msg:err}
 
   # update config
