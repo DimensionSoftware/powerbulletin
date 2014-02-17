@@ -4,7 +4,7 @@ require, exports, module <- define
 require! {
   markdown
 }
-{id, is-type} = require \prelude-ls
+{id, is-type, concat, map} = require \prelude-ls
 md = if markdown.markdown then markdown.markdown else markdown
 
 @util = util = {}
@@ -12,8 +12,6 @@ md = if markdown.markdown then markdown.markdown else markdown
 # A robust regexp for matching URLs. Thanks: https://gist.github.com/dperini/729294
 #   via https://github.com/evilstreak/markdown-js/blob/master/src/dialects/gruber.js
 url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?/i.source;
-
-# regex to match urls
 @util.url-pattern     = new RegExp url-pattern, 'i'
 @util.url-pattern-all = new RegExp url-pattern, 'ig'
 
@@ -38,6 +36,7 @@ url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3}
     #"""<a href="#{url}" target="_blank">#{url}</a>"""
     [ \a, { href: url, target: \_blank }, url ]
 
+# given a string, split it on pattern, but include the matched text as well.
 @util.split = _split = (string, pattern, fn) ->
   m = string.match pattern
   if m
@@ -95,22 +94,28 @@ url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3}
   |> map (-> if it.match(util.url-pattern) then [util.embedded(it)] else it)
   |> concat # just flatten one level
 
+# turn newlines into br tags
 @tx.new-line = (s) ->
   r = util.split s, /\n/
   |> map (-> if it.match(/\n/) then [[\br {}]] else it)
-  |> concat # just flatten one level
+  |> concat
 
-# TODO - #tag support
+# #hashtag support
 @tx.hash-tag = (s) ->
+  hashtag = /#\w+/
+  r = util.split s, hashtag
+  |> map (-> if it.match(hashtag) then [[\a, { class:"mutant hash-tag", href:"/search?q=#{encode-URI-component it.to-lower-case!}" }, it ]] else it)
+  |> concat
 
-# TODO - @tag support
+# @mention (aka at-tag) support
 @tx.at-tag = (s) ->
+  mention = /@\w+/
+  r = util.split s, mention
+  |> map (-> if it.match(mention) then [[\a, { class:"mutant at-tag", href:"/user/#{encode-URI-component it.replace(/^@/, '')}" }, it ]] else it)
+  |> concat
 
 # TODO - bbcode support
 @tx.bbcode = (s) ->
-
-# TODO - sanitize html ### use https://code.google.com/p/jquery-clean/
-@tx.sanitize = (s) ->
 
 # take text and apply markup rules to it
 @render = (text) ->
@@ -118,8 +123,11 @@ url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3}
   tree = md.parse esc-text
   |> md.to-HTML-tree
   |> transform tx.auto-embed-link
+  |> transform tx.hash-tag
+  |> transform tx.at-tag
   |> transform tx.new-line
-  |> md.render-json-ML
+  # cl tree
+  md.render-json-ML tree
 
 # create a custom render function
 @render-fn = (before-filters, transforms) ->
@@ -131,10 +139,4 @@ url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3}
 
 @
 
-# Example:
-#
-# require! { \pagedown, \./shared/format }
-# cv = format.cv pagedown.get-sanitizing-converter!
-# cv.make-html "# http://foo.com/img.jpg\n\n* one\n* two\n* three", {}
-#
 # vim:fdm=indent
