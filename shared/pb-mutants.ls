@@ -573,7 +573,7 @@ same-profile = (hints) ->
       window.component.logo-uploader = new Uploader {
         locals:
           name:      \logo
-          preview:   "/#site-id/#logo"
+          preview:   if logo then "/#site-id/#logo" else void
           post-url:  "/resources/sites/#site-id/logo"
           on-delete: ~> # remove logo
             $ 'header .logo' .remove!
