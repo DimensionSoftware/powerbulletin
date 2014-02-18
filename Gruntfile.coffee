@@ -105,10 +105,10 @@ module.exports = (grunt) ->
     exec "bin/build-component-jade"
     done()
 
-  grunt.registerTask 'css', 'Build master.css for PB, Sales & Community', ->
+  grunt.registerTask 'css', 'Build master.css for PB, Sales & Community (ltr + emkel, too)', ->
     done = this.async()
     fn = (id, cb) -> h.renderCssToFile id, 'master.styl', cb
-    async.each [1, 2, 5], fn, (err) ->
+    async.each [1, 2, 5, 6, 8], fn, (err) ->
       if err then console.log err
       h.renderCss 'master-sales.styl', (err, blocks) ->
         fs.writeFile 'public/master-sales.css', blocks, (err) ->
