@@ -135,7 +135,6 @@ html.forum, html.profile, html.search, html.moderation
           height 101%
           bottom -10px
           content ''
-          background-image linear-gradient(to top, dark 15%, dark 16%, lighten(light, 18%) 75%, lighten(light, 35%) 100%)
         &::after
           position absolute
           content ''
@@ -173,10 +172,11 @@ html.forum, html.profile, html.search, html.moderation
         background-image none
         &::before
           width 5px
+          background-image linear-gradient(to top, dark 15%, dark 16%, lighten(light, 12%) 75%, lighten(light, 20%) 100%)
+        // {{{ active thread arrow
         .arrow
           display none
-          position fixed
-          content ''
+          position absolute
           top 0
           right -51px
           margin-top 0
@@ -222,6 +222,7 @@ html.forum, html.profile, html.search, html.moderation
             border-left 12px solid #fff
             margin-top -65px
             right -63px
+        //}}}
       .thread.active:last-child, .thread.active
         z-index 9
         // background-color #fff
@@ -241,6 +242,10 @@ html.forum, html.profile, html.search, html.moderation
       .thread.sticky
         background-image none
         background-color lighta
+        &.active
+          .arrow
+            &:after
+              border-left 12px solid lighta
 //}}}
 //{{{ - profile
 html.profile

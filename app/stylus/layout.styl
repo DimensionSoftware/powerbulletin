@@ -393,6 +393,19 @@ body.paginator
 
   .ui-resizable-e
     cursor ew-resize
+    &:before
+      position absolute
+      content ''
+      top 0
+      right 4px
+      bottom 0
+      width 0
+      transition all .1s ease-out
+    &:hover:before
+      width 1px
+      background rgba(light, .3)
+      box-shadow 0 1px 2px rgba(light,.2)
+      transition all .05s ease-in .1s
 //}}}
 //{{{ Main Content
 .col1
