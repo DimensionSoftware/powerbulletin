@@ -282,7 +282,16 @@ layout-on-personalize = (w, u) ->
 
       window.$ \#main_content .remove-class \transparent # fade content in
 
-      # refresh share links
+#      $ \.scrollable .on \scroll ->
+#        offset = ($ \.threads .position!top)-200px
+#        active = ($ '.threads > .active' .offset!top)
+#        $ \.arrow
+#          ..css top:offset+(active*.4)
+#          ..hide! # force paint
+#          ..show!
+#        #$('.arrow').css({top:$('.threads').position().top+200}).hide().show()
+
+      #{{{ refresh share links
       if window.social
         # load share links for fb, google & twitter
         # https://developers.facebook.com/docs/plugins/share-button/
@@ -311,6 +320,7 @@ layout-on-personalize = (w, u) ->
         #try gapi.plusone.go!
         try FB.XFBML.parse!
         try twttr.widgets.load!
+      #}}}
       next!
   on-initial:
     (window, next) ->
@@ -348,9 +358,9 @@ layout-on-personalize = (w, u) ->
       next!
   on-mutate:
     (window, next) ->
-      scroll-to-top!
       set-wide! # ensures correct style for width
       window.socket?emit \online-now
+      set-timeout (-> $ window.scroll-top 0), 10ms # yield
       next!
   on-personalize: (w, u, next) ->
     w.r-user u
