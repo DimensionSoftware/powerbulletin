@@ -91,15 +91,15 @@ body.scrolled
       letter-spacing 0
       transform translate(23px, -29px)
       opacity .5
-      color dark
+      color dark_theme_color
       transition .2s ease-out
     .pb
       display none
       //font-weight 500
       //text-transform uppercase
       transform translateX(-85px)
-      color dark
-      text-shadow 1px 1px 0 light
+      color dark_theme_color
+      text-shadow 1px 1px 0 theme_color
       letter-spacing 1px
       font-style normal
       font-weight 300
@@ -113,7 +113,7 @@ body.scrolled
   section
     opacity 1
   #features::after
-    border-top-color light
+    border-top-color theme_color
   nav
     right 44px
     opacity 1
@@ -344,7 +344,7 @@ body.scrolled
       animation-name tiny-grow
       animation-duration .1s
       h1
-        text-shadow 0 0 2px light
+        text-shadow 0 0 2px theme_color
         transition none
     h1
       font-size 1.5em
@@ -484,12 +484,12 @@ body.scrolled
         opacity 0
         outline none
       h4
-        color light
+        color theme_color
         margin-bottom 38px
         font-weight bold
         font-size 3em
         letter-spacing 1px
-        text-shadow 1px 1px 0 dark
+        text-shadow 1px 1px 0 dark_theme_color
         text-align left
       ul
         list-style-type circle
@@ -533,7 +533,7 @@ body.scrolled
     min-width 900px
     height 195px
     border-top 1px solid #eee
-    background-image linear-gradient(bottom, light -650px, #fff 180px)
+    background-image linear-gradient(bottom, theme_color -650px, #fff 180px)
     article
       width 530px
       h3

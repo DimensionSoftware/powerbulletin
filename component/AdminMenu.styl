@@ -54,7 +54,7 @@
       margin 20px 0
       li.active::after
         left 1px
-        background light
+        background theme_color
         opacity .7
         transition all .2s ease-out
       li.active::before
@@ -62,7 +62,7 @@
         transition width .2s ease-out .15s
       li.active > div > input
         font-weight bold
-        color light
+        color theme_color
       li
         list-style-type none
         position relative
@@ -84,7 +84,7 @@
           bottom 18px
           left 1px
           height 2px
-          background light
+          background theme_color
         input
           width 200px
         .cancel
@@ -105,7 +105,7 @@
       margin -1px
       height 1px
       background-color #333
-      border-bottom 1px solid light
+      border-bottom 1px solid theme_color
       z-index 2
   //}}}
   //{{{ right-side (menu body/content)
@@ -161,10 +161,10 @@
             width 115px
             cursor pointer
         li, input[type='radio']:hover + label
-          color light
+          color theme_color
         li, input[type='radio']:checked + label
           font-weight bold
-          color light
+          color theme_color
         li, input[type='radio'] + label
           font-weight 400
           display inline-block

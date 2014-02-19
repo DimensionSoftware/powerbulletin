@@ -42,7 +42,7 @@ body.scrolled
         min-width 850px
         padding 10px 0 25px 0
         margin-left -27px
-        box-shadow 0 1px 15px -1px light
+        box-shadow 0 1px 15px -1px theme_color
         transition padding .15s ease-out .25s, margin-left .15s ease-out .3s, box-shadow .15s ease-out .2s, max-height .15s ease-out .3s
         &.hide
           opacity 0
@@ -107,12 +107,12 @@ body.scrolled
         color dark_text!important
         transition color .5s ease-out
       > .title.active::after
-        background radial-gradient(ellipse farthest-corner at 45% 800%, light 50%, rgba(255,255,255,0) 80%)
+        background radial-gradient(ellipse farthest-corner at 45% 800%, theme_color 50%, rgba(255,255,255,0) 80%)
         height 5px
         width 60%
         transition width .15s ease-out, height .15s ease-out
       > .title.hover::after
-        background radial-gradient(ellipse farthest-corner at 50% 375%, light 50%, rgba(255,255,255,0) 80%)
+        background radial-gradient(ellipse farthest-corner at 50% 375%, theme_color 50%, rgba(255,255,255,0) 80%)
         height 7px
         width 60%
         transition width .15s ease-out .15s
@@ -153,14 +153,14 @@ body.scrolled
               color colored_text!important
               animation-name none
               transition none
-              background-color light
+              background-color theme_color
               border-radius 50px
               transform scale(1.05)
           .row.active
             &:hover
               > a
                 color colored_text!important
-                background-color light
+                background-color theme_color
                 transition none
                 padding-bottom 1px
             a
