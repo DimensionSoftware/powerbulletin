@@ -26,7 +26,10 @@
       font-weight 300
       font-size 1.4em
       b
-        color theme_color
+        if dark(theme_color)
+          color lighten(theme_color, 23%)
+        else
+          color theme_color
         letter-spacing -2px
         font-size 2em
         font-weight 500
