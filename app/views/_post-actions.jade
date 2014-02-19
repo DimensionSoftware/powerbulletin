@@ -7,8 +7,12 @@ mixin _post_actions(p, moderatorMode)
       a.uncensor.onclick-uncensor-post(title='Remove from Moderation Log') Uncensor
         .s-dark-censor
     else
-      a.onclick-append-reply-ui(title='Comment') Comment
-        .s-dark-chat
+      if typeof(commentable) != 'undefined' && commentable
+        a.onclick-append-reply-ui(title='Comment') Comment
+          .s-dark-chat
+      else
+        a.onclick-footer-toggle(title='Comment') Reply
+          .s-dark-chat
       a.edit.mutant.no-surf(data-edit=p.id, href="#{stripped}/edit/#{p.id}") Edit
         .s-edit
       a.permalink.mutant(href=p.uri, title='Permalink') Permalink

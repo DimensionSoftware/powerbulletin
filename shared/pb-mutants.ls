@@ -232,6 +232,7 @@ layout-on-personalize = (w, u) ->
       window.marshal \pagesCount @pages-count
       window.marshal \prevPages @prev-pages
       window.marshal \social @social
+      window.marshal \commentable @commentable
 
       do ~>
         if not @post then return
