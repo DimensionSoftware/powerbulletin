@@ -111,7 +111,7 @@ window.scroll-to-top = (cb=->) ->
   cb!
 window.awesome-scroll-to = (e, duration, cb=->) ->
   e      = $ e
-  ms     = duration or 1000ms
+  ms     = duration or 800ms
   offset = 100px
 
   return unless e.length and e.is \:visible # guard
@@ -122,7 +122,7 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
     dst-scroll = Math.round(e.position!top) - offset
     cur-scroll = window.scroll-y
     if Math.abs(dst-scroll - cur-scroll) > (threshold*2)
-      <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms, \easeInExpo
+      <- $ 'html,body' .animate { scroll-top:dst-scroll }, ms, \easeInOutExpo
       cb!
     else
       cb!

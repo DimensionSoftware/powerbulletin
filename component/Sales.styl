@@ -74,6 +74,17 @@ body.scrolled
       opacity 1
       transform translate(0, 0) rotate(0deg)
       transition all .5s ease-out
+      position relative
+      z-index 2
+      .beacon
+        position relative
+        z-index 1
+        top 15px
+        left 15px
+        height 50px
+        width 50px
+        border-radius 100%
+        //animation r0 2s ease-out .8s infinite
   #register_top.show
     transform translateX(-25px)
     opacity 0
@@ -218,14 +229,14 @@ body.scrolled
         position absolute
         top 55px
         left 170px
-        animation-name move-down
-        animation-duration 1s
-        animation-iteration-count infinite
-        animation-direction alternate
+        //animation-name move-down
+        //animation-duration 1s
+        //animation-iteration-count infinite
+        //animation-direction alternate
     &:hover
       letter-spacing 4px
       color #fff
-      transition all .1s ease-out
+      transition all .08s ease-out
   //}}}
   //{{{ Header
   header
@@ -382,26 +393,29 @@ body.scrolled
     right -500px
     width 150px
     z-index 10
-    li.active::before, li:hover::before
-      background-color transparent
-      border 1px solid #444
-      right -2px
-      height 6px
-      width 6px
-      border-radius 6px
-    li.active::before
-      background-color #777
     li
       position relative
+      margin-bottom 2px
+      &.active::before, &:hover::before
+        background-color transparent
+        border 1px solid #333
+        right -2px
+        top 5px
+        height 7px
+        width 7px
+        border-radius 100%
+      &.active::before
+        background-color #999
       &::before
         content ''
         position absolute
         right 0
+        margin-top 2px
         top 6px
-        height 4px
-        width 4px
+        height 5px
+        width 5px
         border-radius 5px
-        background-color #666
+        background-color #555
         font-weight 300
         transition all .1s ease-out
       &:hover
@@ -419,7 +433,7 @@ body.scrolled
         margin-right -25px
         letter-spacing -5px
         opacity 0
-        background rgba(255,255,255,.4)
+        background rgba(255,255,255,.3)
         font-size .8em
   .container.visible
     visibility visible
@@ -537,7 +551,7 @@ body.scrolled
     article
       width 530px
       h3
-        left 130px
+        left 80px
         color #000
       h3::after
         display none
@@ -664,4 +678,17 @@ footer
     padding 0 23px 0 30px
     //}}}
 
+// overwrite fluidity's box-shadow w/ vendor prefixes for working animations (below)
+box-shadow(arg1, arg2, arg3)
+  box-shadow arg1, arg2, arg3
+
+@keyframes r0
+  0%
+    box-shadow 0 0 8px 6px rgba(26, 255, 179, 0), 0 0 0 0 transparent, 0 0 0px 0px rgba(26, 255, 179, 0)
+
+  10%
+    box-shadow 0 0 8px 6px #1affb3, 0 0 12px 10px transparent, 0 0 12px 14px #1affb3
+
+  100%
+    box-shadow 0 0 8px 6px rgba(26, 255, 179, 0), 0 0 0px 40px transparent, 0 0 0px 40px rgba(26, 255, 179, 0)
 // vim:fdm=marker
