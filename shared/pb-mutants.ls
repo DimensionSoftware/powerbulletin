@@ -600,7 +600,7 @@ same-profile = (hints) ->
         .iris({
           width: 167px
           target: '.theme .color-picker'
-          palettes: <[ #222222 #444444 #777777 #dddddd #fffff ]>
+          palettes: <[ #222222 #444444 #777777 #dddddd #ffffff ]>
           change: (ev, ui) ->
             $(ev.target).next!css background-color: ui.color.to-string!
         })
