@@ -17,6 +17,10 @@ url-pattern = '''(?:(?:https?)://(?:(?:(?:(?:(?:(?:[a-zA-Z0-9][-a-zA-Z0-9]*)?[a-
 @util.replace-urls = (s, fn) ->
   s.replace util.url-pattern-all, fn
 
+md-ref-pattern = '(\\s*)\\[(\\w+)\\]:\\s*(http\\S+)'
+@util.md-ref-pattern     = new RegExp '^' + md-ref-pattern, 'im'
+@util.md-ref-pattern-all = new RegExp '^' + md-ref-pattern, 'img'
+
 # given a url, return its hostname
 @util.hostname = (url) ->
   url.match(/^https?:\/\/(.*?)\//)?1
@@ -116,16 +120,24 @@ url-pattern = '''(?:(?:https?)://(?:(?:(?:(?:(?:(?:[a-zA-Z0-9][-a-zA-Z0-9]*)?[a-
 # TODO - bbcode support
 @tx.bbcode = (s) ->
 
-# take text and apply markup rules to it
-@render = (text) ->
+# prepare text before parsing
+@escape = (text) ->
   esc-text = util.replace-urls text, (url) -> url.replace /_/g, '\\_'
+  esc-text.replace util.md-ref-pattern-all, (m) -> m.replace /\\_/g, '_'
+
+# take text and apply markup rules to it
+@parse = (text) ->
+  esc-text = @escape text
   tree = md.parse esc-text
   |> md.to-HTML-tree
   |> transform tx.auto-embed-link
   |> transform tx.hash-tag
   |> transform tx.at-tag
   |> transform tx.new-line
-  # cl tree
+
+# take parsed tree and render html
+@render = (text) ->
+  tree = @parse text
   md.render-json-ML tree
 
 # create a custom render function
