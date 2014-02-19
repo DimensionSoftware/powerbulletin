@@ -82,10 +82,10 @@ html.forum, html.profile, html.search, html.moderation
           padding 2px 4px
           border-radius 8px 2px
         .hash-tag
-          background lighta
-          color dark
+          background theme_alpha
+          color dark_theme_color
         .at-tag
-          color dark
+          color dark_theme_color
 
       // 2nd children and thereafter are comments
       .children
@@ -147,7 +147,7 @@ html.forum, html.profile, html.search, html.moderation
           width 80%
         .title
           text-shadow none
-          color dark
+          color dark_theme_color
           display inline-block
           border-bottom 1px solid transparent
         .created
@@ -172,7 +172,7 @@ html.forum, html.profile, html.search, html.moderation
         background-image none
         &::before
           width 5px
-          background-image linear-gradient(to top, dark 15%, dark 16%, lighten(theme_color, 12%) 75%, lighten(theme_color, 20%) 100%)
+          background-image linear-gradient(to top, dark_theme_color 15%, dark_theme_color 16%, lighten(theme_color, 12%) 75%, lighten(theme_color, 20%) 100%)
         // {{{ active thread arrow
         .arrow
           display none
@@ -241,11 +241,11 @@ html.forum, html.profile, html.search, html.moderation
           display block
       .thread.sticky
         background-image none
-        background-color lighta
+        background-color theme_alpha
         &.active
           .arrow
             &:after
-              border-left 12px solid lighta
+              border-left 12px solid theme_alpha
 //}}}
 //{{{ - profile
 html.profile
@@ -266,9 +266,9 @@ html.admin
       &.feature.upgrade
         font-size .75em
       &.feature.upgrade.active::after
-        border-left-color dark
+        border-left-color dark_theme_color
       &.feature.upgrade.active
-        background-color dark
+        background-color dark_theme_color
       &.feature
         position relative
         margin-top (grid*3)
@@ -281,7 +281,7 @@ html.admin
           top -(grid)
           left 50px
     li.active
-      background-color dark
+      background-color dark_theme_color
       text-shadow 0 1px 0 #000
       border-radius 9px / 2px
       border-top-right-radius 0
@@ -299,7 +299,7 @@ html.admin
         opacity 1
         right -34px
         border 17px solid transparent
-        border-left 17px solid dark
+        border-left 17px solid dark_theme_color
         transition all .1s ease-out
     li
       a
@@ -339,7 +339,7 @@ html.admin
     .notes
       font-weight 300
       a
-        color dark
+        color dark_theme_color
   //}}}
 html.privateSite
   .fancybox-overlay .fancybox-wrap .fancybox-skin, .fancybox-overlay .fancybox-wrap .fancybox-inner

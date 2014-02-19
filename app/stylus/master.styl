@@ -18,9 +18,9 @@ tint_color = rgba(240,240,240,0.65)
 // site-specific variable theme override
 @import "public/sites/" + site-id + "/color-theme.styl"
 
-lighta = rgba(tint(theme_color, 50%), .15)
-dark   = darken(theme_color, 40%)
-dark_text  = darken(theme_color, 60%)
+theme_alpha      = rgba(tint(theme_color, 50%), .15)
+dark_theme_color = darken(theme_color, 40%)
+dark_text        = darken(theme_color, 60%)
 
 // base layout & theme
 @import "app/stylus/layout"
