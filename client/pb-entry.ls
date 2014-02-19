@@ -87,7 +87,7 @@ const sep = \-
 const k-ui = "#{window.user?id}-ui"
 window.get-prefs = ->
   s = storage.get k-ui
-  if s then s.split sep else void
+  if s then s.split sep else []
 window.save-ui = -> # serialize ui state to local storage
   min = 200px
   w = $ \#left_content .width!
