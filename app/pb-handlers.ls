@@ -196,6 +196,7 @@ function background-for-forum m, active-forum-id
     fdoc.active-forum-id  = fdoc.post.forum_id
     fdoc.active-thread-id = post.id
     fdoc.background       = background-for-forum fdoc.menu, fdoc.active-forum-id
+    fdoc.commentable      = !!item?form?comments
 
     finish fdoc
 

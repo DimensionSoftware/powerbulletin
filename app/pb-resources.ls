@@ -30,6 +30,10 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
   if err then return cb err
   cb null, r.is_locked
 
+# Return true if this forum allows nested comments
+is-commentable-forum = (m, forum-id) ->
+  menu.flatten(m) |> find (-> f = it.form; f.dialog is \forum and f.dbid is forum-id and f.comments)
+
 @aliases =
   update: (req, res, next) ->
     site_id = req.user?site_id # only allow updating on auth'd site
@@ -331,6 +335,12 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
     if err then return next err
     if is-locked-thread and not (req.user?rights?super or req?user?sys_rights?super)
       return res.json success: false, errors: [ "This thread is locked." ]
+
+    # on non-commentable forums, force parent_id to be the right value
+    err, parent-post <- db.post site.id, post.parent_id
+    if err then return next err
+    if (not is-commentable-forum(site.config.menu, parse-int(post.forum_id))) and parent-post
+      post.parent_id = parent-post.thread_id
 
     err, ap-res <- db.add-post post
     if err then return next err
