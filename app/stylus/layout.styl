@@ -168,7 +168,7 @@ header
                   border-radius 25px
                   padding 5px 17px
                   color colored_text
-                  background-color light
+                  background-color theme_color
       &::before
         content ''
         position absolute
@@ -405,8 +405,8 @@ body.paginator
       transition all .1s ease-out
     &:hover:before
       width 1px
-      background rgba(light, .3)
-      box-shadow 0 1px 2px rgba(light,.2)
+      background rgba(theme_color, .3)
+      box-shadow 0 1px 2px rgba(theme_color,.2)
       transition all .05s ease-in .1s
 //}}}
 //{{{ Main Content
@@ -563,7 +563,7 @@ body.scrolled
         &::after
           top 0
           right 32px
-          border-top-color light
+          border-top-color theme_color
         &::before
           display none
         &:hover
@@ -618,7 +618,7 @@ body.collapsed
       background-color #bbb
       background radial-gradient(circle closest-corner at 45% 35%, #d0d0d0 40%, #999 100%)
       border 1px solid #888
-      box-shadow 0 0 3px 1px light
+      box-shadow 0 0 3px 1px theme_color
       &::before, &::after
         transform rotate(180deg)
         top 8px

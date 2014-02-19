@@ -585,7 +585,7 @@ same-profile = (hints) ->
       }, \#logo_uploader
 
       <~ requirejs [\jqueryIris] # live color preview
-      $ \#light
+      $ \#theme
         .iris({
           width: 167px
           target: '.theme .color-picker'

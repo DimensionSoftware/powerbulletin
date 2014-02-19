@@ -55,7 +55,7 @@ html.forum, html.profile, html.search, html.moderation
             .summary::before
               transition none
               z-index 2
-              border-left 5px solid light
+              border-left 5px solid theme_color
         .profile-container
           .username
             font-weight 500
@@ -172,7 +172,7 @@ html.forum, html.profile, html.search, html.moderation
         background-image none
         &::before
           width 5px
-          background-image linear-gradient(to top, dark 15%, dark 16%, lighten(light, 12%) 75%, lighten(light, 20%) 100%)
+          background-image linear-gradient(to top, dark 15%, dark 16%, lighten(theme_color, 12%) 75%, lighten(theme_color, 20%) 100%)
         // {{{ active thread arrow
         .arrow
           display none
@@ -189,7 +189,7 @@ html.forum, html.profile, html.search, html.moderation
             z-index 2
         .arrow
           border 43px solid transparent
-          border-left 12px solid light
+          border-left 12px solid theme_color
           right -55px
           &:after
             border 42px solid transparent
@@ -197,7 +197,7 @@ html.forum, html.profile, html.search, html.moderation
             right -41px
         &.small .arrow
           border 32px solid transparent
-          border-left 12px solid light
+          border-left 12px solid theme_color
           right -45px
           &:after
             border 32px solid transparent
@@ -206,7 +206,7 @@ html.forum, html.profile, html.search, html.moderation
             right -30px
         &.large .arrow
           border 55px solid transparent
-          border-left 12px solid light
+          border-left 12px solid theme_color
           right -66px
           &:after
             border 55px solid transparent
@@ -215,7 +215,7 @@ html.forum, html.profile, html.search, html.moderation
             right -54px
         &.x-large .arrow
           border 69px solid transparent
-          border-left 12px solid light
+          border-left 12px solid theme_color
           right -81px
           &:after
             border 64px solid transparent
@@ -226,11 +226,11 @@ html.forum, html.profile, html.search, html.moderation
       .thread.active:last-child, .thread.active
         z-index 9
         // background-color #fff
-        border-right 1px solid light
-        border-bottom 1px solid light
+        border-right 1px solid theme_color
+        border-bottom 1px solid theme_color
         border-top 1px solid #fff
         border-left 0
-        box-shadow 0 0 4px 0 light
+        box-shadow 0 0 4px 0 theme_color
         .title
           color dark_text
           font-style italic
@@ -335,7 +335,7 @@ html.admin
           opacity .9
 
       input[type="checkbox"]:checked + label .switch::after
-        background-color light
+        background-color theme_color
     .notes
       font-weight 300
       a
@@ -369,5 +369,5 @@ html.privateSite
      transition none
      text-decoration none!important
      //border-radius 9px
-     //background-color light
+     //background-color theme_color
 // vim:fdm=marker

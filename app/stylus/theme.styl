@@ -29,18 +29,18 @@ a
 
 .photo
   background-color #fff
-  box-shadow inset 0 1px 0 rgba(255,255,255,0.35),1px 1px 8px -2px light
+  box-shadow inset 0 1px 0 rgba(255,255,255,0.35),1px 1px 8px -2px theme_color
   opacity .85
 
 .online
-  box-shadow 0 0 2px 0 dark, 1px 1px 10px -1px light
-  border 1px solid light
+  box-shadow 0 0 2px 0 dark, 1px 1px 10px -1px theme_color
+  border 1px solid theme_color
   opacity 1!important
   display block
   transition opacity .3s ease-out
 
 .saved
-  box-shadow 0 0 3px 0 light
+  box-shadow 0 0 3px 0 theme_color
   transition box-shadow .3s ease-in-out
 
 .cancel:hover, .onclick-close:hover
@@ -84,7 +84,7 @@ header
         height 40px
         opacity .75
       .query
-        box-shadow 0 1px 1px -1px light inset,0 1px 3px 0 light inset
+        box-shadow 0 1px 1px -1px theme_color inset,0 1px 3px 0 theme_color inset
         border 0
         background none
         border-radius 10px/6px
@@ -98,7 +98,7 @@ header
           height 21px
           text-indent 8px
           border-radius 6px
-          box-shadow 0 1px 2px 1px light, 0 1px 7px -2px light
+          box-shadow 0 1px 2px 1px theme_color, 0 1px 7px -2px theme_color
           color #111
       .query::-webkit-input-placeholder
           color #ccc
@@ -116,16 +116,16 @@ header
         font-weight 400
     .tools
       .bubble, .bubble2
-        box-shadow 1px 1px 3px light
+        box-shadow 1px 1px 3px theme_color
         background-color overlay_color_primary
       .bubble
-        box-shadow 1px 1px 2px light
+        box-shadow 1px 1px 2px theme_color
       &::before
-        background-color light
+        background-color theme_color
       .container
         menu
           background-color overlay_color_primary
-          box-shadow 1px 1px 4px light
+          box-shadow 1px 1px 4px theme_color
 //}}}
 //{{{ Left side
 #left_content
@@ -245,10 +245,10 @@ header
 //{{{ Footer
 footer.expanded
   background-color #fafafa
-  box-shadow 4px 4px 20px 0 light!important
+  box-shadow 4px 4px 20px 0 theme_color!important
 footer
   opacity 0
-  box-shadow 0 0 4px -1px light
+  box-shadow 0 0 4px -1px theme_color
   text-align center
   color #777
   background-image linear-gradient(to top, overlay_tint_color 96%, rgba(255,255,255,.35))
@@ -261,7 +261,7 @@ footer
     position absolute
   &:hover
     color #666
-    box-shadow 0 0 3px 0 light
+    box-shadow 0 0 3px 0 theme_color
     transition all .3s ease-out
   h6
     margin 0
@@ -306,7 +306,7 @@ body.scrolled
     bottom (footer_height - 4)
   footer
     &:hover
-      box-shadow 0 0 4px 0 light
+      box-shadow 0 0 4px 0 theme_color
 //}}}
 
 //{{{ Fancybox
