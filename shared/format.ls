@@ -121,13 +121,13 @@ md-ref-pattern = '(\\s*)\\[(\\w+)\\]:\\s*(http\\S+)'
 @tx.bbcode = (s) ->
 
 # prepare text before parsing
-@escape = (text) ->
+@escape = escape = (text) ->
   esc-text = util.replace-urls text, (url) -> url.replace /_/g, '\\_'
   esc-text.replace util.md-ref-pattern-all, (m) -> m.replace /\\_/g, '_'
 
 # take text and apply markup rules to it
-@parse = (text) ->
-  esc-text = @escape text
+@parse = parse = (text) ->
+  esc-text = escape text
   tree = md.parse esc-text
   |> md.to-HTML-tree
   |> transform tx.auto-embed-link
@@ -136,8 +136,8 @@ md-ref-pattern = '(\\s*)\\[(\\w+)\\]:\\s*(http\\S+)'
   |> transform tx.new-line
 
 # take parsed tree and render html
-@render = (text) ->
-  tree = @parse text
+@render = render = (text) ->
+  tree = parse text
   md.render-json-ML tree
 
 # create a custom render function
