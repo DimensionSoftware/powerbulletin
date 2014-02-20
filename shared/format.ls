@@ -9,14 +9,17 @@ md = if markdown.markdown then markdown.markdown else markdown
 
 @util = util = {}
 
-# A robust regexp for matching URLs. Thanks: https://gist.github.com/dperini/729294
-#   via https://github.com/evilstreak/markdown-js/blob/master/src/dialects/gruber.js
-url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?/i.source;
+# $RE{URI}{HTTP} from Regexp::Common::URI
+url-pattern = '''(?:(?:https?)://(?:(?:(?:(?:(?:(?:[a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9])[.])*(?:[a-zA-Z][-a-zA-Z0-9]*[a-zA-Z0-9]|[a-zA-Z])[.]?)|(?:[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+)))(?::(?:(?:[0-9]*)))?(?:/(?:(?:(?:(?:(?:(?:[a-zA-Z0-9-_.!~*'():@&=+]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*)(?:;(?:(?:[a-zA-Z0-9-_.!~*'():@&=+]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*))*)(?:/(?:(?:(?:[a-zA-Z0-9-_.!~*'():@&=+]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*)(?:;(?:(?:[a-zA-Z0-9-_.!~*'():@&=+]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*))*))*))(?:[?](?:(?:(?:[;/?:@&=+a-zA-Z0-9-_.!~*'()]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*)))?))?)'''
 @util.url-pattern     = new RegExp url-pattern, 'i'
 @util.url-pattern-all = new RegExp url-pattern, 'ig'
 
 @util.replace-urls = (s, fn) ->
   s.replace util.url-pattern-all, fn
+
+md-ref-pattern = '(\\s*)\\[(\\w+)\\]:\\s*(http\\S+)'
+@util.md-ref-pattern     = new RegExp '^' + md-ref-pattern, 'im'
+@util.md-ref-pattern-all = new RegExp '^' + md-ref-pattern, 'img'
 
 # given a url, return its hostname
 @util.hostname = (url) ->
@@ -29,7 +32,7 @@ url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3}
     #"""<a href="#{url}" target="_blank"><img src="#{url}" /></a>"""
     [ \a, { href: url, target: \_blank }, [ \img, { src: url } ] ]
   else if h is \www.youtube.com and url.match(/v=(\w+)/)
-    [m,v] = url.match(/v=(\w+)/)
+    [m,v] = url.match(/v=([\w\-]+)/)
     #"""<iframe width="560" height="315" src="//www.youtube.com/embed/#v" frameborder="0" allowfullscreen></iframe>"""
     [ \iframe { width: '560', height: '315', src: "//www.youtube.com/embed/#v", frameborder: '0', allowfullscreen: 'true' } ] # TODO instead of an iframe, do something that delays loading flash
   else
@@ -117,16 +120,24 @@ url-pattern = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3}
 # TODO - bbcode support
 @tx.bbcode = (s) ->
 
-# take text and apply markup rules to it
-@render = (text) ->
+# prepare text before parsing
+@escape = escape = (text) ->
   esc-text = util.replace-urls text, (url) -> url.replace /_/g, '\\_'
+  esc-text.replace util.md-ref-pattern-all, (m) -> m.replace /\\_/g, '_'
+
+# take text and apply markup rules to it
+@parse = parse = (text) ->
+  esc-text = escape text
   tree = md.parse esc-text
   |> md.to-HTML-tree
   |> transform tx.auto-embed-link
   |> transform tx.hash-tag
   |> transform tx.at-tag
   |> transform tx.new-line
-  # cl tree
+
+# take parsed tree and render html
+@render = render = (text) ->
+  tree = parse text
   md.render-json-ML tree
 
 # create a custom render function
