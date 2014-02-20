@@ -586,26 +586,30 @@ same-profile = (hints) ->
       }, \#logo_uploader
 
       <~ requirejs [\jqueryIris] # live color preview
+      hide      = -> $ '.color-picker .iris-picker' .hide!
+      add-color = (defaults, color) -> if color then defaults.unshift color;defaults
       $ \#theme
         .iris({
           width: 167px
           target: '.theme .color-picker'
-          palettes: <[ #4ccfea #cc8888 #a2ef2e #ff8c00 #f24e4e ]>
+          palettes: add-color <[ #4ccfea #cc8888 #a2ef2e #ff8c00 #f24e4e ]>, site.config.color-theme.theme_color
           change: (ev, ui) ->
             $(ev.target).next!css background-color: ui.color.to-string!
         })
         .focus((ev) -> 
-          $(ev.current-target).iris(\show))
+          hide!
+          $(ev.current-target).iris \show)
       $ \#colored_text
         .iris({
           width: 167px
           target: '.theme .color-picker'
-          palettes: <[ #222222 #444444 #777777 #dddddd #ffffff ]>
+          palettes: add-color <[ #222222 #777777 #dddddd #ffffff ]>, site.config.color-theme.colored_text
           change: (ev, ui) ->
             $(ev.target).next!css background-color: ui.color.to-string!
         })
         .focus((ev) -> 
-          $(ev.current-target).iris(\show))
+          hide!
+          $(ev.current-target).iris \show)
 
       # no pager (for now)
       window.pages-count = 0
