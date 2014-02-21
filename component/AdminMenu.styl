@@ -27,13 +27,16 @@
       width 25px
       height 35px
       &::after
-        content '='
+        content '-'
         position absolute
         top -7px
         left 13px
         color #999
-        font-weight 100
-
+        font-weight 200
+    .icon
+      position absolute
+      top 2px
+      z-index 11
     .sortable li.mjs-nestedSortable-collapsed > ol 
       display none
     .sortable li.mjs-nestedSortable-branch > div > .disclose 
@@ -94,6 +97,8 @@
           top 5px
           background radial-gradient(circle closest-corner at 45% 35%, #fff 40%, #ddd 100%)
       .row
+        background-image linear-gradient(top, theme_alpha 0, tint_color 3px)
+        text-indent 28px
         font-size 1.1em
         padding 8px
         border-right 0
@@ -101,6 +106,9 @@
         border-left 0
         border-bottom 1px solid #eee
         color #333
+        border-radius 8px
+        &:focus, &:active, &.active
+          border-radius 13px
     .placeholder
       margin -1px
       height 1px

@@ -45,6 +45,7 @@ module.exports =
         ..data \form,  item.data?form
         ..data \title, item.data?title
         ..val item.data?title
+      e.find \.icon .add-class "s-#{item.form?dialog}-icon"
       e
     current-store: !->
       unless e = @current then return # guard
