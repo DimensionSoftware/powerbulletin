@@ -84,7 +84,7 @@ body.scrolled
         height 50px
         width 50px
         border-radius 100%
-        //animation r0 2s ease-out .8s infinite
+        animation r0 1s ease-out .5s infinite
   #register_top.show
     transform translateX(-25px)
     opacity 0
@@ -283,6 +283,7 @@ body.scrolled
     letter-spacing 1px
     font-weight bold
     color #fff
+    min-height 237px
     margin-top 155px
     z-index 2
     ul
@@ -292,13 +293,23 @@ body.scrolled
       padding-top 20px
       list-style none
     .logo-icon
-      background-image url(cache-url + '/images/pb_icon_logo.png')
-      background-repeat no-repeat
+      position absolute
       margin -100px auto 180px auto
       width 81px
       height 96px
       opacity 0
       transform rotate(90deg) translate(15px, 35px)
+      display block
+      &:after
+        top 0
+        z-index 9
+        height @height
+        width @width
+        content ''
+        display block
+        position absolute
+        background-image url(cache-url + '/images/pb_icon_logo.png')
+        background-repeat no-repeat
   #register_top
     margin-top -60px
     opacity 0
