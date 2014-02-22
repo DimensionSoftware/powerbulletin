@@ -9,11 +9,13 @@ mixin menu-item(depth, items)
         //- placeholder
         if item.form.dialog == 'placeholder'
           td.title(colspan=4)
+            .icon(class="s-#{item.form.dialog}-icon")
             span.name= item.title
             span.description
         //- forum
         else if item.form.dialog == 'forum'
           td.title
+            .icon(class="s-#{item.form.dialog}-icon")
             a.mutant(
               data-surf=item.form.dbid,
               class="forum-#{item.form.dbid}",
@@ -32,6 +34,7 @@ mixin menu-item(depth, items)
         //- link & page
         else
           td.title(colspan=4)
+            .icon(class="s-#{item.form.dialog}-icon")
             a.mutant(
               data-surf=item.form.dbid,
               class="forum-#{item.form.dbid}",
