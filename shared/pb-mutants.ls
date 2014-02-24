@@ -603,7 +603,7 @@ same-profile = (hints) ->
         .iris({
           width: 167px
           target: '.theme .color-picker'
-          palettes: add-color <[ #222222 #777777 #dddddd #ffffff ]>, site.config.color-theme.colored_text
+          palettes: add-color <[ #222222 #555555 #dddddd #ffffff ]>, site.config.color-theme.colored_text
           change: (ev, ui) ->
             $(ev.target).next!css background-color: ui.color.to-string!
         })

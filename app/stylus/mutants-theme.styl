@@ -8,7 +8,7 @@ a.mutant:hover
 // Mutant-specific States
 //{{{ - homepage
 html.homepage
-  #forum_background_color::after, #forum_background_buffer::after, #forum_background::after
+  #forum_background_color:after, #forum_background_buffer:after, #forum_background:after
     content ''
     position absolute
     top 0
@@ -23,7 +23,7 @@ html.homepage
 //}}}
 //{{{ - forum, profile, search & moderation
 html.forum, html.profile, html.search, html.moderation
-  #forum_background_color::after, #forum_background_buffer::after, #forum_background::after
+  #forum_background_color:after, #forum_background_buffer:after, #forum_background:after
     content ''
     position absolute
     top 0
@@ -52,7 +52,7 @@ html.forum, html.profile, html.search, html.moderation
         &:hover
           color #111
           .post-edit:hover
-            .summary::before
+            .summary:before
               transition none
               z-index 2
               border-left 5px solid theme_color
@@ -63,7 +63,7 @@ html.forum, html.profile, html.search, html.moderation
             text-transform capitalize
         .container
           background-color #fff
-          &::after
+          &:after
             content ''
             position absolute
             left 0
@@ -74,7 +74,7 @@ html.forum, html.profile, html.search, html.moderation
           .body
             position relative
         .post-edit
-          .summary::before
+          .summary:before
             border-left 4px solid #ccc
             transition all .2s ease-out .4s
         .hash-tag, .at-tag
@@ -103,7 +103,7 @@ html.forum, html.profile, html.search, html.moderation
         z-index 2
         a
           color dark_text
-          .s-reply::after, .s-permalink::after, .s-censor::after
+          .s-reply:after, .s-permalink:after, .s-censor:after
             position absolute
             content ''
             top 1px
@@ -127,7 +127,13 @@ html.forum, html.profile, html.search, html.moderation
         border-right 2px solid #fff
         transition box-shadow .3s ease-in .05s
         background-image linear-gradient(to right, #f9f9f9 18%, #fff 30%)
-        &::before
+        &:hover
+          color #333
+          a
+            color #222
+          &:after
+            border-bottom 1px solid rgba(0,0,0,.12)
+        &:before
           position absolute
           width 0
           top -1px
@@ -135,7 +141,7 @@ html.forum, html.profile, html.search, html.moderation
           height 101%
           bottom -10px
           content ''
-        &::after
+        &:after
           position absolute
           content ''
           border-bottom 1px solid rgba(0,0,0,.07)
@@ -151,10 +157,10 @@ html.forum, html.profile, html.search, html.moderation
           display inline-block
           border-bottom 1px solid transparent
         .created
-          color #444
+          color #555
           opacity 0
         a
-          color #333
+          color #444
           text-decoration none
         &:first-child
           border-top 1px solid transparent
@@ -170,7 +176,7 @@ html.forum, html.profile, html.search, html.moderation
         border-radius 3px
         transition none
         background-image none
-        &::before
+        &:before
           width 5px
           background-image linear-gradient(to top, dark_theme_color 15%, dark_theme_color 16%, lighten(theme_color, 12%) 75%, lighten(theme_color, 20%) 100%)
         // {{{ active thread arrow
@@ -265,14 +271,14 @@ html.admin
         border-radius 5px / 3px
       &.feature.upgrade
         font-size .75em
-      &.feature.upgrade.active::after
+      &.feature.upgrade.active:after
         border-left-color dark_theme_color
       &.feature.upgrade.active
         background-color dark_theme_color
       &.feature
         position relative
         margin-top (grid*3)
-        &::before
+        &:before
           content ''
           position absolute
           height 1px
@@ -292,7 +298,7 @@ html.admin
       a
         font-style italic
         color #fff
-      &::after
+      &:after
         position absolute
         content ''
         top 0
@@ -306,7 +312,7 @@ html.admin
         padding 2px 8px
         font-size 1.2em!important
         text-decoration none
-      &::after
+      &:after
         position absolute
         content ''
         top 10px
@@ -334,7 +340,7 @@ html.admin
         img
           opacity .9
 
-      input[type="checkbox"]:checked + label .switch::after
+      input[type="checkbox"]:checked + label .switch:after
         background-color theme_color
     .notes
       font-weight 300
