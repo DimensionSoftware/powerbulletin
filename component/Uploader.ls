@@ -3,7 +3,7 @@ require, exports, module <- define
 
 require! \./PBComponent
 
-{lazy-load-html5-uploader} = require \../client/client-helpers
+{show-tooltip, lazy-load-html5-uploader} = require \../client/client-helpers
 
 # XXX this component must be rendered inside a <form enctype="multipart/form-data">
 
@@ -51,9 +51,10 @@ module.exports =
             # load current preview
             r = JSON.parse r-json
             if r.success
-              console.log r[locals.name]
               @set-preview r[locals.name]
-              locals.on-success xhr, file, r-json}
+            else
+              show-tooltip ($ \.tooltip:first), r?msg
+        }
 
       ####  main  ;,.. ___  _
       init-html5-uploader @locals!

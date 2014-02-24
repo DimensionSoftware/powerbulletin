@@ -284,27 +284,29 @@ function background-for-forum m, active-forum-id
   if err then return next err
 
   # html5-uploader (save forum logo)
-  logo = req.files.logo
+  if logo = req.files?logo
 
-  dst = "public/sites/#{site.id}"
-  err <- mkdirp dst
-  if err then return res.json {-success, msg:err}
-
-  # atomic write to public/sites/logo
-  ext = extention-for logo?name
-  if ext
-    file-name = "logo.#ext"
-    err <- move logo.path, "#dst/#file-name".to-lower-case!
+    dst = "public/sites/#{site.id}"
+    err <- mkdirp dst
     if err then return res.json {-success, msg:err}
 
-    # update site.config
-    site.config.logo = "#file-name?#{h.cache-buster!}".to-lower-case!
+    # atomic write to public/sites/logo
+    ext = extention-for logo?name
+    if ext
+      file-name = "logo.#ext"
+      err <- move logo.path, "#dst/#file-name".to-lower-case!
+      if err then return res.json {-success, msg:err}
 
-    err, r <- db.site-update site # save!
-    if err then return res.json {-success, msg:err}
-    res.json {+success, logo:"#{site.id}/#{site.config.logo}"}
+      # update site.config
+      site.config.logo = "#file-name?#{h.cache-buster!}".to-lower-case!
+
+      err, r <- db.site-update site # save!
+      if err then return res.json {-success, msg:err}
+      res.json {+success, logo:"#{site.id}/#{site.config.logo}"}
+    else
+      res.json {-success, msg:'What kind of file is this?'}
   else
-    res.json {-success, msg:'What kind of file is this?'}
+    res.json {-success, msg:'What logo?'}
 
 @forum-background = (req, res, next) ->
   # get site
