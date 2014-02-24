@@ -45,7 +45,7 @@ $w .on \scroll, (->
   if Math.abs(bh - (offset + $w.height!)) < 15px then focus-last! # within 15px of bottom so dom doesn't jerk
 
   # top animations
-  if offset < 430px # save cpu for top pieces
+  if offset < 530px # save cpu for top pieces
     $ \#imagine .css {y:"#{0+(offset*0.5)}px"}
 
   if offset > 40px
@@ -68,9 +68,10 @@ $w .on \scroll, (->
         last         := cur-id
         last-visible := visible
       else # same section, so parallax visible sections!
-        for v in last-visible
-          dy = -($ v .offset!?top)
-          $ "#v .bg" .transition {y:"#{parse-int (dy+offset)*0.65}px"}, 0)
+        #for v in last-visible
+        #  dy = -($ v .offset!?top)
+        #  $ "#v .bg" .transition {y:"#{parse-int (dy+offset)*0.65}px"}, 0
+  )
 #}}}
 #{{{ waypoints
 fn = (direction) ->
@@ -80,6 +81,7 @@ fn = (direction) ->
   $ \nav # activate right-side bullets
     ..find \.active .remove-class \active # remove
     ..find ".#id" .add-class \active
+  $ \.shown .remove-class \shown # reset
   $ "##{id}" .add-class \shown
   cur-id := id # track
 
