@@ -567,9 +567,15 @@ same-profile = (hints) ->
         $ 'label[for="domains"]' .effect \highlight
         awesome-scroll-to \#domains
 
-      $ \#sprite_hue .on \keyup -> # live hue preview
-        $ '.sprite-hue .s-dark-chat'
-          .css {["#{k}filter", "hue-rotate(#{$ @ .val!})"] for k in ['', '-moz-', '-webkit-', '-o-']}
+      # hue color selection
+      update-preview = ->
+        $ '.preview .s-dark-chat'
+          .css {["#{k}filter", "hue-rotate(#{$ \#sprite_hue .val!})"] for k in ['', '-moz-', '-webkit-', '-o-']}
+      $ \#sprite_hue .on \keyup update-preview  # live hue preview
+      $ '.hue-selector span' .on \click -> # update hue on click
+        v = $ @ .attr \data-hue
+        $ \#sprite_hue .val (v * 3deg + \deg)
+        update-preview!
 
       # init-html5-uploader
       logo    = window.site.config.logo
@@ -586,8 +592,11 @@ same-profile = (hints) ->
       }, \#logo_uploader
 
       <~ requirejs [\jqueryIris] # live color preview
-      hide      = -> $ '.color-picker .iris-picker' .hide!
-      add-color = (defaults, color) -> if color then defaults.unshift color;defaults
+      hide = ->
+        $ '.color-picker .iris-picker' .hide!
+        $ \.hue-selector .hide!
+      add-color = (defaults, color) -> if color then defaults.unshift color; defaults
+      $ \#sprite_hue .on \focus -> hide!; $ \.hue-selector .show!
       $ \#theme
         .iris({
           width: 167px

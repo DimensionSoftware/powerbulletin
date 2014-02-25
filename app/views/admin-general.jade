@@ -37,8 +37,11 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
             div.preview.light-text(title='Click to choose a Color!', style="background-color: #{ct.colored_text || '#fff'};")
             label(for='sprite_hue') Sprite Hue
             input.color-hue(id='sprite_hue', name='colorTheme[sprite_hue]', type='text', value=ct.sprite_hue, placeholder='0deg')
-            div.preview.sprite-hue(title='Rotate the Color pallette')
+            .preview
               .s-dark-chat
+            .preview.hue-selector(title='Click and Rotate the Color pallette')
+              - for (var i=1; i<=360; i++)
+                span(class="hue-#{i}", data-hue=i)
 
           label(for='style') Custom Style
           textarea.save(id='style', name='style')= site.config.style

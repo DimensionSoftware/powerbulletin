@@ -1079,6 +1079,23 @@ html.admin
           p
             font-size .9em
             margin grid 0 5px grid
+          .hue-selector
+            position absolute
+            border none
+            display none
+            height 33px
+            width 122px
+            bottom 14px
+            right -25px
+            overflow hidden
+          for num in (1..122)
+            .hue-{num}
+              $x = -((num))px
+              background url(cache-url + '/images/sprites.png') no-repeat $x -27px
+              filter hue-rotate(num*3 deg)
+              display inline-block
+              height 100%
+              width 1px
           button[type='submit']
             margin 15px 0 10px 150px
             width 200px
