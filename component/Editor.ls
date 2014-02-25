@@ -63,9 +63,7 @@ module.exports =
               if ++@retry <= max-retry then @save true
 
     refresh-preview: ~>
-      @editor?pagedown?refresh-preview!
-      # FIXME broken
-      $ preview-id-for(@local \id) .html render(@local \body)
+      $ preview-id-for(@local \id) .html render(@body!)
       @editor
 
     toggle-preview: ~>
@@ -93,6 +91,7 @@ module.exports =
 
       c = new Markdown.Converter!
       e = new Markdown.Editor c, id
+      e.hooks.chain \onPreviewRefresh ~> @refresh-preview!
       e.run!
       @editor.pagedown = e # store
       #{{{ - delegates
