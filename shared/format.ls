@@ -112,7 +112,7 @@ md-ref-pattern = '(\\s*)\\[(\\w+)\\]:\\s*(http\\S+)'
 
 # @mention (aka at-tag) support
 @tx.at-tag = (s) ->
-  mention = /@\w+/
+  mention = /@[\w-]+/
   r = util.split s, mention
   |> map (-> if it.match(mention) then [[\a, { class:"mutant at-tag", href:"/user/#{encode-URI-component it.replace(/^@/, '')}" }, it ]] else it)
   |> concat
