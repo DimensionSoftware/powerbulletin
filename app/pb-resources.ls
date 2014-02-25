@@ -8,6 +8,7 @@ require! {
   menu: \./menu
   rights: \./rights
   format: \../shared/format
+  notifications: \./notifications
   async
   fs
   mkdirp
@@ -318,6 +319,7 @@ is-commentable-forum = (m, forum-id) ->
     res.render \post-new
   create  : (req, res, next) ->
     return next 404 unless req.user
+    user = req.user
     site = res.vars.site
     db = pg.procs
     post          = req.body
@@ -325,6 +327,7 @@ is-commentable-forum = (m, forum-id) ->
     post.html     = format.render post.body
     post.ip       = res.vars.remote-ip
     post.tags     = h.hash-tags post.body
+    post.mentions = h.at-tags post.body
 
     return res.json success:false, errors:['Incomplete post'] unless post.user_id and post.forum_id # guard
 
@@ -349,17 +352,22 @@ is-commentable-forum = (m, forum-id) ->
       post.id = ap-res.id
       c.invalidate-post post.id, req.user.name # blow cache!
 
+
     unless post.parent_id
       err, new-post <- db.post site.id, post.id
       if err then return next err
       announce.in(site.id).emit \thread-create new-post
       db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
+      if post.mentions.length
+        notifications.send \mention, user, post.mentions, { site, post: new-post }
     else
       err, new-post <- db.post site.id, post.id
       if err then return next err
       new-post.posts = []
       announce.in(site.id).emit \post-create new-post
       db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
+      if post.mentions.length
+        notifications.send \mention, user, post.mentions, { site, post: new-post }
 
     res.json ap-res
   show    : (req, res, next) ->
@@ -408,6 +416,7 @@ is-commentable-forum = (m, forum-id) ->
       res.json {success: true}
     else
       next 404
+
 @products =
   show: (req, res, next) ->
     return next 404 unless id = req.params.product
