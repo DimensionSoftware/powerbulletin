@@ -167,8 +167,24 @@
         li:first-child .header
           margin-left 105px
         input[type='radio'] + label.header
-          font-weight 300
           font-size 1.1em
+          background-image linear-gradient(top, #e8e8e8 50%, #fafafa)
+          padding 8px
+          margin 5px
+          padding 15px 55px 25px 35px
+          margin 20px
+          box-shadow 1px 1px 2px 1px #ccc
+          border-radius 10px
+          font-weight 500
+          transition all .1s ease-in .05s
+          color #222
+          &:hover
+            color #000
+            border-radius 12px
+            box-shadow 1px 1px 2px 1px #bbb, 0 0 1px theme_color
+            transition none
+          .icon
+            margin-top 15px
         li
           float left
           > label
