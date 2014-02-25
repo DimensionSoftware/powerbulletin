@@ -10,15 +10,15 @@ if window?
 @post-success = (ev, data) ~>
   e = $ ev.target
   f = e.closest \.post-edit # form
-  p = f.closest \.editing # post being edited
   t = e.find \.tooltip
   unless data.success
     @show-tooltip t, data?errors?join \<br>
     e.find \textarea:first .focus!
   else
     # render updated post
-    p.find \.title .html data.0?title
-    p.find \.body  .html data.0?body
+    p = $ "[data-post-id='#{data.post?0?id}']" #f.closest \.editing # post being edited
+    p.find \.title .html data.post?0?title
+    p.find \.body  .html data.post?0?html
     f.remove-class \fadein .hide 300s # & hide
     meta = furl.parse window.location.pathname
     window.last-statechange-was-user = false # flag that this was programmer, not user
@@ -63,7 +63,7 @@ if window?
   set-timeout (-> $f.find \input.title .focus!), 100ms # focus!
   false
 
-# handle in-line editing
+# handle editing
 focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 10ms
 render = (sel, locals, cb=(->)) ~>
   $e = $ sel

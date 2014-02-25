@@ -21,15 +21,10 @@ module.exports =
         @$.find '[name="forum_id"]' .val window.active-forum-id
         @$.find '[name="parent_id"]' .val(if @is-creating-thread! then void else window.active-thread-id)
         ev = {target:@editor.$} # mock event
-        submit-form ev, (data) ~> # ...and sumbit!
+        submit-form ev, (data) ~> # ...and submit!
           post-success ev, data
           if @is-editing # update ui
-            if p = data.post?0
-              e = $ "[data-post-id='#{p.id}']"
-              if e.length # in DOM?
-                e.find \.title .html p.title
-                e.find \.body  .html p.body
-                @edit-mode! # back to default Reply mode
+            @edit-mode! # back to default Reply mode
       @@$ \.onclick-footer-toggle .on \click.post-drawer (ev) ~>
         if $ ev.target .has-class \onclick-footer-toggle # guard
           if in-thread-mode!

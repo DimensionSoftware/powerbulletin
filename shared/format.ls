@@ -137,6 +137,7 @@ md-ref-pattern = '(\\s*)\\[(\\w+)\\]:\\s*(http\\S+)'
 
 # take parsed tree and render html
 @render = render = (text) ->
+  unless text?length then return '' # guard
   tree = parse text
   md.render-json-ML tree
 
