@@ -81,7 +81,7 @@ fn = (direction) ->
   $ \nav # activate right-side bullets
     ..find \.active .remove-class \active # remove
     ..find ".#id" .add-class \active
-  $ \.shown .remove-class \shown # reset
+  #$ \.shown .remove-class \shown # reset
   $ "##{id}" .add-class \shown
   cur-id := id # track
 
