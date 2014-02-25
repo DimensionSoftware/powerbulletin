@@ -423,7 +423,7 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
     else # indicated failure
       show-tooltip t, data?msg
   )
-  ev.prevent-default!
+  if $(ev.target).is \:button then ev.prevent-default! # no <form> submits
   true
 $d.on \click \#add_custom_domain (ev) ->
   e = $ \#custom_domain
