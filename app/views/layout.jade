@@ -63,6 +63,12 @@ html
             .s-big-search
           .onclick-close.toggler(title='Close!') x
         #warning.tooltip
+        #info.info.tooltip
+          .msg
+          .onclick-close(title='Close!') X
+          .next
+            b Next 
+            | >>
         .MainMenu.menu-container
           menu#menu.menu
             +_menu(0, menu)
@@ -84,6 +90,7 @@ html
               li.onclick-logout
                 a(href='/auth/logout') Logout
 
+    .question(title='Help') Help
     section#left_content.left-content
       #handle.handle(title='Toggle')
       #left_container

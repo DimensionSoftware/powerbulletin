@@ -28,7 +28,7 @@ require \raf
 
 require \layout
 
-{storage, set-imgs, set-profile, align-ui, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, submit-form} = require \./client-helpers
+{storage, set-imgs, set-profile, align-ui, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, show-info, submit-form} = require \./client-helpers
 {render-and-append, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
@@ -425,6 +425,21 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
   )
   if $(ev.target).is \:button then ev.prevent-default! # no <form> submits
   true
+
+$d.on \click 'html.admin .question' (ev) ->
+  switch window.location.pathname
+  | \/admin/menu =>
+    show-info 0, 'Click &amp; Drag Menu Items to Rearrange', 'Choose the Type for this Menu Item', 'Fill in the remaining information and Click <b>Save</b>'
+  | \/admin/upgrade =>
+    show-info 0, 'Pro Upgrades are the Sharpest Tools Available for Your Community'
+  | \/admin/invites =>
+    show-info 0, 'Send a Personalized Invitation Link to Your VIPs'
+  | _ =>
+    show-info 0, '''
+      Fill in the remaining information and Click <b>Save</b>
+      <br/><small>Some inputs save automatically</small>
+    '''
+
 $d.on \click \#add_custom_domain (ev) ->
   e = $ \#custom_domain
   n = e.val! # domain name to add

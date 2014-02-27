@@ -234,6 +234,20 @@ load-css = (href) ->
   History.push-state params, '', href
   false
 
+@show-info = (start=0, ...msgs) ~>
+  if ($i=$ \#info)?length  # guard
+    $i.remove-class \hover # close first
+    return if start >= msgs.length
+    if msgs[start]
+      <~ set-timeout _, 20ms # yield (smooth animations)
+      $i
+        ..off! # cleanup
+        ..find \.msg .html msgs[start] # set message
+        ..find \.next .toggle-class \hidden, (start >= msgs.length-1)
+        ..find \.onclick-close .click -> $i.remove-class \hover; false
+        ..add-class \hover # show!
+        ..click ~> @show-info start+1, ...msgs; true # recurse
+
 timers = {}
 @show-tooltip = ($tt, msg, duration=4500ms) ~>
   key = $tt.attr \id # keyed to tooltip id
