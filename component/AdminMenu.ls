@@ -190,6 +190,7 @@ module.exports =
 
     on-attach: !->
       #{{{ Event Delegates
+      @$.on \click \.icon (ev) -> ($ ev.target .next \input).focus!
       @$.on \click \.disclose (ev) ~>
         $ ev.target .closest \li
           ..toggle-class \mjs-nestedSortable-collapsed

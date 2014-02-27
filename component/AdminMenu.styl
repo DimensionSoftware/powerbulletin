@@ -48,7 +48,8 @@
         font-weight 200
     .icon
       position absolute
-      top 2px
+      top 3px
+      left 3px
       z-index 11
       opacity .6
     .sortable li.mjs-nestedSortable-collapsed > ol 
@@ -107,8 +108,9 @@
           left 1px
           height 2px
           background theme_color
-        input
+        input.row
           width 200px
+          background-image linear-gradient(top, tint(theme_alpha, 30%) 0, tint(tint_color, 50%) 5px)
         .cancel
           position absolute
           z-index 10
@@ -125,9 +127,9 @@
         border-left 0
         border-bottom 1px solid #eee
         color #333
-        border-radius 8px
+        border-radius 50px
         &:focus, &:active, &.active
-          border-radius 13px
+          border-radius 50px / 200px
     .placeholder
       margin -1px
       height 1px
@@ -181,7 +183,7 @@
           margin-left 105px
         input[type='radio'] + label.header
           font-size 1.1em
-          background-image linear-gradient(top, #e8e8e8 50%, #fafafa)
+          background-image linear-gradient(to top, tint(theme_alpha, 30%), #fafafa 60%)
           padding 8px
           margin 5px
           padding 15px 55px 25px 35px

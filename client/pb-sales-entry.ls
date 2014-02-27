@@ -90,7 +90,7 @@ $ '#features, .feature' .waypoint fn, {offset: 600px}
 # - on click
 $ 'nav a' .on \click ->
   id = ($ this .parents \li:first).attr \class
-  set-timeout (~> fn.call {id}), 500ms # force correct selection
+  set-timeout (~> fn.call {id}), 700ms # force correct selection
   if id is \support then focus-last!
 
 set-timeout (-> $ \.shown .not(\#support).remove-class \shown), 600ms # reset if had to scroll-to-top

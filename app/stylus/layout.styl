@@ -34,12 +34,18 @@ body.waiting
   cursor pointer
   line-height 9px
   text-indent 1px
-  border-radius 10px
+  border-radius 100%
   padding 6px
   font-size 10px
 
 .clear
   clear both
+  zoom 1
+  &:before, &:after
+    display table
+    content ''
+  &:after
+    clear both
 .hidden
   display none
 
@@ -426,7 +432,6 @@ body.paginator
   img
     border-radius 100%
     width 100%
-
 .main-content
   grid(100%, 800px)
   padding forum-header_height 0 0 0

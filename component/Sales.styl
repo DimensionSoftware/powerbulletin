@@ -43,13 +43,13 @@ body.scrolled
       li
         margin-top 15px
         a
-          color #444
+          color #333
           font-weight 600
-  header::after
-    display none
-    bottom -1px
-    border-bottom-color #eee
-    box-shadow none
+    &:after
+      display none
+      bottom -1px
+      border-bottom-color #eee
+      box-shadow none
   .container.first
     border-top-width 1px!important
   .down-arrow
@@ -272,7 +272,7 @@ body.scrolled
           display none
         a
           display block
-          color #666
+          color #444
           font-weight 400
           &:hover
             color #111
@@ -452,6 +452,7 @@ body.scrolled
         font-size .8em
   .container.visible
     visibility visible
+    top 0
     &:after
       display block
   .container
@@ -709,4 +710,5 @@ box-shadow(arg1, arg2, arg3)
 
   100%
     box-shadow 0 0 8px 6px rgba(26, 255, 179, 0), 0 0 0px 40px transparent, 0 0 0px 40px rgba(26, 255, 179, 0)
+
 // vim:fdm=marker
