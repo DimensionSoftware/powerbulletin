@@ -1175,12 +1175,30 @@ html.admin
      color dark_theme_color
      font-size .9em
      animation-name none
+  .question
+    display block
   footer
     left 150px!important
 //}}}
 //{{{ - forum
 html.forum
-  // reply button on footer
+  .main-content
+    opacity 1
+    transition opacity .15s
+    &.transparent
+      opacity 0
+      transition none
+    .post-reply.onclick-footer-toggle:hover
+      transition none
+    .post-reply.onclick-footer-toggle
+      //transition all .5s ease-out .5s
+      position relative
+      display block
+      cursor pointer
+      font-weight 200
+      margin 0 auto
+      margin-bottom 30px
+  // reply button
   .post-reply
     display none
     cursor pointer
@@ -1208,49 +1226,6 @@ html.forum
       padding-left 20px
       left 12px
       top 0
-  .main-content
-    opacity 1
-    transition opacity .15s
-    &.transparent
-      opacity 0
-      transition none
-    .post-reply.onclick-footer-toggle:hover
-      transition none
-    .post-reply.onclick-footer-toggle
-      //transition all .5s ease-out .5s
-      position relative
-      display block
-      cursor pointer
-      font-weight 200
-      margin 0 auto
-      margin-bottom 30px
-  footer.expanded
-    background-color rgba(250,250,250,.5)
-    cursor s-resize
-    height 320px
-    left 0!important
-    transition height .3s bounce
-    .post-reply
-      margin-top 8px
-      left 39px
-      &::after
-        content 'Close'
-      &:hover::before
-        border 4px solid transparent
-        border-top 8px solid #aaa
-        top 8px
-        left 36px
-      &::before
-        border 4px solid transparent
-        border-top 6px solid #ccc
-        top 9px
-        left 36px
-    h6
-      display none
-    .post-container
-      opacity 1
-      margin-top 10px
-      transition margin-top .3s ease-out .1s, opacity .4s ease-out .1s
   footer
     cursor n-resize
     .onclick-footer-toggle
@@ -1286,6 +1261,33 @@ html.forum
             left 5px
             height 45px
             width 45px
+    &.expanded
+      background-color rgba(250,250,250,.5)
+      cursor s-resize
+      height 320px
+      left 0!important
+      transition height .3s bounce
+      .post-reply
+        margin-top 8px
+        left 39px
+        &::after
+          content 'Close'
+        &:hover::before
+          border 4px solid transparent
+          border-top 8px solid #aaa
+          top 8px
+          left 36px
+        &::before
+          border 4px solid transparent
+          border-top 6px solid #ccc
+          top 9px
+          left 36px
+      h6
+        display none
+      .post-container
+        opacity 1
+        margin-top 10px
+        transition margin-top .3s ease-out .1s, opacity .4s ease-out .1s
 //}}}
 html.page
   body.minimized

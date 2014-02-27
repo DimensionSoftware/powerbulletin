@@ -17,9 +17,10 @@ module.exports =
     on-attach: !~>
       #{{{ Event Delegates
       @$.find \.save .on \click (ev) ~>
-        # XXX for now, always reply to active thread
-        @$.find '[name="forum_id"]' .val window.active-forum-id
-        @$.find '[name="parent_id"]' .val(if @is-creating-thread! then void else window.active-thread-id)
+        # XXX for now, always reply to active or nearest in DOM (context) thread
+        @$.find '[name="forum_id"]' .val(window.active-forum-id or @context-forum-id)
+        @$.find '[name="parent_id"]' .val(
+          if @is-creating-thread! then void else (window.active-thread-id or @context-thread-id))
         ev = {target:@editor.$} # mock event
         submit-form ev, (data) ~> # ...and submit!
           post-success ev, data
@@ -27,6 +28,7 @@ module.exports =
             @edit-mode! # back to default Reply mode
       @@$ \.onclick-footer-toggle .on \click.post-drawer (ev) ~>
         if $ ev.target .has-class \onclick-footer-toggle # guard
+          @context-forum-id = ($ ev.target .parents '[data-forum-id]').data \forum-id
           if in-thread-mode!
             if @is-editing! # if editing, hold drawer open & switch modes
               thread-mode false # replies don't have titles

@@ -266,8 +266,7 @@ layout-on-personalize = (w, u) ->
       # editing handler
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
-      # FIXME will do something smarter -k
-      $ \body .on \click, toggle-postdrawer # expand & minimize drawer
+      window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
 
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
@@ -373,6 +372,7 @@ layout-on-personalize = (w, u) ->
       # cleanup
       w.$ \body .off \click
       w.$ \#main_content .add-class \transparent
+      w.$ \body .off \click.pd
       #$ '#left_container .scrollable' .off \scroll.Forum
       try w.$ \#left_container .resizable(\destroy)
       unless next-mutant is \forum_background
@@ -419,6 +419,7 @@ same-profile = (hints) ->
   on-load:
     (window, next) ->
       # forgot password delegate
+      window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
       window.$ \body .on \click \.onclick-show-forgot ->
         <- Auth.show-login-dialog
         switch-and-focus \on-error \on-forgot '#auth input[name=email]'
@@ -494,6 +495,7 @@ same-profile = (hints) ->
     (window, next-mutant, next) ->
       # cleanup/unbind
       window.$ \body .off \click \.onclick-show-forgot
+      window.$ \body .off \click.pd
       window.$ \.change-title .off!
       window.$ \.change-sig .off!
       reset-paginator window unless next-mutant is \forum

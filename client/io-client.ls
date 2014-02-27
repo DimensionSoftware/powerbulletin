@@ -133,23 +133,27 @@ function init-with-socket s
     # - if they don't, inform them how many are new
     window.active-thread-id ||= -1
     if post.thread_id is window.active-thread-id or (post.user_id is user.id and window.mutator is \profile)
-      return if $ "post_#{post.id}" .length # guard (exists)
+      return if $ "\#post_#{post.id}" .length # guard (exists)
 
       # update post count
       pc = $ "\#left_container ul.threads li[data-id=#{post.thread_id}] span.post-count"
       pc.html ("#{(parse-int pc.text!) + 1} <i>posts</i>")
 
       # & render new post
+      commentable=true
       sel = "\#post_#{post.parent_id} ~ .children:first"
+      unless $ sel .length # no immediate parent (eg. comment became a reply)
+        commentable=false
+        sel = "[data-thread-id=\"#{post.thread_id}\"]:last ~ .children:first"
 
       animate-in = (e) -> $ e .add-class \post-animate-in
       if post.user_id is user?id then post.is_comment=true # hide sig., etc... on our own posts
       render-and-append(
-        window, (window.$ sel), \post, post:post, (new-post) ->
+        window, (window.$ sel), \post, post:post, commentable:commentable or window.commentable, (new-post) ->
           if post.user_id is user?id # & scroll-to
             mutants.forum.on-personalize window, user, (->) # enable edit, etc...
             set-timeout (-> animate-in new-post), 250ms
-            if window.mutator is \forum then awesome-scroll-to new-post, 300ms
+            if window.mutator is \forum or window.mutator is \profile then awesome-scroll-to new-post, 300ms
           else
             animate-in new-post)
 

@@ -396,6 +396,10 @@ function background-for-forum m, active-forum-id
     res.locals.uri.replace /\?$/, ''
   res.locals.limit = ppp
 
+  # force comments ui on profile pages
+  # - the post resource converts correctly to a reply if comments are disabled
+  res.locals.commentable = true
+
   res.mutant \profile
 
 function profile-paths user, uploaded-file, base=\avatar

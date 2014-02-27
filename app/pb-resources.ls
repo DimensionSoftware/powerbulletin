@@ -342,7 +342,7 @@ is-commentable-forum = (m, forum-id) ->
     # on non-commentable forums, force parent_id to be the right value
     err, parent-post <- db.post site.id, post.parent_id
     if err then return next err
-    if (not is-commentable-forum(site.config.menu, parse-int(post.forum_id))) and parent-post
+    if reply-only = (not is-commentable-forum(site.config.menu, parse-int(post.forum_id))) and parent-post
       post.parent_id = parent-post.thread_id
 
     err, ap-res <- db.add-post post
@@ -352,6 +352,9 @@ is-commentable-forum = (m, forum-id) ->
       post.id = ap-res.id
       c.invalidate-post post.id, req.user.name # blow cache!
 
+    finish = (new-post) ->
+      ap-res.user_id = post.user_id
+      res.json ap-res
 
     unless post.parent_id
       err, new-post <- db.post site.id, post.id
@@ -360,6 +363,7 @@ is-commentable-forum = (m, forum-id) ->
       db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
       if post.mentions?length
         notifications.send \mention, user, post.mentions, { site, post: new-post }
+      finish new-post
     else
       err, new-post <- db.post site.id, post.id
       if err then return next err
@@ -368,8 +372,8 @@ is-commentable-forum = (m, forum-id) ->
       db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
       if post.mentions?length
         notifications.send \mention, user, post.mentions, { site, post: new-post }
+      finish new-post
 
-    res.json ap-res
   show    : (req, res, next) ->
     site = res.vars.site
     db = pg.procs
