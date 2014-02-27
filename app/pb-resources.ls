@@ -358,7 +358,7 @@ is-commentable-forum = (m, forum-id) ->
       if err then return next err
       announce.in(site.id).emit \thread-create new-post
       db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
-      if post.mentions.length
+      if post.mentions?length
         notifications.send \mention, user, post.mentions, { site, post: new-post }
     else
       err, new-post <- db.post site.id, post.id
@@ -366,7 +366,7 @@ is-commentable-forum = (m, forum-id) ->
       new-post.posts = []
       announce.in(site.id).emit \post-create new-post
       db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
-      if post.mentions.length
+      if post.mentions?length
         notifications.send \mention, user, post.mentions, { site, post: new-post }
 
     res.json ap-res
