@@ -143,7 +143,7 @@ load-css = (href) ->
 @lazy-load-html5-uploader = (cb) ~>
   @lazy-load (-> window.$!html5-uploader?length),
     "#cache-url/local/jquery.html5uploader.js",
-    "#cache-url/local/editor/skins/moono/editor.css",
+    null,
     cb
 @lazy-load-jcrop = (cb) ~>
   @lazy-load (-> window.$!Jcrop?length),
