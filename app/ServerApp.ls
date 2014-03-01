@@ -195,10 +195,7 @@ module.exports =
           #{err.stack}
           """
           responder res
-          if err.non-fatal
-            console.warn "non-fatal error; keep working"
-          else
-            graceful-shutdown!
+          graceful-shutdown!
 
       # routes
       #
@@ -209,9 +206,9 @@ module.exports =
       # 404 handler, if not 404, punt
       err-or-notfound = (err, req, res, next) ~>
         if err is 404
-          res.send html_404, 404
+          res.send 404, html_404
         else
-          explain = err-handler (res) -> res.send html_50x, 500
+          explain = err-handler (res) -> res.send 500, html_50x
           explain err, req, res, next
 
       app.use err-or-notfound

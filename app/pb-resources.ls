@@ -94,7 +94,7 @@ is-commentable-forum = (m, forum-id) ->
           if err?msg?match /CSS/i
             return res.json {success:false, messages:['CSS must be valid!']}
           else
-            return next err
+            return res.json {success:false, messages:['CSS must be valid!']}
 
       # save color theme
       if not (site.config.color-theme === req.body.color-theme) or not (site.config.sprite-hue === req.body.sprite-hue)
@@ -116,15 +116,15 @@ is-commentable-forum = (m, forum-id) ->
       for s in <[ private analytics ]> # subscription tampering
         delete site.config[s] unless s in site.subscriptions
       err, r <- db.site-update site # save!
-      if err then return next err
+      if err then return res.json {-success, messages:['Unable to Save']}
 
       # save domains
       err, domain <- db.domain-by-id req.body.domain
-      if err then return next err
+      if err then return res.json {-success, messages:['Unable to Save Domain']}
 
       # does site own domain?
       err, domains <- db.domains-by-site-id domain.site_id
-      if err then return next err
+      if err then return res.json {-success, messages:['Only the Site Owner Can Save']}
       unless find (.site_id is domain.site_id) domains then return next 404
 
       # extract specific keys
@@ -145,7 +145,7 @@ is-commentable-forum = (m, forum-id) ->
         |> join ''
       if domain.config.style.length then domain.config.style += '.has-auth{display:block}'
       err, r <- db.domain-update domain # save!
-      if err then return next err
+      if err then return res.json {-success, messages:['Unable to Save Domain']}
 
       # delete existing passport for domain so new one can be created
       delete auth.passports[domain.name]
