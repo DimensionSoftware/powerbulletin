@@ -13,7 +13,7 @@ require! {
 {show-tooltip} = require \../client/client-helpers if window?
 {each} = require \prelude-ls
 
-debounce = lodash.debounce _, 250ms
+debounce = lodash.debounce _, 850ms
 
 module.exports =
   class SiteRegister extends PBComponent

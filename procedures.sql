@@ -732,14 +732,18 @@ CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
   unless site.domain
     return {errors: ["must specify a domain"]}
 
+  capitalize = (s) -> (s.char-at 0).to-upper-case! + s.slice(1)
+
+  pb-domain = /(\.pb\.com|\.powerbulletin\.com)$/
   # this security probably belongs somewhere else, but i felt compelled to check
-  unless site.domain.match /(\.pb\.com|\.powerbulletin\.com)$/
+  unless site.domain.match pb-domain
     return {errors: ["domain must end in .pb.com or .powerbulletin.com"]}
+  name = capitalize(site.domain.replace pb-domain, '')
 
   unless site.user_id
     return {errors: ["user_id is required for creating a new site"]}
 
-  site_id = plv8.execute('INSERT INTO sites (name, user_id) VALUES ($1, $2) RETURNING id', [site.domain, site.user_id]).0.id
+  site_id = plv8.execute('INSERT INTO sites (name, user_id) VALUES ($1, $2) RETURNING id', [name, site.user_id]).0.id
 
   try
     plv8.execute 'INSERT INTO domains (site_id, name) VALUES ($1, $2)', [site_id, site.domain]

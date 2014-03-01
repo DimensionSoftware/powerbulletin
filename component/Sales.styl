@@ -187,6 +187,7 @@ body.scrolled
             display none
           ul
             opacity 1
+            margin-right 0
             text-indent 0
       section.last
         #register_bottom
@@ -520,7 +521,8 @@ body.scrolled
         color theme_color
         margin-bottom 38px
         font-weight bold
-        font-size 3em
+        font-size 3.2em
+        margin-right 0
         letter-spacing 1px
         text-shadow 1px 1px 0 dark_theme_color
         text-align left
@@ -661,17 +663,22 @@ footer
   position fixed
   top auto
   bottom -45px
-  height 40px
+  height 45px
   left auto
   right -20px
   width 117px
   background #555!important
-  border-radius 30px / 20px
+  border-radius 40px / 25px
   border 1px solid #222
+  transition none
+  //all .1s ease-out
   &:hover
     bottom -43px
-    height 42px
+    height 50px
     background #444!important
+    transition none
+    .onclick-scroll-top
+      top 5px
   .onclick-scroll-top:hover
     color #fff
   .onclick-scroll-top:hover::before
@@ -685,12 +692,12 @@ footer
     border-bottom 6px solid #ddd
     top 4px
     right 8px
-    transition all .2s ease-out
+    transition all .1s ease-out
   .onclick-scroll-top
     cursor pointer
     color #eee
     position absolute
-    top 0
+    top 3px
     right 35px
     font-size .8em
     letter-spacing 2px

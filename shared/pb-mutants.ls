@@ -597,13 +597,15 @@ same-profile = (hints) ->
       hide = ->
         $ '.color-picker .iris-picker' .hide!
         $ \.hue-selector .hide!
-      add-color = (defaults, color) -> if color then defaults.unshift color; defaults
+      add-color = (defaults, color) ->
+        if color then defaults.unshift color
+        defaults
       $ \#sprite_hue .on \focus -> hide!; $ \.hue-selector .show!
       $ \#theme
         .iris({
           width: 167px
           target: '.theme .color-picker'
-          palettes: add-color <[ #4ccfea #cc8888 #a2ef2e #ff8c00 #f24e4e ]>, site.config.color-theme.theme_color
+          palettes: add-color <[ #4ccfea #cc8888 #a2ef2e #ff8c00 #f24e4e ]>, site.config.color-theme?theme_color
           change: (ev, ui) ->
             $(ev.target).next!css background-color: ui.color.to-string!
         })
@@ -614,7 +616,7 @@ same-profile = (hints) ->
         .iris({
           width: 167px
           target: '.theme .color-picker'
-          palettes: add-color <[ #222222 #555555 #dddddd #ffffff ]>, site.config.color-theme.colored_text
+          palettes: add-color <[ #222222 #555555 #dddddd #ffffff ]>, site.config.color-theme?colored_text
           change: (ev, ui) ->
             $(ev.target).next!css background-color: ui.color.to-string!
         })
