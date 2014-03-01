@@ -358,9 +358,7 @@ function background-for-forum m, active-forum-id
 
   errors = req.validation-errors!
   if errors
-    err = new Error errors.0?msg
-    err.non-fatal = true
-    return next err
+    res.json 500, {-success, errors}
 
   tasks =
     profile        : db.usr usr, _
