@@ -34,6 +34,7 @@
         color #999
         font-weight 200
     .icon
+      cursor move
       position absolute
       top 3px
       left 3px
@@ -66,10 +67,11 @@
         width 55px
         transition width .2s ease-out .15s
       li.active > div > input
+        box-shadow -1px 0 2px -1px #888 inset,0 2px 0 dark_theme_color, 1px 0 3px -1px theme_color, 0 0 3px theme_color
         font-weight bold
         color theme_color
         background-image none
-        background-color lighten(theme_color, 85%)
+        background-color tint(theme_color, 95%)
       li.active > div, li:hover > div
         .icon
           opacity 1
@@ -172,7 +174,7 @@
           width 210px
           height 200
           font-size 1.1em
-          background-image linear-gradient(to top, tint(theme_alpha, 30%), #fafafa 60%)
+          background-image linear-gradient(to top, #eee, #fafafa 60%)
           padding 8px
           margin 5px
           padding 15px 10px 25px 35px
@@ -185,7 +187,7 @@
           &:hover
             color #000
             border-radius 12px
-            box-shadow 1px 1px 2px 1px #bbb, 0 0 1px theme_color
+            box-shadow 1px 1px 2px 1px #bbb, 1px 1px 2px 1px dark_theme_color, 1px 1px 4px 1px theme_color
             transition none
           .desc
             color #666
@@ -193,8 +195,6 @@
             line-height 1.3em
             min-height 40px
             margin-top 6px
-          .icon
-            margin-top 15px
         li
           float left
           > label

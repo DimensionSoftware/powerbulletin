@@ -238,8 +238,8 @@ load-css = (href) ->
   if ($i=$ \#info)?length  # guard
     $i.remove-class \hover # close first
     return if start >= msgs.length
-    if msgs[start]
-      <~ set-timeout _, 20ms # yield (smooth animations)
+    if m = msgs[start]
+      <~ set-timeout _, 25ms # yield (smooth animations)
       $i
         ..off! # cleanup
         ..find \.msg .html msgs[start] # set message
