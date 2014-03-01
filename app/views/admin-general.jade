@@ -3,6 +3,8 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
   fieldset
     label(for='name') Title
     input(id='name', class='name', name='name', type='text', value=site.name)
+    button.name(type='submit', value='Save') Save
+    .note Appears at top of browser window
     .break
     label(for='invite_only') Invite Only
     .box
@@ -140,6 +142,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
             input(id="google_secret", type='text', name='googleConsumerSecret', placeholder='Google+ API secret ...',
             value=site.config.googleConsumerSecret)
             //-input(type='hidden', name='csrf', value=csrf)
-    button(type='submit', value='Save') Save
+          button(type='submit', value='Save') Save
     input(type='hidden', name='action', value='general')
+    .break
     a.menu-link.mutant(href='/admin/menu') Continue to Menu &rarr;
