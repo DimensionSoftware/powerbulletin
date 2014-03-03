@@ -247,14 +247,16 @@ load-css = (href) ->
     $ \.raised .remove-class \raised # reset DOM
     if index >= msgs.length then reset-ui!; return
 
-    if [control, msg] = msgs[index]
+    if [control, msg, is-right-arrow=false] = msgs[index]
       if ($e = $ control)?length is 1 # raise control & reposition tooltip to control
+        left = $e.position!left + ($i.width!/2)
         $e
           ..0?scroll-into-view!
           ..add-class \raised
         $i
           ..css \top, ($e.position!top - 10px) + \px
-          ..css \left ($e.position!left + ($i.width!/2)) + \px
+          ..css \left if is-right-arrow then left + 280px else left + \px
+          ..toggle-class \right, is-right-arrow
       else # for none & multiple elements, use top-dead-center of screen
         if $e?length then $e.add-class \raised
         $i
