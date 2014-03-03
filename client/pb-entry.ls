@@ -430,7 +430,7 @@ $d.on \click 'html.admin .question' (ev) ->
   switch window.location.pathname
   | \/admin/menu =>
     show-info 0,
-      [\.col1,              'Click &amp; Drag Menu Items to Rearrange', true],
+      [\.col1,              'Click &amp; Drag Menu Items to <b>Rearrange</b>', true],
       ['.col2 .has-dialog', 'Fill in the remaining information and Click <b>Save</b>']
   | \/admin/upgrade =>
     show-info 0, [\fieldset, 'Pro Upgrades are the Sharpest Tools Available for Your Community']

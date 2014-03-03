@@ -5,7 +5,7 @@ require! {
   \./PBComponent
   \./Uploader
 }
-{lazy-load-nested-sortable, show-tooltip, submit-form, storage} = require \../client/client-helpers if window?
+{lazy-load-nested-sortable, show-info, show-tooltip, submit-form, storage} = require \../client/client-helpers if window?
 {each, map, maximum} = require \prelude-ls
 
 module.exports =
@@ -214,7 +214,7 @@ module.exports =
 
       @$.on \click \.onclick-add (ev) ~>
         @show!
-        show-tooltip ($ \#warning), 'Select a type below!', 20000ms # closes early when selected
+        show-tooltip ($ \#warning), 'Choose a Type for This Menu Item!', 20000ms # closes early when selected
 
         s = @$.find \.sortable
         # generate id & add new menu item!
@@ -293,7 +293,15 @@ module.exports =
       set-timeout (~> # activate first
         @restore-sortable-tree!
         unless s.find \input:first .length then @$ \.onclick-add .click! # add unless exists
-        s.find \input:first .focus!), 200ms
+        # show intro to user?
+        const seen-intro = "#{window.user?id}-admin-intro"
+        unless storage.get seen-intro
+          storage.set seen-intro, true
+          show-info 0,
+            [\.col1,              '<b>Welcome!</b> Each Item Added Becomes Part of Your Main Menu', true],
+            [\.col1,              'Click &amp; Drag Menu Items to <b>Rearrange</b>', true],
+            ['.col2 .has-dialog', 'Fill in the remaining information and Click <b>Save</b>']
+        s.find \input:first .focus!), 10ms
       s.nested-sortable { stop: @resort } <<< opts # init
 
     on-detach: -> @$.off!
