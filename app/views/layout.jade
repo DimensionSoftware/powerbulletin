@@ -46,6 +46,12 @@ html
     script(type="text/javascript").
       window.CHANGESET=!{JSON.stringify(global.CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cacheUrl)};window.cache2Url=!{JSON.stringify(cache2Url)};window.cache3Url=!{JSON.stringify(cache3Url)};window.cache4Url=!{JSON.stringify(cache4Url)};window.cache5Url=!{JSON.stringify(cache5Url)};window.authDomain="!{authDomain}";window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cache5Url+'/client',urlArgs:!{JSON.stringify(global.CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
   body
+    #info.info.tooltip
+      .msg
+      .onclick-close(title='Close!') X
+      .next
+        b Next 
+        | >>
     header.header.toggler
       if logo
         h1.logo.custom-logo
@@ -62,12 +68,6 @@ html
             .s-big-search
           .onclick-close.toggler(title='Close!') x
         #warning.tooltip
-        #info.info.tooltip
-          .msg
-          .onclick-close(title='Close!') X
-          .next
-            b Next 
-            | >>
         .MainMenu.menu-container
           menu#menu.menu
             +_menu(0, menu)

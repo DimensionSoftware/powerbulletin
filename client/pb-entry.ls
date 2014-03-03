@@ -429,16 +429,21 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
 $d.on \click 'html.admin .question' (ev) ->
   switch window.location.pathname
   | \/admin/menu =>
-    show-info 0, 'Click &amp; Drag Menu Items to Rearrange', 'Choose the Type for this Menu Item', 'Fill in the remaining information and Click <b>Save</b>'
+    show-info 0,
+      [\.col1,              'Click &amp; Drag Menu Items to Rearrange'],
+      ['.col2 .has-dialog', 'Fill in the remaining information and Click <b>Save</b>']
   | \/admin/upgrade =>
-    show-info 0, 'Pro Upgrades are the Sharpest Tools Available for Your Community'
+    show-info 0, [\fieldset, 'Pro Upgrades are the Sharpest Tools Available for Your Community']
   | \/admin/invites =>
-    show-info 0, 'Send a Personalized Invitation Link to Your VIPs'
+    show-info 0,
+      [\#emails,                'Type in the <b>Email Address</b> of your VIPs'],
+      [\#message,               'Include a Personalized Message <small>(optional)</small>'],
+      ['button[type="submit"]', 'Click to <b>Send</b> an Invitation Link']
   | _ =>
-    show-info 0, '''
+    show-info 0, [\.col1, '''
       Fill in the remaining information and Click <b>Save</b>
       <br/><small>Some inputs save automatically</small>
-    '''
+    ''']
 
 $d.on \click \#add_custom_domain (ev) ->
   e = $ \#custom_domain

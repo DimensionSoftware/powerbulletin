@@ -234,19 +234,42 @@ load-css = (href) ->
   History.push-state params, '', href
   false
 
-@show-info = (start=0, ...msgs) ~>
-  if ($i=$ \#info)?length  # guard
-    $i.remove-class \hover # close first
-    return if start >= msgs.length
-    if m = msgs[start]
-      <~ set-timeout _, 25ms # yield (smooth animations)
-      $i
+@show-info = (index=0, ...msgs) ~>
+  reset-ui = ->
+    $i.remove-class \hover # close last
+    $b.remove-class \disabled
+    false
+
+  $b = $ \body
+  if ($i=$ \#info)?length
+    $ \.raised .remove-class \raised # reset DOM
+    if index >= msgs.length then reset-ui!; return
+
+    if [control, msg] = msgs[index]
+      if ($e = $ control)?length is 1 # raise control & reposition tooltip to control
+        $e
+          ..0?scroll-into-view!
+          ..add-class \raised
+        $i
+          ..css \top, ($e.position!top - 10px) + \px
+          ..css \left ($e.position!left + ($i.width!/2)) + \px
+      else # for none & multiple elements, use top-dead-center of screen
+        if $e?length then $e.add-class \raised
+        $i
+          ..remove-attr \style # remove position
+          ..css \left, (parse-int(($ window .width!) - $i.width!) / 2) + \px
+
+      $b.add-class \disabled
+      <~ set-timeout _, 30ms # yield (smooth animations)
+
+      $i # show info tip
         ..off! # cleanup
-        ..find \.msg .html msgs[start] # set message
-        ..find \.next .toggle-class \hidden, (start >= msgs.length-1)
-        ..find \.onclick-close .click -> $i.remove-class \hover; false
+        ..find \.msg .html msg # set message
+        ..find \.next .toggle-class \hidden, (index >= msgs.length-1)
+        ..find \.onclick-close .click -> reset-ui
         ..add-class \hover # show!
-        ..click ~> @show-info start+1, ...msgs; true # recurse
+        ..click ~> @show-info index+1, ...msgs; true # recurse
+        ..0?scroll-into-view!
 
 timers = {}
 @show-tooltip = ($tt, msg, duration=4500ms) ~>

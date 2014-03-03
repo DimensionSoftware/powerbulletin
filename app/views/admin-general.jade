@@ -1,6 +1,6 @@
 analytics = unescape(site.config.analytics)
 form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", enctype="multipart/form-data")
-  fieldset
+  fieldset.col1
     label(for='name') Title
     input(id='name', class='name', name='name', type='text', value=site.name)
     button.name(type='submit', value='Save') Save

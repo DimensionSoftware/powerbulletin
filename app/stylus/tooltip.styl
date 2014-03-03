@@ -60,6 +60,8 @@ tooltip-border-color = rgb(100, 100, 100)
       left -11px
       top -2px
   &.info
+    position fixed
+    z-index 300
     transform scale(0) rotate(0deg) translate(0, 200px)
     text-shadow none
     tooltip-border-color = darken(dark_theme_color, 25%)
@@ -67,10 +69,10 @@ tooltip-border-color = rgb(100, 100, 100)
     border 2px solid darken(dark_theme_color, 25%)
     box-shadow 0 1px 0px 1px #333,0 1px 3px 0 darken(dark_theme_color, 25%)
     color colored_text
-    top 140px
+    top 12px
     text-transform none
     padding 25px
-    min-height 80px
+    height 65px
     min-width 250px
     font-size 1.2em
     line-height 1.5em
