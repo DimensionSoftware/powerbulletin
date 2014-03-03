@@ -440,7 +440,7 @@ $d.on \click 'html.admin .question' (ev) ->
       [\#message,               'Include a Personalized Message <small>(optional)</small>'],
       ['button[type="submit"]', 'Click to <b>Send</b> an Invitation Link']
   | _ =>
-    show-info 0, [\.col1, '''
+    show-info 0, ['.col1, fieldset', '''
       Fill in the remaining information and Click <b>Save</b>
       <br/><small>Some inputs save automatically</small>
     ''']
