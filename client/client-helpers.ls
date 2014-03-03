@@ -237,7 +237,9 @@ load-css = (href) ->
 @show-info = (index=0, ...msgs) ~>
   reset-ui = ->
     $i.remove-class \hover # close last
-    $b.remove-class \disabled
+    $b
+      ..remove-class \disabled
+      ..off \click.disabled
     false
 
   $b = $ \body
@@ -259,16 +261,18 @@ load-css = (href) ->
           ..remove-attr \style # remove position
           ..css \left, (parse-int(($ window .width!) - $i.width!) / 2) + \px
 
-      $b.add-class \disabled
+      $b
+        ..add-class \disabled
+        ..on \click.disabled -> reset-ui!
       <~ set-timeout _, 30ms # yield (smooth animations)
 
       $i # show info tip
         ..off! # cleanup
         ..find \.msg .html msg # set message
         ..find \.next .toggle-class \hidden, (index >= msgs.length-1)
-        ..find \.onclick-close .click -> reset-ui
+        ..find \.onclick-close .click -> reset-ui!
         ..add-class \hover # show!
-        ..click ~> @show-info index+1, ...msgs; true # recurse
+        ..click ~> @show-info index+1, ...msgs; false # recurse
         ..0?scroll-into-view!
 
 timers = {}
