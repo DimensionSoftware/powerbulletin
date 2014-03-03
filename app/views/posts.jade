@@ -47,7 +47,7 @@ if typeof(post) !== 'undefined'
         .actions
           a.onclick-footer-toggle(title='Reply') Reply
             .s-dark-reply.onclick-footer-toggle
-          a.edit.mutant.no-surf(data-edit=post.id, href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
+          a.edit.mutant.no-surf(data-edit=post.id, data-href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
             .s-edit
           a.permalink.mutant(href=post.uri, title='Permalink') Permalink
             .s-dark-permalink
