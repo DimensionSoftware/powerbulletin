@@ -53,7 +53,9 @@ export init = (cb = (->)) ->
 
 export query = (sql, args, cb) ->
   err, c <- pg.connect conn-str
-  if err then return cb(err)
+  if err
+    console.error \postgres, err
+    return cb(err)
   err, res <- c.query sql, args
   if err then return cb(err)
 
