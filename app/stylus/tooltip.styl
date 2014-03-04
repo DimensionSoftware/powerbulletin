@@ -77,7 +77,8 @@ tooltip-border-color = rgb(100, 100, 100)
     font-size 1.2em
     line-height 1.5em
     transition all .15s ease-in-out
-    &.right
+    // this tooltip points LEFT
+    &.right.left
       width 385px
       border-left none
       &:after
@@ -88,6 +89,17 @@ tooltip-border-color = rgb(100, 100, 100)
       .next
         right 45px
         bottom 10px
+    // this tooltip points RIGHT (left refers to the bubble)
+    &.left
+      border-right none
+      .onclick-close
+        left -5px
+      &:after
+        left auto
+        top 20%
+        border 20px solid transparent
+        border-left 20px solid @background-color
+        right -40px
     &:hover, &.hover
       transform scale(1) rotate(0) translate(0, 0)
       .onclick-close
@@ -114,17 +126,18 @@ tooltip-border-color = rgb(100, 100, 100)
       font-size .75em
       font-weight 100
       position absolute
-      bottom 10px
-      right 17px
+      bottom 20px
+      right 25px
       letter-spacing -1px
       color #222
       padding 0 12px 0 8px
-      background-color rgba(255,255,255,.2)
+      background-color rgba(255,255,255,.4)
       border-radius 4px
       transition all .3s ease-out
+      border-bottom 1px solid rgba(255,255,255,.65)
       &:hover
         color #000
-        background-color rgba(255,255,255,.3)
+        background-color rgba(255,255,255,.5)
         transform translateX(3px)
         transition all .03s ease-in-out
       b

@@ -247,35 +247,46 @@ load-css = (href) ->
     $ \.raised .remove-class \raised # reset DOM
     if index >= msgs.length then reset-ui!; return
 
-    if [control, msg, is-right-arrow=false] = msgs[index]
-      if ($e = $ control)?length is 1 # raise control & reposition tooltip to control
-        left = $e.position!left + ($i.width!/2)
-        $e
+    command = msgs[index]
+    if typeof! command is \Function # run (useful to setup & teardown ui)
+      do command
+      @show-info index+1, ...msgs # recur
+
+    else # setup info dialog for this iteration
+      if [control, msg, arrow=false] = msgs[index]
+        if ($e = $ control)?length is 1 # raise control & reposition tooltip to control
+          left = $e.position!left + ($i.width!/2)
+          $e
+            ..0?scroll-into-view!
+            ..add-class \raised
+          console.log \arrow:, arrow
+          $i # position
+            ..toggle-class \right, arrow is true # points left
+            ..toggle-class \left,  arrow is -1   # points right
+            ..css \top, ($e.position!top - 10px) + \px
+            ..css \left (switch arrow
+              | 1     => \50%
+              | true  => left + 280px
+              | false => left) + \px
+        else # for none & multiple elements, use top-dead-center of screen
+          if $e?length then $e.add-class \raised
+          $i
+            ..remove-attr \style # remove position
+            ..css \left, (parse-int(($ window .width!) - $i.width!) / 2) + \px
+
+        $b
+          ..add-class \disabled
+          ..on \click.disabled -> reset-ui!
+        <~ set-timeout _, 30ms # yield (smooth animations)
+
+        $i # show info tip
+          ..off! # cleanup
+          ..find \.msg .html msg # set message
+          ..find \.next .toggle-class \hidden, (index >= msgs.length-1)
+          ..find \.onclick-close .click -> reset-ui!
+          ..add-class \hover # show!
+          ..click ~> @show-info index+1, ...msgs; false # recurse
           ..0?scroll-into-view!
-          ..add-class \raised
-        $i
-          ..css \top, ($e.position!top - 10px) + \px
-          ..css \left if is-right-arrow then left + 280px else left + \px
-          ..toggle-class \right, is-right-arrow
-      else # for none & multiple elements, use top-dead-center of screen
-        if $e?length then $e.add-class \raised
-        $i
-          ..remove-attr \style # remove position
-          ..css \left, (parse-int(($ window .width!) - $i.width!) / 2) + \px
-
-      $b
-        ..add-class \disabled
-        ..on \click.disabled -> reset-ui!
-      <~ set-timeout _, 30ms # yield (smooth animations)
-
-      $i # show info tip
-        ..off! # cleanup
-        ..find \.msg .html msg # set message
-        ..find \.next .toggle-class \hidden, (index >= msgs.length-1)
-        ..find \.onclick-close .click -> reset-ui!
-        ..add-class \hover # show!
-        ..click ~> @show-info index+1, ...msgs; false # recurse
-        ..0?scroll-into-view!
 
 timers = {}
 @show-tooltip = ($tt, msg, duration=4500ms) ~>
