@@ -204,7 +204,7 @@ function background-for-forum m, active-forum-id
     fdoc.limit = parse-int limit
     fdoc.pages-count = Math.ceil(fdoc.qty / fdoc.limit)
     fdoc.active-forum-id  = fdoc.post.forum_id
-    fdoc.active-thread-id = post.id
+    fdoc.active-thread-id = thread.id
     fdoc.background       = background-for-forum fdoc.menu, fdoc.active-forum-id
     fdoc.commentable      = !!item?form?comments
     fdoc.thread           = thread
