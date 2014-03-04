@@ -155,6 +155,16 @@ function background-for-forum m, active-forum-id
     if err then return next err
     if !post then return next 404
 
+    get-thread = (cb) ->
+      if post.id is post.thread_id
+        cb null, post
+      else
+        db.post site.id, post.thread_id, cb
+
+    err, thread <- get-thread
+    if err then return next err
+    if !thread then return next 404
+
     page = meta.page || 1
     if page < 1 then return next 404
 
@@ -197,6 +207,7 @@ function background-for-forum m, active-forum-id
     fdoc.active-thread-id = post.id
     fdoc.background       = background-for-forum fdoc.menu, fdoc.active-forum-id
     fdoc.commentable      = !!item?form?comments
+    fdoc.thread           = thread
 
     finish fdoc
 

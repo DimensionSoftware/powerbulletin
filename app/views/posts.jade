@@ -18,6 +18,12 @@ if typeof(post) !== 'undefined'
 if typeof(post) !== 'undefined'
   - if (!post.user_photo) post.user_photo = cacheUrl + 'images/profile.jpg'
   .forum.resizable
+
+    if post.id != thread.id
+      h2.permalink-title
+        a.mutant(title=thread.body, href=thread.uri)= thread.title
+          span.reply-context &larr; In Reply to
+
     if page == 1
       .post.head(id="post_#{post.id}", class=post.reason ? 'censored' : '', data-user-id=post.user_id, data-post-id=post.id)
         .onclick-footer-toggle.post-reply
@@ -37,7 +43,8 @@ if typeof(post) !== 'undefined'
         .container
           .s-chat-bubble
           .post-content
-            h2.title= post.title
+            if post.title
+              h2.title= post.title
             if post.html
               .body!= post.html
           if !post.is_comment && post.alias_config && post.alias_config.sig
