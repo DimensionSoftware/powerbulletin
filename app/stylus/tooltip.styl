@@ -54,8 +54,8 @@ tooltip-border-color = rgb(100, 100, 100)
     right -100px
     width 65px
     &:after
-      border-right 10px solid rgba(0,0,0,0.1)
       border 9px solid transparent
+      border-right 10px solid rgba(0,0,0,0.1)
       left -11px
       top -2px
   &.info
@@ -72,13 +72,13 @@ tooltip-border-color = rgb(100, 100, 100)
     top 12px
     text-transform none
     padding 25px
-    height 85px
-    min-width 250px
+    height 95px
+    min-width 375px
     font-size 1.2em
     line-height 1.5em
     transition all .15s ease-in-out
     // this tooltip points LEFT
-    &.right.left
+    &.right, &.left
       width 385px
       border-left none
       &:after
