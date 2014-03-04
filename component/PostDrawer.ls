@@ -26,6 +26,8 @@ module.exports =
           post-success ev, data
           if @is-editing # update ui
             @edit-mode! # back to default Reply mode
+          else # for reply mode only
+            @delete-draft!
       @@$ \.onclick-footer-toggle .on \click.post-drawer (ev) ~>
         if $ ev.target .has-class \onclick-footer-toggle # guard
           @context-forum-id = ($ ev.target .parents '[data-forum-id]').data \forum-id
@@ -46,6 +48,9 @@ module.exports =
               @close!
             else # open & re-create if necessary
               make-resizable f
+              @set-draft!
+              @edit-mode! # back to reply mode
+              @editor.focus!
           false
       #}}}
 
@@ -53,6 +58,26 @@ module.exports =
       # + Editor
       @editor = new Editor {locals:{id:active-thread-id?}}, \#editor, @
       @editor.render!attach!
+
+    _draft: ~>
+      const forum-id  = window.active-forum-id or @context-forum-id
+      const parent-id = if @is-creating-thread! then \0 else (window.active-thread-id or @context-thread-id)
+      const draft-key = "post-#{forum-id}-#{parent-id}"
+      {forum-id, parent-id, draft-key}
+    delete-draft: ~>
+      {forum-id, parent-id, draft-key} = @_draft!
+      storage.del draft-key
+    save-draft: ~>
+      {forum-id, parent-id, draft-key} = @_draft!
+      if v = (@@$ '.PostDrawer [name="body"]')?val!
+        storage.set draft-key, v
+    set-draft: ~>
+      {forum-id, parent-id, draft-key} = @_draft!
+      if draft = storage.get draft-key # retrieve
+        @set-body draft
+      else
+        @set-body '' # no draft
+      @editor.refresh-preview!
 
     toggle:  ~> if @is-open! then @close! else @open!
     is-open: ~> @footer!has-class \expanded
@@ -95,10 +120,11 @@ module.exports =
         $f.attr \action, \/resources/posts
         \reply
 
+    set-body: (body) ->
+      @@$ '.PostDrawer [name="body"]' .val body
     set-post: (p) ~>
       @editor.clear! # reset preview, etc...
-      # FIXME set post using accessor
-      @@$ '.PostDrawer [name="body"]' .val p.body
+      @set-body p.body
       $f = @@$ \.form:first # setup mock form for:
       @edit-mode p.id
       if p.title # top-level post; so--bring out title
