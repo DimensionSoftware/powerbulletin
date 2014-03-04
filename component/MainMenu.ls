@@ -31,7 +31,7 @@ module.exports =
         # force menus closed
         ul = @@$ '.row > .submenu ul' .add-class \close
         sm = @@$ '.row > .submenu' .add-class \hide
-        set-timeout (~> ul.remove-class \close; sm.remove-class \hide), 2000ms # remove The Force
+        set-timeout (~> ul.remove-class \close; sm.remove-class \hide), 1200ms # remove The Force
 
       rows.on \mouseenter -> # set hover
         clear-timeout intent-timer
