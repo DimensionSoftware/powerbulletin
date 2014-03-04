@@ -121,9 +121,17 @@ md-ref-pattern = '(\\s*)\\[(\\w+)\\]:\\s*(http\\S+)'
 @tx.bbcode = (s) ->
 
 # prepare text before parsing
+#
+#   Some people, when confronted with a problem, think
+#   “I know, I'll use regular expressions.”
+#   Now they have two problems.
+#   -jwz
+#
+# http://regex.info/blog/2006-09-15/247
 @escape = escape = (text) ->
-  esc-text = util.replace-urls text, (url) -> url.replace /_/g, '\\_'
-  esc-text.replace util.md-ref-pattern-all, (m) -> m.replace /\\_/g, '_'
+  e1 = util.replace-urls text, (url) -> url.replace /_/g, '\\_'
+  e2 = e1.replace util.md-ref-pattern-all, (m) -> m.replace /\\_/g, '_'  # unescape \\_ in markdown image references
+  e3 = e2.replace /^\s{4,}.*$/mg, (m) -> m.replace /\\_/g, '_'           # unescape \\_ in markdown indented code blocks
 
 # take text and apply markup rules to it
 @parse = parse = (text) ->
