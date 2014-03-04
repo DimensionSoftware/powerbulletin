@@ -56,8 +56,8 @@ if typeof(post) !== 'undefined'
             .s-dark-reply.onclick-footer-toggle
           a.edit.mutant.no-surf(data-edit=post.id, data-href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
             .s-edit
-          a.permalink.mutant(href=post.uri, title='Permalink') Permalink
-            .s-dark-permalink
+          //-a.permalink.mutant(href=post.uri, title='Permalink') Permalink
+          //-  .s-dark-permalink
           a.censor.onclick-censor-post(title='Censor') Censor
             .s-dark-censor
           a.uncensor.onclick-uncensor-post(title='Remove from Moderation Log') Uncensor
