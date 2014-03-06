@@ -25,7 +25,7 @@ global <<< require \../shared/shared-helpers
 
 {each} = require \prelude-ls
 {is-editing, is-admin, is-auth} = require \./path-regexps
-{title-case} = require \change-case
+{title-case} = require \change-case # FIXME need custom title case routine: PowerBulletin -> PowerBulletin (not Powerbulletin)
 
 const posts-per-page = 30
 

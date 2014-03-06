@@ -18,7 +18,9 @@ body
   grid(90%,100%)
   a
     cursor pointer
-  .scroll-to, .onclick-scroll-top
+  .onclick-scroll-top
+    cursor n-resize
+  .scroll-to
     cursor pointer
 
 body.waiting
@@ -494,7 +496,8 @@ footer
   padding 5px 0
   transition left .08s ease-in, height .08s ease-in
   .onclick-scroll-top
-    cursor default
+    cursor n-resize
+    //cursor default
     height 0
     width 0
     opacity 0
@@ -553,7 +556,7 @@ body.scrolled
   #warning.tooltip
     bottom -15px
   .onclick-scroll-top
-    cursor pointer
+    cursor s-resize
     width 22px
     height 22px
     opacity 1

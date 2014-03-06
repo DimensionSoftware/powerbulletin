@@ -72,11 +72,14 @@ body.scrolled
     opacity 1
     transition opacity 1s ease-out
   #imagine
+    p
+      text-shadow 0 2px 0 #999,0 5px 1px rgba(0,0,0,.6)
     p, ul
       opacity 0
       transform translateX(25px)
       transition all .2s ease-out
     .logo-icon
+      cursor s-resize
       opacity 1
       margin-top 0
       transform translate(0, 0) rotate(0deg)
@@ -213,8 +216,27 @@ body.scrolled
   //{{{ Common
   text-align center
   margin-top 100px
+  .hidden
+    display none
+  .cancel, .onclick-close
+    font-weight 600
+    transform rotate(10deg)
+    height 9px
+    width 8px
+    color #333
+    background-color #aaa
+    background radial-gradient(circle closest-corner at 45% 35%, #eee 40%, #bbb 100%)
+    transition all .06s ease-out
+    border-radius 100%
+    padding 5px
+    &:hover
+      background-color #999
+      opacity 1
+      background radial-gradient(circle closest-corner at 45% 35%, #eee 45%, #aaa 100%)
+      color red
+      transition all .06s ease-out
   .arrow
-    cursor pointer
+    cursor s-resize
     display block
     position relative
     .down-arrow
@@ -701,7 +723,7 @@ footer
     right 8px
     transition all .1s ease-out
   .onclick-scroll-top
-    cursor pointer
+    cursor n-resize
     color #eee
     position absolute
     top 3px

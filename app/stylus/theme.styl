@@ -50,12 +50,6 @@ a
   box-shadow 0 0 3px 0 theme_color
   transition box-shadow .3s ease-in-out
 
-.cancel:hover, .onclick-close:hover
-  background-color #999
-  opacity 1
-  background radial-gradient(circle closest-corner at 45% 35%, #eee 45%, #aaa 100%)
-  color red
-  transition all .06s ease-out
 .cancel, .onclick-close
   font-weight 600
   transform rotate(10deg)
@@ -65,6 +59,12 @@ a
   background-color #aaa
   background radial-gradient(circle closest-corner at 45% 35%, #eee 40%, #bbb 100%)
   transition all .06s ease-out
+  &:hover
+    background-color #999
+    opacity 1
+    background radial-gradient(circle closest-corner at 45% 35%, #eee 45%, #aaa 100%)
+    color red
+    transition all .06s ease-out
 
 //{{{ Header
 header
