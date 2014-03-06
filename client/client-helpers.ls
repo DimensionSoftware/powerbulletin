@@ -237,6 +237,7 @@ load-css = (href) ->
 
 @show-info = (index=0, ...msgs) ~>
   reset-ui = ->
+    $ \.raised .remove-class \raised # reset DOM
     $i.remove-class \hover # close last
     $b
       ..remove-class \disabled
@@ -245,7 +246,6 @@ load-css = (href) ->
 
   $b = $ \body
   if ($i=$ \#info)?length
-    $ \.raised .remove-class \raised # reset DOM
     if index >= msgs.length then reset-ui!; return
 
     command = msgs[index]
