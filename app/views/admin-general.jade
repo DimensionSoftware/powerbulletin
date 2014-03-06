@@ -53,7 +53,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
             a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
             | code in above
           .break
-          button(type='submit', value='Save') Save
+          button.onsave-hide(type='submit', value='Save') Save
       .color-picker
     input.collapse(id='seo', type='checkbox')
     label(for='seo')

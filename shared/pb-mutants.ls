@@ -554,6 +554,7 @@ same-profile = (hints) ->
     (window, next-mutant, next) ->
       if window.admin-expanded then $ \body .add-class \collapsed # restore
       window.component.logo-uploader?detach!
+      $ \.onsave-hide .off!
       next!
   on-load:
     (window, next) ->
@@ -599,6 +600,7 @@ same-profile = (hints) ->
       hide = ->
         $ '.color-picker .iris-picker' .hide!
         $ \.hue-selector .hide!
+      $ \.onsave-hide .on \click, hide
       add-color = (defaults, color) ->
         if color then defaults.unshift color
         defaults
