@@ -64,7 +64,7 @@ if window?
   false
 
 # handle editing
-focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 10ms
+focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 200ms
 render = (sel, locals, cb=(->)) ~>
   $e = $ sel
   render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
@@ -260,7 +260,6 @@ load-css = (href) ->
           $e
             ..0?scroll-into-view!
             ..add-class \raised
-          console.log \arrow:, arrow
           $i # position
             ..toggle-class \right, arrow is true # points left
             ..toggle-class \left,  arrow is -1   # points right
@@ -282,6 +281,7 @@ load-css = (href) ->
 
         $i # show info tip
           ..off! # cleanup
+          ..show!
           ..find \.msg .html msg # set message
           ..find \.next .toggle-class \hidden, (index >= msgs.length-1)
           ..find \.onclick-close .click -> reset-ui!

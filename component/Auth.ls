@@ -2,7 +2,7 @@ define = window?define or require(\amdefine) module
 require, exports, module <- define
 require! \./PBComponent
 
-{switch-and-focus, show-tooltip, lazy-load-complexify, lazy-load-fancybox} = require \../client/client-helpers if window?
+{switch-and-focus, show-info, show-tooltip, lazy-load-complexify, lazy-load-fancybox} = require \../client/client-helpers if window?
 {unique} = require \prelude-ls
 
 module.exports =
@@ -13,14 +13,17 @@ module.exports =
     # static methods
 
     # helper to construct an Auth component and show it
+    @hide-info = -> console.log \hide;$ \#info .hide!
+
     @show-login-dialog = (cb=(->)) ->
+      @@hide-info!
       <~ lazy-load-fancybox
       <~ lazy-load-complexify
       if not window._auth
         window._auth             = new Auth locals: {site-name: window.site-name, invite-only:window.invite-only}, $ \#auth
         window._auth.after-login = Auth.after-login if Auth.after-login
 
-      $.fancybox.open \#auth, window.fancybox-params unless $ \.fancybox-overlay:visible .length
+      $.fancybox.open \#auth, {before-close: -> Auth.hide-info!} <<< window.fancybox-params unless $ \.fancybox-overlay:visible .length
       set-timeout (-> $ '#auth input[name=login-email]' .focus!select! ), 200ms
       # password complexity ui
       window.COMPLEXIFY_BANLIST = [\god \money \password \love]
@@ -31,6 +34,7 @@ module.exports =
       cb window._auth.$
 
     @show-info-dialog = (msg, msg2='', remove='', cb=(->)) ->
+      @@hide-info!
       <- Auth.show-login-dialog
       fb = $ \.fancybox-wrap:first
       fb.find \#msg .html msg
@@ -41,9 +45,15 @@ module.exports =
     @show-register-dialog = (remove='', cb=(->)) ->
       <- Auth.show-login-dialog
       switch-and-focus remove, \on-register, '.register input:first'
+      show-info 0, [\.password:first, '''
+        Generate a Secure Password and Forget About It!
+        <br/>
+        <small>Click Forgot later and we'll email you a <b>Secure Login Link</b></small>
+        ''']
       cb window._auth.$
 
     @show-reset-password-dialog = ->
+      @@hide-info!
       $auth <- Auth.show-login-dialog
       $form = $auth .find('.reset form')
       switch-and-focus '', \on-reset, '#auth .reset input:first'
@@ -107,24 +117,33 @@ module.exports =
       @$.on \submit '.choose form' @choose
       @$.on \click '.dialog a.resend' @resend
 
+      @$.on \click \.generate-password ~>
+        # alphabet for a secure password
+        az = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$!@^&*(),[]-_<>'
+        @@$ '#auth .password' .val([az.char-at Math.floor(Math.random! * az.length) for x to 32].join '').select!
+
       @$.on \click \.onclick-close-fancybox ->
+        @@hide-info!
         if window.mutator is \privateSite # back to login dialog
           switch-and-focus 'on-dialog on-forgot on-register on-reset' \on-login '#auth input[name=login-email]'
         else
           $.fancybox.close!
       @$.on \click \.onclick-show-login ->
+        @@hide-info!
         switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=login-email]'
       @$.on \click \.onclick-show-forgot ->
+        @@hide-info!
         switch-and-focus \on-error \on-forgot '#auth input[name=email]'
       @$.on \click \.onclick-show-choose ->
+        @@hide-info!
         switch-and-focus \on-login \on-choose '#auth input[name=username]'
-      @$.on \click \.onclick-show-register ->
-        switch-and-focus \on-login \on-register '#auth input[name=username]'
+      @$.on \click \.onclick-show-register -> Auth.show-register-dialog!
 
       # catch esc key events on input boxes for Auth
       @$.on \keydown \input -> if it.which is 27 then $.fancybox.close!; false
 
     on-detach: !~>
+      @@hide-info!
 
     # open window for 3rd party authentication
     open-oauth-window: (ev) ->
@@ -265,7 +284,7 @@ module.exports =
     # their password as they type it
     toggle-password: (ev) ~>
       e = $ ev.target
-      p = e.prev '[name=password]'
+      p = e.prev-all '[name=password]'
       if p.attr(\type) is \password
         e.html \Hide
         p.attr \type \text

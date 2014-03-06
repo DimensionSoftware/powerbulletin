@@ -484,7 +484,7 @@ $d.on \click 'html.admin .q' -> # close
     e.css {max-height:9999}
   false
 $d.on \click 'html.admin .dialog textarea, html.admin .dialog button, html.admin .dialog input[type="text"], html.admin .dialog select' -> false # discard event
-$d.on \click 'html.admin .theme .preview' (ev) -> $ ev.target .prev \input .focus!; false
+$d.on \click 'html.admin .preview' (ev) -> $ ev.target .prev \input .focus!; false
 $d.on \change 'html.admin .domain' -> # set keys
   id = parse-int($ '.domain option:selected' .val!)
   #console.log \parsed_id, id
