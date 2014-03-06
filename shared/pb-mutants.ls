@@ -80,6 +80,19 @@ function default-pnum-to-href-fun uri
       parsed.pathname
 
 # Common
+set-header-static = (w, cache-url, background) ->
+  # wrap img for pseudo selectors
+  w.$ \header .add-class \image
+  img = (id) ~> "<div id='#id'><img data-src='#{cache-url}/sites/#{background}'></div>"
+  bg  = w.$ \#header_background
+  if bg.length and background # use buffer
+    w.$ \header .prepend (img \header_background_buffer)
+  else if background # first, so add
+    w.$ \header .prepend (img \header_background)
+  else # use solid background color
+    unless w.$ \#header_background_color .length # no dups
+      w.$ \header .prepend '<div id="header_background_color"></div>'
+
 set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
   bg = w.$ \#forum_background
   bf = w.$ \#forum_background_buffer
@@ -139,6 +152,7 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
 
   # handle backgrounds
   set-background-static w, @cache-url, @background
+  set-header-static w, @cache-url, (@header-background or @background or '2/bg/3.jpg')
 
 layout-on-personalize = (w, u) ->
   if u # guard

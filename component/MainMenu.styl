@@ -1,6 +1,16 @@
 // shrink overall look when body has been scrolled
 body.scrolled
   header
+    &:after
+      background-color transparent
+    &.image
+      &:after
+        background-image linear-gradient(bottom, rgba(255,255,255,0) 13%, rgba(0,0,0,.85))
+        bottom 0
+        height (header_scrolled_height + 5)
+    #header_background, #header_background_buffer, #header_background_color
+      height header_scrolled_height
+      transition height .1s ease-out
     .container
       .MainMenu
         .menu
@@ -13,7 +23,62 @@ body.scrolled
           > .row:hover
             .submenu
               top 28px
-
+header
+  //{{{ background header images
+  &.image
+    &:after
+      content ''
+      position absolute
+      width 100%
+      height (header_height + 5)
+      bottom 0
+      right 0
+      background-image linear-gradient(bottom, rgba(255,255,255,0) 59%, rgba(0,0,0,.75))
+      background-color transparent
+      //background radial-gradient(circle closest-corner at 45% 35%, rgba(0,0,0,0,.6) 50%, rgba(255,255,255,0) 100%)
+    #header_background_buffer
+      opacity 0
+      z-index 1
+      display none
+    #header_background, #header_background_buffer, #header_background_color
+      overflow hidden
+      height header_height
+      img
+        width 100%
+        min-height 100%
+      &:after
+        position absolute
+        z-index 10
+        content ''
+        left 0
+        top 0
+        bottom 0
+        width 25%
+        background-image linear-gradient(to right, rgba(255,255,255,.85) 25%, rgba(255,255,255,0))
+    .MainMenu
+      .row
+        > .title
+          text-shadow 0 -1px 0 rgba(0,0,0,.3)
+          color #ddd
+        > .title.active, > .title.hover
+          color #fff!important
+      &.active, &.hover
+        &:before
+          content ''
+          position absolute
+          box-shadow 0 0 10px 10px rgba(255,255,255,.5)
+          width 10px
+          height 10px
+        > .title, > .title.hover, > .title:hover
+          color #fff
+      .submenu
+        .row .title
+          color #222
+    .container
+      .search
+        .query
+          box-shadow 0 1px 1px -1px #333 inset,2px 3px 4px 0px #bbb inset,0 0 1px 0 #555,0 1px 3px 0 theme_color inset
+  //}}}
 .MainMenu
   .close
     display none
