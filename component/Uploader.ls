@@ -54,6 +54,7 @@ module.exports =
               @set-preview r[locals.name]
             else
               show-tooltip ($ \.tooltip:first), r?msg
+            if locals.on-success then locals.on-success xhr, file, try JSON.parse r-json
         }
 
       ####  main  ;,.. ___  _
