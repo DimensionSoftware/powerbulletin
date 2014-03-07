@@ -605,9 +605,13 @@ same-profile = (hints) ->
           preview:   if logo then "/#site-id/#logo" else void
           post-url:  "/resources/sites/#site-id/logo"
           on-delete: ~> # remove logo
-            $ 'header .logo' .remove!
-          on-success: (xhr, file, r-json) ~>
-            # TODO set logo
+            $ 'header .logo'
+              ..remove-class \custom-logo
+              ..find \img .attr \src, "#cache-url/images/transparent-1px.gif"
+          on-success: (xhr, file, r) ~> # set logo
+            $ 'header .logo'
+              ..add-class \custom-logo
+              ..find \img .attr \src, "#cache-url/sites/#{r.logo}"
       }, \#logo_uploader
 
       <~ requirejs [\jqueryIris] # live color preview
