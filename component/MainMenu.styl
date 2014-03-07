@@ -1,6 +1,6 @@
 // shrink overall look when body has been scrolled
 body.scrolled
-  header
+  header.header
     &:after
       background-color transparent
     &.image
@@ -13,7 +13,7 @@ body.scrolled
       transition height .1s ease-out
     .container
       .MainMenu
-        .menu
+        #menu.menu
           bottom -2px
           > .row
             transition line-height .2s ease-out
@@ -23,17 +23,19 @@ body.scrolled
           > .row:hover
             .submenu
               top 28px
-header
+header.header
   //{{{ background header images
   &.image
+    // dark gradient
     &:after
       content ''
+      z-index 2
       position absolute
       width 100%
       height (header_height + 5)
       bottom 0
       right 0
-      background-image linear-gradient(bottom, rgba(255,255,255,0) 59%, rgba(0,0,0,.75))
+      background-image linear-gradient(bottom, rgba(255,255,255,0) 63%, rgba(0,0,0,.8))
       background-color transparent
       //background radial-gradient(circle closest-corner at 45% 35%, rgba(0,0,0,0,.6) 50%, rgba(255,255,255,0) 100%)
     #header_background_buffer
@@ -43,9 +45,13 @@ header
     #header_background, #header_background_buffer, #header_background_color
       overflow hidden
       height header_height
+      position relative
       img
-        width 100%
+        z-index 1
+        position absolute
+        width 105%
         min-height 100%
+      // white gradient
       &:after
         position absolute
         z-index 10
@@ -53,27 +59,40 @@ header
         left 0
         top 0
         bottom 0
-        width 25%
-        background-image linear-gradient(to right, rgba(255,255,255,.85) 25%, rgba(255,255,255,0))
+        width 30%
+        background-image linear-gradient(to right, rgba(255,255,255,.95) 10%, rgba(255,255,255,0))
+    .tools
+      .bubble, .bubble2
+        background-color #222
+      .container menu
+        background-color transparent
+        background-image linear-gradient(bottom, rgba(0,0,0,1) 20%, rgba(0,0,0,.65))
     .MainMenu
-      .row
-        > .title
-          text-shadow 0 -1px 0 rgba(0,0,0,.3)
+      #menu.menu
+        > .row
+          > .title
+            text-shadow 0 -1px 0 rgba(0,0,0,.3)
+            color #ddd
+          > .title.active, > .title.hover, .title:hover
+            color #fff
+        &.active, &.hover
+          &:before
+            content ''
+            position absolute
+            box-shadow 0 0 10px 10px rgba(255,255,255,.5)
+            width 10px
+            height 10px
+          > .title, > .title.hover, > .title:hover
+            color #fff
+        .submenu
           color #ddd
-        > .title.active, > .title.hover
-          color #fff!important
-      &.active, &.hover
-        &:before
-          content ''
-          position absolute
-          box-shadow 0 0 10px 10px rgba(255,255,255,.5)
-          width 10px
-          height 10px
-        > .title, > .title.hover, > .title:hover
-          color #fff
-      .submenu
-        .row .title
-          color #222
+          background-color transparent
+          background-image linear-gradient(bottom, rgba(0,0,0,.9) 50%, #333)
+          .col-sep, .col-sep2
+            background-color #333
+          .row .title, .row .title:hover
+            color #fff
+            text-shadow none
     .container
       .search
         .query
@@ -169,7 +188,7 @@ header
       > .title.hover
         position relative!important
         z-index 75!important
-        color dark_text!important
+        color dark_text
         transition color .5s ease-out
       > .title.active::after
         background radial-gradient(ellipse farthest-corner at 45% 800%, theme_color 50%, rgba(255,255,255,0) 80%)

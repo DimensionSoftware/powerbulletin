@@ -89,9 +89,6 @@ set-header-static = (w, cache-url, background) ->
     w.$ \header .prepend (img \header_background_buffer)
   else if background # first, so add
     w.$ \header .prepend (img \header_background)
-  else # use solid background color
-    unless w.$ \#header_background_color .length # no dups
-      w.$ \header .prepend '<div id="header_background_color"></div>'
 
 set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
   bg = w.$ \#forum_background
