@@ -73,6 +73,7 @@ header
   background overlay_color_secondary
   background-image linear-gradient(bottom, #fff 55%, overlay_color_secondary)
   border-bottom 1px solid #f4f4f4
+  //border-bottom 1px solid #efefef
   &.expanded
     background-color overlay_tint_color
   .container
@@ -100,7 +101,7 @@ header
         font-size 1.15em
         height 20px
         transition all .2s ease-in .1s
-        background-color rgba(overlay_color_primary, .9)
+        background-color rgba(overlay_color_primary, .95)
         &:focus
           transition none
           background-color overlay_color_primary
@@ -289,6 +290,7 @@ body.scrolled
   header
     background-color overlay_tint_color
     box-shadow 0 -1px 12px 2px #eee
+    //border-bottom 1px solid #eaeaea
     border-bottom 1px solid #fff
     height -2px
     transition height .1s ease-out
