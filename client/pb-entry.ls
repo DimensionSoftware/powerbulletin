@@ -604,6 +604,11 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
       window.spin false
 #}}}
 #
+if (h = $ '#header_background img').length # parallax! (might be way too much)
+  <- require ["#cache-url/local/plax.js"]
+  h.plaxify x-range:8px
+  $.plax.enable!
+
 # register action
 # get the user after a successful login
 Auth.after-login = ->
