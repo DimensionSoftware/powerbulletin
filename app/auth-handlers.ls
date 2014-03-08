@@ -130,8 +130,6 @@ announce = sioa.create-client!
     console.log \name-exists err, alias, req.body.username, site.id
     return res.json success:false, errors:["This name has already been registered on this site."]
 
-  console.log \wtf
-
   if errors = req.validation-errors!
     console.warn errors
     res.json {errors}
@@ -314,7 +312,7 @@ do-verify = (req, res, next) ~>
     passport.authenticate('facebook')(req, res, next)
   else
     console.warn "no passport for #{domain}"
-    res.send \500, 500
+    res.send 500, \500
 
 @login-facebook-return = (req, res, next) ->
   domain = res.vars.site.current_domain

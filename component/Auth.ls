@@ -13,7 +13,7 @@ module.exports =
     # static methods
 
     # helper to construct an Auth component and show it
-    @hide-info = -> console.log \hide;$ \#info .hide!
+    @hide-info = -> $ \#info .hide!
 
     @show-login-dialog = (cb=(->)) ->
       @@hide-info!
