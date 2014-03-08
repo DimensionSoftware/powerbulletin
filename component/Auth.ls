@@ -220,7 +220,10 @@ module.exports =
           if Auth.require-registration-cb
             Auth.require-registration-cb!
             Auth.require-registration-cb = null
-          Auth.show-info-dialog "Welcome to #siteName"
+          Auth.show-info-dialog """
+            Welcome to #siteName<br/>
+            <small>Check your Email for a Welcome letter!</small>
+          """
 
         else
           msgs = []
