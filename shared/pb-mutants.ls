@@ -278,7 +278,7 @@ layout-on-personalize = (w, u) ->
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
       window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
-      postdrawer!set-draft!
+      if user then postdrawer!set-draft!
 
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
@@ -387,7 +387,7 @@ layout-on-personalize = (w, u) ->
       w.$ \body .off \click.pd
       #$ '#left_container .scrollable' .off \scroll.Forum
       try w.$ \#left_container .resizable(\destroy)
-      postdrawer!save-draft!
+      if w.user then postdrawer!save-draft!
       unless next-mutant is \forum_background
         remove-backgrounds w
         reset-paginator w

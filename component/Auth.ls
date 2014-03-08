@@ -13,7 +13,7 @@ module.exports =
     # static methods
 
     # helper to construct an Auth component and show it
-    @hide-info = -> console.log \hide;$ \#info .hide!
+    @hide-info = -> $ \#info .hide!
 
     @show-login-dialog = (cb=(->)) ->
       @@hide-info!
@@ -32,6 +32,10 @@ module.exports =
         e.find \.strength-meter .toggle-class \strong, pass
         e.find \.strength .css(height:parse-int(percent)+\%))
       cb window._auth.$
+
+    @show-choose-dialog = ->
+      <- Auth.show-login-dialog
+      switch-and-focus '', \on-choose, '.choose input:first'
 
     @show-info-dialog = (msg, msg2='', remove='', cb=(->)) ->
       @@hide-info!
@@ -216,7 +220,10 @@ module.exports =
           if Auth.require-registration-cb
             Auth.require-registration-cb!
             Auth.require-registration-cb = null
-          Auth.show-info-dialog "Welcome to #siteName"
+          Auth.show-info-dialog """
+            Welcome to #siteName<br/>
+            <small>Check your Email for a Welcome letter!</small>
+          """
 
         else
           msgs = []
@@ -305,9 +312,11 @@ module.exports =
             window.location.reload!
           else
             $.fancybox.close!
-            $ \#username .val '' # blank username
+            v = $ \#username .val # blank username
+              ..val ''
             @after-login!
             window.location.hash = ''
+            storage.set \user, window.user <<< {name:v}
         else
           $form.find \input:first .focus!
           show-tooltip $form.find(\.tooltip), r.msg # display error

@@ -245,6 +245,7 @@ else # use locally stored user (non-blocking)
   | \#invalid    => Auth.show-info-dialog 'Invalid invite code!'
   | \#validate   => Auth.after-login! # email activation
   | \#once       => Auth.login-with-token!
+  | \#choose     => Auth.show-choose-dialog!
   | \#once-admin =>
     <- Auth.login-with-token!
     History.push-state null, null, \/admin

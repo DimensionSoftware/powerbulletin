@@ -130,8 +130,6 @@ announce = sioa.create-client!
     console.log \name-exists err, alias, req.body.username, site.id
     return res.json success:false, errors:["This name has already been registered on this site."]
 
-  console.log \wtf
-
   if errors = req.validation-errors!
     console.warn errors
     res.json {errors}
@@ -159,9 +157,11 @@ announce = sioa.create-client!
       if err then next err
 
       req.body.username = email           # give passport what it wants, where it wants it
-      @login req, res, next               # <- autologin
+      unless site.config.private
+        @login req, res, next             # <- autologin
+      else
+        res.json {+success}
                                           # pick one
-
     done!
 
 do-verify = (req, res, next) ~>
@@ -171,7 +171,10 @@ do-verify = (req, res, next) ~>
   if err then return next err
   if r
     req.session?passport?user = "#{r.name}:#{site.id}" # XXX
-    res.redirect if res.vars.is-invite then \/#choose else \/#validate
+    if res.vars.is-invite or site.config.private 
+      res.redirect \/#choose
+    else
+      res.redirect \/#validate
   else
     res.redirect \/#invalid
 @verify = (req, res, next) -> do-verify req, res, next
@@ -309,7 +312,7 @@ do-verify = (req, res, next) ~>
     passport.authenticate('facebook')(req, res, next)
   else
     console.warn "no passport for #{domain}"
-    res.send \500, 500
+    res.send 500, \500
 
 @login-facebook-return = (req, res, next) ->
   domain = res.vars.site.current_domain
