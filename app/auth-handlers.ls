@@ -159,9 +159,11 @@ announce = sioa.create-client!
       if err then next err
 
       req.body.username = email           # give passport what it wants, where it wants it
-      @login req, res, next               # <- autologin
+      unless site.config.private
+        @login req, res, next             # <- autologin
+      else
+        res.json {+success}
                                           # pick one
-
     done!
 
 do-verify = (req, res, next) ~>
@@ -171,7 +173,10 @@ do-verify = (req, res, next) ~>
   if err then return next err
   if r
     req.session?passport?user = "#{r.name}:#{site.id}" # XXX
-    res.redirect if res.vars.is-invite then \/#choose else \/#validate
+    if res.vars.is-invite or site.config.private 
+      res.redirect \/#choose
+    else
+      res.redirect \/#validate
   else
     res.redirect \/#invalid
 @verify = (req, res, next) -> do-verify req, res, next

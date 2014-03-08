@@ -33,6 +33,10 @@ module.exports =
         e.find \.strength .css(height:parse-int(percent)+\%))
       cb window._auth.$
 
+    @show-choose-dialog = ->
+      <- Auth.show-login-dialog
+      switch-and-focus '', \on-choose, '.choose input:first'
+
     @show-info-dialog = (msg, msg2='', remove='', cb=(->)) ->
       @@hide-info!
       <- Auth.show-login-dialog
@@ -305,9 +309,11 @@ module.exports =
             window.location.reload!
           else
             $.fancybox.close!
-            $ \#username .val '' # blank username
+            v = $ \#username .val # blank username
+              ..val ''
             @after-login!
             window.location.hash = ''
+            storage.set \user, window.user <<< {name:v}
         else
           $form.find \input:first .focus!
           show-tooltip $form.find(\.tooltip), r.msg # display error
