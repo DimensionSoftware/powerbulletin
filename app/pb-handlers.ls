@@ -321,26 +321,13 @@ function background-for-forum m, active-forum-id
 
 @forum-background = (req, res, next) ->
   # get site
-  site = res.vars.site
+  site     = res.vars.site
+  forum-id = parse-int req.params.id
   err, site <- db.site-by-id site.id
   if err then return next err
-
-  # html5-uploader (save forum backgrounds)
-  background = req.files.background
-
-  # mkdirp public/sites/ID
-  dst = "public/sites/#{site.id}/bg"
-  err <- mkdirp dst
-  if err then return res.json {-success, msg:err}
-
-  # atomic write to public/sites/SITE-ID/bg/FORUM-ID.jpg
-  forum-id  = parse-int req.params.id
-  ext       = extention-for background.name
-  if ext
-    file-name = if ext then "#forum-id.#ext" else forum-id
-    err <- move background.path, "#dst/#file-name".to-lower-case!
-    if err then return res.json {-success, msg:err}
-
+  err, file-name <- save-file-to-disk req.files.background, "#{site.id}/bg", forum-id
+  if err then return res.json {-success, msg:"Unable to save file: #err"}
+  if file-name
     # update site.config.menu
     m    = site.config.menu
     item = menu.flatten m |> find -> it.form.dbid is forum-id
@@ -780,5 +767,19 @@ function decorate-menu-item item, forums
 
 function extention-for file-name
   file-name?match(/\.(\w+)$/)?1 or ""
+
+function save-file-to-disk file, dst-dir, dst-file-name, cb
+  # html5-uploader (save forum backgrounds)
+  # mkdirp public/sites/ID
+  const prefix = \public/sites
+  err <- mkdirp "#prefix/#dst-dir"
+  if err then return cb err
+
+  # atomic write to public/sites/SITE-ID/bg/FORUM-ID.jpg
+  ext = extention-for file.name
+  file-name = if ext then "#dst-file-name.#ext" else dst-file-name
+  err <- move file.path, "#prefix/#dst-dir/#file-name".to-lower-case!
+  if err then return cb err
+  cb null, file-name
 
 # vim:fdm=indent
