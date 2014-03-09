@@ -44,7 +44,7 @@ module.exports =
 
       init-html5-uploader = (locals) ~>
         @set-preview locals.preview
-        @$.find('.drop-target, input.upload[type=file]').html5-uploader {
+        @$.find('.drop-target, input[type=file]').html5-uploader {
           name: locals.name
           post-url: locals.postUrl
           on-success: (xhr, file, r-json) ~>
