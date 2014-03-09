@@ -89,6 +89,7 @@ set-header-static = (w, cache-url, background) ->
     w.$ \header .prepend (img \header_background_buffer)
   else if background # first, so add
     w.$ \header .prepend (img \header_background)
+  if w.marshal then w.marshal \headerBackground, (background or void)
 
 set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
   bg = w.$ \#forum_background
@@ -149,7 +150,7 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
 
   # handle backgrounds
   set-background-static w, @cache-url, @background
-  set-header-static w, @cache-url, (@header-background or @background or '2/bg/3.jpg')
+  set-header-static w, @cache-url, @header
 
 layout-on-personalize = (w, u) ->
   if u # guard
@@ -565,6 +566,7 @@ same-profile = (hints) ->
     (window, next-mutant, next) ->
       if window.admin-expanded then $ \body .add-class \collapsed # restore
       window.component.logo-uploader?detach!
+      window.component.header-uploader?detach!
       $ \.onsave-hide .off!
       next!
   on-load:
@@ -610,6 +612,19 @@ same-profile = (hints) ->
               ..add-class \custom-logo
               ..find \img .attr \src, "#cache-url/sites/#{r.logo}"
       }, \#logo_uploader
+      header = window.site.config.header
+      window.component.header-uploader = new Uploader {
+        locals:
+          name:      \header
+          preview:   if header then header else void
+          post-url:  "/resources/sites/#site-id/header"
+          on-delete: ~> # remove header
+            $ '#header_background img' .attr \src, "#cache-url/images/transparent-1px.gif"
+            $ \header.header .remove-class \image
+          on-success: (xhr, file, r) ~>
+            $ '#header_background img' .attr \src, "#cache-url/sites/#{r.header}"
+            $ \header.header .add-class \image
+      }, \#header_uploader
 
       <~ requirejs [\jqueryIris] # live color preview
       hide = ->

@@ -30,6 +30,7 @@ require! {
     res.locals.site-id        = id
     res.locals.site-name      = name
     res.locals.current-domain = current_domain
+    res.locals.header         = config.header
     res.locals.analytics      = config.analytics
     res.locals.invite-only    = config.invite-only
     res.locals.private        = config.private

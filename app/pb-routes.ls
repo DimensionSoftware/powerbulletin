@@ -44,6 +44,8 @@ app.post \/resources/posts/:id/locked,      handlers.locked
 app.post \/resources/users/:id/avatar,      handlers.profile-avatar
 app.put \/resources/users/:id/avatar,       handlers.profile-avatar-crop
 
+app.post   \/resources/sites/:id/header,      handlers.forum-header
+app.delete \/resources/sites/:id/header,      handlers.forum-header-delete
 app.post   \/resources/forums/:id/background, handlers.forum-background
 app.delete \/resources/forums/:id/background, handlers.forum-background-delete
 app.post   \/resources/sites/:id/logo,        handlers.forum-logo

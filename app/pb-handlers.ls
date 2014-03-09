@@ -206,6 +206,7 @@ function background-for-forum m, active-forum-id
     fdoc.active-forum-id  = fdoc.post.forum_id
     fdoc.active-thread-id = thread.id
     fdoc.background       = background-for-forum fdoc.menu, fdoc.active-forum-id
+    fdoc.header           = site.config.header
     fdoc.commentable      = !!item?form?comments
     fdoc.thread           = thread
 
@@ -249,6 +250,7 @@ function background-for-forum m, active-forum-id
     fdoc.title           = title-case "#{fdoc?forum?title} | #{res.vars.site?name}"
     fdoc.description     = item?form?forum-description or ''
     fdoc.background      = background-for-forum fdoc.menu, fdoc.active-forum-id
+    fdoc.header          = site.config.header
 
     finish fdoc
 
@@ -318,6 +320,39 @@ function background-for-forum m, active-forum-id
       res.json {-success, msg:'What kind of file is this?'}
   else
     res.json {-success, msg:'What logo?'}
+
+@forum-header-delete = (req, res, next) ->
+  site = res.vars.site # get site
+  err, site <- db.site-by-id site.id
+  if err then return next err
+
+  # wipe file from disk
+  file-name = site.config.header
+  err <- fs.unlink "public/sites/#{site.id}/#{file-name.replace(/\?.*$/, '')}"
+  if err then return res.json {-success, msg:err}
+
+  # update config
+  site.config.header = ''
+  err, r <- db.site-update site # save!
+  if err then return res.json {-success, msg:err}
+  res.json {+success}
+
+@forum-header = (req, res, next) ->
+  # get site
+  site     = res.vars.site
+  forum-id = parse-int req.params.id
+  err, site <- db.site-by-id site.id
+  if err then return next err
+  err, file-name <- save-file-to-disk req.files.header, "#{site.id}", \header
+  if err then return res.json {-success, msg:"Unable to save file: #err"}
+  if file-name
+    # update site.config
+    site.config.header = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
+    err, r <- db.site-update site # save!
+    if err then return res.json {-success, msg:err}
+    res.json {+success, header:site.config.header}
+  else
+    res.json {-success, msg:'What kind of file is this?'}
 
 @forum-background = (req, res, next) ->
   # get site

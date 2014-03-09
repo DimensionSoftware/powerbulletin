@@ -94,17 +94,26 @@ module.exports =
           e.val title
           form{id, title} = {id, title}
           # init-html5-uploader
-          @uploader.detach! if @uploader # cleanup
-          @uploader = new Uploader {
-            locals:
-              preview: form.background
-              post-url: "/resources/forums/#{form.dbid}/background"
-              on-delete: ~>
-                # remove background from config
-                @$.find 'form.menus .background' .data \src, ''
-                @current-store!
-              on-success: (xhr, file, r-json) ~>
-                @current-store!}, \#uploader_component
+#          @uploader.detach! if @uploader # cleanup
+#          @uploader = new Uploader {
+#            locals:
+#              name: 'Header Image'
+#              preview: form.header
+#              post-url: "/resources/forums/#{form.dbid}/header"
+#              on-delete: ~>
+#                @current-store!
+#              on-success: (xhr, file, r-json) ~>
+#                @current-store!}, \#uploader_component
+#          @uploader = new Uploader {
+#            locals:
+#              preview: form.background
+#              post-url: "/resources/forums/#{form.dbid}/background"
+#              on-delete: ~>
+#                # remove background from config
+#                @$.find 'form.menus .background' .data \src, ''
+#                @current-store!
+#              on-success: (xhr, file, r-json) ~>
+#                @current-store!}, \#uploader_component
           # set input values
           html-form.find 'input,textarea' |> each (input) ->
             $i = @$ input

@@ -23,6 +23,8 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
           //- XXX html5-uploader works inside parent <form>
           #logo_uploader
           .break
+          #header_uploader
+          .break
           //-label(for='theme') Theme
           //-select(id='theme', name='theme')
           //-  option(disabled=true, selected=true) - Choose a Theme -
@@ -78,6 +80,8 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
           label.switch-control(for='private')
             .switch
         .note Hide content from search engines &amp; the public
+        //- XXX html5-uploader works inside parent <form>
+        #background_uploader
         .break.double
         label(for='keywords') Keywords
         textarea.save(id='keywords', name='metaKeywords')= site.config.metaKeywords
