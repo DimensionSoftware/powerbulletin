@@ -1,16 +1,16 @@
 .body-bg
-  img(src="#{cacheUrl}/images/pb_sales_main_bg.jpg")
+  img(src="#{cacheUrl}/images/pb_sales_main_bg.jpg", alt='Real-time Forum and Community only possible with PowerBulletin')
 header
   ul
     li
       a.onclick-scroll-to(data-scroll-to="#faq") FAQ
     li.community
-      a(href='https://community.powerbulletin.com', target='_blank') Community
+      a(href='https://community.powerbulletin.com', target='_blank', title='Community Forum') Community
     li(style="display: none;").my-sites
-      a.onclick-my-sites My Communities
+      a.onclick-my-sites(title='My Forums') My Communities
     li.auth
-      a.onclick-login Login
-      a.onclick-logout(style="display:none;") Logout
+      a.onclick-login(title='Forum Login') Login
+      a.onclick-logout(title='Forumu Logout', style="display:none;") Logout
     li
       button#start_now Start Now
 
@@ -22,9 +22,10 @@ header
     b Next 
     | >>
 
-#logo.logo
-  h1 Power
-    b Bulletin
+#logo.logo(title='PowerBulletin Forums and Community in real-time!')
+  h1
+    a(href='/', title='PowerBulletin Forums and Community in real-time!') Power
+      b Bulletin
 h2#imagine.stick
   p Your own real-time community
   ul
@@ -56,7 +57,7 @@ nav
   li.support
     a.name.onclick-scroll-to(data-scroll-to='#support') Support
 .container.first
-  img.bg(src="#{cacheUrl}/images/live_support.jpg")
+  img.bg(src="#{cacheUrl}/images/live_support.jpg", alt='Forum Support Community')
 section#navigation.feature
   article
     img(src="#{cacheUrl}/images/navigation-icon.jpg")
@@ -69,10 +70,10 @@ section#navigation.feature
       .down-arrow
         .s-down-arrow
 .container.second
-  img.bg(src="#{cacheUrl}/images/navigation.jpg")
+  img.bg(src="#{cacheUrl}/images/navigation.jpg", alt='Responsive Forum Communities')
 section#responsive.feature
   article
-    img(src="#{cacheUrl}/images/responsiveness-icon.jpg")
+    img(src="#{cacheUrl}/images/responsiveness-icon.jpg", alt='Responsive Forum Communities')
     h4 Device Responsive
     ul
       li Mobile &amp; tablets, to wide-screen &#8210; 
@@ -82,10 +83,10 @@ section#responsive.feature
       .down-arrow
         .s-down-arrow
 .container.third
-  img.bg(src="#{cacheUrl}/images/responsiveness.jpg")
+  img.bg(src="#{cacheUrl}/images/responsiveness.jpg", alt='Responsive Community Forum Software')
 section#realtime.feature
   article
-    img(src="#{cacheUrl}/images/real_time_flow-icon.jpg")
+    img(src="#{cacheUrl}/images/real_time_flow-icon.jpg", alt='Forum Communities in Real-time')
     h4 Real-Time Flow
     ul
       li Ultrafast PowerBulletin is built on a real-time engine
@@ -109,10 +110,10 @@ section#realtime.feature
 //-      .down-arrow
 //-        .s-down-arrow
 .container.fifth
-  img.bg(src="#{cacheUrl}/images/real_time_flow.jpg")
+  img.bg(src="#{cacheUrl}/images/real_time_flow.jpg", alt='Forum Community Software in Real-time')
 section#support.feature.shown
   article
-    img(src="#{cacheUrl}/images/live_support-icon.jpg")
+    img(src="#{cacheUrl}/images/live_support-icon.jpg", alt='Forum Software Support Community')
     h4 Live Support
     p
       | Knowledge is PowerBulletin!  With
@@ -131,11 +132,10 @@ section#faq.faq
         h4 Can I customize the look of PowerBulletin?
         p
           | Absolutely!  Get started with the 
-          b Look &amp; Feel section 
-          | in Your
+          b Look &amp; Feel
+          | section in Your 
           b /admin.
-          br
-          | With a stylish eye, Anything is Possible.
+          | Everything is Possible.
           a(href='http://www.w3schools.com/cssref/', target='_blank') CSS
           | &amp;
           a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
