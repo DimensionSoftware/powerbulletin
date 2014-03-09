@@ -1,4 +1,4 @@
-tooltip-border-color = rgb(100, 100, 100)
+tooltip-border-color = #555
 
 .tooltip-container:hover .tooltip, .tooltip.hover
   opacity .95
@@ -22,11 +22,11 @@ tooltip-border-color = rgb(100, 100, 100)
   text-align center
   cursor pointer
   color #fff
-  background-color rgb(110, 110, 110)
+  background-color #444
   border 2px solid tooltip-border-color
   border-radius 5px / 3px
   opacity 0
-  box-shadow 0 1px 0px 1px #333,0 3px 5px 1px tooltip-border-color
+  box-shadow 0 1px 0px 1px #222,0 3px 5px 1px tooltip-border-color
   text-shadow 0 -1px 0 #000
   &:after
     content ''
@@ -39,7 +39,8 @@ tooltip-border-color = rgb(100, 100, 100)
     border-top 10px solid rgba(0,0,0,0.1)
     bottom -12px
     margin-left -10px
-    border-top 9px solid #444
+    border-top 9px solid #222
+  // gloss fx
   &:before
     position absolute
     content ''
@@ -47,7 +48,7 @@ tooltip-border-color = rgb(100, 100, 100)
     right -3px
     top -3px
     height 54%
-    background rgba(255,255,255,.15)
+    background rgba(255,255,255,.12)
     border-radius .5em .1em 5em 4em/.1em .1em 1em 3em
   &.right
     top 35%
@@ -69,7 +70,7 @@ tooltip-border-color = rgb(100, 100, 100)
     background-color lighten(dark_theme_color, 10%)
     border 2px solid darken(dark_theme_color, 25%)
     box-shadow 0 1px 0px 1px #333,0 1px 3px 0 darken(dark_theme_color, 25%)
-    color darken(colored_text, 10%)
+    color darken(colored_text, 8%)
     top 12px
     text-transform none
     padding 25px
