@@ -488,19 +488,23 @@ query-dictionary =
     uncensor: (command, cb) ->
       postgres.query 'DELETE FROM moderations WHERE user_id=$1 AND post_id=$2',
         [command.user_id, command.post_id], cb
-    moderated: (forum-id, cb) ->
+    moderated: (augmented-fn ((forum-id, cb) ->
       postgres.query '''
       SELECT
         p.*,
+        thread.title AS thread_title,
+        thread.id AS thread_id,
+        thread.uri AS thread_uri,
         a.name AS user_name,
         a.photo AS user_photo
       FROM posts p
+      JOIN posts thread ON thread.id = p.thread_id
       JOIN forums f ON f.id=p.forum_id
       JOIN users u ON u.id=p.user_id
       JOIN aliases a ON a.user_id=u.id AND a.site_id=f.site_id
       JOIN moderations m ON m.post_id=p.id
       WHERE p.forum_id=$1
-      ''', [forum-id], cb
+      ''', [forum-id], cb), sh.add-dates)
 
     upsert: upsert-fn \posts
 
