@@ -501,12 +501,20 @@ $d.on \change 'html.admin .domain' -> # set keys
     \googleConsumerKey
     \googleConsumerSecret]
       $ "[name='#k']" .val domain?config[k]
+set-private-state = ->
+  c = $ \#private .is \:checked
+  $ \#background_uploader .toggle-class \hidden, !c
+  $ '#background_uploader + .note' .toggle-class \hidden !c
 subscribe = (what) -> unless what in site.subscriptions
   do-buy what
   false
-$d.on \click 'html.admin #private'           -> subscribe \private
 $d.on \click 'html.admin #analytics'         -> subscribe \analytics
 $d.on \click 'html.admin #add_custom_domain' -> subscribe \custom_domain
+$d.on \click 'html.admin #private' ->
+  subscribe \private
+  set-private-state!
+
+set-private-state!
 #}}}
 # {{{ - components
 window.component = {}
