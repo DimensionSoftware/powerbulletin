@@ -151,7 +151,7 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
       ..add-class \hover
 
   # handle backgrounds
-  set-background-static w, @cache-url, (@background or @private-background)
+  #set-background-static w, @cache-url, (@background or @private-background)
   set-header-static w, @cache-url, @header
 
 layout-on-personalize = (w, u) ->
@@ -262,6 +262,7 @@ layout-on-personalize = (w, u) ->
         paginator-component window, locals, pnum-to-href
 
       layout-static.call @, window, \forum, @active-forum-id
+      set-background-static window, @cache-url, void # use color
       next!
   on-load:
     (window, next) ->
@@ -904,6 +905,7 @@ mk-post-pnum-to-href = (post-uri) ->
     window.$ '[name="robots"]' .attr \content, 'noindex, nofollow'
     window.marshal \background, @private-background
     layout-static.call @, window, \privateSite
+    set-background-static window, @cache-url, (@background or @private-background)
     next!
   on-load: (window, next) ->
     <~ lazy-load-fancybox
