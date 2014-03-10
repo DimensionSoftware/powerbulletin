@@ -118,7 +118,7 @@ set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
     bg.remove!
 set-background-static = (w, cache-url, background) ->
   # wrap img for pseudo selectors
-  img = (id) ~> "<div id='#id'><img data-src='#{cache-url}/sites/#{background}'></div>"
+  img = (id) ~> "<div id='#id' style='background-image: url(#{cache-url}/sites/#{background})'></div>"
   bg  = w.$ \#forum_background
   if bg.length and background # use buffer
     w.$ \body .prepend (img \forum_background_buffer)
