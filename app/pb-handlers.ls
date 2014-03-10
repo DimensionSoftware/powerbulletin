@@ -254,22 +254,6 @@ function background-for-forum m, active-forum-id
 
     finish fdoc
 
-@forum-logo-delete = (req, res, next) ->
-  site = res.vars.site # get site
-  err, site <- db.site-by-id site.id
-  if err then return next err
-
-  # wipe file from disk
-  file-name = site.config.logo
-  err <- fs.unlink "public/sites/#{site.id}/#{file-name.replace(/\?.*$/, '')}"
-  if err then return res.json {-success, msg:err}
-
-  # update config
-  site.config.logo = ''
-  err, r <- db.site-update site # save!
-  if err then return res.json {-success, msg:err}
-  res.json {+success}
-
 @forum-background-delete = (req, res, next) ->
   # get site
   site = res.vars.site
@@ -279,18 +263,41 @@ function background-for-forum m, active-forum-id
   # get item
   m    = site.config.menu
   item = menu.flatten m |> find -> it.form.dbid is forum-id
-  unless item then return res.json {-success} # guard
+  unless item then return res.json 500, {-success} # guard
   # wipe file from disk
   err <- fs.unlink "public/sites/#{item.form.background.replace(/\?.*$/, '')}"
-  if err then return res.json {-success, msg:err}
+  if err then return res.json 500, {-success, msg:err}
   # update config
   path = menu.path-for-upsert m, item.id.to-string!
   item.form.background = void
   site.config.menu     = menu.struct-upsert m, path, item
   err, r <- db.site-update site # save!
-  if err then return res.json {-success, msg:err}
+  if err then return res.json 500, {-success, msg:err}
   res.json {+success}
+@forum-background = (req, res, next) ->
+  # get site
+  site     = res.vars.site
+  forum-id = parse-int req.params.id
+  err, site <- db.site-by-id site.id
+  if err then return next err
+  err, file-name <- save-file-to-disk req.files.background, "#{site.id}", forum-id
+  if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+  if file-name
+    # update site.config.menu
+    m    = site.config.menu
+    item = menu.flatten m |> find -> it.form.dbid is forum-id
+    unless item then return res.json 500, {-success} # guard
+    path = menu.path-for-upsert m, item.id.to-string!
+    item.form.background = "#{site.id}/bg/#file-name?#{h.cache-buster!}".to-lower-case!
+    site.config.menu     = menu.struct-upsert m, path, item
 
+    err, r <- db.site-update site # save!
+    if err then return res.json 500, {-success, msg:err}
+    res.json {+success, background:item.form.background}
+  else
+    res.json 500, {-success, msg:'What kind of file is this?'}
+
+@forum-logo-delete = (req, res, next) -> wipe-file-with-config res, \logo, next
 @forum-logo = (req, res, next) ->
   site = res.vars.site
   err, site <- db.site-by-id site.id
@@ -298,45 +305,21 @@ function background-for-forum m, active-forum-id
 
   # html5-uploader (save forum logo)
   if logo = req.files?logo
-
-    dst = "public/sites/#{site.id}"
-    err <- mkdirp dst
-    if err then return res.json {-success, msg:err}
-
-    # atomic write to public/sites/logo
-    ext = extention-for logo?name
-    if ext
-      file-name = "logo.#ext"
-      err <- move logo.path, "#dst/#file-name".to-lower-case!
-      if err then return res.json {-success, msg:err}
-
+    err, file-name <- save-file-to-disk req.files?logo, "#{site.id}", \logo
+    if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+    if file-name
       # update site.config
-      site.config.logo = "#file-name?#{h.cache-buster!}".to-lower-case!
+      site.config.logo = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
 
       err, r <- db.site-update site # save!
-      if err then return res.json {-success, msg:err}
-      res.json {+success, logo:"#{site.id}/#{site.config.logo}"}
+      if err then return res.json 500, {-success, msg:err}
+      res.json {+success, logo:site.config.logo}
     else
-      res.json {-success, msg:'What kind of file is this?'}
+      res.json 500, {-success, msg:'What kind of file is this?'}
   else
-    res.json {-success, msg:'What logo?'}
+    res.json 500, {-success, msg:'What logo?'}
 
-@forum-header-delete = (req, res, next) ->
-  site = res.vars.site # get site
-  err, site <- db.site-by-id site.id
-  if err then return next err
-
-  # wipe file from disk
-  file-name = site.config.header
-  err <- fs.unlink "public/sites/#{site.id}/#{file-name.replace(/\?.*$/, '')}"
-  if err then return res.json {-success, msg:err}
-
-  # update config
-  site.config.header = ''
-  err, r <- db.site-update site # save!
-  if err then return res.json {-success, msg:err}
-  res.json {+success}
-
+@forum-header-delete = (req, res, next) -> wipe-file-with-config res, \header, next
 @forum-header = (req, res, next) ->
   # get site
   site     = res.vars.site
@@ -344,55 +327,31 @@ function background-for-forum m, active-forum-id
   err, site <- db.site-by-id site.id
   if err then return next err
   err, file-name <- save-file-to-disk req.files.header, "#{site.id}", \header
-  if err then return res.json {-success, msg:"Unable to save file: #err"}
+  if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
   if file-name
     # update site.config
     site.config.header = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
     err, r <- db.site-update site # save!
-    if err then return res.json {-success, msg:err}
+    if err then return res.json 500, {-success, msg:err}
     res.json {+success, header:site.config.header}
   else
-    res.json {-success, msg:'What kind of file is this?'}
-
-@forum-background = (req, res, next) ->
-  # get site
-  site     = res.vars.site
-  forum-id = parse-int req.params.id
-  err, site <- db.site-by-id site.id
-  if err then return next err
-  err, file-name <- save-file-to-disk req.files.background, "#{site.id}/bg", forum-id
-  if err then return res.json {-success, msg:"Unable to save file: #err"}
-  if file-name
-    # update site.config.menu
-    m    = site.config.menu
-    item = menu.flatten m |> find -> it.form.dbid is forum-id
-    unless item then return res.json {-success} # guard
-    path = menu.path-for-upsert m, item.id.to-string!
-    item.form.background = "#{site.id}/bg/#file-name?#{h.cache-buster!}".to-lower-case!
-    site.config.menu     = menu.struct-upsert m, path, item
-
-    err, r <- db.site-update site # save!
-    if err then return res.json {-success, msg:err}
-    res.json {+success, background:item.form.background}
-  else
-    res.json {-success, msg:'What kind of file is this?'}
+    res.json 500, {-success, msg:'What kind of file is this?'}
 
 @private-background-delete = (req, res, next) -> wipe-file-with-config res, \privateBackground, next
 @private-background = (req, res, next) ->
   # get site
   site     = res.vars.site
-  forum-id = parse-int req.params.id
   err, site <- db.site-by-id site.id
   if err then return next err
-  err, file-name <- save-file-to-disk req.files.background, "private-background", forum-id
-  if err then return res.json {-success, msg:"Unable to save file: #err"}
+  err, file-name <- save-file-to-disk req.files.background, "#{site.id}", \private-background
+  if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
   if file-name
-    site.config.private-background = "private-background/#file-name?#{h.cache-buster!}".to-lower-case!
+    site.config.private-background = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
     err, r <- db.site-update site # save!
-    if err then return res.json {-success, msg:err}
+    if err then return res.json 500, {-success, msg:err}
     res.json {+success, background:site.config.private-background}
   else
-    res.json {-success, msg:'What kind of file is this?'}
+    res.json 500, {-success, msg:'What kind of file is this?'}
 
 # user profiles /user/:name
 @profile = (req, res, next) ->
@@ -841,15 +800,15 @@ function wipe-file-with-config res, key, next
 
   # wipe file from disk
   if file-name = site.config[key]
-    err <- fs.unlink "public/sites/#{site.id}/#{file-name.replace(/\?.*$/, '')}"
-    if err then return res.json {-success, msg:err}
+    err <- fs.unlink "public/sites/#{file-name.replace(/\?.*$/, '')}"
+    if err then return res.json 500, {-success, msg:err}
 
     # update config
     site.config[key] = ''
     err, r <- db.site-update site # save!
-    if err then return res.json {-success, msg:err}
+    if err then return res.json 500, {-success, msg:err}
     res.json {+success}
   else
-    res.json {-success, msg:['Unable to find file!']}
+    res.json 500, {-success, msg:['Unable to find file!']}
 
 # vim:fdm=indent

@@ -20,7 +20,9 @@ module.exports =
 
     delete-preview: ->
       @@$.ajax {method:\DELETE, url:@local \postUrl}
-        .done (data) ~>
+        ..error (data) ~>
+          show-tooltip ($ \#warning), 'Unable to Delete!'
+        ..success (data) ~>
           @set-preview void # remove thumb
           @locals!on-delete data # cb
 

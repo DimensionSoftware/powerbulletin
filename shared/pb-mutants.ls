@@ -81,15 +81,17 @@ function default-pnum-to-href-fun uri
 
 # Common
 set-header-static = (w, cache-url, background) ->
-  # wrap img for pseudo selectors
-  w.$ \header .add-class \image
   img = (id) ~> "<div id='#id'><img data-src='#{cache-url}/sites/#{background}'></div>"
-  bg  = w.$ \#header_background
-  if bg.length and background # use buffer
-    w.$ \header .prepend (img \header_background_buffer)
-  else if background # first, so add
-    w.$ \header .prepend (img \header_background)
-  if w.marshal then w.marshal \headerBackground, (background or void)
+  existing = w.$ \#header_background .length
+  if background
+    # wrap img for pseudo selectors
+    w.$ \header .add-class \image
+    if background and not existing # first, so add
+      w.$ \header .prepend (img \header_background)
+  else # remove bg & leave placeholder
+    w.$ \header .remove-class \image
+    w.$ \header .prepend (img \header_background) unless existing.length
+  #if w.marshal then w.marshal \headerBackground, (background or void)
 
 set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
   bg = w.$ \#forum_background
@@ -602,7 +604,7 @@ same-profile = (hints) ->
       window.component.logo-uploader = new Uploader {
         locals:
           name:      \logo
-          preview:   if logo then "/#site-id/#logo" else void
+          preview:   if logo then logo else void
           post-url:  "/resources/sites/#site-id/logo"
           on-delete: ~> # remove logo
             $ 'header .logo'
@@ -626,10 +628,11 @@ same-profile = (hints) ->
             $ '#header_background img' .attr \src, "#cache-url/sites/#{r.header}"
             $ \header.header .add-class \image
       }, \#header_uploader
+      private-background = window.site.config.private-background
       window.component.background-uploader = new Uploader {
         locals:
           name:      \background
-          preview:   if private-background? then private-background else void
+          preview:   if private-background then private-background else void
           post-url:  "/resources/sites/#site-id/private-background"
           on-delete: ~> # remove background
             $ '#forum_background img' .attr \src, "#cache-url/images/transparent-1px.gif"
