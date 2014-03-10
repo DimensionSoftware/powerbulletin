@@ -50,6 +50,8 @@ app.post   \/resources/forums/:id/background, handlers.forum-background
 app.delete \/resources/forums/:id/background, handlers.forum-background-delete
 app.post   \/resources/sites/:id/logo,        handlers.forum-logo
 app.delete \/resources/sites/:id/logo,        handlers.forum-logo-delete
+app.post   \/resources/sites/:id/private-background, handlers.private-background
+app.delete \/resources/sites/:id/private-background, handlers.private-background-delete
 #}}}
 
 #{{{ Common JS

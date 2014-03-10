@@ -377,6 +377,23 @@ function background-for-forum m, active-forum-id
   else
     res.json {-success, msg:'What kind of file is this?'}
 
+@private-background-delete = (req, res, next) -> wipe-file-with-config res, \privateBackground, next
+@private-background = (req, res, next) ->
+  # get site
+  site     = res.vars.site
+  forum-id = parse-int req.params.id
+  err, site <- db.site-by-id site.id
+  if err then return next err
+  err, file-name <- save-file-to-disk req.files.background, "private-background", forum-id
+  if err then return res.json {-success, msg:"Unable to save file: #err"}
+  if file-name
+    site.config.private-background = "private-background/#file-name?#{h.cache-buster!}".to-lower-case!
+    err, r <- db.site-update site # save!
+    if err then return res.json {-success, msg:err}
+    res.json {+success, background:site.config.private-background}
+  else
+    res.json {-success, msg:'What kind of file is this?'}
+
 # user profiles /user/:name
 @profile = (req, res, next) ->
   db   = pg.procs
@@ -816,5 +833,23 @@ function save-file-to-disk file, dst-dir, dst-file-name, cb
   err <- move file.path, "#prefix/#dst-dir/#file-name".to-lower-case!
   if err then return cb err
   cb null, file-name
+
+function wipe-file-with-config res, key, next
+  site = res.vars.site # get site
+  err, site <- db.site-by-id site.id
+  if err then return next err
+
+  # wipe file from disk
+  if file-name = site.config[key]
+    err <- fs.unlink "public/sites/#{site.id}/#{file-name.replace(/\?.*$/, '')}"
+    if err then return res.json {-success, msg:err}
+
+    # update config
+    site.config[key] = ''
+    err, r <- db.site-update site # save!
+    if err then return res.json {-success, msg:err}
+    res.json {+success}
+  else
+    res.json {-success, msg:['Unable to find file!']}
 
 # vim:fdm=indent

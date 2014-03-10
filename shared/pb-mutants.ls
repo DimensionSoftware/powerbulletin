@@ -149,7 +149,7 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
       ..add-class \hover
 
   # handle backgrounds
-  set-background-static w, @cache-url, @background
+  set-background-static w, @cache-url, (@background or @private-background)
   set-header-static w, @cache-url, @header
 
 layout-on-personalize = (w, u) ->
@@ -567,6 +567,7 @@ same-profile = (hints) ->
       if window.admin-expanded then $ \body .add-class \collapsed # restore
       window.component.logo-uploader?detach!
       window.component.header-uploader?detach!
+      window.component.background-uploader?detach!
       $ \.onsave-hide .off!
       next!
   on-load:
@@ -625,6 +626,16 @@ same-profile = (hints) ->
             $ '#header_background img' .attr \src, "#cache-url/sites/#{r.header}"
             $ \header.header .add-class \image
       }, \#header_uploader
+      window.component.background-uploader = new Uploader {
+        locals:
+          name:      \background
+          preview:   if private-background? then private-background else void
+          post-url:  "/resources/sites/#site-id/private-background"
+          on-delete: ~> # remove background
+            $ '#forum_background img' .attr \src, "#cache-url/images/transparent-1px.gif"
+          on-success: (xhr, file, r) ~>
+            $ '#forum_background img' .attr \src, "#cache-url/sites/#{r.private-background}"
+      }, \#background_uploader
 
       <~ requirejs [\jqueryIris] # live color preview
       hide = ->
@@ -888,7 +899,7 @@ mk-post-pnum-to-href = (post-uri) ->
     window.$ \#main_content .remove!
     window.$ \body .add-class \oval # fancybox theme
     window.$ '[name="robots"]' .attr \content, 'noindex, nofollow'
-    window.marshal \backgrounds, @backgrounds
+    window.marshal \background, @private-background
     layout-static.call @, window, \privateSite
     next!
   on-load: (window, next) ->
