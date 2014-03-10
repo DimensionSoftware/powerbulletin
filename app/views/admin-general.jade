@@ -80,8 +80,10 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
           label.switch-control(for='private')
             .switch
         .note Hide content from search engines &amp; the public
+        .break
         //- XXX html5-uploader works inside parent <form>
         #background_uploader
+        .note.below Displays behind the Authentication Dialog for Private Sites
         .break.double
         label(for='keywords') Keywords
         textarea.save(id='keywords', name='metaKeywords')= site.config.metaKeywords

@@ -917,7 +917,7 @@ mk-post-pnum-to-href = (post-uri) ->
     <- Auth.show-login-dialog
     set-timeout (-> # XXX guarantee fancybox shows
       unless $ \.fancybox-overlay:visible .length
-        <- Auth.show-login-dialog), 1200ms
+        <- Auth.show-login-dialog), 100ms
 
     # handle background
     rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds?length > 1

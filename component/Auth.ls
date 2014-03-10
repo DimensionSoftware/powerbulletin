@@ -52,7 +52,7 @@ module.exports =
       show-info 0, [\.password:first, '''
         Generate a Secure Password and Forget About It!
         <br/>
-        <small>Click Forgot later and we'll email you a <b>Secure Login Link</b></small>
+        <small>Click Forgot later and we'll email you a single-use <b>Secure Login Link</b></small>
         ''']
       cb window._auth.$
 
