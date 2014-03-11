@@ -78,6 +78,11 @@ tooltip-border-color = #555
     font-size 1.2em
     line-height 1.5em
     transition all .15s ease-in-out
+    &:after
+      border-top-color @background-color
+      margin-left -20px
+      bottom -20px
+      border-width 20px
     // this tooltip points LEFT
     &.right, &.left
       width 385px
