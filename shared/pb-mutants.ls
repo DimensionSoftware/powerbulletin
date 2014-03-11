@@ -91,7 +91,6 @@ set-header-static = (w, cache-url, background) ->
   else # remove bg & leave placeholder
     w.$ \header .remove-class \image
     unless existing.length then w.$ \header .prepend (img \header_background)
-  #if w.marshal then w.marshal \headerBackground, (background or void)
 
 set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
   bg = w.$ \#forum_background
@@ -151,7 +150,6 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
       ..add-class \hover
 
   # handle backgrounds
-  #set-background-static w, @cache-url, (@background or @private-background)
   set-header-static w, @cache-url, @header
 
 layout-on-personalize = (w, u) ->
@@ -920,7 +918,7 @@ mk-post-pnum-to-href = (post-uri) ->
     window.$ '[name="robots"]' .attr \content, 'noindex, nofollow'
     window.marshal \background, @private-background
     layout-static.call @, window, \privateSite
-    set-background-static window, @cache-url, (@background or @private-background)
+    set-background-static window, @cache-url, @private-background
     next!
   on-load: (window, next) ->
     <~ lazy-load-fancybox
