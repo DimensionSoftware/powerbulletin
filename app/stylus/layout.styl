@@ -92,7 +92,6 @@ body.waiting
     outline none
     text-shadow 0 0 1px #ccc
     color #555
-    filter hue-rotate(sprite_hue)
     background-image url(cache-url + '/images/pb_icon_logo_sm.png')
     background-repeat no-repeat
     padding-left 35px
@@ -265,7 +264,7 @@ header
       bottom 8px
     .search
       top 10px
-      left 234px
+      left 240px
       position absolute 
       z-index 10
       .query
@@ -587,11 +586,11 @@ body.scrolled
     transition all .1s ease-out
   .logo
     top 3px
-    transition all .1s ease-out
+    //transition all .1s ease-out
     a
       font-size .6em
-      padding-top 4px
-      transition all .1s ease-out
+      padding-top 2px
+      //transition all .1s ease-out
   .logo.custom-logo
     a
       img
@@ -623,7 +622,7 @@ body.scrolled
               right 50px
       .search
         opacity 0
-        transition opacity .07s ease-out
+        //transition opacity .07s ease-out
         .onclick-search
           right 14px
         .query

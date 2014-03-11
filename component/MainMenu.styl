@@ -4,19 +4,20 @@ body.scrolled
     &:after
       background-color transparent
     &.image
+      // dark gradient
       &:after
-        background-image linear-gradient(bottom, rgba(255,255,255,0) 13%, rgba(0,0,0,.85))
+        background-image linear-gradient(bottom, rgba(0,0,0,0) 14%, rgba(0,0,0,.9))
         bottom 0
         height (header_scrolled_height + 5)
     #header_background, #header_background_buffer, #header_background_color
       height header_scrolled_height
-      transition height .1s ease-out
+      //transition height .1s ease-out
     .container
       .MainMenu
         #menu.menu
           bottom -2px
           > .row
-            transition line-height .2s ease-out
+            //transition line-height .2s ease-out
             .submenu
               .row
                 line-height (grid*3)
@@ -35,7 +36,7 @@ header.header
       height (header_height + 5)
       bottom 0
       right 0
-      background-image linear-gradient(bottom, rgba(255,255,255,0) 63%, rgba(0,0,0,.85))
+      background-image linear-gradient(bottom, rgba(0,0,0,0) 64%, rgba(0,0,0,.9))
       background-color transparent
       //background radial-gradient(circle closest-corner at 45% 35%, rgba(0,0,0,0,.6) 50%, rgba(255,255,255,0) 100%)
     #header_background_buffer
@@ -60,6 +61,7 @@ header.header
         top 0
         bottom 0
         width 30%
+        max-width 450px
         background-image linear-gradient(to right, rgba(255,255,255,.95) 10%, rgba(255,255,255,0))
     .tools
       .bubble, .bubble2
