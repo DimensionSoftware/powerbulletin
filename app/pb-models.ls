@@ -489,22 +489,43 @@ query-dictionary =
       postgres.query 'DELETE FROM moderations WHERE user_id=$1 AND post_id=$2',
         [command.user_id, command.post_id], cb
     moderated: (augmented-fn ((forum-id, cb) ->
-      postgres.query '''
+      sql = '''
       SELECT
         p.*,
         thread.title AS thread_title,
         thread.id AS thread_id,
         thread.uri AS thread_uri,
         a.name AS user_name,
-        a.photo AS user_photo
+        a.photo AS user_photo,
+        a2.user_id AS moderator_id,
+        a2.name AS moderator_name,
+        a2.photo AS moderator_photo,
+        m.reason AS moderation_reason,
+        m.created AS moderation_created
       FROM posts p
       JOIN posts thread ON thread.id = p.thread_id
       JOIN forums f ON f.id=p.forum_id
       JOIN users u ON u.id=p.user_id
       JOIN aliases a ON a.user_id=u.id AND a.site_id=f.site_id
       JOIN moderations m ON m.post_id=p.id
+      JOIN aliases a2 ON a2.user_id=m.user_id AND a2.site_id=f.site_id
       WHERE p.forum_id=$1
-      ''', [forum-id], cb), sh.add-dates)
+      '''
+      err, r <- postgres.query sql, [forum-id]
+      if err then return cb err
+      mods = r |> map ->
+        m = {} <<< it
+        m.posts = [sh.add-dates({
+          id         : 0
+          user_id    : m.moderator_id
+          thread_id  : 0
+          forum_id   : m.forum_id
+          user_name  : m.moderator_name
+          user_photo : m.moderator_photo
+          html       : "<b>Moderation Reason:</b> #{m.moderation_reason}"
+          created    : m.moderation_created })]
+        m
+      cb null, mods), sh.add-dates)
 
     upsert: upsert-fn \posts
 
