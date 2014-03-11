@@ -43,7 +43,7 @@ export configure = (cb = (->)) ->
 
   err <- superagent.post('http://127.0.0.1:9200/pb').send({settings, mappings}).end(_)
   if err
-    console.error \elastic, err
+    console.error \elastic, err?res?body
     return cb err
 
   cb!
