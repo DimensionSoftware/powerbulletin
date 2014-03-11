@@ -90,7 +90,7 @@ set-header-static = (w, cache-url, background) ->
       w.$ \header .prepend (img \header_background)
   else # remove bg & leave placeholder
     w.$ \header .remove-class \image
-    w.$ \header .prepend (img \header_background) unless existing.length
+    unless existing.length then w.$ \header .prepend (img \header_background)
   #if w.marshal then w.marshal \headerBackground, (background or void)
 
 set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
