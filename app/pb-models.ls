@@ -510,20 +510,22 @@ query-dictionary =
       JOIN moderations m ON m.post_id=p.id
       JOIN aliases a2 ON a2.user_id=m.user_id AND a2.site_id=f.site_id
       WHERE p.forum_id=$1
+      ORDER BY m.created DESC
       '''
       err, r <- postgres.query sql, [forum-id]
       if err then return cb err
       mods = r |> map ->
         m = {} <<< it
         m.posts = [sh.add-dates({
-          id         : 0
-          user_id    : m.moderator_id
-          thread_id  : 0
-          forum_id   : m.forum_id
-          user_name  : m.moderator_name
-          user_photo : m.moderator_photo
-          html       : "<b>Moderation Reason:</b> #{m.moderation_reason}"
-          created    : m.moderation_created })]
+          moderation   : true
+          id           : 0
+          user_id      : m.moderator_id
+          thread_id    : 0
+          forum_id     : m.forum_id
+          user_name    : m.moderator_name
+          user_photo   : m.moderator_photo
+          html         : "<b>Moderation Reason:</b> #{m.moderation_reason}"
+          created      : m.moderation_created })]
         m
       cb null, mods), sh.add-dates)
 
