@@ -83,6 +83,8 @@ function default-pnum-to-href-fun uri
 set-header-static = (w, cache-url, background) ->
   img = (id) ~> "<div id='#id'><img data-src='#{cache-url}/sites/#{background}'></div>"
   existing = w.$ \#header_background .length
+  console.log \existing, existing
+  console.trace { background, existing }
   if background
     # wrap img for pseudo selectors
     w.$ \header .add-class \image

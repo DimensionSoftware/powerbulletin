@@ -206,7 +206,6 @@ function background-for-forum m, active-forum-id
     fdoc.active-forum-id  = fdoc.post.forum_id
     fdoc.active-thread-id = thread.id
     fdoc.background       = background-for-forum fdoc.menu, fdoc.active-forum-id
-    fdoc.header           = site.config.header
     fdoc.commentable      = !!item?form?comments
     fdoc.thread           = thread
 
@@ -250,7 +249,6 @@ function background-for-forum m, active-forum-id
     fdoc.title           = title-case "#{fdoc?forum?title} | #{res.vars.site?name}"
     fdoc.description     = item?form?forum-description or ''
     fdoc.background      = background-for-forum fdoc.menu, fdoc.active-forum-id
-    fdoc.header          = site.config.header
 
     finish fdoc
 
