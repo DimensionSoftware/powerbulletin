@@ -9,7 +9,7 @@ purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
-  {postdrawer, respond-resize, storage, switch-and-focus, set-imgs, align-ui, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, toggle-postdrawer} = require \../client/client-helpers
+  {postdrawer, respond-resize, storage, switch-and-focus, set-imgs, align-ui, thread-mode, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, toggle-postdrawer} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -268,10 +268,8 @@ layout-on-personalize = (w, u) ->
       next!
   on-load:
     (window, next) ->
+      $   = window.$
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
-      if is-forum-homepage window.location.to-string! # render homepage
-        render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
-      $ = window.$
 
       align-ui!
 
@@ -285,6 +283,7 @@ layout-on-personalize = (w, u) ->
       if id then edit-post id, forum_id:window.active-forum-id
       window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
       if user then postdrawer!set-draft!
+      $ \html .add-class \new # for stylus
 
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
@@ -330,6 +329,21 @@ layout-on-personalize = (w, u) ->
         try FB.XFBML.parse!
         try twttr.widgets.load!
       #}}}
+
+      if is-forum-homepage window.location.pathname
+        homepage-postdrawer = ->
+          thread-mode true
+          postdrawer!
+            ..clear!
+            ..editor?focus!
+        # intercept for thread-mode
+        $ \.onclick-footer-toggle .on \click.homepage (ev) ->
+          ev.prevent-default!
+          <- set-timeout _, 200ms
+          homepage-postdrawer!
+        homepage-postdrawer!
+        # render homepage
+        render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
       next!
   on-initial:
     (window, next) ->
@@ -388,6 +402,7 @@ layout-on-personalize = (w, u) ->
   on-unload:
     (w, next-mutant, next) ->
       # cleanup
+      w.$ \.onclick-footer-toggle .off \click.homepage
       w.$ \body .off \click
       w.$ \#main_content .add-class \transparent
       w.$ \body .off \click.pd
