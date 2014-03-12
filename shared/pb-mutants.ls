@@ -81,17 +81,9 @@ function default-pnum-to-href-fun uri
 
 # Common
 set-header-static = (w, cache-url, background) ->
-  img = (id) ~> "<div id='#id'><img data-src='#{cache-url}/sites/#{background}'></div>"
-  existing = w.$ \#header_background .length
-  if background
-    # wrap img for pseudo selectors
-    w.$ \header .add-class \image
-    if background and not existing # first, so add
-      w.$ \header .prepend (img \header_background)
-  else # remove bg & leave placeholder
-    w.$ \header .remove-class \image
-    unless existing.length then w.$ \header .prepend (img \header_background)
-
+  prepend = -> w.$ \header .prepend "<div id='header_background'><img data-src='#{cache-url}/sites/#{background}'></div>"
+  w.$ \header .toggle-class \image, !!background
+  unless w.$ \#header_background .length then prepend! # first, so add!
 set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
   bg = w.$ \#forum_background
   bf = w.$ \#forum_background_buffer
