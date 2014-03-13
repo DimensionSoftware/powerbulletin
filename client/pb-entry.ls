@@ -139,9 +139,10 @@ append-reply-ui = (ev) ->
 uncensor = (ev) ->
   $p = $ ev.target .parents \.post:first # find post div
   post-id = $p.data \post-id
+  $m = $p.parents \.moderation:first
   $.post "/resources/posts/#post-id/uncensor", (r) ->
     if r?success then $p.remove-class \censored
-    if mutator is \moderation then $p.slide-up 300ms
+    if mutator is \moderation then $m.slide-up 300ms
 
 censor = (ev) ->
   $p = $ ev.target .parents \.post:first # find post div

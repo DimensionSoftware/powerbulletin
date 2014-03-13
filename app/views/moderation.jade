@@ -4,9 +4,10 @@ h2 Moderation Log
 .forum
   if posts.length
     each p in posts
-      h3
-        a.mutant(href=p.thread_uri)= p.thread_title
-      mixin _post(p, 0, true)
+      .moderation
+        h3
+          a.mutant(href=p.thread_uri)= p.thread_title
+        mixin _post(p, 0, true)
   else
     p Nothing to see here, move along ...
 
