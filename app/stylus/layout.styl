@@ -79,12 +79,12 @@ body.waiting
   // feathering around PowerBulletin text
   &:before
     content ''
-    left 0
+    left -13px
     top -12px
-    width 230px
+    width 260px
     height 60px
     position absolute
-    background radial-gradient(ellipse closest-side at 37% 45%, rgba(255,255,255,.9) 10%, rgba(255,255,255,0) 100%)
+    background radial-gradient(ellipse closest-side at 37% 45%, rgba(255,255,255,.9) 30%, rgba(255,255,255,0) 100%)
   a
     position relative
     height 30px
@@ -123,6 +123,7 @@ body.waiting
       top 0
       left 0
       max-height 70px
+      max-width 230px
       display block
 header
   position fixed
@@ -198,7 +199,7 @@ header
       &::before
         content ''
         position absolute
-        top 55px
+        top 46px
         right 3px
         z-index 12
         height 20px
@@ -206,7 +207,7 @@ header
         border-radius 20px
       // ::after is the arrow
       &:hover::after
-        top 61px
+        top 52px
         right 12px
         border-top-width 9px
         transform rotate(10deg)
@@ -216,7 +217,7 @@ header
         border-top 6px solid #fff
         content ''
         position absolute
-        top 62px
+        top 53px
         right 9px
         z-index 13
         height 20px
@@ -228,9 +229,9 @@ header
         display none
         opacity .6
         right 75px
-        top -10px
-        height 75px
-        width 75px
+        top -4px
+        height 65px
+        width 65px
         border-radius 75px
       .container
         height 0
@@ -264,7 +265,7 @@ header
       bottom 8px
     .search
       top 10px
-      left 240px
+      left 308px
       position absolute 
       z-index 10
       .query
@@ -483,7 +484,7 @@ body.paginator
   display none
   position fixed
   top 135px
-  right 78px
+  right 93px
   font-weight 200
   font-size 1.5em
   cursor help

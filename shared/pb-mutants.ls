@@ -81,17 +81,9 @@ function default-pnum-to-href-fun uri
 
 # Common
 set-header-static = (w, cache-url, background) ->
-  img = (id) ~> "<div id='#id'><img data-src='#{cache-url}/sites/#{background}'></div>"
-  existing = w.$ \#header_background .length
-  if background
-    # wrap img for pseudo selectors
-    w.$ \header .add-class \image
-    if background and not existing # first, so add
-      w.$ \header .prepend (img \header_background)
-  else # remove bg & leave placeholder
-    w.$ \header .remove-class \image
-    unless existing.length then w.$ \header .prepend (img \header_background)
-
+  prepend = -> w.$ \header .prepend "<div id='header_background'><img data-src='#{cache-url}/sites/#{background}'></div>"
+  w.$ \header .toggle-class \image, !!background
+  unless w.$ \#header_background .length then prepend! # first, so add!
 set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
   bg = w.$ \#forum_background
   bf = w.$ \#forum_background_buffer
@@ -151,6 +143,8 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
 
   # handle backgrounds
   set-header-static w, @cache-url, @header
+  if next-mutant in <[forum profile search moderation private-site]>
+    set-background-static w, @cache-url, @private-background
 
 layout-on-personalize = (w, u) ->
   if u # guard
@@ -176,7 +170,7 @@ layout-on-personalize = (w, u) ->
     next!
   on-mutate: 
     (window, next) ->
-      scroll-to-top!
+      window.scroll-to 0, 0
   on-load:
     (window, next) ->
       render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
@@ -215,6 +209,8 @@ layout-on-personalize = (w, u) ->
         window.render-mutant \main_content, \post-new
       else if is-forum-homepage @furl.path
         render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
+        <- set-timeout _, 500ms
+        window.scroll-to 0, 0
       else
         window.render-mutant \main_content, \posts
 
@@ -260,7 +256,6 @@ layout-on-personalize = (w, u) ->
         paginator-component window, locals, pnum-to-href
 
       layout-static.call @, window, \forum, @active-forum-id
-      set-background-static window, @cache-url, void # use color
       next!
   on-load:
     (window, next) ->
@@ -380,7 +375,7 @@ layout-on-personalize = (w, u) ->
       set-wide! # ensures correct style for width
       window.socket?emit \online-now
       # snappy-to-top
-      $ window .scroll-top 0
+      window.scroll-to 0, 0
       $ \body .remove-class \scrolled
       next!
   on-personalize: (w, u, next) ->
@@ -457,7 +452,7 @@ same-profile = (hints) ->
       next!
   on-mutate:
     (window, next) ->
-      scroll-to-top!
+      window.scroll-to 0, 0
       next!
   on-personalize: (w, u, next) ->
     <- lazy-load-html5-uploader
@@ -698,7 +693,7 @@ same-profile = (hints) ->
       next!
   on-mutate:
     (window, next) ->
-      scroll-to-top!
+      window.scroll-to 0, 0
       next!
 
 join-search = (sock) ->
@@ -840,6 +835,7 @@ mk-post-pnum-to-href = (post-uri) ->
       next!
   on-mutate:
     (w, next) ->
+      window.scroll-to 0, 0
       next!
   on-load:
     (w, next) ->
@@ -886,7 +882,7 @@ mk-post-pnum-to-href = (post-uri) ->
       next!
   on-mutate:
     (window, next) ->
-      scroll-to-top!
+      window.scroll-to 0, 0
       next!
   on-personalize:
     (w, u, next) ->
@@ -918,7 +914,6 @@ mk-post-pnum-to-href = (post-uri) ->
     window.$ '[name="robots"]' .attr \content, 'noindex, nofollow'
     window.marshal \background, @private-background
     layout-static.call @, window, \privateSite
-    set-background-static window, @cache-url, @private-background
     next!
   on-load: (window, next) ->
     <~ lazy-load-fancybox
@@ -957,6 +952,9 @@ mk-post-pnum-to-href = (post-uri) ->
     if u.rights?super
       $ \.uncensor .css \display \inline-block
     layout-on-personalize w, u
+    next!
+  on-mutate: (w, next) ->
+    window.scroll-to 0, 0
     next!
   on-load: (window, next) ->
     next!
