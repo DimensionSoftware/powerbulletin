@@ -349,20 +349,25 @@ html.admin
 html.privateSite
   #info.tooltip
     z-index 9999
+    height 55px
+    padding-top 15px
+  h2
+    color #fff!important
   .fancybox-overlay .fancybox-wrap .fancybox-skin, .fancybox-overlay .fancybox-wrap .fancybox-inner
     background-color transparent
     background-image none
   .fancybox-overlay.fancybox-overlay-fixed
     background radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,.3) 20%, rgba(0,0,0,.75) 100%)!important
   .fancybox-skin
-    background-color #111!important
-    opacity .8
+    background-color rgba(0,0,0,.6)!important
+    opacity .7
+    transition opacity .5s ease-in
     &:hover, &.hover
       opacity .95
       transition none
     fieldset
       border 1px solid #222!important
-      background-color #181818!important
+      background-color rgba(10,10,10,.3)!important
   //#forum_background
   //  animation-name translate-and-scale
   //  animation-duration 20s

@@ -940,13 +940,15 @@ mk-post-pnum-to-href = (post-uri) ->
     bg = $ \#forum_background # fade-in background after loaded
       ..wait-for-images -> bg.add-class \visible
 
-    fb = window.$ \.fancybox-skin
-    fn = -> fb.remove-class \hover
-    fr = set-timeout fn, 4000ms                   # dim if mouse hovers out
-    window.$ 'input[placeholder]' .on \keydown -> # opaque on key press, and re-dim:
+    fb  = window.$ \.fancybox-skin
+    dim = -> fb.remove-class \hover
+    fr  = set-timeout dim, 6000ms # dim if mouse hovers out
+    opaque = -> # opaque on key press, and re-dim
       clear-timeout fr
       fb.add-class \hover
-      fr := set-timeout fn, 2000ms
+      fr := set-timeout dim, 4000ms
+    fb.on \click, opaque
+    window.$ 'input[placeholder]' .on \keydown, opaque
 
 @moderation =
   static: (w, next) ->
