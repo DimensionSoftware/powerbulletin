@@ -56,6 +56,7 @@ body.waiting
   opacity 0
   z-index 1
 #forum_background_color, #forum_background_buffer, #forum_background
+  opacity 0
   position fixed
   top -12px
   right -40px
@@ -64,6 +65,9 @@ body.waiting
   background-position 50%
   background-repeat no-repeat
   background-size cover
+  &.visible
+    opacity 1
+    transition opacity .65s ease-in
 //}}}
 
 //{{{ Header

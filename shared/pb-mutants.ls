@@ -936,6 +936,9 @@ mk-post-pnum-to-href = (post-uri) ->
 
     # handle background
     rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds?length > 1
+    <- require ["#cache-url/local/jquery.waitforimages.min.js"]
+    bg = $ \#forum_background # fade-in background after loaded
+      ..wait-for-images -> bg.add-class \visible
 
     fb = window.$ \.fancybox-skin
     fn = -> fb.remove-class \hover
