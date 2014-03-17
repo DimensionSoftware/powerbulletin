@@ -142,9 +142,11 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
       ..add-class \hover
 
   # handle backgrounds
+  # XXX forum backgrounds are only allowed on private sites
+  # other mutants get a solid (tint) color that's defaulted gray
   set-header-static w, @cache-url, @header
-  if next-mutant in <[forum profile search moderation private-site]>
-    set-background-static w, @cache-url, @private-background
+  if next-mutant in <[forum profile search moderation privateSite]> # background color for these
+    set-background-static w, @cache-url, (if next-mutant is \privateSite then @private-background)
 
 layout-on-personalize = (w, u) ->
   if u # guard
