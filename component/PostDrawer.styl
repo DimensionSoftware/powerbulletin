@@ -1,3 +1,34 @@
+.PostDrawer
+  // has 2 states: reply & edit
+  #action_wrapper
+    position absolute
+    left 0
+    right 0
+    top 1px
+    text-align center
+    z-index 25
+    a
+      margin 0 3px
+    // default style show neither
+    .in-reply, .in-edit
+      display none
+      padding 0 8px
+      border-bottom-right-radius 5px
+      border-bottom-left-radius 5px
+      background-color #f0f0f0
+      max-width 450px
+      max-height 23px
+      overflow hidden
+      text-overflow ellipsis
+      #reply_to, #reply_by
+        display inline-block
+        text-transform capitalize
+    // show either state
+    &.reply .in-reply
+      display inline-block
+    &.edit .in-edit
+      display inline-block
+
 pre,code
   background-color #f9f9f9
   font-size smaller

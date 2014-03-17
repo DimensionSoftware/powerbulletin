@@ -104,6 +104,7 @@ module.exports =
       @@$ '[name="forum_id"]'  .val ''
       @@$ '[name="parent_id"]' .val ''
       @@$ '[name="id"]'        .val ''
+      @@$ \#action_wrapper .remove-class 'reply edit' # clear ui action
       @edit-mode! # back to reply mode
     is-creating-thread: ~> (furl.parse window.location.pathname)?type is \new-thread
     is-editing: ~> (@@$ \.form:first .attr \method) is \put
@@ -113,15 +114,25 @@ module.exports =
         $ \.save .html \Edit
         $f.attr \method, \put
         $f.attr \action, "/resources/posts/#{id}"
+        # show action is "edit"
+        @@$ \#action_wrapper .toggle-class \reply, false
+        @@$ \#action_wrapper .toggle-class \edit,  true
         \edit
       else # reply mode
         $ \.save .html \Reply
         $f.attr \method, \post
         $f.attr \action, \/resources/posts
+        # show action is "reply"
+        @@$ \#action_wrapper .toggle-class \reply, true
+        @@$ \#action_wrapper .toggle-class \edit,  false
         \reply
 
     set-body: (body) ->
       @@$ '.PostDrawer [name="body"]' .val body
+      # FIXME use (better) surf/local'd data or marshalled data to fill-out
+      @@$ \#reply_to .html "<a>#{$ \h2 .html!}</a>"
+      @@$ \#reply_by .html "<a>#{$ '.post:first .username' .html!}"
+
     set-post: (p) ~>
       @editor.clear! # reset preview, etc...
       @set-body p.body
