@@ -28,9 +28,10 @@ module.exports =
             @edit-mode! # back to default Reply mode
           else # for reply mode only
             @delete-draft!
-      @@$ \.onclick-footer-toggle .on \click.post-drawer (ev) ~>
+      @@$ window .on \click.post-drawer (ev) ~> # live
         if $ ev.target .has-class \onclick-footer-toggle # guard
           @context-forum-id = ($ ev.target .parents '[data-forum-id]').data \forum-id
+          if @is-open! then @close! # toggle
           if in-thread-mode!
             if @is-editing! # if editing, hold drawer open & switch modes
               thread-mode false # replies don't have titles
@@ -38,19 +39,13 @@ module.exports =
               @editor
                 ..clear!
                 ..focus!
-            else # user indicated close
-              @close!
-          else # user indicated toggle
+          else
             @clear! # back to Reply mode
             thread-mode false
-            f = @footer!
-            if f.has-class \expanded and f.data \uiResizable # cleanup & close
-              @close!
-            else # open & re-create if necessary
-              make-resizable f
-              @set-draft!
-              @edit-mode! # back to reply mode
-              @editor.focus!
+            make-resizable @footer!
+            @set-draft!
+            @edit-mode! # back to reply mode
+            @editor.focus!
           false
       #}}}
 
@@ -149,7 +144,7 @@ module.exports =
       @editor.refresh-preview!
 
     on-detach: ->
-      @@$ \.onclick-footer-toggle .off \click.post-drawer
+      @@$ window .off \click.post-drawer
       @$.off!
       @close!
       @editor.detach!

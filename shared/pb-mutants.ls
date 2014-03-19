@@ -274,7 +274,7 @@ layout-on-personalize = (w, u) ->
       # editing handler
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
-      window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
+      #window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
       if user then postdrawer!set-draft!
       $ \html .add-class \new # for stylus
 
@@ -398,7 +398,7 @@ layout-on-personalize = (w, u) ->
       w.$ \.onclick-footer-toggle .off \click.homepage
       w.$ \body .off \click
       w.$ \#main_content .add-class \transparent
-      w.$ \body .off \click.pd
+      #w.$ \body .off \click.pd
       #$ '#left_container .scrollable' .off \scroll.Forum
       try w.$ \#left_container .resizable(\destroy)
       if w.user then postdrawer!save-draft!
@@ -446,7 +446,7 @@ same-profile = (hints) ->
   on-load:
     (window, next) ->
       # forgot password delegate
-      window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
+      #window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
       window.$ \body .on \click \.onclick-show-forgot ->
         <- Auth.show-login-dialog
         switch-and-focus \on-error \on-forgot '#auth input[name=email]'

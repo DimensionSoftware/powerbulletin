@@ -28,7 +28,7 @@ require \raf
 
 require \layout
 
-{storage, set-imgs, set-profile, align-ui, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, show-info, submit-form} = require \./client-helpers
+{storage, set-imgs, set-profile, align-ui, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, show-info, submit-form, postdrawer} = require \./client-helpers
 {render-and-append, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
@@ -542,6 +542,7 @@ window.do-buy = (product-id) ->
 window.component.main-menu = new MainMenu {-auto-render, locals:{}}, $ \#menu
 
 # panels
+postdrawer! # + PostDrawer singleton
 window.component.panels = new PanelCollection {}
 window.component.chat-list = new ChatList { locals: { p: window.component.panels, width: 350, css: { background: '#222' } } }
 $ \body .append window.component.panels.$

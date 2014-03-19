@@ -590,16 +590,21 @@ html.forum, html.profile, html.search, html.moderation
     .post-new
       .title
         display block
-        height 17px
         border 1px solid #eee
         background #f8f8f8
         background-image none
         box-shadow none
+        font-size 1.1em
+        top -5px
+        height 6px
         &:focus
+          top -7px
           transform none
           background #f8f8f8
           box-shadow none
           border none
+          height 15px
+          font-size 1.2em
 //}}}
 //{{{ - profile
 html.profile
@@ -1274,6 +1279,7 @@ html.forum
     .onclick-footer-toggle
       display block
     .post-container
+      cursor default
       position absolute
       top 0
       bottom 0
