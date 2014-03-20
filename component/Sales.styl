@@ -754,12 +754,12 @@ box-shadow(arg1, arg2, arg3)
 
 @keyframes r0
   0%
-    box-shadow 0 0 8px 6px rgba(26, 255, 179, 0), 0 0 0 0 transparent, 0 0 0px 0px rgba(26, 255, 179, 0)
+    box-shadow 0 0 8px 6px rgba(theme_color, 0), 0 0 0 0 transparent, 0 0 0px 0px rgba(theme_color, 0)
 
   10%
-    box-shadow 0 0 8px 6px #1affb3, 0 0 12px 10px transparent, 0 0 12px 14px #1affb3
+    box-shadow 0 0 8px 6px #1affb3, 0 0 12px 10px transparent, 0 0 12px 14px rgba(darken(theme_color, 20%))
 
   100%
-    box-shadow 0 0 8px 6px rgba(26, 255, 179, 0), 0 0 0px 40px transparent, 0 0 0px 40px rgba(26, 255, 179, 0)
+    box-shadow 0 0 8px 6px rgba(26, 255, 179, 0), 0 0 0px 40px transparent, 0 0 0px 40px rgba(theme_color, 0)
 
 // vim:fdm=marker
