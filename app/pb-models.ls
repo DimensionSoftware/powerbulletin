@@ -327,7 +327,7 @@ query-dictionary =
         row =
           user_id : user-id
           site_id : site-id
-          photo   : \/images/profile.jpg
+          photo   : \/images/profile.png
         row <<< attrs
         uid = parse-int user-id
         sid = parse-int site-id

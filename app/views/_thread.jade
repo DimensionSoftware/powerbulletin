@@ -1,5 +1,5 @@
 mixin _thread(t)
-  - if (!t.user_photo) t.user_photo = cacheUrl + 'images/profile.jpg'
+  - if (!t.user_photo) t.user_photo = cacheUrl + 'images/profile.png'
   li(class="thread#{t.is_sticky ? ' sticky' : ''}#{t.is_locked ? ' locked' : ''}", data-id=t.id, data-user-id=t.user_id)
     .arrow
     a.mutant(data-surf=t.forum_id, href=t.uri)

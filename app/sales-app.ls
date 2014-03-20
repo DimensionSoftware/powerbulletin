@@ -87,7 +87,7 @@ s-app.post '/ajax/can-has-site-plz', sales-personal-mw, (req, res, next) ->
       site_id : result.site_id
       name    : user.name
       rights  : { super : 1 }
-      photo   : \/images/profile.jpg
+      photo   : \/images/profile.png
     err <- db.alias-create-preverified alias
     if err then return next err
     done!

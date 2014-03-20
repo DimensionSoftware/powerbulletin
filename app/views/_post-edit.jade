@@ -6,7 +6,7 @@ mixin _post-edit(u, p)
     form(action="/resources/posts", method="#{p.method || 'put'}")
       .tooltip
       label.summary(data-user-id=u.id)
-        img.profile.photo.online(src="#{cacheUrl}#{u.photo || '/images/profile.jpg'}")
+        img.profile.photo.online(src="#{cacheUrl}#{u.photo || '/images/profile.png'}")
         if !p.is_comment
           input.title(name='title', type='text', placeholder='Title', value=p.title)
         textarea.body.onenter-submit(id=edit_id, name='body', placeholder='Comment ...')= p.body

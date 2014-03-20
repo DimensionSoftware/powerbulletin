@@ -288,7 +288,7 @@ CREATE FUNCTION procs.find_or_create_user(usr JSON) RETURNS JSON AS $$
   _u = find-or-create(sel, sel-params, ins, ins-params)
   if _u
     change-avatar = plv8.find_function('procs.change_avatar')
-    change-avatar _u, '/images/profile.jpg'
+    change-avatar _u, '/images/profile.png'
   return _u
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -336,7 +336,7 @@ CREATE FUNCTION procs.register_local_user(usr JSON) RETURNS JSON AS $$
   if _u
     _u.id = _u.user_id
     change-avatar = plv8.find_function('procs.change_avatar')
-    change-avatar _u, '/images/profile.jpg'
+    change-avatar _u, '/images/profile.png'
   return _u
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
