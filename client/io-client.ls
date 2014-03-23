@@ -140,7 +140,7 @@ function init-with-socket s
       pc.html ("#{(parse-int pc.text!) + 1} <i>posts</i>")
 
       # & render new post
-      commentable=true
+      commentable=window.commentable
       sel = "\#post_#{post.parent_id} ~ .children:first"
       unless $ sel .length # no immediate parent (eg. comment became a reply)
         commentable=false
@@ -149,7 +149,7 @@ function init-with-socket s
       animate-in = (e) -> $ e .add-class \post-animate-in
       if post.user_id is user?id then post.is_comment=true # hide sig., etc... on our own posts
       render-and-append(
-        window, (window.$ sel), \post, post:post, commentable:commentable or window.commentable, (new-post) ->
+        window, (window.$ sel), \post, post:post, commentable:commentable, (new-post) ->
           if post.user_id is user?id # & scroll-to
             mutants.forum.on-personalize window, user, (->) # enable edit, etc...
             set-timeout (-> animate-in new-post), 250ms
