@@ -124,9 +124,9 @@ module.exports =
 
     set-body: (body) ->
       @@$ '.PostDrawer [name="body"]' .val body
-      # FIXME use (better) surf/local'd data or marshalled data to fill-out
-      @@$ \#reply_to .html "<a>#{$ \h2 .html!}</a>"
-      @@$ \#reply_by .html "<a>#{$ '.post:first .username' .html!}"
+      # use marshalled data to fill-out
+      @@$ \#reply_to .html "<a>#{window.reply_to}</a>"
+      @@$ \#reply_by .html "<a>#{window.reply_by}</a>"
 
     set-post: (p) ~>
       @editor.clear! # reset preview, etc...
