@@ -199,6 +199,10 @@ module.exports =
 
     on-attach: !->
       #{{{ Event Delegates
+      @$.on \click \.option (ev) -> # correct sprite when adding new menu item
+        $ \.s-undefined-icon
+          ..remove-class \s-undefined-icon
+          ..add-class "s-#{$ ev.target .attr \id}-icon"
       @$.on \click \.icon (ev) -> ($ ev.target .next \input).focus!
       @$.on \click \.disclose (ev) ~>
         $ ev.target .closest \li
