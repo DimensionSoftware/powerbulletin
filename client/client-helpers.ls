@@ -94,7 +94,7 @@ render = (sel, locals, cb=(->)) ~>
   $ \footer .toggle-class \thread, mode
   $ '[name="title"]' .val ''
   if active-forum-id? then $ '[name="forum_id"]' .val active-forum-id # set forum
-  unless mode then @postdrawer!edit-mode!    # back to reply mode
+  unless mode then @postdrawer!edit-mode! # back to reply mode
 @in-thread-mode = -> ($ \footer .has-class \thread) and ($ \footer .has-class \expanded)
 
 @edit-post = (id) ~>

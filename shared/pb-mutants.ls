@@ -243,8 +243,8 @@ layout-on-personalize = (w, u) ->
       window.marshal \prevPages @prev-pages
       window.marshal \social @social
       window.marshal \commentable @commentable
-      window.marshal \reply_to @post?title
-      window.marshal \reply_by @post?user_name
+      window.marshal \replyTo @post?title
+      window.marshal \replyBy @post?user_name
 
       do ~>
         if not @post then return
@@ -331,6 +331,8 @@ layout-on-personalize = (w, u) ->
           postdrawer!
             ..clear!
             ..editor?focus!
+          <- set-timeout _, 100ms # FIXME this is janky, need to simplify states, hard w/ mutant
+          $ \#action_wrapper .remove-class 'reply edit' # clear title
         # intercept for thread-mode
         $ \.onclick-footer-toggle .on \click.homepage (ev) ->
           ev.prevent-default!
