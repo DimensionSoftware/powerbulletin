@@ -1,6 +1,5 @@
 //- main menu
 mixin _menu(depth, menu)
-  - var klass = (depth > 0) ? 'indent' : 'submenu'
   if (typeof(menu) == 'object')
     each item,i in menu
       if item && item.form
@@ -15,12 +14,3 @@ mixin _menu(depth, menu)
               class="forum-#{item.form.dbid}",
               href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
               target=(item.form.separateTab ? '_blank' : '_self'))= item.title
-          //- stylize depth & recurse
-          if item.children
-            div(class=klass)
-              ul
-                //- makeshift separators
-                if klass == 'submenu'
-                  .col-sep
-                  .col-sep2
-                +_menu(depth+1, item.children)
