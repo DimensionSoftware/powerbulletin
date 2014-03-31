@@ -40,6 +40,8 @@ window.ChatList        = require \../component/ChatList
 window.ChatPanel       = require \../component/ChatPanel
 window.PostDrawer      = require \../component/PostDrawer
 
+window.CensorReasonDialog = require \../component/CensorReasonDialog
+
 window.furl     = require \../shared/forum-urls
 window.tasks    = require \./tasks
 window.ioc      = require \./io-client
