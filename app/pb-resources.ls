@@ -330,6 +330,7 @@ is-commentable-forum = (m, forum-id) ->
     post.mentions = h.at-tags post.body
 
     return res.json success:false, errors:['Incomplete post'] unless post.user_id and post.forum_id # guard
+    return res.json success:false, errors:['Threads must have a title'] if ((not post.parent_id) and (not post.title))
 
     if is-locked-forum(site.config.menu, parse-int(post.forum_id)) and (not req.user.rights?super)
       return res.json success: false, errors: [ "The forum is locked." ]
