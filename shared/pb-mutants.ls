@@ -243,8 +243,8 @@ layout-on-personalize = (w, u) ->
       window.marshal \prevPages @prev-pages
       window.marshal \social @social
       window.marshal \commentable @commentable
-      window.marshal \reply_to @post.title
-      window.marshal \reply_by @post.user_name
+      window.marshal \reply_to @post?title
+      window.marshal \reply_by @post?user_name
 
       do ~>
         if not @post then return
