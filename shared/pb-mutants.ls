@@ -172,7 +172,7 @@ layout-on-personalize = (w, u) ->
     next!
   on-mutate: 
     (window, next) ->
-      window.scroll-to 0, 0
+      window?scroll-to 0, 0
   on-load:
     (window, next) ->
       render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
@@ -212,7 +212,7 @@ layout-on-personalize = (w, u) ->
       else if is-forum-homepage @furl.path
         render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
         <- set-timeout _, 500ms
-        window.scroll-to 0, 0
+        window?scroll-to 0, 0
       else
         window.render-mutant \main_content, \posts
 
@@ -243,8 +243,8 @@ layout-on-personalize = (w, u) ->
       window.marshal \prevPages @prev-pages
       window.marshal \social @social
       window.marshal \commentable @commentable
-      window.marshal \reply_to @post?title
-      window.marshal \reply_by @post?user_name
+      window.marshal \replyTo @post?title
+      window.marshal \replyBy @post?user_name
 
       do ~>
         if not @post then return
@@ -331,6 +331,8 @@ layout-on-personalize = (w, u) ->
           postdrawer!
             ..clear!
             ..editor?focus!
+          <- set-timeout _, 100ms # FIXME this is janky, need to simplify states, hard w/ mutant
+          $ \#action_wrapper .remove-class 'reply edit' # clear title
         # intercept for thread-mode
         $ \.onclick-footer-toggle .on \click.homepage (ev) ->
           ev.prevent-default!
@@ -379,7 +381,7 @@ layout-on-personalize = (w, u) ->
       set-wide! # ensures correct style for width
       window.socket?emit \online-now
       # snappy-to-top
-      window.scroll-to 0, 0
+      window?scroll-to 0, 0
       $ \body .remove-class \scrolled
       next!
   on-personalize: (w, u, next) ->
@@ -456,7 +458,7 @@ same-profile = (hints) ->
       next!
   on-mutate:
     (window, next) ->
-      window.scroll-to 0, 0
+      window?scroll-to 0, 0
       next!
   on-personalize: (w, u, next) ->
     <- lazy-load-html5-uploader
@@ -697,7 +699,7 @@ same-profile = (hints) ->
       next!
   on-mutate:
     (window, next) ->
-      window.scroll-to 0, 0
+      window?scroll-to 0, 0
       next!
 
 join-search = (sock) ->
@@ -839,7 +841,7 @@ mk-post-pnum-to-href = (post-uri) ->
       next!
   on-mutate:
     (w, next) ->
-      window.scroll-to 0, 0
+      window?scroll-to 0, 0
       next!
   on-load:
     (w, next) ->
@@ -886,7 +888,7 @@ mk-post-pnum-to-href = (post-uri) ->
       next!
   on-mutate:
     (window, next) ->
-      window.scroll-to 0, 0
+      window?scroll-to 0, 0
       next!
   on-personalize:
     (w, u, next) ->
@@ -963,7 +965,7 @@ mk-post-pnum-to-href = (post-uri) ->
     layout-on-personalize w, u
     next!
   on-mutate: (w, next) ->
-    window.scroll-to 0, 0
+    window?scroll-to 0, 0
     next!
   on-load: (window, next) ->
     next!

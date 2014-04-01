@@ -9,7 +9,7 @@ module.exports =
     init: ->
       @local \cardNeeded, true if @local(\cardNeeded) is void
     on-attach: ->
-      set-timeout (-> @@$ \.Buy-card-number .focus!), 100ms
+      set-timeout (-> @@$ \.Buy-card-number .focus!), 350ms
       @$.on \click \.Buy-change-card ~>
         @local \cardNeeded, true
         @reload!

@@ -66,26 +66,35 @@ header.header
     .tools
       .profile.photo
         box-shadow 2px 1px 10px 2px #111, 0 0 2px 1px dark_theme_color, 1px 1px 3px 2px theme_color
-      .bubble, .bubble2
-        background-color #222
+      //.bubble, .bubble2
+      //  background-color #222
       .container menu
-        background-color transparent
-        background-image linear-gradient(bottom, rgba(0,0,0,1) 20%, rgba(0,0,0,.75))
+        background-color #fff
+        //background-image linear-gradient(bottom, rgba(0,0,0,1) 20%, rgba(0,0,0,.75))
         li a
-          color #eee
+          color #333
         .onclick-logout
           a
-            color #ddd
+            color #555
           &:hover a
-            color #eee!important
+            color #333!important
     .MainMenu
       #menu.menu
+        &.flat
+          .row, .row.active, .row:hover
+            > .submenu
+              > ul
+                .row:hover
+                  background-color transparent
+                  background-image linear-gradient(to bottom, rgba(255,255,255,.01) 50%, rgba(255,255,255,.06))
+                  transition none
         > .row
           > .title
+            text-transform uppercase
             text-shadow 1px 1px 0 rgba(0,0,0,.7)
             color #ddd
-          > .title.active, > .title.hover, .title:hover
-            color #fff
+          //> .title.active, > .title.hover, .title:hover
+          //  color #fff
         &.active, &.hover
           &:before
             content ''
@@ -93,17 +102,17 @@ header.header
             box-shadow 0 0 10px 10px rgba(255,255,255,.5)
             width 10px
             height 10px
-          > .title, > .title.hover, > .title:hover
-            color #fff
+          //> .title, > .title.hover, > .title:hover
+          //  color #fff
         .submenu
           color #ddd
           background-color transparent
-          background-image linear-gradient(bottom, rgba(0,0,0,.9) 50%, #333)
-          .col-sep, .col-sep2
-            background-color #333
-          .row .title, .row .title:hover
-            color #fff
-            text-shadow none
+          //background-image linear-gradient(bottom, rgba(0,0,0,.9) 50%, #333)
+          //.col-sep, .col-sep2
+          //  background-color #333
+          //.row .title, .row .title:hover
+          //  color #fff
+          //  text-shadow none
     .container
       .search
         .query
@@ -127,7 +136,7 @@ header.header
         text-transform capitalize
         padding 0 15px
         margin-right 20px
-    .row.active, .row:hover
+    .row.active, .row.hover, .row:hover
       z-index 7
       > .submenu
         opacity 1
@@ -158,7 +167,7 @@ header.header
       cursor default
       display inline
       line-height 38px
-      font-size .95em
+      font-size 1em
       position relative
       .title
         position relative
@@ -175,17 +184,65 @@ header.header
         max-height 0
         box-shadow 0
         transition box-shadow 0s ease-out .1s, padding 0s ease-out .1s, opacity .1s ease-out, max-height .0s ease-out .1s, top 0s ease-out .1s, min-width 0s ease-out .1s, margin 0s ease-out .1s
+        //- flat-style (non-recursive) menu
+        &.flat
+          box-shadow 0 -1px 3px -1px theme_color, 0 1px 0 0 theme_color, 0 0 3px 0 #444, 0 1px 1px 0 #333
+          border-radius 6px
+          min-width 300px
+          padding 0
+          .col-sep, .col-sep2
+            display none
+          > ul
+            padding 0
+            margin 8px 0!important
+            .row
+              padding 3px 0
+              border-bottom 1px solid rgba(theme_color, 10%)
+              transition all .2s ease-in
+              text-indent 10px
+              &:before
+                position absolute
+                z-index 1
+                content ''
+                top 0
+                bottom 0
+                background theme_color
+                width 0
+                left -5px
+                transition all .2s ease-in .03s
+              &:last-child
+                border-bottom none
+              &:hover
+                background-color transparent
+                //background-image linear-gradient(to bottom, rgba(0,0,0,.01) 50%, rgba(0,0,0,.06))
+                box-shadow 0 0 1px theme_color
+                transition none
+                a, a:hover
+                  text-indent 7px
+                  background none
+                  color darken(theme_color, 30%)!important
+                  position relative
+                  padding-left 18px!important
+                  border-radius 0
+                  //zoom 1.1
+                  width 100%
+                &:before
+                  width 5px
+                  top -1px
+                  left -1px
+                  bottom -1px
+                  transition width .02s ease-out, left .1s ease-out, top .15s ease-in, bottom .15s ease-in
         > ul
           margin-top 12px!important
         ul
           margin 0
           padding-left 25px
           .row
-            width 250px
+            width 298px
             display inline-block
             clear both
             //float left
-            font-size .9em
+            font-size .95em
             text-indent 2px
             a
               line-height 28px
@@ -223,7 +280,7 @@ header.header
         text-decoration none
         border-bottom 1px solid transparent
         color #777
-        text-transform uppercase
+        text-transform capitalize
         font-weight 400
       .title::after
         position absolute

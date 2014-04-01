@@ -39,7 +39,7 @@ module.exports =
       @@$ \#start_now .click ~>
         @scroll-to-top window
         const sr = @@$ \.SiteRegister:first
-        show-tooltip (sr.find \.tooltip), 'Name your community here!'
+        show-tooltip (sr.find \.tooltip), 'Name Your Community Here!'
         set-timeout (-> sr.find \.SiteRegister-subdomain .focus!), 100ms
       #{{{ animate build-in & initial focus
       $ \#register_top  .add-class \show

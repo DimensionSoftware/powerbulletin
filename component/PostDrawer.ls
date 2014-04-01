@@ -16,6 +16,7 @@ module.exports =
 
     on-attach: !~>
       #{{{ Event Delegates
+      @@$ '.in-reply, .in-edit' .on \click scroll-to-top
       @$.find \.save .on \click (ev) ~>
         # XXX for now, always reply to active or nearest in DOM (context) thread
         @$.find '[name="forum_id"]' .val(window.active-forum-id or @context-forum-id)
@@ -125,8 +126,9 @@ module.exports =
     set-body: (body) ->
       @@$ '.PostDrawer [name="body"]' .val body
       # use marshalled data to fill-out
-      @@$ \#reply_to .html "<a>#{window.reply_to}</a>"
-      @@$ \#reply_by .html "<a>#{window.reply_by}</a>"
+      if window.reply-to and window.reply-by
+        @@$ \#reply_to .html "<a>#{window.reply-to}</a>"
+        @@$ \#reply_by .html "<a>#{window.reply-by}</a>"
 
     set-post: (p) ~>
       @editor.clear! # reset preview, etc...
