@@ -523,7 +523,6 @@ function profile-paths user, uploaded-file, base=\avatar
   command = req.body <<< {
     user_id: req.user.id
     post_id: req.params.id
-    reason: \STUBBBBBB # XXX: fix me
   }
 
   (err, r) <- db.censor command

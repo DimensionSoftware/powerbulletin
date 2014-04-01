@@ -152,6 +152,17 @@ censor = (ev) ->
   $.post "/resources/posts/#post-id/censor", (r) ->
     if r?success then $p.add-class \censored
 
+show-censor-dialog = (ev) ->
+  $p = $ ev.target .parents \.post:first
+  post-id = $p.data \post-id
+  c = new CensorReasonDialog locals: { post-id, $p }
+  position = $p.position!
+  new-position =
+    top: position.top + $p.height! + 170
+    left: position.left + $p.width! / 2
+  c.$.css new-position
+  $ \body .append c.$
+
 # left nav thread admin ui
 window.r-show-thread-admin-ui = $R((user) ->
   if user and (user.sys_rights?super or user.rights?super)
@@ -324,7 +335,7 @@ $d.on \click, submit-selectors.join(', '), post-submit
 $d.on \keydown \.onenter-submit ~> if it.which is 13 and not it.shift-key then post-submit it; it.target?blur!
 
 $d.on \click \.onclick-append-reply-ui Auth.require-login(append-reply-ui)
-$d.on \click \.onclick-censor-post Auth.require-login(censor)
+$d.on \click \.onclick-censor-post Auth.require-login(show-censor-dialog)
 $d.on \click \.onclick-uncensor-post Auth.require-login(uncensor)
 #}}}
 #{{{ - header (main menu)
