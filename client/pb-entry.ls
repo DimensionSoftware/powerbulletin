@@ -158,8 +158,8 @@ show-censor-dialog = (ev) ->
   c = new CensorReasonDialog locals: { post-id, $p }
   position = $p.position!
   new-position =
-    top: position.top + $p.height! + 170
-    left: position.left + $p.width! / 2
+    top: position.top + $p.height! + 100px
+    left: position.left + ($p.width! / 2)
   c.$.css new-position
   $ \body .append c.$
 

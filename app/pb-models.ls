@@ -524,7 +524,7 @@ query-dictionary =
           forum_id     : m.forum_id
           user_name    : m.moderator_name
           user_photo   : m.moderator_photo
-          html         : "<b>Moderation Reason:</b> #{m.moderation_reason}"
+          html         : "<b>Reason</b>&nbsp; #{m.moderation_reason}"
           created      : m.moderation_created })]
         m
       cb null, mods), sh.add-dates)
