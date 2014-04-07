@@ -31,7 +31,7 @@ export init = (cb = (->)) ->
 
   cmd-loop = ->
     #XXX:
-    # 250ms loop is a workaround so node doesn't eat cpu
+    # 100ms loop is a workaround so node doesn't eat cpu
     # i need to figure out how to get this completely event-based if possible
     # what i am not clear on is whether or not we can asynchronously
     # send more than one command to varnish admin at a time before receiving
@@ -39,7 +39,7 @@ export init = (cb = (->)) ->
     # safe and assuming synchronous with a naively-non-scaleable algorithm here
     # for now but this long winded rant is so we can punt this for now and
     # figure it out later
-    set-interval maybe-run-command, 250
+    set-interval maybe-run-command, 100
 
   sock = net.connect 2000
   sock.on \error, console.warn
