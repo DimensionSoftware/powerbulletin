@@ -58,7 +58,7 @@ module.exports =
     _draft: ~>
       const forum-id  = window.active-forum-id or @context-forum-id
       const parent-id = if @is-creating-thread! then \0 else (window.active-thread-id or @context-thread-id)
-      const draft-key = "post-#{window.user.id}-#{forum-id}-#{parent-id}"
+      const draft-key = "post-#{window.user?id}-#{forum-id}-#{parent-id}"
       {forum-id, parent-id, draft-key}
     delete-draft: ~>
       {forum-id, parent-id, draft-key} = @_draft!
@@ -131,6 +131,7 @@ module.exports =
         @@$ \#reply_by .html "<a>#{window.reply-by}</a>"
 
     set-post: (p) ~>
+      unless p then return # guard
       @editor.clear! # reset preview, etc...
       @set-body p.body
       $f = @@$ \.form:first # setup mock form for:
