@@ -414,6 +414,15 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
 )
 #}}}
 #{{{ - admin
+$d.on \click 'html.admin .plus-minus.degrees button' (ev) -> # inc/dec in degrees
+  e = $ ev.current-target     # button pressed
+  i = e.prev-all \input:first # the input
+  try v = parse-int(i.val!to-string!replace /[^\d]*/, '')
+  v = 0 unless v
+  e.val switch e.attr \class
+    | \plus  => i.val (v + 1) + \deg
+    | \minus => i.val (v - 1) + \deg
+  $ i .keyup!focus!select!
 $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save[type="checkbox"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form

@@ -40,7 +40,10 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
             input.color-theme(id='colored_text', name='colorTheme[colored_text]', type='text', value=ct.colored_text, placeholder='#DDDDDD')
             div.preview.light-text(title='Click to choose a Color!', style="background-color: #{ct.colored_text || '#fff'};")
             label(for='sprite_hue') Sprite Hue
-            input.color-hue(id='sprite_hue', name='colorTheme[sprite_hue]', type='text', value=ct.sprite_hue, placeholder='0deg')
+            .plus-minus.degrees
+              input.color-hue(id='sprite_hue', name='colorTheme[sprite_hue]', type='text', value=ct.sprite_hue, placeholder='0deg')
+              button.plus +
+              button.minus -
             .preview
               .s-dark-chat
             .preview.hue-selector(title='Click and Rotate the Color pallette')

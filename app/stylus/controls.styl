@@ -63,6 +63,33 @@ input.active, input[type="password"]:focus, input[type="password"]:focus, select
 textarea:focus, select:focus
   letter-spacing 0
 //}}}
+//{{{    `- with a plus & minus
+.plus-minus
+  position relative
+  input
+    text-align center
+    border-radius 6px/5px
+  .plus, .minus
+    background-color transparent!important
+    position absolute
+    top -8px
+    bottom -7px
+    width 32px!important
+    height auto!important
+    margin 0!important
+    text-indent -4px!important
+    vertical-align middle
+    line-height 0!important
+    text-align center
+    opacity .8
+    z-index 10
+    &:hover, &:active
+      opacity 1
+  .plus
+    left 0
+  .minus
+    right 0
+//}}}
 //{{{ Checkboxes (switch)
 .stylish[type="checkbox"]
   display none
