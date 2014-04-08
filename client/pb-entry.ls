@@ -414,15 +414,33 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
 )
 #}}}
 #{{{ - admin
+$d.on \click 'html.admin .plus-minus.hex button' (ev) -> # inc/dec in hex
+  to-color = (d) ->
+    c = Number(d).to-string 16
+    "\##{'000000'.substr(0, 6 - c.length) + c.to-upper-case!}"
+  e = $ ev.current-target     # button pressed
+  i = e.prev-all \input:first # the input
+  try v = parse-int((i.val!to-string!replace /[^\da-zA-Z]*/, ''), 16)
+  v = 0x000000 unless v
+  i.val switch e.attr \class  # inc/dec if in range
+    | \plus  =>
+      unless v >= 0xffffff then to-color (v + 0x000001) else v
+    | \minus =>
+      unless v <= 0x000000 then to-color (v - 0x000001) else v
+  i.keyup!
+  <- set-timeout _, 100ms
+  i.focus!select!       # focus input
 $d.on \click 'html.admin .plus-minus.degrees button' (ev) -> # inc/dec in degrees
   e = $ ev.current-target     # button pressed
   i = e.prev-all \input:first # the input
   try v = parse-int(i.val!to-string!replace /[^\d]*/, '')
   v = 0 unless v
-  e.val switch e.attr \class
-    | \plus  => i.val (v + 1) + \deg
-    | \minus => i.val (v - 1) + \deg
-  $ i .keyup!focus!select!
+  i.val switch e.attr \class  # inc/dec if in range
+    | \plus  =>
+      unless v >= 360deg then (v + 1) + \deg else v + \deg
+    | \minus =>
+      unless v <= 0deg   then (v - 1) + \deg else v + \deg
+  i.keyup!focus!select!       # focus input
 $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save[type="checkbox"]' (ev) ->
   submit-form(ev, (data) ->
     f = $ this # form

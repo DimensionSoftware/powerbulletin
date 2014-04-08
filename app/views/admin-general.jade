@@ -34,10 +34,16 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
           fieldset
             - var ct = site.config.colorTheme ? site.config.colorTheme : {}
             label(for='theme') Color
-            input.color-theme(id='theme', name='colorTheme[theme_color]', type='text', value=ct.theme_color, placeholder='#4CCFEA')
+            .plus-minus.hex
+              input.color-theme(id='theme', name='colorTheme[theme_color]', type='text', value=ct.theme_color, placeholder='#4CCFEA')
+              button.plus +
+              button.minus -
             div.preview.theme(title='Click to choose a Color!', style="background-color: #{ct.theme_color || '#fff'};")
             label(for='colored_text') Text Color
-            input.color-theme(id='colored_text', name='colorTheme[colored_text]', type='text', value=ct.colored_text, placeholder='#DDDDDD')
+            .plus-minus.hex
+              input.color-theme(id='colored_text', name='colorTheme[colored_text]', type='text', value=ct.colored_text, placeholder='#DDDDDD')
+              button.plus +
+              button.minus -
             div.preview.light-text(title='Click to choose a Color!', style="background-color: #{ct.colored_text || '#fff'};")
             label(for='sprite_hue') Sprite Hue
             .plus-minus.degrees
