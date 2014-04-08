@@ -11,7 +11,7 @@ mixin _post_actions(p, moderatorMode)
         a.onclick-append-reply-ui(title='Comment') Comment
           .s-dark-chat
       else
-        a.onclick-footer-toggle(title='Comment') Reply
+        a.onclick-footer-toggle.require-login(title='Comment') Reply
           .s-dark-reply
       a.edit.mutant.no-surf(data-edit=p.id, data-href="#{stripped}/edit/#{p.id}") Edit
         .s-edit

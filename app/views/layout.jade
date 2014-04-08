@@ -101,11 +101,11 @@ html
       #mocha
 
     footer
-      .post-reply.onclick-footer-toggle
-        .s-reply.onclick-footer-toggle
+      .post-reply.onclick-footer-toggle.require-login
+        .s-reply.onclick-footer-toggle.require-login
       .onclick-scroll-top Top
       #pb_paginator
-      h6.onclick-footer-toggle
+      h6.onclick-footer-toggle.require-login
         a.mutant(href='/', title="#{metaKeywords} #{siteName}")
           small &copy; #{siteName} &nbsp;
           b= new Date().getFullYear()
