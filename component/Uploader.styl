@@ -7,6 +7,16 @@ form
         transition none
 
     // <drag-n-drop & upload widget>
+    .progress
+      position absolute
+      z-index 10
+      top 0
+      bottom 1px
+      left 0
+      width 0
+      height 100%
+      background-image linear-gradient(to right, dark_theme_color, theme_color)
+      transition width .15s ease-in
     .cancel
       opacity 0
       transition .2s ease-out .3s

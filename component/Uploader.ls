@@ -49,7 +49,11 @@ module.exports =
         @$.find('.drop-target, input[type=file]').html5-uploader {
           name: locals.name
           post-url: locals.postUrl
+          on-server-progress: (progress, file) ~>
+            @$.find \.progress .css(\width, parse-int((progress.loaded/file.size) * 100) + \%)
+          on-client-load-end: ~> @$.find \.progress .width 0px
           on-success: (xhr, file, r-json) ~>
+            @$.find \.progress .width 0px
             # load current preview
             r = JSON.parse r-json
             if r.success
