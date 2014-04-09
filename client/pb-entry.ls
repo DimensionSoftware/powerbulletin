@@ -414,32 +414,46 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
 )
 #}}}
 #{{{ - admin
+function to-color d
+  c = Number(d).to-string 16
+  "\##{'000000'.substr(0, 6 - c.length) + c.to-upper-case!}"
+function next-hex-value plus-or-minus, initial-v
+  try v = parse-int((initial-v.replace /[^\da-zA-Z]*/, ''), 16)
+  v = 0x000000 unless v
+  switch plus-or-minus # inc/dec if in range
+    | \plus  => (unless v >= 0xffffff then to-color (v + 0x000001) else v)
+    | \minus => (unless v <= 0x000000 then to-color (v - 0x000001) else v)
+function next-deg-value plus-or-minus, initial-v
+  try v = parse-int(initial-v.replace /[^\d]*/, '')
+  v = 0 unless v
+  switch plus-or-minus # inc/dec if in range
+    | \plus  => (unless v >= 360deg then (v + 1) + \deg else v + \deg)
+    | \minus => (unless v <= 0deg   then (v - 1) + \deg else v + \deg)
+$d.on \keyup 'html.admin .plus-minus.hex input' (ev) -> # inc/dec in hex
+  i = $ ev.current-target # input
+  switch ev.key-code
+    | 38 => i.val(next-hex-value \plus, i.val!)  # plus
+    | 39 => i.val(next-hex-value \plus, i.val!)
+    | 40 => i.val(next-hex-value \minus, i.val!) # minus
+    | 37 => i.val(next-hex-value \minus, i.val!)
 $d.on \click 'html.admin .plus-minus.hex button' (ev) -> # inc/dec in hex
-  to-color = (d) ->
-    c = Number(d).to-string 16
-    "\##{'000000'.substr(0, 6 - c.length) + c.to-upper-case!}"
   e = $ ev.current-target     # button pressed
   i = e.prev-all \input:first # the input
-  try v = parse-int((i.val!to-string!replace /[^\da-zA-Z]*/, ''), 16)
-  v = 0x000000 unless v
-  i.val switch e.attr \class  # inc/dec if in range
-    | \plus  =>
-      unless v >= 0xffffff then to-color (v + 0x000001) else v
-    | \minus =>
-      unless v <= 0x000000 then to-color (v - 0x000001) else v
-  i.keyup!
+    ..val next-hex-value (e.attr \class), i.val!
+    ..keyup!
   <- set-timeout _, 100ms
-  i.focus!select!       # focus input
+  i.focus!select! # focus input
+$d.on \keyup 'html.admin .plus-minus.degrees input' (ev) -> # inc/dec in degrees
+  i = $ ev.current-target # input
+  switch ev.key-code
+    | 38 => i.val(next-deg-value \plus, i.val!)  # plus
+    | 39 => i.val(next-deg-value \plus, i.val!)
+    | 40 => i.val(next-deg-value \minus, i.val!) # minus
+    | 37 => i.val(next-deg-value \minus, i.val!)
 $d.on \click 'html.admin .plus-minus.degrees button' (ev) -> # inc/dec in degrees
   e = $ ev.current-target     # button pressed
   i = e.prev-all \input:first # the input
-  try v = parse-int(i.val!to-string!replace /[^\d]*/, '')
-  v = 0 unless v
-  i.val switch e.attr \class  # inc/dec if in range
-    | \plus  =>
-      unless v >= 360deg then (v + 1) + \deg else v + \deg
-    | \minus =>
-      unless v <= 0deg   then (v - 1) + \deg else v + \deg
+    ..val next-deg-value (e.attr \class), i.val!
   i.keyup!focus!select!       # focus input
 $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save[type="checkbox"]' (ev) ->
   submit-form(ev, (data) ->
