@@ -797,8 +797,9 @@ function wipe-file-with-config res, key, next
 
   # wipe file from disk
   if file-name = site.config[key]
-    err <- fs.unlink "public/sites/#{file-name.replace(/\?.*$/, '')}"
-    if err then return res.json 500, {-success, msg:err}
+    unless (file-name is \powerbulletin_header.jpg) or (file-name.to-string!match /\.\./) # guard
+      err <- fs.unlink "public/sites/#{file-name.replace(/\?.*$/, '')}"
+      if err then return res.json 500, {-success, msg:err}
 
     # update config
     site.config[key] = ''
