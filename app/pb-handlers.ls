@@ -191,7 +191,7 @@ function background-for-forum m, active-forum-id
     #console.warn err, keys(fdoc)
     if err   then return next err
     if !fdoc then return next 404
-    if page > 1 and fdoc.sub-posts-tree.length < 1 then return next 404
+    if page > 1 and fdoc.sub-posts-tree?length < 1 then return next 404
 
     # attach sub-post to fdoc, among other things
     fdoc <<< {post, forum-id:post.forum_id, page, cvars.t-step}
