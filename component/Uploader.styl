@@ -9,12 +9,21 @@ form
     // <drag-n-drop & upload widget>
     .progress
       position absolute
+      text-aliggn center
+      overflow hidden
+      text-align center
+      font-size .6em
+      line-height 2.3em
+      letter-spacing -1px
+      text-indent -5px
+      font-style italic
       z-index 10
       top 0
       bottom 1px
       left 0
       width 0
       height 100%
+      color text_color
       background-image linear-gradient(to right, dark_theme_color, theme_color)
       transition width .15s ease-in
     .cancel
@@ -46,6 +55,7 @@ form
         border 1px solid #ccc
         outline none
         height 37px
+        max-width 260px
         left 248px
         top 0
         border-radius 3px
@@ -57,9 +67,9 @@ form
           transition all .2s ease-in .2s
         &[src*='/sites/']:hover
           border 1px solid theme_color
-          background-color #f8f8f8
-          transform scale(2)
-          transition all .05s ease-out .2s
+          background-color darken(theme_color, 20%)
+          transform scale(1.5)
+          transition all .01s ease-out .5s
     .upload
       display none
     .button
