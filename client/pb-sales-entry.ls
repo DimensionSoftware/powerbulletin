@@ -34,12 +34,25 @@ cur-id      = void # waypoint id of current scrolled-to-section
 
 # focus events
 $ '#products .onclick-scroll-to' .click -> focus-last!
+
 #{{{ parallax
-last=void
-last-visible=[]
-$w = $ window
-bh = $ \body .height!
-$w .on \scroll, (->
+# shim layer with setTimeout fallback
+window.request-anim-frame = (->
+  window.requestAnimationFrame       or
+  window.webkitRequestAnimationFrame or
+  window.mozRequestAnimationFrame    or
+  window.oRequestAnimationFrame      or
+  window.msRequestAnimationFrame     or
+  (cb) ->
+    window.set-timeout cb, 1000 / 60)!
+
+last         = void
+last-visible = []
+$w           = $ window
+bh           = $ \body .height!
+ticking      = false
+
+update-elements = ->
   offset  = $w.scroll-top!
   if offset is 0 then focus-first!
   if Math.abs(bh - (offset + $w.height!)) < 15px then focus-last! # within 15px of bottom so dom doesn't jerk
@@ -68,10 +81,21 @@ $w .on \scroll, (->
         last         := cur-id
         last-visible := visible
       else # same section, so parallax visible sections!
-        #for v in last-visible
-        #  dy = -($ v .offset!?top)
-        #  $ "#v .bg" .transition {y:"#{parse-int (dy+offset)*0.65}px"}, 0
-  )
+        for v in last-visible
+          dy = -($ v .offset!?top)
+          $ "#v .bg" .transition {y:"#{parse-int (dy+offset)*0.65}px"}, 0
+  ticking := false
+
+on-resize = -> update-elements window.scroll-y
+on-scroll = (ev) ->
+  unless ticking
+    ticking := true
+    requestAnimFrame updateElements
+    last-scroll-y = window.scroll-y
+
+# listen & go!
+window.add-event-listener \resize, on-resize, false
+window.add-event-listener \scroll, on-scroll, false
 #}}}
 #{{{ waypoints
 fn = (direction) ->
