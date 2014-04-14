@@ -37,11 +37,10 @@ box-shadow(arg1, arg2, arg3)
 
 @keyframes build-in
   0%
-    transform translate(0, 0)
+    transform translate(0, 0), scale(.9)
     opacity 0
   100%
-    transform translate(-30px, -30px), scale(1.1)
-    text-indent 100px
+    transform translate(-30px, -30px), scale(1)
     opacity 1
 
 body
@@ -49,15 +48,28 @@ body
   font-family 'Source Sans Pro','Open Sans Condensed','Ubuntu','Helvetica Neue',sans-serif
   cursor pointer
   img
-    position absolute
-    height 102%
-    width 106%
+    position fixed
+    z-index 1
+    height 110%
+    width 110%
+    margin-left -170px
+    margin-top -80px
     min-height 1015px
     min-width 1542px
     animation build-in .3s ease-in 1 forwards
+  .lense
+    position fixed
+    z-index 2
+    background radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.75) 100%)
+    top 0
+    right 0
+    bottom 0
+    left 0
   .container
     // initially hide everything
-    .logo, .beacon, .note
+    position relative
+    z-index 5
+    .logo, .beacon
       opacity 0
     // loaded happens after background image has
     &.loaded
@@ -70,7 +82,7 @@ body
         position relative
         z-index 100
         display block
-        text-indent 140px
+        text-indent 100px
         padding 15px 0 60px 0
         margin-bottom 15px
         font-size 3em
@@ -112,22 +124,17 @@ body
         animation r0 1s ease-out .5s infinite
       .note
         position absolute
-        background radial-gradient(circle closest-corner at 50% 50%, rgba(0,0,0,.35) 0%, rgba(0,0,0,.01) 100%)
-        padding 10px
+        background radial-gradient(circle closest-corner at 50% 50%, rgba(0,0,0,.55) 0%, rgba(0,0,0,.01) 100%)
         margin-top -39px
+        margin-left 10px
+        padding 5px 8px
         font-size 1.5em
         font-weight 200
         letter-spacing 2px
         color #3199b0
         text-align center
-        margin-left -37px
-        opacity 0
-        animation fade-in .4s ease-out 1 forwards .1s
         b
           margin-left 4px
           margin-right 8px
           letter-spacing 0
           font-size 1.1em
-          &:first-child
-            margin-right 10px
-            letter-spacing 0

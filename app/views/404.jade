@@ -22,15 +22,16 @@ html
     script(type='text/javascript').
       function buildIn() {
         $(function() {
-          $('.container').addClass('loaded');
-          $('.bg').plaxify({xRange:40, yRange:13, invert:true});
-          $('.logo').plaxify({xRange:75});
-          $('.note').plaxify({xRange:30});
-          $.plax.enable();
-        })
+            $('.container').addClass('loaded');
+            $('.bg').plaxify({xRange:40, yRange:13, invert:true});
+            $('.logo').plaxify({xRange:75});
+            $('.note').plaxify({xRange:30});
+            $.plax.enable();
+        });
       }
   body(onclick="window.location='https://#{domain}'")
     img(src="//muscache.#{domain}/images/live_support.jpg" class="bg", onload="buildIn()")
+    .lense
     .container
       h1.logo
         a(href="https://#{domain}") Power 
