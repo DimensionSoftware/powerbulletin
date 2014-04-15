@@ -1,28 +1,20 @@
 .PhotoCropper
-  display none
-
-  h1
+  h1, h2
     margin 0 15px 15px 3px
     font-weight 300
     letter-spacing 1px
     font-size 1.3em
 
-  .upload
-    display none
-    padding-bottom 12px
-    img
-      max-width 100%
-      margin-bottom 31px
-    input[type=file]
-      cursor pointer
-      position absolute
-      top -2px
-      left -2px
-      right -2px
-      bottom -2px
-      margin 0
-      padding 0
-      opacity 0
+  input[type=file]
+    cursor pointer
+    position absolute
+    top -2px
+    left -2px
+    right -2px
+    bottom -2px
+    margin 0
+    padding 0
+    opacity 0
 
   .crop
     display none
@@ -34,13 +26,20 @@
       display inline-block
       vertical-align top
       .preview-wrapper
-        border-left 2px solid transparent
-        box-shadow 0 0 2px solid #000
+        border-radius 100%
+        margin-left 10px
+        border 6px solid rgb(255,255,255)
+        box-shadow 0 0 1px 3px solid theme_color
         overflow hidden
         width 150px
         height 150px
+      .upload
+        margin 10px 0 0 10px
+        .onclick-upload
+          font-size .9em
+          width 100%
 
-  button
+  .onclick-save
     cursor pointer
     position absolute
     right 1px
@@ -51,3 +50,4 @@
     text-align center
     cursor pointer
     overflow hidden
+    width 100%

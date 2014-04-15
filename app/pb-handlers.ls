@@ -473,7 +473,7 @@ function profile-paths user, uploaded-file, base=\avatar
   console.warn \crop, { cropped-photo, avatar-photo }
   gm(cropped-photo.fs-path)
     .crop w, h, x, y
-    .resize 255, 255
+    .resize 255px, 255px
     .write avatar-photo.fs-path, (err) ->
       if err
         console.warn \crop-and-resize-err, err

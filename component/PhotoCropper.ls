@@ -13,16 +13,18 @@ module.exports =
     @pc = null
 
     # helper function to put photocropper in a fancybox
-    @start = ({title="Profile Photo", mode=\upload, photo=null, aspect-ratio=1/1, endpoint-url=null}={}, cb=(->)) ~>
-      photo        = user.photo                           unless photo
+    @start = ({title="Profile Photo", photo, aspect-ratio=1/1, endpoint-url=null}={}, cb=(->)) ~>
+      unless photo
+        photo = if user.photo
+          p = user.photo.replace \avatar., \avatar-to-crop.
+          p.replace /\?[\w]+$/, '' # query string
+        else
+          \/images/profile.png
       endpoint-url = "/resources/users/#{user.id}/avatar" unless endpoint-url
 
       <~ lazy-load-fancybox
       @pc = new PhotoCropper { aspect-ratio, endpoint-url, locals: { title, photo, endpoint-url } }
-      if mode is \crop
-        @pc.crop-mode { url: photo }
-      else
-        @pc.upload-mode!
+      @pc.crop-mode {url:photo}
       $.fancybox.open @pc.$, { after-load: cb }
 
     #
@@ -42,14 +44,12 @@ module.exports =
 
     #
     on-attach: ->
-
-      #@$.find('.upload input[type=file]').change ~>
-      #  @upload!
-
-      @$.find \img:first .on \load ->
+      @$.find \img:first .on \load -> # render correctly-sized cropper
+        $ \.crop .show!
+        $ \h1 .hide!
         @@$.fancybox.update!
 
-      @$.find('.upload input[type=file]').html5-uploader {
+      @$.find('.upload input[type=file]').html5-uploader { # upload
         name: \avatar
         post-url: @endpoint-url
         on-success: (xhr, file, r-json) ~>
@@ -59,7 +59,7 @@ module.exports =
           @crop-mode r
       }
 
-      @$.find('.crop button').click @crop
+      @$.find \.onclick-save .click @crop
 
     #
     upload: ->
@@ -69,11 +69,6 @@ module.exports =
         @crop-mode r
       jqxhr.fail (r) ~>
         console.warn 'upload failed', r
-
-    # this is the default mode where new images can be uploaded
-    upload-mode: ->
-      @$.find \.crop .hide!
-      @$.find \.upload .show!
 
     bounds: []
     update-preview: (coords) ~>
@@ -92,8 +87,6 @@ module.exports =
     crop-mode: (r) ->
       if r
         @$.data \path, r.url
-      @$.find \.upload .hide!
-      @$.find \.crop .show!
       <~ lazy-load-jcrop
       @jcrop.destroy! if @jcrop
       options =
@@ -125,6 +118,7 @@ module.exports =
       if data.height is 0 or data.width is 0
         # TODO - warn that a crop selection has not been made
         return
+      data.path = data.path.replace \-to-crop, ''
       jqxhr = @@$.ajax {
         type : \PUT
         data : data
