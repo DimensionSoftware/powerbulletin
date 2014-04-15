@@ -571,8 +571,10 @@ sub vcl_recv {
      && req.http.X-Forwarded-Proto !~ "(?i)https"
      )
   {
-    set req.http.Location = "https://" + req.http.host + req.url; 
-    error 302 "Found"; 
+    if (req.http.host != "lbox.org" && req.http.host != "hoerling.com" && req.http.host != "dimensionsoftware.com") {
+      set req.http.Location = "https://" + req.http.host + req.url; 
+      error 302 "Found"; 
+    }
   }
 
   # if it starts with /socket.io then send to socket backend
