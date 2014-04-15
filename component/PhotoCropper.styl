@@ -19,6 +19,12 @@
   .crop
     display none
     padding-bottom 48px
+    &.show
+      h2, .onclick-save
+        opacity 1
+        transition opacity .1s ease-in
+    h2
+      opacity 0
     .left
       display inline-block
       vertical-align top
@@ -40,6 +46,7 @@
           width 100%
 
   .onclick-save
+    opacity 0
     cursor pointer
     position absolute
     right 1px

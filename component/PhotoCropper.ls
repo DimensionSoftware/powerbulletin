@@ -44,10 +44,12 @@ module.exports =
 
     #
     on-attach: ->
-      @$.find \img:first .on \load -> # render correctly-sized cropper
-        $ \.crop .show!
-        $ \h1 .hide!
+      @$.find \img:first .on \load ~> # render correctly-sized cropper
+        @$.find \.crop .show!
         @@$.fancybox.update!
+        @$.find \h1 .hide!
+        <~ set-timeout _, 300ms
+        @$.find \.crop .add-class \show
 
       @$.find('.upload input[type=file]').html5-uploader { # upload
         name: \avatar
