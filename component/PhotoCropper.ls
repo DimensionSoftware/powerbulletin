@@ -5,7 +5,7 @@ require! {
   \./PBComponent
   sh: \../shared/shared-helpers
 }
-{lazy-load-fancybox, lazy-load-jcrop} = require \../client/client-helpers
+{storage, lazy-load-fancybox, lazy-load-jcrop} = require \../client/client-helpers
 
 module.exports =
   class PhotoCropper extends PBComponent
@@ -34,6 +34,7 @@ module.exports =
 
     # jcrop object
     jcrop: null
+    storage-key: "#{window.user?id}-jcrop-coords"
 
     #
     init: ->
@@ -84,6 +85,7 @@ module.exports =
           margin-left: "-#{Math.round(rx * coords.x)}px",
           margin-top:  "-#{Math.round(ry * coords.y)}px",
         }
+        storage.set @storage-key, coords
 
     # this is the mode for cropping an uploaded image
     crop-mode: (r) ->
@@ -97,12 +99,19 @@ module.exports =
         on-select: @update-preview
       options <<< @box-dimensions!
       fb = @@$.fancybox
+      s  = storage.get @storage-key
       save-jcrop = (j) ~> @jcrop = j
       component  = @
       @$.find '.crop img:first' .Jcrop options, ->
         save-jcrop this
         fb.update!
-        component.bounds = @get-bounds!
+        b = component.bounds = @get-bounds!
+        @animate-to (if s
+          [s.x, s.y, s.x2, s.y2]
+        else # default
+          [Math.random!*b[0], Math.random!*b[1], Math.random!*b[0], Math.random!*b[1]]
+        )
+
 
     # constrain image size in case we have to crop an image bigger than the window
     box-dimensions: ->
