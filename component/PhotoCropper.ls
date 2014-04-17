@@ -59,6 +59,7 @@ module.exports =
           r = JSON.parse(r-json)
           cache-buster = Math.random!to-string!replace \\. ''
           @$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
+          storage.del @storage-key # reset selection
           @crop-mode r
       }
 
@@ -92,6 +93,7 @@ module.exports =
       if r
         @$.data \path, r.url
       <~ lazy-load-jcrop
+      @$.find \img .attr \style, ''
       @jcrop.destroy! if @jcrop
       options =
         aspect-ratio: @aspect-ratio

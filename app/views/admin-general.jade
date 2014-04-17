@@ -16,8 +16,8 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
     .break
     .theme
       input.collapse(id='lookandfeel', type='checkbox')
-      label(for='lookandfeel')
-        h4 Look &amp; Feel
+      label.onclick-expand(for='click_lookandfeel')
+        h4.onclick-expand Look &amp; Feel
         .dialog
           .break
           //- XXX html5-uploader works inside parent <form>
@@ -33,7 +33,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
           .break
           fieldset
             - var ct = site.config.colorTheme ? site.config.colorTheme : {}
-            label(for='theme') Color
+            label(for='theme') Theme Color
             .plus-minus.hex
               input.color-theme(id='theme', name='colorTheme[theme_color]', type='text', value=ct.theme_color, placeholder='#4CCFEA')
               div.preview.theme(title='Click to choose a Color!', style="background-color: #{ct.theme_color || '#fff'};")
@@ -48,13 +48,14 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
             label(for='sprite_hue') Sprite Hue
             .plus-minus.degrees
               input.color-hue(id='sprite_hue', name='colorTheme[sprite_hue]', type='text', value=ct.sprite_hue, placeholder='0deg')
+              .preview
+                .s-dark-chat
+              .preview.hue-selector(title='Click and Rotate the Color pallette')
+                - for (var i=1; i<=360; i++)
+                  span(class="hue-#{i}", data-hue=i)
               button.plus +
               button.minus -
-            .preview
-              .s-dark-chat
-            .preview.hue-selector(title='Click and Rotate the Color pallette')
-              - for (var i=1; i<=360; i++)
-                span(class="hue-#{i}", data-hue=i)
+            .note Modern browsers only
 
           label(for='style') Custom Style
           textarea.save(id='style', name='style')= site.config.style
@@ -67,8 +68,8 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
           button.onsave-hide(type='submit', value='Save') Save
       .color-picker
     input.collapse(id='seo', type='checkbox')
-    label(for='seo')
-      h4 SEO Options
+    label.onclick-expand(for='click_seo')
+      h4.onclick-expand SEO Options
       .dialog
         .break
         label(for='posts_per_page') Replies 
@@ -106,8 +107,8 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
         .break
     .domains
       input.collapse(id='domains', type='checkbox')
-      label(for='domains')
-        h4 Domains
+      label.onclick-expand(for='click_domains')
+        h4.onclick-expand Domains
         .dialog
           .break
           .domain

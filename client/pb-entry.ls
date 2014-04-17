@@ -429,6 +429,11 @@ function next-deg-value plus-or-minus, initial-v
   switch plus-or-minus # inc/dec if in range
     | \plus  => (unless v >= 360deg then (v + 1) + \deg else v + \deg)
     | \minus => (unless v <= 0deg   then (v - 1) + \deg else v + \deg)
+$d.on \click 'html.admin .onclick-expand' (ev) -> # expand admin drop-downs
+  return unless ($ ev.target .has-class \onclick-expand) # guard
+  l = $ ev.current-target
+    ..toggle-class \expanded, !(l.has-class \expanded)
+$d.on \click 'html.admin .theme .preview' (ev) -> $ \#sprite_hue .focus!
 $d.on \keyup 'html.admin .plus-minus.hex input' (ev) -> # inc/dec in hex
   i = $ ev.current-target # input
   switch ev.key-code

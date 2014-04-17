@@ -956,12 +956,14 @@ html.admin
         right -40px
         top -5px
         display none
-      .collapse:checked ~ .color-picker
+      label.expanded ~ .color-picker
         display block
-        margin-top 135px
+        margin-top 205px
       .preview
         cursor pointer
         position absolute
+        top -11px
+        right -45px
         display inline-block
         width 34px
         height 34px
@@ -1100,7 +1102,6 @@ html.admin
       .collapse ~ label
         display block
         min-width 565px
-        cursor pointer
         position relative
         margin-top grid
         margin-bottom 0
@@ -1109,6 +1110,7 @@ html.admin
         background-color #fcfcfc
         overflow hidden
         h4
+          cursor pointer
           padding-top 20px
           top 0
           left 0
@@ -1133,8 +1135,8 @@ html.admin
             display none
             height 33px
             width 122px
-            bottom 14px
-            right -25px
+            bottom 0
+            right -180px
             overflow hidden
           .plus-minus
             display inline
@@ -1156,7 +1158,7 @@ html.admin
         border-bottom 1px solid #dfdfdf
         border-left 1px solid #eee
       // for expansion
-      .collapse:checked + label
+      label.expanded, .collapse:checked + label
         border-top 1px solid #eee
         border-left 1px solid #dfdfdf
         background-color #fdfdfd
@@ -1179,6 +1181,8 @@ html.admin
           input
             font-size 1.1em
             width 165px
+          .note
+            left 160px
         img
           display block
         select
