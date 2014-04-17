@@ -42,10 +42,11 @@
         &.item-forum
           .name
             position absolute
-            top 0
             padding 2px 9px
             margin-left -9px
-            margin-top 8px
+            margin-top -4px
+            border-radius 8px
+            display inline-block
             transition all .05s ease-out .03s
           .description
             margin-top 22px
@@ -59,10 +60,8 @@
               color #444
           &:hover
             .name
-              display inline-block
               transform scale(1.07)
               background-color theme_color
-              border-radius 8px
               color colored_text
               transition none
             .last-post
