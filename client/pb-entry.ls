@@ -429,6 +429,7 @@ function next-deg-value plus-or-minus, initial-v
   switch plus-or-minus # inc/dec if in range
     | \plus  => (unless v >= 360deg then (v + 1) + \deg else v + \deg)
     | \minus => (unless v <= 0deg   then (v - 1) + \deg else v + \deg)
+$d.on \click 'html.admin .theme .preview' (ev) -> $ \#sprite_hue .focus!
 $d.on \keyup 'html.admin .plus-minus.hex input' (ev) -> # inc/dec in hex
   i = $ ev.current-target # input
   switch ev.key-code
