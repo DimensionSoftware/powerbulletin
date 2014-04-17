@@ -46,11 +46,13 @@ window.request-anim-frame = (->
   (cb) ->
     window.set-timeout cb, 1000 / 60)!
 
-last         = void
-last-visible = []
-$w           = $ window
-bh           = $ \body .height!
-ticking      = false
+dir           = \down
+last-id       = void
+last-visible  = []
+last-scroll-y = window.scroll-y
+$w            = $ window
+bh            = $ \body .height!
+ticking       = false
 
 update-elements = ->
   offset  = $w.scroll-top!
@@ -64,34 +66,49 @@ update-elements = ->
   if offset > 40px
     # move background images in view
     const all = <[.first .second .third .fifth]>
-    # <optimization> -- save work on invisible sections
-    # TODO precompute jquery elements
+    # <optimization> -- save work on invisible sections & by knowing scroll direction
     if cur-id
-      if last isnt cur-id # new section in view, so-- show & hide
-        cur = switch cur-id # given cur-id, these must be visible:
-        | \features   => <[.first .second]>
-        | \navigation => <[.first .second .third]>
-        | \responsive => all
-        | \realtime   => <[.second .third .fifth]>
-        #| \products   => <[.third .fifth]>
-        | \support    => <[.third .fifth]>
+      last-dir = dir
+      if last-scroll-y < window.scroll-y then dir := \down
+      if last-scroll-y > window.scroll-y then dir := \up
+      if (last-dir isnt dir) or (last-id isnt cur-id) # new section in view, so-- show & hide
+        if dir is \down
+          console.log \d
+          cur = switch cur-id # given cur-id, these must be visible:
+          | \features   => <[.first]>
+          | \navigation => <[.first .second]>
+          | \responsive => <[.first .second .third]>
+          | \realtime   => <[.third .fifth]>
+          #| \products   => <[.third .fifth]>
+          | \support    => <[.fifth]>
+        else # upward direction
+          console.log \u
+          cur = switch cur-id # given cur-id, these must be visible:
+          | \features   => <[.first]>
+          | \navigation => <[.first .second]>
+          | \responsive => <[.first .second .third]>
+          | \realtime   => <[.second .third]>
+          #| \products   => <[.third .fifth]>
+          | \support    => <[.third .fifth]>
+
         [visible, hide] = partition (-> it in cur), all
         for h in hide then $ h .remove-class \visible # hide these
         for v in visible then $ v .add-class \visible # show these
-        last         := cur-id
+        last-id      := cur-id
         last-visible := visible
       else # same section, so parallax visible sections!
         for v in last-visible
           dy = -($ v .offset!?top)
           $ "#v .bg" .transition {y:"#{parse-int (dy+offset)*0.65}px"}, 0
-  ticking := false
+
+  last-scroll-y := window.scroll-y
+  ticking       := false
 
 on-resize = -> update-elements window.scroll-y
 on-scroll = (ev) ->
   unless ticking
     ticking := true
     requestAnimFrame updateElements
-    last-scroll-y = window.scroll-y
 
 # listen & go!
 window.add-event-listener \resize, on-resize, false
