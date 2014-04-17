@@ -34,7 +34,7 @@ module.exports =
 
     # jcrop object
     jcrop: null
-    storage-key: "#{window.user?id}-jcrop-coords"
+    storage-key: "#{window?user?id}-jcrop-coords"
 
     #
     init: ->
