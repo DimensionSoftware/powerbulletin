@@ -118,6 +118,7 @@ html.forum, html.profile, html.search, html.moderation
   .left-content
     // for light & dark colors
     box-shadow 0 1px 1px rgba(0,0,0,.3), 0 2px 1px rgba(255,255,255,.3)
+    background-image linear-gradient(to right, #f9f9f9 50%, #fff 70%)
     .threads
       .thread
         list-style-type none
@@ -125,7 +126,6 @@ html.forum, html.profile, html.search, html.moderation
         border-left 2px solid transparent
         border-right 2px solid #fff
         transition box-shadow .3s ease-in .05s
-        background-image linear-gradient(to right, #fafafa 50%, #fff 90%)
         &:hover
           color #333
           a
@@ -175,6 +175,7 @@ html.forum, html.profile, html.search, html.moderation
         border-radius 3px
         transition none
         background-image none
+        background-color #fff
         &:before
           width 5px
           background-image linear-gradient(to top, dark_theme_color 15%, dark_theme_color 16%, lighten(theme_color, 12%) 75%, lighten(theme_color, 20%) 100%)
