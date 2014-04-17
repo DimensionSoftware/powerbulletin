@@ -48,13 +48,14 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
             label(for='sprite_hue') Sprite Hue
             .plus-minus.degrees
               input.color-hue(id='sprite_hue', name='colorTheme[sprite_hue]', type='text', value=ct.sprite_hue, placeholder='0deg')
+              .preview
+                .s-dark-chat
+              .preview.hue-selector(title='Click and Rotate the Color pallette')
+                - for (var i=1; i<=360; i++)
+                  span(class="hue-#{i}", data-hue=i)
               button.plus +
               button.minus -
-            .preview
-              .s-dark-chat
-            .preview.hue-selector(title='Click and Rotate the Color pallette')
-              - for (var i=1; i<=360; i++)
-                span(class="hue-#{i}", data-hue=i)
+            .note Modern browsers only
 
           label(for='style') Custom Style
           textarea.save(id='style', name='style')= site.config.style
