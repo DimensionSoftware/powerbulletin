@@ -35,10 +35,12 @@ body.scrolled
     opacity 0
     transition opacity .5s ease-out
   header
-    border-bottom 0
+    border-bottom none
     height 53px
     box-shadow none
     background rgba(255,255,255,0.7)
+    &:after, &:before
+      display none
     ul
       li
         margin-top 15px
@@ -82,7 +84,7 @@ body.scrolled
       cursor s-resize
       opacity 1
       margin-top 0
-      transform translate(0, 0) rotate(0deg)
+      transform translate(0, 0) rotate(0deg) scale(1)
       transition all .5s ease-out
       position relative
       z-index 2
@@ -326,7 +328,7 @@ body.scrolled
       height 96px
       top -100px
       opacity 0
-      transform rotate(90deg) translate(15px, 35px)
+      transform rotate(90deg) translate(15px, 35px) scale(4)
       display block
       &:after
         top 0
