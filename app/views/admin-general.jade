@@ -33,7 +33,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
           .break
           fieldset
             - var ct = site.config.colorTheme ? site.config.colorTheme : {}
-            label(for='theme') Color
+            label(for='theme') Theme Color
             .plus-minus.hex
               input.color-theme(id='theme', name='colorTheme[theme_color]', type='text', value=ct.theme_color, placeholder='#4CCFEA')
               div.preview.theme(title='Click to choose a Color!', style="background-color: #{ct.theme_color || '#fff'};")
