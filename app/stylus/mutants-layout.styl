@@ -1102,7 +1102,6 @@ html.admin
       .collapse ~ label
         display block
         min-width 565px
-        cursor pointer
         position relative
         margin-top grid
         margin-bottom 0
@@ -1111,6 +1110,7 @@ html.admin
         background-color #fcfcfc
         overflow hidden
         h4
+          cursor pointer
           padding-top 20px
           top 0
           left 0
@@ -1158,7 +1158,7 @@ html.admin
         border-bottom 1px solid #dfdfdf
         border-left 1px solid #eee
       // for expansion
-      .collapse:checked + label
+      label.expanded, .collapse:checked + label
         border-top 1px solid #eee
         border-left 1px solid #dfdfdf
         background-color #fdfdfd

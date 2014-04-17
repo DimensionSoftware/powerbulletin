@@ -16,8 +16,8 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
     .break
     .theme
       input.collapse(id='lookandfeel', type='checkbox')
-      label(for='lookandfeel')
-        h4 Look &amp; Feel
+      label.onclick-expand(for='click_lookandfeel')
+        h4.onclick-expand Look &amp; Feel
         .dialog
           .break
           //- XXX html5-uploader works inside parent <form>
@@ -68,8 +68,8 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
           button.onsave-hide(type='submit', value='Save') Save
       .color-picker
     input.collapse(id='seo', type='checkbox')
-    label(for='seo')
-      h4 SEO Options
+    label.onclick-expand(for='click_seo')
+      h4.onclick-expand SEO Options
       .dialog
         .break
         label(for='posts_per_page') Replies 
@@ -107,8 +107,8 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
         .break
     .domains
       input.collapse(id='domains', type='checkbox')
-      label(for='domains')
-        h4 Domains
+      label.onclick-expand(for='click_domains')
+        h4.onclick-expand Domains
         .dialog
           .break
           .domain
