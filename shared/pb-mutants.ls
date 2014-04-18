@@ -9,7 +9,7 @@ purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
-  {postdrawer, respond-resize, storage, switch-and-focus, set-imgs, align-ui, thread-mode, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, toggle-postdrawer} = require \../client/client-helpers
+  {postdrawer, respond-resize, storage, switch-and-focus, set-imgs, align-ui, thread-mode, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, toggle-postdrawer, show-info} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -517,6 +517,12 @@ same-profile = (hints) ->
         change-title-enable!
         photocropper-enable!
         window.$ \#change_title .focus!
+        # show info tips?
+        k = "#{u.id}-profile" # key
+        unless storage.get k or u?title
+          show-info 0,
+            [\.left-content, 'Spice up your posts with a Profile Photo, Title &amp; Signature!', true]
+          storage.set k, true
       else
         photocropper-disable!
     else
