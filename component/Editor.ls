@@ -6,7 +6,7 @@ require! {
 }
 {render}   = require \../shared/format
 {throttle} = require \lodash
-{storage, lazy-load-fancybox} = require \../client/client-helpers
+{storage, show-tooltip, lazy-load-fancybox} = require \../client/client-helpers
 
 const watch-every   = 2500ms
 const max-retry     = 3failures
@@ -59,6 +59,7 @@ module.exports =
           }
             ..done (r) ~> # saved, so reset--
               @retry=0
+              show-tooltip (@$.find \.tooltip), 'Saved!', 3000ms
             ..fail (r) ~> # failed, so try again (to server) until max-retries
               if ++@retry <= max-retry then @save true
 
