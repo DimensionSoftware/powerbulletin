@@ -17,29 +17,42 @@ html
     link(href="//muscache.#{domain}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
     link(href="//muscache.#{domain}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
     link(href="//muscache2.#{domain}/404.css", rel='stylesheet', type='text/css')
-    script(type='text/javascript', src='//muscache4.#{domain}/local/jquery-1.10.2.min.js')
-    script(src="//muscache3.#{domain}/local/plax.js", type='text/javascript')
-    script(type='text/javascript').
-      function buildIn() {
-        $(function() {
-            $('.container').addClass('loaded');
-            $('.bg').plaxify({xRange:40, yRange:13, invert:true});
-            $('.logo').plaxify({xRange:75});
-            $('.note').plaxify({xRange:30});
-            $.plax.enable();
-        });
-      }
   body(onclick="window.location='https://#{domain}'")
-    img(src="//muscache.#{domain}/images/live_support.jpg" class="bg", onload="buildIn()")
     .lense
-    .container
-      h1.logo
-        a(href="https://#{domain}") Power 
-          b Bulletin
-        .beacon
-      .note
-        span #
-        b Invalid Request
-        span but we still
-        b &hearts; U
-          i !
+    ul#scene
+      li.layer(data-invert-x=true, data-invert-y=true, data-depth='0.2')
+        img(src="//muscache.#{domain}/images/live_support.jpg" class="bg")
+      li.layer(data-depth='0.7')
+        .container
+          h1.logo
+            a(href="https://#{domain}") Power 
+              b Bulletin
+            .beacon
+      li.layer(data-depth='1.0')
+        .note
+          span #
+          b Invalid Request
+          span but we still
+          b &hearts; U
+            i !
+
+    script(type='text/javascript', src='//muscache4.#{domain}/local/jquery-1.10.2.min.js')
+    script(src="//muscache3.#{domain}/local/jquery.parallax.js", type='text/javascript')
+    script(type='text/javascript').
+      $('.bg').on('load',
+        $(function() {
+            $('#scene').addClass('loaded')
+              .parallax({
+                calibrateX: false,
+                calibrateY: true,
+                invertX: false,
+                invertY: true,
+                limitX: false,
+                limitY: 10,
+                scalarX: 3,
+                scalarY: 9,
+                frictionX: 0.2,
+                frictionY: 0.8 })
+              .parallax('enable');
+        })
+      );

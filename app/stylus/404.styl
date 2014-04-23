@@ -31,8 +31,10 @@ box-shadow(arg1, arg2, arg3)
 
 @keyframes rotate-in
   0%
+    opacity 0
     transform rotate(-100deg) scale(3.5)
   100%
+    opacity 1
     transform rotate(0deg) scale(1)
 
 @keyframes build-in
@@ -47,16 +49,6 @@ body
   background-color #000
   font-family 'Source Sans Pro','Open Sans Condensed','Ubuntu','Helvetica Neue',sans-serif
   cursor pointer
-  img
-    position fixed
-    z-index 1
-    height 110%
-    width 110%
-    margin-left -170px
-    margin-top -80px
-    min-height 1015px
-    min-width 1542px
-    animation build-in .3s ease-in 1 forwards
   .lense
     position fixed
     z-index 2
@@ -65,24 +57,32 @@ body
     right 0
     bottom 0
     left 0
-  .container
-    // initially hide everything
-    position relative
-    z-index 5
-    .logo, .beacon
-      opacity 0
-    // loaded happens after background image has
-    &.loaded
+  #scene
+    img
       position fixed
-      top 30%
+      z-index 1
+      min-width 115%
+      margin-left -30px
+      min-height 1015px
+      animation build-in .3s ease-out 1 forwards
+    .container
+      // initially hide everything
+      position fixed
+      top 290px
       left 50%
       margin 0 -190px
       height 100px
+      z-index 5
+      .logo, .beacon
+        opacity 0
+      // loaded happens after background image has
+    &.loaded
       .logo 
+        text-shadow 0 1px 1px #000
         position relative
         z-index 100
         display block
-        text-indent 100px
+        text-indent 105px
         padding 15px 0 60px 0
         margin-bottom 15px
         font-size 3em
@@ -90,7 +90,7 @@ body
         letter-spacing -1px
         line-height 53px
         transform scale(.5)
-        animation build-in .4s ease-out 1 forwards
+        animation build-in .4s ease-in 1 forwards
         &:after
           position absolute
           display block
@@ -102,7 +102,7 @@ body
           background-image url("//muscache2.powerbulletin.com/images/pb_icon_logo.png")
           background-repeat no-repeat
           transform rotate(-120deg)
-          animation rotate-in .75s ease-out 1 forwards
+          animation rotate-in .75s ease-in 1 forwards
         a 
           color #fff
           text-decoration none
@@ -122,11 +122,13 @@ body
         position absolute
         transition all .2s
         animation r0 1s ease-out .5s infinite
+        animation-delay .8s
       .note
         position absolute
         background radial-gradient(circle closest-corner at 50% 50%, rgba(0,0,0,.55) 0%, rgba(0,0,0,.01) 100%)
-        margin-top -39px
-        margin-left 10px
+        margin-left 20px
+        top 430px
+        left 36%
         padding 5px 8px
         font-size 1.5em
         font-weight 200
