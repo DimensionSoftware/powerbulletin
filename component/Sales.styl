@@ -1,5 +1,13 @@
 blend = rgba(0,0,0,.5)
 
+@keyframes build-in
+  0%
+    transform translate(0, 0), scale(.9)
+    opacity 0
+  100%
+    transform translate(-30px, -30px), scale(1)
+    opacity 1
+
 //{{{ Sales is a site component that owns <body> and it can define initial style:
 body
   #features .s-down-arrow
@@ -16,9 +24,10 @@ body
     bottom 0
     opacity 1
     img
-      width 100%
+      width 102%
       min-height 1015px
       min-width 1542px
+      animation build-in .3s ease-out 1 forwards
   .container.first
     border-top-width 0!important
   .bg, .feature
@@ -387,7 +396,7 @@ body.scrolled
     position fixed
     top 8px
     left 100px
-    z-index 20
+    z-index 30
     text-align left
     background-image url(cache-url + '/images/pb_icon_logo_sm.png')
     background-repeat no-repeat
