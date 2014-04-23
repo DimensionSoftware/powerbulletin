@@ -28,9 +28,9 @@ module.exports =
           help.push ['.Homepage, .menu .row', '<b>Welcome!</b> Forum Activity Shows Here in Realtime']
           help.push -> $ \header .css \z-index, 202 # lift it up
           help.push ['.tools', '''
-            Pull Down the <b>Admin Menu</b> and Start Building Your Community!
+            Start Building Your Community!
             <br/>
-            <small><i>Hover Over Your Profile Photo</i></small>
+            <small><i>Hover Over Your Profile Photo to Pull Down the Admin Menu</i></small>
           ''', -1] if user.rights.super
           help.push -> $ \header .css \z-index, 200 # put it back
           show-info 0, ...help
