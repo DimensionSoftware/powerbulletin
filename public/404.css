@@ -141,7 +141,7 @@ textarea{overflow:auto;vertical-align:top}
 table{border-collapse:collapse;border-spacing:0}
 body{background-color:#000;font-family:'Source Sans Pro','Open Sans Condensed','Ubuntu','Helvetica Neue',sans-serif;cursor:pointer;}
 body .lense{position:fixed;z-index:2;background:-webkit-radial-gradient(50% 30%, circle closest-corner , rgba(0,0,0,0) 70%, rgba(0,0,0,0.8) 100%);background:-moz-radial-gradient(50% 30%, circle closest-corner , rgba(0,0,0,0) 70%, rgba(0,0,0,0.8) 100%);background:radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.8) 100% );top:0;right:0;bottom:0;left:0}
-body #scene img{position:fixed;z-index:1;min-width:105%;margin-left:-30px;min-height:1015px;-webkit-animation:build-in .3s ease-out 1 forwards;-moz-animation:build-in .3s ease-out 1 forwards;animation:build-in .3s ease-out 1 forwards}
+body #scene img{position:fixed;z-index:1;min-width:115%;margin-left:-30px;min-height:1015px;-webkit-animation:build-in .3s ease-out 1 forwards;-moz-animation:build-in .3s ease-out 1 forwards;animation:build-in .3s ease-out 1 forwards}
 body #scene .container{position:fixed;top:290px;left:50%;margin:0 -190px;height:100px;z-index:5;}
 body #scene .container .logo,body #scene .container .beacon{-webkit-opacity:0;-moz-opacity:0;opacity:0}
 body #scene.loaded .logo{text-shadow:0 1px 1px #000;position:relative;z-index:100;display:block;text-indent:105px;padding:15px 0 60px 0;margin-bottom:15px;font-size:3em;font-weight:400;letter-spacing:-1px;line-height:53px;-webkit-transform:scale(.5);-moz-transform:scale(.5);transform:scale(.5);-webkit-animation:build-in .4s ease-in 1 forwards;-moz-animation:build-in .4s ease-in 1 forwards;animation:build-in .4s ease-in 1 forwards;}
