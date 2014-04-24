@@ -1,27 +1,3 @@
-.body-bg
-  img(src="#{cacheUrl}/images/pb_sales_main_bg.jpg", alt='Real-time Forum and Community only possible with PowerBulletin')
-header
-  ul
-    li
-      a.onclick-scroll-to(data-scroll-to="#faq") FAQ
-    li.community
-      a(href='https://community.powerbulletin.com', target='_blank', title='Community Forum') Community
-    li(style="display: none;").my-sites
-      a.onclick-my-sites(title='My Forums') My Communities
-    li.auth
-      a.onclick-login(title='Forum Login') Login
-      a.onclick-logout(title='Forumu Logout', style="display:none;") Logout
-    li
-      button#start_now Start Now
-
-#wrapper.Sales-content
-#info.info.tooltip
-  .msg
-  .onclick-close(title='Close!') X
-  .next
-    b Next 
-    | >>
-
 #logo.logo(title='PowerBulletin Forums and Community in real-time!')
   h1
     a(href='/', title='PowerBulletin Forums and Community in real-time!') Power
@@ -150,6 +126,30 @@ section#faq.faq
           a(href='https://community.powerbulletin.com', target='_blank') Online Community
           br
           a(href='mailto:support@powerbulletin.com') support@powerbulletin.com
+.body-bg
+  img(src="#{cacheUrl}/images/pb_sales_main_bg.jpg", alt='Real-time Forum and Community only possible with PowerBulletin')
+header
+  ul
+    li
+      a.onclick-scroll-to(data-scroll-to="#faq") FAQ
+    li.community
+      a(href='https://community.powerbulletin.com', target='_blank', title='Community Forum') Community
+    li(style="display: none;").my-sites
+      a.onclick-my-sites(title='My Forums') My Communities
+    li.auth
+      a.onclick-login(title='Forum Login') Login
+      a.onclick-logout(title='Forumu Logout', style="display:none;") Logout
+    li
+      button#start_now Start Now
+
+#wrapper.Sales-content
+#info.info.tooltip
+  .msg
+  .onclick-close(title='Close!') X
+  .next
+    b Next 
+    | >>
+
 section#auth
 footer
   .onclick-scroll-top Top

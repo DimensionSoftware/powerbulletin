@@ -64,7 +64,7 @@ module.exports =
         @@last-subdomain = subdomain
         errors = pure-validations.subdomain subdomain
         @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ~>
-          unless res.available then errors.push 'Domain is unavailable, try again!'
+          unless res.available then errors.push 'Domain is Unavailable, Try Again!'
           children = [@parent.children.register-top, @parent.children.register-bottom]
           if errors.length
             each (.disable-ui!), children

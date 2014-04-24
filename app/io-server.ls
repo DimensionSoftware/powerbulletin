@@ -7,7 +7,6 @@ require! {
   RedisStore: 'socket.io/lib/stores/redis'
   ChatServer: './io-chat-server'
   Presence: './presence'
-  '../component/Chat'
   sio: \socket.io
   pg: \./postgres
   m: \./pb-models
