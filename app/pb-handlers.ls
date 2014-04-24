@@ -440,7 +440,7 @@ function profile-paths user, uploaded-file, base=\avatar
   err <- mkdirp fs-dir-path
   if err
     console.error \mkdirp.rename, err
-    return res.json { success: false, type: \mkdirp }
+    return res.json { success: false, type: \mkdirp, path: fs-dir-path }
 
   # move image to public/images/user/:user_id/
   err <- move avatar.path, fs-path
