@@ -58,6 +58,7 @@ body
     bottom 0
     left 0
   #scene
+    width 100%
     img
       position fixed
       z-index 1
@@ -126,10 +127,10 @@ body
       .note
         position absolute
         background radial-gradient(circle closest-corner at 50% 50%, rgba(0,0,0,.55) 0%, rgba(0,0,0,.01) 100%)
-        margin-left 20px
         top 430px
-        left 36%
         padding 5px 8px
+        margin-left -210px
+        left 50%
         font-size 1.5em
         font-weight 200
         letter-spacing 2px
@@ -140,3 +141,23 @@ body
           margin-right 8px
           letter-spacing 0
           font-size 1.1em
+
+
+@media screen and (max-width: 800px)
+  body
+    font-size .75em
+    .lense
+      background radial-gradient(circle closest-corner at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%)
+    #scene.loaded
+      img
+        margin-left -600px
+        min-width 100%
+        max-height 100%
+      .container
+        top 100px
+      .note
+        top 230px
+        margin-left 8px
+        font-size 1.3em
+      .note
+        left 0
