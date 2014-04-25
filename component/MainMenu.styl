@@ -188,6 +188,9 @@ header.header
         &.flat
           border-radius 6px
           min-width 300px
+          left 0
+          width 300px
+          overflow hidden
           padding 0
           .col-sep, .col-sep2
             display none
@@ -195,21 +198,21 @@ header.header
             padding 0
             margin 8px 0!important
             .row
-              padding 3px 0
+              padding 3px 0 0 10px
               border-bottom 1px solid rgba(theme_color, 10%)
               border-right 1px solid theme_color
-              transition all .2s ease-in
-              text-indent 10px
+              transition none
               &:before
                 position absolute
                 z-index 1
                 content ''
-                top 0
-                bottom 0
-                background theme_color
+                top 12px
+                bottom 12px
+                //background theme_color
+                border none
                 width 0
-                left -5px
-                transition all .2s ease-in .03s
+                left -10px
+                transition none
               &:last-child
                 border-bottom none
               &:hover
@@ -218,20 +221,22 @@ header.header
                 box-shadow 0 0 1px theme_color inset
                 transition none
                 a, a:hover
+                  display inline-block
                   transform scale(1.035)
                   text-indent 5px
                   background none
                   color darken(theme_color, 30%)!important
                   position relative
-                  padding-left 18px!important
+                  padding-left 14px!important
                   border-radius 0
                   width 100%
                 &:before
-                  width 5px
-                  top 0
-                  left -1px
+                  border 24px solid transparent
+                  border-left 24px solid theme_color
+                  top -2px
+                  left -15px
                   bottom 1px
-                  transition width .02s ease-out, left .1s ease-out, top .15s ease-in, bottom .15s ease-in
+                  transition left .1s ease-out, top .15s ease-in
         > ul
           margin-top 12px!important
         ul
