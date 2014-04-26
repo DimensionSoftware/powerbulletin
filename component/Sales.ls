@@ -47,6 +47,8 @@ module.exports =
       set-timeout (-> # ...and action!
         $ '.SiteRegister h3' .transition {opacity:1, x:-30px}, 350ms
         set-timeout (-> # build-in "Why you'll love" features last
+          $ \#logo .transition {opacity:1}, 1800ms
+          $ \header .transition {opacity:1}, 1400ms
           $ \#features .transition {opacity:1}, 1400ms), 1200ms), 100ms
       #}}}
 
