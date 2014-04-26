@@ -592,6 +592,7 @@ same-profile = (hints) ->
       window.component.header-uploader?detach!
       window.component.background-uploader?detach!
       $ \.onsave-hide .off!
+      $ 'html.admin .onclick-close' .off!
       next!
   on-load:
     (window, next) ->
@@ -669,7 +670,7 @@ same-profile = (hints) ->
       add-color = (defaults, color) ->
         if color then defaults.unshift color
         defaults
-      $ \#sprite_hue .on \focus -> hide!; $ \.hue-selector .show!
+      $ \#sprite_hue .on \focus -> hide!; $ \.hue-selector .show!; $ 'html.admin .onclick-close' .show!
       $ \#theme
         .iris({
           width: 167px
@@ -679,6 +680,7 @@ same-profile = (hints) ->
             $(ev.target).next!css background-color: ui.color.to-string!
         })
         .focus((ev) -> 
+          $ 'html.admin .onclick-close' .show!
           hide!
           $(ev.current-target).iris \show)
       $ \#colored_text
@@ -691,7 +693,9 @@ same-profile = (hints) ->
         })
         .focus((ev) -> 
           hide!
+          $ 'html.admin .onclick-close' .show!
           $(ev.current-target).iris \show)
+      $ 'html.admin .onclick-close' .click (ev) -> hide!; $ ev.current-target .hide!
 
       # no pager (for now)
       window.pages-count = 0
