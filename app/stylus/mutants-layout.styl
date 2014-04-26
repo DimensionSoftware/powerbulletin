@@ -951,6 +951,16 @@ html.admin
         float left
     .theme
       position relative
+      .onclick-close
+        position absolute
+        z-index 1
+        right -50px
+        top 187px
+        display none
+        opacity 1
+        &:hover
+          top 180px
+          transition none
       .color-picker
         position absolute
         right -40px
