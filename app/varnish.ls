@@ -10,7 +10,7 @@ export read-varnish-responses = (buf) ->
   r = []
   while raw.length
     header = raw.match(/^(\d+) (\d+)\s*\n/)
-    return null unless header
+    return r unless header
     m      = header.0
     code   = parse-int header.1
     length = parse-int header.2
