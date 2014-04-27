@@ -9,7 +9,7 @@ purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
-  {postdrawer, respond-resize, storage, switch-and-focus, set-imgs, align-ui, thread-mode, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, toggle-postdrawer, show-info} = require \../client/client-helpers
+  {show-tooltip, postdrawer, respond-resize, storage, switch-and-focus, set-imgs, align-ui, thread-mode, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, toggle-postdrawer, show-info} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
 {is-editing, is-email, is-forum-homepage} = require \./shared-helpers
@@ -492,6 +492,7 @@ same-profile = (hints) ->
                 title: cur
             success: ->
               last := cur
+              show-tooltip (w.$ \.change-tooltip), \Saved!, 3000ms
           }), 1000ms
     photocropper-enable = ->
       w.$ \#left_content .add-class \editable
@@ -533,8 +534,8 @@ same-profile = (hints) ->
       # cleanup/unbind
       window.$ \body .off \click \.onclick-show-forgot
       window.$ \body .off \click.pd
-      window.$ \.change-title .off!
-      window.$ \.change-sig .off!
+      window.$ \#change_title .off!
+      window.$ \.onclick-change-sig .off!
       reset-paginator window unless next-mutant is \forum
       next!
   on-initial:

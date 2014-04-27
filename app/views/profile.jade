@@ -3,6 +3,7 @@
   .profile(data-user-id="#{profile.id}", data-user-name="#{profile.name}")
     h2= profile.name
     h3= profile.title
+    .change-tooltip.tooltip.small
     input#change_title.change-title(placeholder='Choose a title', type='text', name='title', value=profile.title)
     form(action="/resources/users/#{profile.id}/avatar", enctype="multipart/form-data", method="post")
       .avatar.profile
