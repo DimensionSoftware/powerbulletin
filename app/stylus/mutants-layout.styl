@@ -611,9 +611,15 @@ html.forum, html.profile, html.search, html.moderation
 //{{{ - profile
 html.profile
   // hide Back button on "change password" dialog
+  .change-tooltip
+    top 21px
+    left auto
+    right 37px
+    bottom auto
   .msg.onclick-show-login
     display none
   .left-content.editable
+    background lighten(theme_color, 98%)!important
     .avatar
       img
         cursor copy

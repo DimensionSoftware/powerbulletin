@@ -66,8 +66,9 @@ form
         &[src*='/sites/']
           transition all .2s ease-in .2s
         &[src*='/sites/']:hover
-          border 1px solid theme_color
-          background-color darken(theme_color, 20%)
+          border 1px solid darken(theme_color, 20%)
+          box-shadow 0 0 1px theme_color
+          background-color #fff
           transform scale(1.5)
           transition all .01s ease-out .5s
     .upload
