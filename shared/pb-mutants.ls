@@ -667,6 +667,7 @@ same-profile = (hints) ->
       hide = ->
         $ '.color-picker .iris-picker' .hide!
         $ \.hue-selector .hide!
+        $ 'html.admin .onclick-close' .hide!
       $ \.onsave-hide .on \click, hide
       add-color = (defaults, color) ->
         if color then defaults.unshift color
@@ -681,8 +682,8 @@ same-profile = (hints) ->
             $(ev.target).next!css background-color: ui.color.to-string!
         })
         .focus((ev) -> 
-          $ 'html.admin .onclick-close' .show!
           hide!
+          $ 'html.admin .onclick-close' .show!
           $(ev.current-target).iris \show)
       $ \#colored_text
         .iris({
