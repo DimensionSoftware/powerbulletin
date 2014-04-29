@@ -476,7 +476,7 @@ same-profile = (hints) ->
         w.$.fancybox e.$, {after-close:-> w.user <<< sig:e.body!; storage.set \user, w.user; e.detach!} <<< fancybox-params # set sig & cleanup
 
     change-title-enable = ->
-      var last
+      last = user?title or \first # default
       e = w.$ \#change_title
       e.on \click -> false # interception
       e.on \keypress (ev) -> if (ev.key-code or ev.which) is 13 then false else true
@@ -493,7 +493,7 @@ same-profile = (hints) ->
             success: ->
               last := cur
               show-tooltip (w.$ \.change-tooltip), \Saved!, 3000ms
-          }), 1000ms
+          }), 800ms
     photocropper-enable = ->
       w.$ \#left_content .add-class \editable
       w.$ \body .on \click, '#left_content.editable .avatar', photocropper-start
