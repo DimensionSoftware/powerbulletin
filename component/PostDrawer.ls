@@ -33,7 +33,6 @@ module.exports =
       @@$ document .on \click.post-drawer (ev) ~> # live
         if $ ev.target .has-class \onclick-footer-toggle # guard
           @context-forum-id = ($ ev.target .parents '[data-forum-id]').data \forum-id
-          if @is-open! then @close! # toggle
           if in-thread-mode!
             if @is-editing! # if editing, hold drawer open & switch modes
               thread-mode false # replies don't have titles
@@ -41,7 +40,10 @@ module.exports =
               @editor
                 ..clear!
                 ..focus!
+            else
+              if @is-open! then @close! # toggle
           else
+            if @is-open! then @close! # toggle
             @clear! # back to Reply mode
             thread-mode false
             make-resizable @footer!
