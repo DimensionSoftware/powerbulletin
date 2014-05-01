@@ -163,7 +163,7 @@ module.exports =
       @editor?refresh-preview!
 
     on-detach: ->
-      @@$ window .off \click.post-drawer
+      @@$ document .off \click.post-drawer
       @$.off!
       @close!
       @editor.detach!
