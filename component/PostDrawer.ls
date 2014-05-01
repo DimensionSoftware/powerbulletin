@@ -95,7 +95,7 @@ module.exports =
 
     focus: ~> @editor.focus!
     clear: ~> # clear all inputs
-      @editor.clear!
+      @editor?clear!
       @@$ '[name="title"]'     .val ''
       @@$ '[name="forum_id"]'  .val ''
       @@$ '[name="parent_id"]' .val ''
