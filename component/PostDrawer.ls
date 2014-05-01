@@ -29,7 +29,8 @@ module.exports =
             @edit-mode! # back to default Reply mode
           else # for reply mode only
             @delete-draft!
-      @@$ window .on \click.post-drawer (ev) ~> # live
+
+      @@$ document .on \click.post-drawer (ev) ~> # live
         if $ ev.target .has-class \onclick-footer-toggle # guard
           @context-forum-id = ($ ev.target .parents '[data-forum-id]').data \forum-id
           if @is-open! then @close! # toggle
