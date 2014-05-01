@@ -37,9 +37,10 @@ module.exports =
             if @is-editing! # if editing, hold drawer open & switch modes
               thread-mode false # replies don't have titles
               @edit-mode! # back to default Reply mode
-              @editor
-                ..clear!
-                ..focus!
+              if @editor
+                @editor
+                  ..clear!
+                  ..focus!
             else
               if @is-open! then @close! # toggle
           else
@@ -49,7 +50,7 @@ module.exports =
             make-resizable @footer!
             @set-draft!
             @edit-mode! # back to reply mode
-            @editor.focus!
+            if @editor then @editor.focus!
           false
       #}}}
 
@@ -76,7 +77,7 @@ module.exports =
         @set-body draft
       else
         @set-body '' # no draft
-      @editor.refresh-preview!
+      @editor?refresh-preview!
 
     toggle:  ~> if @is-open! then @close! else @open!
     is-open: ~> @footer!has-class \expanded
@@ -96,7 +97,7 @@ module.exports =
           try f.resizable \destroy
           f.data \uiResizable, void), 50ms
 
-    focus: ~> @editor.focus!
+    focus: ~> @editor?focus!
     clear: ~> # clear all inputs
       @editor?clear!
       @@$ '[name="title"]'     .val ''
@@ -159,7 +160,7 @@ module.exports =
       @@$ '[name="parent_id"]' .val p.parent_id
       @@$ '[name="id"]'        .val p.id
 
-      @editor.refresh-preview!
+      @editor?refresh-preview!
 
     on-detach: ->
       @@$ window .off \click.post-drawer
