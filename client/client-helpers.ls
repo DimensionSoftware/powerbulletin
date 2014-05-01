@@ -90,7 +90,7 @@ render = (sel, locals, cb=(->)) ~>
 @open-postdrawer = (ev) ~> @postdrawer!open!
 
 # thread mode toggles between top-level posts w/ a title
-@thread-mode = (mode=true) ~>
+@thread-mode = (mode=true) ~> # true is thread mode (has an editable title, etc...)
   $ \footer .toggle-class \thread, mode
   $ '[name="title"]' .val ''
   if active-forum-id? then $ '[name="forum_id"]' .val active-forum-id # set forum
@@ -103,6 +103,7 @@ render = (sel, locals, cb=(->)) ~>
     $ \html .add-class \new # for stylus
     @postdrawer!clear!
     @thread-mode!
+    @postdrawer!set-creating-mode!
     @open-postdrawer!
   else # fetch existing & edit
     sel = "\#post_#{id}"

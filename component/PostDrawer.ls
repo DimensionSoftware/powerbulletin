@@ -104,6 +104,10 @@ module.exports =
       @edit-mode! # back to reply mode
     is-creating-thread: ~> (furl.parse window.location.pathname)?type is \new-thread
     is-editing: ~> (@@$ \.form:first .attr \method) is \put
+    set-creating-mode: ~>
+      $ \.save .html \Create
+      @@$ \#action_wrapper .toggle-class \reply, false
+      @@$ \#action_wrapper .toggle-class \edit,  false
     edit-mode: (id) ~>
       $f = @@$ \.form:first # setup mock form for:
       if id # edit mode
@@ -115,20 +119,28 @@ module.exports =
         @@$ \#action_wrapper .toggle-class \edit,  true
         \edit
       else # reply mode
-        $ \.save .html \Reply
         $f.attr \method, \post
         $f.attr \action, \/resources/posts
-        # show action is "reply"
-        @@$ \#action_wrapper .toggle-class \reply, true
-        @@$ \#action_wrapper .toggle-class \edit,  false
-        \reply
+        if @is-creating-thread!
+          # show action is "new"
+          @set-creating-mode!
+          \new-thread
+        else
+          $ \.save .html \Reply
+          # show action is "reply"
+          @@$ \#action_wrapper .toggle-class \reply, true
+          @@$ \#action_wrapper .toggle-class \edit,  false
+          \reply
 
     set-body: (body) ->
       @@$ '.PostDrawer [name="body"]' .val body
       # use marshalled data to fill-out
-      if window.reply-to and window.reply-by
-        @@$ \#reply_to .html "<a>#{window.reply-to}</a>"
-        @@$ \#reply_by .html "<a>#{window.reply-by}</a>"
+      if @is-creating-thread!
+        @set-creating-mode!
+      else # use marshalled for body title?
+        if window.reply-to and window.reply-by
+          @@$ \#reply_to .html "<a>#{window.reply-to}</a>"
+          @@$ \#reply_by .html "<a>#{window.reply-by}</a>"
 
     set-post: (p) ~>
       unless p then return # guard
