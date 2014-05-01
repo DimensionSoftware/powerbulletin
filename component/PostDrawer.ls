@@ -29,24 +29,28 @@ module.exports =
             @edit-mode! # back to default Reply mode
           else # for reply mode only
             @delete-draft!
-      @@$ window .on \click.post-drawer (ev) ~> # live
+
+      @@$ document .on \click.post-drawer (ev) ~> # live
         if $ ev.target .has-class \onclick-footer-toggle # guard
           @context-forum-id = ($ ev.target .parents '[data-forum-id]').data \forum-id
-          if @is-open! then @close! # toggle
           if in-thread-mode!
             if @is-editing! # if editing, hold drawer open & switch modes
               thread-mode false # replies don't have titles
               @edit-mode! # back to default Reply mode
-              @editor
-                ..clear!
-                ..focus!
+              if @editor
+                @editor
+                  ..clear!
+                  ..focus!
+            else
+              if @is-open! then @close! # toggle
           else
+            if @is-open! then @close! # toggle
             @clear! # back to Reply mode
             thread-mode false
             make-resizable @footer!
             @set-draft!
             @edit-mode! # back to reply mode
-            @editor.focus!
+            if @editor then @editor.focus!
           false
       #}}}
 
@@ -73,7 +77,7 @@ module.exports =
         @set-body draft
       else
         @set-body '' # no draft
-      @editor.refresh-preview!
+      @editor?refresh-preview!
 
     toggle:  ~> if @is-open! then @close! else @open!
     is-open: ~> @footer!has-class \expanded
@@ -93,9 +97,9 @@ module.exports =
           try f.resizable \destroy
           f.data \uiResizable, void), 50ms
 
-    focus: ~> @editor.focus!
+    focus: ~> @editor?focus!
     clear: ~> # clear all inputs
-      @editor.clear!
+      @editor?clear!
       @@$ '[name="title"]'     .val ''
       @@$ '[name="forum_id"]'  .val ''
       @@$ '[name="parent_id"]' .val ''
@@ -104,6 +108,10 @@ module.exports =
       @edit-mode! # back to reply mode
     is-creating-thread: ~> (furl.parse window.location.pathname)?type is \new-thread
     is-editing: ~> (@@$ \.form:first .attr \method) is \put
+    set-creating-mode: ~>
+      $ \.save .html \Create
+      @@$ \#action_wrapper .toggle-class \reply, false
+      @@$ \#action_wrapper .toggle-class \edit,  false
     edit-mode: (id) ~>
       $f = @@$ \.form:first # setup mock form for:
       if id # edit mode
@@ -115,20 +123,28 @@ module.exports =
         @@$ \#action_wrapper .toggle-class \edit,  true
         \edit
       else # reply mode
-        $ \.save .html \Reply
         $f.attr \method, \post
         $f.attr \action, \/resources/posts
-        # show action is "reply"
-        @@$ \#action_wrapper .toggle-class \reply, true
-        @@$ \#action_wrapper .toggle-class \edit,  false
-        \reply
+        if @is-creating-thread!
+          # show action is "new"
+          @set-creating-mode!
+          \new-thread
+        else
+          $ \.save .html \Reply
+          # show action is "reply"
+          @@$ \#action_wrapper .toggle-class \reply, true
+          @@$ \#action_wrapper .toggle-class \edit,  false
+          \reply
 
     set-body: (body) ->
       @@$ '.PostDrawer [name="body"]' .val body
       # use marshalled data to fill-out
-      if window.reply-to and window.reply-by
-        @@$ \#reply_to .html "<a>#{window.reply-to}</a>"
-        @@$ \#reply_by .html "<a>#{window.reply-by}</a>"
+      if @is-creating-thread!
+        @set-creating-mode!
+      else # use marshalled for body title?
+        if window.reply-to and window.reply-by
+          @@$ \#reply_to .html "<a>#{window.reply-to}</a>"
+          @@$ \#reply_by .html "<a>#{window.reply-by}</a>"
 
     set-post: (p) ~>
       unless p then return # guard
@@ -144,10 +160,10 @@ module.exports =
       @@$ '[name="parent_id"]' .val p.parent_id
       @@$ '[name="id"]'        .val p.id
 
-      @editor.refresh-preview!
+      @editor?refresh-preview!
 
     on-detach: ->
-      @@$ window .off \click.post-drawer
+      @@$ document .off \click.post-drawer
       @$.off!
       @close!
       @editor.detach!
