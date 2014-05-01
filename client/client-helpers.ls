@@ -25,9 +25,10 @@ if window?
     switch meta.type
     | \new-thread => History.replace-state {} '' data.uri
     | \edit       => @remove-editing-url meta
-    # close drawer & cleanup
-    window.component.postdrawer?detach!
-    window.component.postdrawer = void
+    # close drawer
+    window.component.postdrawer.close!
+    #window.component.postdrawer?detach!
+    #window.component.postdrawer = void
     $ '#post_new .fadein' .remove!
   false
 
