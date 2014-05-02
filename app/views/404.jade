@@ -18,28 +18,30 @@ html
     link(href="//muscache.#{domain}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
     link(href="//muscache2.#{domain}/404.css", rel='stylesheet', type='text/css')
   body(onclick="window.location='https://#{domain}'")
-    .lense
     ul#scene
       li.layer(data-invert-x=true, data-invert-y=true, data-depth='0.2')
-        img(src="//muscache.#{domain}/images/live_support.jpg" class="bg")
+        a(title='Forum Community in Realtime | PowerBulletin', href="https://#{domain}")
+          img(src="//muscache.#{domain}/images/live_support.jpg" class="bg")
       li.layer(data-depth='0.7')
         .container
           h1.logo
-            a(href="https://#{domain}") Power 
+            a(title='Forum Community in Realtime | PowerBulletin', href="https://#{domain}") Power 
               b Bulletin
             .beacon
       li.layer(data-depth='1.0')
         .note
-          span #
-          b Invalid Request
-          span but we still
-          b &hearts; U
-            i !
+          a(title='Forum Community in Realtime | PowerBulletin', href="https://#{domain}")
+            span #
+            b Invalid Request
+            span but we still
+            b &hearts; U
+              i !
+    .lense
 
     script(type='text/javascript', src='//muscache4.#{domain}/local/jquery-1.10.2.min.js')
     script(src="//muscache3.#{domain}/local/jquery.parallax.js", type='text/javascript')
     script(type='text/javascript').
-      $('.bg').on('load',
+      $('.bg').on('load', // establishing shot loaded--so, build-in the scene!
         $(function() {
             $('#scene').addClass('loaded')
               .parallax({
@@ -56,3 +58,6 @@ html
               .parallax('enable');
         })
       );
+      if (typeof console != 'undefined' && console !== null) { // greet
+        console.log('\n░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█\n░█▀▀░█░█░█▄█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░░█░░░█░░█░█\n░▀░░░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀▀▀░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀\nHey, you-- join us!  https://powerbulletin.com');
+      }
