@@ -18,9 +18,20 @@ html.profile .wmd-preview
   height 100%
   position relative
   border-top 1px solid border_color
-  .tooltip
-    bottom 12px
-    left 59%
+  .center
+    position absolute
+    z-index 99
+    top 10px
+    height 0
+    left 0
+    right 0
+    .tooltip
+      position relative
+      max-width 300px
+      left auto
+      right auto
+      bottom 12px
+      margin 0 auto
   //{{{ Preview pane
   &.has-preview
   // - when the preview is visible
