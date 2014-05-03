@@ -52,16 +52,17 @@ box-shadow(arg1, arg2, arg3)
 
 @keyframes tiny-grow
   0%
-    transform scale(1.0)
-  25%
+    opacity .85
+    transform scale(.98)
+  65%
     transform scale(1.01)
-  45%
-    transform scale(1.03)
   100%
+    opacity 1
     transform scale(1.0)
 .tiny-grow
   animation-name tiny-grow
   animation-duration .2s
+  animation-timing-function ease-in
 
 @keyframes shake
   0%
