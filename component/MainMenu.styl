@@ -198,6 +198,8 @@ header.header
           width 300px
           overflow hidden
           padding 0
+          a
+            animation-name none!important
           .col-sep, .col-sep2
             display none
           > ul
@@ -215,9 +217,10 @@ header.header
                 z-index 1
                 content ''
                 //top 0
+                opacity .3
                 top 5px
                 bottom 5px
-                left 22px
+                left 20px
                 width 0
                 background theme_color
                 border none
@@ -232,7 +235,7 @@ header.header
                 a, a:hover
                   display inline-block
                   transform scale(1.035)
-                  text-indent 6px
+                  text-indent 5px
                   background none
                   color darken(theme_color, 30%)!important
                   position relative
@@ -244,6 +247,7 @@ header.header
                 &:before
                   //border 24px solid transparent
                   //border-left 24px solid theme_color
+                  opacity 1
                   width 5px
                   //top -2px
                   //left -15px
@@ -252,7 +256,7 @@ header.header
                   left 0
                   bottom 0
                   //transition left .1s ease-out, top .15s ease-in
-                  transition all .08s ease-in
+                  transition width .2s ease-out
         > ul
           margin-top 12px!important
         ul
