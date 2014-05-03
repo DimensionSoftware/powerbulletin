@@ -97,7 +97,7 @@ function init-with-socket s
     $ "[data-user-id=#{message.id}] .profile.photo" .remove-class \online
 
   s.on \menu-update, (menu, cb) ->
-    $ \#menu .html jade.templates.menu {menu}
+    $ \.MainMenu .html jade.templates.menu {menu}
     window.component.main-menu.detach!attach!
 
   s.on \thread-impression (thread, cb) ->

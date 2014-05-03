@@ -1,16 +1,40 @@
-//- main menu
-mixin _menu(depth, menu)
+include _recursive-menu
+include _flat-menu
+
+mixin _menu
+  //- output top-level (depth zed)
   if (typeof(menu) == 'object')
-    each item,i in menu
-      if item && item.form
-        //- row -> out!
-        li.row
-          if item.form.dialog == 'placeholder'
-            .title= item.title
-          else
-            a.title(
-              data-surf=item.form.dbid,
-              data-scroll-to="#forum_#{item.form.dbid}",
-              class="forum-#{item.form.dbid}",
-              href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
-              target=(item.form.separateTab ? '_blank' : '_self'))= item.title
+    menu#menu.menu
+      each item,i in menu
+        if item && item.form
+          //- row -> out!
+          li.row
+            if item.form.dialog == 'placeholder'
+              .title= item.title
+            else
+              a.title(
+                data-surf=item.form.dbid,
+                data-scroll-to="#forum_#{item.form.dbid}",
+                class="forum-#{item.form.dbid}",
+                href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
+                target=(item.form.separateTab ? '_blank' : '_self'))= item.title
+            //- stylize depth & recurse at least once
+            if item.children
+              //- choose either to be flat or recurse (wide style)
+              - var hasChildren=false
+              each child in item.children
+                if child.children && child.children.length
+                  - hasChildren=true
+              //- if any items have more children or if there's more > 9 items in this level
+              - var shouldRecurse = ((item.children.length > 9) || hasChildren)
+              div(class="submenu #{hasChildren} #{item.children.length} #{shouldRecurse ? '' : 'flat'}")
+                ul
+                  if shouldRecurse
+                    //- use wide-style menu
+                    //- w/ makeshift separators
+                    .col-sep
+                    .col-sep2
+                    +_recursive-menu(1, item.children)
+                  else
+                    //- use flat-style slender menu
+                    +_flat-menu(0, item.children)
