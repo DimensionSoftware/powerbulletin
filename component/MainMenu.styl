@@ -22,9 +22,9 @@ body.scrolled
               &.flat
                 .row
                   line-height 35px
-                  // arrow
+                  // square arrow
                   &:before
-                    top -4px
+                    top 0
               .row
                 line-height (grid*3)
           > .row:hover
@@ -209,16 +209,18 @@ header.header
               border-bottom 1px solid rgba(theme_color, .1)
               border-right 1px solid theme_color
               transition none
-              // arrow
+              // square arrow
               &:before
                 position absolute
                 z-index 1
                 content ''
-                top 0
-                //background theme_color
-                border none
+                //top 0
+                top 5px
+                bottom 5px
+                left 22px
                 width 0
-                left -10px
+                background theme_color
+                border none
                 transition none
               &:last-child
                 border-bottom none
@@ -226,25 +228,31 @@ header.header
                 background-color transparent
                 background-image linear-gradient(to bottom, rgba(theme_color, .01) 50%, rgba(darken(theme_color, 30%), .08))
                 box-shadow 0 0 1px theme_color inset
-                transition none
+                transition all .08s ease-in
                 a, a:hover
                   display inline-block
                   transform scale(1.035)
-                  text-indent 5px
+                  text-indent 6px
                   background none
                   color darken(theme_color, 30%)!important
                   position relative
                   padding-left 14px!important
                   border-radius 0
                   width 100%
-                // hovered "active" arrow
+                  transition none
+                // hovered "active" square arrow
                 &:before
-                  border 24px solid transparent
-                  border-left 24px solid theme_color
-                  top -2px
-                  left -15px
-                  bottom 1px
-                  transition left .1s ease-out, top .15s ease-in
+                  //border 24px solid transparent
+                  //border-left 24px solid theme_color
+                  width 5px
+                  //top -2px
+                  //left -15px
+                  //bottom 1px
+                  top 0
+                  left 0
+                  bottom 0
+                  //transition left .1s ease-out, top .15s ease-in
+                  transition all .08s ease-in
         > ul
           margin-top 12px!important
         ul

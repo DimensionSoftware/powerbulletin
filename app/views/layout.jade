@@ -1,4 +1,4 @@
-include menu
+include _menu
 - var invite   = (inviteOnly) ? "window.inviteOnly='true';" : ''
 |<!DOCTYPE html><!--
 |░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
@@ -70,7 +70,7 @@ html
           .onclick-close.toggler(title='Close!') x
         #warning.tooltip
         .MainMenu.menu-container
-          +menu(0, menu)
+          +_menu(0, menu)
         .tools
           a.profile.photo.mutant
             img#profile(src="#{cache3Url}/images/profile.png")

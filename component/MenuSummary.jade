@@ -25,7 +25,7 @@ mixin menu-item(depth, items)
               span.description= desc
           td.last-post
             latest = item.latest_post
-            if latest.username
+            if latest && latest.username
               a.mutant.body(href=latest.uri)= latest.title
               a.mutant.username(href="/user/#{latest.username}")= latest.username
               span.date(data-time=latest.created.last_post_created_iso, title=latest.created.last_post_created_friendly)- latest.created.last_post_created_human
