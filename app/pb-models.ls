@@ -175,6 +175,22 @@ delete-fn = (table) ->
   (object, cb) ->
     postgres.query "DELETE FROM #table WHERE id = $1", [ object.id ], cb
 
+# Generate a soft-delete funciton for the given table and field.
+# The field will be set to null to signify that the row was soft-deleted.
+# The table must have a JSON config column for this to work.
+#
+# @param  String    table         name of table
+# @param  String    null-field    name of field in table to null
+# @return Function                a soft delete function for the table
+soft-delete-fn = (table, null-field) ->
+  (object, cb) ->
+    err, fresh-object <- module.exports[table].select-one id: object.id
+    if err then return cb err
+    fresh-object.config.soft-delete =
+      "#null-field" : object[null-field]
+      deleted       : Date.now!
+    postgres.query "UPDATE #table SET #null-field = NULL, config = $2 WHERE id = $1", [ object.id, JSON.stringify(fresh-object.config) ], cb
+
 # Generate a WHERE clause to uniquely identify a row in the aliases table
 _alias-where = (obj) ->
   throw new Error("need user_id and site_id") if (not obj.user_id and not obj.site_id);
@@ -482,7 +498,8 @@ query-dictionary =
 
   auths: {}
 
-  pages: {}
+  pages:
+    soft-delete: (serialized-fn (soft-delete-fn \pages, \path), { config: JSON.stringify })
 
   posts:
     uncensor: (command, cb) ->
@@ -564,6 +581,7 @@ query-dictionary =
       thread-summary(site-id, forum-ids, sort, limit, cb)
     forum-summary: (forum-ids, cb) ->
       forum-summary(forum-ids, cb)
+    soft-delete: (serialized-fn (soft-delete-fn \forums, \uri), { config: JSON.stringify })
 
   sites:
     user-is-member-of: (user-id, cb) ->
