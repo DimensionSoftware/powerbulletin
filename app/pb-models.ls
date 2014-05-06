@@ -186,6 +186,7 @@ soft-delete-fn = (table, null-field) ->
   (object, cb) ->
     err, fresh-object <- module.exports[table].select-one id: object.id
     if err then return cb err
+    if not fresh-object then return cb null # If it doesn't exist, no point in soft-deleting it.
     fresh-object.config.soft-delete =
       "#null-field" : object[null-field]
       deleted       : Date.now!
