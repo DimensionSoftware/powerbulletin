@@ -279,14 +279,16 @@ require! {
 # @param  Function  cb      function to run after deletions have completed
 @db-delete = (object, cb) ->
   [type, data] = @extract object
-  if not data.id
+  if (type is \page or type is \forum) and not data.id
     cb new Error("no id in data")
 
-  query = { data.id }
-
   switch type
-  | \page          => db.pages.delete query, cb
-  | \forum         => db.forums.delete query, cb
+  | \page          =>
+    query = { id: data.id, path: data.path }
+    db.pages.soft-delete query, cb
+  | \forum         =>
+    query = { id: data.id, uri: data.uri }
+    db.forums.soft-delete query, cb
   | \link          => cb null, []
   | \placeholder   => cb null, []
   | otherwise      => cb null, []

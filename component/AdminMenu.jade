@@ -22,6 +22,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .desc Discussion &amp; Chat
             .s-forum.icon
           .dialog
+            label(for='forum_title') Title
+            input#forum_title(type='text', name='forumTitle')
+            .note Titles show in the main menu
+            .break
             label(for='forum_slug') Slug
             input#forum_slug(type='text', name='forumSlug', placeholder='/path/to/forum')
             .note URL suffix for this page
@@ -59,6 +63,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .desc Raw HTML
             .s-page.icon
           .dialog
+            label(for='page_title') Title
+            input#page_title(type='text', name='pageTitle')
+            .note Titles show in the main menu
+            .break
             label(for='page_slug') Slug
             input#page_slug(type='text', name='pageSlug', placeholder='/path/to/page')
             .note URL suffix for this page
@@ -85,6 +93,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .desc External or Internal
             .s-link.icon
           .dialog
+            label(for='link_title') Title
+            input#link_title(type='text', name='linkTitle')
+            .note Titles show in the main menu
+            .break
             label(for='url') Url
             input(id='url', type='text', name='url', placeholder='http://')
             .break
@@ -106,6 +118,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .desc Leave Blank for Whitespace
             .s-placeholder.icon
           .dialog
+            label(for='placeholder_title') Title
+            input#placeholder_title(type='text', name='placeholderTitle')
+            .note Titles show in the main menu
+            .break
             label(for='placeholder_description') Description
             input#placeholder_description(type='text', name='placeholderDescription')
             .note Descriptions show on homepage views

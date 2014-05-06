@@ -88,7 +88,7 @@ module.exports =
         e.val title
         html-form # default form
           ..find \fieldset .toggle-class \has-dialog (!!form?dialog)
-          ..find '#forum_slug, #page_slug, #url, textarea' .val ''
+          ..find '#placeholder_title, #link_title, #page_title, #forum_title, #forum_slug, #page_slug, #url, textarea' .val ''
           ..find 'input[type="checkbox"], input[type="radio"]' .prop \checked, false
         if form # restore current's id + menu + title
           e.val title
@@ -126,6 +126,7 @@ module.exports =
                 | \checkbox
                   $i.prop \checked (if form[n] then \checked else false)
                 | \text \hidden # always value
+                  if n.match /Title$/ then form[n] = title # set title for page, forum, placeholder, link, etc...
                   $i.val form[n]
                 | otherwise
                   if $i.is \textarea
@@ -137,6 +138,7 @@ module.exports =
       data.title = data.form.title = $input.val!
       @$.find 'input[name=title]' .val $input.val!
       $input.data data
+      $ '.dialog:visible input:first' .val data.title # sync dialog's title
 
     to-hierarchy: ->
       @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!
@@ -199,6 +201,17 @@ module.exports =
 
     on-attach: !->
       #{{{ Event Delegates
+      @$.on \keydown, '#forum_title, #page_title, #link_title, #placeholder_title' (ev) ~>
+        title = $ ev.target .val! # title
+        # sync with data to be saved
+        [prefix, suffix] = ev.target.id.split \_
+        title-field = prefix + suffix.0.to-upper-case! + (suffix.substr 1)
+        d = @current.data!
+        d.title = d.form.title = d.form[title-field] = title
+        @$.find 'input[name=title]' .val title
+        @current
+          ..val  title
+          ..data d
       @$.on \click \.option (ev) -> # correct sprite when adding new menu item
         $ \.s-undefined-icon
           ..remove-class \s-undefined-icon
