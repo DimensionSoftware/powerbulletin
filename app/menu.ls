@@ -279,7 +279,7 @@ require! {
 # @param  Function  cb      function to run after deletions have completed
 @db-delete = (object, cb) ->
   [type, data] = @extract object
-  if not data.id
+  if (type is \page or type is \forum) and not data.id
     cb new Error("no id in data")
 
   query = { data.id }
