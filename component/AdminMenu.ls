@@ -33,6 +33,9 @@ module.exports =
           return false
         true
 
+    init: ->
+      @local \title \Title # default reactive
+
     current:  null # active "selected" menu item
 
     show: ->
@@ -133,12 +136,8 @@ module.exports =
                     $i.val form[n]
 
     store-title: (ev) !~>
-      $input     = $ ev.target
-      data       = $input.data!
-      data.title = data.form.title = $input.val!
-      @$.find 'input[name=title]' .val $input.val!
-      $input.data data
-      $ '.dialog:visible input:first' .val data.title # sync dialog's title
+      @state.title ($ ev.target .val!)
+      $ '.dialog:visible input:first' .val @state.title! # sync dialog's title
 
     to-hierarchy: ->
       @$.find \.sortable .data(\mjsNestedSortable).to-hierarchy!
@@ -201,17 +200,9 @@ module.exports =
 
     on-attach: !->
       #{{{ Event Delegates
-      @$.on \keydown, '#forum_title, #page_title, #link_title, #placeholder_title' (ev) ~>
-        title = $ ev.target .val! # title
-        # sync with data to be saved
-        [prefix, suffix] = ev.target.id.split \_
-        title-field = prefix + suffix.0.to-upper-case! + (suffix.substr 1)
-        d = @current.data!
-        d.title = d.form.title = d.form[title-field] = title
-        @$.find 'input[name=title]' .val title
-        @current
-          ..val  title
-          ..data d
+      @$.on \keyup, '#forum_title, #page_title, #link_title, #placeholder_title' (ev) ~>
+        @state.title ($ ev.target .val!) # sync title using reactive local
+
       @$.on \click \.option (ev) -> # correct sprite when adding new menu item
         $ \.s-undefined-icon
           ..remove-class \s-undefined-icon
@@ -302,6 +293,17 @@ module.exports =
       @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore! # load active row
       @$.on \blur   \.row (ev) ~> show-tooltip ($ \#warning) # hide
       #}}}
+
+      #### reactive
+      @@$R((title) ~>
+        # sync title to ui (so it can be saved)
+        d = @current.data! # all data from selection
+        d.title = d.form.title = title
+        @$.find 'input[name=title]' .val title
+        @current
+          ..val  title
+          ..data d
+      ).bind-to @state.title
 
       ####  main  ;,.. ___  _
       <~ lazy-load-nested-sortable
