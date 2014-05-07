@@ -318,7 +318,7 @@ module.exports =
       @show! # bring in ui
       set-timeout (~> # activate first
         @restore-sortable-tree!
-        unless s.find \input:first .length then @$ \.onclick-add .click! # add unless exists
+        unless site.config?menu?length then @$ \.onclick-add .click! # add unless exists
         # show intro to user?
         const seen-intro = "#{window.user?id}-admin-intro"
         unless storage.get seen-intro
@@ -327,7 +327,7 @@ module.exports =
             [\.col1,              '<b>Welcome!</b> Each Item Added Becomes Part of Your Main Menu', true],
             [\.col1,              'Click &amp; Drag Menu Items to <b>Rearrange</b>', true],
             ['.col2 .has-dialog', 'Fill in the remaining information and Click <b>Save</b>']
-        s.find \input:first .focus!), 10ms
+        s.find \input:first .focus!), 50ms
       s.nested-sortable { stop: @resort } <<< opts # init
 
     on-detach: -> @$.off!
