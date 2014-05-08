@@ -33,8 +33,9 @@ box-shadow(arg1, arg2, arg3)
   0%
     opacity 0
     transform rotate(-100deg) scale(3.5)
-  100%
+  80%
     opacity 1
+  100%
     transform rotate(0deg) scale(1)
 
 @keyframes build-in
@@ -152,15 +153,20 @@ body
     .lense
       background radial-gradient(circle closest-corner at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%)
     #scene.loaded
+      padding-left 20px
       img
-        margin-left -600px
+        margin-left -700px
         min-width 100%
         max-height 100%
       .container
         top 100px
+      .logo
+        a
+          font-size .81em
+          line-height 2px
+          margin-left -10px
       .note
-        top 230px
-        margin-left 8px
+        font-size 1em
+        top 205px
+        left 168px
         font-size 1.3em
-      .note
-        left 0
