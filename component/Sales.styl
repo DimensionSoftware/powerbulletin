@@ -53,6 +53,7 @@ body.scrolled
     ul
       li
         margin-top 15px
+        margin-left 30px
         a
           color #333
           font-weight 600
@@ -138,7 +139,12 @@ body.scrolled
 //{{{ - Site Responsive (mobile)
 @media screen and (max-width: 800px)
   body.homepage
-    height 3000px!important
+    height 2750px!important
+    &.scrolled
+      .Sales
+        #imagine
+          display block
+          height 300px
     .Sales
       font-size .85em
       .Sales-content
@@ -158,10 +164,10 @@ body.scrolled
       #start_now
         display none
       .SiteRegister
-        left 0!important
+        left -55px!important
         top 107px!important
         h3
-          left 75px!important
+          left 100px!important
         .SiteRegister-subdomain
           width 300px
         .SiteRegister-create
@@ -171,10 +177,12 @@ body.scrolled
         .bg
           display none
       section.feature
+        height 360px
         padding-left 0!important
         h4
           font-size 1.5em!important
         article
+          margin-top 80px
           transform translateX(5px)
           width 90%!important
           .arrow
@@ -185,11 +193,15 @@ body.scrolled
             opacity 1
             margin-right 0
             text-indent 0
+      #support
+        margin-left 0
+        h4, p
+          text-align center!important
       section.last
         #register_bottom
-          padding-left 50px!important
+          padding-left 80px!important
           .hostname
-            padding-left 75px
+            padding-left 115px
       section.faq
         margin-bottom 25px
         article
