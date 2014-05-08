@@ -356,6 +356,7 @@ unicode-non-letters = /[^\sa-zA-Z0-9\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA
 
 # turn a title into a unique uri
 function title2slug title, id
+  return '/' unless title?length
   title = title.to-lower-case!
   title = title.replace unicode-non-letters, ''
   title = title.replace /\s+/g, '-'
