@@ -165,8 +165,9 @@ module.exports =
         username: u.val!
         password: p.val!
       s.attr \disabled \disabled
-      $.post $form.attr(\action), params, (r) ~>
+      cors.post "#{auth-domain}#{$form.attr(\action)}", params, (r) ~>
         if r.success
+          <~ Auth.login-with-token
           if r.choose-name
             @after-login! if @after-login
             if Auth.require-login-cb
