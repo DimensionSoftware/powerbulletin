@@ -3,11 +3,10 @@ require, exports, module <- define
 
 require! {
   surl: \../shared/sales-urls
-  Component: yacomponent
+  \./PBComponent
   \./SuperAdminUsers
   \./SuperAdminSites
 }
-{templates} = require \../build/component-jade
 
 mod-info =
   mod-users: {klass: SuperAdminUsers, url: surl.gen(\superUsers)}
@@ -18,8 +17,7 @@ for mname, mi of mod-info
   # add css class to anchor as well and use that for click handlers
 
 module.exports =
-  class SuperAdmin extends Component
-    template: templates.SuperAdmin
+  class SuperAdmin extends PBComponent
     init: ->
       # @mods are special children
       # set them up based on mod-info above

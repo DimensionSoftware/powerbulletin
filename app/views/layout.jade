@@ -1,17 +1,18 @@
 include _menu
-- var invite = (inviteOnly) ? "window.inviteOnly='true';" : ''
+- var invite   = (inviteOnly) ? "window.inviteOnly='true';" : ''
 |<!DOCTYPE html><!--
-░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
-░█▀▀░█░█░█▄█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░░█░░░█░░█░█
-░▀░░░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀▀▀░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀.com (jsb,mae,kh) ~-->
+|░█▀█░█▀█░█░█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░▀█▀░▀█▀░█▀█
+|░█▀▀░█░█░█▄█░█▀▀░█▀▄░█▀▄░█░█░█░░░█░░░█▀▀░░█░░░█░░█░█
+|░▀░░░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀░░▀▀▀░▀▀▀░▀▀▀░▀▀▀░░▀░░▀▀▀░▀░▀.com (jsb,mae,kh) ~-->
 html
   head
     if typeof(title) !== 'undefined'
       title= title
-    if typeof(meta_description) !== 'undefined'
-      meta(name='description',content=meta_description) 
-    if typeof(meta_keywords) !== 'undefined'
-      meta(name='keywords',content=meta_keywords.join(', '))
+    //- XXX reinstate+admin if requested by customer
+    //-if typeof(meta_description) !== 'undefined'
+    //-  meta(name='description',content=meta_description) 
+    if metaKeywords !== ''
+      meta(name='keywords',content=metaKeywords)
     meta(http-equiv='X-UA-Compatible',content='IE=EmulateIE9,chrome=1')
     meta(name='robots',content='index, follow')
     meta(name='apple-mobile-web-app-capable', content='yes')
@@ -19,52 +20,60 @@ html
     meta(name='viewport', content='user-scalable=0, initial-scale=1, maximum-scale=1, width=device-width')
 
     //- links first
-    link(href="#{cacheUrl}/images/favicon.ico",rel='shortcut icon',type='image/x-icon')
+    link(href="#{cache2Url}/images/favicon.ico",rel='shortcut icon',type='image/x-icon')
     link(href="#{cache2Url}/images/apple-touch-icon.png", rel='apple-touch-icon')
-    link(href="#{cache3Url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
-    link(href="#{cache4Url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
-    //-link(href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400', rel='stylesheet', type='text/css')
+    link(href="#{cache2Url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
+    link(href="#{cache2Url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
+    if env == 'production'
+      link#master-styl(href="#{cacheUrl}/sites/#{siteId}/master.css?#{cacheBuster}", rel='stylesheet', type='text/css')
+    else
+      link#master-styl(href='/dynamic/css/master.styl?#{cacheBuster}', rel='stylesheet', type='text/css')
     if cssUrls
       for obj in cssUrls
         link(rel='stylesheet',type='text/css',href=obj.url)
     if domainStyle
       link(href="#{cache3Url}/sites/#{siteId}/#{domainId}.auth.css?#{cacheBuster}", rel='stylesheet', type='text/css')
     if style
-      link(href="#{cache2Url}/sites/#{siteId}/master.css?#{cacheBuster}", rel='stylesheet', type='text/css')
-
-    if env == 'production'
-      //- in this case we preload most libraries, as opposed to fetching them all separately
-      script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
-      script(src="#{cacheUrl}/pb-optimized.js")
-    else
-      script(type='text/javascript', src="#{cache4Url}/local/require.js") //- offline
+      link(href="#{cache3Url}/sites/#{siteId}/custom.css?#{cacheBuster}", rel='stylesheet', type='text/css')
 
     //- the only .js in our <head> 
-    if cvars.env != 'production'
-      script(type='text/javascript', src="#{cache5Url}/local/head-0.99.load.min.js") //- offline
+    if env == 'production'
+      //- in this case we preload most libraries, as opposed to fetching them all separately
+      script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
+      script(type='text/javascript', src="#{cache5Url}/pb-optimized.js")
     else
-      script(type='text/javascript', src="//cdnjs.cloudflare.com/ajax/libs/headjs/0.99/head.load.min.js")
-    script(type="text/javascript")
-      window.CHANGESET=!{JSON.stringify(CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cvars.cacheUrl)};window.cache2Url=!{JSON.stringify(cvars.cache2Url)};window.cache3Url=!{JSON.stringify(cvars.cache3Url)};window.cache4Url=!{JSON.stringify(cvars.cache4Url)};window.cache5Url=!{JSON.stringify(cvars.cache5Url)};window.authDomain="!{cvars.authDomain}";window.headjs=head.js;window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cacheUrl+'/client',urlArgs:!{JSON.stringify(CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
+      script(type='text/javascript', src="#{cache3Url}/local/require.js")
+    script(type="text/javascript").
+      window.CHANGESET=!{JSON.stringify(global.CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cacheUrl)};window.cache2Url=!{JSON.stringify(cache2Url)};window.cache3Url=!{JSON.stringify(cache3Url)};window.cache4Url=!{JSON.stringify(cache4Url)};window.cache5Url=!{JSON.stringify(cache5Url)};window.authDomain="!{authDomain}";window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cache5Url+'/client',urlArgs:!{JSON.stringify(global.CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
   body
-
+    #info.info.tooltip
+      .msg
+      .onclick-close(title='Close!') X
+      .next
+        b Next 
+        | >>
     header.header.toggler
-      h1.logo
-        a.mutant(href='/') Power
-          strong Bulletin
+      if logo
+        h1.logo.custom-logo
+          a.mutant(tabindex='-1', href='/', title=metaKeywords)= siteName
+            img(title=siteName, alt=metaKeywords, src="#{cacheUrl}/sites/#{logo}")
+      else
+        h1.logo
+          a.mutant(tabindex='-1', href='/', title=metaKeywords) Power
+            strong Bulletin
+            img(title=siteName, alt=metaKeywords, src="")
       .container
         .search
+          input#query.query(tabindex='1', type='text', placeholder='Search', autocomplete='off')
           .icon
-            .s-search
-          input#query.query(type='text', placeholder='Search', autocomplete='off')
+            .s-big-search
           .onclick-close.toggler(title='Close!') x
         #warning.tooltip
         .MainMenu.menu-container
-          menu#menu.menu
-            +_menu(0, menu)
+          +_menu(0, menu)
         .tools
           a.profile.photo.mutant
-            img#profile(src="#{cacheUrl}/images/profile.jpg")
+            img#profile(src="#{cache3Url}/images/profile.png")
           .bubble
           .bubble2
           .container
@@ -75,63 +84,40 @@ html
                 a.mutant(href='/admin') Admin
               li.onclick-profile
                 a.mutant.onclick-profile(href='/users') Profile
+              li.onclick-messages
+                a(href='#messages') Chats
               li.onclick-logout
                 a(href='/auth/logout') Logout
 
+    .question.s-help(title='Help')
     section#left_content.left-content
       #handle.handle(title='Toggle')
       #left_container
-      #paginator(title='Go to this Page')
-        if typeof page == 'number'
-          if page != 1
-            if page != 2
-              a.page.previous(title='Previous Page', href="#{furl.threadUri}/page/#{page - 1}") 
-            else
-              a.page.previous(title='Previous Page', href="#{furl.threadUri}") 
-          else
-            a.page.previous(title='Previous Page', href="#{furl.threadUri}", style="display:none;") 
-
-          .current(title='Drag to Page through')
-            .tooltip.right
-
-          if page != pagesCount
-            a.page.next(title='Next Page', href="#{furl.threadUri}/page/#{page + 1}") 
-          else
-            a.page.next(title='Next Page', href="#{furl.threadUri}/page/#{pagesCount}", style="display:none;") 
-        else
-          a.page.previous(title='Previous Page', href="/", style="display:none;") 
-          .current(title='Drag to Page through')
-            .tooltip.right
-          a.page.next(title='Next Page', href="/", style="display:none;") 
 
     section#main_content.main-content.container
 
-    section.extra
-
-    section#auth(style="display:none;")
-
     //- for mocha testing
-    if cvars.env != 'production'
+    if env != 'production'
       #mocha
 
-    footer.onclick-footer-toggle
-      .post-reply.onclick-footer-toggle
-        .s-reply.onclick-footer-toggle
+    footer
+      .post-reply.onclick-footer-toggle.require-login
+        .s-reply.onclick-footer-toggle.require-login
       .onclick-scroll-top Top
       #pb_paginator
-      h6.onclick-footer-toggle
-        small &copy; #{siteName} &nbsp;
-        b= new Date().getFullYear()
+      h6.onclick-footer-toggle.require-login
+        a.mutant(href='/', title="#{metaKeywords} #{siteName}")
+          small &copy; #{siteName} &nbsp;
+          b= new Date().getFullYear()
       .post-container
-        form.post.post-new(action='/resources/posts', method='post')
-          //-input.title(name='title', type='text', placeholder='Title')
-          //-textarea#post_new.body
+        .form.post.post-new(action='/resources/posts', method='post')
+          input.title(name='title', type='text', placeholder='Title Your New Thread ...')
           #post_new
-          .tooltip
           //-input(type='hidden', name='forum_id')
           //-input(type='hidden', name='csrf')
 
     #chat_drawer
+    section#auth(style="display:none;")
 
     //- css not required for initial page render -- performance mod.
     link(href="#{cache5Url}/local/jquery-ui.min.css", rel='stylesheet', type='text/css')

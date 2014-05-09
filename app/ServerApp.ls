@@ -160,7 +160,12 @@ module.exports =
           colors: true
         })
 
-      app.use connect.logger(immediate: false, format: \dev) if (env is \development or env is void)
+      #log-format = ":method :req[Host]:url :status :response-time - :res[Content-Length]"
+
+      if (env is \development or env is void)
+        app.use connect.logger(immediate: false, format: sh.dev-log-format)
+      else
+        app.use connect.logger(immediate: false, format: sh.prod-log-format)
 
       for a in [app] # apply app defaults
         a.use mw.vars
@@ -190,10 +195,7 @@ module.exports =
           #{err.stack}
           """
           responder res
-          if err.non-fatal
-            console.warn "non-fatal error; keep working"
-          else
-            graceful-shutdown!
+          graceful-shutdown!
 
       # routes
       #
@@ -204,9 +206,9 @@ module.exports =
       # 404 handler, if not 404, punt
       err-or-notfound = (err, req, res, next) ~>
         if err is 404
-          res.send html_404, 404
+          res.send 404, html_404
         else
-          explain = err-handler (res) -> res.send html_50x, 500
+          explain = err-handler (res) -> res.send 500, html_50x
           explain err, req, res, next
 
       app.use err-or-notfound

@@ -1,92 +1,112 @@
-.fancybox-overlay .fancybox-wrap .fancybox-skin
-  opacity .85
-  background-image linear-gradient(to top, #fff 10px, #f2f2f2 100%)
-  transition opacity .3s ease-out 3s
-  &:hover, &.hover
-    opacity 1
-    transition none
+// oval theme used on private site
+body.oval
+  .fancybox-overlay > .fancybox-wrap > .fancybox-skin
+    border-radius 50%
+    min-height 440px
+    #auth
+      h2
+        margin-top 48px
+      fieldset
+        border-radius 25% / 100%
+      .register
+        margin-top -16px!important
+      .social
+        margin 10px auto 50px auto
+
 #auth
   .strength-meter
-    background-color #fafafa
+    background-color #fcfcfc
     border-left 1px solid #eee
     .strength
-      background-color red
+      background-color #f94046
       background-image linear-gradient(0deg, #f94046 0%, #92080b 80%)
   .strength-meter.strong
       .strength
-        background-color green
+        background-color dark_theme_color
         border-top 1px solid #278000
-        background-image linear-gradient(0deg, #8AD702 0%, #389100 80%)
-  .toggle-password:hover
-    background #f3f3f3
-    color #444
-   border-radius 4px / 6px
-  .toggle-password
-    background #f6f6f6
+        background-image linear-gradient(0deg, theme_color 0%, dark_theme_color 80%)
+  .generate-password
+    color dark_text!important
+    background-color tint(theme_color, 85%)!important
+  .generate-password, .toggle-password
+    background #fcfcfc
     border 1px solid #eee
     color #666
     border-radius 3px / 5px
+    &:hover
+      background #fff
+      color #444
+      border 1px solid #ddd
+      border-radius 4px / 6px
   .login
     .msg.onclick-show-register
       opacity 1
       height 30px
-      h3:hover
-        color #222
-        text-shadow 0 0 1px dark
-        transition none
       h3
         position relative
         float right
         margin-top 8px
         text-shadow none
-        transition all .4s ease-out .4s
-      h3::before
-        display none
+        transition text-shadow .4s ease-out .4s
+        &:hover
+          color #eee
+          text-shadow 0 0 1px dark_theme_color
+          transition none
+        &::before
+          display none
     .small
       h3
-        color #777
-      h3:hover
-        color #333
-        text-shadow 0 0 0 dark
-        transition all .1s ease-out
+        color #aaa
+        &:hover
+          color #ccc
+          text-shadow 0 0 0 dark_theme_color
+          transition all .1s ease-out
     .msg
       overflow hidden
       display block
       height 0
       opacity 0
       h3
-        text-shadow 0 0 1px dark
+        text-shadow 0 0 1px dark_theme_color
   .msg.onclick-show-login
     h3:hover
-      color #444
+      color #eee
   h3
     font-weight 200
     position relative
     font-size 15px
-    color #555
+    color #ddd
+    &:hover::before
+      border-right 10px solid #ddd
+      left -10px
+      transition all .2s ease-out
+    &::before
+      display block
+      position absolute
+      border-right 9px solid #aaa
+      border-left 5px solid transparent
+      border-top 5px solid transparent
+      border-bottom 5px solid transparent
+      content ''
+      left -7px
+      top 7px
   .social h3::before
     display none
   .onclick-show-forgot h3::before
     border none
-  h3:hover::before
-    border-right 10px solid #aaa
-    left -10px
-    transition all .2s ease-out
-  h3::before
-    display block
-    position absolute
-    border-right 9px solid #ddd
-    border-left 5px solid transparent
-    border-top 5px solid transparent
-    border-bottom 5px solid transparent
-    content ''
-    left -7px
-    top 7px
   fieldset
     padding-top 40px
-    border-color #f0f0f0
+    border 1px solid #272727
     border-radius 2px
-    background-color #fff
+    background-color rgba(#222,0.9)
+  input
+    background-image none
+    background-color #f3f3f3
+    &:hover
+      background-color #fafafa
+    &:focus, &:active
+      background-color #fff
+      box-shadow 0 0 3px 1px theme_color
   input[name="password"]:focus
     border-top-left-radius 3px
     border-top-right-radius 3px

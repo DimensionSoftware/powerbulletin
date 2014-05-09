@@ -7,17 +7,20 @@ vendors = webkit moz official
 
 grid = 10px
 
-// theamable color defaults (cyan/blue)
-lighta = rgba(230,245,255,.7)
-light  = #4ccfea
-//43c2e0
-//dark   = #40bfdb
-dark   = #3199b0
-light2 = #00ffcc
-dark2  = #25c6c5
-dark_text  = #3199b0
-light_text = #ddd
+// PowerBulletin cyan/blue theme default
+theme_color  = #4ccfea
+colored_text = #fff
+sprite_hue   = 0deg
 
+// tint color is placed over the background among other images (translucent)
+tint_color = rgba(240,240,240,0.65)
+
+// site-specific variable theme override
+@import "public/sites/" + site-id + "/color-theme.styl"
+
+theme_alpha      = rgba(tint(theme_color, 50%), .15)
+dark_theme_color = darken(theme_color, 40%)
+dark_text        = darken(theme_color, 60%)
 
 // base layout & theme
 @import "app/stylus/layout"
@@ -39,8 +42,11 @@ light_text = #ddd
 @import "component/Auth-theme"
 @import "component/AdminUpgrade"
 @import "component/Buy"
-@import "component/Chat"
+@import "component/CensorReasonDialog"
+@import "component/ChatList"
+@import "component/ChatPanel"
 @import "component/Paginator"
+@import "component/PanelCollection"
 @import "component/ParallaxButton"
 @import "component/PhotoCropper"
 @import "component/AdminMenu"
@@ -51,3 +57,14 @@ light_text = #ddd
 @import "component/MainMenu"
 @import "component/Uploader"
 @import "component/Table"
+@import "component/Editor"
+@import "component/Pins"
+@import "component/Homepage"
+@import "component/MenuSummary"
+@import "component/PostDrawer"
+
+// animations last since they override some of fluidity
+@import './app/stylus/animations'
+
+// extra
+@import "public/local/xbbcode.css"

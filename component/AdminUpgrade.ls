@@ -1,9 +1,7 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! Component: yacomponent
-{templates} = require \../build/component-jade
+require! \./PBComponent
 
 module.exports =
-  class AdminUpgrade extends Component
-    template: templates.AdminUpgrade
+  class AdminUpgrade extends PBComponent

@@ -42,6 +42,8 @@ export configure = (cb = (->)) ->
       _timestamp: {+enabled, +store}
 
   err <- superagent.post('http://127.0.0.1:9200/pb').send({settings, mappings}).end(_)
-  if err then return cb err
+  if err
+    console.error \elastic, err?res?body
+    return cb err
 
   cb!

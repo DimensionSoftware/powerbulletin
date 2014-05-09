@@ -7,6 +7,25 @@ form
         transition none
 
     // <drag-n-drop & upload widget>
+    .progress
+      position absolute
+      text-aliggn center
+      overflow hidden
+      text-align center
+      font-size .6em
+      line-height 2.3em
+      letter-spacing -1px
+      text-indent -5px
+      font-style italic
+      z-index 10
+      top 0
+      bottom 1px
+      left 0
+      width 0
+      height 100%
+      color text_color
+      background-image linear-gradient(to right, dark_theme_color, theme_color)
+      transition width .15s ease-in
     .cancel
       opacity 0
       transition .2s ease-out .3s
@@ -14,19 +33,21 @@ form
       top -10px
       right -7px
     label
+      text-transform capitalize
+      position relative
       .button
-        margin -21px 0 7px 140px!important
+        margin -21px 0 7px 150px!important
         padding 0
         width 85px!important
         height 35px!important
         span
-          color #fff
+          color lighten(colored_text, 25%)
           font-weight 400
           font-size 15px
           line-height 35px
-    label[for='upload']
-      position relative
-      .background
+          &:hover
+            color colored_text
+      .inline-preview
         position absolute
         z-index 10
         display block
@@ -34,19 +55,22 @@ form
         border 1px solid #ccc
         outline none
         height 37px
-        width 37px
-        right -135px
+        max-width 260px
+        left 248px
         top 0
         border-radius 3px
         // hide close for empty backgrounds
         &[src*='transparent'] + .close
           opacity 0!important
         // magnify these on hover--they have backgrounds
+        &[src*='/sites/']
+          transition all .2s ease-in .2s
         &[src*='/sites/']:hover
-          border 1px solid light
-          background-color #f8f8f8
-          transform scale(3)
-          transition all .15s ease-out .15s
+          border 1px solid darken(theme_color, 20%)
+          box-shadow 0 0 1px theme_color
+          background-color #fff
+          transform scale(1.5)
+          transition all .01s ease-out .5s
     .upload
       display none
     .button

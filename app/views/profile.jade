@@ -1,30 +1,35 @@
 
 .container
   .profile(data-user-id="#{profile.id}", data-user-name="#{profile.name}")
+    h2= profile.name
+    h3= profile.title
+    .change-tooltip.tooltip.small
+    input#change_title.change-title(placeholder='Choose a title', type='text', name='title', value=profile.title)
     form(action="/resources/users/#{profile.id}/avatar", enctype="multipart/form-data", method="post")
-      .avatar
+      .avatar.profile
         if profile.photo
           if profile.photo.match(/^https?:/)
             img(src="#{profile.photo}")
           else
             img(src="#{cacheUrl}/#{profile.photo}")
         else
-          img(src="#{cacheUrl}/images/profile.jpg")
+          img(src="#{cacheUrl}/images/profile.png")
       input(type="file", name="avatar", style="display:none;")
-      //- button(type="submit")
 
   ul
-    li.since
+    li.post-count
+      b!= profile.human_post_count 
+        span  #{profile.post_count == 1 ? "post" : "posts"}
+    li.since(title=profile.created_friendly)
       span Joined 
       != profile.created_human
-    li.count
-      b!= profile.human_post_count 
-      span  #{profile.post_count == 1 ? "post" : "posts"}
-    if postsByUser.length
-      //- use date of last post
-      p = postsByUser[0]
+    if profile.last_activity_iso
       li.last-activity
         span Last active 
-        span.date(data-time=p.created_iso)!= p.created_human
-
-  button.onclick-chat(title="Chat") Chat
+        span.date(title=profile.last_activity_friendly, data-time=profile.last_activity_iso)
+  .profile-actions
+    button.onclick-chat(title="Private Message") Chat
+    a.change-profile.avatar Edit Profile Photo
+    a.onclick-change-sig Edit Signature
+  .profile-actions
+    a.onclick-show-forgot Change Password

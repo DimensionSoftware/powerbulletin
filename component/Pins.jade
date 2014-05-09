@@ -1,0 +1,31 @@
+mixin post-profile(p)
+  .post-profile
+    a.user.mutant(href="/user/#{p.user_name}", data-user-id=p.user_id)
+      .profile.photo
+        if p.user_photo && p.user_photo.match(/^http/)
+          img(title=p.user_name, src="#{p.user_photo}")
+        else
+          img(src="#{cacheUrl}#{p.user_photo}")
+
+mixin pin(p)
+  .pin(id="post_#{p.id}", class=p.reason?'censored':'', data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id, data-forum-id=p.forum_id)
+    .profile-container
+      mixin post-profile(p)
+      a.user.mutant(href="/user/#{p.user_name}")
+        span.username= p.user_name
+      .date(data-time=p.created_iso, title=p.created_friendly)
+    .container
+      .pin-content
+        if p.title
+          if p.thread_uri
+            h3.title
+              a.mutant(href=p.thread_uri)= p.title
+          else
+            h3.title= p.title
+        if p.html
+          .body!= p.html
+
+if forums
+  each f,i in forums
+    +pin(f,i)
+.clear

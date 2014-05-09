@@ -1,34 +1,33 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! {
-  Component: yacomponent
-}
+require! \./PBComponent
 
-{templates} = require \../build/component-jade
+{show-tooltip, lazy-load-html5-uploader} = require \../client/client-helpers
 
 # XXX this component must be rendered inside a <form enctype="multipart/form-data">
 
 module.exports =
-  class Uploader extends Component
+  class Uploader extends PBComponent
     default-locals =
       post-url:   ''
       on-success: (->)
 
-    template: templates.Uploader
-
     init: !->
+      @local \name, \background unless @local \name
       for k,v of default-locals when @local(k) is void
         @local k, v
 
-    delete-background-thumb: ->
+    delete-preview: ->
       @@$.ajax {method:\DELETE, url:@local \postUrl}
-        .done (data) ~>
-          @set-background-thumb void # remove thumb
+        ..error (data) ~>
+          show-tooltip ($ \#warning), 'Unable to Delete!'
+        ..success (data) ~>
+          @set-preview void # remove thumb
           @locals!on-delete data # cb
 
-    set-background-thumb: (uri) ->
-      @$.find \.background
+    set-preview: (uri) ->
+      @$.find \.inline-preview
         ..data \src, uri
         ..attr \src,
           if uri
@@ -37,23 +36,35 @@ module.exports =
             "#{cacheUrl}/images/transparent-1px.gif"
 
     on-attach: !->
+      <~ lazy-load-html5-uploader
+
       #{{{ Event Delegates
       @$.on \click \.onclick-delete (ev) ~> # delete
         if confirm "Permanently Delete Background?"
-          @delete-background-thumb!
+          @delete-preview!
       #}}}
 
       init-html5-uploader = (locals) ~>
-        @set-background-thumb locals.background
-        @$.find('.drop-target, input.upload[type=file]').html5-uploader {
-          name: \background
+        @set-preview locals.preview
+        @$.find('.drop-target, input[type=file]').html5-uploader {
+          name: locals.name
           post-url: locals.postUrl
+          on-server-progress: (progress, file) ~>
+            p = parse-int((progress.loaded/file.size) * 100)
+            @$.find \.progress # progress update!
+              ..html p + ' <small> %</small>'
+              ..css  \width, p + \%
+          on-client-load-end: ~> @$.find \.progress .width 0px
           on-success: (xhr, file, r-json) ~>
-            # load current background
+            @$.find \.progress .width 0px
+            # load current preview
             r = JSON.parse r-json
             if r.success
-              @set-background-thumb r.background
-              locals.on-success xhr, file, r-json}
+              @set-preview r[locals.name]
+            else
+              show-tooltip ($ \.tooltip:first), r?msg
+            if locals.on-success then locals.on-success xhr, file, try JSON.parse r-json
+        }
 
       ####  main  ;,.. ___  _
       init-html5-uploader @locals!

@@ -1,0 +1,13 @@
+.Editor
+  .center
+    .tooltip.small
+  .wmd-panel
+    div(id="wmd-button-bar#{id}")
+    .wrapper
+      textarea.wmd-input(id="wmd-input#{id}", name='body')!= body
+      input(type='hidden', name='forum_id', value=forumId)
+      input(type='hidden', name='parent_id', value=parentId)
+      input(type='hidden', name='id', value=id)
+  .wmd-preview
+    div(id="wmd-preview#{id}")
+    .onclick-toggle-preview

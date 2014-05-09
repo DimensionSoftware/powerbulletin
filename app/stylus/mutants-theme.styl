@@ -1,92 +1,40 @@
 
 // Theme details (esp. colors) applied to ...
 a.mutant:hover
-  animation-name tiny-grow
-  animation-duration .1s
   text-decoration none!important
 
 // Mutant-specific States
 //{{{ - homepage
 html.homepage
-  .main-content
-    .container
-      width 90%
-      margin 0 auto
-    .forum
-      .post
-        .profile
-          background-color #fafafa
-          border 1px solid #555
-          font-weight bold
-        .post-edit
-          .title
-            border-bottom-left-radius 0
-            border-bottom-right-radius 0
-      .user
-        font-weight 500
-  .extra
-    .orderer::before
-      border-left 15px solid #ddd
-      border-top 10px solid transparent
-      border-bottom 10px solid transparent
-    .orderer:hover
-      background-image linear-gradient(bottom, #fcfcfc 0%, #fff 23%, #cfcfcf 85%, #cfcfcf 100%)
-    .orderer
-      border-bottom-left-radius 5px
-      border-top-left-radius 5px
-      background-image linear-gradient(bottom, #fff 0%, #fff 23%, #ccc 85%, #ccc 100%)
-      border 1px solid #ccc
-      border-bottom 2px solid #bbb
-      border-left-width 1px
-      padding 2px
-      a
-        display block
-        padding 8px
-      color #555
-      font-weight 100
-      li
-        letter-spacing 2px
-      .indicator
-        opacity .3
-        background-color #666
-      .onclick-scroll-top
-        border-bottom 10px solid #555
-      .onclick-scroll-top:hover
-        border-bottom 10px solid #777
-      #order
-        li.active
-          color #000
-          font-weight 500
-          font-size .95em
-          animation-name tiny-grow
-          animation-duration .25s
-//}}}
-//{{{ - forum, profile, search & moderation
-html.forum, html.profile, html.search, html.moderation
-  #forum_background_buffer::after, #forum_background::after
+  #forum_background_color:after, #forum_background_buffer:after, #forum_background:after
     content ''
     position absolute
     top 0
     right 0
     bottom 0
     left 0
-    background-color tint-color
+    background-color tint_color
+  .main-content
+    .container
+      width 90%
+      margin 0 auto
+//}}}
+//{{{ - forum, profile, search & moderation
+html.forum, html.profile, html.search, html.moderation
+  #forum_background_color:after, #forum_background_buffer:after, #forum_background:after
+    content ''
+    position absolute
+    top 0
+    right 0
+    bottom 0
+    left 0
+    background-color tint_color
   .main-content
     .forum, .threads, .search
-      .post:hover
-        color #111
-        .post-edit:hover
-          .summary::before
-            transition none
-            z-index 2
-            border-left 5px solid light
-        p.body
-          border-bottom 1px solid rgba(0,0,0,.05)
       .post.censored
         .body, blockquote, p
           text-decoration line-through
-          opacity .8
-          font-size .8em
+          font-size .95em
           color #888
           transition all .1s ease-out
       .post-edit
@@ -98,15 +46,32 @@ html.forum, html.profile, html.search, html.moderation
       .post
         overflow visible
         color #333
-        .username
-          font-weight 500
-          color dark_text
-          text-transform capitalize
-        p.body
-          background-color rgba(0,0,0,.015)
-          border-bottom 1px solid transparent
+        &:hover
+          color #111
+          .post-edit:hover
+            .summary:before
+              transition none
+              z-index 2
+              border-left 5px solid theme_color
+        .profile-container
+          .username
+            font-weight 500
+            color dark_text
+            text-transform capitalize
+        .container
+          background-color #fff
+          &:after
+            content ''
+            position absolute
+            left 0
+            right 0
+            bottom 0
+            height 0
+            box-shadow 0 0 10px 1px tint_color
+          .body
+            position relative
         .post-edit
-          .summary::before
+          .summary:before
             border-left 4px solid #ccc
             transition all .2s ease-out .4s
         .hash-tag, .at-tag
@@ -114,44 +79,28 @@ html.forum, html.profile, html.search, html.moderation
           padding 2px 4px
           border-radius 8px 2px
         .hash-tag
-          background lighta
-          color dark
+          background theme_alpha
+          color dark_theme_color
         .at-tag
-          color dark
+          color dark_theme_color
 
       // 2nd children and thereafter are comments
       .children
         .children
-          p.body, .user span
+          .body
             color #666
-          .container
-            max-width 450px
-          .container, .actions
-            margin-left 52px
-          .username
-            color #444
-          .user
-            .profile.photo
-              position absolute
           .post-content, .cke_editable
             p
               color #444
               margin-top 0
           .date
-            color #999
-            text-transform lowercase
-            padding-right (grid*2.5)
+            color #888
       .actions
-        a:active, a:focus
-          background radial-gradient(circle closest-corner at 55% 65%, light2 85%, dark2 100%)
-        a:hover
-          background radial-gradient(circle closest-corner at 45% 35%, light2 55%, dark2 100%)
+        position relative
+        z-index 2
         a
-          color dark
-          background-color light2
-          background-image linear-gradient(to top, dark2 10%, light2 100%)
-          border-radius 27px
-          .s-reply::after, .s-permalink::after, .s-censor::after
+          color dark_text
+          .s-reply:after, .s-permalink:after, .s-censor:after
             position absolute
             content ''
             top 1px
@@ -167,74 +116,125 @@ html.forum, html.profile, html.search, html.moderation
   .left-content
     // for light & dark colors
     box-shadow 0 1px 1px rgba(0,0,0,.3), 0 2px 1px rgba(255,255,255,.3)
+    background-image linear-gradient(to right, #f9f9f9 50%, #fff 70%)
     .threads
       .thread
         list-style-type none
         border-top 1px solid transparent
         border-left 2px solid transparent
-        border-right 2px solid transparent
-        &::after
+        border-right 2px solid #fff
+        transition box-shadow .3s ease-in .05s
+        &:hover
+          color #333
+          a
+            color #222
+          &:after
+            border-bottom 1px solid rgba(0,0,0,.12)
+        &:before
+          position absolute
+          width 0
+          top -1px
+          left 0
+          height 101%
+          bottom -10px
+          content ''
+        &:after
           position absolute
           content ''
-          border-bottom 1px solid rgba(0,0,0,.1)
+          border-bottom 1px solid rgba(0,0,0,.07)
           background-color rgba(255,255,255,.3)
           height 1px
-          margin-top 10px
+          margin-top 7px
+          z-index 2
           left 10%
           width 80%
         .title
           text-shadow none
-          color dark
+          color dark_theme_color
           display inline-block
           border-bottom 1px solid transparent
         .created
-          color #444
+          color #555
           opacity 0
         a
-          color #333
+          color #444
           text-decoration none
-      .thread:first-child
-        border-top 1px solid transparent
-      .thread:first-child:hover
-        border-top 1px solid rgba(250,250,250,.2)
-      .thread:hover::after
-        border-bottom 1px solid rgba(0,0,0,.2)
-      .thread:hover
-        //border-bottom 1px solid rgba(90,90,90,.2)
-        background-color rgba(255,255,255,.2)
-        //transition border-bottom .5s ease-out, background-color .3s ease-out
-        .created
-          opacity .8
-          transition opacity .3s ease-out
-        a
-          color #222
-      .thread.active::after
-        height 0
-        border none
-      .thread::before
-        position absolute
-        top -1px
-        bottom -1px
-        left 0
-        width 0
-        content ''
-      .thread.active::before
-        background-image linear-gradient(to top, dark 10%, light 100%)
-        width 6px
-        transition all .2s ease-out
-      .thread.active:hover
-        a #fff
-      .thread.active:last-child, .thread.active
-        position relative
-        z-index 9
+        &:first-child
+          border-top 1px solid transparent
+        &:first-child:hover
+          border-top 1px solid rgba(250,250,250,.2)
+        &:hover
+          background-color rgba(255,255,255,.2)
+          .created
+            opacity .8
+          a
+            color #222
+      .thread.active
+        border-radius 3px
+        transition none
+        background-image none
         background-color #fff
-        border-right 1px solid light
-        border-bottom 1px solid light
+        &:before
+          width 5px
+          background-image linear-gradient(to top, dark_theme_color 15%, dark_theme_color 16%, lighten(theme_color, 12%) 75%, lighten(theme_color, 20%) 100%)
+        // {{{ active thread arrow
+        .arrow
+          display none
+          position absolute
+          top 0
+          right -51px
+          margin-top 0
+          z-index 9
+          &:after
+            position absolute
+            content ''
+            right -42px
+            margin-top -42px
+            z-index 2
+        .arrow
+          border 43px solid transparent
+          border-left 12px solid theme_color
+          right -55px
+          &:after
+            border 42px solid transparent
+            border-left 12px solid #fff
+            right -41px
+        &.small .arrow
+          border 32px solid transparent
+          border-left 12px solid theme_color
+          right -45px
+          &:after
+            border 32px solid transparent
+            border-left 12px solid #fff
+            margin-top -33px
+            right -30px
+        &.large .arrow
+          border 55px solid transparent
+          border-left 12px solid theme_color
+          right -66px
+          &:after
+            border 55px solid transparent
+            border-left 12px solid #fff
+            margin-top -54px
+            right -54px
+        &.x-large .arrow
+          border 69px solid transparent
+          border-left 12px solid theme_color
+          right -81px
+          &:after
+            border 64px solid transparent
+            border-left 12px solid #fff
+            margin-top -65px
+            right -63px
+        //}}}
+      .thread.active:last-child, .thread.active
+        z-index 9
+        // background-color #fff
+        border-right 1px solid theme_color
+        border-bottom 1px solid theme_color
         border-top 1px solid #fff
         border-left 0
-        background-image linear-gradient(to top, #e2e2e2 0, #fff 100%)
-        box-shadow 0 0 4px 0 light
-        transition box-shadow .2s ease-out
+        box-shadow 0 0 4px 0 theme_color
         .title
           color dark_text
           font-style italic
@@ -243,14 +243,16 @@ html.forum, html.profile, html.search, html.moderation
         .created
           opacity .8em
           display block
+      .thread.sticky
+        background-image none
+        background-color theme_alpha
+        &.active
+          .arrow
+            &:after
+              border-left 12px solid theme_alpha
 //}}}
 //{{{ - profile
 html.profile
-  h1
-    color #222
-  .left-content.editable
-    .avatar img
-      cursor copy
   .main-content
     .forum
       .heading
@@ -267,14 +269,14 @@ html.admin
         border-radius 5px / 3px
       &.feature.upgrade
         font-size .75em
-      &.feature.upgrade.active::after
-        border-left-color dark2
+      &.feature.upgrade.active:after
+        border-left-color dark_theme_color
       &.feature.upgrade.active
-        background-color dark2
+        background-color dark_theme_color
       &.feature
         position relative
         margin-top (grid*3)
-        &::before
+        &:before
           content ''
           position absolute
           height 1px
@@ -283,7 +285,7 @@ html.admin
           top -(grid)
           left 50px
     li.active
-      background-color dark
+      background-color dark_theme_color
       text-shadow 0 1px 0 #000
       border-radius 9px / 2px
       border-top-right-radius 0
@@ -294,21 +296,21 @@ html.admin
       a
         font-style italic
         color #fff
-      &::after
+      &:after
         position absolute
         content ''
         top 0
         opacity 1
         right -34px
         border 17px solid transparent
-        border-left 17px solid dark
+        border-left 17px solid dark_theme_color
         transition all .1s ease-out
     li
       a
         padding 2px 8px
         font-size 1.2em!important
         text-decoration none
-      &::after
+      &:after
         position absolute
         content ''
         top 10px
@@ -336,27 +338,40 @@ html.admin
         img
           opacity .9
 
-      input[type="checkbox"]:checked + label .switch::after
-        background-color light
+      input[type="checkbox"]:checked + label .switch:after
+        background-color theme_color
     .notes
       font-weight 300
       a
-        color dark
+        color dark_theme_color
   //}}}
 html.privateSite
+  #info.tooltip
+    z-index 9999
+    height 55px
+    padding-top 15px
+  h2
+    color #fff!important
   .fancybox-overlay .fancybox-wrap .fancybox-skin, .fancybox-overlay .fancybox-wrap .fancybox-inner
     background-color transparent
     background-image none
+  .fancybox-overlay.fancybox-overlay-fixed
+    background radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,.3) 20%, rgba(0,0,0,.75) 100%)!important
   .fancybox-skin
-    background radial-gradient(circle closest-corner at 50% 50%, #fff 78%, #cacaca 100%)!important
+    background-color rgba(0,0,0,.6)!important
+    opacity .7
+    transition opacity .5s ease-in
+    &:hover, &.hover
+      opacity .95
+      transition none
     fieldset
-      border 1px solid #eee!important
-      background-color transparent!important
-  #forum_background
-    animation-name translate-and-scale
-    animation-duration 20s
-    animation-iteration-count infinite
-    animation-direction alternate
+      border 1px solid #222!important
+      background-color rgba(10,10,10,.3)!important
+  //#forum_background
+  //  animation-name translate-and-scale
+  //  animation-duration 20s
+  //  animation-iteration-count infinite
+  //  animation-direction alternate
 
 // hover fx for links
 .stylish
@@ -365,5 +380,5 @@ html.privateSite
      transition none
      text-decoration none!important
      //border-radius 9px
-     //background-color light
+     //background-color theme_color
 // vim:fdm=marker

@@ -1,29 +1,31 @@
 .ParallaxButton
   margin 0
-  overflow-y scroll
+  //overflow-y scroll
   font-family sans-serif
   font-size 16px
-  perspective 350px
+  //perspective 350px
 
   button, button:hover
     position relative
-    display inline-block
-    padding 16px 16px
+    //display inline-block
+    //padding 16px 16px
     //border 0
     min-width 48px
     margin 10px
+    margin-top 14px
     font-size 24px
     font-weight bold
+    border-radius 10px/3px
     //transition transform 60ms linear
     //transform-style preserve-3d
-    transform translateZ(14px)
-    user-select none
-  button:active
-    transform translateZ(7px)
+    //transform translateZ(14px)
+    //user-select none
+  //button:active
+  //  transform translateZ(7px)
 
-  @media screen and (min-width 0 \0)
-    button::before, button::after
-      display none
+  //@media screen and (min-width 0 \0)
+  //  button::before, button::after
+  //    display none
 
-  x:-o-prefocus, button::before, button::after
-    display none
+  //x:-o-prefocus, button::before, button::after
+  //  display none

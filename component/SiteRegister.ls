@@ -3,22 +3,22 @@ require, exports, module <- define
 
 require! {
   lodash
-  Component: yacomponent
+  \./PBComponent
   \./ParallaxButton
   \./Auth
   sh: \../shared/shared-helpers
   \../plv8_modules/pure-validations
 }
 
-ch = require \../client/client-helpers if window?
+{show-tooltip} = require \../client/client-helpers if window?
+{each} = require \prelude-ls
 
-{templates} = require \../build/component-jade
-
-debounce = lodash.debounce _, 250ms
+debounce = lodash.debounce _, 850ms
 
 module.exports =
-  class SiteRegister extends Component
-    template: templates.SiteRegister
+  class SiteRegister extends PBComponent
+    @last-subdomain = ''
+
     init: ->
       # mandatory state
       @local \hostname, if env is \production then \.powerbulletin.com else \.pb.com
@@ -30,9 +30,9 @@ module.exports =
           subdomain = @local \subdomain
           @@$.post '/ajax/can-has-site-plz', {domain: subdomain+@local(\hostname)}, ({errors}:r) ~>
             if errors.length
-              ch.show-tooltip (@@$ \.SiteRegister-errors), errors.join \<br> if errors.length
+              show-tooltip (@@$ \.SiteRegister-errors), errors.join \<br> if errors.length
             else
-              window.location = "http://#subdomain#{@local \hostname}\#once"
+              window.location = "https://#subdomain#{@local \hostname}\#once"
         after-registration = ~>
           set-timeout create-site, 2000ms
         on-click = ~>
@@ -59,20 +59,29 @@ module.exports =
       component = @ # save
 
       @check-subdomain-availability = @@$R((subdomain) ~>
+        if subdomain is @@last-subdomain
+          return
+        @@last-subdomain = subdomain
         errors = pure-validations.subdomain subdomain
-        @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ->
-          unless res.available then errors.push 'Domain is unavailable, try again!'
-          if errors.length then component.disable-ui! else component.enable-ui!
-          ch.show-tooltip $errors, errors.join \<br> if errors.length
+        @@$.get \/ajax/check-domain-availability {domain: subdomain+@local(\hostname)} (res) ~>
+          unless res.available then errors.push 'Domain is Unavailable, Try Again!'
+          children = [@parent.children.register-top, @parent.children.register-bottom]
+          if errors.length
+            each (.disable-ui!), children
+            show-tooltip $errors, errors.join \<br> if errors.length
+          else
+            each (.enable-ui!), children
+            show-tooltip $errors, ''
       ).bind-to @state.subdomain
 
       var last-val
       @$.on \click, \.hostname (ev) -> $ ev.target .prev \.SiteRegister-subdomain .focus!
       @$.on \keydown, \input.SiteRegister-subdomain, -> $ \.hostname .css \opacity, 0
-      @$.on \keyup, \input.SiteRegister-subdomain, debounce ->
-        new-input = $(@).val!
+      @$.on \keyup, \input.SiteRegister-subdomain, debounce (ev) ~>
+        new-input = $ ev.target .val!
         if new-input.length
-          $ \.hostname .animate {opacity:1, left:new-input.length * 27px + 32px}, 150ms # assume fixed-width font
+          w = (@$.find \.hostname-hidden .html new-input).width! # px width of input
+          $ \.hostname .transition {opacity:1, left:w}, 300ms, \easeOutExpo
           unless new-input is last-val
             # only signal changes on _different_ input
             component.state.subdomain new-input

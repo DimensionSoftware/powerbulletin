@@ -7,13 +7,18 @@ require! {
   \util
   program: \commander
   pg: '../app/postgres'
-  __: \lodash
+  m: '../app/pb-models'
   varnish: '../app/varnish'
   sioa: 'socket.io-announce'
 }
 global <<< require \prelude-ls
-pg.init!
 announce = sioa.create-client!
+err <- pg.init
+if err then console.warn(err)
+err <- m.init
+if err then console.warn(err)
+db = pg.procs
+db <<< { [k,v] for k,v of m when k not in <[orm client driver]> }
 
 url = # {{{1
   forum: (forum-id) ->
@@ -67,6 +72,10 @@ with-posts = (max, t, cb) --> # {{{1
           $p.find("img[src$='apple.png'],img[src$='droid.png']").remove!
           first-image = $p.find \img:first .attr \src
           first-image = null if first-image?length > 2000
+          images = []
+          $p.find \img .each (i, img) ->
+            images.push $(img).attr('src')
+          images = unique images
           html = $p.html!
           post =
             parent-id : thread-id
@@ -74,6 +83,7 @@ with-posts = (max, t, cb) --> # {{{1
             user-id   : 3
             title     : ""
             media-url : first-image or ''
+            images    : images
             body      : html
             html      : html
           _posts.push post
@@ -81,9 +91,10 @@ with-posts = (max, t, cb) --> # {{{1
     )
   async.map-series [1 to actual-pages], fetch-posts, (err, posts) ->
     util.print "\n"
-    t.posts = __.flatten posts
+    t.posts = flatten posts
     t.body = t.posts?0?body || "\n"
     t.html = t.posts?0?html || "\n"
+    t.media_url = t.posts?0?media-url
     t.posts.shift!
     cb null, t
 
@@ -95,6 +106,7 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
     title      : t.title
     body       : t.body
     html       : t.html
+    media_url  : t.media_url
     build_docs : false
 
   emit = (type, id, len) ->
@@ -121,7 +133,19 @@ create-thread-for-site = (site-id, t, cb) --> # {{{1
           emit \post-create, r.id
         else
           console.error \add-post, err
-        cb(err, r)
+        if r?success and not err and q.images
+          add-images = (url, cb) ->
+            i =
+              post_id   : r.id
+              thread_id : q.thread_id
+              is_local  : false
+              url       : url
+            util.print \i
+            db.images.upsert i, cb
+          async.each-series q.images, add-images, (err) ->
+            cb(err, r)
+        else
+          cb(err, r)
 
     t.posts.shift!
     async.map-series t.posts, create-post, cb

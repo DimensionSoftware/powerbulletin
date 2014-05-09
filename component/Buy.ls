@@ -1,23 +1,18 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! {
-  ch: \../client/client-helpers
-  Component: yacomponent
-}
-
-{templates} = require \../build/component-jade
+require! \./PBComponent
+{show-tooltip} = require \../client/client-helpers
 
 module.exports =
-  class Buy extends Component
-    template: templates.Buy
+  class Buy extends PBComponent
     init: ->
       @local \cardNeeded, true if @local(\cardNeeded) is void
     on-attach: ->
-      set-timeout (-> @@$ \.Buy-card-number .focus!), 100ms
+      set-timeout (-> @@$ \.Buy-card-number .focus!), 350ms
       @$.on \click \.Buy-change-card ~>
         @local \cardNeeded, true
-        @detach!render!attach!
+        @reload!
         $fb = @@$ \.fancybox-wrap:first # animate switch
         $fb.remove-class \slide
         set-timeout (-> $fb.add-class \slide), 10ms
@@ -31,13 +26,13 @@ module.exports =
           code:    @$.find \.Buy-card-code .val!
         product = @local \product .id
         re-enable = -> $ ev.target .attr \disabled null
-        ch.show-tooltip (@$.find \.tooltip), 'Securing connection'
+        show-tooltip (@$.find \.tooltip), 'Securing connection', 30000ms
         @@$.post "/ajax/checkout/#product", data, (r) ~>
           if r.success
             site.subscriptions.push product # subscribe!
             site.has_stripe = true
             $ "\##product" .focus!
-            ch.show-tooltip (@$.find \.tooltip), (['Sincere thanks!', "Awesome.  Go ahead!", 'You got it!', 'Thank you!'][parse-int Math.random!*5])
+            show-tooltip (@$.find \.tooltip), (['Sincere thanks!', "Awesome.  Go ahead!", 'You got it!', 'Thank you!'][parse-int Math.random!*5])
             set-timeout (->
               re-enable!
               # show new product
@@ -46,7 +41,7 @@ module.exports =
               $.fancybox.close!), 2000ms
 
           else # error handling
-            ch.show-tooltip (@$.find \.tooltip), if r.errors?length then r.errors.join "\n" else 'Invalid payment!'
+            show-tooltip (@$.find \.tooltip), if r.errors?length then r.errors.join "\n" else 'Invalid payment!'
             card-number = @$.find \.Buy-card-number
             for e in [card-number, @@$ \.Buy-card-code] then e.add-class \has-error
 

@@ -4,9 +4,10 @@
       h2 Authenticating...
     fieldset
       .tooltip
-      input(id="password", name="password", type="password", placeholder="Password", disabled="disabled", autocomplete="off")
+      input.password(id="password", name="password", type="password", placeholder="Password", disabled="disabled", autocomplete="off")
+      .generate-password Generate
       .toggle-password Show
-      .strength-meter(title="Stronger passwords are greener")
+      .strength-meter(title="Stronger passwords are taller")
         .strength
       input(type="hidden", name="forgot")
       button(type="submit", value="Save", disabled="disabled") Save
@@ -15,7 +16,7 @@
 .choose(style="display:none;")
   form(method="post", action="/auth/choose-username")
     label(for="username")
-      h2 Choose a User Name
+      h2 Choose a Name for Yourself
         i !
     fieldset
       .tooltip
@@ -26,8 +27,7 @@
 .forgot(style="display:none;")
   form(method="post", action="/auth/forgot")
     label(for="email")
-      h2 Tell Us Your Email Address
-        i !
+      h2 Tell Us Your Email
     fieldset
       .tooltip
       input(id="email", name="email", type="text", placeholder="Email", maxlength=254)
@@ -48,9 +48,10 @@
     fieldset
       .tooltip
       input(id="username", name="username", type="text", placeholder="Username")
-      input(name="password", type="password", placeholder="Password", autocomplete="off")
+      input.password(name="password", type="password", placeholder="Password", autocomplete="off")
+      .generate-password Generate
       .toggle-password Show
-      .strength-meter(title="Stronger passwords are greener")
+      .strength-meter(title="Stronger passwords are taller")
         .strength
       input(name="email", class="register-email", type="text", placeholder="Email", maxlength=254)
       button(type="submit", value="Register") Register

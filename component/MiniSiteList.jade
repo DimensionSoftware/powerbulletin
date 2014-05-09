@@ -1,8 +1,7 @@
 h1 My Communities
 if sites.length
   a.new.top.onclick-first-site(href='#', title='Start a new community!') +
-    b New
-  ul
+  ul.communities
     each s in sites
       li
         h2= s.name
@@ -13,16 +12,16 @@ if sites.length
         ul.domains
           each d in s.domains
             li
-              a(href="https://#{d}/", target="_blank")= d
+              a(href="https://#{d}/#once", target="_blank")= d
               | &nbsp;(
-              a(href="https://#{d}/#once-admin", target="_blank") admin
+              a(href="https://#{d}/auth/once-admin", target="_blank") admin
               | )
   p.new
-    a.onclick-first-site(href='#') Start a new community by clicking here
-      i !
+    a.onclick-first-site(href='#') Start a New Community
+      i ! &nbsp;
 else
   p
-    | First, choose a name for your community; 
+    | Choose a name for your first community; 
     small
       i anything you wish!
     br
@@ -36,3 +35,13 @@ else
     br
     a.onclick-first-site(href='#') Click to Get Started
       i !
+
+if memberships.length
+  h3 You're #{sites.length ? ' also ' : ''} a member of
+  ul.memberships
+    each m in memberships
+      if m && m.domain
+        li
+          a(href="https://#{m.domain}/#once", target="_blank") #{m.name}
+            small @ 
+            | #{m.domain}

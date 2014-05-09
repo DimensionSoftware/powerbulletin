@@ -25,6 +25,15 @@ global.m   = require \./pb-models
 
 global.sioa     = require \socket.io-announce
 global.announce = sioa.create-client!
+global.menu     = require \./menu
+
+global.reload = (m) ->
+  paths = require.resolve m
+  if is-type \String, paths
+    delete require.cache[paths]
+  else
+    paths.for-each (p) -> delete require.cache[p]
+  require m
 
 require! \./payments
 require! \./validate-cc

@@ -1,0 +1,37 @@
+doctype html
+html
+  head
+    script(type="text/javascript", src="#{cacheUrl}/local/jquery-1.9.1.min.js")
+    script(type="text/javascript").
+      window.authDomain = "!{authDomain}";
+      window.siteId     = !{siteId};
+    script(type="text/javascript").
+      function fail() {
+        window.location.pathname = '/#fail';
+      }
+      $(function(){
+        var url   = window.authDomain + '/auth/once';
+        var jqxhr = $.ajax({
+          type      : 'GET',
+          url       : url,
+          data      : { site_id: window.siteId },
+          xhrFields : { withCredentials: true }
+        });
+        jqxhr.done(function(r, status, jqxhr){
+          var jqxhr2 = $.ajax({
+            type : 'POST',
+            url  : '/auth/once',
+            data : { token: r.token },
+          });
+          jqxhr2.done(function(r, status, jqxhr2){
+            if (r.success) {
+              window.location.pathname = '/admin'
+            } else {
+              fail()
+            }
+          });
+          jqxhr2.fail(fail)
+        });
+        jqxhr.fail(fail)
+      });
+  body

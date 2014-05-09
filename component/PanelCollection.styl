@@ -1,0 +1,77 @@
+z = 150
+
+body.scrolled
+  .PanelCollection
+    top (header_scrolled_height+2)
+    bottom footer_height
+
+.PanelCollection
+  position fixed
+  top header_height
+  padding-top grid
+  bottom 0
+  right 0
+  width 10px
+  z-index z
+
+  // template
+  .panel-tmpl
+    display none
+
+  .toggler
+    position absolute
+    top 6px
+    right 10px
+    cursor pointer
+    z-index 1
+    font-size 12px
+    height 11px
+    width 11px
+    text-indent 2px
+    border-radius 100%
+  .toggler.off
+    display none
+    //&:after
+    //  content "☰ "
+    //  display none
+  .toggler.on
+    display block
+    opacity 1
+    //&:after
+    //  content "X "
+    //  position absolute
+
+  .panel-togglers
+    position relative
+    float left
+    margin grid 0 0 0
+    left 0
+    .selected
+      transform scale(1.1)
+    .panel-icon
+      position relative
+      list-style none
+      cursor pointer
+      margin-bottom 5px
+      .notices
+        position absolute
+        left -57px
+        top -5px
+        z-index 1
+        background-color theme_alpha
+        color dark_text
+        padding 2px
+        border-radius 4px
+      .cancel
+        position absolute
+        left -15px
+        top -5px
+      &:hover
+        .cancel
+          display block
+          opacity 1
+    .photo
+      margin-left -51px
+      width 55px
+      height 55px
+      float none

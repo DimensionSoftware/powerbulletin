@@ -1,0 +1,206 @@
+min_height   = 200px
+bg_color     = #f8f8f8
+border_color = #eee
+
+//{{{ special style for "Edit Signature" preview
+html.profile .wmd-preview
+  font-size .85em
+  color #777
+  img
+    max-width 80%
+    max-height 125px
+//}}}
+
+.Editor
+  width 100%
+  min-width 800px
+  min-height min_height
+  height 100%
+  position relative
+  border-top 1px solid border_color
+  .center
+    position absolute
+    z-index 99
+    top 10px
+    height 0
+    left 0
+    right 0
+    .tooltip
+      position relative
+      max-width 300px
+      left auto
+      right auto
+      bottom 12px
+      margin 0 auto
+  //{{{ Preview pane
+  &.has-preview
+  // - when the preview is visible
+    .wmd-panel
+      position absolute
+      min-width 50%
+      width 50%
+      transition none
+      &:after
+        position absolute
+        z-index 20
+        content ''
+        top 0
+        bottom 0
+        right 0
+        background-color border_color
+        width 1px
+      .wmd-input
+        width 98%
+    .wmd-preview 
+      position absolute
+      height 100%
+      bottom 0
+      left 50%
+      text-align left
+      cursor default
+      width 50%
+      transition none
+    .onclick-toggle-preview
+      width 92px
+      text-indent 2px
+      &:after
+        content 'Hide Preview'
+  .onclick-toggle-preview
+    position absolute
+    z-index 10
+    right 0
+    bottom 0
+    height 22px
+    width 55px
+    padding 4px 12px
+    color #fff
+    font-size .95em
+    background-color rgba(0,0,0,.3)
+    border-left 1px solid #999
+    border-top 1px solid #999
+    border-top-left-radius 8px
+    cursor pointer
+    transition all .4s ease-out .1s
+    &:hover
+      background-color rgba(0,0,0,.5)
+      border-left 1px solid #555
+      border-top 1px solid #555
+      transition none
+    &:after
+      right 20px
+      position absolute
+      content 'Preview'
+  //}}}
+  //{{{ <PageDown Editor>
+  blockquote 
+    border-left 2px dotted #888
+    padding-left 5px
+
+  .wmd-panel
+    position absolute
+    min-height min_height
+    min-width 100%
+    height 100%
+    padding 0
+    border-top-left-radius 3px
+    border-bottom-left-radius 3px
+    background-color bg_color
+    transition width .1s ease-out
+    .wrapper
+      position absolute
+      top 37px
+      right 8px
+      bottom 0
+      left 0
+      padding 0
+      .wmd-input 
+        position absolute
+        top 0
+        left 0
+        right 0
+        min-width 100%
+        min-height 100%
+        background bg_color
+        padding 0 0 0 8px
+        bottom -4px
+        resize none
+        transform none
+        border none
+        &:focus, &:hover
+          background bg_color
+          box-shadow none
+          border none
+  .wmd-preview
+    overflow scroll
+    float right
+    width 0
+    min-height min_height
+    height 0
+    color #333
+    background-color bg_color
+    border-top-right-radius 3px
+    border-bottom-right-radius 3px
+    h1, h2, h3, h4, h5, h6
+      color #333
+
+  .wmd-button-bar
+    width 100%
+    background-color bg_color
+
+  .wmd-button-row 
+    position relative 
+    z-index 30
+    margin-left 5px
+    margin-right 5px
+    margin-bottom 5px
+    margin-top 10px
+    padding 0
+    height 20px
+
+  .wmd-spacer
+    width 1px
+    height 20px
+    margin-left 14px
+    position absolute
+    background-color Silver
+    display inline-block
+    list-style none
+
+  .wmd-button
+    width 20px
+    height 20px
+    padding-left 2px
+    padding-right 3px
+    position absolute
+    display inline-block
+    list-style none
+    cursor pointer
+
+  .wmd-button > span
+    background-image url(cache-url + '/images/wmd-buttons.png')
+    background-repeat no-repeat
+    background-position 0 0
+    width 20px
+    height 20px
+    display inline-block
+
+  .wmd-spacer1
+    left 50px
+  .wmd-spacer2
+    left 175px
+  .wmd-spacer3
+    left 300px
+
+absolue_top = 9999999!important
+.wmd-prompt-background
+  background-color #000
+  z-index 99998!important
+
+.wmd-prompt-dialog
+  border 1px solid #777
+  background-color #fafafa
+  border-radius 3px
+  z-index 99999!important
+  //}}} </PageDown Editor>
+
+// vim: fdm=marker

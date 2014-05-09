@@ -9,10 +9,10 @@ purl = require \../shared/pb-urls
 
 # only required if on client-side
 if window?
-  {set-imgs, align-ui, edit-post, fancybox-params, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-inline-editor, set-online-user, set-profile, set-wide, toggle-post} = require \../client/client-helpers
+  {show-tooltip, postdrawer, respond-resize, storage, switch-and-focus, set-imgs, align-ui, thread-mode, edit-post, fancybox-params, lazy-load-autosize, lazy-load-deserialize, lazy-load-fancybox, lazy-load-html5-uploader, lazy-load-nested-sortable, set-online-user, set-profile, set-wide, toggle-postdrawer, show-info} = require \../client/client-helpers
   ch = require \../client/client-helpers
 
-{flip-background, is-editing, is-email, is-forum-homepage} = require \./shared-helpers
+{is-editing, is-email, is-forum-homepage} = require \./shared-helpers
 {last, sort-by} = require \prelude-ls
 
 require! {
@@ -21,6 +21,9 @@ require! {
   \../component/AdminMenu
   \../component/Paginator
   \../component/PhotoCropper
+  \../component/Editor
+  \../component/Homepage
+  \../component/Uploader
   \../client/globals
   __: lodash
   $R: reactivejs
@@ -46,7 +49,8 @@ require! {
   # always instantiate using 'internal' dom by not passing a target at instantiation
   c = wc[name] = new klass(first-klass-arg)
 
-  win.$(target).html('').append c.$ # render
+  # unless auto-render is explicitly false, render
+  unless first-klass-arg.auto-render is false then win.$(target).html('').append c.$
 
 !function paginator-component w, locals, pnum-to-href
   wc = w.component ||= {}
@@ -76,33 +80,44 @@ function default-pnum-to-href-fun uri
       parsed.pathname
 
 # Common
+set-header-static = (w, cache-url, background) ->
+  prepend = -> w.$ \header .prepend "<div id='header_background'><img data-src='#{cache-url}/sites/#{background}'></div>"
+  w.$ \header .toggle-class \image, !!background
+  unless w.$ \#header_background .length then prepend! # first, so add!
 set-background-onload = (w, background, duration=400ms, fx=\fade, cb=(->)) ->
   bg = w.$ \#forum_background
   bf = w.$ \#forum_background_buffer
-  if background and bg.length and bf.length # double-buffer
-    bf-img = bf.find \img
-    bf-img
-      ..attr \src, bf-img.data \src
-      ..load ->
-        bg.transition (if fx is \fade then {opacity:0} else {scale:1.5}), duration
-        bf.transition opacity:1, duration, \easeOutExpo, ->
-          # cleanup
-          bg.remove!
-          bf.attr \id, \forum_background
-          cb!
+  bc = w.$ \#forum_background_color
+  if background and bg.length and bf.length      # double-buffer replace!
+    cur = bg.find \img .attr \src                # current visible background
+    unless cur?match new RegExp "#{background}$" # bail if same ass passed in
+      bf-img = bf.find \img
+        ..attr \src, bf-img.data \src
+        ..load ->
+          bg.transition (if fx is \fade then {opacity:0} else {scale:1.5}), duration
+          bf.transition opacity:1, duration, \easeOutExpo, ->
+            # cleanup
+            bg.remove!
+            bf.attr \id, \forum_background
+            cb!
+    bc.remove!
   else if background # set bg
-    ch.set-imgs!
-  else if bg.length # no background passed in, so--reap both!
+    bc.remove!
+    set-imgs!
+  else if bg.length # no background passed in, so--reap bg + buffer & use color!
     bf.remove!
     bg.remove!
 set-background-static = (w, cache-url, background) ->
   # wrap img for pseudo selectors
-  img = (id) ~> "<div id='#id'><img data-src='#{cache-url}/sites/#{background}'></div>"
+  img = (id) ~> "<div id='#id' style='background-image: url(#{cache-url}/sites/#{background})'></div>"
   bg  = w.$ \#forum_background
   if bg.length and background # use buffer
     w.$ \body .prepend (img \forum_background_buffer)
   else if background # first, so add
     w.$ \body .prepend (img \forum_background)
+  else # use solid background color
+    unless w.$ \#forum_background_color .length # no dups
+      w.$ \body .prepend '<div id="forum_background_color"></div>'
   if w.marshal then w.marshal \background, (background or void)
 
 layout-static = (w, next-mutant, active-forum-id=-1) ->
@@ -119,7 +134,6 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     ..remove-class \hover
   w.$ "menu .row .forum-#fid" # add current
     ..add-class \active
-    ..add-class \hover
   p = w.$ "menu .submenu .forum-#fid"
   if p.length # subform
     p.parent!add-class \active
@@ -128,7 +142,11 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
       ..add-class \hover
 
   # handle backgrounds
-  set-background-static w, @cache-url, @background
+  # XXX forum backgrounds are only allowed on private sites
+  # other mutants get a solid (tint) color that's defaulted gray
+  set-header-static w, @cache-url, @header
+  if next-mutant in <[forum profile search moderation privateSite]> # background color for these
+    set-background-static w, @cache-url, (if next-mutant is \privateSite then @private-background)
 
 layout-on-personalize = (w, u) ->
   if u # guard
@@ -136,113 +154,31 @@ layout-on-personalize = (w, u) ->
     set-profile u.photo
 
     # hash actions
-    switch window.location.hash
+    switch w.location.hash
     | \#choose   =>
       if is-email user?name
-        Auth.show-login-dialog!
-        switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
-
-# initialize pager
-#pager-init = (w) ->
-#  pager-opts =
-#    current  : parse-int w.page
-#    last     : parse-int w.pages-count
-#    forum-id : parse-int w.active-forum-id
-#  if w.pager
-#    w.pager <<< pager-opts
-#    w.pager.init!
-#  else
-#    w.pager = new w.Pager \#paginator pager-opts
-#  w.pager.set-page(w.page, false) if w.page
+        w.Auth.show-login-dialog!
+        w.switch-and-focus \on-login, \on-choose, '#auth input[name=username]'
 
 @homepage =
   static:
     (window, next) ->
-      window.render-mutant \main_content \homepage
-      # handle active forum background
-#      window.$ \.bg-set .remove!
-#      window.$ \.bg .each ->
-#        e = window.$ this .add-class \bg-set .remove!
-#        window.$ \body .prepend e
+      render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
+      window.marshal locals:@
       layout-static.call @, window, \homepage
       next!
   on-personalize: (w, u, next) ->
     layout-on-personalize w, u
     next!
+  on-mutate: 
+    (window, next) ->
+      if window.scroll-to then window.scroll-to 0, 0
   on-load:
     (window, next) ->
-      try # reflow masonry content
-        window.$ '.forum .container' .masonry(
-          item-selector: \.post
-          is-animated:   true
-          animation-options:
-            duration: 200ms
-          is-fit-width:  true
-          is-resizable:  true)
-
-      # fill-in extra
-      active = window.location.search.match(/order=(\w+)/)?1 or \recent
-      window.jade.render $(\.extra:first).0, \order-control, active: active
-
-      #{{{ Waypoints
-      set-timeout (->
-        # TODO use breadcrumb for sticky forum headers
-        #$ = window.$
-        #$ '.forum .header' .waypoint \sticky { offset: -70 }
-
-        # forum switches
-        $ \.forum .waypoint {
-          offset  : \25%,
-          handler : (direction) ->
-            e   = $ this
-            eid = e.attr \id
-
-            # handle menu active
-            id = if direction is \down then eid else
-              $ "\##{eid}" .prev-all \.forum:first .attr \id
-            return unless id # guard
-            $ 'header .menu' .find \.active .remove-class \active # remove prev
-            cur = $ 'header .menu'
-              .find ".#{id.replace /_/ \-}"
-              .add-class \active # ...and activate!
-
-            # handle forum headers
-            $ '.forum .stuck' .remove-class \stuck
-            # TODO if direction is \up stick last forum
-
-            flip-background window, cur, direction
-        }
-
-        reorder = __.debounce(( -> History.push-state {}, '', it), 100ms)
-        window.current-order = false
-        $ '#order li' .waypoint {
-          context: \ul
-          offset : 30px
-          handler: (direction) ->
-            e = $ this # figure active element
-            if direction is \up
-              e = e.prev!
-            e = $ this unless e.length
-
-            $ '#order li.active' .remove-class \active
-            e .add-class \active # set!
-            order = e.data \value
-            path = "/?order=#order"
-            if window.current-order then reorder path else window.current-order=order
-        }), 100ms
-
-      #window.awesome-scroll-to "forum_#{}"
-      #}}}
+      render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
       next!
   on-unload:
     (window, next-mutant, next) ->
-      try
-        window.$ '.forum .container' .masonry(\destroy)
-        window.$ '.forum .header' .waypoint(\destroy)
-        window.$ \.forum .waypoint(\destroy)
-        window.$ '#order li' .waypoint(\destroy)
-        window.$ \.bg .remove!
-        window.$ $(\.extra:first) .html ''
       next!
 
 # this function meant to be shared between static and on-initial
@@ -260,35 +196,55 @@ layout-on-personalize = (w, u) ->
   locals = {qty, step, active-page: 1}
   render-component win, \#thread-paginator, \threadPaginator, Paginator, {locals, on-page}
 
+!function remove-backgrounds w
+  w.$ \#forum_background .remove!
+  w.$ \#forum_background_color .remove!
+  w.$ \#forum_background_buffer .remove!
+
 @forum =
   static:
     (window, next) ->
       const prev-mutant = window.mutator
 
       # render main content
-      window.render-mutant \main_content if is-editing(@furl.path) is true
-        \post-new
+      if is-editing(@furl.path) is true
+        window.render-mutant \main_content, \post-new
       else if is-forum-homepage @furl.path
-        \homepage
+        render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
+        <- set-timeout _, 500ms
+        if window.scroll-to then window.scroll-to 0, 0
       else
-        \posts
+        window.render-mutant \main_content, \posts
+
+      # add locked class to body (@item is the current forum)
+      is-locked = if @item?form
+        !!if @post
+          (@post.is_locked or @item.form?locked)
+        else
+          @item.form?locked
+      else
+        false # default
+      window.$ \body .toggle-class \locked, is-locked
+
+      not-commentable = not @item?form?comments
+      window.$ \body .toggle-class \no-comments, not-commentable
 
       # render left content
       if @top-threads
         window.render-mutant \left_container \nav # refresh on forum & mutant change
-
         render-thread-paginator-component window, @t-qty, @t-step
         window.marshal \tQty, @t-qty
         window.marshal \tStep, @t-step
-
 
       window.marshal \activeForumId @active-forum-id
       window.marshal \activeThreadId @active-thread-id
       window.marshal \page @page
       window.marshal \pagesCount @pages-count
       window.marshal \prevPages @prev-pages
-
-      #window.$ \.bg .remove! # XXX kill background (for now)
+      window.marshal \social @social
+      window.marshal \commentable @commentable
+      window.marshal \replyTo @post?title
+      window.marshal \replyBy @post?user_name
 
       do ~>
         if not @post then return
@@ -307,32 +263,26 @@ layout-on-personalize = (w, u) ->
       next!
   on-load:
     (window, next) ->
+      $   = window.$
       cur = window.$ "header .menu .forum-#{window.active-forum-id}"
-      flip-background window, cur
-      $ = window.$
 
       align-ui!
 
       $l = $ \#left_container
       $l.find \.active .remove-class \active # set active post
       $l.find ".thread[data-id='#{window.active-thread-id}']" .add-class \active
+      respond-resize!
 
       # editing handler
       id = is-editing window.location.pathname
       if id then edit-post id, forum_id:window.active-forum-id
-      # FIXME will do something smarter -k
-      $ \body .on \click, toggle-post # expand & minimize drawer
+      #window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
+      if user then postdrawer!set-draft!
+      $ \html .add-class \new # for stylus
 
       # add impression
       post-id = $('#main_content .post:first').data(\post-id)
       $.post "/resources/posts/#{post-id}/impression" if post-id
-
-      # bring down first reply
-      if user?
-        e = $ \.onclick-append-reply-ui:first
-          ..data \no-focus, true # not the neatest, needed to not steal ui focus
-          ..click!
-          ..data \no-focus, false
 
       # default surf-data (no refresh of left nav)
       window.surf-data = window.active-forum-id
@@ -340,46 +290,125 @@ layout-on-personalize = (w, u) ->
       # handle forum background
       set-background-onload window, window.background
 
+      <- lazy-load-autosize
+
+      window.$ \#main_content .remove-class \transparent # fade content in
+
+      #{{{ refresh share links
+      if window.social
+        # load share links for fb, google & twitter
+        # https://developers.facebook.com/docs/plugins/share-button/
+        ``
+        (function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=240716139417739";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+        ``
+        # https://about.twitter.com/resources/buttons#tweet
+        ``
+        (function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}})(document, 'script', 'twitter-wjs');
+        ``
+        # https://developers.google.com/+/web/share/
+        ``
+        (function() {
+          var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/platform.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+        ``
+        # for mutations
+        #try gapi.plusone.go!
+        try FB.XFBML.parse!
+        try twttr.widgets.load!
+      #}}}
+
+      if is-forum-homepage window.location.pathname
+        homepage-postdrawer = ->
+          thread-mode true
+          postdrawer!
+            ..clear!
+            ..editor?focus!
+          <- set-timeout _, 100ms # FIXME this is janky, need to simplify states, hard w/ mutant
+          $ \#action_wrapper .remove-class 'reply edit' # clear title
+        # intercept for thread-mode
+        $ \.onclick-footer-toggle .on \click.homepage (ev) ->
+          ev.prevent-default!
+          <- set-timeout _, 200ms
+          homepage-postdrawer!
+        homepage-postdrawer!
+        # render homepage
+        render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
       next!
   on-initial:
     (window, next) ->
-      # FIXME this is a race condition (on-static/on-load isn't finished when this runs)
+      if window.social
+        # share links for fb, google & twitter
+        # https://developers.facebook.com/docs/plugins/share-button/
+        ``
+        (function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=240716139417739";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+        ``
+        # https://about.twitter.com/resources/buttons#tweet
+        ``
+        (function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}})(document, 'script', 'twitter-wjs');
+        ``
       set-timeout (-> # scroll active thread on left nav into view
-        threads = $ '#left_container .threads'
+        threads = $ '#left_container .scrollable'
         offset  = -125px
         cur = threads.scroll-top!
         dst = Math.round($ '#left_container .threads > .active' .position!?top)
         if dst then threads.animate {scroll-top:cur+dst+offset}, 500ms, \easeOutExpo), 500ms
 
+      # FIXME move arrow on scroll
+      #orig = $ '#left_container .active' .offset!top
+      #$ '#left_container .scrollable' .on \scroll.Forum ->
+      #  e   = $ '#left_container .active'
+      #  cur = e.offset!top
+      #e.find \.arrow .transition {y:cur - orig}, 0
+
       render-thread-paginator-component window, window.t-qty, window.t-step
       next!
   on-mutate:
     (window, next) ->
-      scroll-to-top!
       set-wide! # ensures correct style for width
       window.socket?emit \online-now
+      # snappy-to-top
+      if window.scroll-to then window.scroll-to 0, 0
+      $ \body .remove-class \scrolled
       next!
   on-personalize: (w, u, next) ->
+    w.r-user u
     if u
       layout-on-personalize w, u
       # enable edit actions
-      # - censor
-      $ ".post[data-user-id=#{u.id}] .censor"
-        .css \display \inline-block
-      if u.rights?super
-        $ \.censor .css \display \inline-block
-      # - post editing
-      set-inline-editor.call ch, u.id
+      $ ".post[data-user-id=#{u.id}] .censor" .css \display \inline-block     # censor
+      $ ".post[data-user-id=#{u.id}] [data-edit]" .css \display \inline-block # post edit
+      if u.rights?super then $ \.censor .css \display \inline-block
+      # remove body.locked if super
+      # XXX shouldn't make the ui jump
+      if u.rights?super or u.sys_rights?super then w.$ \body .remove-class \locked
     next!
   on-unload:
-    (win, next-mutant, next) ->
+    (w, next-mutant, next) ->
       # cleanup
-      $ \body .off \click
-      try win.$ \#left_container .resizable(\destroy)
-      unless next-mutant is \forum
-        $ \#forum_background .remove!
-        $ \#forum_background_buffer .remove!
-        reset-paginator win
+      w.$ \.onclick-footer-toggle .off \click.homepage
+      w.$ \body .off \click
+      w.$ \#main_content .add-class \transparent
+      #w.$ \body .off \click.pd
+      #$ '#left_container .scrollable' .off \scroll.Forum
+      try w.$ \#left_container .resizable(\destroy)
+      if w.user then postdrawer!save-draft!
+      unless next-mutant is \forum_background
+        remove-backgrounds w
+        reset-paginator w
       next!
 
 same-profile = (hints) ->
@@ -420,37 +449,81 @@ same-profile = (hints) ->
       next!
   on-load:
     (window, next) ->
-      #pager-init window
+      # forgot password delegate
+      #window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
+      window.$ \body .on \click \.onclick-show-forgot ->
+        <- Auth.show-login-dialog
+        switch-and-focus \on-error \on-forgot '#auth input[name=email]'
+      <- lazy-load-autosize
       next!
   on-mutate:
     (window, next) ->
-      scroll-to-top!
+      if window.scroll-to then window.scroll-to 0, 0
       next!
   on-personalize: (w, u, next) ->
     <- lazy-load-html5-uploader
 
     photocropper-start = (ev) -> PhotoCropper.start!
 
+    change-sig-enable = ->
+      w.$ \.onclick-change-sig .on \click ->
+        <~ lazy-load-fancybox
+        e = w.component.editor = new Editor {locals:
+          id:   \sig
+          url:  "/resources/aliases/#{w.user.id}"
+          body: (storage.get \user)?sig or u?sig
+          auto-save: true}
+        w.$.fancybox e.$, {after-close:-> w.user <<< sig:e.body!; storage.set \user, w.user; e.detach!} <<< fancybox-params # set sig & cleanup
+
+    change-title-enable = ->
+      last = user?title or \first # default
+      e = w.$ \#change_title
+      e.on \click -> false # interception
+      e.on \keypress (ev) -> if (ev.key-code or ev.which) is 13 then false else true
+      e.on \keyup __.debounce (-> # watch & save title
+        cur = e.val!
+        unless last then last := \first
+        if last isnt cur # save!
+          w.$.ajax {
+            type: \PUT
+            url:  "/resources/aliases/#{w.user.id}",
+            data:
+              config:
+                title: cur
+            success: ->
+              last := cur
+              show-tooltip (w.$ \.change-tooltip), \Saved!, 3000ms
+          }), 800ms
     photocropper-enable = ->
-      window.$(\#left_content).add-class \editable
-      window.$(\body).on \click, '#left_content.editable .avatar', photocropper-start
+      w.$ \#left_content .add-class \editable
+      w.$ \body .on \click, '#left_content.editable .avatar', photocropper-start
       options =
         name: \avatar
-        post-url: "/resources/users/#{window.user.id}/avatar"
+        post-url: "/resources/users/#{w.user.id}/avatar"
         on-success: (xhr, file, r-json) ->
           r = JSON.parse r-json
           PhotoCropper.start mode: \crop, photo: r.url
-      window.$('#left_content .avatar').html5-uploader options
+      w.$('#left_content .avatar').html5-uploader options
 
     photocropper-disable = ->
-      window.$(\#left_content).remove-class \editable
-      window.$(\body).off \click, '#left_content.editable .avatar', photocropper-start
+      w.$(\#left_content).remove-class \editable
+      w.$(\body).off \click, '#left_content.editable .avatar', photocropper-start
 
     if u # guard
       layout-on-personalize w, u
-      profile-user-id = window.$('#left_content .profile').data \userId
+      w.$ \#change_title .val u?title # most current (cache blow)
+      profile-user-id = w.$('#left_content .profile').data \userId
       if profile-user-id is u.id
+        change-sig-enable!
+        change-title-enable!
         photocropper-enable!
+        window.$ \#change_title .focus!
+        # show info tips?
+        k = "#{u.id}-profile" # key
+        unless storage.get k or u?title
+          show-info 0,
+            [\.left-content, 'Spice up your posts with a Profile Photo, Title &amp; Signature!', true]
+          storage.set k, true
       else
         photocropper-disable!
     else
@@ -458,6 +531,11 @@ same-profile = (hints) ->
     next!
   on-unload:
     (window, next-mutant, next) ->
+      # cleanup/unbind
+      window.$ \body .off \click \.onclick-show-forgot
+      window.$ \body .off \click.pd
+      window.$ \#change_title .off!
+      window.$ \.onclick-change-sig .off!
       reset-paginator window unless next-mutant is \forum
       next!
   on-initial:
@@ -475,7 +553,7 @@ same-profile = (hints) ->
 # this function meant to be shared between static and on-initial
 !function render-admin-components action, site, win
   switch action
-  | \domains  => try win.render-mutant \main_content, \admin-domains
+  | \domains  => try win.render-mutant \main_content, \admin-general
   | \invites  => try win.render-mutant \main_content, \admin-invites
   | \users    => render-component win, \#main_content, \admin-users, SuperAdminUsers, {locals: {} <<< win.admin-users-locals <<< {purl.gen}}
   | \menu     => render-component win, \#main_content, \admin-menu, AdminMenu, {locals: {site:site}}
@@ -491,7 +569,10 @@ same-profile = (hints) ->
       window.$ '#left_container menu li' .remove-class \active
       window.$ "\#left_container menu .#{@action or \general}" .add-class \active
 
-      window.marshal \adminUsersLocals, ({} <<< @) if @action is \users
+      if @action is \users
+        @.cols.splice 3, 1                # prune photo col
+        @.rows.for-each -> it.splice 3, 1 # ...and assoc. row
+        window.marshal \adminUsersLocals, {} <<< @
       render-admin-components @action, @site, window
 
       # these two vars have to be marshalled so the components have access
@@ -499,6 +580,7 @@ same-profile = (hints) ->
       window.marshal \action @action
       window.marshal \site @site
       layout-static.call @, window, \admin
+      remove-backgrounds window
       next!
   on-personalize:
     (w, u, next) ->
@@ -507,9 +589,15 @@ same-profile = (hints) ->
   on-unload:
     (window, next-mutant, next) ->
       if window.admin-expanded then $ \body .add-class \collapsed # restore
+      window.component.logo-uploader?detach!
+      window.component.header-uploader?detach!
+      window.component.background-uploader?detach!
+      $ \.onsave-hide .off!
+      $ 'html.admin .onclick-close' .off!
       next!
   on-load:
     (window, next) ->
+      #require \jqueryIris
       # expand left nav or not?
       $b = $ \body
       if window.admin-expanded = $b.has-class \collapsed
@@ -518,9 +606,101 @@ same-profile = (hints) ->
       current-domain = (window.site.domains.filter (-> it.name is window.location.hostname))?0
       $('.domain select').val current-domain.id.to-string! if current-domain
       $ \.domain .trigger \change # fill-in authorization
+      if window.location.to-string!match \domains
+        $ \#domains .attr \checked, true
+        $ 'label[for="domains"]' .effect \highlight
+        awesome-scroll-to \#domains
+
+      # hue color selection
+      update-preview = ->
+        $ '.preview .s-dark-chat'
+          .css {["#{k}filter", "hue-rotate(#{$ \#sprite_hue .val!})"] for k in ['', '-moz-', '-webkit-', '-o-']}
+      $ \#sprite_hue .on \keyup update-preview  # live hue preview
+      $ '.hue-selector span' .on \click -> # update hue on click
+        v = $ @ .attr \data-hue
+        $ \#sprite_hue .val (v * 3deg + \deg)
+        update-preview!
+
+      # init-html5-uploader
+      logo    = window.site.config.logo
+      site-id = window.site.id
+      window.component.logo-uploader = new Uploader {
+        locals:
+          name:      \logo
+          preview:   if logo then logo else void
+          post-url:  "/resources/sites/#site-id/logo"
+          on-delete: ~> # remove logo
+            $ 'header .logo'
+              ..remove-class \custom-logo
+              ..find \img .attr \src, "#cache-url/images/transparent-1px.gif"
+          on-success: (xhr, file, r) ~> # set logo
+            $ 'header .logo'
+              ..add-class \custom-logo
+              ..find \img .attr \src, "#cache-url/sites/#{r.logo}"
+      }, \#logo_uploader
+      header = window.site.config.header
+      window.component.header-uploader = new Uploader {
+        locals:
+          name:      \header
+          preview:   if header then header else void
+          post-url:  "/resources/sites/#site-id/header"
+          on-delete: ~> # remove header
+            $ '#header_background img' .attr \src, "#cache-url/images/transparent-1px.gif"
+            $ \header.header .remove-class \image
+          on-success: (xhr, file, r) ~>
+            $ '#header_background img' .attr \src, "#cache-url/sites/#{r.header}"
+            $ \header.header .add-class \image
+      }, \#header_uploader
+      private-background = window.site.config.private-background
+      window.component.background-uploader = new Uploader {
+        locals:
+          name:      \background
+          preview:   if private-background then private-background else void
+          post-url:  "/resources/sites/#site-id/private-background"
+          on-delete: ~> # remove background
+            $ '#forum_background img' .attr \src, "#cache-url/images/transparent-1px.gif"
+          on-success: (xhr, file, r) ~>
+            $ '#forum_background img' .attr \src, "#cache-url/sites/#{r.private-background}"
+      }, \#background_uploader
+
+      <~ requirejs [\jqueryIris] # live color preview
+      hide = ->
+        $ '.color-picker .iris-picker' .hide!
+        $ \.hue-selector .hide!
+        $ 'html.admin .onclick-close' .hide!
+      $ \.onsave-hide .on \click, hide
+      add-color = (defaults, color) ->
+        if color then defaults.unshift color
+        defaults
+      $ \#sprite_hue .on \focus -> hide!; $ \.hue-selector .show!; $ 'html.admin .onclick-close' .show!
+      $ \#theme
+        .iris({
+          width: 167px
+          target: '.theme .color-picker'
+          palettes: add-color <[ #4ccfea #cc8888 #a2ef2e #ff8c00 #f24e4e ]>, site.config.color-theme?theme_color
+          change: (ev, ui) ->
+            $(ev.target).next!css background-color: ui.color.to-string!
+        })
+        .focus((ev) -> 
+          hide!
+          $ 'html.admin .onclick-close' .show!
+          $(ev.current-target).iris \show)
+      $ \#colored_text
+        .iris({
+          width: 167px
+          target: '.theme .color-picker'
+          palettes: add-color <[ #222222 #555555 #dddddd #ffffff ]>, site.config.color-theme?colored_text
+          change: (ev, ui) ->
+            $(ev.target).next!css background-color: ui.color.to-string!
+        })
+        .focus((ev) -> 
+          hide!
+          $ 'html.admin .onclick-close' .show!
+          $(ev.current-target).iris \show)
+      $ 'html.admin .onclick-close' .click (ev) -> hide!; $ ev.current-target .hide!
+
       # no pager (for now)
       window.pages-count = 0
-      #pager-init window
       <~ lazy-load-html5-uploader
       <~ lazy-load-fancybox
       <~ lazy-load-nested-sortable
@@ -531,7 +711,7 @@ same-profile = (hints) ->
       next!
   on-mutate:
     (window, next) ->
-      scroll-to-top!
+      if window.scroll-to then window.scroll-to 0, 0
       next!
 
 join-search = (sock) ->
@@ -673,13 +853,13 @@ mk-post-pnum-to-href = (post-uri) ->
       next!
   on-mutate:
     (w, next) ->
+      if window.scroll-to then window.scroll-to 0, 0
       next!
   on-load:
     (w, next) ->
       window.$new-hits = w.$('<div/>')  # reset new-hit div
 
       align-ui!
-      #pager-init w
 
       # avoid stacking up search join requests
       # only pay attention to last one
@@ -705,22 +885,31 @@ mk-post-pnum-to-href = (post-uri) ->
       window.replace-html window.$(\#left_container), ''
       window.replace-html window.$(\#main_content), @page.config.main_content
       window.marshal \activeForumId, @active-forum-id
+      window.marshal \contentOnly, @content-only
+      remove-backgrounds window
       layout-static.call @, window, \page, @active-forum-id
       next!
   on-load:
     (window, next) ->
-      #pager-init window
+      $ \body .toggle-class(\minimized, window.content-only)
+      next!
+  on-unload:
+    (window, next-mutant, next) ->
+      unless next-mutant is \page
+        $ \body .remove-class \minimized
       next!
   on-mutate:
     (window, next) ->
-      scroll-to-top!
+      if window.scroll-to then window.scroll-to 0, 0
+      next!
+  on-personalize:
+    (w, u, next) ->
+      layout-on-personalize w, u
       next!
 
 # this mutant pre-empts any action for private sites where user is not logged in
 # it means the site owner has specified that the site is private therefore we show a skeleton
 # of the site and prompt for login (all sensitive details should be removed)
-#!function plax-bg window # background parallax
-#  window.$ \#forum_background .plaxify {y-range:15px,x-range:40px,invert:true}
 !function rotate-backgrounds window, cache-url, backgrounds
   set-timeout (->
     # shuffle backgrounds & choose
@@ -729,7 +918,6 @@ mk-post-pnum-to-href = (post-uri) ->
     # set choice in static & on-load
     set-background-static window, cache-url, c
     <- set-background-onload window, c, 2500ms, \scale
-    #plax-bg window
     rotate-backgrounds window, cache-url, backgrounds # again, and again...
   ), 9000ms
   #
@@ -737,24 +925,16 @@ mk-post-pnum-to-href = (post-uri) ->
   static: (window, next) ->
     window.$ \header .remove!
     window.$ \footer .remove!
+    window.$ \#menu .remove!
     window.$ \#left_content .remove!
     window.$ \#main_content .remove!
-    window.marshal \backgrounds, @backgrounds
-    window.$ \body .add-class \parallax-viewport
+    window.$ \body .add-class \oval # fancybox theme
+    window.$ '[name="robots"]' .attr \content, 'noindex, nofollow'
+    window.marshal \background, @private-background
     layout-static.call @, window, \privateSite
     next!
   on-load: (window, next) ->
     <~ lazy-load-fancybox
-
-    # XXX: not sure why this fails the first time...
-    # workaround ;(
-    try
-      <- require [\jqueryPlax]
-    catch
-      <- require [\jqueryPlax]
-
-    # handle background
-    rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds?length > 1
 
     window.fancybox-params ||= {}
     window.fancybox-params <<< {
@@ -764,22 +944,40 @@ mk-post-pnum-to-href = (post-uri) ->
       close-click: false
       modal:       true}
 
-    #  show Auth dialog
-    set-timeout (->
-      # ensure login stays open
-      <- Auth.show-login-dialog
+    # show Auth dialog
+    <- Auth.show-login-dialog
+    set-timeout (-> # XXX guarantee fancybox shows
+      unless $ \.fancybox-overlay:visible .length
+        <- Auth.show-login-dialog), 100ms
 
-      set-timeout (-> # XXX guarantee fancybox shows -- race condition & plax!
-        unless $ \.fancybox-overlay:visible .length
-          <- Auth.show-login-dialog), 1200ms
-      # remove initial hover state to dim if mouse is really hovered out
-      set-timeout (-> window.$ \.fancybox-skin .remove-class \hover), 4000ms
-    ), 200ms
+    # handle background
+    rotate-backgrounds window, cache-url, window.backgrounds if window.backgrounds?length > 1
+    <- require ["#cache-url/local/jquery.waitforimages.min.js"]
+    bg = $ \#forum_background # fade-in background after loaded
+      ..wait-for-images -> bg.add-class \visible
+
+    fb  = window.$ \.fancybox-skin
+    dim = -> fb.remove-class \hover
+    fr  = set-timeout dim, 6000ms # dim if mouse hovers out
+    opaque = -> # opaque on key press, and re-dim
+      clear-timeout fr
+      fb.add-class \hover
+      fr := set-timeout dim, 4000ms
+    fb.on \click, opaque
+    window.$ 'input[placeholder]' .on \keydown, opaque
 
 @moderation =
   static: (w, next) ->
     w.render-mutant \main_content \moderation
     layout-static.call @, w, \moderation
+    next!
+  on-personalize: (w, u, next) ->
+    if u.rights?super
+      $ \.uncensor .css \display \inline-block
+    layout-on-personalize w, u
+    next!
+  on-mutate: (w, next) ->
+    if window.scroll-to then window.scroll-to 0, 0
     next!
   on-load: (window, next) ->
     next!

@@ -1,17 +1,15 @@
 - var cacheBuster = Math.random().toString().replace(/\\./, '')
-.upload
-  h1= title
-  div
-    img(src="#{cacheUrl}#{photo}?#{cacheBuster}")
-  div
-    form(method="POST", action="#{endpointUrl}", enctype="multipart/form-data")
-      div.button 
-        span Upload Image
-        input(type="file", name="avatar")
-
+- var cropSrc = cacheUrl + photo + '?' + cacheBuster
+h1 Loading ...
 .crop
-  h1= title + " (crop)"
-  div
-    img(src="#{cacheUrl}#{photo}?#{cacheBuster}")
-  div.button
-    span Crop Image
+  h2 Drag to Crop Your Photo
+  .left
+    img(src=cropSrc)
+  .right
+    .preview-wrapper
+      img#preview(src=cropSrc)
+    div.upload
+      form(method="POST", action="#{endpointUrl}", enctype="multipart/form-data")
+        button.onclick-upload Upload Photo
+          input(type="file", name="avatar")
+  button.onclick-save Save

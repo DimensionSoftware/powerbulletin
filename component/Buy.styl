@@ -1,15 +1,22 @@
-.fancybox-skin
-  background-image linear-gradient(to top, #fff 10px, #f2f2f2 100%)
 .Buy
+  a
+    if dark(theme_color)
+      color lighten(theme_color, 20%)
+    else
+      color theme_color
+  min-width 680px
+  margin-right 30px
   .clear
     clear both
   h1
     color #777
+    min-width 580px
     letter-spacing 2px
     text-align center
     font-weight 200
-    font-size 2.5em
+    font-size 1.5em
     font-style italic
+    margin-bottom 40px
   .features
     text-align right
     margin-right 30px
@@ -19,34 +26,38 @@
       font-weight 300
       font-size 1.4em
       b
-        color light
-        letter-spacing -3px
-        font-size 2.4em
-        font-weight bold
+        if dark(theme_color)
+          color lighten(theme_color, 23%)
+        else
+          color theme_color
+        letter-spacing -2px
+        font-size 2em
+        font-weight 500
     menu
       list-style none
       margin 15px 0 0 0
       padding 0
-      color light
+      color theme_color
       font-style italic
       font-weight 200
       li
         padding-left 5px
         margin-bottom 6px
         span
-          color #777
+          color #aaa
   label
     vertical-align middle
     display inline-block
     width 120px
-    color #333
+    color #eee
+    font-size 1.05em
   .right
     float right
   .notice
     float right
     clear both
     margin 6px 20px 0
-    color #bbb
+    color #999
     font-size .8em
     font-weight 200
   .cards
@@ -54,6 +65,7 @@
     margin-right 17px
     float right
     clear both
+    padding-bottom 40px
     .amex
       background-image url(cache-url + '/images/amex.png')
     .discover
@@ -81,9 +93,10 @@
   .ccinfo
     position relative
     padding 20px 20px 10px 20px
-    border 1px solid #f3f3f3
+    border 1px solid rgba(255,255,255,.05)
+    background-color rgba(0,0,0,.1)
+    background-image linear-gradient(to bottom, #333 14%, #222)
     border-radius 12px / 8px
-    background-color #fff
     button.Buy-checkout
       float right
       margin 20px 0 12px 0
@@ -98,7 +111,7 @@
     .Buy-card-year
       margin-left 10px
     .Buy-card-code
-      height 15px
+      font-size 15px
       margin-top 12px
       width 60px
     .Buy-card-expiration
@@ -115,19 +128,12 @@
       font-size .8em
       font-style italic
   .tooltip
-    top -35px
+    top -69px
     bottom auto
-  .code:hover
-    border 1px solid #eaeaea
-    .cvvinfo
-      opacity 1
-      height 85px
-      padding 10px
-      top -119px
-      transition top .2s ease-out .1s, height .2s ease-in-out .2s, opacity .6s ease-in-out .1s
+    box-shadow 0 0 3px 1px #999
   .code
     font-weight bold
-    border 1px solid #f3f3f3
+    border 1px solid #444
     padding 1px 4px
     border-radius 8px / 3px
     transform rotate(10deg)
@@ -137,12 +143,20 @@
     cursor pointer
     position relative
     z-index 99
+    &:hover
+      border 1px solid #555
+      .cvvinfo
+        opacity 1
+        height 85px
+        padding 10px
+        top -119px
+        transition top .2s ease-out .1s, height .2s ease-in-out .2s, opacity .6s ease-in-out .1s
     .cvvinfo
       border-radius 12px / 8px
       top 0
       left -96px
-      background-color #eee
-      border 1px solid #ccc
+      background-color #000
+      border 1px solid #222
       padding 0
       margin 0
       opacity 0

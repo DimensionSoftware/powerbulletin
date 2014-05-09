@@ -21,16 +21,20 @@ include_recipe 'haproxy'
 include_recipe 'postgres'
 include_recipe 'redis'
 #include_recipe 'phantomjs'
-#include_recipe 'selenium'
+include_recipe 'selenium'
 include_recipe 'mon'
 include_recipe 'elasticsearch'
 
 # XXX this should perhaps go somewhere else, but for now, i like having this always
+package 'ack-grep'
 package 'tmux'
 package 'vim'
+package 'figlet'
 package 'tree'
 package 'zsh'
 package 'git'
+package 'tig'
+#package 'git-extras'
 package 'libgeoip-dev'
 package 'libgeoip1'
 package 'postfix'
@@ -49,10 +53,34 @@ unless File.file? '/etc/NPM_GLOBAL_PACKAGES_COMPLETED'
   end
 end
 
+# copy our editing settings
+cookbook_file '/root/.vimrc' do
+  source 'vim/.vimrc'
+  mode '0644'
+end
+remote_directory '/root/.vim' do
+  source 'vim/.vim'
+  files_owner 'root'
+  files_group 'root'
+  files_mode 00644
+  owner 'root'
+  group 'root'
+  mode 00755
+end
+
+#tmux config
+cookbook_file '/root/.tmux.conf' do
+  source 'dotfiles/_tmux.conf'
+  mode '0644'
+end
 
 # SYMLINK CITY! these settings differ between prod and dev
 if ENV['NODE_ENV'] == 'production'
   project_dir = '/pb'
+  # more setup symlinks for plv8
+  link "/pb" do
+    to "/vagrant"
+  end
 else
   project_dir = '/vagrant'
 end

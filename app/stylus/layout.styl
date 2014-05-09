@@ -4,22 +4,23 @@
 // XXX eventually each forum will have its own theme.{styl,css}
 bounce = cubic-bezier(0,1.72,0,.75)
 
-header-height           = 100px
-header-scrolled-height  = 35px
+header_height           = 100px
+header_scrolled_height  = 35px
 
-forum-header-height = 0
-footer-height       = 36px
-left-content-width  = 310px
+forum-header_height = 0
+footer_height       = 36px
+left_content_width  = 310px
 
 section
   box-sizing border-box
 
 body
   grid(90%,100%)
-  overflow visible!important
   a
     cursor pointer
-  .scroll-to, .onclick-scroll-top
+  .onclick-scroll-top
+    cursor n-resize
+  .scroll-to
     cursor pointer
 
 body.waiting
@@ -27,7 +28,7 @@ body.waiting
   a, input, button, textarea
     cursor wait!important
 
-.onclick-logout, .onclick-profile, .admin-only, .has-facebook, .has-google, .has-twitter, .has-auth
+.onclick-logout, .onclick-profile, .onclick-messages, .admin-only, .has-facebook, .has-google, .has-twitter, .has-auth
   display none
 
 .close, .onclick-close
@@ -35,75 +36,145 @@ body.waiting
   cursor pointer
   line-height 9px
   text-indent 1px
-  border-radius 10px
+  border-radius 100%
   padding 6px
   font-size 10px
 
+.clear
+  clear both
+  zoom 1
+  &:before, &:after
+    display table
+    content ''
+  &:after
+    clear both
 .hidden
-  display none
+  display none!important
+
+//{{{  Background of entire window
+#forum_background_buffer
+  opacity 0
+  z-index 1
+#forum_background
+  opacity 0
+#forum_background_color, #forum_background_buffer, #forum_background
+  position fixed
+  top -12px
+  right -40px
+  bottom -12px
+  left -40px
+  background-position 50%
+  background-repeat no-repeat
+  background-size cover
+  &.visible
+    opacity 1
+    transition opacity .65s ease-in
+//}}}
 
 //{{{ Header
 // TODO move this into app/stylus/pb.styl & re-create everything in css (after/before pseudo for text)
 .logo
+  position fixed
+  top 17px
+  left 35px
+  height 30px
+  z-index 10
   margin 0
   padding 0
+  // feathering around PowerBulletin text
+  &:before
+    content ''
+    left -13px
+    top -12px
+    width 260px
+    height 60px
+    position absolute
+    background radial-gradient(ellipse closest-side at 37% 45%, rgba(255,255,255,.7) 30%, rgba(255,255,255,0) 100%)
   a
+    position relative
+    height 30px
+    display block
+    outline none
     text-shadow 0 0 1px #ccc
-    color #888
+    color #555
     background-image url(cache-url + '/images/pb_icon_logo_sm.png')
     background-repeat no-repeat
     padding-left 35px
     padding-top 4px
     vertical-align top
-    font-size .75em
+    font-size .65em
     text-decoration none
     font-weight 200
-    letter-spacing -1px
-    font-style normal
-    position fixed
-    top 17px
-    left 35px
-    height 30px
-    z-index 10
+    font-style italic
     strong
       color #555
+      font-size 1.1em
       letter-spacing -1px
-      font-style italic
+      font-style normal
       font-weight 600
       padding-left 3px
+  img
+    display none
+.logo.custom-logo
+  top 10px
+  &:before
+    content ''
+    left -13px
+    top -12px
+    width 380px
+    height 80px
+    position absolute
+    background radial-gradient(ellipse closest-side at 37% 45%, rgba(255,255,255,.7) 30%, rgba(255,255,255,0) 100%)
+  a
+    filter none
+    display inline-block
+    background-image none
+    text-indent -9999px
+    img
+      position absolute
+      top 0
+      left 0
+      max-height 70px
+      max-width 230px
+      display block
 header
   position fixed
-  height header-height
+  height header_height
   top 0
-  z-index 10
+  z-index 200
   .container
     width 800px
     margin 0 auto
     // tools is the avatar drop-down menu for admin, profile, log-out, etc...
     .tools
       position absolute
-      right -10px
-      top 18px
-      width 160px
+      right 50px
+      top 15px
+      height 22px
+      width 0
       z-index 50
+      // force closed state
       .bubble, .bubble2
         position absolute
         border-radius 30px
         height 10px
         width 10px
-        right 51px
-        top 58px
+        right 5px
+        top 70px
         opacity 0
+        &.close
+          display none
       .bubble2
         height 15px
         width 15px
       // bring down menu
       &:hover
+        height auto
         .bubble, .bubble2
           opacity 1
         .bubble
           transform translate(-20px, 30px)
-          transition all .2s ease-out
+          transition all .1s ease-out
         .bubble2
           transform translate(-10px, 10px)
           transition all .1s ease-out
@@ -113,36 +184,43 @@ header
         .container
           width 105px
           height auto
-          padding-top 90px
-          margin-left -60px
+          padding-top 105px
+          margin-left -97px
           opacity 1
           text-align center
-          transition all .2s ease-out
+          //transition all .2s ease-out
           menu
             padding 5px
             transition padding .1s ease-out
+            &.close
+              opacity 0
+              height 0
+              transition opacity .1s ease-out, height 0, padding 0
+              li
+                transition none
             li
               height 23px
               opacity 1
-              transition height .1s ease-out .1s
+              transition height .1s ease-out .05s
               &:hover
-                background-color light
-                border-radius 25px
                 a
-                  color #fff
+                  border-radius 25px
+                  padding 5px 17px
+                  color colored_text
+                  background-color theme_color
       &::before
         content ''
         position absolute
-        top 45px
-        right 53px
+        top 46px
+        right 3px
         z-index 12
         height 20px
         width 20px
         border-radius 20px
       // ::after is the arrow
       &:hover::after
-        top 51px
-        right 62px
+        top 52px
+        right 12px
         border-top-width 9px
         transform rotate(10deg)
         transition all .2s ease-out
@@ -151,22 +229,22 @@ header
         border-top 6px solid #fff
         content ''
         position absolute
-        top 52px
-        right 59px
+        top 53px
+        right 9px
         z-index 13
         height 20px
       .profile
         animation-name none
         position relative
+        border 4px solid #fff
         cursor pointer
         display none
-        opacity .6
-        right -35px
-        top -8px
-        height 75px
-        width 75px
+        opacity .9
+        right 75px
+        top -4px
+        height 65px
+        width 65px
         border-radius 75px
-        transition all .05s ease-out
       .container
         height 0
         width 0
@@ -176,7 +254,7 @@ header
         transition all .1s ease-out
         menu
           position relative
-          right -42px
+          right 35px
           border-radius 15px
           list-style none
           margin-top 12px
@@ -186,25 +264,33 @@ header
             height 0
             opacity 0
             overflow hidden
+          .onclick-logout
+            margin-top 2px
+            &:hover
+              a
+                background none!important
+                color dark_text!important
+            a
+              padding-top 2px
+              font-size .95em
     #warning
       bottom 8px
     .search
       top 10px
-      left 234px
+      left 308px
       position absolute 
-      z-index 8
+      z-index 10
       .query
-        width 400px
-        padding-right 45px
+        width 440px
         padding-top grid
         font-size 1.3em
         text-indent 8px
       .onclick-close
         cursor pointer
         position absolute
-        right 11px
+        right 36px
         top -40px
-        z-index 14
+        z-index 20
         font-size 1.1em
         line-height 6px
         opacity 0
@@ -228,9 +314,9 @@ body.paginator
   position fixed
   left 0
   bottom 0
-  top (header-height+2)
+  top (header_height+2)
   height auto
-  width left-content-width
+  width left_content_width
   z-index 8
   padding-top (grid*2)
   .photo
@@ -243,14 +329,14 @@ body.paginator
     height 32px
     width 32px
     margin-top 9px
-    top (header-height-20)
+    top (header_height-20)
     right -17px
     cursor pointer
     position absolute
     text-align center
     cursor pointer
     z-index 95
-    &::before
+    &::after, &::before
       position absolute
       content ''
       border-bottom 8px solid transparent
@@ -260,6 +346,8 @@ body.paginator
       width 0
       top 8px
       left -1px
+    &:before
+      left -2px
     &:hover
       right -15px
       transition right .1s ease-out
@@ -290,7 +378,7 @@ body.paginator
     a.page
       display block
       position absolute
-      height footer-height + (grid * 2)
+      height footer_height + (grid * 2)
       width 12px
     a.page.previous
       top 0
@@ -347,6 +435,20 @@ body.paginator
 
   .ui-resizable-e
     cursor ew-resize
+    cursor col-resize
+    &:before
+      position absolute
+      content ''
+      top 0
+      right 4px
+      bottom 0
+      width 0
+      transition all .1s ease-out
+    &:hover:before
+      width 1px
+      background rgba(theme_color, .3)
+      box-shadow 0 1px 2px rgba(theme_color,.2)
+      transition all .05s ease-in .1s
 //}}}
 //{{{ Main Content
 .col1
@@ -361,22 +463,22 @@ body.paginator
   margin-right grid
   width 31px
   height 31px
-  float left
+  border-radius 100%
   img
+    border-radius 100%
     width 100%
-
 .main-content
   grid(100%, 800px)
-  padding forum-header-height 0 0 0
-  padding-top (header-height+(grid*2))
-  z-index 5
+  padding forum-header_height 0 0 0
+  padding-top (header_height+(grid*2))
+  //z-index 5
   .breadcrumb
     position fixed
     top -100px
     text-align center
     z-index 100
-    border-bottom-left-radius 3px
-    border-bottom-right-radius 3px
+    border-bottom-left-radius 10px
+    border-bottom-right-radius 10px
     padding (grid/2+2) (grid*2.5) 3px (grid*2.5)
     font-size .9em
     margin-bottom (grid/2)
@@ -386,10 +488,28 @@ body.paginator
       padding-right (grid/2)
       margin-right 3px
   .resizable
-    padding-left (left-content-width+(grid*3))
+    padding-left (left_content_width+(grid*3))
   .onclick-scroll-top
     clear both
 //}}}
+.question
+  display none
+  position fixed
+  top 135px
+  right 93px
+  font-weight 200
+  font-size 1.5em
+  cursor help
+  z-index 10
+  color #ccc
+  opacity .85
+  transform scale(1)
+  transition all .1s ease-in .1s
+  &:hover
+    transition none
+    opacity 1
+    transform scale(1.15)
+    color #aaa
 //{{{ Footer
 footer.expanded
   z-index 100
@@ -400,10 +520,9 @@ footer.active
   bottom -(grid * 1.4)
   font-size .85em
 footer
-  position fixed
+  position fixed!important
+  top auto!important
   right 0
-  //left 0
-  // bottom -(footer-height)
   bottom -(grid)
   height 0
   opacity 0
@@ -411,9 +530,10 @@ footer
   width auto
   font-size .95em
   padding 5px 0
-  transition height .2s ease-out .3s
+  transition left .08s ease-in, height .08s ease-in
   .onclick-scroll-top
-    cursor default
+    cursor n-resize
+    //cursor default
     height 0
     width 0
     opacity 0
@@ -447,6 +567,17 @@ footer
       top 2px
       right 7px
       transition all .2s ease-out
+  .post-container
+    .post-new
+      .title
+        display none
+        position relative
+        top -10px
+        z-index 20
+        width 18%
+        transform width .1s ease-in
+        &:focus, &:active
+          width 40%
 #chat_drawer
   position fixed
   height 0
@@ -458,61 +589,69 @@ footer
 
 //{{{ Scrolled <body>
 body.scrolled
+  #warning.tooltip
+    bottom -15px
   .onclick-scroll-top
-    cursor pointer
+    cursor n-resize
     width 22px
     height 22px
     opacity 1
     transition all .1s ease-out
   .logo
+    top 3px
+    //transition all .1s ease-out
     a
-      top 3px
-      font-size .62em
-      transition all .1s ease-out
-      padding-top 4px
+      font-size .6em
+      padding-top 2px
+      //transition all .1s ease-out
+  .logo.custom-logo
+    a
+      img
+        max-height 32px
   header
-    height header-scrolled-height
+    height header_scrolled_height
     .container
       .tools
         top 15px
+        right 0
         .bubble, .bubble2
-          top 2px
-          right 18px
+          top 5px
+          right 22px
         .container menu
           padding 0
           margin 0
-      .tools::after
-        top 0
-        right 32px
-        border-top-color light
-      .tools:hover
-        .container
-          padding-top 35px!important
-          menu
-            padding 5px
-            right -72px
-            margin-top 12px
-      .tools::before
-        display none
+        &::after
+          top 0
+          right 32px
+          border-top-color theme_color
+        &::before
+          display none
+        &:hover
+          .container
+            padding-top 37px!important
+            menu
+              padding 5px
+              margin-top 15px
+              right 50px
       .search
-        top -200px!important
         opacity 0
-        transition all .1s ease-out
+        //transition opacity .07s ease-out
         .onclick-search
           right 14px
         .query
           font-size 1em
           height 18px
       .profile
-        height 30px
-        width 30px
+        height 27px
+        width 27px
+        border-width 2px
         top -14px
-        right -85px
-        transition all .2s bounce
+        right 75px
+        //transition height .08s ease-out, width .08s ease-out
   #left_content
-    top (header-scrolled-height+5)
+    top (header_scrolled_height+3)
     padding-top (grid * 1.5)
-    transition padding-top .3s ease-out, top .2s ease-out!important
+    //transition padding-top .4s ease-out, top .1s ease-out!important
     .handle
       transition top .2s ease-out
     #paginator
@@ -522,27 +661,36 @@ body.scrolled
         bottom 10px
   .main-content
     .breadcrumb
-      top (header-scrolled-height+2)
-      transition top .2s ease-out
+      top (header_scrolled_height+2)
+      transition top .25s ease-out
   footer
     opacity 1
-    height footer-height
-    transition height .1s ease-out
+    height footer_height
+    transition height .08s ease-out
 //}}}
 //{{{ Collapsed left nav
 body.collapsed
   #left_content
     width 0!important
     transition width .1s
-    .handle::before
-      transform rotate(180deg)
-      top 8px
-      left 14px
-      transition all .2s ease-out
     .handle
       right -25px
+      background-color #bbb
+      background radial-gradient(circle closest-corner at 45% 35%, #d0d0d0 40%, #999 100%)
+      border 1px solid #888
+      box-shadow 0 0 3px 1px theme_color
+      &::before, &::after
+        transform rotate(180deg)
+        top 8px
+        left 14px
+        transition all .2s ease-out
+      &::after
+        top 7px
+        left 15px
     .create a
       display none!important
+    .thread.active .arrow
+      display none
   .main-content
     .resizable
       padding-left (grid*5)!important
@@ -551,6 +699,7 @@ body.collapsed
     left 0!important
 //}}}
 
+// homepage
 //{{{ Background layer
 img.bg
   position fixed
@@ -568,7 +717,6 @@ img.bg.active
   //opacity 1
   //display block
 //}}}
-
 //{{{ Masonry
 .masonry, .masonry .masonry-brick
   transition-duration 0.1s

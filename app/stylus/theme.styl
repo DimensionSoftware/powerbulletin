@@ -1,13 +1,17 @@
 @import 'fluidity/css3'
-@import './app/stylus/animations'
 
 // XXX default theme containing all color decoration & embellishments
 
-tint-color = rgba(255,255,255,0.9)
-footer-height = 25px
+// overlay is tint applied to the header & footer while scrolled
+overlay_tint_color = rgba(255,255,255,0.9)
+// these are the overlay colors for the most important - least important blocks of elements (opaque)
+overlay_color_primary   = #fff
+overlay_color_secondary = #f9f9f9
+
+footer_height = 25px
 
 body
-  font-family 'Source Sans Pro', 'Open Sans Condensed', 'Ubuntu', 'Helvetica Neue', sans-serif
+  font-family 'Helvetica Neue', 'Helvetica', sans-serif
 
 body.disabled::after
   content ''
@@ -16,51 +20,36 @@ body.disabled::after
   right 0
   bottom 0
   left 0
-  z-index 99
-  background radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,0.1) 20%, rgba(0,0,0,0.5) 100%)!important
+  z-index 200
+  background radial-gradient(circle closest-corner at 50% 30%, rgba(255,255,255,0.7) 25%, rgba(255,255,255,1) 100%)!important
+
+.raised
+  position relative
+  z-index 201!important
 
 a
-  color dark
+  color dark_theme_color
   text-decoration none
-
-// background of entire window (set on each forum)
-#forum_background_buffer
-  opacity 0
-  z-index 1
-#forum_background_buffer, #forum_background
-  position fixed
-  top -12px
-  right -40px
-  bottom -12px
-  left -40px
-  img
-    width 100%
-    min-height 100%
 
 .photo
   background-color #fff
-  //border-top-right-radius 2px
-  border-radius 3px
-  box-shadow inset 0 1px 0 rgba(255,255,255,0.35),1px 1px 8px -2px light
-  //border 1px solid #aaa
-  opacity .85
+  box-shadow inset 0 1px 0 rgba(255,255,255,0.35),1px 1px 8px -2px theme_color
+  opacity .9
+
+.profile.photo.online
+  box-shadow 0 0 2px 1px dark_theme_color, 1px 1px 3px 2px theme_color
 
 .online
-  box-shadow 0 0 2px 0 dark, 1px 1px 10px -1px light
-  border 1px solid #eee
+  box-shadow 0 0 2px 0 dark_theme_color, 1px 1px 10px -1px theme_color
+  border 1px solid theme_color
   opacity 1!important
-  transition box-shadow .3s ease-out, opacity .3s ease-out
+  display block
+  transition opacity .3s ease-out
 
 .saved
-  box-shadow 0 0 2px rgba(50,150,50,.8), 1px 1px 1px rgba(50,150,50,.8),0 1px 0 rgba(40,140,40, .9)
+  box-shadow 0 0 3px 0 theme_color
   transition box-shadow .3s ease-in-out
 
-.cancel:hover, .onclick-close:hover
-  background-color #999
-  opacity 1
-  background radial-gradient(circle closest-corner at 45% 35%, #eee 45%, #aaa 100%)
-  color red
-  transition all .06s ease-out
 .cancel, .onclick-close
   font-weight 600
   transform rotate(10deg)
@@ -69,42 +58,59 @@ a
   color #333
   background-color #aaa
   background radial-gradient(circle closest-corner at 45% 35%, #eee 40%, #bbb 100%)
-  transition all .06s ease-out
+  transition all .3s ease-out .1s
+  &:hover
+    zoom 1.05
+    background-color #999
+    opacity 1
+    background radial-gradient(circle closest-corner at 45% 35%, #eee 45%, #aaa 100%)
+    color red
+    transition none
 
 //{{{ Header
 header
   border-top 1px solid #aaa
-  border-bottom 1px solid rgba(180,180,180,0.15)
   color #555
+  background overlay_color_secondary
+  background-image linear-gradient(bottom, #fff 55%, overlay_color_secondary)
+  border-bottom 1px solid #f4f4f4
+  //border-bottom 1px solid #efefef
   &.expanded
-    background-color tint-color
+    background-color overlay_tint_color
   .container
     .search
       .icon
-        background radial-gradient(circle closest-corner at 50% 44%, light 55%, dark 100%)
+        cursor text
         position absolute
+        overflow hidden
         z-index 20
-        top -6px
-        left -10px
-        height 22px
-        width 22px
-        border-radius 22px
-        .s-search
-          margin-left 2px
+        top 0
+        right -1px
+        height 38px
+        width 97px
+        .s-big-search
+          background-position -251px -9px
+      .query:focus + .icon
+        top -2px
+        height 40px
+        opacity .75
       .query
-        box-shadow 1px 1px 3px light inset
+        box-shadow 0 1px 1px -1px theme_color inset,0 1px 3px 0 theme_color inset
         border 0
         background none
-        border-radius 6px
+        border-radius 8px
         font-size 1.15em
         height 20px
+        transition all .2s ease-in .1s
+        background-color rgba(overlay_color_primary, .95)
         &:focus
-          background-color tint-color
+          transition none
+          background-color overlay_color_primary
           margin-top -1px
           height 21px
-          text-indent 13px
+          text-indent 8px
           border-radius 5px
-          box-shadow 1px 1px 3px 1px light
+          box-shadow 0 1px 2px 1px theme_color, 0 1px 7px -2px theme_color
           color #111
       .query::-webkit-input-placeholder
           color #ccc
@@ -122,57 +128,64 @@ header
         font-weight 400
     .tools
       .bubble, .bubble2
-        box-shadow 1px 1px 3px light
-        background-color tint-color
+        box-shadow 0 0 1px #999, 1px 1px 3px theme_color
+        background-color overlay_color_primary
       .bubble
-        box-shadow 1px 1px 2px light
+        box-shadow 0 0 1px #777, 1px 1px 2px theme_color
       &::before
-        background-color light
+        background-color theme_color
       .container
         menu
-          background-color tint-color
-          box-shadow 1px 1px 4px light
+          background-color overlay_color_primary
+          box-shadow 0 -1px 3px -1px theme_color, 0 1px 0 0 theme_color, 0 1px 1px 0 #333
 //}}}
 //{{{ Left side
-#left_content:hover::after
-  width 1px
-  background-color #fafafa
-#left_content::after
-  position absolute
-  right 0
-  top 1px
-  content ''
-  bottom 0
-  background-color #f7f7f7
-  width 1px
 #left_content
+  background-color overlay_color_primary
+  &:hover::after
+    width 1px
+    background-color #fafafa
+  &::after
+    position absolute
+    right 0
+    top 1px
+    content ''
+    bottom 0
+    background-color #f7f7f7
+    width 1px
   .handle
     transition all .2s ease-out
     background-color #ddd
     background radial-gradient(circle closest-corner at 45% 35%, #e0e0e0 40%, #bbb 100%)
     border 1px solid #ddd
     color #888
-    &:hover::before
-      border-right 12px solid #fff
-      left -3px
-    &::before
+    &::after
       border-right 10px solid #fff
+      transition all .1s ease-out
+    &::before
+      border-right 12px solid #aaa
       transition all .1s ease-out
     &:hover
       background-color #ddd
       background radial-gradient(circle closest-corner at 45% 35%, #e0e0e0 40%, #a0a0a0 100%)
       color #444
+      &::before
+        border-right 14px solid #999
+        left -4px
+      &::after
+        border-right 12px solid #fff
+        left -3px
   .title
     letter-spacing -1px
     font-size 1.1em
     margin (grid / 2) 0
-  #paginator:hover
-    border-right 1px solid #bbb
   #paginator
     border-right 1px solid #ddd
     background-color rgba(200,200,200,0.1)
     border-top 2px solid #ccc
     border-bottom 1px solid #ccc
+    &:hover
+      border-right 1px solid #bbb
     .current:hover
       border-left 1px solid #ccc
       border-top 1px solid #ccc
@@ -206,21 +219,21 @@ header
     text-decoration none
 
   #breadcrumb
-    background-color tint-color
-    border-bottom 1px solid #ddd
-    border-right 1px solid #ddd
-    border-left 1px solid #ddd
-    box-shadow 0 1px 0px 0px #aaa
+    background-color overlay_color_secondary
+    border-bottom 1px solid #eee
+    border-right 1px solid #eee
+    border-left 1px solid #eee
+    box-shadow 0 1px 0 0 #eee
     font-style italic
-    color #ddd
+    color #e9e9e9
     a, em
-      color #666
+      color #888
 
   a.page
     color #eee
 
   a.page:hover, a.active
-    background-color dark
+    background-color dark_theme_color
     color #eee
 
   blockquote
@@ -244,18 +257,13 @@ header
 //{{{ Footer
 footer.expanded
   background-color #fafafa
-  box-shadow 0 3px 30px 0 light!important
-  &::before
-    position fixed
-    left 0
-    right 0
-    bottom 0
-    top 0
+  box-shadow 4px 4px 20px 0 theme_color!important
 footer
   opacity 0
-  box-shadow 0 0 4px -1px light
+  box-shadow 0 0 4px -1px theme_color
   text-align center
   color #777
+  background-image linear-gradient(to top, overlay_tint_color 96%, rgba(255,255,255,.35))
   &::before
     //border-top 1px solid #eee
     top 0
@@ -265,28 +273,31 @@ footer
     position absolute
   &:hover
     color #666
-    background-image linear-gradient(to top, #f7f7f7 15px, rgba(255,255,255,1))
-    box-shadow 0 0 3px 0 light
+    box-shadow 0 0 3px 0 theme_color
     transition all .3s ease-out
   h6
-    cursor default
-    font-size .9em
-    letter-spacing 3px
     margin 0
-    font-weight 100
+    a
+      color #777
+      font-size .9em
+      letter-spacing 3px
+      font-weight 100
+      b
+        color #999
 //}}}
 
 //{{{ Scrolled <body>
 body.scrolled
   header
-    background-color tint-color
+    background-color overlay_tint_color
     box-shadow 0 -1px 12px 2px #eee
-    border-bottom 1px solid #fff
+    border-bottom 1px solid #eaeaea
+    //border-bottom 1px solid #fff
     height -2px
-    transition height .1s ease-out
+    //transition height .1s ease-out
     &::after
-      border-bottom 1px solid #ddd
       box-shadow 0 2px 6px 0px #ddd
+      background-color darken(overlay_color_secondary, 5%)
       bottom -1px
       left 0
       right 0
@@ -305,13 +316,15 @@ body.scrolled
             color #bbb
         .query:-ms-input-placeholder
             color #bbb
+
+    .profile.photo.online
+      box-shadow 0 0 2px 1px dark_theme_color, 1px 1px 2px 1px theme_color!important
+
   #left_content::after
-    bottom (footer-height - 4)
+    bottom (footer_height - 4)
   footer
-    background-image linear-gradient(to top, tint-color 26px, rgba(255,255,255,.35))
     &:hover
-      box-shadow 0 0 4px 0 light
-      background-image linear-gradient(to top, #f7f7f7 10px, rgba(255,255,255,1))
+      box-shadow 0 0 4px 0 theme_color
 //}}}
 
 //{{{ Fancybox
@@ -327,23 +340,29 @@ body.scrolled
 .shake
   animation-name shake
   animation-duration .8s
-.fancybox-overlay::after
-  position absolute
-  bottom (grid*2)
-  right (grid*2)
-  height 24px
-  width 228px
-  content ''
-  background-image url(cache-url + '/images/secure.png')
 .fancybox-overlay
-  background radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,0.35) 20%, rgba(0,0,0,0.8) 100%)!important
+  background radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,0.5) 20%, rgba(0,0,0,0.95) 100%)!important
   overflow none
+  &::after
+    position absolute
+    bottom (grid*2)
+    right (grid*2)
+    height 24px
+    width 228px
+    content ''
+    background-image url(cache-url + '/images/secure.png')
+  // part of black theme
+  // TODO move this and the rest into black.styl
   .fancybox-wrap
     .fancybox-skin
-      box-shadow 0 1px 12px 3px rgba(0,0,0,0.4)!important
-    .fancybox-skin, .fancybox-inner
-      background-color #f9f9f9
-      background-image linear-gradient(to top, #fff 10px, #f2f2f2)
+      h1, h2, h3
+        color #eee
+.fancybox-overlay .fancybox-wrap .fancybox-skin
+  border-radius 5px
+  background-color transparent
+  background-image linear-gradient(to top, rgba(0,0,0,.83) 10px, #222 100%)
+  border 1px solid #111
+  transition opacity .3s ease-out 3s
 //}}}
 //{{{ jQuery UI
 .ui-widget-overlay

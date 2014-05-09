@@ -2,25 +2,36 @@ include _post-actions
 include _post-profile
 
 mixin _post(p, i, moderatorMode)
-  .post(id="post_#{p.id}", class=p.reason ? 'censored' : '', data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id, data-forum-id=p.forum_id)
-    if p.thread_uri
-      h4.title
-        a.mutant(href=p.thread_uri)= p.title
-    else
-      h4.title= p.title
-    mixin _post-profile(p)
+  utitle = (p.alias_config && p.alias_config.title) ? p.alias_config.title : ''
+  .post(id="post_#{p.id}", class=((p.moderation ? 'moderation' : '') + ' ' + (p.reason ? 'censored' : '')), data-user-id=p.user_id, data-post-id=p.id, data-thread-id=p.thread_id, data-forum-id=p.forum_id)
+    .profile-container
+      mixin _post-profile(p)
+      a.user.mutant(href="/user/#{p.user_name}")
+        span.username= p.user_name
+      .user-title=utitle
+      .date.created(data-time=p.created_iso, title=p.created_friendly)
     .container
-      span.username= p.user_name
-      .date(data-time=p.created_iso)!= p.created_human
+      .s-chat-bubble
       .post-content
+        if p.title
+          if p.thread_uri
+            h4.title
+              a.mutant(href=p.thread_uri)= p.title
+          else
+            h4.title= p.title
         if p.html
-          p.body!= p.html
-    if !moderatorMode
-      mixin _post-actions(p)
-      .reply
+          .body!= p.html
+          .clear
+        //- only print signatures for top-level posts
+        if !p.is_comment && i===0 && p.alias_config && p.alias_config.sig
+          .sig!= p.alias_config.sigHtml
+        .clear
+    +_post-actions(p, moderatorMode)
+    .reply
+  .clear
   .children
     if p.posts && p.posts.length
       each pp, ii in p.posts
-        mixin _post(pp, ii)
+        +_post(pp, ++ii)
     else if p.morePosts
       a.load-more(href='#') More Posts

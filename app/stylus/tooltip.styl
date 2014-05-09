@@ -1,65 +1,159 @@
-tooltip-border-color = rgb(100, 100, 100)
+tooltip-border-color = #555
 
 .tooltip-container:hover .tooltip, .tooltip.hover
-  opacity .9
+  opacity .95
+  text-transform capitalize
   transform scale(1) rotate(0) translate(0, 0)
-  transition all .3s ease-in-out
-.tooltip::after
-  content ''
-  position absolute
-  bottom -13px
-  left 50%
-  margin-left -9px
-  width 0
-  height 0
-  border-left 10px solid transparent
-  border-right 10px solid transparent
-  border-top 10px solid rgba(0,0,0,0.1)
-.tooltip::after
-  bottom -12px
-  margin-left -10px
-  border-top 9px solid #444
-.tooltip::before
-  position absolute
-  content ''
-  left -3px
-  right -3px
-  top -3px
-  height 54%
-  background rgba(255,255,255,.15)
-  border-radius .5em .1em 5em 4em/.1em .1em 1em 3em
+  transition all .1s ease-out
 .tooltip
-  transition all .2s ease-in-out
+  transition all .3s ease-in-out .1s
   transform scale(0) rotate(30deg) translate(120px, 200px)
   display block
   position absolute
   z-index 99
-  padding 5px 13px
+  padding 12px 25px
   left 50%
   bottom 25px
   margin-left -117px
   font-style italic
   font-weight 400
   letter-spacing 1px
-  font-size 1.2em
+  font-size 1.25em
   text-align center
   cursor pointer
   color #fff
-  background-color rgb(110, 110, 110)
+  background-color #444
   border 2px solid tooltip-border-color
-  border-radius 6px / 2px
+  border-radius 5px / 3px
   opacity 0
-  box-shadow 0 1px 0px 1px #333,0 3px 5px 1px tooltip-border-color
+  box-shadow 0 1px 0px 1px #222,0 3px 5px 1px tooltip-border-color
   text-shadow 0 -1px 0 #000
-.tooltip.right::after
-  border-right 10px solid rgba(0,0,0,0.1)
-  border 9px solid transparent
-  left -11px
-  top -2px
-.tooltip.right
-  top 35%
-  right -100px
-  width 65px
-.tooltip.right::after
-  border-right 10px solid tooltip-border-color
+  &:after
+    content ''
+    position absolute
+    left 50%
+    width 0
+    height 0
+    border-left 10px solid transparent
+    border-right 10px solid transparent
+    bottom -12px
+    margin-left -10px
+    border-top 9px solid tooltip-border-color
+  // gloss fx
+  &:before
+    position absolute
+    content ''
+    left -3px
+    right -3px
+    top -3px
+    height 54%
+    background rgba(255,255,255,.12)
+    border-radius .5em .1em 5em 4em/.1em .1em 1em 3em
+  &.right
+    top 35%
+    right -100px
+    width 65px
+    &:after
+      border 9px solid transparent
+      border-right 10px solid rgba(0,0,0,0.1)
+      left -11px
+      top -2px
+  &.small
+    padding 4px 12px
+    font-size 1em
+  //{{{ Info Bubble inherits tooltip style
+  &.info
+    position fixed
+    z-index 9000
+    transform scale(0) rotate(0deg) translate(0, 200px)
+    border-radius 50px / 29px
+    text-shadow none
+    tooltip-border-color = darken(dark_theme_color, 25%)
+    background-color lighten(dark_theme_color, 10%)
+    border 2px solid darken(dark_theme_color, 25%)
+    box-shadow 0 1px 0px 1px #333,0 1px 3px 0 darken(dark_theme_color, 25%)
+    color darken(colored_text, 8%)
+    top 12px
+    text-transform none
+    padding 25px
+    height 115px
+    min-width 375px
+    font-size 1.2em
+    line-height 1.5em
+    transition all .15s ease-in-out
+    &:after
+      border-top-color @background-color
+      margin-left -20px
+      bottom -20px
+      border-width 20px
+    // this tooltip points LEFT
+    &.right, &.left
+      width 385px
+      border-left none
+      &:after
+        top 20%
+        border 20px solid transparent
+        border-right 20px solid @background-color
+        margin-left -27px
+      .next
+        right 45px
+        bottom 10px
+    // this tooltip points RIGHT (left refers to the bubble)
+    &.left
+      border-right none
+      .onclick-close
+        left -5px
+      &:after
+        left auto
+        top 20%
+        border 20px solid transparent
+        border-left 20px solid @background-color
+        right -40px
+    &:hover, &.hover
+      transform scale(1) rotate(0) translate(0, 0)
+      .onclick-close
+        opacity .9
+    &:before
+      background rgba(255,255,255,.05)
+    a
+      color #fff
+      font-weight 400
+    .onclick-close
+      position absolute
+      top -11px
+      right -3px
+      opacity 0
+      font-size .9em
+      height 20px
+      width 20px
+      line-height 1.3em
+      transition opacity .18s ease-out
+      &:hover
+        transition none
+        opacity 1
+    .next
+      font-size .75em
+      font-weight 100
+      position absolute
+      bottom 20px
+      right 25px
+      letter-spacing -1px
+      color #222
+      padding 0 12px 0 8px
+      background-color rgba(255,255,255,.4)
+      border-radius 4px
+      transition all .3s ease-out
+      border-bottom 1px solid rgba(255,255,255,.65)
+      &:hover
+        color #000
+        background-color rgba(255,255,255,.5)
+        transform translateX(3px)
+        transition all .03s ease-in-out
+      b
+        letter-spacing 0
+        font-weight 400
+        font-size 1.2em
+        margin-left 4px
+  //}}}
 
+// vim:fdm=marker

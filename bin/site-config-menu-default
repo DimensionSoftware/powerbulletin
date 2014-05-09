@@ -27,6 +27,8 @@ all-site-ids = (cb) ->
   cb null, r.map (.id)
 
 site-config-menu = (id, cb) ->
+  err <- db.build-all-uris id
+  if err then return cb err
   err, site <- db.site-by-id id
   if err then return cb err
   console.log "[menu] #{site.name}"

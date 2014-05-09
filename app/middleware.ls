@@ -16,7 +16,7 @@ require! {
   res.locals.env = global.env
 
   # cacheUrls should always be available
-  res.locals {[k,v] for k,v of cvars when k.match /^cache\d?Url$/}
+  res.locals {[k,v] for k,v of cvars when (k.match /^cache\d?Url$/ or k.match /authDomain/)}
 
   next!
 
@@ -27,16 +27,21 @@ require! {
   if site
     {id, name, current_domain, domain_id, domain_config, config} = site
     res.vars.site = site
-    res.locals.site-id        = id
-    res.locals.site-name      = name
-    res.locals.current-domain = current_domain
-    res.locals.analytics      = config.analytics
-    res.locals.invite-only    = config.invite-only
-    res.locals.private        = config.private
-    res.locals.style          = config.style
-    res.locals.domain-style   = domain_config.style
-    res.locals.domain-id      = domain_id
-    res.locals.cache-buster   = config.cache-buster or '' # default
+    res.locals.site-id            = id
+    res.locals.site-name          = name
+    res.locals.current-domain     = current_domain
+    res.locals.header             = config.header
+    res.locals.analytics          = config.analytics
+    res.locals.invite-only        = config.invite-only
+    res.locals.social             = config.social
+    res.locals.style              = config.style
+    res.locals.logo               = config.logo
+    res.locals.private            = config.private
+    res.locals.private-background = config.private-background
+    res.locals.meta-keywords      = config.meta-keywords or ''
+    res.locals.domain-style       = domain_config.style
+    res.locals.domain-id          = domain_id
+    res.locals.cache-buster       = config.cache-buster or '' # default
     for i in ['', 2, 3, 4, 5]
       res.locals["cache#{i}Url"] = cvars["cache#{i}Url"]
     next!
@@ -64,8 +69,7 @@ require! {
   site    = res.vars.site
   site-id = site.id
   tasks =
-    menu:   db.menu site-id, _
-    forums: db.site-summary site-id, 6threads, (req.query?order or \recent), _
+    menu: db.menu site-id, _
 
   err, async-locals <- async.auto tasks
   if err then return next err

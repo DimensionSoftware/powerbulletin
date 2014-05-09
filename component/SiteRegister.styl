@@ -3,15 +3,17 @@
   position relative
   margin 0 auto
   text-align center
+  padding-left 50px
   .SiteRegister-errors
-    bottom 96px
+    bottom 100px
     left 40%
   h3
     position absolute!important
-    left 170px
-    top -75px
+    left 165px
+    top -45px
     opacity 0
-    color #999
+    padding-left 30px
+    color #eee
     margin 0
     font-weight 300
     font-style italic
@@ -23,22 +25,29 @@
     .hostname
       position absolute
       z-index 10
-      top 34px
-      left 27px
+      top 42px
+      left 0
       color #bbb
+      padding-left 83px
       font-size 16px
       vertical-align middle
     .SiteRegister-subdomain
       &:focus
         width 463px
+        box-shadow 0 0 5px 1px theme_color
       float left
       font-size 35px
-      padding 14px
+      padding 18px
       width 467px
-      height 41px
+      height 43px
+      border-radius 7px
+    .hostname-hidden
+      position absolute
+      font-size 35px
+      visibility hidden
     .SiteRegister-available
       position absolute
-      bottom 19px
+      bottom 23px
       right 195px
       z-index 10
       font-weight bold
@@ -57,10 +66,10 @@
       button
         height 69px
     .success
-      color green
+      color theme_color
       display none
     .error
-      color red
+      color dark_theme_color
       display none
 
     .SiteRegister-available.success

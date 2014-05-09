@@ -151,7 +151,7 @@ export user-forgot-password = (user, cb) ->
   if err then return cb err
 
   user.forgot = hash
-  err <- db.aliases.update criteria: { user_id: user.id, site_id: user.site_id }, data: { forgot: hash }
+  err <- db.aliases.update { forgot: hash }, { user_id: user.id, site_id: user.site_id }
 
   cb null, user
 
@@ -160,7 +160,7 @@ export set-login-token = (user, cb) ->
   if err then return cb err
 
   user.login_token = hash
-  err <- db.aliases.update criteria: { user_id: user.id, site_id: user.site_id }, data: { login_token: hash }
+  err <- db.aliases.update { login_token: hash }, { user_id: user.id, site_id: user.site_id }
 
   cb null, user
 
@@ -197,7 +197,7 @@ export create-passport = (domain, cb) ->
   pass.use new passport-local.Strategy (email, password, done) ~>
     console.log email, site.id
     (err, user) <~ db.users.by-email-and-site email, site.id
-    console.log \db.users.by-email-and-site, user
+    #console.log \db.users.by-email-and-site, user
     errors = [ "Invalid login" ] # vague message on purpose
     if err then return done(err)
     if not user

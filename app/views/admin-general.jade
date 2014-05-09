@@ -1,50 +1,165 @@
 analytics = unescape(site.config.analytics)
-form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put")
-  fieldset
+form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", enctype="multipart/form-data")
+  fieldset.col1
     label(for='name') Title
     input(id='name', class='name', name='name', type='text', value=site.name)
+    button.name(type='submit', value='Save') Save
+    .note Appears at top of browser window
     .break
-    label(for='posts_per_page') Posts per Page
-    input(id='posts_per_page', class='posts-per-page', name='postsPerPage', type='text', value=site.config.postsPerPage, maxlength=4)
-    .break
-    label Privacy
+    label(for='invite_only') Invite Only
     .box
-      input#private(type='checkbox', value='checked', name='private', checked=site.config.private)
-      label.switch-control(for='private')
-        .switch
-    .note Hide content from search engines &amp; the public
-    .break
-    label Invite Only
-    .box
-      input#invite_only(type='checkbox', value='checked', name='inviteOnly', checked=site.config.inviteOnly)
+      input.stylish.save#invite_only(type='checkbox', value='checked', name='inviteOnly', checked=site.config.inviteOnly)
       label.switch-control(for='invite_only')
         .switch
     .note Disallow the public from registering - 
       a.mutant(href='/admin/invites') Invites
+    .break
+    .theme
+      input.collapse(id='lookandfeel', type='checkbox')
+      label.onclick-expand(for='click_lookandfeel')
+        h4.onclick-expand Look &amp; Feel
+        .dialog
+          .break
+          //- XXX html5-uploader works inside parent <form>
+          #logo_uploader
+          .break
+          #header_uploader
+          .break
+          //-label(for='theme') Theme
+          //-select(id='theme', name='theme')
+          //-  option(disabled=true, selected=true) - Choose a Theme -
+          //-  each t in themes
+          //-    option(value=t.id)= t.name
+          .break
+          fieldset
+            - var ct = site.config.colorTheme ? site.config.colorTheme : {}
+            label(for='theme') Theme Color
+            .plus-minus.hex
+              input.color-theme(id='theme', name='colorTheme[theme_color]', type='text', value=ct.theme_color, placeholder='#4CCFEA')
+              div.preview.theme(title='Click to choose a Color!', style="background-color: #{ct.theme_color || '#fff'};")
+              button.plus +
+              button.minus -
+            label(for='colored_text') Text Color
+            .plus-minus.hex
+              input.color-theme(id='colored_text', name='colorTheme[colored_text]', type='text', value=ct.colored_text, placeholder='#DDDDDD')
+              div.preview.light-text(title='Click to choose a Color!', style="background-color: #{ct.colored_text || '#fff'};")
+              button.plus +
+              button.minus -
+            label(for='sprite_hue') Sprite Hue
+            .plus-minus.degrees
+              input.color-hue(id='sprite_hue', name='colorTheme[sprite_hue]', type='text', value=ct.sprite_hue, placeholder='0deg')
+              .preview
+                .s-dark-chat
+              .preview.hue-selector(title='Click and Rotate the Color pallette')
+                - for (var i=1; i<=360; i++)
+                  span(class="hue-#{i}", data-hue=i)
+              button.plus +
+              button.minus -
+            .note Modern browsers only
 
-    //-.break
-    //-label(for='theme') Base Theme
-    //-select(id='theme', name='theme')
-    //-  each t in themes
-    //-    option(value=t.id)= t.name
-    .break.double
-    label(for='keywords') Keywords
-    textarea(id='keywords', name='metaKeywords')= site.config.metaKeywords
-    .note Separate meta keywords with commas
+          label(for='style') Custom Style
+          textarea.save(id='style', name='style')= site.config.style
+          .note Paste
+            a(href='http://www.w3schools.com/cssref/', target='_blank') CSS
+            | or 
+            a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
+            | code in above
+          .break
+          button.onsave-hide(type='submit', value='Save') Save
+      .color-picker
+      .onclick-close X
+    input.collapse(id='seo', type='checkbox')
+    label.onclick-expand(for='click_seo')
+      h4.onclick-expand SEO Options
+      .dialog
+        .break
+        label(for='posts_per_page') Replies 
+          small per page
+        input(id='posts_per_page', placeholder='30', class='posts-per-page', name='postsPerPage', type='text', value='30', maxlength=4)
+        .note Default applies to Profile &amp; Forum pages
+        .break
+        label(for='social') Social
+        .box
+          input.stylish.save#social(type='checkbox', value='checked', name='social', checked=site.config.social)
+          label.switch-control(for='social')
+            .switch
+        .note Embed share links for Facebook, Twitter &amp; Google+
+        .break
+        label(for='private') Privacy
+        .box
+          input.stylish.save#private(type='checkbox', value='checked', name='private', checked=site.config.private)
+          label.switch-control(for='private')
+            .switch
+        .note Hide content from search engines &amp; the public
+        .break
+        //- XXX html5-uploader works inside parent <form>
+        #background_uploader
+        .note.below Displays behind the Authentication Dialog for Private Sites
+        .break.double
+        label(for='keywords') Keywords
+        textarea.save(id='keywords', name='metaKeywords')= site.config.metaKeywords
+        .note Separate meta keywords with commas
+        .break
+        label(for='analytics') Analytics
+        textarea.save(id='analytics', name='analytics')= analytics
+        .note Paste Javascript code above, excluding &lt;script&gt; tags
+        .break
+        button(type='submit', value='Save') Save
+        .break
+    .domains
+      input.collapse(id='domains', type='checkbox')
+      label.onclick-expand(for='click_domains')
+        h4.onclick-expand Domains
+        .dialog
+          .break
+          .domain
+            input#custom_domain(type='text', placeholder='Custom-Domain.com')
+            button#add_custom_domain Add
+            span.q ?
+              .message
+                h5 Add your own domain
+                p Purchase from your favorite registrar and point to
+                  b 50.116.30.21
+                p For help, contact 
+                  a(href='mailto:support@powerbulletin.com') support@powerbulletin.com
+          .break
+          p Enable users to login from the respective social network
+          select(id='domain', name='domain')
+            option(disabled='disabled') - Select a Domain -
+            each d in site.domains
+              option(value=d.id)= d.name
+          .break
+          fieldset
+            img(src="#{cacheUrl}/images/facebook_32.png")
+            legend
+              a(href="https://developer.facebook.com/", target="_blank", title="What is this?") Facebook
+            label(for="facebook_client_id") ID
+            input.first(id="facebook_client_id", type='text', name='facebookClientId', placeholder='Facebook API ID ...',
+            value=site.config.facebookClientId)
+            label(for="facebook_client_secret") Secret
+            input(id="facebook_client_secret", type='text', name='facebookClientSecret', placeholder='Facebook secret ...',
+            value=site.config.facebookClientId)
+          fieldset
+            img(src="#{cacheUrl}/images/twitter_32.png")
+            legend
+              a(href="https://dev.twitter.com/", target="_blank", title="What is this?") Twitter
+            label(for="twitter_key") Key
+            input.first(id="twitter_key", type='text', name='twitterConsumerKey', placeholder='Twitter API key ...',
+            value=site.config.twitterConsumerKey)
+            label(for="twitter_secret") Secret
+            input(id="twitter_secret", type='text', name='twitterConsumerSecret', placeholder='Twitter API secret ...',
+            value=site.config.twitterConsumerSecret)
+          fieldset
+            img(src="#{cacheUrl}/images/google_32.png")
+            legend
+              a(href="https://code.google.com/apis/console/", target="_blank", title="What is this?") Google+
+            label(for="google_key") Key
+            input.first(id="google_key", type='text', name='googleConsumerKey', placeholder='Google+ API key ...', value=site.config.googleConsumerKey)
+            label(for="google_secret") Secret
+            input(id="google_secret", type='text', name='googleConsumerSecret', placeholder='Google+ API secret ...',
+            value=site.config.googleConsumerSecret)
+            //-input(type='hidden', name='csrf', value=csrf)
+          button(type='submit', value='Save') Save
+    input(type='hidden', name='action', value='general')
     .break
-    label(for='style') Style
-    textarea(id='style', name='style')= site.config.style
-    .note Paste
-      a(href='http://www.w3schools.com/cssref/', target='_blank') CSS
-      | or 
-      a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
-      | code in above
-    .break
-    label(for='analytics') Analytics
-    textarea(id='analytics', name='analytics')= analytics
-    .note Paste Javascript code above, excluding &lt;script&gt; tags
-  .tooltip
-  button(type='submit', value='Save') Save
-  input(type='hidden', name='action', value='general')
-  a.menu-link.mutant(href='/admin/menu') Click here to continue building your menu
-    i !
+    a.menu-link.mutant(href='/admin/menu') Continue to Menu &rarr;

@@ -4,9 +4,10 @@ form.onclick-submit(action="/resources/users", method="post")
     input(id='emails', class='emails clear', name='emails', type='text')
     .note Separated by commas
     .break
-    label(for='message') Message
-    textarea(id='message', name='message')
+    label(for='message') Invitation
+    textarea(id='message', name='message', placeholder="Your Message ...")
+    .note Users will also receive a sign-up link 
+      i !
 
   button(type='submit', value='Send') Send
-  .tooltip(data-msg='Invites sent!')
   input(type='hidden', name='action', value='invites')

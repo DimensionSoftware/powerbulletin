@@ -1,6 +1,7 @@
 li.default
   div
     span.disclose
+    .icon
     input.row(type='text', placeholder='Title')
     .cancel.onclick-close(title='Delete') X
 
@@ -14,46 +15,69 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
     ol.sortable
   .col2
     fieldset
-      label.type Select a Type
       ul.options
         li
           input.option(id='forum', type='radio', name='dialog', checked='checked', value='forum')
           label.header(for='forum') Forum
+            .desc Discussion &amp; Chat
+            .s-forum.icon
           .dialog
+            label(for='forum_title') Title
+            input#forum_title(type='text', name='forumTitle')
+            .note Titles show in the main menu
+            .break
             label(for='forum_slug') Slug
             input#forum_slug(type='text', name='forumSlug', placeholder='/path/to/forum')
             .note URL suffix for this page
             .break
+            label(for='forum_description') Description
+            input#forum_description(type='text', name='forumDescription')
+            .note Descriptions show on homepage views
+            .break
+            label(for='posts_per_page') Replies 
+              small per page
+            input(id='posts_per_page', placeholder='30', class='posts-per-page', name='postsPerPage', type='text', value='30', maxlength=4)
+            .note Override the default
+            //-.break
             //- XXX html5-uploader works inside parent <form>
-            #uploader_component
+            //-#uploader_component
             .break
             label(for='locked') Admin Only
             .box
-              input#locked(type='checkbox', value='checked', name='locked')
+              input.stylish#locked(type='checkbox', value='checked', name='locked')
               label.switch-control(for='locked')
                 .switch
             .note Lock entire forum (read-only except admin)
-            .break    
+            .break
             label(for='comments') Comments
             .box
-              input#comments(type='checkbox', value='checked', name='comments')
+              input.stylish#comments(type='checkbox', value='checked', name='comments')
               label.switch-control(for='comments')
                 .switch
             .note Commentable forums are threaded like Reddit
-            .break    
+            .break
             button(type='submit', value='Save') Save
-            .tooltip
         li
           input.option(id='page', type='radio', name='dialog', value='page')
           label.header(for='page') Page
+            .desc Raw HTML
+            .s-page.icon
           .dialog
+            label(for='page_title') Title
+            input#page_title(type='text', name='pageTitle')
+            .note Titles show in the main menu
+            .break
             label(for='page_slug') Slug
             input#page_slug(type='text', name='pageSlug', placeholder='/path/to/page')
             .note URL suffix for this page
             .break
+            label(for='page_description') Description
+            input#page_description(type='text', name='pageDescription')
+            .note Descriptions show on homepage views
+            .break
             label Content Only
             .box
-              input#content_only(type='checkbox', value='checked', name='contentOnly')
+              input.stylish#content_only(type='checkbox', value='checked', name='contentOnly')
               label.switch-control(for='content_only')
                 .switch
             .note Hide the header, side-bar &amp; footer for this page
@@ -61,22 +85,45 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             label(for='content') Content
             textarea(id='content', name='content')
             .note Paste the HTML contents of the page above
-            .break    
+            .break
             button(type='submit', value='Save') Save
-            .tooltip
         li
           input.option(id='link', type='radio', name='dialog', value='link')
-          label.header(for='link') External Link
+          label.header(for='link') Link
+            .desc External or Internal
+            .s-link.icon
           .dialog
+            label(for='link_title') Title
+            input#link_title(type='text', name='linkTitle')
+            .note Titles show in the main menu
+            .break
             label(for='url') Url
             input(id='url', type='text', name='url', placeholder='http://')
             .break
+            label(for='link_description') Description
+            input#link_description(type='text', name='linkDescription')
+            .note Descriptions show on homepage views
+            .break
             label(for='separate_tab') Separate Tab
             .box
-              input#separate_tab(type='checkbox', value='checked', name='separateTab')
+              input.stylish#separate_tab(type='checkbox', value='checked', name='separateTab')
               label.switch-control(for='separate_tab')
                 .switch
             .note Open link in separate window
-            .break    
+            .break
             button(type='submit', value='Save') Save
-            .tooltip
+        li
+          input.option(id='placeholder', type='radio', name='dialog', value='placeholder')
+          label.header(for='placeholder') Menu Item
+            .desc Leave Blank for Whitespace
+            .s-placeholder.icon
+          .dialog
+            label(for='placeholder_title') Title
+            input#placeholder_title(type='text', name='placeholderTitle')
+            .note Titles show in the main menu
+            .break
+            label(for='placeholder_description') Description
+            input#placeholder_description(type='text', name='placeholderDescription')
+            .note Descriptions show on homepage views
+            .break
+            button(type='submit', value='Save') Save

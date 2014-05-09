@@ -2,18 +2,22 @@
 
 echo killing old watchers and workers
 # watchers
-pkill -9 -f '^node node_modules/.bin/lsc -cw'
+pkill -9 -f '^node node_modules/.bin/lsc -cw' &
 # workers
 pkill -9 '^pb-worker'
 
 set -e
-echo compiling/watching...
-bin/build-client-jade
-bin/build-component-jade
-# launch this in the background async to pick up file changes
-node_modules/.bin/lsc -cw app client shared component lib/mutant client/requirejs-config public/app plv8_modules &
 
-sleep 3
+echo Compiling...
+bin/build-client-jade &
+bin/build-component-jade &
+bin/build-procs >/dev/null 2>&1 &
 
-echo launching...
-bin/powerbulletin
+echo Launching...
+while true ; do
+  node_modules/.bin/lsc -cw app client shared component lib/mutant client/requirejs-config public/app plv8_modules &
+  grunt launch watch
+  echo Restarting...
+  sleep 0.25
+  done
+

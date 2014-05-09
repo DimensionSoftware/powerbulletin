@@ -1,6 +1,7 @@
 mixin _thread(t)
-  - if (!t.user_photo) t.user_photo = cacheUrl + 'images/profile.jpg'
-  li.thread(data-id=t.id, data-user-id=t.user_id)
+  - if (!t.user_photo) t.user_photo = cacheUrl + 'images/profile.png'
+  li(class="thread#{t.is_sticky ? ' sticky' : ''}#{t.is_locked ? ' locked' : ''}", data-id=t.id, data-user-id=t.user_id)
+    .arrow
     a.mutant(data-surf=t.forum_id, href=t.uri)
       h4.title= t.title
       .break
@@ -8,10 +9,13 @@ mixin _thread(t)
         img(src="#{cacheUrl}#{t.user_photo}")
       .container
         span.username
-          em= t.user_name // XXX weird things happened when I tried to turn this into an anchor
+          //- XXX weird things happened when I tried to turn this into an anchor
+          em= t.user_name
         span.created(data-time=t.created_iso)!= t.created_human
-        .clear
+        .clear-right
         span.post-count= t.post_count
           i posts
         span.views= t.views
           i views
+    .sticky-toggle(title='Pin')
+    .locked-toggle(title='Lock')

@@ -6,10 +6,19 @@ require! {
   crypto
   bbcode
   nodemailer
+  strftime
+  v: \./varnish
+  h: \../shared/shared-helpers
   auth:  \./auth
   cvars: \./load-cvars
 }
 sanitize = require('express-validator/node_modules/validator').sanitize
+
+@ban-all-domains = (site-id) ->
+  # varnish ban site's domains
+  err, domains <- db.domains-by-site-id site-id
+  if err then return next err
+  for d in domains then v.ban-domain d.name
 
 @cache-buster = ->
   crypto.create-hash \sha1 .update(Math.floor((new Date).get-time! * Math.random!).to-string!).digest \hex
@@ -133,38 +142,38 @@ process-cached-data = {}
     #@login(req, res, cb) # on successful registration, automagically @login, too
     cb null, u
 
-@format =
-  chat-message: (s, options={}) ->
-    t0 = @replace-urls(s, @embedded)
-    t1 = sanitize(t0).xss!
-  url-pattern: /(\w+:\/\/[\w\.\?\&=\%\/-]+[\w\?\&=\%\/-])/g
-  replace-urls: (s, fn) ->
-    s.replace @url-pattern, fn
-  embedded: (url) ->
-    if url.match /\.(jpe?g|png|gif)$/i
-      """<img src="#{url}" />"""
+@render-css-fn = ({define=[],use=[],set=[]}) ->
+  (file-name, cb) ->
+    if file-name in global.cvars.acceptable-stylus-files
+      fs.read-file "app/stylus/#{file-name}", (err, buffer) ->
+        if err then return cb err
+        cvars = global.cvars
+        options =
+          compress: true
+        s = stylus(buffer.to-string!, options) # build css
+        for args in define
+          s.define.apply s, args
+        for args in set
+          s.set.apply s, args
+        for args in use
+          s.use.apply s, args
+        s.define \cache-url  cvars.cache4-url # consolidate & mv assets to lesser-used-domain (browser speed)
+          .set \paths [\app/stylus]
+          .use fluidity!
+          .render cb
     else
-      """<a href="#{url}" target="_blank">#{url}</a>"""
-
-
+      cb "#file-name is not allowed"
+@render-css-to-file = (site-id, file-name, cb) ~>
+  fn = @render-css-fn define:[[\site-id, site-id]]
+  fn file-name, (err, blocks) ->
+    if err then return cb err
+    css-file = "public/sites/#site-id/#file-name".replace /\.styl$/, \.css
+    (err) <- fs.write-file css-file, blocks
+    if err then cb err
+    cb null
 @render-css = (file-name, cb) ->
-  if file-name in global.cvars.acceptable-stylus-files
-    fs.read-file "app/stylus/#{file-name}", (err, buffer) ->
-      if err then return cb err
-      cvars = global.cvars
-      options =
-        compress: true
-      stylus(buffer.to-string!, options) # build css
-        .define \cache-url  cvars.cache-url
-        .define \cache2-url cvars.cache2-url
-        .define \cache3-url cvars.cache3-url
-        .define \cache4-url cvars.cache4-url
-        .define \cache5-url cvars.cache5-url
-        .set \paths [\app/stylus]
-        .use fluidity!
-        .render cb
-  else
-    cb "#file-name is not allowed"
+  fn = @render-css-fn define:[[]]
+  fn file-name, cb
 
 @move = (src, dst, cb) ->
   _is = fs.create-read-stream src
@@ -173,5 +182,35 @@ process-cached-data = {}
     err2 <- fs.unlink src
     cb(err)
   _is.pipe(_os)
+
+@rpad = (n, str) ->
+  if str.length >= n
+    str
+  else
+    str + Str.repeat(n - str.length, ' ')
+
+@lpad = (n, str) ->
+  if str.length >= n
+    str
+  else
+    Str.repeat(n - str.length, ' ') + str
+
+@dev-log-format = (tokens, req, res) ->
+  status = res.status-code
+  len    = parse-int res.get-header(\Content-Length), 10
+  color  = switch
+  | status >= 500 => 31
+  | status >= 400 => 31
+  | status >= 300 => 36
+  | otherwise     => 32
+
+  len = if is-NaN len then '' else len
+  "\x1b[38;5;222m#{@lpad 7, req.method} \x1b[90m(\x1b[#{color}m#{res.status-code}\x1b[90m) \x1b[38;5;255m#{req.host}#{req.originalUrl} \x1b[38;5;197m#{new Date - req._start-time}ms - #{len}\x1b[0m"
+
+@prod-log-format = (tokens, req, res) ->
+  status = res.status-code
+  len    = parse-int res.get-header(\Content-Length), 10
+  len    = if is-NaN len then '' else len
+  "#{@lpad 7, req.method} (#{res.status-code}) #{req.host}#{req.originalUrl} #{new Date - req._start-time}ms - #{len} - #{req.ip}"
 
 # vim:fdm=marker

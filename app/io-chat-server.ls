@@ -1,99 +1,67 @@
 require! {
   async
   debug
-  redis
 }
-
-{format} = require \./server-helpers
 
 {map} = require \prelude-ls
 
 log = debug 'io-chat-server'
 
-# Redis Keys
-# chats-by-connection:$sid = hash conversation.id => JSON.stringify(conversation)
-
 module.exports = class ChatServer
 
   (@io, @socket, @presence, @site, @user) ->
-    @r = redis.create-client!
 
-  chats-by-connection: ~>
-    "chats-by-connection:#{@socket.id}"
-
-  join: (c, cb) ~>
-    log \chat-join, { connection: @socket.id, chat: c.id }
-    c.room = "#{@site.id}/conversations/#{c.id}"
-    err <~ @r.hset @chats-by-connection!, c.id, JSON.stringify(c)
+  between: (user-ids, cb=(->)) ~>
+    unless @user.id in user-ids
+      return cb { -success, messages: [ "You're not part of this conversation." ] }
+    err, c <~ db.conversations.between @site.id, user-ids
     if err then return cb err
-    err <~ @presence.enter c.room, @socket.id
-    if err then return cb err
-    @socket.join c.room
     cb null, c
 
-  leave: (c, cb) ~>
-    log \chat-leave, { connection: @socket.id, chat: c.id }
-    err <~ @r.hdel @chats-by-connection!, c.id
+  # summary of unread messages grouped by conversation
+  unread: (cb=(->)) ~>
+    err, unread <~ db.conversations.unread-summary-by-user @site.id, @user.id
     if err then return cb err
-    err <~ @presence.leave c.room, @socket.id
-    if err then return cb err
-    @socket.leave c?room
-    cb null, c
+    cb null, unread
 
-  disconnect: (cb=(->)) ~>
-    # leave all user's chats
-    log \chat-disconnect
-    #for c in keys @connections[@socket.id]
-    #  @leave {id:c, room:"#{@site.id}/conversations/#c"}, (->)
-    err, cs-json <~ @r.hvals @chats-by-connection!
-    if err then return cb err
-    cs = cs-json |> map (-> JSON.parse it)
-    async.each cs, ((c, cb) ~> @leave c, cb), cb
+  # send a message
+  message: (message, cb=(->)) ~>
+    err, msg <~ db.messages.send message
+    cb null, msg
 
-  message: (message, cb) ~>
-    ## if they're not currently online, there should be some way to notify them of new messages when they do get online
-    log \message, message
-    ## if connection has a chat with message.chat_id use it
-    err, c-json <~ @r.hget @chats-by-connection!, message.conversation_id
-    if err then return cb err
-    c = JSON.parse(c-json) if c-json
+  # previous messages
+  previous-messages: (cid, {last=null,limit=30}, cb=(->)) ~>
+    err, c <~ db.conversations.by-id cid
+    if err then return cb { -success, err }
     if c
-      log "remote chat already opened"
-      err, m <~ db.conversation-add-message c.id, { user_id: message.from.id, body: message.body }
-      return cb err if err
-      log \m, m
-      message.id = m.id
-      m.body = message.body = format.chat-message message.body
-      @io.sockets.in c.room .emit \chat-message, message
-      cb null, { conversation: c, message: m }
-
-    ## else load it from the database
+      may-participate = any (~> it.user_id is @user.id), c.participants
+      unless may-participate
+        return cb { -success, errors: [ "#{@user.id} is not a participant of cid #cid" ] }
+      err, messages <~ db.messages.by-cid cid, @user.id, last, limit
+      if err then return cb { -success, err }
+      c.messages = messages
+      c.success = true
+      return cb null, c
     else
-      log "need to setup new remote chat"
-      err, c <~ db.conversation-find-or-create @site.id, [{id:@user.id, name:@user.name}, {id:message.to.id, name:message.to.name}]
-      if err then cb err
+      return cb { -success }
 
-      # join the room for the conversation if we haven't already joined
-      err, c <~ @join c
-      if err then return cb err
+  # mark one message unread for @user
+  mark-read: (mid, cb=(->)) ~>
+    err <~ db.messages.mark-read mid, @user.id
+    cb err, { success: !!err }
 
-      # request a remote chat window be opened
-      user-room = "#{@site.id}/users/#{message.to?id}"
-      log "sending chat-open message to #user-room"
-      @io.sockets.in(user-room).emit \chat-open, c
+  # mark all messages read for combination of cid and @user.id
+  mark-read-since: (mid, cid, cb=(->)) ~>
+    err <~ db.messages.mark-read-since mid, cid, @user.id
+    cb err, { sucess: !!err }
 
-      # broadcast message to channel after delay
-      send-chat-message = ~>
-        message.conversation_id = c.id
-        err, m <~ db.conversation-add-message c.id, { user_id: message.from.id, body: message.body }
-        return cb err if err
-        message.id = m.id
-        m.body = message.body = format.chat-message message.body
-        @io.sockets.in(c.room).emit \chat-message, message
-        cb null, { conversation: c, message: m }
-      set-timeout send-chat-message, 1000ms
+  # figure out the first unread message and mark all read
+  mark-all-read: (cid, cb=(->)) ~>
+    err <~ db.messages.mark-all-read cid, @user.id
+    cb err, { sucess: !!err }
 
-  debug: (cb) ~>
-    log \chat-debug
-    @socket.emit \debug, @socket.id
+  # info on past conversations
+  past: (cb=(->)) ~>
+    db.conversations.past @site.id, @user.id, cb
 
+# vim:fdm=indent

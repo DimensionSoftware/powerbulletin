@@ -1,10 +1,23 @@
-mixin _post_actions(p)
+mixin _post_actions(p, moderatorMode)
   stripped = p.uri ? p.uri.replace(/\/\d+$/, '') : ''
   .actions
-    a.onclick-append-reply-ui(title='Comment')
-      .s-reply
-    a.edit.mutant.no-surf(data-edit=p.id, href="#{stripped}/edit/#{p.id}") Edit
-    a.permalink.mutant(href=p.uri, title='Permalink')
-      .s-permalink
-    a.censor.onclick-censor-post(title='Censor')
-      .s-censor
+    if moderatorMode
+      a.censor.onclick-censor-post(title='Move to Moderation Log') Censor
+        .s-dark-censor
+      a.uncensor.onclick-uncensor-post(title='Remove from Moderation Log') Uncensor
+        .s-dark-censor
+    else
+      if typeof(commentable) != 'undefined' && commentable
+        a.onclick-append-reply-ui(title='Comment') Comment
+          .s-dark-chat
+      else
+        a.onclick-footer-toggle.require-login(title='Comment') Reply
+          .s-dark-reply
+      a.edit.mutant.no-surf(data-edit=p.id, data-href="#{stripped}/edit/#{p.id}") Edit
+        .s-edit
+      a.permalink.mutant(href=p.uri, title='Permalink') Permalink
+        .s-dark-permalink
+      a.censor.onclick-censor-post(title='Move to Moderation Log') Censor
+        .s-dark-censor
+      a.uncensor.onclick-uncensor-post(title='Remove from Moderation Log') Uncensor
+        .s-dark-censor

@@ -50,162 +50,162 @@ inputs =
 
 @type-of-part = (i) ->
   switch i
-  | \page     => \page
-  | \censored => \censored
-  | \t        => \t
-  | \edit     => \edit
-  | \new      => \new
-  | otherwise =>
+  | \page       => \page
+  | \moderation => \moderation
+  | \t          => \t
+  | \edit       => \edit
+  | \new        => \new
+  | otherwise   =>
     if i.match /[\.]/ then return \fbdn #forbidden
     if i.match /^\d+$/ then \number else \string
 
 @machine =
   initial:
-    string   : \forum
-    number   : \forum
-    new      : \forum
-    edit     : \forum
-    censored : \forum
-    m        : \forum
-    t        : \forum
-    page     : \forum
-    fbdn     : \error
+    string     : \forum
+    number     : \forum
+    new        : \forum
+    edit       : \forum
+    moderation : \forum
+    m          : \forum
+    t          : \forum
+    page       : \forum
+    fbdn       : \error
   forum:
-    string   : \forum
-    number   : \forum
-    new      : \new-thread
-    edit     : \forum
-    censored : \moderation
-    t        : \-thread-marker
-    page     : \forum
-    fbdn     : \error
-  moderation:
-    string   : \error
-    number   : \error
-    new      : \error
-    edit     : \error
-    censored : \error
-    m        : \error
-    t        : \error
-    page     : \error
-    fbdn     : \error
+    string     : \forum
+    number     : \forum
+    new        : \new-thread
+    edit       : \forum
+    moderation : \moderation
+    t          : \-thread-marker
+    page       : \forum
+    fbdn       : \error
+  moderation   :
+    string     : \error
+    number     : \error
+    new        : \error
+    edit       : \error
+    moderation : \error
+    m          : \error
+    t          : \error
+    page       : \error
+    fbdn       : \error
   'new-thread':
-    string   : \error
-    number   : \error
-    new      : \error
-    edit     : \error
-    censored : \error
-    m        : \error
-    t        : \error
-    page     : \error
-    fbdn     : \error
+    string     : \error
+    number     : \error
+    new        : \error
+    edit       : \error
+    moderation : \error
+    m          : \error
+    t          : \error
+    page       : \error
+    fbdn       : \error
   '-thread-marker':
-    string   : \thread
-    number   : \thread
-    new      : \thread
-    edit     : \thread
-    censored : \thread
-    m        : \thread
-    t        : \thread
-    page     : \thread
-    fbdn     : \error
+    string     : \thread
+    number     : \thread
+    new        : \thread
+    edit       : \thread
+    moderation : \thread
+    m          : \thread
+    t          : \thread
+    page       : \thread
+    fbdn       : \error
   thread:
-    string   : \thread-permalink
-    number   : \thread-permalink
-    new      : \error
-    edit     : \-edit-marker
-    censored : \error # instead of an error, this could point to a thread-level view of the moderation log
-    m        : \thread-permalink
-    t        : \error
-    page     : \-page-marker
-    fbdn     : \error
+    string     : \thread-permalink
+    number     : \thread-permalink
+    new        : \error
+    edit       : \-edit-marker
+    moderation : \error # instead of an error, this could point to a thread-level view of the moderation log
+    m          : \thread-permalink
+    t          : \error
+    page       : \-page-marker
+    fbdn       : \error
   'thread-permalink':
-    string   : \error
-    number   : \error
-    new      : \error
-    edit     : \-edit-marker
-    censored : \error
-    m        : \error
-    t        : \error
-    page     : \-permalink-page-marker
-    fbdn     : \error
+    string     : \error
+    number     : \error
+    new        : \error
+    edit       : \-edit-marker
+    moderation : \error
+    m          : \error
+    t          : \error
+    page       : \-permalink-page-marker
+    fbdn       : \error
   '-edit-marker':
-    string   : \error
-    number   : \edit
-    new      : \error
-    edit     : \error
-    censored : \error
-    m        : \error
-    t        : \error
-    page     : \error
-    fbdn     : \error
+    string     : \error
+    number     : \edit
+    new        : \error
+    edit       : \error
+    moderation : \error
+    m          : \error
+    t          : \error
+    page       : \error
+    fbdn       : \error
   edit:
-    string   : \error
-    number   : \error
-    new      : \error
-    edit     : \error
-    censored : \error
-    m        : \error
-    t        : \error
-    page     : \error
-    fbdn     : \error
+    string     : \error
+    number     : \error
+    new        : \error
+    edit       : \error
+    moderation : \error
+    m          : \error
+    t          : \error
+    page       : \error
+    fbdn       : \error
   '-permalink-page-marker':
-    string   : \error
-    number   : \thread-permalink-page
-    new      : \error
-    edit     : \error
-    censored : \error
-    m        : \error
-    t        : \error
-    page     : \error
-    fbdn     : \error
+    string     : \error
+    number     : \thread-permalink-page
+    new        : \error
+    edit       : \error
+    moderation : \error
+    m          : \error
+    t          : \error
+    page       : \error
+    fbdn       : \error
   'thread-permalink-page':
-    string   : \error
-    number   : \error
-    new      : \error
-    edit     : \error
-    censored : \error
-    m        : \error
-    t        : \error
-    page     : \error
-    fbdn     : \error
+    string     : \error
+    number     : \error
+    new        : \error
+    edit       : \error
+    moderation : \error
+    m          : \error
+    t          : \error
+    page       : \error
+    fbdn       : \error
   '-page-marker':
-    string   : \error
-    number   : \thread-page
-    new      : \error
-    edit     : \error
-    censored : \error
-    m        : \error
-    t        : \error
-    page     : \error
-    fbdn     : \error
+    string     : \error
+    number     : \thread-page
+    new        : \error
+    edit       : \error
+    moderation : \error
+    m          : \error
+    t          : \error
+    page       : \error
+    fbdn       : \error
   'thread-page':
-    string   : \error
-    number   : \error
-    new      : \error
-    edit     : \error
-    censored : \error
-    m        : \error
-    t        : \error
-    page     : \error
-    fbdn     : \error
+    string     : \error
+    number     : \error
+    new        : \error
+    edit       : \error
+    moderation : \error
+    m          : \error
+    t          : \error
+    page       : \error
+    fbdn       : \error
   error:
-    string   : \error
-    number   : \error
-    new      : \error
-    edit     : \error
-    censored : \error
-    m        : \error
-    t        : \error
-    page     : \error
-    fbdn     : \error
+    string     : \error
+    number     : \error
+    new        : \error
+    edit       : \error
+    moderation : \error
+    m          : \error
+    t          : \error
+    page       : \error
+    fbdn       : \error
 
 
 # Given a URL path, return the type of forum url and the associated metadata
 # @param String path
 # @returns Object info about the forum url
 @parse = (path) ->
-  parts  = path.split '/' |> reject (-> it is '')
+  parts  = path?split '/' |> reject (-> it is '')
   inputs = map @type-of-part, parts
   type   = fsm.new-state @machine, \initial, inputs
   meta   = switch type
@@ -249,7 +249,7 @@ furl.parse '/otherground-forum/supportground/t/new'                             
 furl.parse '/otherground-forum/supportground/t/edit'                                # threads can be called "edit"
 furl.parse '/otherground-forum/supportground/t/edit/edit'                           # ...but we can still identify the edit marker
 furl.parse '/otherground-forum/supportground/t/edit/edit/1234'                      # and know this is an edit url
-furl.parse '/otherground-forum/supportground/t/new-thing'                  
+furl.parse '/otherground-forum/supportground/t/new-thing'
 furl.parse '/otherground-forum/supportground/t/new-thing/page/5'                    # pretty page urls are not a problem
 furl.parse '/otherground-forum/supportground/t/this-is-a-test/edit/2108'
 */

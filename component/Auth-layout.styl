@@ -1,6 +1,14 @@
 //{{{ Login
-#auth a
-  cursor pointer
+#info.tooltip
+    margin-top 15px
+    left 41%!important
+
+#auth
+  padding-bottom 16px
+  a
+    cursor pointer
+  .msg
+    margin-right (grid/2)
 
 .on-dialog
   #auth
@@ -17,6 +25,7 @@
         h3
           text-align center
           margin-top (grid*2)!important
+          margin-right grid
           text-transform uppercase
           letter-spacing 0
           font-weight bold
@@ -24,8 +33,6 @@
     display none!important
 .on-register
   #auth
-    input[name="username"], input[name="password"]
-      background #fff
     input[name="email"]:focus
       border-top-left-radius 4px
       border-top-right-radius 4px
@@ -64,6 +71,8 @@
       opacity 1!important
       transition height .5s, opacity 1s
 #auth
+  padding 5px
+  min-height 240px
   .strength-meter
     position absolute
     transform rotate(180deg)
@@ -72,7 +81,7 @@
     height 20px
     width 8px
     margin-top -36px
-  .toggle-password
+  .generate-password, .toggle-password
     position absolute
     z-index 10
     margin-top -37px
@@ -82,13 +91,17 @@
     right 130px
     padding 0 5px
     cursor pointer
-  .register, .login, .forgot, .reset, .choose
+  .generate-password
+    right 175px
+  .register .tooltip
+    margin-bottom 220px
+  .login, .forgot, .reset, .choose
     .tooltip
       width 210px
       bottom auto
-      margin-top -42px
-      font-size 1em
+      margin-top -58px
   .login .tooltip
+    margin-top -52px
     width 100px
     margin-left -60px
   .login
@@ -103,6 +116,7 @@
   .choose, .forgot, .register, .reset
     a
       h3
+        margin-right grid
         margin-top (grid+2)
         float right
         padding-left 12px
@@ -112,15 +126,15 @@
     display none
   h2
     text-align center
-    margin 20px 0 20px 0
-    letter-spacing 3px
+    margin 0 0 20px 0
+    letter-spacing 1px
     font-weight 200
     font-style italic
-    font-size 2em
+    font-size 1.5em
   h3
     margin 0 5px 10px 0
   .social
-    margin 20px auto
+    margin 15px auto 15px auto
     width 313px
     height 55px
     a
@@ -141,11 +155,21 @@
     width 300px
   button[type="submit"]
     height 42px
-    width 315px
-    margin-left 2px
+    width 318px
     margin-top 5px
     margin-bottom 8px
     display block
-
 //}}}
 
+@media screen and (max-width: 800px)
+  #auth
+    h2
+      color #eee
+    fieldset
+      padding 3px!important
+  .fancybox-overlay, .fancybox-wrap, .fancybox-skin
+    padding 0
+    margin 0
+    background-image none
+    background-color #111!important
+    background #111!important

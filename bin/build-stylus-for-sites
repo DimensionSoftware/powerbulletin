@@ -1,0 +1,46 @@
+#!./node_modules/.bin/lsc
+
+global.pg = require \../app/postgres
+global.m  = require \../app/pb-models
+program = require \commander
+
+{each-limit} = require \async
+{render-css-to-file} = require \../app/server-helpers
+
+const limit = 5 # how many to run simultaneously
+
+program
+  .usage '[SITE-IDs]...'
+  .parse process.argv
+
+
+# main
+# --------
+# init db
+global <<< {db: {}}
+err <- pg.init
+if err then throw err
+global.db <<< pg.procs
+
+# build stylus
+args = program.args
+if args?length
+  err <- each-limit args, limit, render-fn
+  if err then throw err
+  console.log \Done.
+  process.exit 0
+else
+  console.log 'Nothing to do...'
+  process.exit 0
+
+
+function render-fn item, cb
+  if id = parse-int item
+    err, r <- render-css-to-file id, \master.styl
+    if err then return throw err
+    console.log "Built css for site ##id"
+    cb null, id
+  else
+    throw "Bad site id #item"
+
+# vim:ft=ls

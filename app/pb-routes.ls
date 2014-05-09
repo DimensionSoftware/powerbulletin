@@ -21,7 +21,7 @@ personal-mw =
   * cors(origin: '*', credentials: true)
   * express.body-parser!
   * express.cookie-parser!
-  * express.cookie-session {secret:cvars.secret}
+  * express.cookie-session {secret:cvars.secret, proxy:true, cookie:{proxy:true, secure:true, max-age:1000*60*60*24*365}}
   * auth.mw.initialize
   * auth.mw.session
 
@@ -30,25 +30,30 @@ app.all      \/resources/*,                 ...personal-mw
 app.resource \resources/sites,              resources.sites
 app.resource \resources/posts,              resources.posts
 app.resource \resources/users,              resources.users
+app.resource \resources/aliases,            resources.aliases
 app.resource \resources/products,           resources.products
 app.resource \resources/conversations,      resources.conversations
 app.resource \resources/threads,            resources.threads
+app.resource \resources/domains,            resources.domains
 app.get  \/resources/posts/:id/sub-posts,   handlers.sub-posts
 app.post \/resources/posts/:id/impression,  handlers.add-impression
 app.post \/resources/posts/:id/censor,      handlers.censor
+app.post \/resources/posts/:id/uncensor,    handlers.uncensor
+app.post \/resources/posts/:id/sticky,      handlers.sticky
+app.post \/resources/posts/:id/locked,      handlers.locked
 app.post \/resources/users/:id/avatar,      handlers.profile-avatar
+app.put \/resources/users/:id/avatar,       handlers.profile-avatar-crop
+
+app.post   \/resources/sites/:id/header,      handlers.forum-header
+app.delete \/resources/sites/:id/header,      handlers.forum-header-delete
 app.post   \/resources/forums/:id/background, handlers.forum-background
 app.delete \/resources/forums/:id/background, handlers.forum-background-delete
-app.put \/resources/users/:id/avatar,       handlers.profile-avatar-crop
+app.post   \/resources/sites/:id/logo,        handlers.forum-logo
+app.delete \/resources/sites/:id/logo,        handlers.forum-logo-delete
+app.post   \/resources/sites/:id/private-background, handlers.private-background
+app.delete \/resources/sites/:id/private-background, handlers.private-background-delete
 #}}}
 
-# common for all pages within a site
-#{{{ Common CSS - TODO be specific by site's theme (default, minimal, etc....)
-common-css = if process.env.NODE_ENV is \production
-  ["#{cvars.cache2-url}/master.css"]
-else
-  [\/dynamic/css/master.styl] # refresh without building css
-#}}}
 #{{{ Common JS
 common-js = [v for k,v of jsu when k in [
   \jquery
@@ -66,9 +71,6 @@ common-js = [v for k,v of jsu when k in [
   \powerbulletin]]
 ##}}}
 
-# authorization for dreamcodez' blitz.io account
-app.get \/mu-d81b9b5a-572eee60-bc2ce3f6-e3fc404b (req, res) -> res.send \42
-
 # inject testing code in dev only
 app.configure \development ->
   entry = common-js.pop!
@@ -81,7 +83,6 @@ app.get \/admin/:action?,
   personal-mw.concat(
     , mw.require-admin
     , mw.add-js(common-js)
-    , mw.add-css(common-css)
     , mmw.mutant-layout(\layout, mutants)
   ),
   handlers.admin
@@ -100,7 +101,6 @@ app.get '/u/:name', (req, res, next) ->
 app.get '/user/:name',
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.profile
@@ -108,17 +108,41 @@ app.get '/user/:name',
 app.get '/user/:name/page/:page',
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.profile
 #}}}
 
+app.get '/dynamic/css/:file' handlers.stylus # dynamic serving
+
+app.get '/favicon.ico', (req, res, next) ->
+  # TODO - replace with real favicon
+  next 404, \404
+
+app.get '/robots.txt', mw.multi-domain, (req, res, next) ->
+  res.send if res.locals.private
+    '''
+    User-agent: *
+    Disallow: /
+    '''
+  else
+    '''
+    User-agent: *
+    Allow: /
+    '''
+
+# page handler tries to match paths before forum handler
+app.get '*',
+  personal-mw,
+  mw.add-js(common-js),
+  mmw.mutant-layout(\layout, mutants),
+  mw.private-site,
+  handlers.page
+
 app.get '/',
   personal-mw,
   mw.geo,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.homepage
@@ -126,36 +150,19 @@ app.get '/',
 app.get \/search,
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.search
 
 app.get '/hello', handlers.hello
 
-app.get '/dynamic/css/:file' handlers.stylus # dynamic serving
-
-app.get '/favicon.ico', (req, res, next) ->
-  # replace with real favicon
-  next 404, \404
-
 app.get '/:forum/most-active',
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.forum
 
-
-# page handler tries to match paths before forum handler
-app.get '*',
-  personal-mw,
-  mw.add-js(common-js),
-  mw.add-css(common-css),
-  mmw.mutant-layout(\layout, mutants),
-  mw.private-site,
-  handlers.page
 
 # XXX: TODO, FURL needs to take into account these cases so i can get rid of dependent
 # hacky regexps:
@@ -174,7 +181,6 @@ app.get '*',
 app.all new RegExp('^(.+)/t/([^/]+/edit/[^/]+)$'),
   personal-mw ++ [
     mw.add-js(common-js),
-    mw.add-css(common-css),
   ],
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
@@ -184,7 +190,6 @@ app.all new RegExp('^(.+)/t/([^/]+/edit/[^/]+)$'),
 app.all new RegExp('^(.+)/t/(.+)$'),
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.forum
@@ -193,7 +198,6 @@ app.all new RegExp('^(.+)/t/(.+)$'),
 app.all new RegExp('^(.+)/new$'),
   personal-mw ++ [
     mw.add-js(common-js),
-    mw.add-css(common-css),
   ],
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
@@ -203,18 +207,8 @@ app.all new RegExp('^(.+)/new$'),
 app.all new RegExp('^(.+)$'),
   personal-mw,
   mw.add-js(common-js),
-  mw.add-css(common-css),
   mmw.mutant-layout(\layout, mutants),
   mw.private-site,
   handlers.forum
-
-#{{{ Development Debug
-if process.env.NODE_ENV != \production
-  app.get '/debug/sub-posts-tree/:post_id', (req, res, next) ->
-    site = res.vars.site
-    err, d <- db.sub-posts-tree site.id, req.params.post_id, 25, 0
-    if err then return next(err)
-    res.json d
-#}}}
 
 # vim:fdm=marker

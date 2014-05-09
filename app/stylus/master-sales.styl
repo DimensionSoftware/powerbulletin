@@ -7,27 +7,26 @@ vendors = webkit moz official
 grid = 10px
 
 // theamable color defaults (cyan/blue)
-lighta = rgba(230,245,255,.7)
-light  = #4ccfea
-dark   = #40bfdb
-light2 = #00ffcc
-dark2  = #25c6c5
-dark_text  = #3299b0
-light_text = #ddd
+theme_alpha = rgba(230,245,255,.7)
+
+colored_text = #fff
+theme_color  = #4ccfea
+
+dark_theme_color = #40bfdb
+dark_text        = #3299b0
 
 
 // base layout & theme
 @import "app/stylus/theme"
 @import "app/stylus/controls"
 @import "app/stylus/tooltip"
-@import "app/stylus/animations"
+@import "app/stylus/sprites"
 
 @import "component/SalesRouter"
 @import "component/Buy"
 @import "component/ParallaxButton"
 @import "component/SiteRegister"
 @import "component/Sales"
-@import "component/SalesApp"
 @import "component/SuperAdmin"
 @import "component/SuperAdminSites"
 @import "component/SuperAdminUsers"
@@ -35,3 +34,6 @@ light_text = #ddd
 @import "component/Auth-layout"
 @import "component/Auth-theme"
 @import "component/MiniSiteList"
+
+// animations last since they override some of fluidity
+@import "app/stylus/animations"

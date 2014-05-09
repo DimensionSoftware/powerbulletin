@@ -1,17 +1,27 @@
-
-#logo.logo
-  h1 Power
-    b Bulletin
-  em The Official Real-Time Community Builder
+#logo.logo(title='PowerBulletin Forums and Community in real-time!')
+  h1
+    a(href='/', title='PowerBulletin Forums and Community in real-time!') Power
+      b Bulletin
 h2#imagine.stick
-  p Imagine real-time communities at the click of a button.
-  .logo-icon
+  p Your own real-time community
+  ul
+    li The perfect forum to pour your passion
+    li Connect your business, friends, family or colleagues
+    //-li
+    //-  small
+    //-    i Only possible with 
+    //-      b PowerBulletin
+  .logo-icon.onclick-scroll-to(data-scroll-to='#navigation')
+    .beacon
 #register_top
-h2#features.stick.arrow.onclick-scroll-to(data-scroll-to='#navigation')
-  span.why Why you'll
-  span.love love
-  span.pb Power
-    b Bulletin
+#features.stick.arrow.onclick-scroll-to(data-scroll-to='#navigation')
+  .down-arrow
+    .s-down-arrow
+  .slogan
+    span.why Why you'll
+    span.love &hearts;
+    span.pb Power
+      b Bulletin
 nav
   li.navigation
     a.name.onclick-scroll-to(data-scroll-to='#navigation') Navigation
@@ -19,50 +29,68 @@ nav
     a.name.onclick-scroll-to(data-scroll-to='#responsive') Responsive
   li.realtime
     a.name.onclick-scroll-to(data-scroll-to='#realtime') Real-Time
-  li.products
-    a.name.onclick-scroll-to(data-scroll-to='#products') Commerce
+  //-li.products
+  //-  a.name.onclick-scroll-to(data-scroll-to='#products') Commerce
   li.support
     a.name.onclick-scroll-to(data-scroll-to='#support') Support
 .container.first
-  img.bg(src="#{cacheUrl}/images/navigation.jpg")
+  img.bg(src="#{cacheUrl}/images/live_support.jpg", alt='Forum Support Community')
 section#navigation.feature
   article
-    h4 Breakthrough Navigation
-    p
-      | From SEO technology that speedily transmits page delta instead of reloading browsers,
-      | to a split-thread &amp; post interface, the PowerBulletin experience is always secure, fast &amp; fluid.
-    a.arrow.onclick-scroll-to(data-scroll-to="#responsive") Next
+    img(src="#{cacheUrl}/images/navigation-icon.jpg")
+    h4 Seamless Navigation
+    ul
+      li Browse threads without leaving a post
+      li Split interface shows navigation &amp; threads
+      li SEO technology transmits only page differences
+    a.arrow.onclick-scroll-to(data-scroll-to="#responsive")
+      .down-arrow
+        .s-down-arrow
 .container.second
-  img.bg(src="#{cacheUrl}/images/responsiveness.jpg")
+  img.bg(src="#{cacheUrl}/images/navigation.jpg", alt='Responsive Forum Communities')
 section#responsive.feature
   article
-    h4 Unmatched Responsive Design
-    p
-      | A modern, responsive interface that scales from to your phone,
-      | tablet and PC to wide-screen projectors--your PowerBulletin community always stuns.
-    a.arrow.onclick-scroll-to(data-scroll-to="#realtime") Next
+    img(src="#{cacheUrl}/images/responsiveness-icon.jpg", alt='Responsive Forum Communities')
+    h4 Device Responsive
+    ul
+      li Mobile &amp; tablets, to wide-screen &#8210; 
+      li Your PowerBulletin community always stuns
+      li Modern interface that scales across all devices
+    a.arrow.onclick-scroll-to(data-scroll-to="#realtime")
+      .down-arrow
+        .s-down-arrow
 .container.third
-  img.bg(src="#{cacheUrl}/images/real_time_flow.jpg")
+  img.bg(src="#{cacheUrl}/images/responsiveness.jpg", alt='Responsive Community Forum Software')
 section#realtime.feature
   article
+    img(src="#{cacheUrl}/images/real_time_flow-icon.jpg", alt='Forum Communities in Real-time')
     h4 Real-Time Flow
-    p
-      | Ultrafast PowerBulletin is built on a real-time engine that powers
-      | everything from user chat &amp; posts to administration, such as creating products.
-    a.arrow.onclick-scroll-to(data-scroll-to="#products") Next
-.container.fourth
-  img.bg(src="#{cacheUrl}/images/products_ecommerce.jpg")
-section#products.feature
-  article
-    h4 Products &amp; e-Commerce Capabilities
-    p
-      | Sell your business products &amp; services around PowerBulletin communities.
-      | Offering e-commerce is so easy to use, it's easy to love.
-    a.arrow.onclick-scroll-to(data-scroll-to="#support") Next
+    ul
+      li Ultrafast PowerBulletin is built on a real-time engine
+      li Real-time posting, chatting, administration &#8210; everything
+        i !
+      li Always secure, fast &amp; fluid
+    a.arrow.onclick-scroll-to(data-scroll-to="#support")
+      .down-arrow
+        .s-down-arrow
+//-.container.fourth
+//-  img.bg(src="#{cacheUrl}/images/products_ecommerce.jpg")
+//-section#products.feature
+//-  article
+//-    h4 Products &amp; e-Commerce
+//-    ul
+//-      li Sell your business around PowerBulletin communities
+//-      li Offering e-commerce is so easy to use, it's easy to love
+//-      li Coming soon
+//-        i !
+//-    a.arrow.onclick-scroll-to(data-scroll-to="#support")
+//-      .down-arrow
+//-        .s-down-arrow
 .container.fifth
-  img.bg(src="#{cacheUrl}/images/live_support.jpg")
+  img.bg(src="#{cacheUrl}/images/real_time_flow.jpg", alt='Forum Community Software in Real-time')
 section#support.feature.shown
   article
+    img(src="#{cacheUrl}/images/live_support-icon.jpg", alt='Forum Software Support Community')
     h4 Live Support
     p
       | Knowledge is PowerBulletin!  With
@@ -78,14 +106,17 @@ section#faq.faq
     h3 FAQ
     menu
       li
-        h4 Can I change the look of PowerBulletin?
+        h4 Can I customize the look of PowerBulletin?
         p
-          | Absolutely!  We provide a solid default theme to get started quickly.
-          | Anything is possible with your stylish eye:
+          | Absolutely!  Get started with the 
+          b Look &amp; Feel 
+          | section in Your 
+          b /admin. 
+          | Everything is Possible.
           a(href='http://www.w3schools.com/cssref/', target='_blank') CSS
           | &amp;
           a(href='http://learnboost.github.io/stylus/', target='_blank') Stylus
-          | are supported.
+          | are also supported.
     menu
       li
         h4 Contact
@@ -95,5 +126,30 @@ section#faq.faq
           a(href='https://community.powerbulletin.com', target='_blank') Online Community
           br
           a(href='mailto:support@powerbulletin.com') support@powerbulletin.com
+.body-bg
+  img(src="#{cacheUrl}/images/pb_sales_main_bg.jpg", alt='Real-time Forum and Community only possible with PowerBulletin')
+header
+  ul
+    li
+      a.onclick-scroll-to(data-scroll-to="#faq") FAQ
+    li.community
+      a(href='https://community.powerbulletin.com', target='_blank', title='Community Forum') Community
+    li(style="display: none;").my-sites
+      a.onclick-my-sites(title='My Forums') My Communities
+    li.auth
+      a.onclick-login(title='Forum Login') Login
+      a.onclick-logout(title='Forumu Logout', style="display:none;") Logout
+    li
+      button#start_now Start Now
+
+#wrapper.Sales-content
+#info.info.tooltip
+  .msg
+  .onclick-close(title='Close!') X
+  .next
+    b Next 
+    | >>
+
+section#auth
 footer
   .onclick-scroll-top Top

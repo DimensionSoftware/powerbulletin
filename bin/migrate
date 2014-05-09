@@ -5,11 +5,17 @@ require! {
   \async
   program: \commander
   pg: '../app/postgres'
+  models: '../app/pb-models'
 }
 global <<< require \prelude-ls
 
 err <- pg.init
-if err then "Unable to init DB"; process.exit 1 # guard
+if err then console.warn "Unable to init DB"; process.exit 1 # guard
+global.db = pg.procs
+err <- models.init
+if err then console.warn "Unable to init models"; process.exit 2
+# mixing additional keys into 'db' namespace
+do -> db <<< { [k,v] for k,v of models when k not in <[orm client driver]> }
 
 defaults =
   id: 1

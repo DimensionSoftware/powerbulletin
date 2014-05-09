@@ -1,0 +1,172 @@
+@import "fluidity"
+@import "fluidity/type"
+@import "fluidity/normalize"
+
+vendors = webkit moz official
+
+bounce      = cubic-bezier(0,1.72,0,.75)
+theme_color = #4ccfea
+
+
+// overwrite fluidity's box-shadow w/ vendor prefixes for working animations (below)
+box-shadow(arg1, arg2, arg3)
+  box-shadow arg1, arg2, arg3
+
+@keyframes r0
+  0%
+    box-shadow 0 0 8px 6px rgba(theme_color, 0), 0 0 0 0 transparent, 0 0 0px 0px rgba(theme_color, 0)
+
+  10%
+    box-shadow 0 0 8px 6px #1affb3, 0 0 12px 10px transparent, 0 0 12px 14px rgba(darken(theme_color, 20%))
+
+  100%
+    box-shadow 0 0 8px 6px rgba(26, 255, 179, 0), 0 0 0px 40px transparent, 0 0 0px 40px rgba(theme_color, 0)
+
+
+@keyframes fade-in
+  0%
+    opacity 0
+  100%
+    opacity 1
+
+@keyframes rotate-in
+  0%
+    opacity 0
+    transform rotate(-100deg) scale(3.5)
+  80%
+    opacity 1
+  100%
+    transform rotate(0deg) scale(1)
+
+@keyframes build-in
+  0%
+    transform translate(0, 0), scale(.9)
+    opacity 0
+  100%
+    transform translate(-30px, -30px), scale(1)
+    opacity 1
+
+body
+  background-color #000
+  font-family 'Source Sans Pro','Open Sans Condensed','Ubuntu','Helvetica Neue',sans-serif
+  cursor pointer
+  .lense
+    position fixed
+    z-index 2
+    background radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.8) 100%)
+    top 0
+    right 0
+    bottom 0
+    left 0
+  #scene
+    width 100%
+    img
+      position fixed
+      z-index 1
+      min-width 115%
+      margin-left -30px
+      min-height 1015px
+      animation build-in .3s ease-out 1 forwards
+    .container
+      // initially hide everything
+      position fixed
+      top 290px
+      left 50%
+      margin 0 -190px
+      height 100px
+      z-index 5
+      .logo, .beacon
+        opacity 0
+      // loaded happens after background image has
+    &.loaded
+      .logo 
+        text-shadow 0 1px 1px #000
+        position relative
+        z-index 100
+        display block
+        text-indent 105px
+        padding 15px 0 60px 0
+        margin-bottom 15px
+        font-size 3em
+        font-weight 400
+        letter-spacing -1px
+        line-height 53px
+        transform scale(.5)
+        animation build-in .4s ease-in 1 forwards
+        &:after
+          position absolute
+          display block
+          top 0
+          left 0
+          content ''
+          height 100px
+          width 100px
+          background-image url("//muscache2.powerbulletin.com/images/pb_icon_logo.png")
+          background-repeat no-repeat
+          transform rotate(-120deg)
+          animation rotate-in .65s ease-in 1 forwards
+        a 
+          color #fff
+          text-decoration none
+          font-style italic
+          margin-left 6px
+          b 
+            margin-left -2px
+            color #eee
+            font-style normal
+      .beacon
+        opacity 1
+        width 50px
+        height 50px
+        left 15px
+        top 15px
+        border-radius 50%
+        position absolute
+        transition all .2s
+        animation r0 1s ease-out .5s infinite
+        animation-delay .6s
+      .note
+        position absolute
+        background radial-gradient(circle closest-corner at 50% 50%, rgba(0,0,0,.55) 0%, rgba(0,0,0,.01) 100%)
+        top 430px
+        padding 5px 8px
+        margin-left -210px
+        left 50%
+        font-size 1.5em
+        font-weight 200
+        letter-spacing 2px
+        color #3199b0
+        text-align center
+        a
+          color @color
+          text-decoration none
+        b
+          margin-left 4px
+          margin-right 8px
+          letter-spacing 0
+          font-size 1.1em
+
+
+@media screen and (max-width: 800px)
+  body
+    font-size .75em
+    .lense
+      background radial-gradient(circle closest-corner at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%)
+    #scene.loaded
+      padding-left 20px
+      img
+        margin-left -700px
+        min-width 100%
+        max-height 100%
+      .container
+        top 100px
+      .logo
+        a
+          font-size .81em
+          line-height 2px
+          margin-left -10px
+      .note
+        font-size 1em
+        top 205px
+        left 168px
+        font-size 1.3em

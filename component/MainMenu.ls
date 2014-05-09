@@ -1,16 +1,12 @@
 define = window?define or require(\amdefine) module
 require, exports, module <- define
 
-require! {
-  Component: yacomponent
-}
-
-{templates} = require \../build/component-jade
+require! \./PBComponent
 
 module.exports =
-  class MainMenu extends Component
+  class MainMenu extends PBComponent
 
-    #template: templates.MainMenu
+    # XXX renders in mutant static app/views/menu.jade
 
     init: !~>
       @menu = @@$R((new-menu) ~>
@@ -30,6 +26,13 @@ module.exports =
       remove-hover = -> rows.remove-class \hover
 
       # setup delegates
+      @$.on \click ->
+        remove-hover!
+        # force menus closed
+        ul = @@$ '.row > .submenu ul' .add-class \close
+        sm = @@$ '.row > .submenu' .add-class \hide
+        set-timeout (~> ul.remove-class \close; sm.remove-class \hide), 1200ms # remove The Force
+
       rows.on \mouseenter -> # set hover
         clear-timeout intent-timer
         remove-hover!
@@ -44,8 +47,8 @@ module.exports =
 
       @$.on \mouseleave ~> # mouse-hover-intent'd out
         intent-timer := set-timeout (~>
-          remove-hover!
-          @$.find \.active:first .add-class \hover), 400ms
+          remove-hover!), 400ms
+          #@$.find \.active:first .add-class \hover), 400ms
 
     on-detach: -> @$.off!
 

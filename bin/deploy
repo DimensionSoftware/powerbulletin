@@ -1,16 +1,17 @@
 #!/bin/bash -e
 
 # new prod server
-TARGET=165.225.139.183
+TARGET=107.170.231.97
+CI_BRANCH=prod
 
 echo deploying to $TARGET...
 
-echo installing git...
-ssh root@$TARGET -p 3733 apt-get update -y
-ssh root@$TARGET -p 3733 apt-get install git -y
+# using semicolon as the git install might succeed anyway
+GIT_INSTALL_COMMAND='apt-get update -y; apt-get install git -y'
 
 # get deployed source
 REMOTE_GIT_COMMAND="
+echo 'cloning ...'
 git clone \
   --branch $CI_BRANCH \
   --depth 50 \
@@ -18,14 +19,12 @@ git clone \
   /pb \
 || (cd /pb; git checkout $CI_BRANCH; git pull)
 "
-echo updating source...
-ssh root@$TARGET -p 3733 $REMOTE_GIT_COMMAND
 
-#echo setting up NODE_ENV=production
-# below line doesn't check to see if its there already...
-#ssh root@$TARGET 'echo "NODE_ENV=production" >> /etc/environment'
+PROVISION_COMMAND='echo "provisioning...";(cd /pb; bin/provision)'
 
-# XXX/TODO: bounce appservers with killall (mon will restart)
-echo restarting appservers...
-# re-launch daemons + haproxy & varnish after app-servers are restarted
-ssh root@$TARGET -p 3733 'cd /pb; bin/launch; bin/powerbulletin'
+ENV_COMMAND='echo "setting environment...";(grep "NODE_ENV" /etc/environment || echo "NODE_ENV=production" >> /etc/environment)'
+
+BOOT_COMMAND='echo "booting PowerBulletin...";(cd /pb && bin/site-config-menu-default -a && grunt)'
+
+# update, install & boot in a single step!
+ssh root@$TARGET -p 3733 "$ENV_COMMAND;$GIT_INSTALL_COMMAND;($REMOTE_GIT_COMMAND);$PROVISION_COMMAND;$BOOT_COMMAND"

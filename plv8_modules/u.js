@@ -40,10 +40,12 @@
     return results$;
   });
   out$.userFields = userFields = userFields = function(uField, sid){
-    var aliasSql, photoSql;
+    var aliasSql, photoSql, titleSql, activeSql;
     aliasSql = "SELECT a.name FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid;
     photoSql = "SELECT a.photo FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid;
-    return "(" + aliasSql + ") AS user_name,\n(" + photoSql + ") AS user_photo";
+    titleSql = "SELECT a.config FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid;
+    activeSql = "SELECT a.last_activity FROM aliases a WHERE a.user_id=" + uField + " AND a.site_id=" + sid;
+    return "(" + aliasSql + ")  AS user_name,\n(" + photoSql + ")  AS user_photo,\n(" + titleSql + ")  AS alias_config,\n(" + activeSql + ") AS user_last_activity";
   };
   topForums = function(siteId, limit, fields){
     var sql;
@@ -76,7 +78,7 @@
         throw new Error("invalid sort for top-posts: " + sort);
       }
     }());
-    sql = "SELECT\n  " + fields + ",\n  " + userFields('p.user_id', siteId) + ",\n  COUNT(p.id) post_count\nFROM posts p\nLEFT JOIN posts p2 ON p2.thread_id=p.id\nLEFT JOIN moderations m ON m.post_id=p.id\nWHERE p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND m.post_id IS NULL\nGROUP BY p.id\nORDER BY " + sortExpr + "\nLIMIT $2 OFFSET $3";
+    sql = "SELECT\n  " + fields + ",\n  " + userFields('p.user_id', siteId) + ",\n  COUNT(p2.id) post_count\nFROM posts p\nLEFT JOIN posts p2 ON p2.thread_id=p.id\nLEFT JOIN moderations m ON m.post_id=p.id\nLEFT JOIN moderations m2 ON m2.post_id=p2.id\nWHERE p.parent_id IS NULL\n  AND p.forum_id=$1\n  AND m.post_id IS NULL\n  AND m2.post_id IS NULL\nGROUP BY p.id\nORDER BY " + sortExpr + "\nLIMIT $2 OFFSET $3";
     f = function(){
       var args;
       args = slice$.call(arguments);
@@ -128,7 +130,7 @@
     return merge(f, {
       forums: (function(){
         var i$, ref$, len$, results$ = [];
-        for (i$ = 0, len$ = (ref$ = subForums(f.id, 'id,title,slug,uri,description,media_url')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = subForums(f.id, 'id,title,slug,uri,media_url')).length; i$ < len$; ++i$) {
           sf = ref$[i$];
           results$.push(decorateMenu(sf));
         }
@@ -179,7 +181,7 @@
   };
   forumTree = function(forumId, topPostsFun){
     var sql, f;
-    sql = 'SELECT id,site_id,parent_id,title,slug,description,media_url,classes FROM forums WHERE id=$1 LIMIT 1';
+    sql = 'SELECT id,site_id,parent_id,title,slug,media_url,classes FROM forums WHERE id=$1 LIMIT 1';
     if (f = plv8.execute(sql, [forumId])[0]) {
       return decorateForum(f, topPostsFun);
     }
@@ -223,7 +225,7 @@
   };
   out$.menu = menu = function(siteId){
     var topMenuFun, i$, ref$, len$, f, results$ = [];
-    topMenuFun = topForums(siteId, null, 'id,title,slug,uri,description,media_url');
+    topMenuFun = topForums(siteId, null, 'id,title,slug,uri,media_url');
     for (i$ = 0, len$ = (ref$ = topMenuFun(siteId)).length; i$ < len$; ++i$) {
       f = ref$[i$];
       results$.push(decorateMenu(f, topMenuFun));

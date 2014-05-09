@@ -1,5 +1,5 @@
 require! pg
-require! h: \../shared/shared-helpers
+require! \../shared/shared-helpers
 
 export conn-str = "tcp://postgres@localhost/pb"
 
@@ -26,7 +26,7 @@ init-proc = (proname) ->
     if err then return cb(err)
 
     json = res[0][proname]
-    cb null, h.add-dates(JSON.parse(json))
+    cb null, shared-helpers.add-dates(JSON.parse(json))
 
 init-procs = (cb = (->)) ->
   sql = '''
@@ -53,7 +53,9 @@ export init = (cb = (->)) ->
 
 export query = (sql, args, cb) ->
   err, c <- pg.connect conn-str
-  if err then return cb(err)
+  if err
+    console.error \postgres, err
+    return cb(err)
   err, res <- c.query sql, args
   if err then return cb(err)
 

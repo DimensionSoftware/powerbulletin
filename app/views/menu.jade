@@ -1,2 +1,5 @@
 include _menu
-+_menu(0, menu)
+
+//- render menu from _menu (flat & recursive) partials
+if (typeof(menu) === 'object')
+  +_menu(0, menu)

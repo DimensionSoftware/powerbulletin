@@ -1,0 +1,2 @@
+bin/psql pb < procedures.sql
+node_modules/.bin/lsc -c plv8_modules/*.ls

@@ -1,20 +1,136 @@
 // shrink overall look when body has been scrolled
 body.scrolled
-  header
+  header.header
+    &:after
+      background-color transparent
+    &.image
+      // dark gradient
+      &:after
+        background-image linear-gradient(bottom, rgba(0,0,0,0) 14%, rgba(0,0,0,.9))
+        bottom 0
+        height (header_scrolled_height + 5)
+    #header_background, #header_background_buffer, #header_background_color
+      height header_scrolled_height
+      //transition height .1s ease-out
     .container
       .MainMenu
-        .menu
+        #menu.menu
           bottom -2px
           > .row
-            transition line-height .2s ease-out
+            //transition line-height .2s ease-out
             .submenu
+              &.flat
+                .row
+                  line-height 35px
+                  // square arrow
+                  &:before
+                    top 0
               .row
                 line-height (grid*3)
           > .row:hover
             .submenu
               top 28px
-
+header.header
+  a.mutant:hover
+    animation-name tiny-grow
+    animation-duration .2s
+    text-decoration none!important
+  //{{{ background header images
+  &.image
+    // dark gradient
+    &:after
+      content ''
+      z-index 2
+      position absolute
+      width 100%
+      height (header_height + 5)
+      bottom 0
+      right 0
+      background-image linear-gradient(bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,.9))
+      background-color transparent
+      //background radial-gradient(circle closest-corner at 45% 35%, rgba(0,0,0,0,.6) 50%, rgba(255,255,255,0) 100%)
+    #header_background_buffer
+      opacity 0
+      z-index 1
+      display none
+    #header_background, #header_background_buffer, #header_background_color
+      overflow hidden
+      height header_height
+      position relative
+      img
+        z-index 1
+        position absolute
+        width 105%
+        min-height 100%
+      // white gradient
+      &:after
+        position absolute
+        z-index 10
+        content ''
+        left 0
+        top 0
+        bottom 0
+        width 30%
+        max-width 450px
+        background-image linear-gradient(to right, rgba(255,255,255,.95) 10%, rgba(255,255,255,0))
+    .tools
+      .profile.photo
+        box-shadow 2px 1px 10px 2px #111, 0 0 2px 1px dark_theme_color, 1px 1px 3px 2px theme_color
+      //.bubble, .bubble2
+      //  background-color #222
+      .container menu
+        background-color #fff
+        //background-image linear-gradient(bottom, rgba(0,0,0,1) 20%, rgba(0,0,0,.75))
+        li a
+          color #333
+        .onclick-logout
+          a
+            color #555
+          &:hover a
+            color #333!important
+    .MainMenu
+      #menu.menu
+        &.flat
+          .row, .row.active, .row:hover
+            > .submenu
+              > ul
+                .row:hover
+                  background-color transparent
+                  background-image linear-gradient(to bottom, rgba(255,255,255,.01) 50%, rgba(255,255,255,.06))
+                  transition none
+        > .row
+          > .title
+            text-transform uppercase
+            text-shadow 1px 1px 0 rgba(0,0,0,.7)
+            color #ddd
+          //> .title.active, > .title.hover, .title:hover
+          //  color #fff
+        &.active, &.hover
+          &:before
+            content ''
+            position absolute
+            box-shadow 0 0 10px 10px rgba(255,255,255,.5)
+            width 10px
+            height 10px
+          //> .title, > .title.hover, > .title:hover
+          //  color #fff
+        .submenu
+          color #ddd
+          background-color transparent
+          //background-image linear-gradient(bottom, rgba(0,0,0,.9) 50%, #333)
+          //.col-sep, .col-sep2
+          //  background-color #333
+          //.row .title, .row .title:hover
+          //  color #fff
+          //  text-shadow none
+    .container
+      .search
+        .query
+          box-shadow 0 1px 1px -1px #333 inset,2px 3px 4px 0px #bbb inset,0 0 1px 0 #555,0 1px 3px 0 theme_color inset
+  //}}}
 .MainMenu
+  .close
+    display none
   //{{{ Structure-related
   .menu
     padding 0
@@ -30,7 +146,7 @@ body.scrolled
         text-transform capitalize
         padding 0 15px
         margin-right 20px
-    .row.active, .row:hover
+    .row.active, .row.hover, .row:hover
       z-index 7
       > .submenu
         opacity 1
@@ -40,10 +156,25 @@ body.scrolled
         min-width 850px
         padding 10px 0 25px 0
         margin-left -27px
-        box-shadow 0 1px 15px -1px light
-        transition padding .15s ease-out .15s, margin-left .15s ease-out .2s, box-shadow .15s ease-out .2s, max-height .05s ease-out .2s
+        box-shadow 0 -1px 5px -1px theme_color, 0 1px 0 0 theme_color, 0 1px 1px 0 #333
+        transition padding .15s ease-out .25s, margin-left .15s ease-out .3s, box-shadow .15s ease-out .2s, max-height .15s ease-out .3s
+        &.hide
+          opacity 0
+          max-height 0
+          padding 0
+          transition opacity .1s ease-out, max-height .1s ease-in, padding .1s ease-out
+        .col-sep
+          left 270px
+        .col-sep2
+          left 520px
+        .col-sep, .col-sep2
+          position absolute
+          background #eee
+          width 1px
+          bottom 30px
+          top 40px
     .row
-      cursor pointer
+      cursor default
       display inline
       line-height 38px
       font-size 1em
@@ -61,19 +192,86 @@ body.scrolled
         padding 0
         margin 0
         max-height 0
-        min-width 600px
         box-shadow 0
         transition box-shadow 0s ease-out .1s, padding 0s ease-out .1s, opacity .1s ease-out, max-height .0s ease-out .1s, top 0s ease-out .1s, min-width 0s ease-out .1s, margin 0s ease-out .1s
-        > menu
+        //- flat-style (non-recursive) menu
+        &.flat
+          border-radius 6px
+          min-width 300px
+          left 0
+          width 300px
+          overflow hidden
+          padding 0
+          a
+            animation-name none!important
+          .col-sep, .col-sep2
+            display none
+          > ul
+            padding 0
+            margin 8px 0!important
+            .row
+              padding 3px 0 0 10px
+              margin-left -1px
+              border-bottom 1px solid rgba(theme_color, .1)
+              border-right 1px solid theme_color
+              transition none
+              // square arrow
+              &:before
+                position absolute
+                z-index 1
+                content ''
+                //top 0
+                opacity .3
+                top 5px
+                bottom 5px
+                left 20px
+                width 0
+                background theme_color
+                border none
+                transition none
+              &:last-child
+                border-bottom none
+              &:hover
+                background-color transparent
+                background-image linear-gradient(to bottom, rgba(theme_color, .01) 50%, rgba(darken(theme_color, 30%), .08))
+                box-shadow 0 0 1px theme_color inset
+                transition all .08s ease-in
+                a, a:hover
+                  display inline-block
+                  transform scale(1.035)
+                  text-indent 5px
+                  background none
+                  color darken(theme_color, 30%)!important
+                  position relative
+                  padding-left 14px!important
+                  border-radius 0
+                  width 100%
+                  transition none
+                // hovered "active" square arrow
+                &:before
+                  //border 24px solid transparent
+                  //border-left 24px solid theme_color
+                  opacity 1
+                  width 5px
+                  //top -2px
+                  //left -15px
+                  //bottom 1px
+                  top 0
+                  left 0
+                  bottom 0
+                  //transition left .1s ease-out, top .15s ease-in
+                  transition width .2s ease-out
+        > ul
           margin-top 12px!important
-        menu
+        ul
           margin 0
           padding-left 25px
           .row
-            width 250px
+            width 298px
             display inline-block
-            float left
-            font-size .9em
+            clear both
+            //float left
+            font-size .95em
             text-indent 2px
             a
               line-height 28px
@@ -87,16 +285,22 @@ body.scrolled
       > .title.hover
         position relative!important
         z-index 75!important
-        color dark_text!important
+        color dark_text
         transition color .5s ease-out
+      > .title.active::after
+        background radial-gradient(ellipse farthest-corner at 45% 800%, theme_color 50%, rgba(255,255,255,0) 80%)
+        height 5px
+        width 60%
+        transition width .15s ease-out, height .15s ease-out
       > .title.hover::after
-        background radial-gradient(ellipse farthest-corner at 50% 300%, light 50%, rgba(255,255,255,0) 80%)
-        height 8px
+        background radial-gradient(ellipse farthest-corner at 50% 375%, theme_color 50%, rgba(255,255,255,0) 80%)
+        height 7px
         width 60%
         transition width .15s ease-out .15s
       .title.active
-        font-weight bold
-        font-style italic
+        font-weight 400
+        color #222
+        transition color .2s ease-out
       > .title:hover, .title.hover
         color #555
         animation-name tiny-grow!important
@@ -105,7 +309,7 @@ body.scrolled
         text-decoration none
         border-bottom 1px solid transparent
         color #777
-        text-transform uppercase
+        text-transform capitalize
         font-weight 400
       .title::after
         position absolute
@@ -127,17 +331,17 @@ body.scrolled
             display none
           &:hover
             > a
-              color #fff!important
+              color colored_text!important
               animation-name none
               transition none
-              background-color light
+              background-color theme_color
               border-radius 50px
               transform scale(1.05)
           .row.active
             &:hover
               > a
-                color #fff!important
-                background-color light
+                color colored_text!important
+                background-color theme_color
                 transition none
                 padding-bottom 1px
             a
@@ -151,7 +355,8 @@ body.scrolled
             white-space nowrap
             text-overflow ellipsis
         .indent
-          menu
+          float left
+          ul
             margin-top -5px
             margin-left 0
             .row

@@ -2,46 +2,83 @@ include _post
 include _post-actions
 include _breadcrumb
 
+mixin social
+  if typeof(social) !== 'undefined' && social
+    .social
+      .fb-share-button(data-type='button_count')
+      a.twitter-share-button(href='https://twitter.com/share')
+      .g-plus(data-action='share')
+
+//- breadcrumb for posts
+if typeof(post) !== 'undefined'
+  #breadcrumb.breadcrumb
+    +_breadcrumb(post)
+
 //- posts tree
 if typeof(post) !== 'undefined'
-  - if (!post.user_photo) post.user_photo = cacheUrl + 'images/profile.jpg'
+  - if (!post.user_photo) post.user_photo = cacheUrl + 'images/profile.png'
   .forum.resizable
+
+    if post.id != thread.id
+      h2.permalink-title
+        a.mutant(title=thread.body, href=thread.uri)= thread.title
+          span.reply-context &larr; In Reply to
+
     if page == 1
       .post.head(id="post_#{post.id}", class=post.reason ? 'censored' : '', data-user-id=post.user_id, data-post-id=post.id)
-        h3.title= post.title
-        a.user.mutant(href="/user/#{post.user_name}")
-          .profile.photo
-            img(src="#{cacheUrl}/#{post.user_photo}")
-          span.username=post.user_name
-        .date(data-time=post.created_iso)!= post.created_human
+        .onclick-footer-toggle.post-reply.require-login
+          .s-reply
+        .profile-container
+          a.user.mutant(href="/user/#{post.user_name}")
+            .profile.photo
+              img(src="#{cacheUrl}/#{post.user_photo}")
+            span.username=post.user_name
+          .user-title=post.alias_config.title
+          if post.user_last_activity
+            //- rely on client to out human-friendly time
+            .date Active 
+              span(data-time=post.user_last_activity)
+          .date.created(data-time=post.created_iso, title=post.created_friendly)
         .edit-container
-        if post.html
-          p.body!= post.html
+        .container
+          .s-chat-bubble
+          .post-content
+            if post.title
+              h2.title= post.title
+            if post.html
+              .body!= post.html
+          if !post.is_comment && post.alias_config && post.alias_config.sig
+            .sig!= post.alias_config.sigHtml
         .reply
+        //- actions for top-level posts are different from children's post-actions partial
         .actions
-          a.onclick-footer-toggle(title='Reply')
-            .s-reply.onclick-footer-toggle
-          a.edit.mutant.no-surf(data-edit=post.id, href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
-          a.permalink.mutant(href=post.uri, title='Permalink')
-            .s-permalink
-          a.censor.onclick-censor-post(title='Censor')
-            .s-censor
+          a.onclick-footer-toggle.require-login(title='Reply') Reply
+            .s-dark-reply.onclick-footer-toggle.require-login
+          a.edit.mutant.no-surf(data-edit=post.id, data-href="#{post.uri.replace(/\/\d+$/, '')}/edit/#{post.id}") Edit
+            .s-edit
+          //-a.permalink.mutant(href=post.uri, title='Permalink') Permalink
+          //-  .s-dark-permalink
+          a.censor.onclick-censor-post(title='Censor') Censor
+            .s-dark-censor
+          a.uncensor.onclick-uncensor-post(title='Remove from Moderation Log') Uncensor
+            .s-dark-censor
+        +social
     .children
       if post.posts.length
         div(data-page=page)
           each sp in post.posts
             if sp.parent_id !== null
-              mixin _post(sp, 0)
+              +_post(sp, 0)
       else if post.morePosts
         a(href='#') Load more posts ...
-    .onclick-footer-toggle.post-reply
+    .onclick-footer-toggle.post-reply.require-login
       .s-reply
-else //- placeholder
+    .post-bottom
+    if post.posts.length
+      +social
+//- placeholder
+else
   .forum.resizable
-
-if typeof(post) !== 'undefined'
-  #breadcrumb.breadcrumb
-    mixin _breadcrumb(post)
 
 
 //- vim:fdm=marker

@@ -13,37 +13,56 @@ mixin product(p, msg)
       p.green= msg
         span &#x2713;
 
-fieldset
-  h2 Custom Domain
-  p Add your own personal flair!  Get serious and aim any domain at your PowerBulletin community.
-  mixin product('custom_domain', 'Custom Domain Purchased')
-  .notes
-    a.mutant(href='/admin/domains') Click here to bring your domains online!
-    
-fieldset
-  h2 Go Private
-  p Privacy?  We got you covered.  This feature hides your content from Search Engines and the public.
-  mixin product('private', 'Private Site Purchased')
-  .notes
-    a.mutant(href='/admin') Click here to toggle privacy settings!
+.code Applied Deal: 
+  span SAVE33-4-BETA
+.sale.header
+  big
+    b Save 33
+    small %
+  | &nbsp; This Week Only!
+.container
+  fieldset
+    h2 Domains
+    p Get serious and aim any domain at your PowerBulletin community.
+    mixin product('custom_domain', 'Custom Domain Purchased')
+    .sale
+      b UNLIMITED 
+      | for the next 
+      big
+        b 33 
+      | who purchase!
+    .notes
+      a.mutant(href='/admin/domains') Get Started
 
-fieldset
-  h2 Analytics
-  p Your enterprising PowerBulletin community is bustling!  Know who, where and how with your favorite analytics tracker.
-  mixin product('analytics', 'Analytics Purchased')
-  .notes
-    a.mutant(href='/admin') Get started with analytics here!
+  fieldset
+    h2 Go Private
+    p Privacy?  We got you covered.  Have confidence knowing your content is hidden from Search Engines and the public.
+    mixin product('private', 'Private Site Purchased')
+    .notes
+      a.mutant(href='/admin') Get Started
 
-fieldset
-  h2 Super Computing Instance
-  p Your community really took off and you'd like more horsepower--speed is everything!  With your turbo-charged instance comes additional security, monitoring and peace of mind.
-  mixin product('compute_instance', 'Super Computing Instance Purchased')
-  .notes
-    p A PowerBulletin team member will contact you after purchase!
+  fieldset
+    h2 Analytics
+    p Use the sharpest tools.  Know who, where and how with your favorite analytics.
+    mixin product('analytics', 'Analytics Purchased')
+    .notes
+      a.mutant(href='/admin') Get Started
 
-fieldset
-  h2 Engineering &amp; Creative
-  p Need extra personalization for your PowerBulletin community?  Our engineering ninjas entertain inventive ideas!
-  mixin product('engineering', 'Engineering Purchased')
-  .notes
-    p A PowerBulletin team member will contact you after purchase!
+  fieldset
+    h2 Super Compute Cloud
+    p Leverage the cloud as an engine for community growth - speed is everything!  With your turbo-charged cloud instance comes additional security, monitoring and peace of mind.
+    mixin product('compute_instance', 'Super Computing Cloud Instance Purchased')
+    .notes
+      p We will contact you after purchase
+        i !
+
+  fieldset
+    h2 Engineering &amp; Creative
+    p Need extra personalization for your PowerBulletin community?  Our engineering ninjas entertain inventive ideas!
+    mixin product('engineering', 'Engineering Purchased')
+    .sale.small
+      b FREE
+        i !
+    .notes
+      p We will contact you after purchase
+        i !

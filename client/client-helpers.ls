@@ -8,138 +8,112 @@ if window?
 
 #{{{ Editing Posts
 @post-success = (ev, data) ~>
-  f = $ ev.target .closest \.post-edit # form
-  p = f.closest \.editing # post being edited
-  t = $(f.find \.tooltip)
+  e = $ ev.target
+  f = e.closest \.post-edit # form
+  t = e.find \.tooltip
   unless data.success
     @show-tooltip t, data?errors?join \<br>
-    f.find \textarea:first .focus!
+    e.find \textarea:first .focus!
   else
     # render updated post
-    p.find \.title .html data.0?title
-    p.find \.body  .html data.0?body
+    p = $ "[data-post-id='#{data.post?0?id}']" #f.closest \.editing # post being edited
+    p.find \.title .html data.post?0?title
+    p.find \.body  .html data.post?0?html
     f.remove-class \fadein .hide 300s # & hide
     meta = furl.parse window.location.pathname
     window.last-statechange-was-user = false # flag that this was programmer, not user
     switch meta.type
     | \new-thread => History.replace-state {} '' data.uri
     | \edit       => @remove-editing-url meta
-    # close drawer & cleanup
-    $ \footer .remove-class \expanded
-    $ \body   .remove-class \disabled
+    # close drawer
+    window.component.postdrawer.close!
+    #window.component.postdrawer?detach!
+    #window.component.postdrawer = void
     $ '#post_new .fadein' .remove!
   false
 
-@ck-submit-form = (e) ~>
-  editor = e?element?$
-  ev = {target:editor} # mock event
-  unless editor?id # editing, so--build post
-    $p = $ editor .closest \.post
-    $.ajax {
-      url: \/resources/posts/ + $p.data \post-id
-      type: \put
-      data:
-        id:        $p.data \post-id
-        forum_id:  $p.data \forum-id
-        parent_id: $p.data \thread-id
-        body:      e.get-data!
-      success: (data) ->
-        e.fire \blur
-        $p.find '[contentEditable=true]' .blur!
-    }
-  else
-    @submit-form ev, (data) ~> # ...and sumbit!
-      @post-success ev, data
-
 @submit-form = (ev, fn) ~>
-  $f = $ ev.target .closest(\form) # get event's form
-  $s = $ $f.find('[type=submit]:first')
+  $f = $ ev.target .closest \form # get event's form
+  form-data = if $f?length
+    $f.serialize!
+  else # mock form (eg. PostDrawer's Editor is outside a <form>)
+    $f = $ ev.target.closest \.form
+    [encodeURI("#k=#v&") for k,v of {
+      body:     ($f.find '[name="body"]' .val!)
+      title:    ($f.find '[name="title"]' .val!)
+      id:       ($f.find '[name="id"]' .val!)
+      parent_id:($f.find '[name="parent_id"]' .val!)
+      forum_id: ($f.find '[name="forum_id"]' .val!)}].join('').replace /,$/, ''
+
+  # disable inputs
+  $s = $ $f.find '[type=submit]:first'
   if $s then $s.attr \disabled \disabled
-
-  # is body in ckeditor?
-  body = $f.find \textarea.body
-  e    = CKEDITOR?instances?[body.attr \id]
-  if e
-    input = e.get-data!
-    if input?length
-      body.val input # fill-in
-      e.set-data ''  # clear
-
   $.ajax { # submit!
-    url:       $f.attr \action
-    type:      $f.attr \method
-    data:      $f.serialize!
+    url:  $f.attr \action
+    type: $f.attr \method
+    data: form-data
     data-type: \json
     success:   (data) ~>
-      $s.remove-attr \disabled
+      $s.remove-attr \disabled # re-enable
+      @show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
       if fn then fn.call $f, data
     error: (data) ~>
-      $s.remove-attr \disabled
+      $s.remove-attr \disabled # re-enable
       @show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
   }
   set-timeout (-> $f.find \input.title .focus!), 100ms # focus!
   false
 
-# makes entire page inline-editable for user-id
-@set-inline-editor = (user-id) ~>
-  $ ".post[data-user-id=#user-id] .post-content"
-    .attr \contentEditable true
-  <- @lazy-load-editor
-  for e in CKEDITOR.instances then e.destroy true # cleanup
-  try CKEDITOR.inline-all!
-
-# handle in-line editing
-focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 10ms
+# handle editing
+focus  = ($e) -> set-timeout (-> $e.find 'input[type="text"]' .focus!), 200ms
 render = (sel, locals, cb=(->)) ~>
   $e = $ sel
   render-and-append window, sel, \post-edit, {user:user, post:locals}, ($e) ->
     cb!
     focus $e
-@toggle-post = (ev) ~>
+
+@postdrawer = ~>
+  return pd if pd = window.component.postdrawer # guard
+  window.component.postdrawer = new PostDrawer {locals:{
+    forum-id:window.active-forum-id,
+    parent-id:window.active-thread-id}}, \#post_new
+
+@toggle-postdrawer = (ev) ~>
   # guards
-  unless $ ev?target .has-class \onclick-footer-toggle then return
-  if $ \html .has-class \new then return
+  if ev # XXX pass-through programatical calls
+    unless $ ev.target .has-class \onclick-footer-toggle then return
+  unless (window.user?rights?super or window.user?sys_rights?super)
+    if $ \body .has-class \locked then return
   unless user then Auth.show-login-dialog!; return
+  @postdrawer!set-draft!
+  @postdrawer!toggle!
 
-  data =
-    action: \/resources/posts
-    method: \post
-  # setup form
-  e = $ \footer
-  if e.has-class \expanded # close drawer & cleanup
-    e.remove-class \expanded
-    $ \body .remove-class \disabled
-    #try CKEDITOR.instances.post_new.destroy true
-    $ '#post_new .fadein' .remove!
-  else # bring out drawer & init+focus editor
-    e.add-class \expanded
-    $ \body .add-class \disabled
-    render \#post_new, data, ~> # init form
-      <- @lazy-load-editor
-      unless CKEDITOR.instances.post_new
-        CKEDITOR.replace ($ '#post_new textarea' .0), {startup-focus:true}
-      e.find 'form.post-new input[name="forum_id"]' .val window.active-forum-id
-      e.find 'form.post-new input[name="parent_id"]' .val window.active-thread-id
+@open-postdrawer = (ev) ~> @postdrawer!open!
 
-@edit-post = (id, data={}) ~>
+# thread mode toggles between top-level posts w/ a title
+@thread-mode = (mode=true) ~> # true is thread mode (has an editable title, etc...)
+  $ \footer .toggle-class \thread, mode
+  $ '[name="title"]' .val ''
+  if active-forum-id? then $ '[name="forum_id"]' .val active-forum-id # set forum
+  unless mode then @postdrawer!edit-mode! # back to reply mode
+@in-thread-mode = -> ($ \footer .has-class \thread) and ($ \footer .has-class \expanded)
+
+@edit-post = (id) ~>
   if id is true # render new
     scroll-to-top!
     $ \html .add-class \new # for stylus
-    data.action = \/resources/posts
-    data.method = \post
-    render \.forum, data, ~> # init editor on post
-      <- @lazy-load-editor
-      CKEDITOR.replace($ \#editor .0)
+    @postdrawer!clear!
+    @thread-mode!
+    @postdrawer!set-creating-mode!
+    @open-postdrawer!
   else # fetch existing & edit
     sel = "\#post_#{id}"
     e   = $ sel
-    unless e.find("\#post_edit_#{id}:visible").length # guard
-      #awesome-scroll-to "\#post_#{id}" 600ms
-      $.get "/resources/posts/#{id}" (p) ->
-        render sel, p
-        e .add-class \editing
-    else
-      focus e
+    @thread-mode false
+    $.get "/resources/posts/#{id}" (p) ~>
+      # setup & open post drawer
+      @postdrawer!set-post p
+      @open-postdrawer!
 #}}}
 #{{{ Lazy loading
 load-css-cache = {}
@@ -153,12 +127,17 @@ load-css = (href) ->
   b.add-class \waiting
   unless test!
     if css then load-css css
-    <- headjs script
+    <- require [script]
     b .remove-class \waiting
     cb!
   else
     b .remove-class \waiting
     cb!
+@lazy-load-autosize = (cb) ~>
+  @lazy-load (-> window.$!fn?autosize),
+    "#cache-url/local/jquery.autosize.min.js",
+    null,
+    cb
 @lazy-load-nested-sortable = (cb) ~>
   @lazy-load (-> window.$!nested-sortable?length),
     "#cache-url/local/jquery.mjs.nestedSortable.js",
@@ -167,16 +146,16 @@ load-css = (href) ->
 @lazy-load-html5-uploader = (cb) ~>
   @lazy-load (-> window.$!html5-uploader?length),
     "#cache-url/local/jquery.html5uploader.js",
-    "#cache-url/local/editor/skins/moono/editor.css",
+    null,
     cb
 @lazy-load-jcrop = (cb) ~>
   @lazy-load (-> window.$!Jcrop?length),
     "#cache-url/jcrop/js/jquery.Jcrop.min.js",
     "#cache-url/jcrop/css/jquery.Jcrop.min.css",
     cb
-@lazy-load-editor = (cb) ~>
-  @lazy-load (-> CKEDITOR?version),
-    "#cache-url/local/editor/ckeditor.js",
+@lazy-load-complexify = (cb) ~>
+  @lazy-load (-> window.$.fn.complexify),
+    "#cache-url/local/jquery.complexify.min.js"
     null,
     cb
 @lazy-load-fancybox = (cb) ~>
@@ -185,11 +164,17 @@ load-css = (href) ->
     "#cache-url/fancybox/jquery.fancybox.css",
     cb
 @lazy-load-socketio = (cb) ~>
-  @lazy-load (-> window.io),
-    "#cache-url/local/socket.io.min.js?#{window.CHANGESET}",
+  @lazy-load (-> window.$!fancybox?length),
+    "#cache-url/local/socket.io.min.js",
     null,
     cb
 #}}}
+
+@storage = # use local storage
+  del: (k)    -> local-storage.remove-item k
+  get: (k)    -> try local-storage.get-item k |> JSON.parse
+  has: (k)    -> local-storage.has-own-property k
+  set: (k, v) -> local-storage.set-item k, JSON.stringify v
 
 @fancybox-params =
   close-effect: \elastic
@@ -200,6 +185,23 @@ load-css = (href) ->
 
 @respond-resize = ~>
   w = $ window
+  # augment stylus for height
+  if e = $ \.thread.active
+    switch e.height!
+    | 54 => # one-liner title
+      e.add-class \small
+      e.remove-class 'medium large x-large'
+    | 76 => # most variations fit into medium
+      e.add-class \medium
+      e.remove-class 'small large x-large'
+    | 98 => # long title & narrow nav
+      e.add-class \large
+      e.remove-class 'small medium x-large'
+    | 120 => # 3 or 4 row title
+      e.add-class \x-large
+      e.remove-class 'small medium large'
+    e.remove-class \hidden
+
   unless window.mutator is \admin # FIXME improve responsive.styl
     if w.width! <= 800px then $ \body .add-class \collapsed
 
@@ -235,28 +237,84 @@ load-css = (href) ->
   History.push-state params, '', href
   false
 
+@show-info = (index=0, ...msgs) ~>
+  reset-ui = ->
+    $ \.raised .remove-class \raised # reset DOM
+    $i.remove-class \hover # close last
+    $b
+      ..remove-class \disabled
+      ..off \click.disabled
+    false
+
+  $b = $ \body
+  if ($i=$ \#info)?length
+    if index >= msgs.length then reset-ui!; return
+
+    command = msgs[index]
+    if typeof! command is \Function # run (useful to setup & teardown ui)
+      do command
+      @show-info index+1, ...msgs # recur
+
+    else # setup info dialog for this iteration
+      if [control, msg, arrow=false] = msgs[index]
+        if ($e = $ control)?length is 1 # raise control & reposition tooltip to control
+          left = $e.position!left + ($i.width!/2)
+          $e
+            ..0?scroll-into-view!
+            ..add-class \raised
+          $i # position
+            ..toggle-class \right, arrow is true # points left
+            ..toggle-class \left,  arrow is -1   # points right
+            ..css \top, ($e.position!top - 10px) + \px
+            ..css \left (switch arrow
+              | 1     => \50%
+              | true  => left + 280px
+              | false => left) + \px
+        else # for none & multiple elements, use top-dead-center of screen
+          if $e?length then $e.add-class \raised
+          $i
+            ..remove-attr \style # remove position
+            ..css \left, (parse-int(($ window .width!) - $i.width!) / 2) + \px
+
+        $b
+          ..add-class \disabled
+          ..on \click.disabled -> reset-ui!
+        <~ set-timeout _, 30ms # yield (smooth animations)
+
+        $i # show info tip
+          ..off! # cleanup
+          ..show!
+          ..find \.msg .html msg # set message
+          ..find \.next .toggle-class \hidden, (index >= msgs.length-1)
+          ..find \.onclick-close .click -> reset-ui!
+          ..add-class \hover # show!
+          ..click ~> @show-info index+1, ...msgs; false # recurse
+          ..0?scroll-into-view!
+
 timers = {}
-@show-tooltip = ($tooltip, msg, duration=5000ms) ~>
-  unless msg?length then return # guard
-  timer = timers[msg]
-  if timer then clear-timeout timer
-  $tooltip.html msg .add-class \hover # show
-  timers[msg] = set-timeout (-> timers[msg]=void; $tooltip.remove-class \hover), duration # remove
+@show-tooltip = ($tt, msg, duration=4500ms) ~>
+  key = $tt.attr \id # keyed to tooltip id
+  if $tt?length
+    unless msg?length then $tt.remove-class \hover; return # hide & guard
+    timer = timers[key]
+    if timer then clear-timeout timer
+    $tt.html msg .add-class \hover # show
+    timers[key] = set-timeout (-> timers[key]=void; $tt.remove-class \hover), duration # remove
 
 @switch-and-focus = (remove, add, focus-on) ~>
   $e = $ \.fancybox-wrap
   $e.remove-class("#remove shake slide").add-class(add)
   set-timeout (-> # animate & yield before focus, so smooth!
     $e.add-class \slide
-    set-timeout (-> $ focus-on .focus!), 250ms), 50ms
+    set-timeout (-> $ focus-on .focus!select!), 250ms), 50ms
 
 @set-online-user = (id) ~>
   $ "[data-user-id=#{id}] .profile.photo"
     ..add-class \online
     ..attr \title, \Online!
 
-@set-profile = (src) ~>
-  $ \.photo
+@set-profile = (src) ~> # top-right profile/login area
+  $ '.tools > .photo'
     ..attr \href "/user/#{user.name}"
     ..add-class \online # set online!
     ..attr \title user.name

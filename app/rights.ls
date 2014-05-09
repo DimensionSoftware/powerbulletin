@@ -5,7 +5,7 @@
     cb null false
 
 @can-edit-user = (user, target-user-id, cb) ->
-  if user.rights.super
+  if user.rights.super or (user.id is target-user-id)
     cb null true
   else
     cb null false

@@ -1,10 +1,13 @@
 
 .container
+  if sites && sites.length
+    h2.sites Go Admin &rarr;
+      .dialog
+        each s,i in sites
+          a(href="//#{s.domains[0]}/auth/once-admin")!= s.name
   menu
     li.general
       a.mutant(href="/admin") General
-    li.domains
-      a.mutant(href="/admin/domains") Domains
     li.menu
       a.mutant(href="/admin/menu") Menu
     li.users.feature

@@ -1,4 +1,4 @@
-h3 Create a name now
+h3 Create your web address now
   i !
 .tooltip.SiteRegister-errors
 form.site-register
@@ -6,6 +6,7 @@ form.site-register
     input.SiteRegister-subdomain(type='text', name='subdomain', value=typeof subdomain != 'undefined' ? subdomain : '', autocomplete="off")
       t
     span.hostname= hostname
+    span.hostname-hidden
     span.SiteRegister-available
       //- unicode checkmark
       .success &#x2713;

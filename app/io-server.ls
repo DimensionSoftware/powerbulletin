@@ -7,7 +7,6 @@ require! {
   RedisStore: 'socket.io/lib/stores/redis'
   ChatServer: './io-chat-server'
   Presence: './presence'
-  '../component/Chat'
   sio: \socket.io
   pg: \./postgres
   m: \./pb-models
@@ -20,12 +19,15 @@ log = debug 'io-server'
 user-from-session = (s, cb) ->
   unless s?passport?user
     return cb null, {id:0, name:\Anonymous, guest:true}
-  [email, site_id] = s?passport?user?split \:
-  if email and site_id
-    (err, user) <~ db.users.by-email-and-site email, site_id
+  [name, site_id] = s?passport?user?split \:
+  if name and site_id
+    (err, user) <~ db.usr { name, site_id }
     if err
       log \user-from-session, \db.usr, err
       return cb err
+    if not user
+      console.log \no-user
+      return cb new Error("couldn't find user")
     delete user.auths
     cb null, user
   else
@@ -36,6 +38,11 @@ site-by-domain = (domain, cb) ->
     cb null null
   else
     db.site-by-domain domain, cb
+
+# This is intended to be run on startup to clear stale data out of redis.
+# TODO - make this less heavy handed
+clear-stale-redis-data = (r, cb) ->
+  r.flushall cb
 
 @init = (server) ->
   err <- pg.init
@@ -63,8 +70,10 @@ site-by-domain = (domain, cb) ->
   redis-store  = new RedisStore({ redis, redis-pub, redis-sub, redis-client })
   io.set \store, redis-store
 
+  err <- clear-stale-redis-data redis-client
+
   io.set \authorization, (handshake, accept) ->
-    if not handshake
+    if not handshake or handshake?domain
       return accept("null handshake", false)
     handshake.domain = handshake.headers.host
     if handshake.headers.cookie
@@ -85,9 +94,26 @@ site-by-domain = (domain, cb) ->
       log "no cookies found during socket.io authorization phase"
       return accept(null, true)
 
+  seen-socket-ids = {}
+
   io.on \connection, (socket) ->
     var search-room
     var presence
+
+    socket.on \ok, (cb) ->
+      console.warn "ok #{socket.id}"
+      if cb then cb null, \ok
+
+    console.warn { connecting: socket.id, pid: process.pid }
+    if seen-socket-ids[socket.id]
+      console.warn "#{socket.id} already connected"
+      return
+    else
+      seen-socket-ids[socket.id] = 1
+
+    if not socket
+      log "no socket; bailing to prevent crash"
+      return
 
     if not socket.handshake
       log "no socket.handshake; bailing to prevent crash"
@@ -98,7 +124,12 @@ site-by-domain = (domain, cb) ->
       log err
       return
 
-    err, site <- site-by-domain socket.handshake.domain
+    err <- db.aliases.update-last-activity-for-user user
+    if err
+      log err
+      return
+
+    err, site <- site-by-domain socket.handshake?domain
     if err
       log err
       return
@@ -113,6 +144,8 @@ site-by-domain = (domain, cb) ->
     if err then log \presence.enter, err
     log "joining #site-room"
     socket.join site-room
+    if user?guest # logged out user
+      socket.emit \logout, {}
     if user
       err <- presence.users-client-add socket.id, user
       if err then log \presence.users-client-add, err
@@ -123,18 +156,25 @@ site-by-domain = (domain, cb) ->
 
     #ChatServer
     chat-server = new ChatServer(io, socket, presence, site, user)
-    socket.on \chat-message, chat-server.message
-    socket.on \chat-join, chat-server.join
-    socket.on \chat-leave, chat-server.leave
-    socket.on \chat-debug, chat-server.debug
+    socket.on  \chat-message,            chat-server.message
+    socket.on  \chat-between,            chat-server.between
+    socket.on  \chat-unread,             chat-server.unread
+    socket.on  \chat-previous-messages,  chat-server.previous-messages
+    socket.on  \chat-mark-read,          chat-server.mark-read
+    socket.on  \chat-mark-read-since,    chat-server.mark-read-since
+    socket.on  \chat-mark-all-read,      chat-server.mark-all-read
+    socket.on  \chat-past,               chat-server.past
 
     socket.on \disconnect, ->
+      delete seen-socket-ids[socket.id]
       log \disconnected
       err <- presence.leave-all socket.id
       if err then log \presence.leave-all, err
       if search-room
         socket.leave search-room
       if user and site
+        err <- db.aliases.update-last-activity-for-user user
+        if err then return log \db.aliases.update-last-activity-for-user, err
         err <- presence.users-client-remove socket.id, user
         if err then return log \presence.users-client-remove, err
         err, cids <- presence.cids-by-uid user.id
@@ -142,17 +182,20 @@ site-by-domain = (domain, cb) ->
         log "#{user.name}'s cids", cids
         if cids.length is 0
           io.sockets.in(site-room).emit \leave-site, user
-        chat-server.disconnect!
+
+    socket.on \ping, (data, cb) ->
+      if user and site
+        err <- db.aliases.update-last-activity-for-user user
+        if err then return log \db.aliases.update-last-activity-for-user, err
+      io.sockets.in(site-room).emit \enter-site, { user.id }
+      if cb
+        cb null, \pong
 
     socket.on \online-now, ->
       err, users <- presence.in "#{site.id}"
       unless err then try # guard
         users |> filter (-> it) |> each (u) ->
-          socket.in("#{site.id}").emit \enter-site, u # not braoadcast
-
-    socket.on \debug, ->
-      socket.emit \debug, socket.manager.rooms
-      io.sockets.in('1/users/3').emit \debug, 'hi again to 3'
+          socket.in("#{site.id}").emit \enter-site, u # not broadcast
 
     # client no longer needs realtime query updates (navigated away from search page)
     socket.on \search-end, ->
@@ -181,3 +224,11 @@ site-by-domain = (domain, cb) ->
 
       # register search with the search notifier
       io.sockets.emit \register-search, {searchopts, site-id: site.id, room: search-room}
+
+    socket.on \debug, (args, cb=(->)) ->
+      console.warn \debug, args
+      socket.emit \debug, args
+      cb null, args
+
+    console.warn \ready, socket.id
+    socket.emit \ready

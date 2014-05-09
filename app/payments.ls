@@ -29,18 +29,12 @@ export subscribe = ({
   unless site-id
     return cb new Error "siteId is required to subscribe"
 
-  err, product <~ db.products.find-one {
-    criteria: {id: product-id}
-    columns: [\price]
-  }
+  err, product <~ db.products.select-one id: product-id
   if err then return cb err
   unless product
     return cb new Error "Subscription requires a valid product"
 
-  err, res <~ db.sites.find-one {
-    criteria: {id: site-id}
-    columns: [\user_id]
-  }
+  err, res <~ db.site-by-id site-id
   if err then return cb err
   unless user-id = res?user_id
     return cb new Error "Site must have an owner to subscribe"
@@ -57,10 +51,7 @@ export subscribe = ({
   }
   subscription <<< {card} if card
 
-  err, res <~ db.users.find-one {
-    criteria: {id: user-id}
-    columns: [\stripe_id]
-  }
+  err, res <~ db.users.select-one id: user-id
   if err then return cb err
   if stripe-id = res.stripe_id
     err <- @client.customers.update_subscription stripe-id, subscription
@@ -74,7 +65,7 @@ export subscribe = ({
     err, customer <- @client.customers.create subscription
     if err then return cb err
 
-    err <- db.users.update {criteria: {id: user-id}, data: {stripe_id: customer.id}}
+    err <- db.users.update { stripe_id: customer.id }, { id: user-id }
     if err then return cb err
 
     err <- db.add-subscription site-id, product-id

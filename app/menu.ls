@@ -15,7 +15,7 @@ require! {
     return [ ...p, menu.index-of(menu-item) ]
   else
     #console.log \not-found
-    ndx-menu-pairs = menu |> map (.children) |> zip [0 to 1000] |> filter (-> it.1)
+    ndx-menu-pairs = menu |> map (.children) |> zip [0 to 200] |> filter (-> it.1)
     if ndx-menu-pairs.length
       #console.log \child-menus
       f = null
@@ -166,16 +166,18 @@ require! {
       title       : title
       uri         : form.forum-slug
       slug        : p.basename form.forum-slug
-      description : ''
   | \page =>
     type = \page
     data =
       site_id     : null
       path        : form.page-slug
       title       : title
-      config      : JSON.stringify(main_content: form.content)
+      config      : { main_content: form.content, content-only: form.content-only }
   | \link =>
     type = \link
+    data = {}
+  | \placeholder =>
+    type = \placeholder
     data = {}
   | otherwise =>
     type = null
@@ -268,6 +270,7 @@ require! {
         err.message = "Slug is already taken."
       cb err, data
   | \link          => cb null, []
+  | \placeholder   => cb null, []
   | otherwise      => cb new Error("menu.upsert unknown type #type"), data
 
 # Delete an object referenced by a menu-item from the database.
@@ -276,13 +279,18 @@ require! {
 # @param  Function  cb      function to run after deletions have completed
 @db-delete = (object, cb) ->
   [type, data] = @extract object
-  if not data.id
+  if (type is \page or type is \forum) and not data.id
     cb new Error("no id in data")
 
   switch type
-  | \page          => db.pages.delete data, cb
-  | \forum         => db.forums.delete data, cb
+  | \page          =>
+    query = { id: data.id, path: data.path }
+    db.pages.soft-delete query, cb
+  | \forum         =>
+    query = { id: data.id, uri: data.uri }
+    db.forums.soft-delete query, cb
   | \link          => cb null, []
+  | \placeholder   => cb null, []
   | otherwise      => cb null, []
 
 # vim:fdm=indent

@@ -2,7 +2,13 @@ include _post
 
 .resizable.forum
   if postsByUser.length
-    h2.username #{profile.name}'s Latest
+    h4.overview Latest Posts
+      span.right
+        b!= profile.human_post_count 
+          span  #{profile.post_count == 1 ? "Post" : "Posts"} 
+        span in 
+        b!= profile.human_thread_count
+          span  #{profile.thread_count == 1 ? "Thread" : "Threads"}
     last_thread_id = -1
     each p, i in postsByUser
       if last_thread_id != p.thread_id
@@ -15,7 +21,7 @@ include _post
             b #{p.forum_title}
       mixin _post(p, i)
       last_thread_id = p.thread_id
-    .bottom
+    .post-bottom
   else
     h3 Check back for my first post
       i !

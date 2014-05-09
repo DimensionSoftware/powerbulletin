@@ -31,26 +31,35 @@ module.exports = (grunt) ->
 
     watch:
       procs:
-        files: ["plv8_modules/*.ls", "procedures.sql"]
-        tasks: ["procs", "launch"]
+        files: ['plv8_modules/*.ls', 'procedures.sql']
+        tasks: ['procs', 'launch']
         options:
           debounceDelay: 50
           interrupt: true
+
+      socketIO:
+        files: ['app/io-chat-server.ls', 'app/pb-models.ls', 'app/io-server.ls']
+        tasks: ['socketIO']
 
       clientJade:
-        files: ["app/views/*.jade"]
-        tasks: ["clientJade", "launch"]
+        files: ['app/views/*.jade']
+        tasks: ['clientJade', 'launch']
+        options:
+          debounceDelay: 50
+          interrupt: true
+      app:
+        files: ['app/*.ls']
+        tasks: ['launch']
+        options:
+          debounceDelay: 50
+          interrupt: true
+      componentJade:
+        files: ['component/*.jade']
+        tasks: ['componentJade', 'launch']
         options:
           debounceDelay: 50
           interrupt: true
 
-      componentJade:
-        files: ["component/*.jade"]
-        tasks: ["componentJade", "launch"]
-        options:
-          debounceDelay: 50
-          interrupt: true
-  
   #{{{ daemonize a command
   # - possibly not needed anymore, bin/powerbulletin wipes :)
   daemon = (command, pidFile, logFile) ->
@@ -68,21 +77,23 @@ module.exports = (grunt) ->
     proc = cp.spawn(command, [], opts)
     fs.writeFileSync pidFile, proc.pid
   #}}}
-#{{{ Backend tasks
+  #{{{ Backend tasks
   grunt.registerTask "launch", "Launch PowerBulletin!", launch = ->
     if process.env.NODE_ENV is "production"
       daemon "./bin/powerbulletin", config.tmp + "/pb.pid"
     else
       #exec "bin/develop &", async:true
-      daemon "./bin/develop", config.tmp + "/develop.pid"
+      daemon "./bin/powerbulletin", config.tmp + "/develop.pid"
 
   grunt.registerTask "procs", "Compile stored procedures to JS", ->
     done = this.async()
-    exec "node_modules/.bin/lsc -c plv8_modules/*.ls"
-    exec "bin/psql pb < procedures.sql",
+    exec "./bin/build-procs"
       silent: true
     done()
-#}}}
+
+  grunt.registerTask 'socketIO', 'Restart Socket IO', ->
+    exec 'bin/launch-pb-rt'
+  #}}}
   #{{{ Frontend tasks
   grunt.registerTask "clientJade", "compile regular jade", ->
     done = this.async()
@@ -94,20 +105,22 @@ module.exports = (grunt) ->
     exec "bin/build-component-jade"
     done()
 
-  grunt.registerTask 'css', 'Build master.css for all themes', ->
+  grunt.registerTask 'css', 'Build master.css for PB, Sales & Community (ltr + emkel, too)', ->
     done = this.async()
-    h.renderCss('master.styl', (err, blocks) ->
-      fs.writeFileSync 'public/master.css', blocks
-      h.renderCss('master-sales.styl', (err, blocks) ->
-        fs.writeFileSync 'public/master-sales.css', blocks
-        done(true)))
+    fn = (id, cb) -> h.renderCssToFile id, 'master.styl', cb
+    async.each [1, 2, 5, 6, 8], fn, (err) ->
+      if err then console.log err
+      h.renderCss 'master-sales.styl', (err, blocks) ->
+        fs.writeFile 'public/master-sales.css', blocks, (err) ->
+          if err then console.log err
+          done()
   #}}}
 
   # Default task(s).
   if process.env.NODE_ENV is "production"
     grunt.registerTask "default", ["launch"] # launch handles everything
   else
-    grunt.registerTask "default", ["procs", "clientJade", "componentJade", "launch", "watch"]
+    grunt.registerTask "default", ["launch", "procs", "clientJade", "componentJade", "watch"]
 
 process.on 'SIGINT', ->
   exec "killall -s INT -r pb-worker"

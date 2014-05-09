@@ -2,7 +2,6 @@
 
 JADE_FILES='
 app/views/layout.jade
-app/views/homepage.jade
 app/views/order-control.jade
 app/views/thread.jade
 app/views/menu.jade

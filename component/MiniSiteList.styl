@@ -1,14 +1,12 @@
-.fancybox-inner
-  background-image linear-gradient(to top, #fff 10px, #f2f2f2 100%)
-
 .MiniSiteList
-  background-color #fff
   border-color #f0f0f0
-  border-bottom 1px solid #f6f6f6
-  margin 58px 20px 30px 20px
-  padding 30px 50px 10px 30px
+  margin 58px 20px 45px 20px
+  padding 20px 50px 10px 30px
   position relative
   max-width 600px
+  min-width 400px
+  p
+    color #aaa
   p, h1
     margin 0
     padding 0
@@ -16,21 +14,21 @@
   .new
     position absolute
     right 8px
-    bottom -30px
+    bottom -35px
     font-weight 200
     font-size .75em
     a
-      color #444
+      color #ccc
       transition all .4s ease-out .4s
       &:hover
-        color #222
-        text-shadow 0 0 1px light
-        transition none
+        color #eee
+        text-shadow 0 0 1px theme_color
+        transition all .05s ease-out
     &.top
       bottom auto
-      top -36px
-      b
-        margin-left 5px
+      top -45px
+      font-size 3em
+      font-weight bold
 
   h1
     position absolute
@@ -44,9 +42,19 @@
 
   h2
     margin 2px
+    color #eee!important
+
+  h3
+    color #eee!important
+    font-weight 400
+    font-size .95em
+    margin 15px 0 5px 40px
+    padding-top 5px
+    border-top 1px dashed #333
 
   .onclick-first-site
-    font-size 1.2em
+    font-size 1.4em
+    display block
 
   .users
     font-size small
@@ -57,7 +65,7 @@
     padding 0
     li
       font-size 1.1em
-      color #ddd
+      color #555
       list-style none
 
 .MiniSiteList > ul
@@ -67,13 +75,21 @@
 .MiniSiteList > ul > li
     margin-bottom 8px
     padding 8px
-    color #333
+    color #bbb
     a:first-child
       padding 1px 8px 3px 8px
       margin-left -8px
       transition all .2s ease-out
       &:hover
-        background-color light
+        background-color theme_color
         border-radius 4px
         color #fff
         transition none
+.MiniSiteList > ul.memberships > li
+  margin 0
+  padding 0
+  a
+    margin 0 4px
+    font-size .9em
+    small
+      font-size .65em

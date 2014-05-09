@@ -1,0 +1,81 @@
+.PostDrawer
+  // has 2 states: reply & edit
+  #action_wrapper
+    position absolute
+    left 0
+    right 0
+    top 1px
+    text-align center
+    z-index 25
+    a
+      margin 0 3px
+    // default style show neither
+    .in-reply, .in-edit
+      cursor n-resize
+      display none
+      padding 0 8px
+      border-bottom-right-radius 5px
+      border-bottom-left-radius 5px
+      background-color #f0f0f0
+      max-width 450px
+      max-height 23px
+      overflow hidden
+      text-overflow ellipsis
+      #reply_to, #reply_by
+        display inline-block
+        text-transform capitalize
+    // show either state
+    &.reply .in-reply
+      display inline-block
+    &.edit .in-edit
+      display inline-block
+
+pre,code
+  background-color #f9f9f9
+  font-size smaller
+code
+  display inline
+  border none
+
+footer
+  .ui-resizable-n
+    position absolute
+    cursor ns-resize!important
+    cursor row-resize!important
+    top -3px
+    height 10px
+    &:hover:after
+      content ''
+      background-color theme_color
+      opacity .6
+      height 1px
+      position absolute
+      left 0
+      right 0
+      top 3px
+  &.expanded
+    .PostDrawer
+      position absolute
+      bottom 14px
+      top 24px
+      left 0
+      right 0
+      #editor + .save
+        position absolute
+        z-index 25
+        padding 5px 65px
+        bottom 0
+        border-bottom-right-radius 0
+        border-bottom-left-radius 0
+        right 44%
+      #editor .center
+        top 0
+        .tooltip.small
+          bottom auto
+      .onclick-toggle-preview
+        position fixed!important
+        height 17px!important
+        width 65px!important
+      .has-preview
+        .onclick-toggle-preview
+          width 95px!important

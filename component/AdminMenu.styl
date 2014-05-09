@@ -12,10 +12,10 @@
   .col1
     width 313px
     position fixed
-    top 100px
+    top 186px
     padding-left 20px
     bottom 0
-    margin-top 70px
+    margin-top 0
     padding-bottom 50px
     overflow-y scroll
     .disclose 
@@ -27,13 +27,19 @@
       width 25px
       height 35px
       &::after
-        content '='
+        content '-'
         position absolute
         top -7px
         left 13px
         color #999
-        font-weight 100
-
+        font-weight 200
+    .icon
+      cursor move
+      position absolute
+      top 3px
+      left 3px
+      z-index 11
+      opacity .6
     .sortable li.mjs-nestedSortable-collapsed > ol 
       display none
     .sortable li.mjs-nestedSortable-branch > div > .disclose 
@@ -54,15 +60,21 @@
       margin 20px 0
       li.active::after
         left 1px
-        background light
+        background theme_color
         opacity .7
         transition all .2s ease-out
       li.active::before
         width 55px
         transition width .2s ease-out .15s
       li.active > div > input
+        box-shadow -1px 0 2px -1px #888 inset,0 2px 0 dark_theme_color, 1px 0 3px -1px theme_color, 0 0 3px theme_color
         font-weight bold
-        color light
+        color theme_color
+        background-image none
+        background-color tint(theme_color, 95%)
+      li.active > div, li:hover > div
+        .icon
+          opacity 1
       li
         list-style-type none
         position relative
@@ -84,9 +96,10 @@
           bottom 18px
           left 1px
           height 2px
-          background light
-        input
+          background theme_color
+        input.row
           width 200px
+          background-image linear-gradient(top, tint(theme_alpha, 30%) 0, tint(tint_color, 50%) 5px)
         .cancel
           position absolute
           z-index 10
@@ -94,6 +107,8 @@
           top 5px
           background radial-gradient(circle closest-corner at 45% 35%, #fff 40%, #ddd 100%)
       .row
+        background-image linear-gradient(top, theme_alpha 0, tint_color 3px)
+        text-indent 28px
         font-size 1.1em
         padding 8px
         border-right 0
@@ -101,11 +116,14 @@
         border-left 0
         border-bottom 1px solid #eee
         color #333
+        border-radius 50px
+        &:focus, &:active, &.active
+          border-radius 50px / 200px
     .placeholder
       margin -1px
       height 1px
       background-color #333
-      border-bottom 1px solid light
+      border-bottom 1px solid theme_color
       z-index 2
   //}}}
   //{{{ right-side (menu body/content)
@@ -126,7 +144,7 @@
         opacity 1
     fieldset
       padding-top 17px!important
-      min-width 500px
+      min-width 600px
       position relative
       .dialog
         visibility hidden
@@ -142,6 +160,10 @@
       .type, .dialog
         position absolute
         left 0
+      .type
+        font-weight bold
+        letter-spacing -1px
+        margin-left -50px
       .options
         list-style none
         margin 0
@@ -149,22 +171,44 @@
         li:first-child .header
           margin-left 105px
         input[type='radio'] + label.header
-          font-weight 400
-          font-weight 600
+          width 210px
+          height 200
           font-size 1.1em
+          background-image linear-gradient(to top, #eee, #fafafa 60%)
+          padding 8px
+          margin 5px
+          padding 15px 10px 25px 35px
+          margin 20px
+          box-shadow 1px 1px 2px 1px #ccc
+          border-radius 10px
+          font-weight 500
+          transition all .1s ease-in .05s
+          color #222
+          &:hover
+            color #000
+            border-radius 12px
+            box-shadow 1px 1px 2px 1px #bbb, 1px 1px 2px 1px dark_theme_color, 1px 1px 4px 1px theme_color
+            transition none
+          .desc
+            color #666
+            font-size .8em
+            line-height 1.3em
+            min-height 40px
+            margin-top 6px
         li
           float left
           > label
-            width 95px
+            width 115px
             cursor pointer
+        li, input[type='radio']:hover + label
+          color theme_color
         li, input[type='radio']:checked + label
           font-weight bold
-          font-size 1.05em
-          color #000
+          color theme_color
         li, input[type='radio'] + label
           font-weight 400
           display inline-block
-          font-size .98em
+          transition color .1s ease-out .1s
         li > div, input[type='radio']
           position absolute
           left 0
@@ -180,7 +224,7 @@
           top 75px
           left 0
         .note
-          left 144px!important
+          left 154px!important
   //}}}
 
 // vim: fdm=marker

@@ -20,10 +20,12 @@ require! {
 
 announce = require(\socket.io-announce).create-client!
 
-global <<< require \./server-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
-global <<< require \../shared/shared-helpers # XXX UGLY, UNGLOBALIZE ME PLEASE
+global <<< require \./server-helpers
+global <<< require \../shared/shared-helpers
 
+{each} = require \prelude-ls
 {is-editing, is-admin, is-auth} = require \./path-regexps
+{title-case} = require \change-case # FIXME need custom title case routine: PowerBulletin -> PowerBulletin (not Powerbulletin)
 
 const posts-per-page = 30
 
@@ -47,6 +49,7 @@ delete-unnecessary-surf-data = (res) ->
      \cache5Url
      \jsUrls
      \cssUrls
+     \menu
   for i in unnecessary
     delete locals[i]
   locals
@@ -56,24 +59,29 @@ delete-unnecessary-surf-data = (res) ->
 # @param String keep-string   comma-separated list of tasks to be kept
 # @returns Object             a new, smaller set of tasks
 delete-unnecessary-surf-tasks = (tasks, keep-string) ->
-  always-keep = <[ subPostsCount tStep tQty ]>
+  always-keep = <[ moderation_count summary subPostsCount tStep tQty ]>
   keep = always-keep ++ keep-string.split ','
   t = { [k, v] for k, v of tasks when k in keep }
 
 @homepage = (req, res, next) ->
   # TODO fetch smart/fun combination of latest/best voted posts, posts & media
-  site = res.vars.site
-  site-id = res.vars.site.id
+  site  = res.vars.site
+  forum-ids = site.config.menu |> filter (-> it.form.dialog is \forum) |> map (-> it.form.dbid)
   tasks =
-    forums: db.site-summary site-id, 6threads, (req.query?order or \recent), _
-
-  if req.surfing then delete-unnecessary-surf-data res
+    #forums:  db.sites.thread-summary site.id, (req.query?order or \recent), 8, _
+    summary: db.forums.forum-summary forum-ids, _
 
   err, doc <- async.auto tasks
   doc.menu            = site.config.menu
-  doc.forums          = filter (.posts.length), doc.forums
-  doc.title           = res.vars.site.name
+  doc.menu-summary    = site.config.menu
+    |> map (item) -> # only top-level items
+      decorate-menu-item {[k,v] for k,v of item when k isnt \children}, doc.summary
+  doc.title           = title-case (res.vars.site?name or '')
+  doc.description     = ''
   doc.active-forum-id = \homepage
+
+  if req.surfing then delete-unnecessary-surf-data res
+
   res.locals doc
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
@@ -92,8 +100,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 function background-for-forum m, active-forum-id
   return unless m?length # guard
   item = menu.flatten m |> find -> it.form.dbid is active-forum-id
-  if b = item.form.background
-    b
+  item?form?background
 
 @forum = (req, res, next) ->
   user = req.user
@@ -125,6 +132,8 @@ function background-for-forum m, active-forum-id
     unless res.locals.private
       # only cache if not a private site, private sites must never be cached
       res.header \x-varnish-ttl \24h # we cache for a very long ttl in varnish because we control this cache
+
+    if req.surfing then delete-unnecessary-surf-data res
     res.mutant \forum
 
   if meta.type is \moderation
@@ -141,15 +150,27 @@ function background-for-forum m, active-forum-id
     res.mutant \moderation
     return
 
-  else if post_part # post
+  else if post_part # thread view
     err, post <- db.uri-to-post site.id, meta.thread-uri
     if err then return next err
     if !post then return next 404
 
+    get-thread = (cb) ->
+      if post.id is post.thread_id
+        cb null, post
+      else
+        db.post site.id, post.thread_id, cb
+
+    err, thread <- get-thread
+    if err then return next err
+    if !thread then return next 404
+
     page = meta.page || 1
     if page < 1 then return next 404
 
-    limit = site.config?posts-per-page or posts-per-page
+    # fetch forum settings
+    item   = menu.flatten site.config.menu |> find -> it.form.dbid is post.forum_id
+    limit  = item?form?posts-per-page or posts-per-page
     offset = (page - 1) * limit
 
     tasks =
@@ -170,35 +191,45 @@ function background-for-forum m, active-forum-id
     #console.warn err, keys(fdoc)
     if err   then return next err
     if !fdoc then return next 404
-    if page > 1 and fdoc.sub-posts-tree.length < 1 then return next 404
+    if page > 1 and fdoc.sub-posts-tree?length < 1 then return next 404
 
     # attach sub-post to fdoc, among other things
     fdoc <<< {post, forum-id:post.forum_id, page, cvars.t-step}
+    fdoc.item  = item
     fdoc.menu  = site.config.menu
-    fdoc.title = post.title
+    fdoc.title = title-case "#{post.title} | #{res.vars.site.name}"
     # attach sub-posts-tree to sub-post toplevel item
     fdoc.post.posts = delete fdoc.sub-posts-tree
     fdoc.qty = parse-int(delete fdoc.sub-posts-count)
     fdoc.limit = parse-int limit
     fdoc.pages-count = Math.ceil(fdoc.qty / fdoc.limit)
     fdoc.active-forum-id  = fdoc.post.forum_id
-    fdoc.active-thread-id = post.id
+    fdoc.active-thread-id = thread.id
     fdoc.background       = background-for-forum fdoc.menu, fdoc.active-forum-id
+    fdoc.commentable      = !!item?form?comments
+    fdoc.thread           = thread
 
     finish fdoc
 
-  else # forum
+  else # forum & forum homepage
     err, forum-id <- db.uri-to-forum-id res.vars.site.id, meta.forum-uri
     if err then return next err
     if !forum-id then return next 404
+
+    # get active menu item
+    m        = site.config.menu
+    item     = menu.flatten m |> find -> it.form.dbid is forum-id
+    children = (menu.item m, (menu.path m, item?id))?children or []
+    forum-ids = children |> map (.form.dbid) |> filter (-> it)
+
     tasks =
+      #forums      : db.forums.thread-summary site.id, forum-ids, (req.query?order or \recent), 8, _
+      summary     : db.forums.forum-summary forum-ids, _
       forum       : db.forum forum-id, _
-      forums      : db.forum-summary forum-id, 10threads, \recent, _
       top-threads : db.top-threads site.id, forum-id, \recent, cvars.t-step, 0, _ # always offset 0 since thread pagination is ephemeral
       t-qty       : db.thread-qty forum-id, _
 
     if req.surfing
-      delete-unnecessary-surf-data res
       if req.query._surf-tasks
         tasks = delete-unnecessary-surf-tasks tasks, req.query._surf-tasks
       else
@@ -209,9 +240,14 @@ function background-for-forum m, active-forum-id
     if !fdoc then return next 404
 
     fdoc <<< {forum-id, cvars.t-step}
-    fdoc.menu            = site.config.menu
+    fdoc.item            = item
+    fdoc.menu            = m
+    fdoc.menu-summary    = children
+      |> map (child) -> # only top-level
+        decorate-menu-item {[k,v] for k,v of child when k isnt \children}, fdoc.summary
     fdoc.active-forum-id = fdoc.forum-id
-    fdoc.title           = fdoc?forum?title
+    fdoc.title           = title-case "#{fdoc?forum?title} | #{res.vars.site?name}"
+    fdoc.description     = item?form?forum-description or ''
     fdoc.background      = background-for-forum fdoc.menu, fdoc.active-forum-id
 
     finish fdoc
@@ -225,50 +261,95 @@ function background-for-forum m, active-forum-id
   # get item
   m    = site.config.menu
   item = menu.flatten m |> find -> it.form.dbid is forum-id
-  unless item then return res.json {-success} # guard
+  unless item then return res.json 500, {-success} # guard
   # wipe file from disk
   err <- fs.unlink "public/sites/#{item.form.background.replace(/\?.*$/, '')}"
-  if err then return res.json {-success, msg:err}
+  if err then return res.json 500, {-success, msg:err}
   # update config
   path = menu.path-for-upsert m, item.id.to-string!
   item.form.background = void
   site.config.menu     = menu.struct-upsert m, path, item
   err, r <- db.site-update site # save!
-  if err then return res.json {-success, msg:err}
+  if err then return res.json 500, {-success, msg:err}
   res.json {+success}
-
 @forum-background = (req, res, next) ->
   # get site
+  site     = res.vars.site
+  forum-id = parse-int req.params.id
+  err, site <- db.site-by-id site.id
+  if err then return next err
+  err, file-name <- save-file-to-disk req.files.background, "#{site.id}", forum-id
+  if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+  if file-name
+    # update site.config.menu
+    m    = site.config.menu
+    item = menu.flatten m |> find -> it.form.dbid is forum-id
+    unless item then return res.json 500, {-success} # guard
+    path = menu.path-for-upsert m, item.id.to-string!
+    item.form.background = "#{site.id}/bg/#file-name?#{h.cache-buster!}".to-lower-case!
+    site.config.menu     = menu.struct-upsert m, path, item
+
+    err, r <- db.site-update site # save!
+    if err then return res.json 500, {-success, msg:err}
+    res.json {+success, background:item.form.background}
+  else
+    res.json 500, {-success, msg:'What kind of file is this?'}
+
+@forum-logo-delete = (req, res, next) -> wipe-file-with-config res, \logo, next
+@forum-logo = (req, res, next) ->
   site = res.vars.site
   err, site <- db.site-by-id site.id
   if err then return next err
 
-  # html5-uploader (save forum backgrounds)
-  background = req.files.background
+  # html5-uploader (save forum logo)
+  if logo = req.files?logo
+    err, file-name <- save-file-to-disk req.files?logo, "#{site.id}", \logo
+    if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+    if file-name
+      # update site.config
+      site.config.logo = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
 
-  # mkdirp public/sites/ID
-  dst = "public/sites/#{site.id}"
-  err <- mkdirp dst
-  if err then return res.json {-success, msg:err}
+      err, r <- db.site-update site # save!
+      if err then return res.json 500, {-success, msg:err}
+      res.json {+success, logo:site.config.logo}
+    else
+      res.json 500, {-success, msg:'What kind of file is this?'}
+  else
+    res.json 500, {-success, msg:'What logo?'}
 
-  # atomic write to public/sites/SITE-ID/FORUM-ID.jpg
-  forum-id  = parse-int req.params.id
-  ext       = background.name.match(/\.(\w+)$/)?1 or ""
-  file-name = if ext then "#forum-id.#ext" else forum-id
-  err <- move background.path, "#dst/#file-name".to-lower-case!
-  if err then return res.json {-success, msg:err}
+@forum-header-delete = (req, res, next) -> wipe-file-with-config res, \header, next
+@forum-header = (req, res, next) ->
+  # get site
+  site     = res.vars.site
+  forum-id = parse-int req.params.id
+  err, site <- db.site-by-id site.id
+  if err then return next err
+  err, file-name <- save-file-to-disk req.files.header, "#{site.id}", \header
+  if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+  if file-name
+    # update site.config
+    site.config.header = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
+    err, r <- db.site-update site # save!
+    if err then return res.json 500, {-success, msg:err}
+    res.json {+success, header:site.config.header}
+  else
+    res.json 500, {-success, msg:'What kind of file is this?'}
 
-  # update site.config.menu
-  m    = site.config.menu
-  item = menu.flatten m |> find -> it.form.dbid is forum-id
-  unless item then return res.json {-success} # guard
-  path = menu.path-for-upsert m, item.id.to-string!
-  item.form.background = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
-  site.config.menu     = menu.struct-upsert m, path, item
-
-  err, r <- db.site-update site # save!
-  if err then return res.json {-success, msg:err}
-  res.json {+success, background:item.form.background}
+@private-background-delete = (req, res, next) -> wipe-file-with-config res, \privateBackground, next
+@private-background = (req, res, next) ->
+  # get site
+  site     = res.vars.site
+  err, site <- db.site-by-id site.id
+  if err then return next err
+  err, file-name <- save-file-to-disk req.files.background, "#{site.id}", \private-background
+  if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+  if file-name
+    site.config.private-background = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
+    err, r <- db.site-update site # save!
+    if err then return res.json 500, {-success, msg:err}
+    res.json {+success, background:site.config.private-background}
+  else
+    res.json 500, {-success, msg:'What kind of file is this?'}
 
 # user profiles /user/:name
 @profile = (req, res, next) ->
@@ -284,9 +365,7 @@ function background-for-forum m, active-forum-id
 
   errors = req.validation-errors!
   if errors
-    err = new Error errors.0?msg
-    err.non-fatal = true
-    return next err
+    res.json 500, {-success, errors}
 
   tasks =
     profile        : db.usr usr, _
@@ -303,11 +382,13 @@ function background-for-forum m, active-forum-id
 
   err, fdoc <- async.auto tasks
   unless fdoc.profile then return next 404 # guard
-  fdoc.furl  = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
-  fdoc.menu  = site.config.menu
-  fdoc.page  = parse-int page
-  fdoc.title = name
-  fdoc.profile.human_post_count = add-commas(fdoc.qty)
+  fdoc.profile = add-dates fdoc.profile, [ \last_activity ]
+  fdoc.furl    = thread-uri: "/user/#name" # XXX - a hack to fix the pager that must go away
+  fdoc.menu    = site.config.menu
+  fdoc.page    = parse-int page
+  fdoc.title   = title-case "#name | #{res.vars.site?name}"
+  fdoc.profile.human_post_count   = add-commas(fdoc.qty)
+  fdoc.profile.human_thread_count = add-commas(fdoc.profile.thread_count) or 0
 
   res.locals fdoc
   res.locals.step = ppp
@@ -320,13 +401,17 @@ function background-for-forum m, active-forum-id
     res.locals.uri.replace /\?$/, ''
   res.locals.limit = ppp
 
+  # force comments ui on profile pages
+  # - the post resource converts correctly to a reply if comments are disabled
+  res.locals.commentable = true
+
   res.mutant \profile
 
 function profile-paths user, uploaded-file, base=\avatar
   ext = uploaded-file.name.match(/\.(\w+)$/)?1 or ""
   r = {}
   r.avatar-file = if ext then "#base.#ext" else base
-  r.url-dir-path = "/images/user/#{user.id}"
+  r.url-dir-path = "/images/user/#{user.id}.#{user.site_id}"
   r.url-path = "#{r.url-dir-path}/#{r.avatar-file}"
   r.fs-dir-path = "public#{r.url-dir-path}"
   r.fs-path = "#{r.fs-dir-path}/#{r.avatar-file}"
@@ -355,7 +440,7 @@ function profile-paths user, uploaded-file, base=\avatar
   err <- mkdirp fs-dir-path
   if err
     console.error \mkdirp.rename, err
-    return res.json { success: false, type: \mkdirp }
+    return res.json { success: false, type: \mkdirp, path: fs-dir-path }
 
   # move image to public/images/user/:user_id/
   err <- move avatar.path, fs-path
@@ -388,7 +473,7 @@ function profile-paths user, uploaded-file, base=\avatar
   console.warn \crop, { cropped-photo, avatar-photo }
   gm(cropped-photo.fs-path)
     .crop w, h, x, y
-    .resize 255, 255
+    .resize 255px, 255px
     .write avatar-photo.fs-path, (err) ->
       if err
         console.warn \crop-and-resize-err, err
@@ -400,16 +485,21 @@ function profile-paths user, uploaded-file, base=\avatar
           console.error \change-avatar, err
           return res.json success: false, type: \db.change-avatar
         announce.in(site.id).emit \new-profile-photo, { id: user.id, photo: new-photo }
+        ban-all-domains site.id
         return res.json success: true
   res.json success: false
 
 @stylus = (req, res, next) ->
+  site = res.vars.site
   r = req.route.params
   files = r.file.split ','
   if not files?length then return next 404
 
+  render-css = render-css-fn define: [ [ \site-id, site.id ] ]
+
   async.map files, render-css, (err, css-blocks) ->
-    if err then return next err
+    if err
+      return next 404
     body = css-blocks.join "\n"
     caching-strategies.etag res, sha1(body), 7200
     res.content-type \css
@@ -433,13 +523,56 @@ function profile-paths user, uploaded-file, base=\avatar
   command = req.body <<< {
     user_id: req.user.id
     post_id: req.params.id
-    reason: \STUBBBBBB # XXX: fix me
   }
 
   (err, r) <- db.censor command
   if err then next err
   if r?success then c.invalidate-post req.params.id, req.user.name # blow cache!
   res.json r
+
+@uncensor = (req, res, next) ->
+  return next 404 unless req.user
+  db = pg.procs
+  command = req.body <<< {
+    user_id: req.user.id
+    post_id: req.params.id
+  }
+  (err, r) <- db.posts.uncensor command
+  if err then next err
+  c.invalidate-post req.params.id, req.user.name # blow cache!
+  res.json {+success}
+
+@sticky = (req, res, next) ->
+  return next 404 unless req.user
+  return next 403 unless req.user.sys_rights?super or req.user.rights?super
+  site = res.vars.site
+  thread-id = req.params.id
+
+  err, r <- db.posts.toggle-sticky thread-id
+  if err then return next err
+
+  new-sticky-state =
+    success : true
+    sticky  : !!r.is_sticky
+
+  h.ban-all-domains site.id
+  res.json new-sticky-state
+
+@locked = (req, res, next) ->
+  return next 404 unless req.user
+  return next 403 unless req.user.sys_rights?super or req.user.rights?super
+  site = res.vars.site
+  thread-id = req.params.id
+
+  err, r <- db.posts.toggle-locked thread-id
+  if err then return next err
+
+  new-locked-state =
+    success : true
+    locked  : !!r.is_locked
+
+  h.ban-all-domains site.id
+  res.json new-locked-state
 
 @sub-posts = (req, res, next) ->
   post-id = parse-int(req.params.id) || null
@@ -460,8 +593,10 @@ function profile-paths user, uploaded-file, base=\avatar
   site = res.vars.site
   res.locals.action = req.param \action
 
+  user = req.user
   tasks =
     site: db.site-by-id site.id, _
+    sites: db.sites.owned-by-user user.id, _
 
   if req.surfing
     delete-unnecessary-surf-data res
@@ -471,15 +606,24 @@ function profile-paths user, uploaded-file, base=\avatar
 
   # default
   fdoc.themes =
-    * id:1 name:'PowerBulletin Minimal'
-    * id:0 name:\None
+    * id:0 name:'PowerBulletin'
+    * id:1 name:'Autumn'
+    * id:2 name:'Spring'
+    * id:3 name:'Winter'
+    * id:4 name:'Fall'
+    * id:5 name:'Summer'
+    * id:6 name:'Monsoon'
   defaults =
     posts-per-page: site.config?posts-per-page or posts-per-page
     meta-keywords:  "#{site.name}, PowerBulletin"
   fdoc.site.config = defaults <<< fdoc.site.config
   fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')
-  fdoc.title = \Admin
+  fdoc.title   = "Admin | #{res.vars.site.name}"
   fdoc.menu = site.config.menu
+
+  # reject current site
+  tmp = fdoc.sites |> reject (.id is site.id)
+  fdoc.sites = tmp # mutate
 
   res.locals fdoc
 
@@ -569,16 +713,18 @@ function profile-paths user, uploaded-file, base=\avatar
 
 @page = (req, res, next) ->
   site = res.vars.site
-  err, page <- db.pages.find-one criteria: { site_id: site.id, path: req.path }
+  err, page <- db.pages.select-one { site_id: site.id, path: req.path }
   if err then return next err
   if page
-    page.config = JSON.parse page.config
     if req.surfing then delete-unnecessary-surf-data res
     fdoc ||= {}
     fdoc.menu = site.config.menu
-    fdoc.page = page
+    item = fdoc.menu |> find -> it.form.dialog is \page and it.form.dbid is page.id
+    fdoc.page            = page
     fdoc.active-forum-id = page.id
+    fdoc.content-only    = item?form?content-only is \checked
     res.locals fdoc
+    caching-strategies.etag res, sha1(JSON.stringify page.config), 60s
     res.mutant \page
   else
     next!
@@ -588,10 +734,7 @@ function profile-paths user, uploaded-file, base=\avatar
   product-id = req.params.product-id
   errors     = []
 
-  err, existing-subscription <- db.subscriptions.find-one {
-    criteria: {site_id: site-id, product_id: product-id}
-    columns: [\product_id]
-  }
+  err, existing-subscription <- db.subscriptions.select-one {site_id: site-id, product_id: product-id}
   if err then return next err
   if existing-subscription then errors.push 'You\'re already subscribed'
 
@@ -611,5 +754,59 @@ function profile-paths user, uploaded-file, base=\avatar
     finish!
   else
     finish!
+
+function decorate-menu-item item, forums
+  switch item.form.dialog
+  | \forum =>
+    if forums?length # match menu w/ forum data
+      forum = forums |> find -> it.id is item.form.dbid
+      if forum
+        item.thread_count = (add-commas forum.thread_count) or 0
+        item.post_count   = (add-commas forum.post_count) or 0
+        item.latest_post  =
+          html:     forum.last_post_html
+          title:    title-case (forum?last_post_title or '')
+          uri:      forum.last_post_uri
+          username: forum.last_post_user_name
+          photo:    forum.last_post_user_photo
+          user_id:  forum.last_post_user_id
+          created:  add-dates forum, [ \last_post_created ]
+  item
+
+function extention-for file-name
+  file-name?match(/\.(\w+)$/)?1 or ""
+
+function save-file-to-disk file, dst-dir, dst-file-name, cb
+  # html5-uploader (save forum backgrounds)
+  # mkdirp public/sites/ID
+  const prefix = \public/sites
+  err <- mkdirp "#prefix/#dst-dir"
+  if err then return cb err
+
+  # atomic write to public/sites/SITE-ID/bg/FORUM-ID.jpg
+  ext = extention-for file.name
+  file-name = if ext then "#dst-file-name.#ext" else dst-file-name
+  err <- move file.path, "#prefix/#dst-dir/#file-name".to-lower-case!
+  if err then return cb err
+  cb null, file-name
+
+function wipe-file-with-config res, key, next
+  site = res.vars.site # get site
+  err, site <- db.site-by-id site.id
+  if err then return next err
+
+  # wipe file from disk
+  if file-name = site.config[key]
+    unless (file-name is \powerbulletin_header.jpg) or (file-name.to-string!match /\.\./) # guard
+      err <- fs.unlink "public/sites/#{file-name.replace(/\?.*$/, '')}"
+      if err then return res.json 500, {-success, msg:err}
+
+    # update config
+    site.config[key] = ''
+    err, r <- db.site-update site # save!
+    if err then return res.json 500, {-success, msg:err}
+    res.json {+success}
+  else
+    res.json 500, {-success, msg:['Unable to find file!']}
 
 # vim:fdm=indent

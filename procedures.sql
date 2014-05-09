@@ -11,7 +11,7 @@ $$ LANGUAGE plls IMMUTABLE STRICT;
 -- Posts {{{
 CREATE FUNCTION procs.owns_post(post_id JSON, user_id JSON) RETURNS JSON AS $$
   return unless post_id and user_id # guard
-  return plv8.execute('SELECT id FROM posts WHERE id=$1 AND user_id=$2', [post_id, user_id])
+  return plv8.execute('SELECT id, parent_id, forum_id, title FROM posts WHERE id=$1 AND user_id=$2', [post_id, user_id])
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.post(site_id JSON, id JSON) RETURNS JSON AS $$
@@ -54,12 +54,13 @@ CREATE FUNCTION procs.posts_by_user(usr JSON, page JSON, ppp JSON) RETURNS JSON 
     # fetch thread & forum context
     thread-sql = """
       SELECT p.id,p.title,p.uri, a.user_id,a.name, f.uri furi,f.title ftitle
-      FROM posts p
+       FROM posts p
         LEFT JOIN aliases a ON a.user_id=p.user_id
         LEFT JOIN forums f ON f.id=p.forum_id
       WHERE p.id IN (#{(u.unique [p.thread_id for p,i in posts]).join(', ')})
+        AND a.site_id = $1
     """
-    ctx = plv8.execute(thread-sql, [])
+    ctx = plv8.execute(thread-sql, [usr.site_id])
 
     # hash for o(n) + o(1) * posts -> thread mapping
     lookup = {[v.id, v] for k,v of ctx}
@@ -104,9 +105,8 @@ CREATE FUNCTION procs.edit_post(usr JSON, post JSON) RETURNS JSON AS $$
   errors.push "Higher access required" unless r.length
   res = {success: !errors.length, errors}
   if res.success
-    sqlres = plv8.execute('UPDATE posts SET title=$1,body=$2,html=$3 WHERE id=$4 RETURNING id,title,body,forum_id', [post.title, post.body, post.html, post.id])
-
-    res <<< sqlres
+    sqlres = plv8.execute('UPDATE posts SET title=$1,body=$2,html=$3 WHERE id=$4 RETURNING id,title,html,body,forum_id', [post.title, post.body, post.html, post.id])
+    res.post = sqlres
   return res
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -124,7 +124,7 @@ CREATE FUNCTION procs.add_post(post JSON) RETURNS JSON AS $$
   require! <[u validations]>
   errors = validations.post(post)
   if !errors.length
-    if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])[0]?site_id
+    if site-id = plv8.execute('SELECT site_id FROM forums WHERE id=$1', [post.forum_id])?0?site_id
       [{nextval}] = plv8.execute("SELECT nextval('posts_id_seq')", [])
 
       forum-id = parse-int(post.forum_id) or null
@@ -288,7 +288,7 @@ CREATE FUNCTION procs.find_or_create_user(usr JSON) RETURNS JSON AS $$
   _u = find-or-create(sel, sel-params, ins, ins-params)
   if _u
     change-avatar = plv8.find_function('procs.change_avatar')
-    change-avatar _u, '/images/profile.jpg'
+    change-avatar _u, '/images/profile.png'
   return _u
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -336,7 +336,7 @@ CREATE FUNCTION procs.register_local_user(usr JSON) RETURNS JSON AS $$
   if _u
     _u.id = _u.user_id
     change-avatar = plv8.find_function('procs.change_avatar')
-    change-avatar _u, '/images/profile.jpg'
+    change-avatar _u, '/images/profile.png'
   return _u
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
@@ -448,8 +448,9 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
   sql = """
   SELECT
     u.id, u.email, u.rights AS sys_rights,
-    a.photo, a.verified, a.rights, a.name, a.created, a.site_id,
+    a.photo, a.verified, a.rights, a.name, a.created, a.site_id, a.last_activity, a.config AS config,
     (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2) AS post_count,
+    (SELECT SUM(count) FROM (SELECT DISTINCT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2 GROUP BY thread_id) AS tc) AS thread_count,
     auths.type, auths.profile 
   FROM users u
   JOIN aliases a ON a.user_id = u.id
@@ -464,17 +465,21 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
     memo.auths[auth.type] = auth.profile
     memo
   u =
-    auths      : {}
-    id         : auths.0?id
-    site_id    : auths.0?site_id
-    name       : auths.0?name
-    photo      : auths.0?photo
-    email      : auths.0?email
-    rights     : auths.0?rights
-    sys_rights : auths.0?sys_rights
-    verified   : auths.0?verified
-    created    : auths.0?created
-    post_count : auths.0?post_count
+    auths         : {}
+    title         : auths.0?config?title
+    sig           : auths.0?config?sig
+    id            : auths.0?id
+    site_id       : auths.0?site_id
+    name          : auths.0?name
+    photo         : auths.0?photo
+    email         : auths.0?email
+    rights        : auths.0?rights
+    sys_rights    : auths.0?sys_rights
+    verified      : auths.0?verified
+    last_activity : auths.0?last_activity
+    created       : auths.0?created
+    post_count    : auths.0?post_count
+    thread_count  : auths.0?thread_count or 0
   user = auths.reduce make-user, u
   return user
 $$ LANGUAGE plls IMMUTABLE STRICT;
@@ -606,7 +611,7 @@ CREATE FUNCTION procs.bans_for_post(post_id JSON, user_id JSON) RETURNS JSON AS 
 
   for b in bans
     b.url = '^' + b.url
-  
+
   # ban associated profile, too
   profiles = bans.map (b) ->
     {host:b.host, url:"^/user/#user_id"}
@@ -618,53 +623,6 @@ CREATE FUNCTION procs.menu(site_id JSON) RETURNS JSON AS $$
   require! u
   return u.menu site_id
 $$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.homepage_forums(forum_id JSON, sort JSON) RETURNS JSON AS $$
-  unless sort in [\popular \recent] then sort = \recent # guard
-  require! u
-  return u.homepage-forums forum_id, sort
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.forum_summary(forum_id JSON, thread_limit JSON, sort JSON) RETURNS JSON AS $$
-  require! u
-  forumf = plv8.find_function('procs.forum')
-  forum  = forumf(forum_id)
-
-  sort-sql =
-    switch sort or \recent
-    | \recent   => 'p.created DESC, p.id ASC'
-    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE thread_id=p.thread_id) DESC, p.created DESC'
-    | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
-
-  # This query can be moved into its own proc and generalized so that it can
-  # provide a flat view of a thread.
-  # XXX non-null media url sorted first/top in list
-  sql = """
-  SELECT
-    p.*,
-    #{u.user-fields \p.user_id, forum.site_id}
-  FROM posts p
-  LEFT JOIN moderations m ON m.post_id = p.id
-  WHERE p.forum_id = $1
-    AND p.parent_id IS NULL
-  ORDER BY (LENGTH(p.media_url) > 1) DESC, #sort-sql
-  LIMIT $2
-  """
-  forum.posts = plv8.execute(sql, [forum_id, thread_limit])
-  return [forum]
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.site_summary(site_id JSON, thread_limit JSON, sort JSON) RETURNS JSON AS $$
-  sort-sql =
-    switch sort or \recent
-    | \recent   => 'created DESC, id ASC'
-    | \popular  => '(SELECT (SUM(views) + COUNT(*)*2) FROM posts WHERE forum_id=id GROUP BY forum_id) DESC, created DESC'
-    | otherwise => throw new Error "invalid sort for top-posts: #{sort}"
-  site-ids = plv8.execute "SELECT id FROM forums WHERE site_id=$1::bigint ORDER BY #sort-sql", [site_id]
-  fn = plv8.find_function \procs.forum_summary
-  return site-ids.map (-> fn(it.id, thread_limit, sort).0)
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
 
 CREATE FUNCTION procs.top_threads(site_id JSON, forum_id JSON, sort JSON, lim JSON, _off JSON) RETURNS JSON AS $$
   require! u
@@ -683,7 +641,7 @@ CREATE FUNCTION procs.uri_to_forum_id(site_id JSON, uri JSON) RETURNS JSON AS $$
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.forum(id JSON) RETURNS JSON AS $$
-  return plv8.execute('SELECT * FROM forums WHERE id=$1', [id])[0]
+  return plv8.execute('SELECT forums.*, (SELECT COUNT(m) FROM moderations m JOIN posts p ON p.id=m.post_id WHERE p.forum_id=$1) AS moderation_count FROM forums WHERE id=$1', [id])[0]
 $$ LANGUAGE plls IMMUTABLE STRICT;
 
 CREATE FUNCTION procs.uri_to_post(site_id JSON, uri JSON) RETURNS JSON AS $$
@@ -762,132 +720,6 @@ CREATE FUNCTION procs.idx_ack_post(post_id JSON) RETURNS JSON AS $$
   return true
 $$ LANGUAGE plls IMMUTABLE STRICT;
 --}}}
--- {{{ Private Conversations 
-
--- #''' getting around quoting bug
-
--- this should actually find-or-create a conversation by the set of users given
-CREATE FUNCTION procs.conversation_find_or_create(site_id JSON, users JSON) RETURNS JSON AS $$
-  plv8.elog WARNING, JSON.stringify(users)
-  find-or-create = plv8.find_function \procs.find_or_create
-  find-sql = '''
-  SELECT c.*
-  FROM conversations c
-  LEFT JOIN users_conversations uc0 on uc0.conversation_id = c.id
-  LEFT JOIN users_conversations uc1 on uc1.conversation_id = c.id
-  WHERE uc0.user_id = $1
-  AND   uc1.user_id = $2
-  AND   c.site_id = $3
-  '''
-  find-params = ins-params = [ users.0?id, users.1?id, site_id ]
-  ins-sql = '''
-  WITH c AS (
-      INSERT INTO conversations (site_id) VALUES ($3) RETURNING *
-    ), i AS (
-      INSERT INTO users_conversations (user_id, conversation_id) SELECT $1, id FROM c
-    )
-  INSERT INTO users_conversations (user_id, conversation_id) SELECT $2, id FROM C
-  '''
-  c = find-or-create find-sql, find-params, ins-sql, ins-params
-  if not c
-    return null
-  plv8.elog WARNING,"c #{JSON.stringify(c)}"
-
-  usr                    = plv8.find_function \procs.usr
-  messages-recent-by-cid = plv8.find_function \procs.messages_recent_by_cid
-
-  c.participants   = [ usr({ name: u.name, site_id: site_id }) for u in users ]
-  c.messages       = messages-recent-by-cid c.id, site_id
-  return c
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.conversation_add_participants(cid JSON, users JSON) RETURNS JSON AS $$
-  sql = 'INSERT INTO users_conversations (user_id, conversation_id) VALUES ($1, $2)'
-  results = [ plv8.execute sql, [u.id, cid] for u in users ]
-  # TODO - I really want to only return the users I was able to successfully add.
-  return users
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.conversation_add_message(cid JSON, message JSON) RETURNS JSON AS $$
-  sql = 'INSERT INTO messages (user_id, conversation_id, body) VALUES ($1, $2, $3) RETURNING *'
-  [c] = plv8.execute sql, [message.user_id, cid, message.body]
-  if not c
-    return null
-  else
-    # TODO - add tags
-  return c
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.conversation_by_id(cid JSON) RETURNS JSON AS $$
-  sql = 'SELECT * FROM conversations WHERE id = $1'
-  [c] = plv8.execute sql, [cid]
-  # TODO - fill out this object with sane defaults
-  if not c
-    return null
-  else
-    messages-recent-by-cid = plv8.find_function \procs.messages_recent_by_cid
-    c.messages = messages-recent-by-cid cid, c.site_id
-    conversation-participants = plv8.find_function \procs.conversation_participants
-    c.participants = conversation-participants cid, c.site_id
-  return c
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.conversations_by_user(u JSON, page JSON) RETURNS JSON AS $$
-  # TODO - pagination
-  sql = '''
-  SELECT c.*
-  FROM conversations c
-  LEFT JOIN users_conversations uc ON uc.conversation_id = c.id
-  LEFT JOIN users u ON u.id = uc.user_id
-  WHERE u.id = $1
-  AND conversations.site_id = $2
-  ORDER BY id DESC
-  '''
-  conversations = plv8.execute sql, [u.id, u.site_id]
-  # TODO order by date of last message in conversation instead of id
-  return conversations
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.conversation_participants(cid JSON, site_id JSON) RETURNS JSON AS $$
-  sql = 'SELECT user_id as id FROM users_conversations where conversation_id = $1'
-  uids = plv8.execute sql, [cid]
-  plv8.elog WARNING, JSON.stringify(uids)
-  usr = plv8.find_function \procs.usr
-  users = [ usr({id: u.id, site_id}) for u in uids ]
-  return users
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.messages_by_cid(cid JSON, last JSON, lim JSON) RETURNS JSON AS $$
-  # TODO - pagination
-  sql = '''
-  SELECT * FROM messages WHERE conversation_id = $1 AND id < $2
-  ORDER BY id DESC
-  LIMIT $3
-  '''
-  params = [cid, last, lim]
-  messages = plv8.execute sql, params
-  return messages
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.messages_recent_by_cid(cid JSON, site_id JSON) RETURNS JSON AS $$
-  sql = '''
-  SELECT * FROM messages WHERE conversation_id = $1 AND id <= (SELECT MAX(id) FROM messages)
-  ORDER BY id DESC
-  LIMIT 10
-  '''
-  params = [cid]
-  messages = plv8.execute sql, params
-  map-users = plv8.find_function \procs.map_users
-  return map-users(site_id, messages)
-$$ LANGUAGE plls IMMUTABLE STRICT;
-
-CREATE FUNCTION procs.map_users(site_id JSON, list JSON) RETURNS JSON AS $$
-  user-ids = Object.keys(list.reduce ((m, x) -> m[x.user_id] = 1; m), {})
-  usr = plv8.find_function \procs.usr
-  users-by-id = { [u, usr({id: u, site_id})] for u in user-ids }
-  return list.map (-> it.from = users-by-id[it.user_id]; it)
-$$ LANGUAGE plls IMMUTABLE STRICT;
---}}}
 
 CREATE FUNCTION procs.domain_by_name_exists(name JSON) RETURNS JSON AS $$
   return !!plv8.execute("SELECT TRUE FROM domains WHERE name=$1 LIMIT 1", [name]).0
@@ -900,17 +732,21 @@ CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
   unless site.domain
     return {errors: ["must specify a domain"]}
 
+  capitalize = (s) -> (s.char-at 0).to-upper-case! + s.slice(1)
+
+  pb-domain = /(\.pb\.com|\.powerbulletin\.com)$/
   # this security probably belongs somewhere else, but i felt compelled to check
-  unless site.domain.match /(\.pb\.com|\.powerbulletin\.com)$/
+  unless site.domain.match pb-domain
     return {errors: ["domain must end in .pb.com or .powerbulletin.com"]}
+  name = capitalize(site.domain.replace pb-domain, '')
 
   unless site.user_id
     return {errors: ["user_id is required for creating a new site"]}
 
-  site_id = plv8.execute('INSERT INTO sites (name, user_id) VALUES ($1, $2) RETURNING id', [site.domain, site.user_id]).0.id
+  site_id = plv8.execute('INSERT INTO sites (name, user_id) VALUES ($1, $2) RETURNING id', [name, site.user_id]).0.id
 
   try
-    plv8.execute 'INSERT INTO domains (site_id, name) VALUES ($1, $2)', [site_id, site.domain]
+    plv8.execute 'INSERT INTO domains (site_id, name) VALUES ($1, $2)', [site_id, site.domain.to-lower-case!]
   catch
     return {errors: ["domain '#{site.domain}' already exists"]}
 
@@ -920,14 +756,13 @@ CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
     site_id
     title: 'General Forum'
     slug: 'general'
-    description: 'General Discussion'
   }
   sql = '''
-  INSERT INTO forums (site_id, title, slug, uri, description)
-    VALUES ($1,$2,$3,$4,$5)
+  INSERT INTO forums (site_id, title, slug, uri)
+    VALUES ($1,$2,$3,$4)
     RETURNING id
   '''
-  forum_id = plv8.execute(sql, [f.site_id, f.title, f.slug, f.uri, f.description]).0.id
+  forum_id = plv8.execute(sql, [f.site_id, f.title, f.slug, f.uri]).0.id
 
   # set forum uri
   uri = u.uri-for-forum forum_id

@@ -6,25 +6,57 @@ require! {
   sioa: \socket.io-announce
   auth: \./auth
   menu: \./menu
+  rights: \./rights
+  format: \../shared/format
+  notifications: \./notifications
   async
   fs
   mkdirp
   stylus
+  validator
 }
 
 const base-css = \public/sites
 
 announce = sioa.create-client!
 
-ban-all-domains = (site-id) ->
-  # varnish ban site's domains
-  err, domains <- db.domains-by-site-id site-id
-  if err then return next err
-  for d in domains then v.ban-domain d.name
-
 # Return true if forum-id is a locked forum according to the menu m.
 is-locked-forum = (m, forum-id) ->
   menu.flatten(m) |> find (-> f = it.form; f.dialog is \forum and f.dbid is forum-id and f.locked)
+
+# cb(null, true) if current thread is locked
+is-locked-thread-by-parent-id = (parent-id, cb) ->
+  return cb(null, false) if not parent-id
+  err, r <- db.posts.is-thread-locked parent-id
+  if err then return cb err
+  cb null, r.is_locked
+
+# Return true if this forum allows nested comments
+is-commentable-forum = (m, forum-id) ->
+  menu.flatten(m) |> find (-> f = it.form; f.dialog is \forum and f.dbid is forum-id and f.comments)
+
+@aliases =
+  update: (req, res, next) ->
+    site_id = req.user?site_id # only allow updating on auth'd site
+    user_id = req.params.alias
+    (err, r) <- rights.can-edit-user req.user, user_id
+    if err then return next err
+    if r # can edit, so--
+      (err, alias) <- db.aliases.select-one {user_id, site_id}  # fetch current config
+      config={}
+      alias.config <<< req.body?config or {}                        # & merge
+      alias.config.sig = req.body.editor                            # merge from Editor
+      for k in <[title sig]> then config[k]=alias.config[k]         # & scrub
+      if config.sig then config.sig-html = format.render config.sig # & scrub harder + render sig
+      err <- db.aliases.update {config}, {user_id, site_id}         # & update!
+      announce.in(site_id).emit \new-profile-title, { id:user_id, title:config?title } # broadcast title everywhere
+      (err, user) <~ db.usr { id:user_id, site_id }
+      user.sig = config.sig # ensure latest sig
+      delete user.auths
+      announce.in("#site_id/users/#user_id").emit \set-user, user # brodcast new user object to all of my browsers
+      res.json {+success}
+    else
+      res.json {-success}
 
 @sites =
   create: (req, res, next) ->
@@ -50,56 +82,101 @@ is-locked-forum = (m, forum-id) ->
     switch req.body.action
     | \general =>
       should-ban = false # varnish
-      for f in [\style \postsPerPage \inviteOnly \private \analytics]
+      for f in [\style \postsPerPage \inviteOnly \private \social \analytics]
         if site.config[f] isnt req.body[f] then should-ban = true
 
       css-dir = "#base-css/#{site.id}"
       # save css to disk for site
       if site.config.style isnt req.body.style # only on change
         site.config.cache-buster = h.cache-buster!
-        err <- mkdirp css-dir
-        if err then return next err
-        (err, css) <- stylus.render site.config.style, {compress:true}
-        if err then return res.json {success:false, msg:'CSS must be valid!'}
-        err <- fs.write-file "#css-dir/master.css" css
-        if err then return next err
+        err <- db.sites.save-style site
+        if err
+          if err?msg?match /CSS/i
+            return res.json {success:false, messages:['CSS must be valid!']}
+          else
+            return res.json {success:false, messages:['CSS must be valid!']}
+
+      # save color theme
+      if not (site.config.color-theme === req.body.color-theme) or not (site.config.sprite-hue === req.body.sprite-hue)
+        site.config.cache-buster = h.cache-buster!
+        err <- db.sites.save-color-theme { id: site.id, config: { color-theme: req.body.color-theme } }
+        if err then return res.json {-success, messages:[err]}
+        # generate site-specific master.css
+        err <- h.render-css-to-file site.id, \master.styl
+        if err then return res.json {-success, messages:[err]}
+        announce.in("#{site.id}/users/#{req.user.id}").emit \css-update, { cache-buster: site.config.cache-buster }
+        if err then res.json { -success, messages: [ "Could not save color theme." ] }
 
       # update site
       site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
-        <[ postsPerPage metaKeywords inviteOnly private analytics style ]> }
-      for c in <[ inviteOnly  private ]> # uncheck checkboxes?
+        <[ postsPerPage metaKeywords inviteOnly private social analytics style colorTheme ]> }
+      for c in <[ inviteOnly  social private ]> # uncheck checkboxes?
         delete site.config[c] unless req.body[c]
       for s in <[ private analytics ]> # subscription tampering
         delete site.config[s] unless s in site.subscriptions
       err, r <- db.site-update site # save!
+      if err then return res.json {-success, messages:['Unable to Save']}
+
+      # save domains
+      err, domain <- db.domain-by-id req.body.domain
+      if err then return res.json {-success, messages:['Unable to Save Domain']}
+
+      # does site own domain?
+      err, domains <- db.domains-by-site-id domain.site_id
+      if err then return res.json {-success, messages:['Only the Site Owner Can Save']}
+      unless find (.site_id is domain.site_id) domains then return next 404
+
+      # extract specific keys
+      auths = [
+        \facebookClientId
+        \facebookClientSecret
+        \twitterConsumerKey
+        \twitterConsumerSecret
+        \googleConsumerKey
+        \googleConsumerSecret]
+      domain.config <<< { [k, v] for k, v of req.body when k in auths}
+
+      # save domain config
+      const suffix = \Secret
+      domain.config.style = auths
+        |> filter (-> it.index-of(suffix) isnt -1 and req.body[it])                # only auths with values
+        |> map (-> ".has-#{take-while (-> it in [\a to \z]), it}{display:inline}") # make css selectors
+        |> join ''
+      if domain.config.style.length then domain.config.style += '.has-auth{display:block}'
+      err, r <- db.domain-update domain # save!
+      if err then return res.json {-success, messages:['Unable to Save Domain']}
+
+      # delete existing passport for domain so new one can be created
+      delete auth.passports[domain.name]
+
+      # save css to disk
+      css-dir = "#base-css/#{domain.site_id}"
+      err <- mkdirp css-dir
       if err then return next err
+      err <- fs.write-file "#css-dir/#{domain.id}.auth.css" domain.config.style
 
       # varnish ban
-      ban-all-domains site.id if should-ban
+      h.ban-all-domains site.id if should-ban
       res.json success:true
 
     | \menu =>
       # save site config
-      m = site.config?menu or []
-      dbid = null
+      m    = site.config?menu or []
+      id   = req.body.id.to-string! # client-id
+      dbid = null # server-id
 
-      if id = req.body.id # active form
+      if id # active form
         form = { [k, v] for k,v of req.body when k in
-          <[ id dbid title dialog forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
+          <[ id dbid title placeholderDescription linkDescription forumDescription pageDescription dialog postsPerPage forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
         menu-item = { id, form.title, form }
-        m-path = menu.path-for-upsert(m, id.to-string!)
+        menu-item = { id, form.title, form }
+        m-path = menu.path-for-upsert m, id
         site.config.menu = menu.struct-upsert m, m-path, menu-item
-
-      # XXX - the upsert can only insert unless database id is propagated here
-      console.warn \form, form
-      console.warn \menu-item, menu-item
-      console.warn \extracted, menu.extract menu-item
 
       err, r <- menu.db-upsert site, menu-item
       return res.json {-success, errors: err?errors} if err?errors
 
-      console.log \r, r
       if err then return res.json success: false, hint: \menu.upsert, err: err, errors: [ err.message ]
       if r.length
         menu-item.form.dbid = dbid = r.0.id
@@ -109,8 +186,8 @@ is-locked-forum = (m, forum-id) ->
       err, r <- db.site-update site
       if err then return res.json success: false, hint: \db.site-update
 
-      ban-all-domains site.id # varnish ban
-      announce.emit \menu-update, site.config.menu
+      h.ban-all-domains site.id # varnish ban
+      announce.in(site.id).emit \menu-update, site.config.menu
       res.json success:true, id: dbid
 
     # delete a menu
@@ -133,8 +210,8 @@ is-locked-forum = (m, forum-id) ->
       err, r <- db.site-update site
       if err then return res.json success: false, hint: \db-site-update, err: err, errors: [ "Item could not be deleted." ]
 
-      ban-all-domains site.id # varnish ban
-      announce.emit \menu-update, site.config.menu
+      h.ban-all-domains site.id # varnish ban
+      announce.in(site.id).emit \menu-update, site.config.menu
       res.json success: true
 
     # resort a menu
@@ -151,49 +228,8 @@ is-locked-forum = (m, forum-id) ->
       err, r <- db.site-update site
       if err then return res.json success: false, hint: \menu-resort
 
-      ban-all-domains site.id # varnish ban
-      announce.emit \menu-update, site.config.menu
-      res.json success:true
-
-    | \domains =>
-      # find domain
-      err, domain <- db.domain-by-id req.body.domain
-      if err then return next err
-
-      # does site own domain?
-      err, domains <- db.domains-by-site-id domain.site_id
-      if err then return next err
-      unless find (.site_id is domain.site_id) domains then return next 404
-
-      # extract specific keys
-      auths = [
-        \facebookClientId
-        \facebookClientSecret
-        \twitterConsumerKey
-        \twitterConsumerSecret
-        \googleConsumerKey
-        \googleConsumerSecret]
-      domain.config <<< { [k, v] for k, v of req.body when k in auths}
-
-      # save domain config
-      const suffix = \Secret
-      domain.config.style = auths
-        |> filter (-> it.index-of(suffix) isnt -1 and req.body[it])                # only auths with values
-        |> map (-> ".has-#{take-while (-> it in [\a to \z]), it}{display:inline}") # make css selectors
-        |> join ''
-      if domain.config.style.length then domain.config.style += '.has-auth{display:block}'
-      err, r <- db.domain-update domain # save!
-      if err then return next err
-
-      # delete existing passport for domain so new one can be created
-      delete auth.passports[domain.name]
-
-      # save css to disk
-      css-dir = "#base-css/#{domain.site_id}"
-      err <- mkdirp css-dir
-      if err then return next err
-      err <- fs.write-file "#css-dir/#{domain.id}.auth.css" domain.config.style
-
+      h.ban-all-domains site.id # varnish ban
+      announce.in(site.id).emit \menu-update, site.config.menu
       res.json success:true
 
 @users =
@@ -224,7 +260,7 @@ is-locked-forum = (m, forum-id) ->
 
       (err, r) <- async.each emails, register
       if err then return res.json {success:false, msg:err}
-      res.json success:true
+      res.json success:true, msg:'Invites Sent!'
 
     | otherwise =>
       user = req.params.user
@@ -232,13 +268,50 @@ is-locked-forum = (m, forum-id) ->
       (err, user) <- db.find-or-create user
       res.json user
   update: (req, res, next) ->
-    # XXX: fill in this stub
     # RIGHTS: can only edit users on sites you are an admin of
-    # need this db function: db.users.can-edit-user uid -> boolean
-    id = req.params.user
+    admin = req.user
+    site  = res.vars.site
+    id    = req.params.user
+    err, can-edit-user <- rights.can-edit-user admin, id
+    if err
+      return next err
+    if not can-edit-user
+      return res.json success: false, errors: [ "#{admin.name} may not edit this user." ]
+
     user = {} <<< req.body <<< {id}
     console.warn \STUB, 'handle user PUT from UserEditor'
     console.warn \STUBUSER, user
+
+    alias =
+      name    : user.name
+      user_id : id
+      site_id : site.id
+
+    err, new-alias <- db.aliases.update alias
+    if err
+      res.json success: false, errors: [ 'Unable to save User' ]
+    else
+      res.json success: true, alias: new-alias
+
+@domains =
+  create: (req, res, next) ->
+    if not req?user?rights?super then return next 404 # guard
+
+    # get site
+    site = res.vars.site
+    err, site <- db.site-by-id site.id
+    if err then return next err
+
+    unless \custom_domain in site.subscriptions # prevent tampering
+      res.json {success:false, errors:['Subscribe to custom domain first']}
+      return false
+
+    # add domain
+    # TODO validation
+    err, r <- db.domains.upsert {site_id:site.id, name:req.body.name}
+    if err then res.json success:false, errors:['Domain in use']
+    res.json {success:true, domain:r.0}
+
 @posts =
   index   : (req, res) ->
     res.locals.fid = req.query.fid
@@ -246,17 +319,32 @@ is-locked-forum = (m, forum-id) ->
     res.render \post-new
   create  : (req, res, next) ->
     return next 404 unless req.user
+    user = req.user
     site = res.vars.site
     db = pg.procs
     post          = req.body
     post.user_id  = req.user.id
-    post.html     = h.html post.body
+    post.html     = format.render post.body
     post.ip       = res.vars.remote-ip
     post.tags     = h.hash-tags post.body
-    post.forum_id = post.forum_id
+    post.mentions = h.at-tags post.body
+
+    return res.json success:false, errors:['Incomplete post'] unless post.user_id and post.forum_id # guard
+    return res.json success:false, errors:['Threads must have a title'] if ((not post.parent_id) and (not post.title))
 
     if is-locked-forum(site.config.menu, parse-int(post.forum_id)) and (not req.user.rights?super)
       return res.json success: false, errors: [ "The forum is locked." ]
+
+    err, is-locked-thread <- is-locked-thread-by-parent-id (parse-int post.parent_id or 0)
+    if err then return next err
+    if is-locked-thread and not (req.user?rights?super or req?user?sys_rights?super)
+      return res.json success: false, errors: [ "This thread is locked." ]
+
+    # on non-commentable forums, force parent_id to be the right value
+    err, parent-post <- db.post site.id, post.parent_id
+    if err then return next err
+    if reply-only = (not is-commentable-forum(site.config.menu, parse-int(post.forum_id))) and parent-post
+      post.parent_id = parent-post.thread_id
 
     err, ap-res <- db.add-post post
     if err then return next err
@@ -265,17 +353,28 @@ is-locked-forum = (m, forum-id) ->
       post.id = ap-res.id
       c.invalidate-post post.id, req.user.name # blow cache!
 
+    finish = (new-post) ->
+      ap-res.user_id = post.user_id
+      res.json ap-res
+
     unless post.parent_id
       err, new-post <- db.post site.id, post.id
       if err then return next err
-      announce.emit \thread-create new-post
+      announce.in(site.id).emit \thread-create new-post
+      db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
+      if post.mentions?length
+        notifications.send \mention, user, post.mentions, { site, post: new-post }
+      finish new-post
     else
       err, new-post <- db.post site.id, post.id
       if err then return next err
       new-post.posts = []
-      announce.emit \post-create new-post
+      announce.in(site.id).emit \post-create new-post
+      db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
+      if post.mentions?length
+        notifications.send \mention, user, post.mentions, { site, post: new-post }
+      finish new-post
 
-    res.json ap-res
   show    : (req, res, next) ->
     site = res.vars.site
     db = pg.procs
@@ -286,22 +385,27 @@ is-locked-forum = (m, forum-id) ->
     else
       return next 404
   update  : (req, res, next) ->
-    if not req?user?rights?super then return next 404 # guard
+    # if not req?user?rights?super then return next 404 # guard
     # is_owner req?user
-    err, owns-post <- db.owns-post req.body.id, req.user?id
+    err, owns-post <- db.owns-post parse-int(req.body.id), req.user?id
     if err then return next err
-    return next 404 unless owns-post?length
+    return next 403 unless (req?user?rights?super) or (owns-post?length and owns-post.0.forum_id)
     # TODO secure & csrf
     # save post
-    req.body.user_id = req.user.id
-    req.body.html = h.html req.body.body
-    post = req.body
+    unless op = owns-post?0 then return res.json {-success, errors:["You don't own this post"]}
+    post           = req.body
+    post.user_id   = req.user.id
+    post.forum_id  = op.forum_id
+    post.parent_id = op.parent_id
+    post.title     = validator.escape req.body.title
+    post.html      = format.render req.body.body
     err, r <- db.edit-post(req.user, post)
     if err then return next err
 
     if r.success
       # blow cache !
       c.invalidate-post post.id, req.user.name
+      # TODO broadcast post update
 
     res.json r
   destroy : (req, res, next) ->
@@ -317,16 +421,13 @@ is-locked-forum = (m, forum-id) ->
       res.json {success: true}
     else
       next 404
+
 @products =
   show: (req, res, next) ->
     return next 404 unless id = req.params.product
-    err, product <- db.products.find-one {
-      criteria: {id}
-      columns: [\id \description \price \config]
-    }
+    err, product <- db.products.select-one { id }
     if err then return next err
     if product
-      product.config = JSON.parse product.config # p00f--json'ify
       res.json product
     else
       next 404
@@ -356,24 +457,25 @@ is-locked-forum = (m, forum-id) ->
       return res.json success: false # not allowed to chat without a user
 
     id    = req.params.conversation
-    limit = 30
+    limit = req.query.limit or 30
 
-    err, c <~ db.conversation-by-id id
+    err, c <~ db.conversations.by-id id
     if err
       console.error \conversations-show, req.path, err
       res.json success: false
       return
     if c
       # TODO be sure to check participants too
-      may-participate = c?particpants?some (-> it.id is user.id)
+      may-participate = any (-> it.user_id is user.id), c.participants
       unless may-participate
+        console.log \c, c
         return res.json success: false, type: \non-particant
-      err, messages <- db.messages-by-cid c.id, (req.query.last || null), limit
+      err, messages <- db.messages.by-cid c.id, (req.query.last || null), limit
       if err
         console.error \conversations-show, req.path, err
         res.json success: false
         return
-      c.messages = messages |> map (-> it.body = format.chat-message it.body; it)
+      c.messages = messages
       c.success = true
       res.json c
     else

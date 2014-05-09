@@ -1,43 +1,31 @@
 !!! 5
 html
   head
-    title PowerBulletin
-    meta(name='description',content='Build a real-time PowerBulletin Community at the click of a button!') 
+    title Power Bulletin &#9674; Forum Community in Real-Time!
+    meta(name='description',content='Build a real-time Power Bulletin Forum Community at the click of a button!') 
     meta(http-equiv='X-UA-Compatible',content='IE=EmulateIE9,chrome=1')
     meta(name='robots',content='index, follow')
     meta(name='apple-mobile-web-app-capable', content='yes')
     meta(name='apple-mobile-web-app-status-bar-style', content='black')
-    meta(name='viewport', content='user-scalable=0, initial-scale=1, maximum-scale=1, width=device-width')
+    meta(name='viewport', content='user-scalable=0, initial-scale=.8, maximum-scale=.8, width=device-width')
 
     //- links first
-    link(href="#{cacheUrl}/images/favicon.ico",rel='shortcut icon',type='image/x-icon')
+    link(href="#{cache2Url}/images/favicon.ico",rel='shortcut icon',type='image/x-icon')
     link(href="#{cache2Url}/images/apple-touch-icon.png", rel='apple-touch-icon')
-    link(href="#{cache3Url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
-    link(href="#{cache4Url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
+    link(href="#{cache2Url}/images/apple-touch-icon-72x72.png", sizes="72x72", rel='apple-touch-icon')
+    link(href="#{cache2Url}/images/apple-touch-icon-114x114.png", sizes="114x114", rel='apple-touch-icon')
     link(href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400', rel='stylesheet', type='text/css')
     for stylesheet in stylesheets
       link(rel='stylesheet', type='text/css', href=stylesheet)
-    script(src="#{cacheUrl}/local/head-0.99.load.min.js")
 
     if env == 'production'
-      script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
+      script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js')
       //- in this case we preload most libraries, as opposed to fetching them all separately
-      script(src="#{cacheUrl}/pb-sales-optimized.js")
+      script(type='text/javascript', src="#{cache3Url}/pb-sales-optimized.js")
     else
-      script(src='#{cacheUrl}/local/require.js')
-    |<script type="text/javascript">
-    |  window.headjs = head.js
-    |  window.env = '!{env}'
-    |  window.CHANGESET = !{JSON.stringify(CHANGESET)};
-    |  window.cacheUrl = '!{cacheUrl}';
-    |  window.cache2Url = '!{cache2Url}';
-    |  window.cache3Url = '!{cache3Url}';
-    |  window.cache4Url = '!{cache4Url}';
-    |  window.cache5Url = '!{cache5Url}';
-    |  window.siteName = 'PowerBulletin';
-    |  window.authDomain = '!{authDomain}';
-    |  require.config({baseUrl:window.cacheUrl+'/client', urlArgs:!{JSON.stringify(CHANGESET)}});
-    |  require(['requirejs-config'], function(cfg){ require.config(cfg); require.call(window,['pb-sales-entry']); });
-    |</script>
+      script(type='text/javascript', src='#{cache3Url}/local/require.js')
+    script(type='text/javascript').
+      window.env='!{env}';window.CHANGESET=!{JSON.stringify(CHANGESET)};window.cacheUrl='!{cacheUrl}';window.cache2Url='!{cache2Url}';window.cache3Url='!{cache3Url}';window.cache4Url='!{cache4Url}';window.cache5Url='!{cache5Url}';window.siteName='Power Bulletin';window.authDomain='!{authDomain}';
+      require.config({baseUrl:window.cache5Url+'/client', urlArgs:!{JSON.stringify(CHANGESET)}});
+      require(['requirejs-config'], function(cfg){ require.config(cfg); require.call(window,['pb-sales-entry']); });
   body
-    #auth

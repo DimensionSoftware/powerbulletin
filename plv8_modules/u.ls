@@ -27,11 +27,16 @@ export map = (f, xs) -->
   [f x for x in xs]
 
 export user-fields = user-fields = (u-field, sid) ->
-  alias-sql = "SELECT a.name FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
-  photo-sql = "SELECT a.photo FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
+  # TODO possibly use JOIN on result SELECT to pick out fields -- needs FROM to have p.user_id & f.site_id
+  alias-sql  = "SELECT a.name FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
+  photo-sql  = "SELECT a.photo FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
+  title-sql  = "SELECT a.config FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
+  active-sql = "SELECT a.last_activity FROM aliases a WHERE a.user_id=#u-field AND a.site_id=#sid"
   """
-  (#alias-sql) AS user_name,
-  (#photo-sql) AS user_photo
+  (#alias-sql)  AS user_name,
+  (#photo-sql)  AS user_photo,
+  (#title-sql)  AS alias_config,
+  (#active-sql) AS user_last_activity
   """
 ## END PURE FUNCTIONS ##
 
@@ -64,13 +69,15 @@ export top-posts = (site-id, sort, limit = void, offset = 0, fields='p.*') ->
   SELECT
     #fields,
     #{user-fields \p.user_id, site-id},
-    COUNT(p.id) post_count
+    COUNT(p2.id) post_count
   FROM posts p
   LEFT JOIN posts p2 ON p2.thread_id=p.id
   LEFT JOIN moderations m ON m.post_id=p.id
+  LEFT JOIN moderations m2 ON m2.post_id=p2.id
   WHERE p.parent_id IS NULL
     AND p.forum_id=$1
     AND m.post_id IS NULL
+    AND m2.post_id IS NULL
   GROUP BY p.id
   ORDER BY #{sort-expr}
   LIMIT $2 OFFSET $3
@@ -112,7 +119,7 @@ posts-tree = (site-id, forum-id, top-posts, fields) ->
   [merge(p, {posts: sub-posts-tree(site-id, p.id, fields, 10, 0)}) for p in top-posts]
 
 decorate-menu = (f) ->
-  merge f, {forums: [decorate-menu(sf) for sf in sub-forums(f.id, 'id,title,slug,uri,description,media_url')]}
+  merge f, {forums: [decorate-menu(sf) for sf in sub-forums(f.id, 'id,title,slug,uri,media_url')]}
 
 decorate-forum = (f, top-posts-fun) ->
   # XXX - we needed to pass fields all the way down to sub-posts()
@@ -144,7 +151,7 @@ export put-doc = (...args) ->
 
 # single forum
 forum-tree = (forum-id, top-posts-fun) ->
-  sql = 'SELECT id,site_id,parent_id,title,slug,description,media_url,classes FROM forums WHERE id=$1 LIMIT 1'
+  sql = 'SELECT id,site_id,parent_id,title,slug,media_url,classes FROM forums WHERE id=$1 LIMIT 1'
   if f = plv8.execute(sql, [forum-id])[0]
     decorate-forum(f, top-posts-fun)
 
@@ -177,7 +184,7 @@ export uri-for-post = (post-id, first-slug = null) ->
 export menu = (site-id) ->
   # XXX: forums should always list in the same order, get rid of top-forums, and list in static order
   # TODO use site.config.menu to build!
-  top-menu-fun = top-forums(site-id, null, 'id,title,slug,uri,description,media_url')
+  top-menu-fun = top-forums(site-id, null, 'id,title,slug,uri,media_url')
   [decorate-menu(f, top-menu-fun) for f in top-menu-fun(site-id)]
 
 export top-threads = (site-id, forum-id, sort, limit, offset) ->

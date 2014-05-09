@@ -1,7 +1,9 @@
-label(for='upload') Background
+label(for=name)= name
   div.drop-target.button 
+    .progress 1
+      small %
     span Browse
-    input.upload(id='upload', type='file', name='background')
-  img.background
+    input.upload(id=name, type='file', name=name)
+  img.inline-preview
   .cancel.close.onclick-delete(title='Delete') X
 .note Drag &amp; drop or choose above

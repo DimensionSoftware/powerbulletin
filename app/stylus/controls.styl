@@ -25,7 +25,7 @@ select
 input[type="password"], select, textarea, input[type="text"]
   border-radius 3px
   color #666
-  background-image linear-gradient(top, lighta 1px, tint-color 5px)
+  background-image linear-gradient(top, theme_alpha 0, tint_color 5px)
   outline none
   margin-bottom 4px
   padding 8px
@@ -44,8 +44,8 @@ input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:h
   z-index 1
   color #444
   border-bottom 1px solid #bbb
-  box-shadow 0 1px 0 dark,0 0 1px light
-  background-image linear-gradient(top, lighta 1px, tint-color 7px)
+  box-shadow 0 1px 0 dark_theme_color,0 0 1px theme_color
+  background-image linear-gradient(top, theme_alpha 0, tint_color 5px)
   transition color .5s ease-out, border .05s ease-out, box-shadow .1s ease-out
 input.active, input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #111
@@ -54,31 +54,61 @@ input.active, input[type="password"]:focus, input[type="password"]:focus, select
   background-color #fffcfc
   border-bottom 1px solid #777
   border-right 1px solid #888
-  border-colo #f5f5f5
-  box-shadow -1px 0 2px -1px #888 inset,0 1px 0 dark, 1px 0 1px -1px light, 0 0 1px light
+  box-shadow -1px 0 2px -1px #888 inset,0 1px 0 dark_theme_color, 1px 0 1px -1px theme_color, 0 0 1px theme_color
   transform scale(1.015)
   transition box-shadow .1s ease-out, letter-spacing .1s ease-out, border-radius .8s ease-out
   border-radius 8px / 3px
-  background-image linear-gradient(top, lighta 2px, #fff 10px)
+  background-image linear-gradient(top, theme_alpha 0, #fff 7px)
   transition color .5s ease-out, border .05s ease-out, box-shadow .1s ease-out
 textarea:focus, select:focus
   letter-spacing 0
 //}}}
+//{{{    `- with a plus & minus
+.plus-minus
+  position relative
+  &.hex
+    input
+      text-transform uppercase
+  input
+    text-align center
+    border-radius 6px/5px
+  .plus, .minus
+    box-shadow none
+    background-color transparent!important
+    position absolute
+    top -10px
+    bottom -8px
+    width 32px!important
+    height auto!important
+    margin 0!important
+    text-indent -4px!important
+    vertical-align middle
+    line-height 0!important
+    text-align center
+    opacity .8
+    z-index 10
+    &:hover, &:active
+      opacity 1
+  .plus
+    left -1px
+  .minus
+    right -1px
+//}}}
 //{{{ Checkboxes (switch)
-input[type="checkbox"]
+.stylish[type="checkbox"]
   display none
-input[type="checkbox"]:checked ~ label .switch
+.stylish[type="checkbox"]:checked ~ label .switch
   margin-left 20px
   padding 5px
   box-shadow -1px 1px 1px 0 #777
-input[type="checkbox"]:checked ~ label
-  background-color light
+.stylish[type="checkbox"]:checked ~ label
+  background-color theme_color
   transition background-color .4s ease-out
 // these are placeholders for switch state text, eg: "On" "Off"
-input[type="checkbox"]:checked + label::after
+.stylish[type="checkbox"]:checked + label::after
   color #444
   font-weight 400
-input[type="checkbox"] + label::after
+.stylish[type="checkbox"] + label::after
   position absolute
   top 14px
   left 60px
@@ -97,7 +127,7 @@ label.switch-control
   background rgba(0,0,0,.03)
   box-shadow inset 0 0 1px #666,0 2px 5px #eee
   &:hover
-    box-shadow inset 0 0 1px #888, 0 1px 2px #eee, 0 0 0 1px light
+    box-shadow inset 0 0 1px #888, 0 1px 2px #eee, 0 0 0 1px theme_color
     transition box-shadow .1s ease-out
 // box is the surround container
 .box
@@ -117,38 +147,43 @@ label.switch-control
 //}}}
 //{{{ Buttons
 .button:enabled:hover, input[type="button"]:enabled:hover, input[type="submit"]:enabled:hover, button:enabled:hover
-  animation-name tiny-grow
-  animation-duration .03s
-  //background-image linear-gradient(bottom, dark 12px, light 87%, dark 90%)
-  background-color light
+  //animation-name tiny-grow
+  //animation-duration .03s
+  //background-image linear-gradient(bottom, dark_theme_color 12px, theme_color 87%, dark_theme_color 90%)
+  background-color theme_color
+  color colored_text
   border-color #777
-  border-top 1px solid light
-  border-left 1px solid light
+  border-top 1px solid theme_color
+  border-left 1px solid theme_color
   border-bottom 1px solid #555
-  box-shadow 0 0 5px #bbb,0 1px 5px 0 light
-  text-shadow 0px 1px 0 black,1px 1px 0 rgba(100,100,100,.5)
+  box-shadow 0 0 5px #bbb,0 1px 5px 0 theme_color
+  if dark(colored_text)
+    // dark colors look blurry w/ extra shading 
+    text-shadow 0px 1px 0 black
+  else
+    text-shadow 0px 1px 0 black,1px 1px 0 rgba(100,100,100,.5)
+  transition none
 button:disabled:hover::before, input[type="submit"]:disabled:hover::before, input[type="button"]:disabled:hover::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.05) 0%, rgba(255,255,255,.1) 80%)
 button:disabled::before, input[type="submit"]:disabled::before, input[type="button"]:disabled::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.05) 0%, rgba(255,255,255,.1) 80%)
 button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
-  cursor wait
-  color #fafafa
+  cursor default
+  color lighten(colored_text, 30%)
   opacity .85
   text-shadow 0 1px 0 rgba(0,0,0,.3),1px 1px 0 rgba(100,100,100,.1)
-  transition opacity .2s ease-out, color .1s ease-out
+  transition opacity .2s ease-in, color .1s ease-in
 .button:enabled:active, button:enabled:active, input[type='submit']:enabled:active,input[type='button']:enabled:active,button:enabled:focus, input[type="submit"]:enabled:focus, input[type="button"]:enabled:focus
   border-top 1px solid #666
   text-indent 1px
   border-left 1px solid #666
-  box-shadow 0 0 1px #777, 1px 1px 1px light inset,0 1px 3px #aaa
-  text-shadow 0 1px 1px black,1px 1px 1px rgba(100,100,100,.5)
-  //border-bottom 1px solid dark
-  //border-right 1px solid dark
-  border-bottom-color #888
+  box-shadow 0 0 1px #777, 1px 1px 1px theme_color inset,0 1px 3px #aaa
+  text-shadow 0 1px 2px black inset,1px 1px 1px rgba(100,100,100,.5)
+  //border-bottom 1px solid dark_theme_color
+  //border-right 1px solid dark_theme_color
   border-bottom-color #888
   transform translateY(2px)
-  border-radius 8px / 2px
+  border-radius 8px / 4px
   opacity .9
 // bottom "darken" fx
 input[type="submit"]:active::after, button:active::after, .button:active::after
@@ -157,7 +192,7 @@ input[type="submit"]:hover::after, button:hover::after, .button:hover::after
   opacity .65!important
   height 3px
   background-image linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.3) 100%)
-  transition opacity .08s ease-out, height .05s ease-out
+  transition none
 input[type="submit"]::after, button::after, .button::after
   position absolute
   content ''
@@ -167,43 +202,59 @@ input[type="submit"]::after, button::after, .button::after
   background-image linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.25) 100%)
   opacity .75
   height 4px
+// XXX this is stealing clicks!  (...but it looks so good ;/)
 //- top gloss fx
-input[type="submit"]:active::before, button:active::before, .button:active::before
-  height 53%!important
-  opacity .7
-input[type="submit"]:hover::before, button:hover::before, .button:hover::before
-  background-image linear-gradient(to bottom, rgba(255,255,255,.33) 0%, rgba(255,255,255,.28) 100%)
-  opacity .9
-  height 48%
-  transition opacity .08s ease-out, height .02s ease-out
+//input[type="submit"]:active::before, button:active::before, .button:active::before
+//  height 53%!important
+//  opacity .7
+//input[type="submit"]:hover::before, button:hover::before, .button:hover::before
+//  background-image linear-gradient(to bottom, rgba(255,255,255,.33) 0%, rgba(255,255,255,.28) 100%)
+//  opacity .9
+//  height 48%
+//  transition opacity .08s ease-out, height .02s ease-out
 input[type="submit"]::before, button::before, .button::before
   position absolute
   content ''
-  height 50%
+  // the gloss lightens dark text too much, so ...
+  if light(colored_text)
+    height 50%
+  else
+    height 40%
   top -1px
-  left -3px
+  left -1px
   right -1px
   border-radius .5em .5em 6em 6em/.1em .1em 1em 1em
   background-image linear-gradient(to bottom, rgba(255,255,255,.3) 0%, rgba(255,255,255,.25) 100%)
-  opacity .75
+  if dark(theme_color)
+    opacity .3
+  else
+    opacity .8
 .button, input[type="button"], input[type="submit"], button
+  transition box-shadow .2s ease-in .05s, border .2s ease-in .05s, color .2s ease-in .05s, text-shadow .2s ease-in .05s
   outline none
   white-space nowrap
   position relative
-  text-shadow 0 1px 0 #444,1px 1px 0 rgba(100,100,100,.5)
+  if dark(colored_text)
+    // dark colors look blurry w/ extra shading 
+    text-shadow 0 1px 0 #444
+  else
+    text-shadow 0 1px 0 #444,1px 1px 0 rgba(100,100,100,.5)
   letter-spacing 1px
-  //background-image linear-gradient(bottom, light 10px, light 85%, dark2 90%)
-  background-color light
-  box-shadow 0px 0px 3px light
+  background-color theme_color
+  box-shadow 0px 0px 3px theme_color
   border 1px solid #666
-  border-top 1px solid dark
-  border-left 1px solid dark
+  border-top 1px solid dark_theme_color
+  border-left 1px solid dark_theme_color
+  border-right 1px solid dark_theme_color
   border-bottom-color #444
-  color #fff
+  color lighten(colored_text, 5%)
   font-size 1.25em
-  font-weight 600
+  if light(colored_text)
+    font-weight 600
+  else
+    font-weight 500
   padding 6px 15px
   text-align center
-  border-radius 5px / 1px
+  border-radius 6px/5px
 //}}}
 // vim: fdm=marker

@@ -1,39 +1,77 @@
+body.scrolled
+  .AdminUpgrade
+    .code
+      top 45px
+      right 34px
 .AdminUpgrade
-  fieldset:hover
-    border 1px solid #ddd
-    border-radius 5px / 3px
-    h2
-      color #666
-  fieldset
-    margin 5px 25px 25px 0
-    padding 15px 5px 20px 23px
-    border 1px solid #eee
-    border-top 1px solid #f5f5f5
-    border-right 1px solid #f8f8f8
-    float left
-    height 170px
-    h1, h2, h3, p
-      margin 0
-    h2
-      margin 22px 0 8px 0
-      letter-spacing 2px
-      color #777
-      font-weight 200
-      font-size 2em
-    h2:first-child
-      margin 12px 0 15px 0
-    .onclick-buy
-      margin-right 15px
-      float right
-    .green
-      color green
-    .green span
-      font-size 1.3em
-      padding-left 5px
-    p
-      margin-bottom 10px
-      max-width 500px
-      color #555
-    .notes
-      font-size .9em
-      font-style italic
+  .code
+    position fixed
+    right 58px
+    top 105px
+    display block
+    font-size .8em
+    color #555
+    font-weight 500
+    span
+      font-weight normal
+  .sale
+    &.header
+      top 122px
+      bottom auto
+      width 500px
+      display block
+      left 28%
+    &.small
+      width 60px
+    position absolute
+    right 12px
+    bottom 12px
+    width 280px
+    padding 5px 20px
+    background-color rgba(yellow, .3)
+    font-style italic
+    border 2px dashed darken(yellow, 10%)
+    font-size .9em
+    text-align center
+  .container
+    margin-top 50px
+    fieldset:hover
+      border 1px solid #ddd
+      border-radius 5px / 3px
+      h2
+        color #666
+    fieldset
+      position relative
+      margin 5px 25px 25px 0
+      padding 15px 5px 38px 23px
+      border 1px solid #eee
+      border-top 1px solid #f5f5f5
+      border-right 1px solid #f8f8f8
+      float left
+      height 170px
+      h1, h2, h3, p
+        margin 0
+      h2
+        margin 22px 0 8px 0
+        letter-spacing 2px
+        color #777
+        font-weight 200
+        font-size 2em
+      h2:first-child
+        margin 12px 0 15px 0
+        font-style italic
+      .onclick-buy
+        margin-right 15px
+        float right
+      .green
+        color darken(theme_color, 20%)
+      .green span
+        font-size 1.3em
+        padding-left 5px
+      p
+        margin-bottom 10px
+        width 500px
+        color #555
+      .notes
+        font-size 1.1em
+        font-weight bold!important
