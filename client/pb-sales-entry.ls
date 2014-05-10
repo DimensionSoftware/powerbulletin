@@ -75,11 +75,11 @@ update-elements = ->
         if dir is \down
           cur = switch cur-id # given cur-id, these must be visible:
           | \features   => <[.first]>
-          | \navigation => <[.first .second]>
-          | \responsive => <[.first .second .third]>
-          | \realtime   => <[.second .third .fifth]>
+          | \navigation => <[.second .first]>
+          | \responsive => <[.third .second .first]>
+          | \realtime   => <[.fifth .third .second]>
           #| \products   => <[.third .fifth]>
-          | \support    => <[.third .fifth]>
+          | \support    => <[.fifth .third]>
         else # upward direction
           cur = switch cur-id # given cur-id, these must be visible:
           | \features   => <[.first]>
