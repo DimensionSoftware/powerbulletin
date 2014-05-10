@@ -16,6 +16,10 @@ module.exports =
       # default jade templates
       tpl-name = @constructor.display-name
       fn = templates[tpl-name]
-      if fn then fn @locals! else ''
+      tmpl = if fn then fn @locals! else ''
+      # XXX - I am confused.  When I click on "Login", the following line prints the right thing.
+      # XXX - However, the browser shows the old social links instead of the ones that go to pb.com.
+      console.log \this-seems-right-but, tmpl
+      tmpl
 
 # vim: fdm=marker
