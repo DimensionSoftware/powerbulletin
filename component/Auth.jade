@@ -60,11 +60,11 @@
   unless inviteOnly
     .social.has-auth
       h3 Or Log In With
-      a.has-facebook(href="https:#{authDomain}/auth/facebook", title="Facebook!")
+      a.has-facebook(href="https:#{authDomain}/auth/facebook", title="Facebook!") 
         img(src="#{cacheUrl}/images/facebook_32.png")
-      a.has-google(href="https:#{authDomain}/auth/google", title="Google+")
+      a.has-google(href="https:#{authDomain}/auth/google", title="Google+") 
         img(src="#{cacheUrl}/images/google_32.png")
-      a.has-twitter(href="https:#{authDomain}/auth/twitter", title="Twitter!")
+      a.has-twitter(href="https:#{authDomain}/auth/twitter", title="Twitter!") 
         img(src="#{cacheUrl}/images/twitter_32.png")
 .login
   form(method="post", action="/auth/login")
@@ -87,9 +87,9 @@
   unless inviteOnly
     .social.has-auth
       h3 Or Log In With
-      a.has-facebook(href="/auth/facebook", title="Facebook!") 
+      a.has-facebook(href="https:#{authDomain}/auth/facebook", title="Facebook!") 
         img(src="#{cacheUrl}/images/facebook_32.png")
-      a.has-google(href="/auth/google", title="Google+") 
+      a.has-google(href="https:#{authDomain}/auth/google", title="Google+") 
         img(src="#{cacheUrl}/images/google_32.png")
-      a.has-twitter(href="/auth/twitter", title="Twitter!") 
+      a.has-twitter(href="https:#{authDomain}/auth/twitter", title="Twitter!") 
         img(src="#{cacheUrl}/images/twitter_32.png")
