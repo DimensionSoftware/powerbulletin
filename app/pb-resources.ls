@@ -135,12 +135,12 @@ is-commentable-forum = (m, forum-id) ->
         \twitterConsumerSecret
         \googleConsumerKey
         \googleConsumerSecret]
-      domain.config <<< { [k, v] for k, v of req.body when k in auths}
+      domain.config <<< { [k, req.body.social-auth] for k in auths }
 
       # save domain config
       const suffix = \Secret
       domain.config.style = auths
-        |> filter (-> it.index-of(suffix) isnt -1 and req.body[it])                # only auths with values
+        |> filter (-> it.index-of(suffix) isnt -1 and req.body.social-auth)        # only auths with true values
         |> map (-> ".has-#{take-while (-> it in [\a to \z]), it}{display:inline}") # make css selectors
         |> join ''
       if domain.config.style.length then domain.config.style += '.has-auth{display:block}'
