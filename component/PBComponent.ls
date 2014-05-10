@@ -16,6 +16,7 @@ module.exports =
       # default jade templates
       tpl-name = @constructor.display-name
       fn = templates[tpl-name]
-      if fn then fn @locals! else ''
+      tmpl = if fn then fn @locals! else ''
+      tmpl
 
 # vim: fdm=marker

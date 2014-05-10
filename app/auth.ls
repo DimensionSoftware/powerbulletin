@@ -216,7 +216,7 @@ export create-passport = (domain, cb) ->
   facebook-options =
     client-ID     : config?facebook-client-id     or \x
     client-secret : config?facebook-client-secret or \x
-    callback-URL  : "http://#{domain}/auth/facebook/return"
+    callback-URL  : "https://#{domain}/auth/facebook/return"
   pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
     log 'facebook profile', profile
     err, name <- db.unique-name name: profile.display-name, site_id: site.id
@@ -237,7 +237,7 @@ export create-passport = (domain, cb) ->
   twitter-options =
     consumer-key    : config?twitter-consumer-key    or \x
     consumer-secret : config?twitter-consumer-secret or \x
-    callback-URL    : "http://#{domain}/auth/twitter/return"
+    callback-URL    : "https://#{domain}/auth/twitter/return"
   pass.use new passport-twitter.Strategy twitter-options, (access-token, refresh-token, profile, done) ->
     log 'twitter profile', profile
     err, name <- db.unique-name name: profile.display-name, site_id: site.id

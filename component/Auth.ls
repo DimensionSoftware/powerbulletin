@@ -20,7 +20,7 @@ module.exports =
       <~ lazy-load-fancybox
       <~ lazy-load-complexify
       if not window._auth
-        window._auth             = new Auth locals: {site-name: window.site-name, invite-only:window.invite-only}, $ \#auth
+        window._auth             = new Auth locals: {site-name: window.site-name, invite-only:window.invite-only, auth-domain: window.auth-domain }, $ \#auth
         window._auth.after-login = Auth.after-login if Auth.after-login
 
       $.fancybox.open \#auth, {before-close: -> Auth.hide-info!} <<< window.fancybox-params unless $ \.fancybox-overlay:visible .length
