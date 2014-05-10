@@ -36,11 +36,14 @@ module.exports =
 
       @@$ \.onclick-logout .click ~> @logout!; false # overriding layout.ls'
       @@$ \.onclick-my-sites .click @show-my-sites
-      @@$ \#start_now .click ~>
+      @@$ 'header, #logo, #start_now' .click (ev) ~>
+        return true if ev.target.tag-name.to-lower-case! is \a # guard
+        ev.prevent-default!
         @scroll-to-top window
         const sr = @@$ \.SiteRegister:first
         show-tooltip (sr.find \.tooltip), 'Name Your Community Here!'
         set-timeout (-> sr.find \.SiteRegister-subdomain .focus!), 100ms
+        false
       #{{{ animate build-in & initial focus
       $ \#register_top  .add-class \show
       $ \.SiteRegister-subdomain:first .focus!

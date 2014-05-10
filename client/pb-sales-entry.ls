@@ -73,21 +73,19 @@ update-elements = ->
       if last-scroll-y > window.scroll-y then dir := \up
       if (last-dir isnt dir) or (last-id isnt cur-id) # new section in view, so-- show & hide
         if dir is \down
-          console.log \d
           cur = switch cur-id # given cur-id, these must be visible:
           | \features   => <[.first]>
-          | \navigation => <[.first .second]>
-          | \responsive => <[.first .second .third]>
-          | \realtime   => <[.third .fifth]>
+          | \navigation => <[.second .first]>
+          | \responsive => <[.third .second .first]>
+          | \realtime   => <[.fifth .third .second]>
           #| \products   => <[.third .fifth]>
-          | \support    => <[.fifth]>
+          | \support    => <[.fifth .third]>
         else # upward direction
-          console.log \u
           cur = switch cur-id # given cur-id, these must be visible:
           | \features   => <[.first]>
           | \navigation => <[.first .second]>
           | \responsive => <[.first .second .third]>
-          | \realtime   => <[.second .third]>
+          | \realtime   => <[.second .third .fifth]>
           #| \products   => <[.third .fifth]>
           | \support    => <[.third .fifth]>
 
