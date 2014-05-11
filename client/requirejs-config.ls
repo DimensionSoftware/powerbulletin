@@ -25,6 +25,7 @@ paths:
   # above didn't work because of loading order?
   jquery-waypoints      : \../local/waypoints.min
   jquery-iris           : \../local/iris.min
+  jquery-postmessage    : \../local/jquery.ba-postmesage.min
   lodash                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min else \../local/lodash.min
   pd-editor             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.min else \../local/pagedown/Markdown.Editor
   #pagedown              : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.min else \../local/pagedown/Markdown.Sanitizer
