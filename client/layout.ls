@@ -10,6 +10,7 @@ helpers = require \../shared/shared-helpers
 {respond-resize, storage, switch-and-focus, mutate, show-tooltip, set-profile} = require \./client-helpers
 window.Auth  = require \../component/Auth
 window.switch-and-focus = switch-and-focus
+window.storage = storage
 
 window.cors = #{{{
   ajax-params:
@@ -170,6 +171,11 @@ window.logout = ->
 $d.on \click \.onclick-logout -> window.logout!; false
 $d.on \click \.require-login, Auth.require-login(-> this.click)
 $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
+
+# from /auth/$oauth/finish window
+$w.on \message, (ev) ->
+  $.fancybox.close!
+  Auth.login-with-token!
 
 #}}}
 #{{{ Keep human readable time up to date

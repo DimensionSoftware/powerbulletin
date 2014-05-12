@@ -326,29 +326,14 @@ do-verify = (req, res, next) ~>
 
 auth-finisher = (req, res, next) ->
   user = req.user
-  first-visit = user.created_human.match /just now/i
   err <- db.aliases.update-last-activity-for-user user
   if err then return next err
-  if first-visit
-    res.send """
-    <script type="text/javascript">
-      window.opener.$('\#auth .choose input[name=username]').val('#{user.name}');
-      window.opener.switchAndFocus('on-login', 'on-choose', '\#auth .choose input[name=username]');
-      window.close();
-    </script>
-    """
-  else
-    # XXX - $ and Auth need to be global so the child window can talk to the parent window.
-    res.send """
-    <script type="text/javascript">
-      window.opener.$.fancybox.close();
-      window.opener.Auth.afterLogin();
-      if (window.opener.rUser) {
-        window.opener.rUser(window.opener.user);
-      }
-      window.close();
-    </script>
-    """
+  res.send """
+  <script type="text/javascript">
+    window.opener.postMessage("login", "*")
+    window.close();
+  </script>
+  """
 
 @login-facebook-finish = auth-finisher
 

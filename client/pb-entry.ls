@@ -684,6 +684,9 @@ Auth.after-login = ->
   onload-personalize!
   if user and mutants?[window.mutator]?on-personalize
     set-profile user.photo
+    if user.created_human.match /just now/i
+      $('#auth .choose input[name=username]').val(user.name);
+      set-timeout Auth.show-choose-dialog, 50ms
     mutants?[window.mutator]?on-personalize window, user, ->
       socket?disconnect!
       socket?socket?connect!
