@@ -314,7 +314,7 @@ module.exports =
           else
             $.fancybox.close!
             v = $ \#username .val # blank username
-              ..val ''
+            $ \#username .val ''
             @after-login!
             window.location.hash = ''
             storage.set \user, window.user <<< {name:v}
