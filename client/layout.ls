@@ -3,6 +3,7 @@ require, exports, module <- define
 
 require \jqueryHistory
 require \jqueryUi
+require \jqueryPostmessage
 
 # XXX layout-specific client-side, and stuff we wanna reuse between sites
 helpers = require \../shared/shared-helpers
@@ -173,9 +174,12 @@ $d.on \click \.require-login, Auth.require-login(-> this.click)
 $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
 
 # from /auth/$oauth/finish window
-$w.on \message, (ev) ->
+$.receive-message(((e) ->
+  console.log e
   $.fancybox.close!
-  Auth.login-with-token!
+  Auth.login-with-token!),
+  "https:#{auth-domain}"
+)
 
 #}}}
 #{{{ Keep human readable time up to date
