@@ -20,8 +20,10 @@ module.exports =
       <~ lazy-load-fancybox
       <~ lazy-load-complexify
       if not window._auth
-        window._auth             = new Auth locals: {site-name: window.site-name, invite-only:window.invite-only, auth-domain: window.auth-domain }, $ \#auth
+        window._auth             = new Auth locals: {site-name: window.site-name, invite-only:window.invite-only, auth-domain: window.auth-domain, current-url: window.location.to-string! }, $ \#auth
         window._auth.after-login = Auth.after-login if Auth.after-login
+      else
+        window._auth.update-social-links!
 
       $.fancybox.open \#auth, {before-close: -> Auth.hide-info!} <<< window.fancybox-params unless $ \.fancybox-overlay:visible .length
       set-timeout (-> $ \#login-email .focus!select! ), 350ms
@@ -324,3 +326,8 @@ module.exports =
           shake-dialog $form, 100ms
         s.remove-attr \disabled
       false
+
+    update-social-links: ->
+      @$.find '.social a' .each (i, a) ->
+        $a = $ a
+        $a.attr \href, ($a.attr(\href).replace /\?origin=.*$/, "?origin=#{window.location.to-string!}")

@@ -175,10 +175,10 @@ $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
 
 # from /auth/$oauth/finish window
 $.receive-message(((e) ->
-  console.log e
-  $.fancybox.close!
-  Auth.login-with-token!),
-  "https:#{auth-domain}"
+  if e.data is \login
+    $.fancybox.close!
+    Auth.login-with-token!),
+    "https:#{auth-domain}"
 )
 
 #}}}

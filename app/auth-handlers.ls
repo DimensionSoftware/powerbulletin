@@ -308,7 +308,7 @@ do-verify = (req, res, next) ~>
   err, passport <- auth.passport-for-domain domain
   if err then return next(err)
   if passport
-    req.session.origin = req.get \Referrer
+    req.session.origin = req.query.origin
     passport.authenticate('facebook')(req, res, next)
   else
     console.warn "no passport for #{domain}"
@@ -348,7 +348,7 @@ auth-finisher = (req, res, next) ->
   scope    = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
 
   if passport
-    req.session.origin = req.get \Referrer
+    req.session.origin = req.query.origin
     passport.authenticate('google', {scope})(req, res, next)
   else
     console.warn "no passport for #{domain}"
@@ -371,7 +371,7 @@ auth-finisher = (req, res, next) ->
   err, passport <- auth.passport-for-domain domain
   if err then return next(err)
   if passport
-    req.session.origin = req.get \Referrer
+    req.session.origin = req.query.origin
     passport.authenticate('twitter')(req, res, next)
   else
     console.warn "no passport for #{domain}"
