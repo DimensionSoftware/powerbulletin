@@ -132,12 +132,25 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
             option(disabled='disabled') - Select a Domain -
             each d in site.domains
               option(value=d.id)= d.name
+          .break
           fieldset
             .break
-            label(for='social_auth') Social Authentication
+            label(for='facebook_auth') Facebook Auth
             .box
-              input.stylish.save#social_auth(type='checkbox', value='checked', name='socialAuth', checked=site.config.socialAuth)
-              label.switch-control(for='social_auth')
+              input.stylish.save#facebook_auth(type='checkbox', value='checked', name='facebookClientSecret', checked=site.config.facebookClientSecret)
+              label.switch-control(for='facebook_auth')
+                .switch
+            .break
+            label(for='twitter_auth') Twitter Auth
+            .box
+              input.stylish.save#twitter_auth(type='checkbox', value='checked', name='twitterConsumerSecret', checked=site.config.twitterConsumerSecret)
+              label.switch-control(for='twitter_auth')
+                .switch
+            .break
+            label(for='google_auth') Google+ Auth
+            .box
+              input.stylish.save#google_auth(type='checkbox', value='checked', name='googleConsumerSecret', checked=site.config.googleConsumerSecret)
+              label.switch-control(for='google_auth')
                 .switch
             .note Allow user logins from Facebook, Twitter &amp; Google+
             //- TODO Coming soon:

@@ -478,13 +478,13 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
       id = parse-int($ '#domain option:selected' .val!)
       domain = find (-> it.id == id), site.domains
       for k in [
-        \facebookClientId
+        #\facebookClientId
         \facebookClientSecret
-        \twitterConsumerKey
+        #\twitterConsumerKey
         \twitterConsumerSecret
-        \googleConsumerKey
+        #\googleConsumerKey
         \googleConsumerSecret]
-          domain.config[k] = $ \#social_auth .prop \checked
+          domain.config[k] = $ "[name='#k']" .prop \checked
       for k, v of inputs
         for e in v
           e = $ e
@@ -562,8 +562,9 @@ $d.on \click 'html.admin .preview' (ev) -> $ ev.target .prev \input .focus!; fal
 $d.on \change 'html.admin #domain' -> # set keys
   id = parse-int($ '#domain option:selected' .val!)
   domain  = find (-> it.id == id), site.domains
-  checked = !!domain.config.facebookClientSecret
-  $ \#social_auth .prop \checked, checked
+  $ \#facebook_auth .prop \checked, !!domain.config.facebookClientSecret
+  $ \#twitter_auth .prop \checked, !!domain.config.twitterConsumerSecret
+  $ \#google_auth .prop \checked, !!domain.config.googleConsumerSecret
 set-private-state = ->
   c = $ \#private .is \:checked
   $ \#background_uploader .toggle-class \hidden, !c
