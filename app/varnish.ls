@@ -31,17 +31,24 @@ export init = (cb = (->)) ->
     cb null
   ), 1
 
-  sock = net.connect 2000
-  sock.on \error, console.warn
-  sock.on \data, (buf) ~>
-    rs = read-varnish-responses(buf)
-    for r in rs
-      if first-message-received
-        cb-q.shift! null, r.code, r.body  # call back with code of last request
-      else
-        # we want to skip the initial message
-        # that varnish sends us
-        first-message-received := true
+  var sock
+  new-socket = ->
+    sock := net.connect 2000
+    sock.on \error, console.warn
+    sock.on \close, ->
+      console.info "[varnish] reconnecting"
+      first-message-received := false
+      set-timeout new-socket, 3000ms
+    sock.on \data, (buf) ~>
+      rs = read-varnish-responses(buf)
+      for r in rs
+        if first-message-received
+          cb-q.shift! null, r.code, r.body  # call back with code of last request
+        else
+          # we want to skip the initial message
+          # that varnish sends us
+          first-message-received := true
+  new-socket!
 
   # once housekeeping completed, export command
   export command = (cmd, cb = (->)) ->
