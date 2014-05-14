@@ -611,6 +611,8 @@ same-profile = (hints) ->
         $ 'label[for="domains"]' .effect \highlight
         awesome-scroll-to \#domains
 
+      $ 'html.admin #domain' .trigger \change # setup domains
+
       # hue color selection
       update-preview = ->
         $ '.preview .s-dark-chat'

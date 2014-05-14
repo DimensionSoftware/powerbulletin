@@ -1019,6 +1019,9 @@ html.admin
           display block
           min-width 400px
           margin-bottom -1px
+      fieldset
+        .break
+          padding-bottom 3px
       .domain
         max-height 75px
         margin-left 41px
@@ -1226,9 +1229,9 @@ html.admin
           width 305px
           height 100px
           font-size 1em
-        #invite_only:checked + label::after, #private:checked + label::after, #social:checked + label::after
+        #facebook_auth:checked + label:after, #twitter_auth:checked + label:after, #google_auth:checked + label:after, #invite_only:checked + label::after, #private:checked + label::after, #social:checked + label::after
           content 'On'
-        #invite_only + label::after, #private + label::after, #social + label::after
+        #facebook_auth + label:after, #twitter_auth + label:after, #google_auth + label:after, #invite_only + label::after, #private + label::after, #social + label::after
           content 'Off'
       button
         display block
