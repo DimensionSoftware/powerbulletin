@@ -1,3 +1,13 @@
+mixin social(currentUrl)
+  .social.has-auth
+    h3 Or Log In With
+    a.has-facebook(href="https:#{authDomain}/auth/facebook?origin=#{currentUrl}", title="Facebook!") 
+      img(src="#{cacheUrl}/images/facebook_32.png")
+    a.has-google(href="https:#{authDomain}/auth/google?origin=#{currentUrl}", title="Google+") 
+      img(src="#{cacheUrl}/images/google_32.png")
+    a.has-twitter(href="https:#{authDomain}/auth/twitter?origin=#{currentUrl}", title="Twitter!") 
+      img(src="#{cacheUrl}/images/twitter_32.png")
+
 .reset(style="display:none;")
   form(method="post", action="/auth/reset-password")
     label(for="password")
@@ -58,14 +68,8 @@
       a.msg.onclick-show-login
         h3 I already have an account
   unless inviteOnly
-    .social.has-auth
-      h3 Or Log In With
-      a.has-facebook(href="https:#{authDomain}/auth/facebook", title="Facebook!") 
-        img(src="#{cacheUrl}/images/facebook_32.png")
-      a.has-google(href="https:#{authDomain}/auth/google", title="Google+") 
-        img(src="#{cacheUrl}/images/google_32.png")
-      a.has-twitter(href="https:#{authDomain}/auth/twitter", title="Twitter!") 
-        img(src="#{cacheUrl}/images/twitter_32.png")
+    mixin social(currentUrl)
+
 .login
   form(method="post", action="/auth/login")
     label(for="username")
@@ -85,11 +89,4 @@
         h3 Forgot
           i ?
   unless inviteOnly
-    .social.has-auth
-      h3 Or Log In With
-      a.has-facebook(href="https:#{authDomain}/auth/facebook", title="Facebook!") 
-        img(src="#{cacheUrl}/images/facebook_32.png")
-      a.has-google(href="https:#{authDomain}/auth/google", title="Google+") 
-        img(src="#{cacheUrl}/images/google_32.png")
-      a.has-twitter(href="https:#{authDomain}/auth/twitter", title="Twitter!") 
-        img(src="#{cacheUrl}/images/twitter_32.png")
+    mixin social(currentUrl)
