@@ -20,8 +20,10 @@ module.exports =
       <~ lazy-load-fancybox
       <~ lazy-load-complexify
       if not window._auth
-        window._auth             = new Auth locals: {site-name: window.site-name, invite-only:window.invite-only}, $ \#auth
+        window._auth             = new Auth locals: {site-name: window.site-name, invite-only:window.invite-only, auth-domain: window.auth-domain, current-url: window.location.to-string! }, $ \#auth
         window._auth.after-login = Auth.after-login if Auth.after-login
+      else
+        window._auth.update-social-links!
 
       $.fancybox.open \#auth, {before-close: -> Auth.hide-info!} <<< window.fancybox-params unless $ \.fancybox-overlay:visible .length
       set-timeout (-> $ \#login-email .focus!select! ), 350ms
@@ -165,8 +167,9 @@ module.exports =
         username: u.val!
         password: p.val!
       s.attr \disabled \disabled
-      $.post $form.attr(\action), params, (r) ~>
+      cors.post "#{auth-domain}#{$form.attr(\action)}", params, (r) ~>
         if r.success
+          <~ Auth.login-with-token
           if r.choose-name
             @after-login! if @after-login
             if Auth.require-login-cb
@@ -313,7 +316,7 @@ module.exports =
           else
             $.fancybox.close!
             v = $ \#username .val # blank username
-              ..val ''
+            $ \#username .val ''
             @after-login!
             window.location.hash = ''
             storage.set \user, window.user <<< {name:v}
@@ -323,3 +326,8 @@ module.exports =
           shake-dialog $form, 100ms
         s.remove-attr \disabled
       false
+
+    update-social-links: ->
+      @$.find '.social a' .each (i, a) ->
+        $a = $ a
+        $a.attr \href, ($a.attr(\href).replace /\?origin=.*$/, "?origin=#{window.location.to-string!}")

@@ -159,8 +159,25 @@ export set-login-token = (user, cb) ->
   err, hash <- unique-hash \login_token, user.site_id
   if err then return cb err
 
+  # autovivify alias
+  maybe-create-alias = (cb) ->
+    err, alias <- db.aliases.select-one { user_id: user.id, site_id: user.site_id }
+    if err then return cb err
+    if not alias
+      err, alias <- db.aliases.select-one { user_id: user.id, site_id: 1 }
+      if err then return cb err
+      if not alias then return cb(new Error("user #{user.id} has no alias for site_id 1"))
+      err, unique-name <- db.unique-name { name: alias.name, site_id: user.site_id }
+      db.aliases.add-to-user user.id, [user.site_id], { name: unique-name, photo: \/images/profile.png }, cb
+    else
+      cb null
+
+  err <- maybe-create-alias
+  if err then return cb err
+
   user.login_token = hash
   err <- db.aliases.update { login_token: hash }, { user_id: user.id, site_id: user.site_id }
+  if err then return cb err
 
   cb null, user
 
@@ -216,7 +233,7 @@ export create-passport = (domain, cb) ->
   facebook-options =
     client-ID     : config?facebook-client-id     or \x
     client-secret : config?facebook-client-secret or \x
-    callback-URL  : "http://#{domain}/auth/facebook/return"
+    callback-URL  : "https://#{domain}/auth/facebook/return"
   pass.use new passport-facebook.Strategy facebook-options, (access-token, refresh-token, profile, done) ->
     log 'facebook profile', profile
     err, name <- db.unique-name name: profile.display-name, site_id: site.id
@@ -237,7 +254,7 @@ export create-passport = (domain, cb) ->
   twitter-options =
     consumer-key    : config?twitter-consumer-key    or \x
     consumer-secret : config?twitter-consumer-secret or \x
-    callback-URL    : "http://#{domain}/auth/twitter/return"
+    callback-URL    : "https://#{domain}/auth/twitter/return"
   pass.use new passport-twitter.Strategy twitter-options, (access-token, refresh-token, profile, done) ->
     log 'twitter profile', profile
     err, name <- db.unique-name name: profile.display-name, site_id: site.id

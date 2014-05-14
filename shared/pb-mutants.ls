@@ -604,8 +604,8 @@ same-profile = (hints) ->
         $b.remove-class \collapsed
       $ 'form input:first' .focus!select!
       current-domain = (window.site.domains.filter (-> it.name is window.location.hostname))?0
-      $('.domain select').val current-domain.id.to-string! if current-domain
-      $ \.domain .trigger \change # fill-in authorization
+      if current-domain then $ \#domain .val current-domain.id.to-string!
+      $ \#domain .trigger \change # fill-in authorization
       if window.location.to-string!match \domains
         $ \#domains .attr \checked, true
         $ 'label[for="domains"]' .effect \highlight

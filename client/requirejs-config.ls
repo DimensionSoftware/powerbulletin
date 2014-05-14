@@ -12,6 +12,7 @@ cache-url =
 base-url: "#{cache-url}/client" # override for optimized builds
 wait-seconds: 60s # give a single module this long to load till timeout
 paths:
+  easyxdm               : \../local/easyXDM.min
   fse                   : "../local/fse"
   jquery                : \../local/jquery-1.10.2.min
   jquery-history        : "../local/history.min"
@@ -25,6 +26,7 @@ paths:
   # above didn't work because of loading order?
   jquery-waypoints      : \../local/waypoints.min
   jquery-iris           : \../local/iris.min
+  jquery-postmessage    : \../local/jquery.ba-postmessage.min
   lodash                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min else \../local/lodash.min
   pd-editor             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.min else \../local/pagedown/Markdown.Editor
   #pagedown              : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.min else \../local/pagedown/Markdown.Sanitizer
@@ -38,6 +40,9 @@ paths:
   powerbulletin-sales   : \../powerbulletin-sales
   #pagedown              : ["../local/Markdown.Converter", "../local/Markdown.Sanitizer"]
 shim:
+  easyxdm:
+    exports: \easyXDM
+    init: -> window.easyXDM
   lodash:
     exports: \_
     init: -> window._
@@ -55,6 +60,9 @@ shim:
     deps: [\jquery]
   jquery-waypoints:
     exports: \jQuery.waypoints
+    deps: [\jquery]
+  jquery-postmessage:
+    exports: \jQuery.postMessage
     deps: [\jquery]
   pd-converter:
     exports: \Markdown.Converter

@@ -3,6 +3,7 @@ require, exports, module <- define
 
 require \jqueryHistory
 require \jqueryUi
+require \jqueryPostmessage
 
 # XXX layout-specific client-side, and stuff we wanna reuse between sites
 helpers = require \../shared/shared-helpers
@@ -10,6 +11,7 @@ helpers = require \../shared/shared-helpers
 {respond-resize, storage, switch-and-focus, mutate, show-tooltip, set-profile} = require \./client-helpers
 window.Auth  = require \../component/Auth
 window.switch-and-focus = switch-and-focus
+window.storage = storage
 
 window.cors = #{{{
   ajax-params:
@@ -170,6 +172,14 @@ window.logout = ->
 $d.on \click \.onclick-logout -> window.logout!; false
 $d.on \click \.require-login, Auth.require-login(-> this.click)
 $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
+
+# from /auth/$oauth/finish window
+$.receive-message(((e) ->
+  if e.data is \login
+    $.fancybox.close!
+    Auth.login-with-token!),
+    "https:#{auth-domain}"
+)
 
 #}}}
 #{{{ Keep human readable time up to date

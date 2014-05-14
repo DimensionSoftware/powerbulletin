@@ -474,6 +474,17 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
     if data?success
       # indicated saved
       show-tooltip t, (data?msg or t.data(\msg) or \Saved!)
+      # update config for domains (client)
+      id = parse-int($ '#domain option:selected' .val!)
+      domain = find (-> it.id == id), site.domains
+      for k in [
+        \facebookClientId
+        \facebookClientSecret
+        \twitterConsumerKey
+        \twitterConsumerSecret
+        \googleConsumerKey
+        \googleConsumerSecret]
+          domain.config[k] = $ \#social_auth .prop \checked
       for k, v of inputs
         for e in v
           e = $ e
@@ -548,22 +559,11 @@ $d.on \click 'html.admin .q' -> # close
   false
 $d.on \click 'html.admin .dialog textarea, html.admin .dialog button, html.admin .dialog input[type="text"], html.admin .dialog select' -> false # discard event
 $d.on \click 'html.admin .preview' (ev) -> $ ev.target .prev \input .focus!; false
-$d.on \change 'html.admin .domain' -> # set keys
-  id = parse-int($ '.domain option:selected' .val!)
-  #console.log \parsed_id, id
-  domain = find (->
-    #console.log \actual_id, it.id
-    it.id == id
-  ), site.domains
-  #domain = find (.id is id), site.domains
-  for k in [
-    \facebookClientId
-    \facebookClientSecret
-    \twitterConsumerKey
-    \twitterConsumerSecret
-    \googleConsumerKey
-    \googleConsumerSecret]
-      $ "[name='#k']" .val domain?config[k]
+$d.on \change 'html.admin #domain' -> # set keys
+  id = parse-int($ '#domain option:selected' .val!)
+  domain  = find (-> it.id == id), site.domains
+  checked = !!domain.config.facebookClientSecret
+  $ \#social_auth .prop \checked, checked
 set-private-state = ->
   c = $ \#private .is \:checked
   $ \#background_uploader .toggle-class \hidden, !c
@@ -684,6 +684,9 @@ Auth.after-login = ->
   onload-personalize!
   if user and mutants?[window.mutator]?on-personalize
     set-profile user.photo
+    if user.created_human.match /just now/i
+      $('#auth .choose input[name=username]').val(user.name);
+      set-timeout Auth.show-choose-dialog, 50ms
     mutants?[window.mutator]?on-personalize window, user, ->
       socket?disconnect!
       socket?socket?connect!

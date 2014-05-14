@@ -289,7 +289,6 @@ do-verify = (req, res, next) ~>
   (err, r) <- db.change-alias usr
   if err then return res.json {success:false, msg:'Name in-use!'}
 
-
   maybe-add-aliases = if site.id is 1
     (cb) ->
       cvars = global.cvars
@@ -309,6 +308,7 @@ do-verify = (req, res, next) ~>
   err, passport <- auth.passport-for-domain domain
   if err then return next(err)
   if passport
+    req.session.origin = req.query.origin
     passport.authenticate('facebook')(req, res, next)
   else
     console.warn "no passport for #{domain}"
@@ -326,29 +326,18 @@ do-verify = (req, res, next) ~>
 
 auth-finisher = (req, res, next) ->
   user = req.user
-  first-visit = user.created_human.match /just now/i
+  origin = req.session.origin
+  host = if process.env.NODE_ENV is \production then \powerbulletin else \pb
   err <- db.aliases.update-last-activity-for-user user
   if err then return next err
-  if first-visit
-    res.send """
-    <script type="text/javascript">
-      window.opener.$('\#auth .choose input[name=username]').val('#{user.name}');
-      window.opener.switchAndFocus('on-login', 'on-choose', '\#auth .choose input[name=username]');
-      window.close();
-    </script>
-    """
-  else
-    # XXX - $ and Auth need to be global so the child window can talk to the parent window.
-    res.send """
-    <script type="text/javascript">
-      window.opener.$.fancybox.close();
-      window.opener.Auth.afterLogin();
-      if (window.opener.rUser) {
-        window.opener.rUser(window.opener.user);
-      }
-      window.close();
-    </script>
-    """
+  res.send """
+  <script type="text/javascript" src="https://muscache.#host.com/local/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="https://muscache.#host.com/local/jquery.ba-postmessage.min.js"></script>
+  <script type="text/javascript">
+    $.postMessage("login", "#origin", window.opener);
+    window.close();
+  </script>
+  """
 
 @login-facebook-finish = auth-finisher
 
@@ -359,6 +348,7 @@ auth-finisher = (req, res, next) ->
   scope    = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
 
   if passport
+    req.session.origin = req.query.origin
     passport.authenticate('google', {scope})(req, res, next)
   else
     console.warn "no passport for #{domain}"
@@ -381,6 +371,7 @@ auth-finisher = (req, res, next) ->
   err, passport <- auth.passport-for-domain domain
   if err then return next(err)
   if passport
+    req.session.origin = req.query.origin
     passport.authenticate('twitter')(req, res, next)
   else
     console.warn "no passport for #{domain}"

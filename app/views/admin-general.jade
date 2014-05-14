@@ -1,9 +1,9 @@
 analytics = unescape(site.config.analytics)
 form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", enctype="multipart/form-data")
   fieldset.col1
+    button.name(type='submit', value='Save') Save
     label(for='name') Title
     input(id='name', class='name', name='name', type='text', value=site.name)
-    button.name(type='submit', value='Save') Save
     .note Appears at top of browser window
     .break
     label(for='invite_only') Invite Only
@@ -109,11 +109,13 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
     .domains
       input.collapse(id='domains', type='checkbox')
       label.onclick-expand(for='click_domains')
-        h4.onclick-expand Domains
+        h4.onclick-expand
+          small + 
+          | Domains
         .dialog
           .break
           .domain
-            input#custom_domain(type='text', placeholder='Custom-Domain.com')
+            input#custom_domain(type='text', placeholder='Your-Custom-Domain.com')
             button#add_custom_domain Add
             span.q ?
               .message
@@ -123,43 +125,31 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
                 p For help, contact 
                   a(href='mailto:support@powerbulletin.com') support@powerbulletin.com
           .break
-          p Enable users to login from the respective social network
+          .break
+          //-p Enable users to login from the respective social network
+          label(for='domain') Settings for
           select(id='domain', name='domain')
             option(disabled='disabled') - Select a Domain -
             each d in site.domains
               option(value=d.id)= d.name
-          .break
           fieldset
-            img(src="#{cacheUrl}/images/facebook_32.png")
-            legend
-              a(href="https://developer.facebook.com/", target="_blank", title="What is this?") Facebook
-            label(for="facebook_client_id") ID
-            input.first(id="facebook_client_id", type='text', name='facebookClientId', placeholder='Facebook API ID ...',
-            value=site.config.facebookClientId)
-            label(for="facebook_client_secret") Secret
-            input(id="facebook_client_secret", type='text', name='facebookClientSecret', placeholder='Facebook secret ...',
-            value=site.config.facebookClientId)
-          fieldset
-            img(src="#{cacheUrl}/images/twitter_32.png")
-            legend
-              a(href="https://dev.twitter.com/", target="_blank", title="What is this?") Twitter
-            label(for="twitter_key") Key
-            input.first(id="twitter_key", type='text', name='twitterConsumerKey', placeholder='Twitter API key ...',
-            value=site.config.twitterConsumerKey)
-            label(for="twitter_secret") Secret
-            input(id="twitter_secret", type='text', name='twitterConsumerSecret', placeholder='Twitter API secret ...',
-            value=site.config.twitterConsumerSecret)
-          fieldset
-            img(src="#{cacheUrl}/images/google_32.png")
-            legend
-              a(href="https://code.google.com/apis/console/", target="_blank", title="What is this?") Google+
-            label(for="google_key") Key
-            input.first(id="google_key", type='text', name='googleConsumerKey', placeholder='Google+ API key ...', value=site.config.googleConsumerKey)
-            label(for="google_secret") Secret
-            input(id="google_secret", type='text', name='googleConsumerSecret', placeholder='Google+ API secret ...',
-            value=site.config.googleConsumerSecret)
-            //-input(type='hidden', name='csrf', value=csrf)
-          button(type='submit', value='Save') Save
+            .break
+            label(for='social_auth') Social Authentication
+            .box
+              input.stylish.save#social_auth(type='checkbox', value='checked', name='socialAuth', checked=site.config.socialAuth)
+              label.switch-control(for='social_auth')
+                .switch
+            .note Allow user logins from Facebook, Twitter &amp; Google+
+            //- TODO Coming soon:
+            //-.break
+            //-label(for='ssl_only') Force SSL
+            //-.box
+            //-  input.stylish.save#ssl_only(type='checkbox', value='checked', name='sslOnly', checked=site.config.sslOnly)
+            //-  label.switch-control(for='ssl_only')
+            //-    .switch
+            //-.note Authentication is secured with high-grade SSL, always
+            //-.break
+          //-button(type='submit', value='Save') Save
     input(type='hidden', name='action', value='general')
     .break
     a.menu-link.mutant(href='/admin/menu') Continue to Menu &rarr;
