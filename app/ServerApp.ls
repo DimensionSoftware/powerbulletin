@@ -113,12 +113,12 @@ module.exports =
 
       console.log "\n [1;37m.. ._________\nPowerBulletin [1;37;40m#{app.settings.env}[0;m [1;37mon port [1;37;40m#{@port}"
 
-      app.configure \production, -> # write pidfile
+      if process.env.NODE_ENV is \production
         fs.write-file-sync "#{cvars.tmp}/pb.pid", proc.pid
         id = \pb
         try # ...and drop privileges
           proc.setuid id
-          #proc.setgid id
+          proc.setgid id
         catch e
           console.log "Unable to setuid/setgid #{id}: #{e}"
 
