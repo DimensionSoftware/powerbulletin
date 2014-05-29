@@ -593,7 +593,7 @@ same-profile = (hints) ->
       window.component.header-uploader?detach!
       window.component.background-uploader?detach!
       $ \.onsave-hide .off!
-      $ 'html.admin .col1 .onclick-close' .off!
+      $ 'html.admin .theme .onclick-close' .off!
       next!
   on-load:
     (window, next) ->
@@ -669,12 +669,12 @@ same-profile = (hints) ->
       hide = ->
         $ '.color-picker .iris-picker' .hide!
         $ \.hue-selector .hide!
-        $ 'html.admin .col1 .onclick-close' .hide!
+        $ 'html.admin .theme .onclick-close' .hide!
       $ \.onsave-hide .on \click, hide
       add-color = (defaults, color) ->
         if color then defaults.unshift color
         defaults
-      $ \#sprite_hue .on \focus -> hide!; $ \.hue-selector .show!; $ 'html.admin .col1 .onclick-close' .show!
+      $ \#sprite_hue .on \focus -> hide!; $ \.hue-selector .show!; $ 'html.admin .theme .onclick-close' .show!
       $ \#theme
         .iris({
           width: 167px
@@ -685,7 +685,7 @@ same-profile = (hints) ->
         })
         .focus((ev) -> 
           hide!
-          $ 'html.admin .col1 .onclick-close' .show!
+          $ 'html.admin .theme .onclick-close' .show!
           $(ev.current-target).iris \show)
       $ \#colored_text
         .iris({
@@ -697,9 +697,9 @@ same-profile = (hints) ->
         })
         .focus((ev) -> 
           hide!
-          $ 'html.admin .col1 .onclick-close' .show!
+          $ 'html.admin .theme .onclick-close' .show!
           $(ev.current-target).iris \show)
-      $ 'html.admin .col1 .onclick-close' .click (ev) -> hide!; $ ev.current-target .hide!
+      $ 'html.admin .theme .onclick-close' .click (ev) -> hide!; $ ev.current-target .hide!
 
       # no pager (for now)
       window.pages-count = 0

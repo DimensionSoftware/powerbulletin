@@ -236,6 +236,7 @@ module.exports =
 
       @$.on \click \.onclick-close (ev) ~>
         @delete ($ ev.target .prev \.row) # extract row
+        false
 
       @$.on \click \.onclick-add (ev) ~>
         @show!
