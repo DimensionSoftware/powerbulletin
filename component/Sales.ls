@@ -26,6 +26,16 @@ module.exports =
         register-bottom: new SiteRegister {locals: {subdomain: @state.subdomain}}, \#register_bottom, @
 
     on-attach: ->
+      stretch-imgs = -> # distorting stretch fill
+        console.log \stretch
+        h = $ window .height!
+        $ \.bg .height h
+        # only fill main img when shorter than screen height
+        e = $ '.body-bg > img'
+        if h > e.height! then e.height h
+      stretch-imgs!
+      $ window .on \resize, debounce stretch-imgs
+
       @scroll-to-top window
 
       @@$R((subdomain) ~>
