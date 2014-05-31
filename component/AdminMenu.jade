@@ -18,9 +18,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
       ul.options
         li
           input.option(id='forum', type='radio', name='dialog', checked='checked', value='forum')
-          label.header(for='forum') Forum
-            .desc Discussion &amp; Chat
+          label.header(for='forum')
             .s-forum.icon
+            h2 Forum
+            .desc Discussion &amp; Chat
           .dialog
             label(for='forum_title') Title
             input#forum_title(type='text', name='forumTitle')
@@ -59,9 +60,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             button(type='submit', value='Save') Save
         li
           input.option(id='page', type='radio', name='dialog', value='page')
-          label.header(for='page') Page
-            .desc Raw HTML
+          label.header(for='page')
             .s-page.icon
+            h2 Page
+            .desc Raw HTML
           .dialog
             label(for='page_title') Title
             input#page_title(type='text', name='pageTitle')
@@ -89,9 +91,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             button(type='submit', value='Save') Save
         li
           input.option(id='link', type='radio', name='dialog', value='link')
-          label.header(for='link') Link
-            .desc External or Internal
+          label.header(for='link')
             .s-link.icon
+            h2 Link
+            .desc External or Internal
           .dialog
             label(for='link_title') Title
             input#link_title(type='text', name='linkTitle')
@@ -114,9 +117,12 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             button(type='submit', value='Save') Save
         li
           input.option(id='placeholder', type='radio', name='dialog', value='placeholder')
-          label.header(for='placeholder') Menu Item
-            .desc Leave Blank for Whitespace
+          label.header(for='placeholder')
             .s-placeholder.icon
+            h2 Menu Item
+            .desc Navigation Organizer, 
+              br
+              | no content
           .dialog
             label(for='placeholder_title') Title
             input#placeholder_title(type='text', name='placeholderTitle')

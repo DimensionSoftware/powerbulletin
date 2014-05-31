@@ -144,7 +144,7 @@
         opacity 1
     fieldset
       padding-top 17px!important
-      min-width 600px
+      min-width 780px
       position relative
       .dialog
         visibility hidden
@@ -171,15 +171,15 @@
         li:first-child .header
           margin-left 105px
         input[type='radio'] + label.header
-          width 210px
-          height 200
+          width 290px
+          height 110px
           font-size 1.1em
-          background-image linear-gradient(to top, #eee, #fafafa 60%)
+          background-image linear-gradient(to top, #eee, #fcfcfc 60%)
           padding 8px
           margin 5px
           padding 15px 10px 25px 35px
           margin 20px
-          box-shadow 1px 1px 2px 1px #ccc
+          box-shadow 1px 1px 2px 1px #ddd
           border-radius 10px
           font-weight 500
           transition all .1s ease-in .05s
@@ -187,7 +187,7 @@
           &:hover
             color #000
             border-radius 12px
-            box-shadow 1px 1px 2px 1px #bbb, 1px 1px 2px 1px dark_theme_color, 1px 1px 4px 1px theme_color
+            box-shadow 1px 1px 2px 1px #ddd, 1px 1px 2px 1px dark_theme_color, 1px 1px 4px 1px theme_color
             transition none
           .desc
             color #666
@@ -195,6 +195,18 @@
             line-height 1.3em
             min-height 40px
             margin-top 6px
+        .header
+          position relative
+          .icon
+            position absolute
+            left 20px
+          h2
+            font-size 2em
+            color dark_theme_color
+            margin 25px 0 10px 110px
+            font-weight 200
+          .desc
+            margin 0 0 0 110px
         li
           float left
           > label
