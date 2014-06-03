@@ -2,7 +2,7 @@ z = 150
 
 body.scrolled
   .PanelCollection
-    top (header_scrolled_height+2)
+    top (header_scrolled_height+1)
     bottom footer_height
 
 .PanelCollection
@@ -20,15 +20,14 @@ body.scrolled
 
   .toggler
     position absolute
-    top 6px
-    right 10px
+    padding 11px
+    top 0
+    right 11px
+    font-size 1.3em
+    color #fff
     cursor pointer
     z-index 1
-    font-size 12px
-    height 11px
-    width 11px
     text-indent 2px
-    border-radius 100%
   .toggler.off
     display none
     //&:after

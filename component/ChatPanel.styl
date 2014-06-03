@@ -1,3 +1,5 @@
+line_color = tint(dark_theme_color, 35%)
+
 body.scrolled
   .footer
     bottom 65px
@@ -16,33 +18,40 @@ body.scrolled
   top 0
   right 0
   margin 0
-  background-color #fff
-  border-left 1px solid #eee
+  background-color dark_theme_color
+  box-shadow 0 0 15px #999
 
   &.hidden
 
   .header
-    background-color overlay_color_secondary
     padding 1px
-    border-bottom 1px solid #eee
-    height 30px
+    border-bottom 1px solid line_color
+    height 47px
     h5
-      margin 7px 0 0 10px
-      text-transform capitalize
+      padding-bottom 14px
+      margin-left 17px
+      margin-top 14px
+      a
+        text-transform capitalize
+        color #fff
+        font-weight 300
+        font-size 1.4em
   .middle
     position relative
     .messages
-      margin 0
+      background-color #fff
+      margin 5px 3px 5px 4px
       padding 35px 0 0 0
       left 0
       height 100%
-      width 100%
       list-style-type none
       overflow-y scroll
       p
         margin 0
       img
         max-width 90%
+      li:last-child
+        padding-bottom 13px
 
     .messages > li
       position relative
@@ -51,8 +60,8 @@ body.scrolled
       color #666
       font-size .9em
       text-align right
-      border-right 2px solid dark_theme_color
       word-wrap break-word
+      background-color #eee
     .messages li:last-child
       margin-bottom grid
     .messages > li.other
@@ -60,10 +69,10 @@ body.scrolled
       background-color #fff
       color #333
       font-size 1em
-      border-left 2px solid theme_color
       padding-right (grid*2)
-      border-right 0
-    .messages > li:not(.other) + li.other
+    .messages li.other + li:not(.other)
+      padding-bottom grid
+    .messages li:not(.other) + li.other
       padding-top grid
       &:after
         content ''
@@ -77,10 +86,10 @@ body.scrolled
   .footer
     position absolute
     bottom 97px
-    right 0
-    left 1px
+    right 3px
+    left 4px
     overflow hidden
-    border-top 1px solid #eee
+    border-top 1px solid dark_theme_color
     &:after
       position absolute
       bottom 0
@@ -91,13 +100,13 @@ body.scrolled
     .message-box
       overflow hidden
       border-radius 0
-      padding 5px 0 5px 5px
+      padding 8px 0 8px 8px!important
       border 0
-      font-size 12px
+      font-size 14px
       height 19px
       resize none
       bottom 0
-      left 1px
+      left 0!important
       &:hover
         border 0
         box-shadow none

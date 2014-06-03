@@ -1,30 +1,75 @@
+line_color = tint(dark_theme_color, 35%)
+
 .ChatList
   position absolute
   top 0
   right 0
   margin 0
-  background-color #fff
-  border-left 1px solid #eee
+  background-color dark_theme_color
+  box-shadow 0 0 15px #999
   h5
-    margin 9px 0 10px 12px
-    color #666
+    color #eee
+    padding 0 0 14px 18px
+    margin 14px 0 0 0
+    font-weight 300
+    font-size 1.3em
+    border-bottom 1px solid line_color
   .chat
     margin 0
-    padding 1px 0 0px 0
+    padding 7px 0 0 0
     cursor pointer
     border-radius 3px
-    border 1px solid transparent
-    transition .1s ease-in .05s
+    border-bottom 1px solid transparent
+    transition all .1s ease-in .05s
+    &:first-child
+      margin-top 5px
     &:hover
-      border 1px solid theme_color
+      border-bottom 1px solid theme_color
       background theme_alpha
       transition none
+      li
+        h6
+          border-bottom 1px solid theme_color!important
+          transition .05s ease-in
     .participants
       margin 0 20px
       list-style none
-    .photo
-      margin-top -3px
-    h6
-      margin 9px 0 13px 0
-      color dark_text
-      text-transform capitalize
+      li
+        position relative
+        display block
+        height 52px
+        h6
+          transition border-bottom .1s ease-in .05s
+          position absolute
+          padding-bottom 30px
+          border-bottom 1px solid line_color
+          margin 0
+          color #fff
+          top 0
+          left 57px
+          width 100%
+          text-transform capitalize
+        .photo
+          margin-top -3px
+          padding 2px
+          height 43px
+          width 43px
+        .title
+          position absolute
+          top 19px
+          left 57px
+          height 1.4em
+          color #ddd
+          font-size .8em
+          text-transform capitalize
+          text-overflow ellipsis
+          overflow hidden
+        .date
+          position absolute
+          right 2px
+          top 2px
+          color #eee
+          font-size .8em
+          font-weight 200
+          b
+            font-weight 500

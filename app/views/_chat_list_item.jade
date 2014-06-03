@@ -4,4 +4,5 @@
       li(data-user-id=alias.user_id)
         img.profile.photo(src="#{cacheUrl}/#{alias.photo}")
         h6= alias.name
-
+        .title= alias.config.title
+        .date.created(data-time=max)
