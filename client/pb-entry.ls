@@ -468,15 +468,21 @@ $d.on \click 'html.admin .plus-minus.degrees button' (ev) -> # inc/dec in degree
     ..val next-deg-value (e.attr \class), i.val!
   i.keyup!focus!select!       # focus input
 $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save[type="checkbox"]' (ev) ->
+  # indicate we're saving
+  t = $ \#warning
+  b = $ ev.current-target # submit button
+  b.attr \disabled, \disabled
+  show-tooltip t, \Saving
+
   submit-form(ev, (data) ->
     f = $ this # form
-    t = $ \#warning
     inputs = # class to apply & which input
       saved: f.find 'input, textarea'
 
     f.find \input:first .focus!select! unless f.has-class \no-focus
     if data?success
-      # indicated saved
+      # indicated saved!
+      b.remove-attr \disabled
       show-tooltip t, (data?msg or t.data(\msg) or \Saved!)
       # update config for domains (client)
       id = parse-int($ '#domain option:selected' .val!)
