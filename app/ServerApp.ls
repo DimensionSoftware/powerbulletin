@@ -117,8 +117,8 @@ module.exports =
         fs.write-file-sync "#{cvars.tmp}/pb.pid", proc.pid
         id = \pb
         try # ...and drop privileges
-          proc.setuid id
           proc.setgid id
+          proc.setuid id
         catch e
           console.log "Unable to setuid/setgid #{id}: #{e}"
 
