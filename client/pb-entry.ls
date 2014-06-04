@@ -430,6 +430,7 @@ function next-deg-value plus-or-minus, initial-v
     | \plus  => (unless v >= 360deg then (v + 1) + \deg else v + \deg)
     | \minus => (unless v <= 0deg   then (v - 1) + \deg else v + \deg)
 $d.on \dblclick 'html.admin .dialog' (ev) ->
+  return unless $ ev.target .has-class \dialog # guard
   l = $ ev.current-target .parents \.onclick-expand
     ..toggle-class \expanded, !(l.has-class \expanded)
   $ 'html.admin .theme .onclick-close' .hide!
