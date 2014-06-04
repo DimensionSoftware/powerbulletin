@@ -24,10 +24,14 @@ body.scrolled
     top 0
     right 11px
     font-size 1.3em
-    color #fff
+    color #eee
     cursor pointer
     z-index 1
     text-indent 2px
+    transition color .2s ease-out
+    &:hover
+      transition none
+      color #fff
   .toggler.off
     display none
     //&:after

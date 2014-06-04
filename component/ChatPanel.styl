@@ -27,6 +27,18 @@ body.scrolled
     padding 1px
     border-bottom 1px solid line_color
     height 47px
+    .onclick-messages
+      position absolute
+      top 9px
+      right 47px
+      font-size 2.8em
+      color #eee
+      transition color .2s ease-out
+      z-index 1
+      cursor pointer
+      &:hover
+        transition none
+        color #fff
     h5
       padding-bottom 14px
       margin-left 17px
@@ -110,5 +122,3 @@ body.scrolled
       &:hover
         border 0
         box-shadow none
-        padding-left 7px
-        margin-left -2px
