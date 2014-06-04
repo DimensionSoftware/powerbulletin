@@ -28,6 +28,7 @@ body.scrolled
     border-bottom 1px solid line_color
     height 47px
     .onclick-messages
+      display block!important
       position absolute
       top 9px
       right 47px
@@ -53,6 +54,7 @@ body.scrolled
     .messages
       background-color #fff
       margin 5px 3px 5px 4px
+      border 1px solid theme_color
       padding 35px 0 0 0
       left 0
       height 100%
@@ -67,33 +69,53 @@ body.scrolled
 
     .messages > li
       position relative
-      padding .1em 0.5em
-      //margin 0.5em
-      color #666
+      padding 0.12em 0.5em
+      width 70%
       font-size .9em
+      clear both
+      float right
+      margin-right 16px
+      margin-left 12px
       text-align right
       word-wrap break-word
-      background-color #eee
-    .messages li:last-child
-      margin-bottom grid
+      background-color tint(dark_theme_color, 5%)
+      color #fff
+      a
+        color @color
+        padding 0.12em 0.7em
+    .messages > li:last-child
+      margin-bottom (grid*2)
     .messages > li.other
+      float left
       text-align left
-      background-color #fff
+      background-color #f5f5f5
       color #333
       font-size 1em
       padding-right (grid*2)
+    // first grouped message (mine)
     .messages li.other + li:not(.other)
-      padding-bottom grid
-    .messages li:not(.other) + li.other
-      padding-top grid
+      margin-top grid
+      border-top-right-radius 8px
+      border-top-left-radius 8px
       &:after
         content ''
         position absolute
-        top -5px
-        left 3px
-        width 10%
-        height 1px
-        background-color #f4f4f4
+        top 3px
+        right -17px
+        border 10px solid transparent
+        border-left 10px solid tint(dark_theme_color, 5%)
+    // first grouped message (theirs)
+    .messages li:not(.other) + li.other
+      margin-top grid
+      border-top-right-radius 8px
+      border-top-left-radius 8px
+      &:after
+        content ''
+        position absolute
+        top 5px
+        left -17px
+        border 10px solid transparent
+        border-right 10px solid #f5f5f5
 
   .footer
     position absolute
@@ -110,6 +132,7 @@ body.scrolled
       font-size .7em
       color #ccc
     .message-box
+      font-style italic
       overflow hidden
       border-radius 0
       padding 8px 0 8px 8px!important
