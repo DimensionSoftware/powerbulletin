@@ -73,7 +73,14 @@ header
   color #555
   background overlay_color_secondary
   background-image linear-gradient(bottom, #fff 55%, overlay_color_secondary)
-  //border-bottom 1px solid #f4f4f4
+  &:after
+    position absolute
+    content ''
+    left 0
+    right 0
+    bottom 1px
+    height 1px
+    background #f4f4f4
   &.expanded
     background-color overlay_tint_color
   .container
@@ -289,9 +296,6 @@ footer
 body.scrolled
   header
     background-color overlay_tint_color
-    //box-shadow 0 -1px 12px 2px #eee
-    //border-bottom 1px solid #eaeaea
-    //border-bottom 1px solid #fff
     height -2px
     //transition height .1s ease-out
     //&::after
@@ -303,6 +307,14 @@ body.scrolled
     //  height 1px
     //  content ''
     //  position absolute
+    &:after
+      position absolute
+      content ''
+      left 0
+      right 0
+      bottom 1px
+      height 1px
+      background #eaeaea
     .container
       .search
         .query
