@@ -170,7 +170,7 @@ module.exports =
     hide: (sel) ->
       #@@$(sel).add-class \hidden
       panel = @find @selected
-      wd = panel.local \width
+      wd = (panel.local \width) + 20px
       @@$(sel).transition { x: wd }, @delay/2, @ease-in
 
     show: (sel, cb=(->)) ->

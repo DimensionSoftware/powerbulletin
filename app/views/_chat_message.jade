@@ -1,2 +1,8 @@
-li.time-title(data-mid=id, data-time=created_iso)
-  div!= html
+me = typeof(other) != 'undefined' ? false : true
+if me
+  li.time-title(data-mid=id, data-time=created_iso)
+    div!= html
+else
+  li.time-title(class='other', data-mid=id, data-time=created_iso)
+    img.profile.photo(src=user.photo, onerror="this.src = '//muscache.powerbulletin.com/images/profile.jpg'")
+    div!= html

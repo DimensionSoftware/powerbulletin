@@ -89,11 +89,13 @@ module.exports =
     add-new-message: (message, should-scroll) ->
       return if @seen-messages[message.id]
       @seen-messages[message.id] = 1
+      if message.user_id isnt window.user.id # other chat participant has more decoration
+        message
+          ..other = true
+          ..photo = "#cache-url/#{message.user_id}"
       $msg = @@$(jade.templates._chat_message(message))
       if should-scroll
         $msg.find \img .load (~> @scroll-to-latest {-animate})
-      if message.user_id isnt window.user.id
-        $msg.add-class \other
       # FIXME only scroll if already at bottom
       near-bottom = true #Math.abs(e.offset!top - e.scroll-top!) < 15px
       @$.find \.messages .append $msg
@@ -102,9 +104,11 @@ module.exports =
     add-old-message: (message) ->
       return if @seen-messages[message.id]
       @seen-messages[message.id] = 1
+      if message.user_id isnt window.user.id # other chat participant has more decoration
+        message
+          ..other = true
+          ..photo = "#cache-url/#{message.user_id}"
       $msg = @@$(jade.templates._chat_message(message))
-      if message.user_id isnt window.user.id
-        $msg.add-class \other
       @$.find \.messages .prepend $msg
 
     message-box-key-handler: (ev) ~>
