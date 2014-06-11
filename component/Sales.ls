@@ -27,7 +27,6 @@ module.exports =
 
     on-attach: ->
       stretch-imgs = -> # distorting stretch fill
-        console.log \stretch
         h = $ window .height!
         $ \.bg .height h
         # only fill main img when shorter than screen height

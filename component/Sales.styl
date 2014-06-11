@@ -303,6 +303,8 @@ body.scrolled
     //background rgba(255,255,255,.55)
     background transparent
     background-image linear-gradient(to top, rgba(255,255,255,.55) 35%, rgba(255,255,255,.35) 100%)
+    &:after
+      background #ccc
     ul
       list-style none
       margin 0 50px
@@ -533,9 +535,6 @@ body.scrolled
         width 100%
         text-align left
   section.feature.shown
-    // animate only shown arrows
-    .s-down-arrow
-      animation-name move-down
     article
       img
         opacity 1

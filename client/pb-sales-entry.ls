@@ -82,8 +82,8 @@ update-elements = ->
           | \support    => <[.fifth .third]>
         else # upward direction
           cur = switch cur-id # given cur-id, these must be visible:
-          | \features   => <[.first]>
-          | \navigation => <[.first .second]>
+          | \features   => <[.first .second]>
+          | \navigation => <[.first .second .third]>
           | \responsive => <[.first .second .third]>
           | \realtime   => <[.second .third .fifth]>
           #| \products   => <[.third .fifth]>
