@@ -140,6 +140,7 @@ module.exports =
           @add-new-message msg, true
         @scroll-to-latest!
         @last-mid = r.messages[*-1]?id
+        @$.find \.messages .append(@@$(jade.templates._chat_message_date msg))
 
     load-more-messages-scroll-handler: (ev) ~>
       scroll-top = $(ev.target).scroll-top!
