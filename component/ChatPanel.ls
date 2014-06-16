@@ -109,7 +109,13 @@ module.exports =
           ..other = true
           ..photo = "#cache-url/#{message.user_id}"
       $msg = @@$(jade.templates._chat_message(message))
-      @$.find \.messages .prepend $msg
+
+      # provide a more natural infinity scroll upward
+      m = @$.find \.messages
+      t = m.scroll-top!
+      m.prepend $msg
+      h = $msg.outer-height!
+      m.scroll-top t + h # return scroll to original top + prepended elements height
 
     message-box-key-handler: (ev) ~>
       e = @$.find \.message-box
