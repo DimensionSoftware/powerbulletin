@@ -91,7 +91,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
     caching-strategies.nocache res
   else
     # only cache if not a private site, private sites must never be cached
-    caching-strategies.etag res, sha1(JSON.stringify __.clone(req.params) <<<  res.vars.site), 60s
+    caching-strategies.etag res, sha1(JSON.stringify(__.clone(req.params) <<<  res.vars.site) + CHANGESET), 60s
 
   res.content-type \html
   res.mutant \homepage
@@ -501,7 +501,7 @@ function profile-paths user, uploaded-file, base=\avatar
     if err
       return next 404
     body = css-blocks.join "\n"
-    caching-strategies.etag res, sha1(body), 7200
+    caching-strategies.etag res, sha1(body + CHANGESET), 7200
     res.content-type \css
     res.send body
 
@@ -724,7 +724,7 @@ function profile-paths user, uploaded-file, base=\avatar
     fdoc.active-forum-id = page.id
     fdoc.content-only    = item?form?content-only is \checked
     res.locals fdoc
-    caching-strategies.etag res, sha1(JSON.stringify page.config), 60s
+    caching-strategies.etag res, sha1((JSON.stringify page.config) + CHANGESET), 60s
     res.mutant \page
   else
     next!

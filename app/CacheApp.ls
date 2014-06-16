@@ -16,7 +16,7 @@ require! {
 # cache 1 year in production, (cache will get blown on deploy due to changeset tagging)
 global.DISABLE_HTTP_CACHE = !(process.env.NODE_ENV == 'production' or process.env.NODE_ENV == 'staging' or process.env.TEST_HTTP_CACHE)
 
-const max-age = if DISABLE_HTTP_CACHE then 0 else (60 * 60 * 24 * 365) * 1000
+const max-age = if DISABLE_HTTP_CACHE then 0 else (60 * 60 * 24) * 1 # 1 day max
 
 module.exports =
   class CacheApp
