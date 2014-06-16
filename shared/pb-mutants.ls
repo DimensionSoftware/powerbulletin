@@ -453,6 +453,7 @@ same-profile = (hints) ->
       #window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
       window.$ \body .on \click \.onclick-show-forgot ->
         <- Auth.show-login-dialog
+        <- set-timeout _, 150ms # yield
         switch-and-focus \on-error \on-forgot '#auth input[name=email]'
       <- lazy-load-autosize
       next!
