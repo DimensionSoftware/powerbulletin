@@ -303,9 +303,10 @@ timers = {}
 
 @switch-and-focus = (remove, add, focus-on) ~>
   $e = $ \.fancybox-wrap
+  $e.remove-class("#remove popin")
   set-timeout (-> # animate & yield before focus, so smooth!
     $e.add-class \popin
-    $e.remove-class("#remove popin").add-class(add)
+      ..add-class add
     set-timeout (-> $ focus-on .focus!select!), 250ms), 13ms
 
 @set-online-user = (id) ~>
