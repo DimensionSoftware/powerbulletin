@@ -301,13 +301,13 @@ timers = {}
     $tt.html msg .add-class \hover # show
     timers[key] = set-timeout (-> timers[key]=void; $tt.remove-class \hover), duration # remove
 
-@switch-and-focus = (remove, add, focus-on) ~>
+@switch-and-focus = (remove, add, focus-on, animate=true) ~>
   $e = $ \.fancybox-wrap
   $e.remove-class("#remove popin")
   set-timeout (-> # animate & yield before focus, so smooth!
-    $e.add-class \popin
-      ..add-class add
-    set-timeout (-> $ focus-on .focus!select!), 250ms), 13ms
+    $e.add-class add
+    if animate then $e.add-class \popin
+    set-timeout (-> $ focus-on .focus!select!), 250ms), 5ms
 
 @set-online-user = (id) ~>
   $ "[data-user-id=#{id}] .profile.photo"

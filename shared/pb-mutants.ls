@@ -454,7 +454,7 @@ same-profile = (hints) ->
       window.$ \body .on \click \.onclick-show-forgot ->
         <- Auth.show-login-dialog
         <- set-timeout _, 150ms # yield
-        switch-and-focus \on-error \on-forgot '#auth input[name=email]'
+        switch-and-focus \on-error \on-forgot '#auth input[name=email]', false
       <- lazy-load-autosize
       next!
   on-mutate:
