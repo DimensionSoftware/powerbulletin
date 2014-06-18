@@ -48,14 +48,6 @@ body.scrolled
         font-size 1.25em
   .middle
     position relative
-    // header top shadow
-    &:after
-      content ''
-      position absolute
-      left 7px
-      right 7px
-      top 0
-      box-shadow 0 1px 3px 1px #fff
     .messages
       background-color #fff
       margin 5px 3px 5px 4px
@@ -65,6 +57,15 @@ body.scrolled
       height 100%
       list-style-type none
       overflow-y scroll
+      // header top shadow
+      &:after
+        content ''
+        position absolute
+        left 7px
+        right 7px
+        top 1px
+        height 25px
+        background-image linear-gradient(to bottom, rgba(255,255,255,.9) 5%, rgba(255,255,255,0))
       p
         margin 0
       img
@@ -74,8 +75,8 @@ body.scrolled
 
     .messages > li
       position relative
-      padding 0.12em 0.5em
-      width 70%
+      padding .4em .9em
+      width 60%
       font-size .9em
       clear both
       float right
@@ -84,6 +85,8 @@ body.scrolled
       text-align right
       word-wrap break-word
       background-color tint(dark_theme_color, 5%)
+      border-radius 3px
+      margin-top 1px
       color #fff
       a
         color @color
@@ -109,10 +112,10 @@ body.scrolled
         font-weight 400
 
     // first grouped message (mine)
-    .messages li.other + li:not(.other)
+    .messages li.other + li:not(.other):not(.break)
       margin-top grid
-      border-top-right-radius 8px
-      border-top-left-radius 8px
+      border-top-right-radius 6px
+      border-top-left-radius 6px
       &:after
         content ''
         position absolute
@@ -122,13 +125,13 @@ body.scrolled
         border-left 10px solid tint(dark_theme_color, 5%)
     // last grouped message (mine)
     .messages > li.other ~ li:not(.other):last-child
-      border-bottom-left-radius 8px
-      border-bottom-right-radius 8px
+      border-bottom-left-radius 6px
+      border-bottom-right-radius 6px
     // first grouped message (theirs)
     .messages li:not(.other) + li.other
       margin-top grid
-      border-top-right-radius 8px
-      border-top-left-radius 8px
+      border-top-right-radius 6px
+      border-top-left-radius 6px
       &:after
         content ''
         position absolute
@@ -144,8 +147,8 @@ body.scrolled
         width 27px
     // last grouped message (theirs)
     .messages > li:not(.other) ~ li.other:last-child
-      border-bottom-left-radius 8px
-      border-bottom-right-radius 8px
+      border-bottom-left-radius 6px
+      border-bottom-right-radius 6px
   .footer
     position absolute
     bottom 97px
