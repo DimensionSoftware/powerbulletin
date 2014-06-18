@@ -23,12 +23,6 @@ box-shadow(arg1, arg2, arg3)
     box-shadow 0 0 8px 6px rgba(26, 255, 179, 0), 0 0 0px 40px transparent, 0 0 0px 40px rgba(theme_color, 0)
 
 
-@keyframes fade-in
-  0%
-    opacity 0
-  100%
-    opacity 1
-
 @keyframes rotate-in
   0%
     opacity 0
@@ -60,6 +54,7 @@ body
     left 0
   #scene
     width 100%
+    opacity 0
     img
       position fixed
       z-index 1
@@ -75,10 +70,9 @@ body
       margin 0 -190px
       height 100px
       z-index 5
-      .logo, .beacon
-        opacity 0
-      // loaded happens after background image has
     &.loaded
+      // loaded happens after background image has
+      opacity 1
       .logo 
         text-shadow 0 1px 1px #000
         position relative
