@@ -25,12 +25,12 @@ module.exports =
         unless storage.get seen-intro
           storage.set seen-intro, true
           help = []
-          help.push ['.Homepage, .menu .row', '<b>Welcome!</b> Forum Activity Shows Here in Realtime']
+          help.push ['.Homepage, .menu .row', '<b>Welcome!</b><br/>Forum Activity Shows Here in Realtime']
           help.push -> $ \header .css \z-index, 202 # lift it up
           help.push ['.tools', '''
             Start Building Your Community!
             <br/>
-            <small><i>Hover Over Your Profile Photo to Pull Down the Admin Menu</i></small>
+            <small><i>Hover Over Your Profile Photo to the Admin</i></small>
           ''', -1] if user.rights.super
           help.push -> $ \header .css \z-index, 200 # put it back
           show-info 0, ...help

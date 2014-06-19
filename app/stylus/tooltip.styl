@@ -70,18 +70,21 @@ tooltip-border-color = #555
     text-shadow none
     tooltip-border-color = darken(dark_theme_color, 25%)
     background-color lighten(dark_theme_color, 10%)
-    border 2px solid darken(dark_theme_color, 25%)
+    border 1px solid darken(dark_theme_color, 25%)
     box-shadow 0 1px 0px 1px #333,0 1px 3px 0 darken(dark_theme_color, 25%)
     color darken(colored_text, 8%)
     top 12px
     text-transform none
     margin-top 30px
-    padding 25px
-    height 66px
+    padding 15px 25px 33px 25px
+    height 86px
     min-width 375px
     font-size 1.2em
     line-height 1.5em
     transition all .15s ease-in-out
+    // no gloss fix on info
+    &:before
+      display none
     &:after
       border-top-color @background-color
       margin-left -20px
@@ -133,14 +136,14 @@ tooltip-border-color = #555
         transition none
         opacity 1
     .next
-      font-size .75em
+      font-size .65em
       font-weight 100
       position absolute
-      bottom 20px
-      right 25px
+      bottom 16px
+      right 23px
       letter-spacing -1px
       color #222
-      padding 0 12px 0 8px
+      padding 0 10px 0 6px
       background-color rgba(255,255,255,.4)
       border-radius 4px
       transition all .3s ease-out

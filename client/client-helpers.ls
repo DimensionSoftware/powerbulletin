@@ -286,6 +286,7 @@ load-css = (href) ->
           ..show!
           ..find \.msg .html msg # set message
           ..find \.next .toggle-class \hidden, (index >= msgs.length-1)
+          ..find '.next' .html (if index is msgs.length-2 then '<b>Close</b>' else '<b>Next</b> >>')
           ..find \.onclick-close .click -> reset-ui!
           ..add-class \hover # show!
           ..click ~> @show-info index+1, ...msgs; false # recurse
