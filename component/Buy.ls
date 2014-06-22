@@ -14,8 +14,8 @@ module.exports =
         @local \cardNeeded, true
         @reload!
         $fb = @@$ \.fancybox-wrap:first # animate switch
-        $fb.remove-class \slide
-        set-timeout (-> $fb.add-class \slide), 10ms
+        $fb.remove-class \popin
+        set-timeout (-> $fb.add-class \popin), 10ms
         false
       @$.on \click \.Buy-checkout (ev) ~>
         $ ev.target .attr \disabled \disabled # disable ui
