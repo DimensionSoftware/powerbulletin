@@ -209,7 +209,11 @@ module.exports =
         # default slug
         type = $ \input.active .data!form?dialog
         slug = $ ev.target
-        unless slug.val!length then slug.val '/'+title2slug(@state.title!)
+        unless slug.val!length
+          slug.val if @state.title!length
+            '/'+title2slug(@state.title!)
+          else
+            '/'
 
       @$.on \click \.option (ev) -> # correct sprite when adding new menu item
         $ \.s-undefined-icon
