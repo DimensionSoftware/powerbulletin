@@ -164,6 +164,7 @@ $d.on \mousedown \.onclick-scroll-top ->
 window.shake-dialog = ($form, time) ->
   $fancybox = $form.parents(\.fancybox-wrap:first) .remove-class \shake
   set-timeout (-> $fancybox.add-class(\shake)), 100ms
+  set-timeout (-> $fancybox.remove-class('shake popin')), 1500ms # cleanup (for other animations)
 
 # logout
 window.logout = ->

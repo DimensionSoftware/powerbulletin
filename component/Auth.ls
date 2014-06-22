@@ -194,10 +194,9 @@ module.exports =
           else
             $fancybox = $form.parents \.fancybox-wrap:first
             $fancybox.add-class \on-error
-            $fancybox.remove-class \shake
             show-tooltip $form.find(\.tooltip), 'Try again!' # display error
-            set-timeout (-> $fancybox.add-class(\shake); u.focus!), 10ms
-        s.remove-attr \disabled
+            shake-dialog $form, 100ms
+            u.focus!
       false
 
     # After a login, different webapps may want to do differnt things.
