@@ -57,7 +57,7 @@ ticking       = false
 update-elements = ->
   offset  = $w.scroll-top!
   if offset is 0 then focus-first!
-  if Math.abs(bh - (offset + $w.height!)) < 15px then focus-last! # within 15px of bottom so dom doesn't jerk
+  if Math.abs(bh - (offset + $w.height!)) < 400px then focus-last! # within 15px of bottom so dom doesn't jerk
 
   # top animations
   if offset < 530px # save cpu for top pieces
@@ -74,20 +74,20 @@ update-elements = ->
       if (last-dir isnt dir) or (last-id isnt cur-id) # new section in view, so-- show & hide
         if dir is \down
           cur = switch cur-id # given cur-id, these must be visible:
-          | \features   => <[.first]>
-          | \navigation => <[.second .first]>
-          | \responsive => <[.third .second .first]>
-          | \realtime   => <[.fifth .third .second]>
-          #| \products   => <[.third .fifth]>
-          | \support    => <[.fifth .third]>
+          | \features       => <[.first]>
+          | \navigation     => <[.second .first]>
+          | \responsive     => <[.third .second .first]>
+          | \realtime-cloud => <[.fifth .third .second]>
+          #| \products      => <[.third .fifth]>
+          | \support        => <[.fifth .third]>
         else # upward direction
           cur = switch cur-id # given cur-id, these must be visible:
-          | \features   => <[.first .second]>
-          | \navigation => <[.first .second .third]>
-          | \responsive => <[.first .second .third]>
-          | \realtime   => <[.second .third .fifth]>
-          #| \products   => <[.third .fifth]>
-          | \support    => <[.third .fifth]>
+          | \features       => <[.first .second]>
+          | \navigation     => <[.first .second .third]>
+          | \responsive     => <[.first .second .third]>
+          | \realtime-cloud => <[.second .third .fifth]>
+          #| \products      => <[.third .fifth]>
+          | \support        => <[.third .fifth]>
 
         [visible, hide] = partition (-> it in cur), all
         for h in hide then $ h .remove-class \visible # hide these

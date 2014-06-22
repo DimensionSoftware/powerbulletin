@@ -13,7 +13,7 @@ body
     animation-name move-down
   background-color #000
   margin 0
-  height 6220px
+  height 6400px
   position relative
   .body-bg
     position fixed
@@ -166,7 +166,7 @@ body.scrolled
       .SiteRegister
         left -55px!important
         top 107px!important
-        h3
+        h4
           left 100px!important
         .SiteRegister-subdomain
           width 300px
@@ -179,7 +179,7 @@ body.scrolled
       section.feature
         height 360px
         padding-left 0!important
-        h4
+        h3
           font-size 1.5em!important
         article
           margin-top 80px
@@ -195,7 +195,7 @@ body.scrolled
             text-indent 0
       #support
         margin-left 0
-        h4, p
+        h3, p
           text-align center!important
       section.last
         #register_bottom
@@ -205,7 +205,7 @@ body.scrolled
       section.faq
         margin-bottom 25px
         article
-          h3::after
+          h4::after
             left 29%
           p
             padding 0
@@ -288,8 +288,12 @@ body.scrolled
       height 60px
       position absolute
       background radial-gradient(ellipse closest-side at 48% 45%, rgba(255,255,255,.5) 10%, rgba(255,255,255,0) 100%)
-    h1
-      position relative
+  h1
+    position relative
+    color #999
+    font-weight 200
+    text-shadow 0 0 2px #fff
+    margin 0
   header
     opacity 0
     position fixed
@@ -340,7 +344,8 @@ body.scrolled
     font-weight bold
     color #fff
     min-height 237px
-    margin-top 155px
+    margin-top 35px
+    margin-bottom 45px
     z-index 2
     ul
       font-size .55em
@@ -405,8 +410,10 @@ body.scrolled
       transition all .08s ease-out
   h2
     font-size 1.45em
-    font-weight 400
-    color #888
+    font-weight 300
+    color #aaa
+    margin-bottom 25px
+    font-style italic
   //}}}
   //{{{ Logo
   .logo
@@ -423,7 +430,9 @@ body.scrolled
     &:hover
       animation-name tiny-grow
       animation-duration .3s
-    h1
+    a
+      position relative
+      display block
       font-size 1.5em
       margin-left 3px
       font-weight 300
@@ -517,6 +526,7 @@ body.scrolled
       left 0
       top 0
       right 0
+      background-color #000
       width 100%
       min-width 1200px
   .container.first
@@ -529,7 +539,7 @@ body.scrolled
     box-shadow none
     border none
     article
-      h4
+      h3
         margin-left 0
       p
         width 100%
@@ -563,7 +573,7 @@ body.scrolled
         left -388px
         opacity 0
         outline none
-      h4
+      h3
         color theme_color
         margin-bottom 38px
         font-weight bold
@@ -605,10 +615,12 @@ body.scrolled
     width 100%
     opacity 0
     overflow hidden
+    &#realtime-cloud img
+      top -10px
+      left -500px
   section.last
-    position absolute
+    position relative
     z-index 5
-    bottom 400px
     top auto
     min-height 100px
     min-width 900px
@@ -617,15 +629,18 @@ body.scrolled
     background-image linear-gradient(bottom, theme_color -650px, #fff 180px)
     article
       width 530px
-      h3
+      h4
         left 80px
         color #000
-      h3::after
-        display none
+        &::after
+          display none
       #register_bottom
         position absolute
         padding-left 0
-        bottom 10px
+        bottom -14px
+        h3
+          color #777
+          left 95px
         .hostname
           padding-left 33px
   #responsive article img
@@ -645,39 +660,61 @@ body.scrolled
     position absolute
     bottom 0
     top auto
-    z-index 10
+    z-index 8
     min-height 100px
-    height 350px
+    height 700px
     margin 0
     padding 0
     border-top 1px solid #eee
+    background-image linear-gradient(to bottom, rgb(255,255,255) 50%, #f3f3f3 100%)
     article
       max-width 900px
       margin 80px auto 0 auto
       padding-left 40px
-      h3
+      h4
         color #555
-        text-indent -65px
+        text-indent -21px
+      menu.faq
+        background-color #f0f0f0
+        border 1px solid #eaeaea
+        border-radius 6px
+        padding 23px 20px
+        margin-top 25px
+        p
+          margin-bottom 20px
       menu
         text-align left
         float left
         list-style none
         font-size .8em
         width 45%
-        h4
+        i
+          color theme_color
+        h3
           margin 15px 0 5px 0
           text-transform capitalize
         p
           margin 0 3px
-
+        .hreview
+          margin-top 25px
+          position relative
+          .summary
+            color theme_color
+            font-weight 300
+            font-size 1.25em
+          .reviewer
+            font-weight 200
+            color #999
+            font-size 1em
+            margin-left 13px
   section
     article
       max-width 610px
       margin 171px auto 0 auto
       font-size 1.1em
-      h3
+      h4
         position relative
-        letter-spacing 2px
+        font-size 1em
       p
         margin auto
         color #555
@@ -694,9 +731,9 @@ body.scrolled
           transition all .1s ease-out .3s
           display inline-block
           &:hover
-            color #000
-            background-color #f0f0f0
-            border-bottom 1px solid #bbb
+            color #fff
+            background-color theme_color
+            border-bottom 1px solid darken(theme_color, 15%)
             transition none
             position relative
             transform scale(1.1)
