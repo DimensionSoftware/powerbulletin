@@ -59,6 +59,78 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .break
             button(type='submit', value='Save') Save
         li
+          input.option(id='product', type='radio', name='dialog', value='product')
+          label.header(for='product')
+            .s-page.icon
+            h2 Product
+            .desc Offer Page Template
+          .dialog
+            label(for='page_title') Title
+            input#page_title(type='text', name='pageTitle')
+            .note Titles show in the main menu
+            .break
+            label(for='page_slug') Slug
+            input#page_slug(type='text', name='pageSlug', placeholder='/path/to/page')
+            .note URL suffix for this page
+            .break
+            label(for='page_description') Description
+            input#page_description(type='text', name='pageDescription')
+            .note Exactly the &lt;H1&gt; text, shows on homepage views
+            .break
+            label Content Only
+            .box
+              input.stylish#content_only(type='checkbox', value='checked', name='contentOnly')
+              label.switch-control(for='content_only')
+                .switch
+            .note Hide the header, side-bar &amp; footer for this page
+            .break
+            //- XXX html5-uploader works inside parent <form>
+            #photo_uploader
+            .break
+            label(for='content') Content
+            textarea(id='content', name='content')
+            .note Paste the HTML contents of the page above
+            .break
+            label(for='top_video') Video URL
+            input(id='top_video', type='text', name='top_video', placeholder='https://www.youtube.com/watch?v=Trurfqh_6fQ')
+            .note Shows at top of the page
+            .break
+            label(for='bottom_video') Video URL 2
+            input(id='bottom_video', type='text', name='bottom_video', placeholder='https://www.youtube.com/watch?v=-6BsiVyC1kM')
+            .note Shows at bottom of the page
+            .break
+            label(for='hashtags') Hashtags
+            input(id='hashtags', type='text', name='hashtags', placeholder='#powerbulletin #product #three')
+            .note For searches and social media
+            .break
+            button(type='submit', value='Save') Save
+        li
+          input.option(id='link', type='radio', name='dialog', value='link')
+          label.header(for='link')
+            .s-link.icon
+            h2 Link
+            .desc External or Internal
+          .dialog
+            label(for='link_title') Title
+            input#link_title(type='text', name='linkTitle')
+            .note Titles show in the main menu
+            .break
+            label(for='url') Url
+            input(id='url', type='text', name='url', placeholder='http://')
+            .break
+            label(for='link_description') Description
+            input#link_description(type='text', name='linkDescription')
+            .note Descriptions show on homepage views
+            .break
+            label(for='separate_tab') Separate Tab
+            .box
+              input.stylish#separate_tab(type='checkbox', value='checked', name='separateTab')
+              label.switch-control(for='separate_tab')
+                .switch
+            .note Open link in separate window
+            .break
+            button(type='submit', value='Save') Save
+        li
           input.option(id='page', type='radio', name='dialog', value='page')
           label.header(for='page')
             .s-page.icon
@@ -87,32 +159,6 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             label(for='content') Content
             textarea(id='content', name='content')
             .note Paste the HTML contents of the page above
-            .break
-            button(type='submit', value='Save') Save
-        li
-          input.option(id='link', type='radio', name='dialog', value='link')
-          label.header(for='link')
-            .s-link.icon
-            h2 Link
-            .desc External or Internal
-          .dialog
-            label(for='link_title') Title
-            input#link_title(type='text', name='linkTitle')
-            .note Titles show in the main menu
-            .break
-            label(for='url') Url
-            input(id='url', type='text', name='url', placeholder='http://')
-            .break
-            label(for='link_description') Description
-            input#link_description(type='text', name='linkDescription')
-            .note Descriptions show on homepage views
-            .break
-            label(for='separate_tab') Separate Tab
-            .box
-              input.stylish#separate_tab(type='checkbox', value='checked', name='separateTab')
-              label.switch-control(for='separate_tab')
-                .switch
-            .note Open link in separate window
             .break
             button(type='submit', value='Save') Save
         li
