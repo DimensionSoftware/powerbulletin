@@ -77,6 +77,12 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             input#page_description(type='text', name='pageDescription')
             .note Exactly the &lt;H1&gt; text, shows on homepage views
             .break
+            .break
+            .break
+            label(for='affiliate_link') Affiliate Link
+            input#affiliate_link(type='text', name='affiliateLink')
+            .note Affiliate or otherwise link to send traffic
+            .break
             label Content Only
             .box
               input.stylish#content_only(type='checkbox', value='checked', name='contentOnly')
@@ -90,6 +96,8 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             label(for='content') Content
             textarea(id='content', name='content')
             .note Paste the HTML contents of the page above
+            .break
+            .break
             .break
             label(for='top_video') Video URL
             input(id='top_video', type='text', name='top_video', placeholder='https://www.youtube.com/watch?v=Trurfqh_6fQ')
