@@ -411,7 +411,7 @@ body.scrolled
   h2
     font-size 1.45em
     font-weight 300
-    color #aaa
+    color #bbb
     margin-bottom 25px
     font-style italic
   //}}}
@@ -675,7 +675,7 @@ body.scrolled
         color #555
         text-indent -21px
       menu.faq
-        background-color #f0f0f0
+        background-color #fafafa
         border 1px solid #eaeaea
         border-radius 6px
         padding 23px 20px
@@ -689,24 +689,32 @@ body.scrolled
         font-size .8em
         width 45%
         i
-          color theme_color
+          color darken(theme_color, 20%)
         h3
           margin 15px 0 5px 0
           text-transform capitalize
         p
           margin 0 3px
         .hreview
-          margin-top 25px
+          margin-top 35px
           position relative
           .summary
             color theme_color
             font-weight 300
-            font-size 1.25em
+            font-size 1.45em
+            i
+              display inline-block
+              text-indent 0
+              letter-spacing -1px
+              margin-left 3px
+              margin-bottom 15px
           .reviewer
+            position absolute
+            bottom -10px
+            left 6px
             font-weight 200
             color #999
             font-size 1em
-            margin-left 13px
   section
     article
       max-width 610px

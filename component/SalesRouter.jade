@@ -48,7 +48,7 @@ html
     else
       script(type='text/javascript', src='#{cache3Url}/local/require.js')
     script(type='text/javascript').
-      window.env='!{env}';window.CHANGESET=!{JSON.stringify(CHANGESET)};window.cacheUrl='!{cacheUrl}';window.cache2Url='!{cache2Url}';window.cache3Url='!{cache3Url}';window.cache4Url='!{cache4Url}';window.cache5Url='!{cache5Url}';window.siteName='Power Bulletin';window.authDomain='!{authDomain}';
+      window.env='!{env}';window.CHANGESET=!{JSON.stringify(CHANGESET)};window.cacheUrl='!{cacheUrl}';window.cache2Url='!{cache2Url}';window.cache3Url='!{cache3Url}';window.cache4Url='!{cache4Url}';window.cache5Url='!{cache5Url}';window.siteName='Power Bulletin';window.siteId=1;window.authDomain='!{authDomain}';
       require.config({baseUrl:window.cache5Url+'/client', urlArgs:!{JSON.stringify(CHANGESET)}});
       require(['requirejs-config'], function(cfg){ require.config(cfg); require.call(window,['pb-sales-entry']); });
   body
