@@ -28,6 +28,7 @@ body.oval
   .generate-password
     color dark_text!important
     background-color tint(theme_color, 85%)!important
+    box-shadow 0 0 1px 0 theme_color, 1px 1px 2px -1px darken(theme_color, 20%), 0 0 0 0 transparent
   .generate-password, .toggle-password
     background #fcfcfc
     border 1px solid #eee
@@ -106,7 +107,7 @@ body.oval
       background-color #fafafa
     &:focus, &:active
       background-color #fff
-      box-shadow 0 0 3px 1px theme_color
+      box-shadow 0 0 3px 1px theme_color, 0 0 0 0 transparent, 0 0 0 0 transparent
   input[name="password"]:focus
     border-top-left-radius 3px
     border-top-right-radius 3px
