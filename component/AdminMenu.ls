@@ -33,6 +33,8 @@ module.exports =
           item.find \input .add-class \has-error
           return false
         true
+    const title-selectors = '#product_title, #forum_title, #page_title, #link_title, #placeholder_title'
+    const slug-selectors  = '#product_slug, #forum_slug, #page_slug, #link_slug, #placeholder_slug'
 
     init: ->
       @local \title \Title # default reactive
@@ -92,7 +94,7 @@ module.exports =
         e.val title
         html-form # default form
           ..find \fieldset .toggle-class \has-dialog (!!form?dialog)
-          ..find '#product_slug, #product_description, #product_content, #product_title, #placeholder_title, #link_title, #page_title, #forum_title, #forum_slug, #page_slug, #url, textarea' .val ''
+          ..find "\#product_description, \#product_content, #title-selectors, #slug-selectors, \#url, textarea" .val ''
           ..find 'input[type="checkbox"], input[type="radio"]' .prop \checked, false
         if form # restore current's id + menu + title
           e.val title
@@ -162,12 +164,16 @@ module.exports =
             id     : row.parents \li .attr \id .replace /^list_/ ''
         @@$.ajax req
           .done (data) ~>
-            nearest  = row.parents \li:first
-            adjacent = nearest.prev \li:first
+            nearest = row.parents \li:first
             unless data?errors
               # if success, remove & focus above
               nearest.remove!
-              adjacent.find \.row .focus!
+              adjacent = nearest.prev \li:first
+              if adjacent.length
+                adjacent.find \.row .focus!
+              else # last one, so-- reset to add dialog
+                site.config.menu = site.config.menu.filter -> it.id isnt "list_#{req.data.id}" # update client menu
+                @add-if-empty!
             unless data.success # handle error
               show-tooltip ($ \#warning), data?errors?join \<br>
               nearest.focus!
@@ -195,10 +201,10 @@ module.exports =
 
     on-attach: !->
       #{{{ Event Delegates
-      @$.on \keyup, '#product_title, #forum_title, #page_title, #link_title, #placeholder_title' (ev) ~>
+      @$.on \keyup, title-selectors, (ev) ~>
         @state.title ($ ev.target .val!) # sync title using reactive local
 
-      @$.on \focus '#product_slug, #forum_slug, #page_slug, #link_slug, #placeholder_slug' (ev) ~>
+      @$.on \focus slug-selectors, (ev) ~>
         # default slug
         type = $ \input.active .data!form?dialog
         slug = $ ev.target
@@ -208,10 +214,11 @@ module.exports =
           else
             '/'
 
-      @$.on \click \.option (ev) -> # correct sprite when adding new menu item
+      @$.on \click \.option (ev) ~> # correct sprite when adding new menu item
         $ \.s-undefined-icon
           ..remove-class \s-undefined-icon
           ..add-class "s-#{$ ev.target .attr \id}-icon"
+        $ title-selectors .val ($ "input[name='title'][type='hidden']" .val!) # default initial state
       @$.on \click \.icon (ev) -> ($ ev.target .next \input).focus!
       @$.on \click \.disclose (ev) ~>
         $ ev.target .closest \li
@@ -326,7 +333,7 @@ module.exports =
       @show! # bring in ui
       set-timeout (~> # activate first
         @restore-sortable-tree!
-        unless site.config?menu?length then @$ \.onclick-add .click! # add unless exists
+        @add-if-empty!
         # show intro to user?
         const seen-intro = "#{window.user?id}-admin-intro"
         unless storage.get seen-intro
@@ -337,6 +344,8 @@ module.exports =
             ['.col2 .has-dialog', 'Fill in the remaining information and Click <b>Save</b>']
         s.find \input:first .focus!), 50ms
       s.nested-sortable { stop: @resort } <<< opts # init
+
+    add-if-empty: -> unless site.config?menu?length then @$.find \.onclick-add .click! # add unless exists
 
     on-detach: -> @$.off!
 
