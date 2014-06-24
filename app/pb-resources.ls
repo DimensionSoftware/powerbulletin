@@ -168,7 +168,7 @@ is-commentable-forum = (m, forum-id) ->
 
       if id # active form
         form = { [k, v] for k,v of req.body when k in
-          <[ id dbid title placeholderDescription linkDescription forumDescription pageDescription dialog postsPerPage forumSlug locked comments pageSlug content url contentOnly separateTab ]> }
+          <[ id dbid title placeholderDescription linkDescription forumDescription pageDescription dialog postsPerPage forumSlug hideHomepage locked comments pageSlug content url contentOnly separateTab ]> }
         menu-item = { id, form.title, form }
         menu-item = { id, form.title, form }
         m-path = menu.path-for-upsert m, id

@@ -245,6 +245,7 @@ layout-on-personalize = (w, u) ->
       window.marshal \commentable @commentable
       window.marshal \replyTo @post?title
       window.marshal \replyBy @post?user_name
+      window.marshal \hideHomepage @item?form?hide-homepage
 
       do ~>
         if not @post then return
@@ -326,6 +327,10 @@ layout-on-personalize = (w, u) ->
       #}}}
 
       if is-forum-homepage window.location.pathname
+        # handle homepage or not
+        if (($ '.threads .thread' .length) is 1) or window.hideHomepage # click first thread to enter
+          $ '.threads .thread:first .mutant' .click!
+
         homepage-postdrawer = ->
           thread-mode true
           postdrawer!

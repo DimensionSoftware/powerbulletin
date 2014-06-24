@@ -57,6 +57,13 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
                 .switch
             .note Commentable forums are threaded like Reddit
             .break
+            label(for='hide_homepage') Hide Homepage
+            .box
+              input.stylish#hide_homepage(type='checkbox', value='checked', name='hideHomepage')
+              label.switch-control(for='hide_homepage')
+                .switch
+            .note Automatically select the first thread
+            .break
             button(type='submit', value='Save') Save
         li
           input.option(id='page', type='radio', name='dialog', value='page')
