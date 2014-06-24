@@ -91,9 +91,11 @@ announce = sioa.create-client!
     res.json success: false
 
 @once-setup = (req, res, next) ->
+  try site-id = parse-int req.query.site_id
+  return unless site-id # guard
   user =
     id      : req.user.id
-    site_id : req.query.site_id
+    site_id : site-id
   err, r <- auth.set-login-token user
   if err then return next err
   if r
