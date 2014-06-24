@@ -53,7 +53,7 @@ module.exports =
             p = parse-int((progress.loaded/file.size) * 100)
             @$.find \.progress # progress update!
               ..html p + ' <small> %</small>'
-              ..css  \width, p + \%
+              ..css  \width, (if p < 35 then 35 else p) + \%
           on-client-load-end: ~> @$.find \.progress .width 0px
           on-success: (xhr, file, r-json) ~>
             @$.find \.progress .width 0px
