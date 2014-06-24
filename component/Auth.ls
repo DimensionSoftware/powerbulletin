@@ -51,12 +51,13 @@ module.exports =
     @show-register-dialog = (remove='', cb=(->)) ->
       <- Auth.show-login-dialog
       switch-and-focus remove, \on-register, '.register input:first'
-      show-info 0, [\#auth, '''
-        Generate a Secure Password and Forget About It!
-        <br/>
-        <small>Click Forgot later and we'll email you a single-use <b>Secure Login Link</b></small>
-        ''']
       cb window._auth.$
+      set-timeout (-> # yield to avoid frame janking
+        show-info 0, [\#auth, '''
+          Generate a Secure Password and Forget About It!
+          <br/>
+          <small>Click Forgot later and we'll email you a single-use <b>Secure Login Link</b></small>
+          ''']), 245ms
 
     @show-reset-password-dialog = ->
       @@hide-info!
