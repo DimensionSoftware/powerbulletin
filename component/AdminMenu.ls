@@ -25,6 +25,7 @@ module.exports =
       expand-on-hover: 800ms
       opacity: 0.8
       force-placeholder-size: true
+      product-photo-uploader: void
       is-allowed: (item, parent) ->
         # only move items with a type
         unless (item.find \.row .data \form)?dialog
@@ -91,34 +92,26 @@ module.exports =
         e.val title
         html-form # default form
           ..find \fieldset .toggle-class \has-dialog (!!form?dialog)
-          ..find '#placeholder_title, #link_title, #page_title, #forum_title, #forum_slug, #page_slug, #url, textarea' .val ''
+          ..find '#product_slug, #product_description, #product_content, #product_title, #placeholder_title, #link_title, #page_title, #forum_title, #forum_slug, #page_slug, #url, textarea' .val ''
           ..find 'input[type="checkbox"], input[type="radio"]' .prop \checked, false
         if form # restore current's id + menu + title
           e.val title
           form{id, title} = {id, title}
           @state.title form.title # default
 
-          # init-html5-uploader
-#          @uploader.detach! if @uploader # cleanup
-#          @uploader = new Uploader {
-#            locals:
-#              name: 'Header Image'
-#              preview: form.header
-#              post-url: "/resources/forums/#{form.dbid}/header"
-#              on-delete: ~>
-#                @current-store!
-#              on-success: (xhr, file, r-json) ~>
-#                @current-store!}, \#uploader_component
-#          @uploader = new Uploader {
-#            locals:
-#              preview: form.background
-#              post-url: "/resources/forums/#{form.dbid}/background"
-#              on-delete: ~>
-#                # remove background from config
-#                @$.find 'form.menus .background' .data \src, ''
-#                @current-store!
-#              on-success: (xhr, file, r-json) ~>
-#                @current-store!}, \#uploader_component
+          # init-html5-uploaders
+          @product-photo-uploader.detach! if @product-photo-uploader # cleanup
+          @product-photo-uploader = new Uploader {
+            locals:
+              name:      \product-photo
+              preview:   if form.product-photo then form.product-photo else void
+              post-url:  "/resources/sites/#site-id/product-photo"
+              on-delete: ~>
+                @current-store!
+              on-success: (xhr, file, r) ~>
+                @current-store!
+          }, \#product_photo_uploader
+
           # set input values
           html-form.find 'input,textarea' |> each (input) ->
             $i = @$ input
@@ -202,10 +195,10 @@ module.exports =
 
     on-attach: !->
       #{{{ Event Delegates
-      @$.on \keyup, '#forum_title, #page_title, #link_title, #placeholder_title' (ev) ~>
+      @$.on \keyup, '#product_title, #forum_title, #page_title, #link_title, #placeholder_title' (ev) ~>
         @state.title ($ ev.target .val!) # sync title using reactive local
 
-      @$.on \focus '#forum_slug, #page_slug, #link_slug, #placeholder_slug' (ev) ~>
+      @$.on \focus '#product_slug, #forum_slug, #page_slug, #link_slug, #placeholder_slug' (ev) ~>
         # default slug
         type = $ \input.active .data!form?dialog
         slug = $ ev.target

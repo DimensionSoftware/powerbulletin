@@ -83,18 +83,18 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             input#affiliate_link(type='text', name='affiliateLink')
             .note Affiliate or otherwise link to send traffic
             .break
-            label Content Only
+            //- XXX html5-uploader works inside parent <form>
+            #product_photo_uploader
+            .break
+            label(for='product_content_only') Content Only
             .box
               input.stylish#product_content_only(type='checkbox', value='checked', name='productContentOnly')
               label.switch-control(for='product_content_only')
                 .switch
             .note Hide the header, side-bar &amp; footer for this page
             .break
-            //- XXX html5-uploader works inside parent <form>
-            #photo_uploader
-            .break
             label(for='product_content') Content
-            textarea(id='product_content', name='productContent')
+            textarea#product_content(name='productContent')
             .note Paste the HTML contents of the page above
             .break
             .break
@@ -157,7 +157,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             input#page_description(type='text', name='pageDescription')
             .note Descriptions show on homepage views
             .break
-            label Content Only
+            label(for='content_only') Content Only
             .box
               input.stylish#content_only(type='checkbox', value='checked', name='contentOnly')
               label.switch-control(for='content_only')

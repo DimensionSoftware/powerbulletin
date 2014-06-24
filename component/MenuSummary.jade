@@ -4,7 +4,7 @@ mixin menu-item(depth, items)
     slug  = item.form.forumSlug || item.form.pageSlug || item.form.url
     if item && item.form
       //- row -> out!
-      desc = item.form.forumDescription || item.form.pageDescription || item.form.placeholderDescription || item.form.linkDescription
+      desc = item.form.productDescription || item.form.forumDescription || item.form.pageDescription || item.form.placeholderDescription || item.form.linkDescription
       tr(class="item-#{item.form.dialog}", data-db-id=item.form.dbid)
         //- placeholder
         if item.form.dialog == 'placeholder'
@@ -31,14 +31,14 @@ mixin menu-item(depth, items)
               span.date(data-time=latest.created.last_post_created_iso, title=latest.created.last_post_created_friendly)- latest.created.last_post_created_human
           td.threads= item.thread_count
           td.posts= item.post_count
-        //- link & page
+        //- link, page & product
         else
           td.title(colspan=4)
             .icon(class="s-#{item.form.dialog}-icon")
             a.mutant(
               data-surf=item.form.dbid,
               class="forum-#{item.form.dbid}",
-              href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
+              href="#{item.form.productSlug || item.form.forumSlug || item.form.pageSlug || item.form.url}"
               target=(item.form.separateTab ? '_blank' : '_self'))= item.title
             .description= desc
 

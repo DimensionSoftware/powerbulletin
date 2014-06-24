@@ -183,7 +183,7 @@ require! {
     type = \product
     data =
       site_id     : null
-      path        : form.page-slug
+      path        : form.product-slug
       title       : title
       config      : { main_content: form.content, content-only: form.content-only, affiliate-link: form.affiliate-link, video-top: form.video-top, video-bottom: form.video-bottom, hashtags: form.hashtags }
   | otherwise =>
