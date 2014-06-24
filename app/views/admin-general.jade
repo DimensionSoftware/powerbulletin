@@ -17,7 +17,9 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
     .theme
       input.collapse(id='lookandfeel', type='checkbox')
       label.onclick-expand(for='click_lookandfeel')
-        h4.onclick-expand Look &amp; Feel
+        h4.onclick-expand Look 
+          small &amp; 
+          | Feel
         .dialog
           .break
           //- XXX html5-uploader works inside parent <form>
