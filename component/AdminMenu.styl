@@ -68,7 +68,7 @@
         width 55px
         transition width .2s ease-out .15s
       li.active > div > input
-        box-shadow -1px 0 2px -1px #888 inset,0 2px 0 dark_theme_color, 1px 0 3px -1px theme_color, 0 0 3px theme_color
+        box-shadow -1px 0 2px -1px #888 inset,0 1px 0 dark_theme_color, 1px 0 3px -1px theme_color, 0 0 1px theme_color
         font-weight bold
         color theme_color
         background-image none
@@ -124,8 +124,10 @@
       margin -1px
       height 1px
       background-color #333
+      max-width 100px
       border-bottom 1px solid theme_color
-      z-index 2
+      z-index 20
+      position relative
   //}}}
   //{{{ right-side (menu body/content)
   .col2
