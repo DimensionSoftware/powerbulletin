@@ -179,6 +179,13 @@ require! {
   | \placeholder =>
     type = \placeholder
     data = {}
+  | \product =>
+    type = \product
+    data =
+      site_id     : null
+      path        : form.page-slug
+      title       : title
+      config      : { main_content: form.content, content-only: form.content-only, affiliate-link: form.affiliate-link, video-top: form.video-top, video-bottom: form.video-bottom, hashtags: form.hashtags }
   | otherwise =>
     type = null
     data = {}
@@ -250,6 +257,15 @@ require! {
   data.site_id = site.id
 
   switch type
+  | \product       =>
+    if not data?path
+      return cb errors: [ "Slug is required." ]
+    if not data.path.to-string!match /^\//
+      return cb errors: [ "Slug must begin with /" ]
+    db.pages.upsert data, (err, data) ->
+      if err and err.routine!to-string!match /unique/
+        err.message = "Slug is already taken"
+      cb err, data
   | \page          =>
     if not data?path
       return cb errors: [ "Slug is required." ]

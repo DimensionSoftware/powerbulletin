@@ -65,16 +65,16 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             h2 Product
             .desc Offer Page Template
           .dialog
-            label(for='page_title') Title
-            input#page_title(type='text', name='pageTitle')
+            label(for='product_title') Title
+            input#product_title(type='text', name='productTitle')
             .note Titles show in the main menu
             .break
-            label(for='page_slug') Slug
-            input#page_slug(type='text', name='pageSlug', placeholder='/path/to/page')
+            label(for='product_slug') Slug
+            input#product_slug(type='text', name='productSlug', placeholder='/path/to/product')
             .note URL suffix for this page
             .break
-            label(for='page_description') Description
-            input#page_description(type='text', name='pageDescription')
+            label(for='product_description') Description
+            input#product_description(type='text', name='productDescription')
             .note Exactly the &lt;H1&gt; text, shows on homepage views
             .break
             .break
@@ -85,26 +85,26 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .break
             label Content Only
             .box
-              input.stylish#content_only(type='checkbox', value='checked', name='contentOnly')
-              label.switch-control(for='content_only')
+              input.stylish#product_content_only(type='checkbox', value='checked', name='productContentOnly')
+              label.switch-control(for='product_content_only')
                 .switch
             .note Hide the header, side-bar &amp; footer for this page
             .break
             //- XXX html5-uploader works inside parent <form>
             #photo_uploader
             .break
-            label(for='content') Content
-            textarea(id='content', name='content')
+            label(for='product_content') Content
+            textarea(id='product_content', name='productContent')
             .note Paste the HTML contents of the page above
             .break
             .break
             .break
             label(for='top_video') Video URL
-            input(id='top_video', type='text', name='top_video', placeholder='https://www.youtube.com/watch?v=Trurfqh_6fQ')
+            input(id='top_video', type='text', name='videoTop', placeholder='https://www.youtube.com/watch?v=Trurfqh_6fQ')
             .note Shows at top of the page
             .break
             label(for='bottom_video') Video URL 2
-            input(id='bottom_video', type='text', name='bottom_video', placeholder='https://www.youtube.com/watch?v=-6BsiVyC1kM')
+            input(id='bottom_video', type='text', name='videoBottom', placeholder='https://www.youtube.com/watch?v=-6BsiVyC1kM')
             .note Shows at bottom of the page
             .break
             label(for='hashtags') Hashtags
