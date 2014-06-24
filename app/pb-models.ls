@@ -398,7 +398,7 @@ query-dictionary =
           where-clauses.push "(#{[fn(pdollars.shift!) for fn in clause-fns].join(' OR ')})"
           where-args := where-args ++ args
 
-      console.log \E
+      #console.log \E
       maybe-add-clause [site_id], [-> "a.site_id = #it"]
       maybe-add-clause [q, q], [
         * -> "a.name @@ to_tsquery(#it)"
@@ -420,7 +420,7 @@ query-dictionary =
       #where-clause
       LIMIT $1 OFFSET $2
       """
-      console.log \SQL, "\n" + sql + "\n"
+      #console.log \SQL, "\n" + sql + "\n"
       params = [limit, offset] ++ where-args
 
       err, users <- postgres.query sql, params
