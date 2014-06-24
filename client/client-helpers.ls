@@ -53,13 +53,13 @@ if window?
     type: $f.attr \method
     data: form-data
     data-type: \json
-    success:   (data) ~>
-      $s.remove-attr \disabled # re-enable
+    success: (data) ~>
       @show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
       if fn then fn.call $f, data
     error: (data) ~>
-      $s.remove-attr \disabled # re-enable
       @show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
+    complete: ~>
+      $s.remove-attr \disabled # re-enable
   }
   set-timeout (-> $f.find \input.title .focus!), 100ms # focus!
   false
