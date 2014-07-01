@@ -566,6 +566,11 @@ sub default_vcl_recv {
 }
 
 sub vcl_recv {
+  # remove www. on these domains:
+  if (req.http.host ~ "(?i)www\.dimensionsoftware.com") {
+    error 750 "Moved Permanently";
+  }
+
   # REDIRECT: force ssl
   if (  req.http.user-agent !~ "Zombie\.js/"
      && req.http.X-Forwarded-Proto !~ "(?i)https"
@@ -657,6 +662,12 @@ sub vcl_deliver {
 }
 
 sub vcl_error { 
+  if (obj.status == 750) {
+    set obj.http.Location = "http://dimensionsoftware.com" + req.url;
+    set obj.status = 301;
+    return (deliver);
+  }
+
   # redirect, permanent
   if (obj.status == 301 || obj.status == 302) {
     set obj.http.Location = req.http.Location; 

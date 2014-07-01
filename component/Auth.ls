@@ -52,12 +52,13 @@ module.exports =
       <- Auth.show-login-dialog
       switch-and-focus remove, \on-register, '.register input:first'
       cb window._auth.$
-      set-timeout (-> # yield to avoid frame janking
-        show-info 0, [\#auth, '''
-          Generate a Secure Password and Forget About It!
-          <br/>
-          <small>Click Forgot later and we'll email you a single-use <b>Secure Login Link</b></small>
-          ''']), 245ms
+      show-tooltip ($ '#auth .register .tooltip'), 'Generate A Secure Password!'
+      #set-timeout (-> # yield to avoid frame janking
+      #  show-info 0, [\#auth, '''
+      #    Generate a Secure Password and Forget About It!
+      #    <br/>
+      #    <small>Click Forgot later and we'll email you a single-use <b>Secure Login Link</b></small>
+      #    ''']), 245ms
 
     @show-reset-password-dialog = ->
       @@hide-info!
@@ -128,6 +129,7 @@ module.exports =
         # alphabet for a secure password
         az = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$!@^&*(),[]-_<>'
         @@$ '#auth .password' .val([az.char-at Math.floor(Math.random! * az.length) for x to 32].join '').select!
+        show-tooltip ($ '#auth .register .tooltip'), 'Click The "Forgot" Link Later!'
 
       @$.on \click \.onclick-close-fancybox ->
         @@hide-info!
@@ -195,7 +197,7 @@ module.exports =
           else
             $fancybox = $form.parents \.fancybox-wrap:first
             $fancybox.add-class \on-error
-            show-tooltip $form.find(\.tooltip), 'Try again!' # display error
+            show-tooltip $form.find(\.tooltip), 'Try Again!' # display error
             shake-dialog $form, 100ms
             u.focus!
       false
@@ -225,7 +227,7 @@ module.exports =
             Auth.require-registration-cb = null
           Auth.show-info-dialog """
             Welcome to #siteName<br/>
-            <small>Check your Email for a Welcome letter!</small>
+            <small>Check your Email for a warm welcome!</small>
           """
 
         else
@@ -261,7 +263,7 @@ module.exports =
       $form = $ ev.target
       password = $form.find('input[name=password]').val!
       if password.match /^\s*$/
-        show-tooltip $form.find(\.tooltip), "Password may not be blank"
+        show-tooltip $form.find(\.tooltip), "Password May Not Be Blank"
         return false
       s = $form.find 'input[type=submit]'
       s.attr \disabled \disabled
@@ -269,15 +271,15 @@ module.exports =
         if r.success
           $form.find('input').prop(\disabled, true)
           $form.find \#email .val '' # blank email
-          show-tooltip $form.find(\.tooltip), "Password changed!"
+          show-tooltip $form.find(\.tooltip), "Password Changed!"
           location.hash = ''
           $form.find('input[name=password]').val('')
           set-timeout ( ->
             switch-and-focus \on-reset, \on-login, '#auth .login input:first'
-            show-tooltip $('#auth .login form .tooltip'), "Now log in!"
+            show-tooltip $('#auth .login form .tooltip'), "Now Log In!"
           ), 1500ms
         else
-          show-tooltip $form.find(\.tooltip), "Choose a better password"
+          show-tooltip $form.find(\.tooltip), "Choose A Better Password"
         s.remove-attr \disabled
       false
 
