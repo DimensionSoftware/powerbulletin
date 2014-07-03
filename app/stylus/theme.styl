@@ -315,6 +315,8 @@ body.scrolled
       bottom 1px
       height 1px
       background #eaeaea
+    .online
+      box-shadow 0 0 2px 0 dark_theme_color, 1px 1px 10px -1px theme_color
     .container
       .search
         .query
@@ -333,6 +335,10 @@ body.scrolled
 
   #left_content::after
     bottom (footer_height - 4)
+  .question
+    right 49px
+    top 65px
+    transition all .05s ease-in
   footer
     &:hover
       box-shadow 0 0 4px 0 theme_color
