@@ -52,6 +52,7 @@ module.exports =
         @local \virgin, false
       @$.css(height: "#{hi}px")
       @p.show @$
+      window.time-updater!
 
     hide: ->
       @p.hide @$
