@@ -503,9 +503,8 @@ body.paginator
   z-index 10
   color #ccc
   transform scale(1)
-  transition all .1s ease-in .1s
   &:hover
-    transition none
+    transition all .05s ease-in
     transform scale(1.18)
     color #aaa
 //{{{ Footer
@@ -659,7 +658,7 @@ body.scrolled
         bottom 10px
   .main-content
     .breadcrumb
-      top (header_scrolled_height+2)
+      top (header_scrolled_height+1)
       transition top .25s ease-out
   footer
     opacity 1

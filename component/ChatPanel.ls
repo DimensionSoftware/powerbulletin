@@ -176,6 +176,7 @@ module.exports =
       @p.show @$, (~>
         @scroll-to-latest!
         @$.find \.message-box .focus!)
+      window.time-updater!
 
     hide: ->
       @p.hide @$
