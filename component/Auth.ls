@@ -84,7 +84,7 @@ module.exports =
         if rr.success
           Auth.after-login!
           window.location.hash = ''
-          if cb then return cb!
+          if cb then return cb(rr)
         #else
           #console.error 'local /auth/once failed'
       #else
@@ -172,7 +172,8 @@ module.exports =
       s.attr \disabled \disabled
       cors.post "#{auth-domain}#{$form.attr(\action)}", params, (r) ~>
         if r.success
-          <~ Auth.login-with-token
+          rr <~ Auth.login-with-token
+          r.choose-name ||= rr.choose-name
           if r.choose-name
             @after-login! if @after-login
             if Auth.require-login-cb
