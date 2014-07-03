@@ -272,6 +272,7 @@ function background-for-forum m, active-forum-id
   err, r <- db.site-update site # save!
   if err then return res.json 500, {-success, msg:err}
   res.json {+success}
+  h.ban-all-domains site.id # blow cache since this affects html pages
 @forum-background = (req, res, next) ->
   # get site
   site     = res.vars.site
@@ -292,6 +293,7 @@ function background-for-forum m, active-forum-id
     err, r <- db.site-update site # save!
     if err then return res.json 500, {-success, msg:err}
     res.json {+success, background:item.form.background}
+    h.ban-all-domains site.id # blow cache since this affects html pages
   else
     res.json 500, {-success, msg:'What kind of file is this?'}
 
@@ -312,6 +314,7 @@ function background-for-forum m, active-forum-id
       err, r <- db.site-update site # save!
       if err then return res.json 500, {-success, msg:err}
       res.json {+success, logo:site.config.logo}
+      h.ban-all-domains site.id # blow cache since this affects html pages
     else
       res.json 500, {-success, msg:'What kind of file is this?'}
   else
@@ -332,6 +335,7 @@ function background-for-forum m, active-forum-id
     err, r <- db.site-update site # save!
     if err then return res.json 500, {-success, msg:err}
     res.json {+success, header:site.config.header}
+    h.ban-all-domains site.id # blow cache since this affects html pages
   else
     res.json 500, {-success, msg:'What kind of file is this?'}
 
@@ -808,5 +812,6 @@ function wipe-file-with-config res, key, next
     res.json {+success}
   else
     res.json 500, {-success, msg:['Unable to find file!']}
+  h.ban-all-domains site.id # blow cache since this affects html pages
 
 # vim:fdm=indent
