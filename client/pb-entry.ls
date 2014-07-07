@@ -530,9 +530,14 @@ $d.on \click 'html.admin .question' (ev) ->
     ''']
 
 $d.on \click \#add_custom_domain (ev) ->
+  t = $ \#warning
   e = $ \#custom_domain
   n = e.val! # domain name to add
-  unless n.length then return # guard
+  if (n.length is 0) or (n.index-of \.) is -1 # guard
+    show-tooltip t, 'Enter Your Domain!'
+    $ \#custom_domain .focus!
+    return
+
   unless \custom_domain in site.subscriptions then return # guard
   $.ajax {
     url: \/resources/domains
@@ -540,7 +545,6 @@ $d.on \click \#add_custom_domain (ev) ->
     data:
       name: n
     complete: (data) ->
-      t = $ \#warning
       focus = -> e.focus!select!
       if data.responseJSON?success is true
         e.val '' # clear

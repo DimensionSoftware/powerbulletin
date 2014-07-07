@@ -116,6 +116,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
           | Domains
         .dialog
           .break
+          - ip = '107.170.231.97'
           .domain
             input#custom_domain(type='text', placeholder='Your-Custom-Domain.com')
             button#add_custom_domain Add
@@ -123,11 +124,11 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
               .message
                 h5 Add your own domain
                 p Purchase from your favorite registrar and point to
-                  b 107.170.231.97
+                  b= ip
                 p For help, contact 
                   a(href='mailto:support@powerbulletin.com') support@powerbulletin.com
             .note Point DNS to 
-              b 107.170.231.97
+              b= ip
           .break
           .break
           //-p Enable users to login from the respective social network
