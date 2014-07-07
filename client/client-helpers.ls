@@ -30,6 +30,7 @@ if window?
     #window.component.postdrawer?detach!
     #window.component.postdrawer = void
     $ '#post_new .fadein' .remove!
+    window.time-updater!
   false
 
 @submit-form = (ev, fn) ~>
