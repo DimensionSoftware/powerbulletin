@@ -143,6 +143,7 @@ module.exports =
       @$.on \click \.onclick-show-forgot ->
         @@hide-info!
         switch-and-focus \on-error \on-forgot '#auth input[name=email]'
+        show-tooltip ($ '#auth .forgot .tooltip'), 'We\'ll Send A Single-Use, Secure Link'
       @$.on \click \.onclick-show-choose ->
         @@hide-info!
         switch-and-focus \on-login \on-choose '#auth input[name=username]'
