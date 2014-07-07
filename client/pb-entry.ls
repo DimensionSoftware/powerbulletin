@@ -472,7 +472,7 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
   t = $ \#warning
   b = $ ev.current-target # submit button
   b.attr \disabled, \disabled
-  show-tooltip t, \Saving
+  set-timeout (-> show-tooltip t, \Saving), 150ms # hide for instant saves
 
   submit-form(ev, (data) ->
     f = $ this # form
