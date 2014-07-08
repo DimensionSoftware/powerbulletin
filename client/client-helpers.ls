@@ -301,6 +301,7 @@ timers = {}
     timer = timers[key]
     if timer then clear-timeout timer
     $tt.html msg .add-class \hover # show
+    $tt.on \click -> $tt.remove-class \hover # dismiss
     timers[key] = set-timeout (-> timers[key]=void; $tt.remove-class \hover), duration # remove
 
 @switch-and-focus = (remove, add, focus-on, animate=true) ~>
