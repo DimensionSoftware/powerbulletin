@@ -179,13 +179,13 @@ require! {
   | \placeholder =>
     type = \placeholder
     data = {}
-  | \product =>
-    type = \product
+  | \offer =>
+    type = \offer
     data =
       site_id     : null
-      path        : form.product-slug
+      path        : form.offer-slug
       title       : title
-      config      : { main_content: form.content, content-only: form.content-only, affiliate-link: form.affiliate-link, video-top: form.video-top, video-bottom: form.video-bottom, hashtags: form.hashtags }
+      config      : { product-title: form.product-title, product-slug: form.product-slug, product-description: form.product-description, offer-content: form.offer-content, offer-content-only: form.offer-content-only, offer-photo-upload: form.offer-photo-upload, affiliate-link: form.affiliate-link, video-top: form.video-top, video-bottom: form.video-bottom, hashtags: form.hashtags }
   | otherwise =>
     type = null
     data = {}
@@ -257,7 +257,7 @@ require! {
   data.site_id = site.id
 
   switch type
-  | \product       =>
+  | \offer         =>
     if not data?path
       return cb errors: [ "Slug is required." ]
     if not data.path.to-string!match /^\//

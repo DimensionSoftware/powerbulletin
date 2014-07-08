@@ -68,23 +68,23 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             button(type='submit', value='Save') Save
             .break
         li
-          input.option(id='product', type='radio', name='dialog', value='product')
-          label.header(for='product')
+          input.option(id='offer', type='radio', name='dialog', value='offer')
+          label.header(for='offer')
             .s-page.icon
-            h2 Product
+            h2 Offer
             .desc Offer Page Template
           .dialog
-            label(for='product_title') Title
-            input#product_title(type='text', name='productTitle')
-            .note Titles show in the main menu
+            label(for='offer_title') Title
+            input#offer_title(type='text', name='offerTitle')
+            .note Exactly the &lt;H1&gt;, shows in the main menu
             .break
-            label(for='product_slug') Slug
-            input#product_slug(type='text', name='productSlug', placeholder='/path/to/product')
+            label(for='offer_slug') Slug
+            input#offer_slug(type='text', name='offerSlug', placeholder='/path/to/offer')
             .note URL suffix for this page
             .break
-            label(for='product_description') Description
-            input#product_description(type='text', name='productDescription')
-            .note Exactly the &lt;H1&gt; text, shows on homepage views
+            label(for='offer_description') Description
+            input#offer_description(type='text', name='offerDescription')
+            .note Exactly the &lt;H2&gt; text, shows on homepage views
             .break
             .break
             .break
@@ -93,17 +93,17 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .note Affiliate or otherwise link to send traffic
             .break
             //- XXX html5-uploader works inside parent <form>
-            #product_photo_uploader
+            #offer_photo_uploader
             .break
-            label(for='product_content_only') Content Only
+            label(for='offer_content_only') Content Only
             .box
-              input.stylish#product_content_only(type='checkbox', value='checked', name='productContentOnly')
-              label.switch-control(for='product_content_only')
+              input.stylish#offer_content_only(type='checkbox', value='checked', name='offerContentOnly')
+              label.switch-control(for='offer_content_only')
                 .switch
             .note Hide the header, side-bar &amp; footer for this page
             .break
-            label(for='product_content') Content
-            textarea#product_content(name='productContent')
+            label(for='offer_content') Content
+            textarea#offer_content(name='offerContent')
             .note Paste the HTML contents of the page above
             .break
             .break
@@ -117,7 +117,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .note Shows at bottom of the page
             .break
             label(for='hashtags') Hashtags
-            input(id='hashtags', type='text', name='hashtags', placeholder='#powerbulletin #product #three')
+            input(id='hashtags', type='text', name='hashtags', placeholder='#powerbulletin #offer #three')
             .note For searches and social media
             .break
             button(type='submit', value='Save') Save
