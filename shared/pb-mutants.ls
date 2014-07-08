@@ -458,6 +458,7 @@ same-profile = (hints) ->
       #window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
       window.$ \body .on \click \.onclick-show-forgot ->
         <- Auth.show-login-dialog
+        show-tooltip ($ '#auth .forgot .tooltip'), 'We\'ll Send A Single-Use, Secure Link'
         <- set-timeout _, 150ms # yield
         switch-and-focus \on-error \on-forgot '#auth input[name=email]', false
       <- lazy-load-autosize

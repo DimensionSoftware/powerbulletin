@@ -84,7 +84,7 @@ module.exports =
         if rr.success
           Auth.after-login!
           window.location.hash = ''
-          if cb then return cb!
+          if cb then return cb(rr)
         #else
           #console.error 'local /auth/once failed'
       #else
@@ -143,6 +143,7 @@ module.exports =
       @$.on \click \.onclick-show-forgot ->
         @@hide-info!
         switch-and-focus \on-error \on-forgot '#auth input[name=email]'
+        show-tooltip ($ '#auth .forgot .tooltip'), 'We\'ll Send A Single-Use, Secure Link'
       @$.on \click \.onclick-show-choose ->
         @@hide-info!
         switch-and-focus \on-login \on-choose '#auth input[name=username]'
@@ -172,7 +173,8 @@ module.exports =
       s.attr \disabled \disabled
       cors.post "#{auth-domain}#{$form.attr(\action)}", params, (r) ~>
         if r.success
-          <~ Auth.login-with-token
+          rr <~ Auth.login-with-token
+          r.choose-name ||= rr.choose-name
           if r.choose-name
             @after-login! if @after-login
             if Auth.require-login-cb

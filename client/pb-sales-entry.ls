@@ -57,7 +57,7 @@ ticking       = false
 update-elements = ->
   offset  = $w.scroll-top!
   if offset is 0 then focus-first!
-  if Math.abs(bh - (offset + $w.height!)) < 400px then focus-last! # within 15px of bottom so dom doesn't jerk
+  #if Math.abs(bh - (offset + $w.height!)) < 400px then focus-last! # within 15px of bottom so dom doesn't jerk
 
   # top animations
   if offset < 530px # save cpu for top pieces

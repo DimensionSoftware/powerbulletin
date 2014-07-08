@@ -50,9 +50,9 @@ body.scrolled
     position relative
     .messages
       background-color #fff
-      margin 5px 3px 5px 4px
-      border 1px solid theme_color
-      padding 35px 0 0 0
+      margin 5px 4px 5px 5px
+      //border 1px solid theme_color
+      padding 20px 0 0 0
       left 0
       height 100%
       list-style-type none
@@ -61,9 +61,9 @@ body.scrolled
       &:after
         content ''
         position absolute
-        left 7px
-        right 7px
-        top 1px
+        left 6px
+        right 6px
+        top 0
         height 25px
         background-image linear-gradient(to bottom, rgba(255,255,255,.9) 5%, rgba(255,255,255,0))
       p
@@ -120,7 +120,7 @@ body.scrolled
         content ''
         position absolute
         top 3px
-        right -17px
+        right -16px
         border 10px solid transparent
         border-left 10px solid tint(dark_theme_color, 5%)
     // last grouped message (mine)
@@ -152,8 +152,8 @@ body.scrolled
   .footer
     position absolute
     bottom 97px
-    right 3px
-    left 4px
+    right 4px
+    left 5px
     overflow hidden
     border-top 1px solid dark_theme_color
     &:after
@@ -164,10 +164,9 @@ body.scrolled
       font-size .7em
       color #ccc
     .message-box
-      font-style italic
       overflow hidden
       border-radius 0
-      padding 8px 0 8px 8px!important
+      padding 8px 10px!important
       border 0
       font-size 14px
       height 19px

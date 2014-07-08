@@ -159,11 +159,15 @@ export set-login-token = (user, cb) ->
   err, hash <- unique-hash \login_token, user.site_id
   if err then return cb err
 
+  newly-created = false
+
   # autovivify alias
   maybe-create-alias = (cb) ->
     err, alias <- db.aliases.select-one { user_id: user.id, site_id: user.site_id }
     if err then return cb err
     if not alias
+      newly-created := true
+      console.warn \creating-alias
       err, alias <- db.aliases.select-one { user_id: user.id, site_id: 1 }
       if err then return cb err
       if not alias then return cb(new Error("user #{user.id} has no alias for site_id 1"))
@@ -176,6 +180,7 @@ export set-login-token = (user, cb) ->
   if err then return cb err
 
   user.login_token = hash
+  user.choose-username = newly-created
   err <- db.aliases.update { login_token: hash }, { user_id: user.id, site_id: user.site_id }
   if err then return cb err
 

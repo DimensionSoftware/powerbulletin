@@ -11,11 +11,12 @@ module.exports =
     on-attach: ->
       set-timeout (-> @@$ \.Buy-card-number .focus!), 350ms
       @$.on \click \.Buy-change-card ~>
-        @local \cardNeeded, true
-        @reload!
         $fb = @@$ \.fancybox-wrap:first # animate switch
         $fb.remove-class \popin
-        set-timeout (-> $fb.add-class \popin), 10ms
+        <~ set-timeout _, 5ms
+        @local \cardNeeded, true
+        @reload!
+        $fb.add-class \popin
         false
       @$.on \click \.Buy-checkout (ev) ~>
         $ ev.target .attr \disabled \disabled # disable ui

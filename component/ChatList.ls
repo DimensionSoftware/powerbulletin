@@ -45,7 +45,6 @@ module.exports =
 
     show: ->
       hi = $(window).height!
-      window.time-updater!
       if @local \virgin
         @$.transition { x: (@local \width) }, 0
         @$.css(width: @local \width)
@@ -53,6 +52,7 @@ module.exports =
         @local \virgin, false
       @$.css(height: "#{hi}px")
       @p.show @$
+      window.time-updater!
 
     hide: ->
       @p.hide @$
