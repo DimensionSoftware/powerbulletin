@@ -20,19 +20,19 @@ module.exports =
         summary: new MenuSummary {locals:@locals!} \.MenuSummary @
 
     on-attach: ->
-      if u = window.user
-        const seen-intro = "#{u.id}-home-intro" # key
-        unless storage.get seen-intro
-          storage.set seen-intro, true
-          help = []
-          help.push ['.Homepage, .menu .row', '<b>Welcome!</b><br/>Forum Activity Shows Here in Realtime']
-          help.push -> $ \header .css \z-index, 202 # lift it up
-          help.push ['.tools', '''
-            Start Building Your Community!
-            <br/>
-            <small><i>Hover Over Your Profile Photo to the Admin</i></small>
-          ''', -1] if user.rights.super
-          help.push -> $ \header .css \z-index, 200 # put it back
-          show-info 0, ...help
+#      if u = window.user
+#        const seen-intro = "#{u.id}-home-intro" # key
+#        unless storage.get seen-intro
+#          storage.set seen-intro, true
+#          help = []
+#          help.push ['.Homepage, .menu .row', '<b>Welcome!</b><br/>Forum Activity Shows Here in Realtime']
+#          help.push -> $ \header .css \z-index, 202 # lift it up
+#          help.push ['.tools', '''
+#            Start Building Your Community!
+#            <br/>
+#            <small><i>Hover Over Your Profile Photo to the Admin</i></small>
+#          ''', -1] if user.rights.super
+#          help.push -> $ \header .css \z-index, 200 # put it back
+#          show-info 0, ...help
 
 # vim: fdm=marker

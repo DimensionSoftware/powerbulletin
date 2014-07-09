@@ -27,10 +27,14 @@ module.exports =
       # init children
       do ~>
         create-site = ~>
+          children = [@parent.children.register-top, @parent.children.register-bottom]
+          each (.disable-ui!), children
+          show-tooltip (@@$ \.SiteRegister-errors), 'Reserving Your Address'
           subdomain = @local \subdomain
           @@$.post '/ajax/can-has-site-plz', {domain: subdomain+@local(\hostname)}, ({errors}:r) ~>
-            if errors.length
-              show-tooltip (@@$ \.SiteRegister-errors), errors.join \<br> if errors.length
+            each (.enable-ui!), children
+            if errors?length
+              show-tooltip (@@$ \.SiteRegister-errors), errors.join \<br> if errors?length
             else
               window.location = "https://#subdomain#{@local \hostname}\#once"
         after-registration = ~>

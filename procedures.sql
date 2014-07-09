@@ -743,12 +743,14 @@ CREATE FUNCTION procs.create_site(site JSON) RETURNS JSON AS $$
   unless site.user_id
     return {errors: ["user_id is required for creating a new site"]}
 
-  site_id = plv8.execute('INSERT INTO sites (name, user_id) VALUES ($1, $2) RETURNING id', [name, site.user_id]).0.id
-
-  try
-    plv8.execute 'INSERT INTO domains (site_id, name) VALUES ($1, $2)', [site_id, site.domain.to-lower-case!]
-  catch
-    return {errors: ["domain '#{site.domain}' already exists"]}
+  site_id=0
+  plv8.subtransaction ->
+    try
+      site_id := plv8.execute('INSERT INTO sites (name, user_id) VALUES ($1, $2) RETURNING id', [name, site.user_id]).0.id
+      plv8.execute 'INSERT INTO domains (site_id, name) VALUES ($1, $2)', [site_id, site.domain.to-lower-case!]
+    catch
+      return {errors: ["#{site.domain} already exists"]}
+  unless site_id then return {errors: ["Unable to create #{site.domain}"]}
 
 
   # no need to worry about uniqueness anymore at this point
