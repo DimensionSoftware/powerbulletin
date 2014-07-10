@@ -27,19 +27,29 @@
       h2, .onclick-save
         opacity 1
         transition opacity .1s ease-in
+      .right
+        opacity 1
+        right 3px
+        transition all .15s ease-out .6s
     h2
       opacity 0
     .left
       display inline-block
       vertical-align top
     .right
+      position absolute
+      opacity 0
+      right -300px
+      top 33px
+      z-index 9999
       display inline-block
       vertical-align top
+      transition none
       .preview-wrapper
         border-radius 100%
         margin-left 10px
         border 6px solid rgb(255,255,255)
-        box-shadow 0 0 1px 3px solid theme_color
+        box-shadow 0 0 1px 3px theme_color
         overflow hidden
         width 150px
         height 150px
