@@ -506,7 +506,8 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
           for e in v
             $ e .remove-class k), 3000ms
     else # indicated failure
-      show-tooltip t, data?msg
+      b.remove-attr \disabled
+      show-tooltip t, (data?msg or data?messages?join \<br/>)
   )
   if $(ev.target).is \:button then ev.prevent-default! # no <form> submits
   true

@@ -91,10 +91,7 @@ is-commentable-forum = (m, forum-id) ->
         site.config.cache-buster = h.cache-buster!
         err <- db.sites.save-style site
         if err
-          if err?msg?match /CSS/i
-            return res.json {success:false, messages:['CSS must be valid!']}
-          else
-            return res.json {success:false, messages:['CSS must be valid!']}
+          return res.json {success:false, messages:['CSS must be valid!']}
 
       # save color theme
       if not (site.config.color-theme === req.body.color-theme) or not (site.config.sprite-hue === req.body.sprite-hue)
