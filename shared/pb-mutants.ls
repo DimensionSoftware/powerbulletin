@@ -211,8 +211,6 @@ layout-on-personalize = (w, u) ->
         window.render-mutant \main_content, \post-new
       else if is-forum-homepage @furl.path
         render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
-        <- set-timeout _, 500ms
-        if window.scroll-to then window.scroll-to 0, 0
       else
         window.render-mutant \main_content, \posts
 
