@@ -1373,15 +1373,40 @@ html.forum
         transition margin-top .3s ease-out .1s, opacity .4s ease-out .1s
 //}}}
 html.page
-  body.minimized
-    .logo
-      display none
-    header
-      display none
-    footer
-      left 0!important
-    .main-content
-      padding grid
+  body
+    &.minimized
+      header
+        transform translateY(-100px)
+        opacity 0
+        transition all .4s ease-in
+      .opener
+        cursor pointer
+        height 50px
+        width 75px
+        top -29px
+        margin-left -40px
+        transition top .4s ease-out
+        &:hover
+          top -27px
+          transition top .1s ease-in
+          border-color theme_color
+          background radial-gradient(circle closest-corner at 50% 50%, rgba(theme_color,.2) 50%, rgba(250,250,250,.15) 100%)
+          &:after
+            border-top 15px solid theme_color
+        // downward-facing arrow
+        &:after
+          content ''
+          position absolute
+          height 0
+          width 0
+          top 25px
+          left 26px
+          border 10px solid transparent
+          border-top 13px solid dark_theme_color
+      footer
+        left 0!important
+      .main-content
+        padding grid
 html.forum.new
   .main-content .forum #post_edit .summary
     display block
