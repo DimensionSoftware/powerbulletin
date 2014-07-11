@@ -28,11 +28,11 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .note Titles show in the main menu
             .break
             label(for='forum_slug') Slug
-            input#forum_slug(type='text', name='forumSlug', placeholder='/path/to/forum')
+            input#forum_slug.smaller(type='text', name='forumSlug', placeholder='/path/to/forum')
             .note URL suffix for this page
             .break
             label(for='forum_description') Description
-            input#forum_description(type='text', name='forumDescription')
+            input#forum_description.smaller(type='text', name='forumDescription')
             .note Descriptions show on homepage views
             .break
             .break
@@ -78,11 +78,11 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .note Titles show in the main menu
             .break
             label(for='page_slug') Slug
-            input#page_slug(type='text', name='pageSlug', placeholder='/path/to/page')
+            input#page_slug.smaller(type='text', name='pageSlug', placeholder='/path/to/page')
             .note URL suffix for this page
             .break
             label(for='page_description') Description
-            input#page_description(type='text', name='pageDescription')
+            input#page_description.smaller(type='text', name='pageDescription')
             .note Descriptions show on homepage views
             .break
             label Content Only
@@ -109,10 +109,10 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .note Titles show in the main menu
             .break
             label(for='url') Url
-            input(id='url', type='text', name='url', placeholder='http://')
+            input#url.smaller(type='text', name='url', placeholder='http://')
             .break
             label(for='link_description') Description
-            input#link_description(type='text', name='linkDescription')
+            input#link_description.smaller(type='text', name='linkDescription')
             .note Descriptions show on homepage views
             .break
             label(for='separate_tab') Separate Tab
@@ -137,7 +137,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .note Titles show in the main menu
             .break
             label(for='placeholder_description') Description
-            input#placeholder_description(type='text', name='placeholderDescription')
+            input#placeholder_description.smaller(type='text', name='placeholderDescription')
             .note Descriptions show on homepage views
             .break
             button(type='submit', value='Save') Save
