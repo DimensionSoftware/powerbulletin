@@ -39,6 +39,13 @@
           bottom -1px
           box-shadow 0 0 3px theme_color
           transition all .1s ease-out .05s
+        &.item-page
+          &:hover
+            .name
+              transform scale(1.07)
+              background-color theme_color
+              color colored_text
+              transition none
         &.item-forum
           .name
             position absolute
@@ -75,7 +82,7 @@
                   color #111
             .threads, .posts
               color #000
-              font-weight 500
+              font-weight 400
         td
           padding grid
           vertical-align top
@@ -131,3 +138,5 @@
           position relative
           color #666
           min-width 65px
+          font-weight 200
+          font-size 1.35em

@@ -3,7 +3,7 @@
 bounce = cubic-bezier(0,1.72,0,.75)
 
 // Mutant-specific States
-html.homepage, html.profile, html.admin, html.moderation, html.search
+html.homepage, html.profile, html.admin, html.moderation, html.search, html.page
   // restore footer
   .PostDrawer
     display none
@@ -628,6 +628,7 @@ html.profile
       display block
       height auto
       width auto
+      text-indent 3px
       font-size 1em
       transition opacity .3s ease-out
     h3, .onclick-chat, .title
@@ -652,13 +653,13 @@ html.profile
       font-weight normal
     h3, .change-title
       text-transform capitalize
-      margin 0 0 9px 0
+      margin 3px 0 9px 0
     .change-title
       display none
       margin-left 2px
-      padding 8px 4px
+      padding 6px 4px
       width 92%!important
-      max-width 213px !important
+      max-width 210px !important
     .container
       margin 0 (grid*3.5) 0 (grid*4)
       overflow hidden
@@ -1373,15 +1374,63 @@ html.forum
         transition margin-top .3s ease-out .1s, opacity .4s ease-out .1s
 //}}}
 html.page
-  body.minimized
-    .logo
-      display none
-    header
-      display none
+  body
+    .main-content
+      padding grid grid (grid*8) grid
+      margin 125px 75px 75px 75px
+      opacity 0
+      .grid50
+        float left
+        width 50%
+      h2
+        max-width 600px
+        font-size 2.3em
+        line-height 1.2em
+        margin-top 0
+        font-weight 200
+      h3
+        margin-top 0
+        color #eee
+        font-size 1.6em
+        line-height 1.5em
+        font-weight 200
+    &.loaded
+      .main-content
+        opacity 1
+        transition opacity .5s ease-out
+    &.minimized
+      header
+        transform translateY(-100px)
+        opacity 0
+        transition all .3s ease-in
+      .opener
+        cursor pointer
+        height 50px
+        width 75px
+        top -29px
+        margin-left -40px
+        transition top .4s ease-out
+        &:hover
+          top -27px
+          transition top .1s ease-in
+          border-color theme_color
+          background radial-gradient(circle closest-corner at 50% 50%, rgba(theme_color,.2) 50%, rgba(250,250,250,.15) 100%)
+          &:after
+            border-top 15px solid theme_color
+        // downward-facing arrow
+        &:after
+          content ''
+          position absolute
+          height 0
+          width 0
+          top 25px
+          left 26px
+          border 10px solid transparent
+          border-top 13px solid dark_theme_color
+      .main-content
+        margin 65px
     footer
       left 0!important
-    .main-content
-      padding grid
 html.forum.new
   .main-content .forum #post_edit .summary
     display block

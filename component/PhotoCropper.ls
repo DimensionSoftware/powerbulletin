@@ -54,28 +54,21 @@ module.exports =
       @$.find \img:first .on \load ~> # render correctly-sized cropper
         show-cropper!
 
-      console.log \uploader, @endpoint-url
+      #console.log \uploader, @endpoint-url
       @$.html5-uploader { # make entire component droppable
         name: \avatar
         post-url: @endpoint-url
         on-success: (xhr, file, r-json) ~>
-          console.log \success
           storage.del @storage-key # reset selection
           r = JSON.parse(r-json)
           cache-buster = Math.random!to-string!replace \\. ''
           @$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
           @crop-mode r
-        on-client-load-end: -> console.log \here
-        on-client-load: -> console.log \load
-        on-client-progress: -> console.log \progr
-        onClientLoadStart: -> console.log \start
-        onServerLoadStart: -> console.log \post
       }
 
       @$.find \.onclick-save .click @crop
 
     upload: ->
-      console.log \upload
       data = @$.find('form').serialize!
       jqxhr = @@$.post @endpoint-url, data
       jqxhr.done (r) ~>

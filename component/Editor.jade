@@ -4,7 +4,7 @@
   .wmd-panel
     div(id="wmd-button-bar#{id}")
     .wrapper
-      textarea.wmd-input(id="wmd-input#{id}", name='body')!= body
+      textarea.wmd-input(id="wmd-input#{id}", name='body', spellcheck=true)!= body
       input(type='hidden', name='forum_id', value=forumId)
       input(type='hidden', name='parent_id', value=parentId)
       input(type='hidden', name='id', value=id)
