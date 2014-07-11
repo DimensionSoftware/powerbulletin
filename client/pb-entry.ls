@@ -341,6 +341,7 @@ $d.on \click \.onclick-uncensor-post Auth.require-login(uncensor)
 #{{{ - header (main menu)
 #$d.on \click 'html.homepage header .menu a.title' ->
 #  awesome-scroll-to $(this).data \scroll-to; false
+$d.on \click \.opener -> $ \body .remove-class \minimized # bring out header (from content-only)
 $d.on \click 'html header .menu a.title' mutate
 
 # search header
@@ -505,7 +506,8 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
           for e in v
             $ e .remove-class k), 3000ms
     else # indicated failure
-      show-tooltip t, data?msg
+      b.remove-attr \disabled
+      show-tooltip t, (data?msg or data?messages?join \<br/>)
   )
   if $(ev.target).is \:button then ev.prevent-default! # no <form> submits
   true

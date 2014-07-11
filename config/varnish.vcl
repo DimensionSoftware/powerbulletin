@@ -1,5 +1,19 @@
 import std;
 
+backend d0 {
+  .host = "127.0.0.1";
+  .port = "6000";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
 backend a0 {
   .host = "127.0.0.1";
   .port = "3000";
@@ -587,6 +601,14 @@ sub vcl_recv {
     set req.backend = socket;
     # pipe any socket.io requests as they are long polling requests
     return (pipe);
+  }
+  # if it is dimensionsoftware.com
+  else if (req.http.host ~ "(?i)^dimensionsoftware\.com$") {
+    set req.backend = d0;
+  }
+  # if it is hoerling.com
+  else if (req.http.host ~ "(?i)^hoerling\.com$" || req.http.host ~ "(?i)^lbox\.org$") {
+    error 750 "Moved Permanently";
   }
   # if it is a cdn domain send to cache backend
   else if (req.http.host ~ "(?i)^muscache\d?\.(pb|powerbulletin)\.com$") {

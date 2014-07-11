@@ -172,7 +172,7 @@ layout-on-personalize = (w, u) ->
     next!
   on-mutate: 
     (window, next) ->
-      if window.scroll-to then window.scroll-to 0, 0
+      snap-to-top!
   on-load:
     (window, next) ->
       render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
@@ -211,8 +211,6 @@ layout-on-personalize = (w, u) ->
         window.render-mutant \main_content, \post-new
       else if is-forum-homepage @furl.path
         render-component window, \#main_content, \Homepage, Homepage, {-auto-attach, locals:@}
-        <- set-timeout _, 500ms
-        if window.scroll-to then window.scroll-to 0, 0
       else
         window.render-mutant \main_content, \posts
 
@@ -385,9 +383,7 @@ layout-on-personalize = (w, u) ->
     (window, next) ->
       set-wide! # ensures correct style for width
       window.socket?emit \online-now
-      # snappy-to-top
-      if window.scroll-to then window.scroll-to 0, 0
-      $ \body .remove-class \scrolled
+      snap-to-top!
       next!
   on-personalize: (w, u, next) ->
     w.r-user u
@@ -465,7 +461,7 @@ same-profile = (hints) ->
       next!
   on-mutate:
     (window, next) ->
-      if window.scroll-to then window.scroll-to 0, 0
+      snap-to-top!
       next!
   on-personalize: (w, u, next) ->
     <- lazy-load-html5-uploader
@@ -720,7 +716,7 @@ same-profile = (hints) ->
       next!
   on-mutate:
     (window, next) ->
-      if window.scroll-to then window.scroll-to 0, 0
+      snap-to-top!
       next!
 
 join-search = (sock) ->
@@ -862,7 +858,7 @@ mk-post-pnum-to-href = (post-uri) ->
       next!
   on-mutate:
     (w, next) ->
-      if window.scroll-to then window.scroll-to 0, 0
+      snap-to-top!
       next!
   on-load:
     (w, next) ->
@@ -901,15 +897,17 @@ mk-post-pnum-to-href = (post-uri) ->
   on-load:
     (window, next) ->
       $ \body .toggle-class(\minimized, window.content-only)
+      $ \body .add-class \loaded
       next!
   on-unload:
     (window, next-mutant, next) ->
+      $ \body .remove-class \loaded
       unless next-mutant is \page
         $ \body .remove-class \minimized
       next!
   on-mutate:
     (window, next) ->
-      if window.scroll-to then window.scroll-to 0, 0
+      snap-to-top!
       next!
   on-personalize:
     (w, u, next) ->
@@ -986,9 +984,16 @@ mk-post-pnum-to-href = (post-uri) ->
     layout-on-personalize w, u
     next!
   on-mutate: (w, next) ->
-    if window.scroll-to then window.scroll-to 0, 0
+    snap-to-top!
     next!
   on-load: (window, next) ->
     next!
+
+
+function snap-to-top
+  <~ set-timeout _, 90ms # yield to browser
+  if window.scroll-to then window.scroll-to 0, 0
+  $ \body .remove-class \scrolled
+
 @
 # vim:fdm=indent
