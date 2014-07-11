@@ -79,11 +79,11 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .note Exactly the &lt;H1&gt;, shows in the main menu
             .break
             label(for='offer_slug') Slug
-            input#offer_slug(type='text', name='offerSlug', placeholder='/path/to/offer')
+            input#offer_slug.smaller(type='text', name='offerSlug', placeholder='/path/to/offer')
             .note URL suffix for this page
             .break
             label(for='offer_description') Description
-            input#offer_description(type='text', name='offerDescription')
+            input#offer_description.smaller(type='text', name='offerDescription')
             .note Exactly the &lt;H2&gt; text, shows on homepage views
             .break
             .break

@@ -25,7 +25,7 @@ module.exports =
       expand-on-hover: 800ms
       opacity: 0.8
       force-placeholder-size: true
-      product-photo-uploader: void
+      offer-photo-uploader: void
       is-allowed: (item, parent) ->
         # only move items with a type
         unless (item.find \.row .data \form)?dialog
@@ -33,8 +33,8 @@ module.exports =
           item.find \input .add-class \has-error
           return false
         true
-    const title-selectors = '#product_title, #forum_title, #page_title, #link_title, #placeholder_title'
-    const slug-selectors  = '#product_slug, #forum_slug, #page_slug, #link_slug, #placeholder_slug'
+    const title-selectors = '#offer_title, #forum_title, #page_title, #link_title, #placeholder_title'
+    const slug-selectors  = '#offer_slug, #forum_slug, #page_slug, #link_slug, #placeholder_slug'
 
     init: ->
       @local \title \Title # default reactive
@@ -94,7 +94,7 @@ module.exports =
         e.val title
         html-form # default form
           ..find \fieldset .toggle-class \has-dialog (!!form?dialog)
-          ..find "\#product_description, \#product_content, #title-selectors, #slug-selectors, \#url, textarea" .val ''
+          ..find "\#offer_description, \#offer_content, #title-selectors, #slug-selectors, \#url, textarea" .val ''
           ..find 'input[type="checkbox"], input[type="radio"]' .prop \checked, false
         if form # restore current's id + menu + title
           e.val title
@@ -102,17 +102,17 @@ module.exports =
           @state.title form.title # default
 
           # init-html5-uploaders
-          @product-photo-uploader.detach! if @product-photo-uploader # cleanup
-          @product-photo-uploader = new Uploader {
+          @offer-photo-uploader.detach! if @offer-photo-uploader # cleanup
+          @offer-photo-uploader = new Uploader {
             locals:
-              name:      \product-photo
-              preview:   if form.product-photo then form.product-photo else void
-              post-url:  "/resources/sites/#site-id/product-photo"
+              name:      \offer-photo
+              preview:   if form.offer-photo then form.offer-photo else void
+              post-url:  "/resources/sites/#site-id/offer-photo"
               on-delete: ~>
                 @current-store!
               on-success: (xhr, file, r) ~>
                 @current-store!
-          }, \#product_photo_uploader
+          }, \#offer_photo_uploader
 
           # set input values
           html-form.find 'input,textarea' |> each (input) ->
