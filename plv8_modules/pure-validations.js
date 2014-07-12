@@ -12,16 +12,16 @@
       var errors;
       errors = [];
       if (!post.user_id) {
-        errors.push('Must specify a user');
+        errors.push('Must Specify A User');
       }
       if (!post.forum_id) {
-        errors.push('Forum cannot be blank');
+        errors.push('Forum Cannot Be Blank');
       }
       if (!(post.title || post.parent_id)) {
-        errors.push('Title your creation!');
+        errors.push('Title Your Creation!');
       }
       if (!post.body) {
-        errors.push('Write something!');
+        errors.push('Write Something!');
       }
       return errors;
     };
@@ -29,13 +29,13 @@
       var errors;
       errors = [];
       if (!c.user_id) {
-        errors.push('User cannot be blank');
+        errors.push('User Cannot Be Blank');
       }
       if (!c.post_id) {
-        errors.push('Post cannot be blank');
+        errors.push('Post Cannot Be Blank');
       }
       if (!c.reason) {
-        errors.push('Reason cannot be blank');
+        errors.push('Reason Cannot Be Blank');
       }
       return errors;
     };

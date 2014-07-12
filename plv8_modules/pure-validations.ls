@@ -4,23 +4,23 @@ require, exports, module <- define
 export post = @post = (post) ->
   errors = []
   unless post.user_id
-    errors.push 'Must specify a user'
+    errors.push 'Must Specify A User'
   unless post.forum_id
-    errors.push 'Forum cannot be blank'
+    errors.push 'Forum Cannot Be Blank'
   unless post.title or post.parent_id
-    errors.push 'Title your creation!'
+    errors.push 'Title Your Creation!'
   unless post.body
-    errors.push 'Write something!'
+    errors.push 'Write Something!'
   errors
 
 export censor = @censor = (c) ->
   errors = []
   unless c.user_id
-    errors.push 'User cannot be blank'
+    errors.push 'User Cannot Be Blank'
   unless c.post_id
-    errors.push 'Post cannot be blank'
+    errors.push 'Post Cannot Be Blank'
   unless c.reason
-    errors.push 'Reason cannot be blank'
+    errors.push 'Reason Cannot Be Blank'
   errors
 
 export subdomain = @subdomain = (subdomain) ->
