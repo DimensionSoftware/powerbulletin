@@ -322,7 +322,7 @@ is-commentable-forum = (m, forum-id) ->
     post          = req.body
     post.user_id  = req.user.id
     post.html     = format.render post.body
-    post.ip       = res.vars.remote-ip
+    post.ip       = res.vars.remote-ip |> split ',' |> first
     post.tags     = h.hash-tags post.body
     post.mentions = h.at-tags post.body
 

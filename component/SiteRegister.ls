@@ -27,6 +27,7 @@ module.exports =
       # init children
       do ~>
         create-site = ~>
+          return if (@local \subdomain)?match /^\s*$/ # guard
           children = [@parent.children.register-top, @parent.children.register-bottom]
           each (.disable-ui!), children
           show-tooltip (@@$ \.SiteRegister-errors), 'Reserving Your Address'
