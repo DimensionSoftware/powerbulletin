@@ -174,13 +174,12 @@ module.exports =
       cors.post "#{auth-domain}#{$form.attr(\action)}", params, (r) ~>
         if r.success
           rr <~ Auth.login-with-token
-          r.choose-name ||= rr.choose-name
-          if r.choose-name
+          if rr.choose-name
             @after-login! if @after-login
             if Auth.require-login-cb
               Auth.require-login-cb!
               Auth.require-login-cb = null
-            $ '.choose input:first' .val r.name
+            $ '.choose input:first' .val rr.name
             switch-and-focus '', \on-choose, '.choose input:first'
           else
             $.fancybox.close!

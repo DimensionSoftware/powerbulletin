@@ -86,7 +86,7 @@ announce = sioa.create-client!
   if err then return next err
   if r
     req.session?passport?user = "#{r.name}:#{site.id}"
-    res.json success: true, choose-name: !!(r.created_human?match /Just now/i)
+    res.json success: true, choose-name: !!(r.created_human?match /Just now/i), name: r.name
   else
     res.json success: false
 
