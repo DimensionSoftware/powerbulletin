@@ -17,9 +17,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
     .theme
       input.collapse(id='lookandfeel', type='checkbox')
       label.onclick-expand(for='click_lookandfeel')
-        h4.onclick-expand Look 
-          small &amp; 
-          | Feel
+        h4.onclick-expand Look &amp; Feel
         .dialog
           .break
           //- XXX html5-uploader works inside parent <form>
@@ -112,8 +110,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
       input.collapse(id='domains', type='checkbox')
       label.onclick-expand(for='click_domains')
         h4.onclick-expand
-          small + 
-          | Domains
+          | + Domains
         .dialog
           .break
           - ip = '107.170.231.97'
