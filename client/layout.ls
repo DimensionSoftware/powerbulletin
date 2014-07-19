@@ -240,7 +240,7 @@ $ \.tools .on \click ->
 onload-resizable!
 
 # run initial personalize ( based on parameters from user obj )
-if not (window.user = storage.get \user) # fetch (blocking)
+if (not (window.user = storage.get \user) or not window.user?name) # fetch (blocking)
   window.user <- $.getJSON \/auth/user
   storage.set \user, window.user # set latest
   after-user!
