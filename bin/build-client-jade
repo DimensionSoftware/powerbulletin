@@ -7,6 +7,7 @@ app/views/thread.jade
 app/views/menu.jade
 app/views/moderation.jade
 app/views/nav.jade
+app/views/offer.jade
 app/views/posts.jade
 app/views/post-edit.jade
 app/views/post-new.jade

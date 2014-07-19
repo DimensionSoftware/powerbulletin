@@ -79,6 +79,8 @@ function default-pnum-to-href-fun uri
     else
       parsed.pathname
 
+{templates} = require \../build/client-jade
+
 # Common
 set-header-static = (w, cache-url, background) ->
   unless background then return # guard
@@ -184,7 +186,6 @@ layout-on-personalize = (w, u) ->
 
 # this function meant to be shared between static and on-initial
 !function render-thread-paginator-component win, qty, step
-  {templates} = require \../build/client-jade
 
   on-page = (page) ->
     # XXX: this is sort of a stopgap I know we need pretty ui
@@ -888,8 +889,12 @@ mk-post-pnum-to-href = (post-uri) ->
 @page =
   static:
     (window, next) ->
-      window.replace-html window.$(\#left_container), ''
-      window.replace-html window.$(\#main_content), @page.config.main_content
+      if @page.config.dialog is \offer # render jade offer template
+        console.log @page
+        window.replace-html window.$(\#main_content), (templates.offer @page)
+      else
+        window.replace-html window.$(\#left_container), ''
+        window.replace-html window.$(\#main_content), @page.config.main_content
       window.marshal \activeForumId, @active-forum-id
       window.marshal \contentOnly, @content-only
       remove-backgrounds window
