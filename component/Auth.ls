@@ -35,9 +35,16 @@ module.exports =
         e.find \.strength .css(height:parse-int(percent)+\%))
       cb window._auth.$
 
-    @show-choose-dialog = ->
+    @show-choose-dialog = (remove-class='') ->
       <- Auth.show-login-dialog
-      switch-and-focus '', \on-choose, '.choose input:first'
+      switch-and-focus remove-class, \on-choose, '.choose input:first'
+      u = user?name
+      if u # smooth user into change dialog
+        show-tooltip $('#auth .choose .tooltip'), "Currently Known As #u"
+        $ '#auth .choose #username'
+          ..val user?name
+          ..focus!
+          ..select!
 
     @show-info-dialog = (msg, msg2='', remove='', cb=(->)) ->
       @@hide-info!
@@ -146,7 +153,7 @@ module.exports =
         show-tooltip ($ '#auth .forgot .tooltip'), 'We\'ll Send A Single-Use, Secure Link'
       @$.on \click \.onclick-show-choose ->
         @@hide-info!
-        switch-and-focus \on-login \on-choose '#auth input[name=username]'
+        @show-choose-dialog \on-login
       @$.on \click \.onclick-show-register -> Auth.show-register-dialog!
 
       # catch esc key events on input boxes for Auth
@@ -174,14 +181,13 @@ module.exports =
       cors.post "#{auth-domain}#{$form.attr(\action)}", params, (r) ~>
         if r.success
           rr <~ Auth.login-with-token
-          r.choose-name ||= rr.choose-name
-          if r.choose-name
+          if rr.choose-name
             @after-login! if @after-login
             if Auth.require-login-cb
               Auth.require-login-cb!
               Auth.require-login-cb = null
-            $ '.choose input:first' .val r.name
-            switch-and-focus '', \on-choose, '.choose input:first'
+            @show-choose-dialog!
+            $ '.choose input:first' .val rr.name
           else
             $.fancybox.close!
             @after-login! if @after-login
