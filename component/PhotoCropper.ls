@@ -55,7 +55,7 @@ module.exports =
         show-cropper!
 
       #console.log \uploader, @endpoint-url
-      @$.html5-uploader { # make entire component droppable
+      opts = {
         name: \avatar
         post-url: @endpoint-url
         on-success: (xhr, file, r-json) ~>
@@ -65,6 +65,8 @@ module.exports =
           @$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
           @crop-mode r
       }
+      @$.find('.upload input[type=file]').html5-uploader opts
+      @$.html5-uploader opts # make entire component droppable
 
       @$.find \.onclick-save .click @crop
 
