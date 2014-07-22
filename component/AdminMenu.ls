@@ -107,7 +107,7 @@ module.exports =
             locals:
               name:      \offer-photo
               preview:   if form.offer-photo then form.offer-photo else void
-              post-url:  "/resources/sites/#site-id/offer-photo"
+              post-url:  "/resources/sites/#site-id/offer-photo?id=#id"
               on-delete: ~>
                 @current-store!
               on-success: (xhr, file, r) ~>

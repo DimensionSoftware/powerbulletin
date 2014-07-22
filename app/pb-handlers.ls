@@ -355,6 +355,29 @@ function background-for-forum m, active-forum-id
   else
     res.json 500, {-success, msg:'What kind of file is this?'}
 
+@offer-photo-delete = (req, res, next) -> wipe-file-with-config res, \offer, next
+@offer-photo = (req, res, next) ->
+  site = res.vars.site
+  err, site <- db.site-by-id site.id
+  if err then return next err
+
+  # html5-uploader
+  if offer-photo = req.files?offer-photo
+    # TODO save offer-photo + menu id
+    err, file-name <- save-file-to-disk req.files?offer-photo, "#{site.id}", \offer-photo
+    if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+    if file-name
+      # TODO update offer.config.offer-photo
+      #site.config.logo = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
+      #err, r <- db.site-update site # save!
+      #if err then return res.json 500, {-success, msg:err}
+      #res.json {+success, logo:site.config.logo}
+      h.ban-all-domains site.id # blow cache since this affects html pages
+    else
+      res.json 500, {-success, msg:'What kind of file is this?'}
+  else
+    res.json 500, {-success, msg:'What photo?'}
+
 # user profiles /user/:name
 @profile = (req, res, next) ->
   db   = pg.procs
