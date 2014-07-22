@@ -902,7 +902,7 @@ mk-post-pnum-to-href = (post-uri) ->
       next!
   on-load:
     (window, next) ->
-      $ \body .toggle-class(\minimized, window.content-only)
+      $ \body .toggle-class(\minimized, window.content-only or window.offer-content-only)
       $ \body .add-class \loaded
       next!
   on-unload:
