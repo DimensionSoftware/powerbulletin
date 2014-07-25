@@ -72,7 +72,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
           label.header(for='offer')
             .s-offer.icon
             h2 Offer
-            .desc Offer Page Template
+            .desc Affiliate Page Template
           .dialog
             label(for='offer_title') Title
             input#offer_title(type='text', name='offerTitle')
@@ -161,11 +161,11 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .note Titles show in the main menu
             .break
             label(for='page_slug') Slug
-            input#page_slug(type='text', name='pageSlug', placeholder='/path/to/page')
+            input#page_slug.smaller(type='text', name='pageSlug', placeholder='/path/to/page')
             .note URL suffix for this page
             .break
             label(for='page_description') Description
-            input#page_description(type='text', name='pageDescription')
+            input#page_description.smaller(type='text', name='pageDescription')
             .note Descriptions show on homepage views
             .break
             label(for='content_only') Content Only
