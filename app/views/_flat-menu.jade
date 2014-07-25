@@ -12,5 +12,5 @@ mixin _flat-menu(depth, menu)
               data-surf=item.form.dbid,
               data-scroll-to="#forum_#{item.form.dbid}",
               class="forum-#{item.form.dbid}",
-              href="#{item.form.forumSlug || item.form.pageSlug || item.form.url}"
+              href="#{item.form.offerSlug || item.form.forumSlug || item.form.pageSlug || item.form.url}"
               target=(item.form.separateTab ? '_blank' : '_self'))= item.title
