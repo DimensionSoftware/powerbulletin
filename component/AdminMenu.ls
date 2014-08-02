@@ -312,10 +312,13 @@ module.exports =
         # sync title to ui (so it can be saved)
         d = @current.data! # all data from selection
         d.title = d.form.title = title
-        @$.find 'input[name=title]' .val title
-        @current
-          ..val  title
-          ..data d
+        e = @$.find 'input[name=title]'
+        if e.val! isnt title # only set if changed 
+          e.val title
+          if @current.val! isnt title
+            @current
+              ..val  title
+              ..data d
       ).bind-to @state.title
 
       ####  main  ;,.. ___  _
