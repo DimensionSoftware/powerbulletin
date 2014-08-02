@@ -1,7 +1,7 @@
 
 mixin menu-item(depth, items)
   each item,i in items
-    slug  = item.form.forumSlug || item.form.pageSlug || item.form.url
+    slug  = item.form.offerSlug || item.form.forumSlug || item.form.pageSlug || item.form.url
     if item && item.form
       //- row -> out!
       desc = item.form.productDescription || item.form.forumDescription || item.form.pageDescription || item.form.placeholderDescription || item.form.linkDescription
