@@ -896,13 +896,13 @@ mk-post-pnum-to-href = (post-uri) ->
         window.replace-html window.$(\#left_container), ''
         window.replace-html window.$(\#main_content), @page.config.main_content
       window.marshal \activeForumId, @active-forum-id
-      window.marshal \contentOnly, @content-only
+      window.marshal \offerContentOnly, @page.config.offer-content-only
       remove-backgrounds window
       layout-static.call @, window, \page, @active-forum-id
       next!
   on-load:
     (window, next) ->
-      $ \body .toggle-class(\minimized, window.content-only or window.offer-content-only)
+      $ \body .toggle-class \minimized, !!(window.content-only or window.offer-content-only)
       $ \body .add-class \loaded
       next!
   on-unload:
