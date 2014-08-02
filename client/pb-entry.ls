@@ -487,15 +487,15 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
       show-tooltip t, (data?msg or t.data(\msg) or \Saved!)
       # update config for domains (client)
       id = parse-int($ '#domain option:selected' .val!)
-      domain = find (-> it.id == id), site.domains
-      for k in [
-        #\facebookClientId
-        \facebookClientSecret
-        #\twitterConsumerKey
-        \twitterConsumerSecret
-        #\googleConsumerKey
-        \googleConsumerSecret]
-          domain.config[k] = $ "[name='#k']" .prop \checked
+      if domain = find (-> it.id == id), site.domains
+        for k in [
+          #\facebookClientId
+          \facebookClientSecret
+          #\twitterConsumerKey
+          \twitterConsumerSecret
+          #\googleConsumerKey
+          \googleConsumerSecret]
+            domain.config[k] = $ "[name='#k']" .prop \checked
       for k, v of inputs
         for e in v
           e = $ e
@@ -551,14 +551,14 @@ $d.on \click \#add_custom_domain (ev) ->
       if data.responseJSON?success is true
         e.val '' # clear
         # add domain to dropdown/select input
-        domain = data.responseJSON?domain
-        site.domains.push domain # append
-        o = new Option n, domain.id
-        $ o .html n
-        $ \#domain
-          ..append o
-          ..val domain.id # select
-          ..change!
+        if domain = data.responseJSON?domain
+          site.domains.push domain # append
+          o = new Option n, domain.id
+          $ o .html n
+          $ \#domain
+            ..append o
+            ..val domain.id # select
+            ..change!
         focus!
         show-tooltip t, "Congratulations, added #n!"
       else
@@ -577,10 +577,10 @@ $d.on \click 'html.admin .dialog textarea, html.admin .dialog button, html.admin
 $d.on \click 'html.admin .preview' (ev) -> $ ev.target .prev \input .focus!; false
 $d.on \change 'html.admin #domain' -> # set keys
   id = parse-int($ '#domain option:selected' .val!)
-  domain  = find (-> it.id == id), site.domains
-  $ \#facebook_auth .prop \checked, !!domain.config.facebookClientSecret
-  $ \#twitter_auth .prop \checked, !!domain.config.twitterConsumerSecret
-  $ \#google_auth .prop \checked, !!domain.config.googleConsumerSecret
+  if domain = find (-> it.id == id), site.domains
+    $ \#facebook_auth .prop \checked, !!domain.config.facebookClientSecret
+    $ \#twitter_auth .prop \checked, !!domain.config.twitterConsumerSecret
+    $ \#google_auth .prop \checked, !!domain.config.googleConsumerSecret
 set-private-state = ->
   c = $ \#private .is \:checked
   $ \#background_uploader .toggle-class \hidden, !c

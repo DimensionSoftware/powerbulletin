@@ -75,9 +75,11 @@ module.exports =
                 if $i.is \textarea
                   v
         data.background = (html-form.find \.background).data \src
+        data-id = e.data!
+        if data-id?id then data-id = data-id.id.replace /list_/ ''
         e # store
           ..remove-class \has-error
-          ..data \id,    e.data!id.replace /list_/ ''
+          ..data \id,    data-id
           ..data \form,  data
           ..data \title, e.val!
     current-restore: !->
