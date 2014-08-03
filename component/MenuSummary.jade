@@ -38,7 +38,7 @@ mixin menu-item(depth, items)
             a.mutant(
               data-surf=item.form.dbid,
               class="forum-#{item.form.dbid}",
-              href="#{item.form.productSlug || item.form.forumSlug || item.form.pageSlug || item.form.url}"
+              href=slug,
               target=(item.form.separateTab ? '_blank' : '_self'))= item.title
             .description= desc
 
