@@ -263,8 +263,9 @@ require! {
     if not data.path.to-string!match /^\//
       return cb errors: [ "Slug must begin with /" ]
     db.pages.upsert data, (err, data) ->
-      if err and err.routine!to-string!match /unique/
-        err.message = "Slug is already taken"
+      if typeof! err?routine is \Function
+        if err.routine!to-string!match /unique/
+          err.message = "Slug is already taken"
       cb err, data
   | \page          =>
     if not data?path
@@ -272,8 +273,9 @@ require! {
     if not data.path.to-string!match /^\//
       return cb errors: [ "Slug must begin with /" ]
     db.pages.upsert data, (err, data) ->
-      if err and err.routine.to-string!match /unique/
-        err.message = "Slug is already taken"
+      if typeof! err?routine is \Function
+        if err.routine.to-string!match /unique/
+          err.message = "Slug is already taken"
       cb err, data
   | \forum         =>
     if not data?uri
@@ -282,8 +284,9 @@ require! {
       return cb errors: [ "Slug must begin with /" ]
     db.forums.upsert data, (err, data) ->
       # TODO - forum case is not so simple and will need to be expanded upon
-      if err and err.routine.to-string!match /unique/
-        err.message = "Slug is already taken."
+      if typeof! err?routine is \Function
+        if err.routine.to-string!match /unique/
+          err.message = "Slug is already taken."
       cb err, data
   | \link          => cb null, []
   | \placeholder   => cb null, []
