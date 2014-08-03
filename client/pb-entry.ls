@@ -592,7 +592,10 @@ $d.on \click 'html.admin #analytics'         -> subscribe \analytics
 $d.on \click 'html.admin #add_custom_domain' -> subscribe \custom_domain
 $d.on \click 'html.admin #private' ->
   subscribe \private
-  set-private-state!
+  if \private in site.subscriptions
+    set-private-state! # has bought?
+    return true
+  false # don't toggle ui
 
 set-private-state!
 #}}}

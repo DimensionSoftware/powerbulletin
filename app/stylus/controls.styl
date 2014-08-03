@@ -22,6 +22,9 @@ input[type="password"].active, select.active, textarea.active, input[type="text"
 select
   height 40px
 
+input[type="password"], select, input[type="text"]
+  overflow hidden
+  text-overflow ellipsis
 input[type="password"], select, textarea, input[type="text"]
   border-radius 3px
   color #666
@@ -39,6 +42,7 @@ input[type="password"], select, textarea, input[type="text"]
   transform scale(1)
   transition-duration .3s
   transition-property transform
+  transition color .2s ease-out, border .03s ease-out .05s, box-shadow .25s ease-out .05s
 input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:hover
   position relative
   z-index 1
@@ -46,7 +50,7 @@ input[type="password"]:hover, select:hover, textarea:hover, input[type="text"]:h
   border-bottom 1px solid #bbb
   box-shadow 0 1px 0 dark_theme_color,0 0 1px theme_color
   background-image linear-gradient(top, theme_alpha 0, tint_color 5px)
-  transition color .5s ease-out, border .05s ease-out, box-shadow .1s ease-out
+  transition color .2s ease-out, border .03s ease-out, box-shadow .1s ease-out
 input.active, input[type="password"]:focus, input[type="password"]:focus, select:focus, textarea:focus, input[type="text"]:focus 
   color #111
   position relative
@@ -129,6 +133,7 @@ label.switch-control
   border-radius 30px
   background rgba(0,0,0,.03)
   box-shadow inset 0 0 1px #666,0 2px 5px #eee
+  transition box-shadow .25s ease-out .05s
   &:hover
     box-shadow inset 0 0 1px #888, 0 1px 2px #eee, 0 0 0 1px theme_color
     transition box-shadow .1s ease-out
