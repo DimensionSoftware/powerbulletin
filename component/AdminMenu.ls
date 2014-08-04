@@ -77,7 +77,7 @@ module.exports =
                 if ($i.attr \type) is \file # uploader, so value is preview src
                   src = $i.parents(\.Uploader:first).find \img .attr \src
                   n = $i.attr \name
-                  $ "input[type='hidden'][name='#n']" .val(src.replace /^.+sites\//, '') # remove prefix
+                  $ "input[type='hidden'][name='#n']" .val src
                   src
         data.background = (html-form.find \.background).data \src
         data-id = e.data!
@@ -110,11 +110,10 @@ module.exports =
 
           # init-html5-uploaders
           @offer-photo-uploader.detach! if @offer-photo-uploader # cleanup
-          console.log form
           @offer-photo-uploader = new Uploader {
             locals:
               name:      \offerPhoto
-              preview:   if form.offer-photo then form.offer-photo else void
+              preview:   if form.offer-photo then form.offer-photo.replace /^.+sites\//, '' else void # remove prefix for html5uploader
               post-url:  "/resources/sites/#site-id/offer-photo/#{form.dbid}"
               on-delete: ~>
                 @current-store!
