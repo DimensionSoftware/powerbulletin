@@ -76,7 +76,7 @@ module.exports =
                   v
         data.background = (html-form.find \.background).data \src
         data-id = e.data!
-        if data-id?id then data-id = data-id.id.replace /list_/ ''
+        if data-id?id then data-id = data-id.id.to-string!replace /list_/ ''
         e # store
           ..remove-class \has-error
           ..data \id,    data-id
@@ -297,11 +297,12 @@ module.exports =
           .attr \name, \menu
           .val JSON.stringify menu)
         submit-form ev, (data) ~> # save to server
-          data-form = @current.data \form # FIXME - Even though I try to set a new dbid, it gets blasted away somewhere.
+          data-form = @current.data \form
           data-form.dbid = data.id
           @$.find 'input[name=dbid]' .val data.id
-          @current.data \form, data-form
-          f = $ this # form
+          @current
+            ..data \form, data-form
+            ..data \id,   data.id
           show-tooltip $(\#warning), unless data.success then (data?errors?join \<br>) else \Saved!
 
       @$.on \change \form (ev) ~> @current-store! # save active title & form
