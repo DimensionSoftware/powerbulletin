@@ -94,6 +94,7 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             .break
             //- XXX html5-uploader works inside parent <form>
             #offer_photo_uploader
+            input(type='hidden', name='offerPhoto')
             .break
             label(for='offer_content_only') Content Only
             .box

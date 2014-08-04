@@ -74,6 +74,11 @@ module.exports =
               | otherwise
                 if $i.is \textarea
                   v
+                if ($i.attr \type) is \file # uploader, so value is preview src
+                  src = $i.parents(\.Uploader:first).find \img .attr \src
+                  n = $i.attr \name
+                  $ "input[type='hidden'][name='#n']" .val(src.replace /^.+sites\//, '') # remove prefix
+                  src
         data.background = (html-form.find \.background).data \src
         data-id = e.data!
         if data-id?id then data-id = data-id.id.to-string!replace /list_/ ''
@@ -105,11 +110,12 @@ module.exports =
 
           # init-html5-uploaders
           @offer-photo-uploader.detach! if @offer-photo-uploader # cleanup
+          console.log form
           @offer-photo-uploader = new Uploader {
             locals:
-              name:      \offer-photo
+              name:      \offerPhoto
               preview:   if form.offer-photo then form.offer-photo else void
-              post-url:  "/resources/sites/#site-id/offer-photo?id=#id"
+              post-url:  "/resources/sites/#site-id/offer-photo/#{form.dbid}"
               on-delete: ~>
                 @current-store!
               on-success: (xhr, file, r) ~>

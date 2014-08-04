@@ -362,21 +362,38 @@ function background-for-forum m, active-forum-id
   if err then return next err
 
   # html5-uploader
-  if offer-photo = req.files?offer-photo
-    # TODO save offer-photo + menu id
-    err, file-name <- save-file-to-disk req.files?offer-photo, "#{site.id}", \offer-photo
+  if offer-photo = req.files.offer-photo
+    # save offer-photo + menu id
+    err, file-name <- save-file-to-disk offer-photo, "#{site.id}/offers", \offer-photo
     if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
     if file-name
-      # TODO update offer.config.offer-photo
-      #site.config.logo = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
-      #err, r <- db.site-update site # save!
-      #if err then return res.json 500, {-success, msg:err}
-      #res.json {+success, logo:site.config.logo}
-      h.ban-all-domains site.id # blow cache since this affects html pages
+      id = req.params.offerid
+      err, page <- db.pages.select-one {id} # get offer (page)
+      if err then return next err
+      if page
+        # update offer.config.offer-photo
+        offer-photo = page.config.offer-photo = "#{site.id}/offers/#file-name?#{h.cache-buster!}".to-lower-case!
+        for k in <[created_human created_iso created_friendly updated_human updated_iso updated_friendly]>
+          delete page[k] # prune these before updating
+        err <- db.pages.upsert page # save
+        if err then return res.json 500, {-success, msg:err}
+
+        # update site.config.menu
+        m    = site.config.menu
+        item = menu.flatten m |> find -> it.form.dbid.to-string! is id
+        unless item then return res.json 500, {-success, msg:'Unable to find page menu'} # guard
+        path = menu.path-for-upsert m, item.id.to-string!
+        site.config.menu = menu.struct-upsert m, path, item
+        err, r <- db.site-update site # save!
+
+        res.json {+success, offer-photo}
+        h.ban-all-domains site.id # blow cache since this affects html pages
+      else
+        res.json 500, {-success, msg:'Unable to find page'}
     else
       res.json 500, {-success, msg:'What kind of file is this?'}
   else
-    res.json 500, {-success, msg:'What photo?'}
+    res.json 500, {-success, msg:'What offer photo?'}
 
 # user profiles /user/:name
 @profile = (req, res, next) ->
@@ -645,8 +662,8 @@ function profile-paths user, uploaded-file, base=\avatar
     meta-keywords:  "#{site.name}, PowerBulletin"
   fdoc.site.config = defaults <<< fdoc.site.config
   fdoc.site.config.analytics = escape(fdoc.site.config.analytics or '')
-  fdoc.title   = "Admin | #{res.vars.site.name}"
-  fdoc.menu = site.config.menu
+  fdoc.title = "Admin | #{res.vars.site.name}"
+  fdoc.menu  = site.config.menu
 
   # reject current site
   tmp = fdoc.sites |> reject (.id is site.id)

@@ -165,11 +165,10 @@ is-commentable-forum = (m, forum-id) ->
 
       if id # active form
         form = { [k, v] for k,v of req.body when k in
-          <[ id dbid title placeholderDescription offerContent offerContentOnly offerDescription affiliateLink hashtags videoTop videoBottom linkDescription forumDescription pageDescription dialog postsPerPage offerSlug forumSlug hideHomepage locked comments pageSlug content url contentOnly separateTab ]> }
+          <[ id dbid title placeholderDescription offerPhoto offerContent offerContentOnly offerDescription affiliateLink hashtags videoTop videoBottom linkDescription forumDescription pageDescription dialog postsPerPage offerSlug forumSlug hideHomepage locked comments pageSlug content url contentOnly separateTab ]> }
 
         for k in <[offerSlug forumSlug pageSlug]> # cleanup keys
           if form[k].length < 1 then delete form[k]
-        menu-item = { id, form.title, form }
         menu-item = { id, form.title, form }
         m-path = menu.path-for-upsert m, id
         site.config.menu = menu.struct-upsert m, m-path, menu-item
