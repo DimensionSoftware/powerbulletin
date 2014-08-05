@@ -4,6 +4,7 @@ require, exports, module <- define
 require! {
   \./PBComponent
   \./Uploader
+  _ : \lodash
 }
 {lazy-load-nested-sortable, show-info, show-tooltip, submit-form, storage} = require \../client/client-helpers if window?
 {each, map, maximum} = require \prelude-ls
@@ -117,8 +118,10 @@ module.exports =
               post-url:  "/resources/sites/#site-id/offer-photo/#{form.dbid}"
               on-delete: ~>
                 @current-store!
+                _.debounce (-> @$.find 'button[type="submit"]' .trigger \click), 1000ms, true # save menu, too
               on-success: (xhr, file, r) ~>
                 @current-store!
+                _.debounce (-> @$.find 'button[type="submit"]' .trigger \click), 1000ms, true # save menu, too
           }, \#offer_photo_uploader
 
           # set input values

@@ -30,7 +30,7 @@ module.exports =
       @$.find \.inline-preview
         ..data \src, uri
         ..attr \src,
-          if uri
+          if uri and not uri.match /transparent-1px/
             "#{cacheUrl}/sites/#uri"
           else
             "#{cacheUrl}/images/transparent-1px.gif"

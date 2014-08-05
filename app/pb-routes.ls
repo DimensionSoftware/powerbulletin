@@ -53,7 +53,7 @@ app.delete \/resources/sites/:id/logo,        handlers.forum-logo-delete
 app.post   \/resources/sites/:id/private-background, handlers.private-background
 app.delete \/resources/sites/:id/private-background, handlers.private-background-delete
 app.post   \/resources/sites/:id/offer-photo/:offerid, handlers.offer-photo
-app.delete \/resources/sites/:id/offer-photo, handlers.offer-photo-delete
+app.delete \/resources/sites/:id/offer-photo/:offerid, handlers.offer-photo-delete
 #}}}
 
 #{{{ Common JS

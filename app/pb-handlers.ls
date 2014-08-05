@@ -355,7 +355,37 @@ function background-for-forum m, active-forum-id
   else
     res.json 500, {-success, msg:'What kind of file is this?'}
 
-@offer-photo-delete = (req, res, next) -> wipe-file-with-config res, \offer, next
+@offer-photo-delete = (req, res, next) ->
+  #wipe-file-with-config res, \offer, next
+  site = res.vars.site # get site
+  err, site <- db.site-by-id site.id
+  if err then return next err
+
+  id = req.params.offerid
+  err, page <- db.pages.select-one {id} # get offer (page)
+  if err then return next err
+  unless page then return res.json 500, {-success, msg:['Unable to find page']} # guard
+
+  # update offer.config.offer-photo
+  file-name = page.config.offer-photo?match(/offers\/(.+?)\?/)?1
+
+  # wipe file from disk
+  if file-name
+    unless file-name.to-string!match /\.\./ # guard
+      err <- fs.unlink "public/sites/#{site.id}/offers/#{file-name.replace(/\?.*$/, '')}"
+      if err then return res.json 500, {-success, msg:err}
+
+      # update config
+      cleanup-page-keys page
+      delete page.config.offer-photo
+      err <- db.pages.upsert page # save
+      if err then return res.json 500, {-success, msg:err}
+      res.json {+success}
+      h.ban-all-domains site.id # blow cache since this affects html pages
+    else
+      res.json 500, {-success, msg:['Bad file name!']}
+  else
+    res.json 500, {-success, msg:['Unable to find file!']}
 @offer-photo = (req, res, next) ->
   site = res.vars.site
   err, site <- db.site-by-id site.id
@@ -373,8 +403,7 @@ function background-for-forum m, active-forum-id
       if page
         # update offer.config.offer-photo
         offer-photo = page.config.offer-photo = "#{site.id}/offers/#file-name?#{h.cache-buster!}".to-lower-case!
-        for k in <[created_human created_iso created_friendly updated_human updated_iso updated_friendly]>
-          delete page[k] # prune these before updating
+        cleanup-page-keys page
         err <- db.pages.upsert page # save
         if err then return res.json 500, {-success, msg:err}
 
@@ -854,4 +883,9 @@ function wipe-file-with-config res, key, next
     res.json 500, {-success, msg:['Unable to find file!']}
   h.ban-all-domains site.id # blow cache since this affects html pages
 
+function cleanup-page-keys page # XXX mutates
+  unless page then return # guard
+  for k in <[created_human created_iso created_friendly updated_human updated_iso updated_friendly]>
+    delete page[k] # prune these before updating
+  page
 # vim:fdm=indent
