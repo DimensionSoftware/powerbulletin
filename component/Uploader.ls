@@ -21,7 +21,7 @@ module.exports =
     delete-preview: ->
       @@$.ajax {method:\DELETE, url:@local \postUrl}
         ..error (data) ~>
-          show-tooltip ($ \#warning), 'Unable to Delete!'
+          show-tooltip ($ \#warning), if typeof! data.msg?0 is \String then data.msg.0 else 'Unable to Delete!'
         ..success (data) ~>
           @set-preview void # remove thumb
           @locals!on-delete data # cb
@@ -40,7 +40,7 @@ module.exports =
 
       #{{{ Event Delegates
       @$.on \click \.onclick-delete (ev) ~> # delete
-        if confirm "Permanently Delete Background?"
+        if confirm "Permanently Delete?"
           @delete-preview!
       #}}}
 
