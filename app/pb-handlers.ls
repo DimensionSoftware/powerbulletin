@@ -363,11 +363,11 @@ function background-for-forum m, active-forum-id
 
   # html5-uploader
   if offer-photo = req.files.offer-photo
+    id = req.params.offerid
     # save offer-photo + menu id
-    err, file-name <- save-file-to-disk offer-photo, "#{site.id}/offers", \offer-photo
+    err, file-name <- save-file-to-disk offer-photo, "#{site.id}/offers", id
     if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
     if file-name
-      id = req.params.offerid
       err, page <- db.pages.select-one {id} # get offer (page)
       if err then return next err
       if page
