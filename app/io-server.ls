@@ -97,7 +97,9 @@ clear-stale-redis-data = (r, cb) ->
         handshake.session = session
         return accept(null, true)
       else
-        return accept("bad session?", false)
+        #return accept("bad session?", false)
+        console.warn 'bad session cookie?', connect-cookie
+        return accept(null, true)
     else
       log "no cookies found during socket.io authorization phase"
       return accept(null, true)
