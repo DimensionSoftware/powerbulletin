@@ -41,6 +41,7 @@ module.exports =
       @local \title \Title # default reactive
 
     current:  null # active "selected" menu item
+    is-dirty: false
 
     show: ->
       set-timeout (~> @$.find \.col2 .show 300ms), 300ms
@@ -118,10 +119,10 @@ module.exports =
               post-url:  "/resources/sites/#site-id/offer-photo/#{form.dbid}"
               on-delete: ~>
                 @current-store!
-                _.debounce (-> @$.find 'button[type="submit"]' .trigger \click), 1000ms, true # save menu, too
+                @save!
               on-success: (xhr, file, r) ~>
                 @current-store!
-                _.debounce (-> @$.find 'button[type="submit"]' .trigger \click), 1000ms, true # save menu, too
+                @save!
           }, \#offer_photo_uploader
 
           # set input values
@@ -209,6 +210,28 @@ module.exports =
             $item?append $sub-ol
             @build-nested-sortable $sub-ol, item.children
 
+    save: (ev) ~>
+      @is-dirty = false
+      @current-store!
+
+      # get entire menu
+      menu = @to-hierarchy! # extended to pull data attributes, too
+      form = @$.find \form
+      form.find '[name="active"], [name="menu"]' .remove! # prune old
+      form.append(@@$ \<input> # append new menu
+        .attr \type, \hidden
+        .attr \name, \menu
+        .val JSON.stringify menu)
+      submit-form ev, (data) ~> # save to server
+        data-form = @current.data \form
+        data-form.dbid = data.id
+        @$.find 'input[name=dbid]' .val data.id
+        @current
+          ..data \form, data-form
+          ..data \id,   data.id
+        show-tooltip $(\#warning), unless data.success then (data?errors?join \<br>) else \Saved!
+
+
     on-attach: !->
       #{{{ Event Delegates
       @$.on \keyup, title-selectors, (ev) ~>
@@ -242,6 +265,7 @@ module.exports =
         # TODO - create slug out of title
         @$.find \fieldset .add-class \has-dialog .find \input:visible:first .focus!
 
+      @$.on \change 'input, textarea' ~> @is-dirty = true
       @$.on \keyup, 'input.active', @store-title
       @$.on \keypress, 'form input', -> # disable form submit on enter press
         if (it.key-code or it.which) is 13
@@ -293,28 +317,14 @@ module.exports =
         false
 
       # save menu
-      @$.on \click 'button[type="submit"]' (ev) ~>
-        @current-store!
-
-        # get entire menu
-        menu = @to-hierarchy! # extended to pull data attributes, too
-        form = @$.find \form
-        form.find '[name="active"], [name="menu"]' .remove! # prune old
-        form.append(@@$ \<input> # append new menu
-          .attr \type, \hidden
-          .attr \name, \menu
-          .val JSON.stringify menu)
-        submit-form ev, (data) ~> # save to server
-          data-form = @current.data \form
-          data-form.dbid = data.id
-          @$.find 'input[name=dbid]' .val data.id
-          @current
-            ..data \form, data-form
-            ..data \id,   data.id
-          show-tooltip $(\#warning), unless data.success then (data?errors?join \<br>) else \Saved!
-
+      @$.on \click 'button[type="submit"]' _.debounce @save, 1000ms, true
       @$.on \change \form (ev) ~> @current-store! # save active title & form
-      @$.on \focus  \.row (ev) ~> @current = $ ev.target; @current-restore! # load active row
+      @$.on \focus  \.row (ev) ~>
+        if @is-dirty
+          if confirm 'Save latest changes?' then @current-store!; @$.find 'button[type="submit"]' .trigger \click
+        @is-dirty = false
+        @current = $ ev.target
+        @current-restore! # load active row
       @$.on \blur   \.row (ev) ~> show-tooltip ($ \#warning) # hide
       #}}}
 
