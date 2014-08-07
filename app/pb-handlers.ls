@@ -367,18 +367,27 @@ function background-for-forum m, active-forum-id
   unless page then return res.json 500, {-success, msg:['Unable to find page']} # guard
 
   # update offer.config.offer-photo
-  file-name = page.config.offer-photo?match(/offers\/(.+?)\?/)?1
+  file-name = page.config.offer-photo?match(/offers\/(.+?)\?/).1
 
   # wipe file from disk
   if file-name
     unless file-name.to-string!match /\.\./ # guard
-      err <- fs.unlink "public/sites/#{site.id}/offers/#{file-name.replace(/\?.*$/, '')}"
+      err <- fs.unlink "public/sites/#{site.id}/offers/#file-name"
       if err then return res.json 500, {-success, msg:err}
 
-      # update config
+      # update site.config.menu
+      m    = site.config.menu
+      item = menu.flatten m |> find -> it.form.dbid.to-string! is id
+      unless item then return res.json 500, {-success, msg:'Unable to find page menu'} # guard
+      delete item.form.offer-photo
+      path = menu.path-for-upsert m, item.id.to-string!
+      site.config.menu = menu.struct-upsert m, path, item
+      err, r <- db.site-update site # save!
+
+      # update page config
       cleanup-page-keys page
       delete page.config.offer-photo
-      err <- db.pages.upsert page # save
+      err <- db.pages.update-one page # save
       if err then return res.json 500, {-success, msg:err}
       res.json {+success}
       h.ban-all-domains site.id # blow cache since this affects html pages
