@@ -317,7 +317,7 @@ module.exports =
         false
 
       # save menu
-      @$.on \click 'button[type="submit"]' _.debounce @save, 1000ms, true
+      @$.on \click 'button[type="submit"]' (ev) ~> _.debounce (~> @save ev), 1000ms, true
       @$.on \change \form (ev) ~> @current-store! # save active title & form
       @$.on \focus  \.row (ev) ~>
         if @is-dirty
