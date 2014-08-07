@@ -80,11 +80,19 @@ clear-stale-redis-data = (r, cb) ->
       handshake.cookies = cookie.parse handshake.headers.cookie
       connect-cookie = handshake.cookies['connect.sess']
       unless connect-cookie then return accept("no connect session cookie", false) # guard
-      unsigned = connect.utils.parse-signed-cookie connect-cookie, cvars.secret
+      unsigned = try
+        connect.utils.parse-signed-cookie connect-cookie, cvars.secret
+      catch
+        console.error \connect.utils.parse-signed-cookie, e
+        false
 
       if unsigned
         original-hash = crc32.signed unsigned
-        session = connect.utils.parse-JSON-cookie(unsigned) || {}
+        session = try
+          connect.utils.parse-JSON-cookie(unsigned) || {}
+        catch
+          console.error \connect.utils.parse-JSON-cookie, e
+          {}
         #log \session, session
         handshake.session = session
         return accept(null, true)
