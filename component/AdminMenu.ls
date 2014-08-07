@@ -67,16 +67,16 @@ module.exports =
           v = $i?val!
           if n and n isnt \menu
             data[n] = switch $i.attr \type
-              | \radio # must always have a value
+              | \radio => # must always have a value
                 if $i.is \:checked then v else data[n] # current or use last
-              | \checkbox
+              | \checkbox =>
                 !!$i.is \:checked
               | \text \hidden # always value
                 v
-              | otherwise
+              | otherwise =>
                 if $i.is \textarea
                   v
-                if ($i.attr \type) is \file # uploader, so value is preview src
+                else if ($i.attr \type) is \file # uploader, so value is preview src
                   src = $i.parents(\.Uploader:first).find \img .attr \src
                   n = $i.attr \name
                   $ "input[type='hidden'][name='#n']" .val src
