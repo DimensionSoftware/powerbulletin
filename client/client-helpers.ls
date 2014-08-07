@@ -35,6 +35,7 @@ if window?
 
 @submit-form = (ev, fn) ~>
   $f = $ ev.target .closest \form # get event's form
+  $b = $ ev.current-target # submit button
   form-data = if $f?length
     $f.serialize!
   else # mock form (eg. PostDrawer's Editor is outside a <form>)
@@ -49,6 +50,8 @@ if window?
   # disable inputs
   $s = $ $f.find '[type=submit]:first'
   if $s then $s.attr \disabled \disabled
+  cleanup-re-fn = -> if window._re then clear-timeout window._re
+  re-fn         = -> $b.remove-attr \disabled; $s.remove-attr \disabled; cleanup-re-fn! # re-enable
   $.ajax { # submit!
     url:  $f.attr \action
     type: $f.attr \method
@@ -60,8 +63,10 @@ if window?
     error: (data) ~>
       @show-tooltip $($f.find \.tooltip), data?msg or 'Try again!'
     complete: ~>
-      $s.remove-attr \disabled # re-enable
+      re-fn! # re-enable
   }
+
+  window._re = set-timeout re-fn, 1500ms # force save button re-enable after lapse
   set-timeout (-> $f.find \input.title .focus!), 100ms # focus!
   false
 
