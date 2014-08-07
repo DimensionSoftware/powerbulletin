@@ -64,18 +64,6 @@ box-shadow(arg1, arg2, arg3)
   animation-duration .2s
   animation-timing-function ease-in
 
-@keyframes shake
-  0%
-    transform translateX(-50px), skew(1deg, 3deg)
-  40%
-    transform translateX(25px), skew(-4deg, -6deg)
-  65%
-    transform translateX(-10px), skew(0, 3deg)
-  85%
-    transform translateX(5px), skew(0, 0)
-  100%
-    transform translateX(0)
-
 @keyframes post-animate-in
   0%
     transform translateX(-4px), skew(1deg, 1deg)
@@ -89,6 +77,22 @@ box-shadow(arg1, arg2, arg3)
     opacity 0
   100%
     opacity 1
+
+@keyframes shake
+  0%
+    transform none
+
+  5%
+    transform translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -8deg)
+
+  45%
+    transform translate3d(10%, 0, 0) rotate3d(0, 0, 1, 3deg)
+
+  75%
+    transform translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -3deg)
+
+  100%
+    transform none
 
 @keyframes popin
   0%

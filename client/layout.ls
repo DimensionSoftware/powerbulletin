@@ -162,7 +162,7 @@ $d.on \mousedown \.onclick-scroll-top ->
 #}}}
 #{{{ Login & Authentication
 window.shake-dialog = ($form, time) ->
-  $fancybox = $form.parents(\.fancybox-wrap:first) .remove-class \shake
+  $fancybox = $form.parents(\.fancybox-wrap:first) .remove-class 'shake popin'
   set-timeout (-> $fancybox.add-class(\shake)), 100ms
   set-timeout (-> $fancybox.remove-class('shake popin')), 1500ms # cleanup (for other animations)
 
