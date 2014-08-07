@@ -112,6 +112,7 @@ module.exports =
       @@$ \#action_wrapper .toggle-class \reply, false
       @@$ \#action_wrapper .toggle-class \edit,  false
     edit-mode: (id) ~>
+      if @is-creating-thread! then History.replace-state {}, '', ($ '.threads .active a' .attr \href)
       $f = @@$ \.form:first # setup mock form for:
       if id # edit mode
         $ \.save .html \Edit
