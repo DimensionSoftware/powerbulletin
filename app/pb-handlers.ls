@@ -76,7 +76,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
   doc.menu-summary    = site.config.menu
     |> map (item) -> # only top-level items
       decorate-menu-item {[k,v] for k,v of item when k isnt \children}, doc.summary
-  doc.title           = title-case (res.vars.site?name or '')
+  doc.title           = title-case (res.vars.site?name or 'Power Bulletin Forum Communities in Real Time by Dimension Software')
   doc.description     = ''
   doc.active-forum-id = \homepage
 
@@ -801,7 +801,9 @@ function profile-paths user, uploaded-file, base=\avatar
     if req.surfing then delete-unnecessary-surf-data res
     fdoc ||= {}
     fdoc.menu = site.config.menu
-    item = fdoc.menu |> find -> it.form.dialog is \page and it.form.dbid is page.id
+    item = fdoc.menu |> find -> console.log it.form.dialog; it.form.dialog in <[page offer]> and it.form.dbid is page.id
+    fdoc.site-name       = site.name
+    fdoc.title           = title-case (page.title or 'Power Bulletin Forum Communities in Real Time by Dimension Software')
     fdoc.page            = page
     fdoc.active-forum-id = page.id
     fdoc.content-only    = item?form?content-only is \checked

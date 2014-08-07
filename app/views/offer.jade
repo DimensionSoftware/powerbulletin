@@ -1,10 +1,14 @@
 
 prefix = (config.offerPhoto && config.offerPhoto.indexOf(cacheUrl) !== -1) ? '' : cacheUrl + '/sites/'
 
-.container.offer
+.container.offer(itemscope='true', itemtype='http://data-vocabulary.org/Offer')
   a(href=config.affiliateLink, target='_new')
-    h2= title
-    h3= config.offerDescription
+    h2(itemprop='name')= title
+    h3(itemprop='description')= config.offerDescription
     if config.offerPhoto && !config.offerPhoto.match(/transparent-1px\.gif/)
-      img(src="#{prefix}#{config.offerPhoto}", alt=config.offerDescription, title=title)
-    article!= config.offerContent
+      img(itemprop='image', src="#{prefix}#{config.offerPhoto}", alt=config.offerDescription, title=title)
+    article(itemprop='offerDetails')!= config.offerContent
+    .brand.hdn(itemprop='brand')= siteName
+    .price.hdn(itemprop='price') 0
+    .currency.hdn(itemprop='currency') USD
+  a.button(itemprop='offerURL', href=config.affiliateLink, target='_new') Go Now!
