@@ -207,7 +207,10 @@ module.exports =
             $fancybox.add-class \on-error
             show-tooltip $form.find(\.tooltip), 'Try Again!' # display error
             shake-dialog $form, 100ms
-            u.focus!
+            # clear both email & pass fields so user can see placeholders
+            # (they might've tried their username instead of email, for example)
+            p.val ''
+            u.val '' .focus!
       false
 
     # After a login, different webapps may want to do differnt things.
