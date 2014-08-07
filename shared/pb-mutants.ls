@@ -891,6 +891,7 @@ mk-post-pnum-to-href = (post-uri) ->
     (window, next) ->
       if @page.config.dialog is \offer # render jade offer template
         @page.cache-url = @cache-url
+        @page.site-name = @site-name
         window.replace-html window.$(\#main_content), (templates.offer @page)
       else
         window.replace-html window.$(\#left_container), ''

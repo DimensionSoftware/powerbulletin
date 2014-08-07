@@ -1389,10 +1389,12 @@ html.page
           color #333
           margin 0
         h2
-          color #111
-        h3
           color dark_text
+        h3
+          color #222
           margin-left 2px
+          font-size 1.4em
+          letter-spacing -1px
         h2, h3
           text-transform capitalize
         article
@@ -1402,7 +1404,17 @@ html.page
           margin 25px 0
         p
           margin 24px 2px
+        .button
+          font-style italic
+          font-weight bold
+          font-size 1.05em
+          padding 10px 19px
+          color colored_text
+          margin-top 12px
+          width 125px
+          display block
         a
+          display block
           &:hover
             text-decoration none
       .grid50
@@ -1428,7 +1440,7 @@ html.page
       header
         transform translateY(-100px)
         opacity 0
-        transition all .3s ease-in
+        transition all .3s ease-out .2s
       .opener
         cursor pointer
         height 50px
