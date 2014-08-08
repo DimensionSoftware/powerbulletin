@@ -213,7 +213,6 @@ module.exports =
     save: (ev) ~>
       @is-dirty = false
       @current-store!
-
       # get entire menu
       menu = @to-hierarchy! # extended to pull data attributes, too
       form = @$.find \form
@@ -265,7 +264,7 @@ module.exports =
         # TODO - create slug out of title
         @$.find \fieldset .add-class \has-dialog .find \input:visible:first .focus!
 
-      @$.on \change 'input, textarea' ~> @is-dirty = true
+      @$.on \change, 'input, textarea', (ev) ~> @is-dirty = true
       @$.on \keyup, 'input.active', @store-title
       @$.on \keypress, 'form input', -> # disable form submit on enter press
         if (it.key-code or it.which) is 13
@@ -317,7 +316,7 @@ module.exports =
         false
 
       # save menu
-      @$.on \click 'button[type="submit"]' (ev) ~> _.debounce (~> @save ev), 1000ms, true
+      @$.on \click, 'button[type="submit"]', (ev) ~> @save(ev)
       @$.on \change \form (ev) ~> @current-store! # save active title & form
       @$.on \focus  \.row (ev) ~>
         if @is-dirty
