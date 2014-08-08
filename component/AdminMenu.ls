@@ -117,12 +117,16 @@ module.exports =
               name:      \offerPhoto
               preview:   if form.offer-photo then form.offer-photo.replace /^.+sites\//, '' else void # remove prefix for html5uploader
               post-url:  "/resources/sites/#site-id/offer-photo/#{form.dbid}"
+              on-client-load-start: ~>
+                @current-store! # XXX incase menu hasn't been saved yet, let's do so and take the upload
               on-delete: ~>
                 @current-store!
-                @save!
+                @is-dirty = false
+                @$.find 'button[type="submit"]:visible' .trigger \click # save menu
               on-success: (xhr, file, r) ~>
                 @current-store!
-                @save!
+                @is-dirty = false
+                @$.find 'button[type="submit"]:visible' .trigger \click # save menu
           }, \#offer_photo_uploader
 
           # set input values
@@ -223,7 +227,7 @@ module.exports =
         .val JSON.stringify menu)
       submit-form ev, (data) ~> # save to server
         data-form = @current.data \form
-        data-form.dbid = data.id
+        if data.id then data-form.dbid = data.id # incase dbid is null, don't delete
         @$.find 'input[name=dbid]' .val data.id
         @current
           ..data \form, data-form
