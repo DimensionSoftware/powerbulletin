@@ -1376,14 +1376,39 @@ html.forum
 html.page
   body
     .main-content
-      padding grid grid (grid*8) grid
-      margin 125px 75px 75px 75px
+      background-image linear-gradient(to bottom, rgba(255,255,255,0) 50px, theme_alpha 95%, rgba(255,255,255,0) 100%)
+      padding grid grid (grid*3) grid
+      margin 125px 75px 75px 0
       opacity 0
+      .button
+        text-decoration none
+        font-style italic
+        font-weight bold
+        font-size 1.2em
+        padding 13px 30px
+        color colored_text
+        margin-top 12px
+        display inline-block
+        &:hover
+          box-shadow 0 0 5px #bbb,0 1px 10px 2px theme_color
+          transform scale(1.05)
+          transition none
       .hdn
          display inline-block
          text-indent -9000px
       .offer
-        margin 50px auto 0 auto
+        text-align center
+        &:hover
+          img
+            transform scale(1.05)
+            transition all .07s ease-in
+          .button
+            animation-name tada
+            animation-duration .2s
+        .button
+          width 300px
+          margin auto
+        margin 20px auto 0 auto
         max-width 50%
         h2, h3, article
           color #333
@@ -1394,25 +1419,22 @@ html.page
           color #222
           margin-left 2px
           font-size 1.4em
-          letter-spacing -1px
         h2, h3
           text-transform capitalize
+          text-align center
+          margin 0
         article
           color #555
           margin-left 2px
         img
+          position relative
+          z-index 10
+          border 8px dashed theme_color
           margin 25px 0
+          transform scale(1)
+          transition all .3s ease-in
         p
           margin 24px 2px
-        .button
-          font-style italic
-          font-weight bold
-          font-size 1.05em
-          padding 10px 19px
-          color colored_text
-          margin-top 12px
-          width 125px
-          display block
         a
           display block
           &:hover
@@ -1421,7 +1443,6 @@ html.page
         float left
         width 50%
       h2
-        max-width 700px
         font-size 2.3em
         line-height 1.2em
         margin-top 0
@@ -1429,8 +1450,9 @@ html.page
         font-weight 200
         color dark_text
       h3
-        color #666
-        margin-top 0
+        color #444
+        margin-top -12px
+        letter-spacing 2px
         margin-bottom 12px
         font-size 1.6em
         line-height 1.5em
@@ -1438,11 +1460,12 @@ html.page
     &.loaded
       .main-content
         opacity 1
-        transition opacity .5s ease-out
+        animation-name zoomInDown
+        animation-duration .4s
+        //transition opacity .5s ease-out
     &.minimized
       header
-        transform translateY(-100px)
-        opacity 0
+        transform translateY(-99px)
         transition all .3s ease-out .2s
       .opener
         cursor pointer
@@ -1468,8 +1491,8 @@ html.page
           left 26px
           border 10px solid transparent
           border-top 13px solid dark_theme_color
-      .main-content
-        margin 65px
+      .offer
+        margin-top -30px
     footer
       left 0!important
 html.forum.new

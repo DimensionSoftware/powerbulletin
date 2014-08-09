@@ -188,3 +188,29 @@ box-shadow(arg1, arg2, arg3)
   100%
     transform matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
 
+@keyframes tada
+  0% 
+    transform scale3d(1, 1, 1)
+
+  10%, 20%
+    transform scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg)
+
+  30%, 50%, 70%, 90%
+    transform scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 0)
+
+  40%, 60%, 80%
+    transform scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -2deg)
+
+  100%
+    transform scale3d(1, 1, 1)
+
+@keyframes zoomInDown
+  0% 
+    opacity 0
+    transform scale3d(.1, .1, .1) translate3d(0, -1000px, 0)
+    animation-timing-function cubic-bezier(0.550, 0.055, 0.675, 0.190)
+
+  60% 
+    opacity 1
+    transform scale3d(.475, .475, .475) translate3d(0, 60px, 0)
+    animation-timing-function cubic-bezier(0.175, 0.885, 0.320, 1)
