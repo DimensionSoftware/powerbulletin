@@ -909,33 +909,34 @@ mk-post-pnum-to-href = (post-uri) ->
       $ \body .add-class \loaded
       #{{{ refresh share links
       if window.social
-        # load share links for fb, google & twitter
-        # https://developers.facebook.com/docs/plugins/share-button/
-        ``
-        (function(d, s, id) {
-          var js, fjs = d.getElementsByTagName(s)[0];
-          if (d.getElementById(id)) return;
-          js = d.createElement(s); js.id = id;
-          js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=240716139417739";
-          fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-        ``
-        # https://about.twitter.com/resources/buttons#tweet
-        ``
-        (function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}})(document, 'script', 'twitter-wjs');
-        ``
-        # https://developers.google.com/+/web/share/
-        ``
-        (function() {
-          var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-          po.src = 'https://apis.google.com/js/platform.js';
-          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-        })();
-        ``
-        # for mutations
-        #try gapi.plusone.go!
-        try FB.XFBML.parse!
-        try twttr.widgets.load!
+        set-timeout (->
+          # load share links for fb, google & twitter
+          # https://developers.facebook.com/docs/plugins/share-button/
+          ``
+          (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=240716139417739";
+            fjs.parentNode.insertBefore(js, fjs);
+          }(document, 'script', 'facebook-jssdk'));
+          ``
+          # https://about.twitter.com/resources/buttons#tweet
+          ``
+          (function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}})(document, 'script', 'twitter-wjs');
+          ``
+          # https://developers.google.com/+/web/share/
+          ``
+          (function() {
+            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+            po.src = 'https://apis.google.com/js/platform.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+          })();
+          ``
+          # for mutations
+          #try gapi.plusone.go!
+          try FB.XFBML.parse!
+          try twttr.widgets.load!), 1000ms # yield
       #}}}
       next!
   on-unload:

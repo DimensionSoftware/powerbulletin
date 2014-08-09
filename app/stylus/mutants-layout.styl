@@ -1422,12 +1422,16 @@ html.page
       .offer
         text-align center
         &:hover
+          h2
+            text-shadow 0 0 1px theme_color
+            color #000
           img
             transform scale(1.05)
-            transition all .07s ease-in
+            box-shadow 0 0 15px 2px theme_color
+            transition all .05s ease-in
           .button
             animation-name tada
-            animation-duration .2s
+            animation-duration .3s
         .button
           width 300px
           margin auto
@@ -1453,9 +1457,10 @@ html.page
           position relative
           z-index 10
           border 8px dashed theme_color
+          box-shadow 0 0 2px theme_color
           margin 25px 0
           transform scale(1)
-          transition all .3s ease-in
+          transition all .25s ease-in
         p
           margin 24px 2px
         a
