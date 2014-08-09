@@ -801,7 +801,7 @@ function profile-paths user, uploaded-file, base=\avatar
     if req.surfing then delete-unnecessary-surf-data res
     fdoc ||= {}
     fdoc.menu = site.config.menu
-    item = fdoc.menu |> find -> console.log it.form.dialog; it.form.dialog in <[page offer]> and it.form.dbid is page.id
+    item = fdoc.menu |> find -> it.form.dialog in <[page offer]> and it.form.dbid is page.id
     fdoc.site-name       = site.name
     fdoc.title           = title-case (page.title or 'Power Bulletin Forum Communities in Real Time by Dimension Software')
     fdoc.page            = page
