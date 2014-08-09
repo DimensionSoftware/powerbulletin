@@ -79,7 +79,7 @@ clear-stale-redis-data = (r, cb) ->
     if handshake.headers.cookie
       handshake.cookies = cookie.parse handshake.headers.cookie
       connect-cookie = handshake.cookies['connect.sess']
-      unless connect-cookie then return accept("no connect session cookie", false) # guard
+      unless connect-cookie then return accept(null, true)
       unsigned = try
         connect.utils.parse-signed-cookie connect-cookie, cvars.secret
       catch
