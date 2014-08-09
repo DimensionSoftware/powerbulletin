@@ -1,7 +1,16 @@
 
 prefix = (config.offerPhoto && config.offerPhoto.indexOf(cacheUrl) !== -1) ? '' : cacheUrl + '/sites/'
 
+mixin social
+  if typeof(social) !== 'undefined' && social
+    .social
+      .fb-share-button(data-type='button_count')
+      a.twitter-share-button(href='https://twitter.com/share')
+      .g-plus(data-action='share')
+
 .container.offer(itemscope='true', itemtype='http://data-vocabulary.org/Offer')
+  .right
+    +social
   a(href=config.affiliateLink, target='_new')
     h2(itemprop='name')= title
     h3(itemprop='description')= config.offerDescription
@@ -12,3 +21,5 @@ prefix = (config.offerPhoto && config.offerPhoto.indexOf(cacheUrl) !== -1) ? '' 
     .price.hdn(itemprop='price') 0
     .currency.hdn(itemprop='currency') USD
   a.button(itemprop='offerURL', href=config.affiliateLink, target='_new') Go Now!
+  .center
+    +social
