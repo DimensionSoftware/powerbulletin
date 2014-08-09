@@ -103,6 +103,9 @@ window.onload-resizable = ->
       $l.resizable \destroy
 #}}}
 #{{{ Scrolling behaviors
+$ window .on \scroll -> # expand header when scrolled to top
+  if $ window .scroll-top! is 0 then $ \body .remove-class \minimized
+
 window.scroll-to-top = (cb) ->
   return if ($ window).scroll-top! is 0 # guard
   $e = $ 'html,body'
