@@ -185,7 +185,7 @@ require! {
       site_id     : null
       path        : form.offer-slug
       title       : title
-      config      : { dialog: \offer, offer-title: form.offer-title, offer-slug: form.offer-slug, offer-description: form.offer-description, offer-content: form.offer-content, offer-content-only: form.offer-content-only, offer-photo: form.offer-photo, affiliate-link: form.affiliate-link, video-top: form.video-top, video-bottom: form.video-bottom, hashtags: form.hashtags }
+      config      : { dialog: \offer, offer-title: form.offer-title, offer-slug: form.offer-slug, offer-description: form.offer-description, offer-content: form.offer-content, offer-content-only: form.offer-content-only, offer-photo: form.offer-photo, affiliate-link: form.affiliate-link, video-top: form.video-top, video-top2: form.video-top2, video-bottom: form.video-bottom, hashtags: form.hashtags }
   | otherwise =>
     type = null
     data = {}

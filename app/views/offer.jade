@@ -9,7 +9,7 @@ mixin social
       .g-plus(data-action='share')
 
 .container.offer(itemscope='true', itemtype='http://data-vocabulary.org/Offer')
-  .right
+  .social-right
     +social
   a(href=config.affiliateLink, target='_new')
     h2(itemprop='name')= title
@@ -20,6 +20,14 @@ mixin social
     .brand.hdn(itemprop='brand')= siteName
     .price.hdn(itemprop='price') 0
     .currency.hdn(itemprop='currency') USD
+    .side-by-side
+      if config.videoTop
+        iframe.video(width='560', height='315', src=config.videoTop, frameborder='0', allowfullscreen='true')
+      if config.videoTop2
+        iframe.video(width='560', height='315', src=config.videoTop2, frameborder='0', allowfullscreen='true')
+    if config.videoBottom
+      iframe.big.video(width='853', height='480', src=config.videoBottom, frameborder='0', allowfullscreen='true')
+
   a.button(itemprop='offerURL', href=config.affiliateLink, target='_new') Go Now!
-  .center
+  .social-center
     +social
