@@ -103,8 +103,9 @@ window.onload-resizable = ->
       $l.resizable \destroy
 #}}}
 #{{{ Scrolling behaviors
-$ window .on \scroll -> # expand header when scrolled to top
-  if $ window .scroll-top! is 0 then $ \body .remove-class \minimized
+set-timeout (->
+  $ window .on \scroll -> # expand header when scrolled to top
+    if $ window .scroll-top! is 0 then $ \body .remove-class \minimized), 2000ms
 
 window.scroll-to-top = (cb) ->
   return if ($ window).scroll-top! is 0 # guard
