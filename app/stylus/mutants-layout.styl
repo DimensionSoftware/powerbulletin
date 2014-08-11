@@ -1431,14 +1431,15 @@ html.page
           h2
             text-shadow 0 0 1px theme_color
             color #000
-            transform scale(1.02)
+            transform scale(1.01)
             transition none
           img
             //animation-name popin
             //animation-duration .9s
             //animation-delay .01s
-            transition all .05s ease-out
-            outline-color rgba(theme_color, .4)
+            transform scale(1.01)
+            transition none
+            outline-color rgba(theme_color, .3)
           article
             color #222
           table
@@ -1462,13 +1463,13 @@ html.page
           z-index 1
           margin 20px 0
           transform scale(1)
-          transition all .3s ease-in
+          //transition all .3s ease-in
           box-shadow 0 0 0 2px theme_color
           &.big
             margin-left -12px
           &:hover
             z-index 2
-            transform scale(1.02)
+            transform scale(1.01)
             transition none
             box-shadow 0 0 4px 2px theme_color
         h2, h3, article

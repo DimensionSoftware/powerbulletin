@@ -26,14 +26,12 @@ mixin social(currentUrl)
 .newsletter(style="display:none;")
   form(method="post", action="/auth/register")
     label(for="username")
-      h2 Newsletter
+      h2 Get Our Newsletter
     fieldset
       .tooltip
       input(name="email", class="register-email", type="text", placeholder="Email", maxlength=254)
       button(type="submit", value="Go") Go
         i !
-      a.msg.onclick-show-login
-        h3 I already have an account
   unless inviteOnly
     mixin social(currentUrl)
 .choose(style="display:none;")

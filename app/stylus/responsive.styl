@@ -17,6 +17,9 @@
     .main-content
       .forum, .search
         padding-left (grid*4)!important
+  body.scrolled
+    .logo
+      display none
   body
     grid(100%,475px)
     #left_chrome
@@ -28,14 +31,17 @@
       width 300px
       #query
         width 300px
-  
+    #main_content
+      .offer
+        max-width 100%!important
+
 @media screen and (max-width: 500px)
   header
     font-size 0.8em
     display none
   body
     grid(100%,320px)
-    .main-content
+    #main-content
       margin-left 0!important
       padding 25px 15px!important
       .forum, .search
