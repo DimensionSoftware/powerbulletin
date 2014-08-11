@@ -35,6 +35,14 @@ module.exports =
         e.find \.strength .css(height:parse-int(percent)+\%))
       cb window._auth.$
 
+    @show-newsletter-dialog = (remove-class='') ->
+      <- Auth.show-login-dialog
+      switch-and-focus remove-class, \on-newsletter, '.newsletter input:first'
+      show-tooltip $('#auth .newsletter .tooltip'), 'Get all the latest!'
+      $ '#auth .newsletter #email'
+        ..focus!
+        ..select!
+
     @show-choose-dialog = (remove-class='') ->
       <- Auth.show-login-dialog
       switch-and-focus remove-class, \on-choose, '.choose input:first'
@@ -146,7 +154,7 @@ module.exports =
           $.fancybox.close!
       @$.on \click \.onclick-show-login ->
         @@hide-info!
-        switch-and-focus 'on-forgot on-register on-reset' \on-login '#auth input[name=login-email]'
+        switch-and-focus 'on-newsletter on-forgot on-register on-reset' \on-login '#auth input[name=login-email]'
       @$.on \click \.onclick-show-forgot ->
         @@hide-info!
         switch-and-focus \on-error \on-forgot '#auth input[name=email]'

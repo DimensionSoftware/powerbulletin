@@ -23,6 +23,19 @@ mixin social(currentUrl)
       button(type="submit", value="Save", disabled="disabled") Save
       a.msg.onclick-show-login
         h3 Back
+.newsletter(style="display:none;")
+  form(method="post", action="/auth/register")
+    label(for="username")
+      h2 Newsletter
+    fieldset
+      .tooltip
+      input(name="email", class="register-email", type="text", placeholder="Email", maxlength=254)
+      button(type="submit", value="Go") Go
+        i !
+      a.msg.onclick-show-login
+        h3 I already have an account
+  unless inviteOnly
+    mixin social(currentUrl)
 .choose(style="display:none;")
   form(method="post", action="/auth/choose-username")
     label(for="username")
