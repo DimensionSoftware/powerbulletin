@@ -16,15 +16,16 @@ mixin social
     h3(itemprop='description')= config.offerDescription
     if config.offerPhoto && !config.offerPhoto.match(/transparent-1px\.gif/)
       img(itemprop='image', src="#{prefix}#{config.offerPhoto}", alt=config.offerDescription, title=title)
+    if config.videoTop || config.videoTop2
+      .side-by-side
+        if config.videoTop
+          iframe.video(width='560', height='315', src=config.videoTop, frameborder='0', allowfullscreen='true')
+        if config.videoTop2
+          iframe.video(width='560', height='315', src=config.videoTop2, frameborder='0', allowfullscreen='true')
     article(itemprop='offerDetails')!= config.offerContent
     .brand.hdn(itemprop='brand')= siteName
     .price.hdn(itemprop='price') 0
     .currency.hdn(itemprop='currency') USD
-    .side-by-side
-      if config.videoTop
-        iframe.video(width='560', height='315', src=config.videoTop, frameborder='0', allowfullscreen='true')
-      if config.videoTop2
-        iframe.video(width='560', height='315', src=config.videoTop2, frameborder='0', allowfullscreen='true')
     if config.videoBottom
       iframe.big.video(width='853', height='480', src=config.videoBottom, frameborder='0', allowfullscreen='true')
 

@@ -12,9 +12,6 @@
       .post-count, .views, .profile, .username
         display none!important
 @media screen and (max-width: 800px)
-  .logo
-    font-size 1.1em!important
-    margin-top 4px!important
   body.collapsed
     grid(100%,475px)
     .main-content
@@ -24,6 +21,13 @@
     grid(100%,475px)
     #left_chrome
       display none!important
+    .logo
+      display none
+    .search
+      left 15px!important
+      width 300px
+      #query
+        width 300px
   
 @media screen and (max-width: 500px)
   header

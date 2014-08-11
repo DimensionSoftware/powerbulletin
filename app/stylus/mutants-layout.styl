@@ -1381,8 +1381,8 @@ html.page
       margin 125px 75px 75px 0
       opacity 0
       .social-right > .social
-        top 34px
-        right 65px
+        top -5px
+        right 60px
       .social-center > .social
         position relative
         margin 30px auto
@@ -1431,10 +1431,19 @@ html.page
           h2
             text-shadow 0 0 1px theme_color
             color #000
+            transform scale(1.02)
+            transition none
           img
-            transform scale(1.05)
-            box-shadow 0 0 10px 1px theme_color
-            transition all .03s ease-in
+            //animation-name popin
+            //animation-duration .9s
+            //animation-delay .01s
+            transition all .05s ease-out
+            outline-color rgba(theme_color, .4)
+          article
+            color #222
+          table
+            color #222
+            border 2px dashed rgba(theme_color, .2)!important
           .button
             animation-name tada
             animation-duration .2s
@@ -1443,6 +1452,7 @@ html.page
           margin auto
         .side-by-side
           width 100%
+          height 385px
           clear both
           .video
             float left
@@ -1460,16 +1470,18 @@ html.page
             z-index 2
             transform scale(1.02)
             transition none
-            box-shadow 0 0 5px 2px theme_color
+            box-shadow 0 0 4px 2px theme_color
         h2, h3, article
           color #333
           margin 0
         h2
           color dark_text
+          transition all .3s ease-in
         h3
           color #222
           margin-left 2px
           font-size 1.4em
+          transition all .3s ease-in
         h2, h3
           text-transform capitalize
           text-align center
@@ -1479,6 +1491,10 @@ html.page
           margin-left 2px
           margin 15px 0
           text-align left
+          transition all .3s ease-in
+          table
+            border 2px dashed rgba(theme_color, .1)!important
+            width 100%
           p
             text-align justify
           &:first-letter
@@ -1486,15 +1502,18 @@ html.page
             padding-top 4px
             padding-right 2px
             font-size 1.6em
+            color dark_text
         img
           position relative
           z-index 10
-          outline 7px dashed theme_color
-          border 3px solid #fff
+          padding 5px
+          background theme_color
+          border-radius 3px
+          outline 7px dashed rgba(theme_color,.1)
+          border 15px solid #fff
           box-shadow 0 0 1px theme_color
           margin 25px 0
-          transform scale(1)
-          transition all .25s ease-in
+          transition all .3s ease-out
         p
           margin 24px 2px
         a
@@ -1529,6 +1548,8 @@ html.page
       header
         transform translateY(-99px)
         transition all .3s ease-out .2s
+      .social-right > .social
+        top -100px
       .opener
         cursor pointer
         height 50px
@@ -1540,7 +1561,7 @@ html.page
           top -27px
           transition top .1s ease-in
           border-color theme_color
-          background radial-gradient(circle closest-corner at 50% 50%, rgba(theme_color,.2) 50%, rgba(250,250,250,.15) 100%)
+          background radial-gradient(circle closest-corner at 50% 50%, rgba(theme_color,.2) 50%, rgb(250,250,250) 100%)
           &:after
             border-top 15px solid theme_color
         // downward-facing arrow
