@@ -195,7 +195,7 @@ module.exports =
           #{err.stack}
           """
           responder res
-          graceful-shutdown!
+          #graceful-shutdown!
 
       # routes
       #
