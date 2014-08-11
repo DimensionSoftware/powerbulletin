@@ -311,7 +311,7 @@ do-verify = (req, res, next) ~>
   if err then return next(err)
   if passport
     req.session.origin = req.query.origin
-    passport.authenticate('facebook')(req, res, next)
+    passport.authenticate('facebook', { scope: [\email] })(req, res, next)
   else
     console.warn "no passport for #{domain}"
     res.send 500, \500
