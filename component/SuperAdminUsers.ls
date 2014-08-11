@@ -32,6 +32,9 @@ module.exports =
       @children = {table: new Table {locals, pnum-to-href} \.SuperAdminUsers-table @}
     on-attach: ->
       dollarish = @@$
+      @$.on \click \.onclick-export-email ->
+        console.log \here
+
 #      @$.on \click 'a[data-edit-user]' ->
 #        user = dollarish @ .data \edit-user
 #
