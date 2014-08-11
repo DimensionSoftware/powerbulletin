@@ -96,7 +96,7 @@ html
               li.onclick-messages
                 a(href='#messages') Chats
               li.onclick-logout
-                a(href='/auth/logout') Logout
+                a(href='/auth/logout', onclick='window.onbeforeunload="";') Logout
 
     .question.s-help(title='Help')
     section#left_content.left-content
