@@ -26,15 +26,19 @@ box-shadow(arg1, arg2, arg3)
 @keyframes rotate-in
   0%
     opacity 0
-    transform rotate(-100deg) scale(3.8)
+    transform rotate(-100deg) scale(5.8)
   80%
     opacity 1
+  85%
+    transform scale(.8)
+  95%
+    transform scale(1.1)
   100%
     transform rotate(0deg) scale(1)
 
 @keyframes build-in
   0%
-    transform translate(0, 0), scale(.9)
+    transform translate(0, 0), scale(.8)
     opacity 0
   100%
     transform translate(-30px, -30px), scale(1)
@@ -65,9 +69,9 @@ body
     .container
       // initially hide everything
       position fixed
-      top 290px
+      top 270px
       left 50%
-      margin 0 -190px
+      margin 0 -227px
       height 100px
       z-index 5
     &.loaded
@@ -85,7 +89,6 @@ body
         font-weight 400
         letter-spacing -1px
         line-height 53px
-        transform scale(.5)
         animation build-in .4s ease-in 1 forwards
         &:after
           position absolute
@@ -118,7 +121,7 @@ body
         position absolute
         transition all .2s
         animation r0 1s ease-out .5s infinite
-        animation-delay .8s
+        animation-delay .75s
       .note
         position absolute
         background radial-gradient(circle closest-corner at 50% 50%, rgba(0,0,0,.55) 0%, rgba(0,0,0,.01) 100%)
@@ -154,6 +157,7 @@ body
         max-height 100%
       .container
         top 100px
+        transform scale(.9)
       .logo
         a
           font-size .81em
@@ -161,6 +165,5 @@ body
           margin-left -10px
       .note
         font-size 1em
-        top 205px
-        left 168px
+        top 240px
         font-size 1.3em

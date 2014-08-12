@@ -43,19 +43,20 @@ html
     script(type='text/javascript').
       $('.bg').on('load', // establishing shot loaded--so, build-in the scene!
         $(function() {
-            $('#scene').addClass('loaded')
-              .parallax({
-                calibrateX: false,
-                calibrateY: true,
-                invertX: false,
-                invertY: true,
-                limitX: false,
-                limitY: 15,
-                scalarX: 3,
-                scalarY: 11,
-                frictionX: 0.2,
-                frictionY: 0.8 })
-              .parallax('enable');
+          $('#scene')
+            .addClass('loaded')
+            .parallax({
+              calibrateX: false,
+              calibrateY: true,
+              invertX: false,
+              invertY: true,
+              limitX: false,
+              limitY: 15,
+              scalarX: 3,
+              scalarY: 11,
+              frictionX: 0.2,
+              frictionY: 0.8 })
+            .parallax('enable');
         })
       );
       if (typeof console != 'undefined' && console !== null) { // greet
