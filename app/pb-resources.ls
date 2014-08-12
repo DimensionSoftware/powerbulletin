@@ -9,9 +9,11 @@ require! {
   rights: \./rights
   format: \../shared/format
   notifications: \./notifications
+  fast-csv: \fast-csv
   async
   fs
   mkdirp
+  stream
   stylus
   validator
 }
@@ -232,6 +234,27 @@ is-commentable-forum = (m, forum-id) ->
       res.json success:true
 
 @users =
+  index  : (req, res, next) ->
+    user = req.user
+    site = res.vars.site
+    unless user?rights?super or user?sys_rights?super
+      return res.send 404, 404
+    err, users <- db.users.select {}
+    if err
+      return res.json { success: false, message: err?message or err }
+    switch req.query.format
+    | \csv =>
+      res.header \Content-Disposition, "attachment; filename=#{site.name}-users.csv"
+      res.header \Content-Type, 'text/csv'
+      fast-csv.write-to-stream res, (users |> map (-> u = {} <<< it; u['rights.super'] = it.rights?super; delete u.rights; u))
+    | \csv-email =>
+      emails = users |> map (-> { email: it.email }) |> filter (.email)
+      res.header \Content-Disposition, "attachment; filename=#{site.name}-users-emails.csv"
+      res.header \Content-Type, 'text/csv'
+      fast-csv.write-to-stream res, emails
+    | otherwise =>
+      res.json users
+
   create : (req, res, next) ->
     user   = req.user
     site   = res.vars.site
