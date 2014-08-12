@@ -113,8 +113,12 @@ announce = sioa.create-client!
 
   if res.locals.invite-only then next 404; return # registration disabled
 
+  if req.body.newsletter # email becomes username, and we'll generate a secure password for newsletter users
+    req.body.username = req.body.email
+    req.body.password = gen-password!
+
   # TODO more validation
-  req.assert \username .not-empty!is-alphanumeric!  # .len(min, max) .regex(/pattern/)
+  req.assert \username .not-empty!is-email!regex /[\w\d@\-]+/  # .len(min, max) .regex(/pattern/)
   req.assert \password .not-empty!  # .len(min, max) .regex(/pattern/)
   req.assert \email .is-email!
 
@@ -123,7 +127,7 @@ announce = sioa.create-client!
     return res.json success:false, errors:[err]
   if user
     console.log \email-exists, err, user, req.body.email, site.id
-    return res.json success:false, errors:["This email address has already been registered."]
+    return res.json success:false, errors:["Email has already been registered; use forgot link!"]
 
   err, alias <~ db.aliases.select-one site_id: site.id, name: req.body.username
   if err

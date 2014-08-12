@@ -30,6 +30,7 @@ mixin social(currentUrl)
     fieldset
       .tooltip
       input(name="email", class="register-email", type="text", placeholder="Email", maxlength=254)
+      input(name="newsletter", type="hidden", value=true)
       button(type="submit", value="Go") Go
         i !
   unless inviteOnly
