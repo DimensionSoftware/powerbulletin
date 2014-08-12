@@ -898,6 +898,7 @@ mk-post-pnum-to-href = (post-uri) ->
       else
         window.replace-html window.$(\#left_container), ''
         window.replace-html window.$(\#main_content), @page.config.main_content
+      window.marshal \dialog, @page.config.dialog
       window.marshal \activeForumId, @active-forum-id
       window.marshal \offerContentOnly, @page.config.offer-content-only
       remove-backgrounds window
@@ -908,11 +909,12 @@ mk-post-pnum-to-href = (post-uri) ->
       $ document .scroll-top 0
       $ \body .toggle-class \minimized, !!(window.content-only or window.offer-content-only)
       $ \body .add-class \loaded
-      window.onbeforeunload = (ev) -> # confirm close
-        ev = ev or window.event # ie & ff
-        const msg = 'You\'ll be missing out on all the latest!'
-        if ev then ev.return-value = msg
-        msg
+      if window.dialog is \offer
+        window.onbeforeunload = (ev) -> # confirm close
+          ev = ev or window.event # ie & ff
+          const msg = 'You\'ll be missing out on all the latest!'
+          if ev then ev.return-value = msg
+          msg
       #{{{ refresh share links
       if window.social
         set-timeout (->
