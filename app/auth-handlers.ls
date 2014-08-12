@@ -13,6 +13,7 @@ require! {
 announce = sioa.create-client!
 
 {is-editing, is-admin, is-auth} = require \./path-regexps
+{gen-password} = require \../shared/shared-helpers
 
 @login = (req, res, next) ->
   site      = res.vars.site
