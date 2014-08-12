@@ -67,6 +67,7 @@ const threshold = 15px # snap
 window.onload-personalize = ->
   # TODO use a class on <body> and move this logic into stylus
   if window.user # logged in, so ...
+    $ \#profile .remove-class \onclick-login
     $ \.onclick-profile  .each -> this.href = "/user/#{window.user.name}"
     $ \.onclick-login    .hide!
     $ \.onclick-logout   .show!
@@ -74,6 +75,7 @@ window.onload-personalize = ->
     # admin
     if user?rights?super or user?rights?admin then $ \.admin-only .show! else $ \.admin-only .hide!
   else
+    $ \#profile .add-class \onclick-login
     $ \.onclick-login    .show!
     $ \.onclick-logout   .hide!
     $ \.onclick-profile  .hide!

@@ -197,5 +197,10 @@ _date-fields =
 #   console.log \old-vs-new, date, new-date
 #   new-date
 
+@gen-password = ->
+  # alphabet for a secure password
+  az = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$!@^&*(),[]-_<>'
+  [az.char-at Math.floor(Math.random! * az.length) for x to 32].join ''
+
 @
 # vim:fdm=marker

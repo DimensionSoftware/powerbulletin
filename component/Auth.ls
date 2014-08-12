@@ -3,6 +3,7 @@ require, exports, module <- define
 require! \./PBComponent
 
 {switch-and-focus, show-info, show-tooltip, lazy-load-complexify, lazy-load-fancybox} = require \../client/client-helpers if window?
+{gen-password} = require \../shared/shared-helpers if window?
 {unique} = require \prelude-ls
 
 module.exports =
@@ -38,10 +39,11 @@ module.exports =
     @show-newsletter-dialog = (remove-class='') ->
       <- Auth.show-login-dialog
       switch-and-focus remove-class, \on-newsletter, '.newsletter input:first'
-      show-tooltip $('#auth .newsletter .tooltip'), 'Get all the latest!'
-      $ '#auth .newsletter #email'
-        ..focus!
-        ..select!
+      show-tooltip $('#auth .newsletter .tooltip'), 'Get the latest instantly!'
+      set-timeout (~>
+        $ '#auth .newsletter #email'
+          ..focus!
+          ..select!), 100ms
 
     @show-choose-dialog = (remove-class='') ->
       <- Auth.show-login-dialog
@@ -59,8 +61,14 @@ module.exports =
       <- Auth.show-login-dialog
       fb = $ \.fancybox-wrap:first
       fb.find \#msg .html msg
-      fb.find '.dialog .msg2' .html msg2
-      switch-and-focus remove, \on-dialog, ''
+      em2 = fb.find '.dialog .msg2'
+      if msg2?length
+        em2
+          ..html msg2
+          ..show!
+      else
+        em2.hide!
+      switch-and-focus "#remove on-newsletter", \on-dialog, ''
       cb window._auth.$
 
     @show-register-dialog = (remove='', cb=(->)) ->
@@ -134,6 +142,7 @@ module.exports =
       @$.find '.social a' .click @open-oauth-window
       @$.on \submit '.login form' @login
       @$.on \submit '.register form' @register
+      @$.on \submit '.newsletter form' @register
       @$.on \submit '.forgot form' @forgot-password
       @$.on \submit '.reset form' @reset-password
       @$.on \click '.toggle-password' @toggle-password
@@ -141,9 +150,7 @@ module.exports =
       @$.on \click '.dialog a.resend' @resend
 
       @$.on \click \.generate-password ~>
-        # alphabet for a secure password
-        az = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$!@^&*(),[]-_<>'
-        @@$ '#auth .password' .val([az.char-at Math.floor(Math.random! * az.length) for x to 32].join '').select!
+        @@$ '#auth .password' .val(gen-password!).select!
         show-tooltip ($ '#auth .register .tooltip'), 'Click The "Forgot" Link Later!'
 
       @$.on \click \.onclick-close-fancybox ->
@@ -245,8 +252,8 @@ module.exports =
             Auth.require-registration-cb!
             Auth.require-registration-cb = null
           Auth.show-info-dialog """
-            Welcome to #siteName<br/>
-            <small>Check your Email for a warm welcome!</small>
+            Welcome to #siteName
+            <p><small>Check your Email for a warm welcome!</small></p>
           """
 
         else
