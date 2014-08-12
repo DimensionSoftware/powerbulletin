@@ -1,5 +1,12 @@
-a.invite(href='/admin/invites', class='mutant')
-  b Add User
-a.onclick-export-email
-  b Export Emails
+ul
+  li
+    a.invite(href='/admin/invites', class='mutant')
+      b Add User
+  li
+    a(href='/resources/users?format=csv-email')
+      b Export Emails
+  li
+    a(href='/resources/users?format=csv')
+      b Export Users
+
 .SuperAdminUsers-table
