@@ -1,6 +1,3 @@
-# ISSUES
-# - every site needs its own credentials for 3rd party auth
-
 require! {
   \async
   \bcrypt
@@ -12,6 +9,7 @@ require! {
   \passport-facebook
   \passport-twitter
   \passport-google-oauth
+  \passport-linkedin
   h: \./server-helpers
   pg: \./postgres
   passport.Passport
@@ -290,6 +288,29 @@ export create-passport = (domain, cb) ->
     # TODO - store profile.picture if available
     u =
       type    : \google
+      id      : profile.id
+      profile : profile._json
+      site_id : site.id
+      name    : name
+      verify  : vstring
+    log \u, u
+    (err, user) <- db.find-or-create-user u
+    log 'err', err if err
+    done(err, user)
+
+  linkedin-options =
+    consumer-key    : config?linkedin-consumer-key
+    consumer-secret : config?linkedin-consumer-secret
+    callback-URL    : "https://#{domain}/auth/linkedin/return"
+  pass.use new passport-linkedin.Strategy linkedin-options, (access-token, refresh-token, profile, done) ->
+    log 'linkedin profile', profile
+    err, name <- db.unique-name name: profile.display-name, site_id: site.id
+    if err then return cb err
+    err, vstring <- unique-hash \verify, site.id
+    if err then return cb err
+    # TODO - store profile.picture if available
+    u =
+      type    : \linkedin
       id      : profile.id
       profile : profile._json
       site_id : site.id

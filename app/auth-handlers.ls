@@ -396,6 +396,29 @@ auth-finisher = (req, res, next) ->
 
 @login-twitter-finish = auth-finisher
 
+@login-linkedin = (req, res, next) ->
+  domain = res.vars.site.current_domain
+  err, passport <- auth.passport-for-domain domain
+  if err then return next(err)
+  if passport
+    req.session.origin = req.query.origin
+    passport.authenticate('linkedin')(req, res, next)
+  else
+    console.warn "no passport for #{domain}"
+    res.send \500, 500
+
+@login-linkedin-return = (req, res, next) ->
+  domain = res.vars.site.current_domain
+  err, passport <- auth.passport-for-domain domain
+  if err then return next(err)
+  if passport
+    passport.authenticate('linkedin', { success-redirect: '/auth/linkedin/finish', failure-redirect: '/auth/linkedin/finish?fail=1' })(req, res, next)
+  else
+    console.warn "no passport for #{domain}"
+    res.send \500, 500
+
+@login-linkedin-finish = auth-finisher
+
 @logout = (req, res, next) ->
   user = req.user
   user_id = user?id
@@ -449,5 +472,9 @@ auth-finisher = (req, res, next) ->
   app.get  '/auth/twitter',         mw, @login-twitter
   app.get  '/auth/twitter/return',  mw, @login-twitter-return
   app.get  '/auth/twitter/finish',  mw, @login-twitter-finish
+
+  app.get  '/auth/linkedin',        mw, @login-linkedin
+  app.get  '/auth/linkedin/return', mw, @login-linkedin-return
+  app.get  '/auth/linkedin/finish', mw, @login-linkedin-finish
 
   app.get  '/auth/logout',          mw, @logout

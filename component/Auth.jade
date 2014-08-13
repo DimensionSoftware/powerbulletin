@@ -7,6 +7,8 @@ mixin social(currentUrl)
       img(src="#{cacheUrl}/images/google_32.png")
     a.has-twitter(href="https:#{authDomain}/auth/twitter?origin=#{currentUrl}", title="Twitter!") 
       img(src="#{cacheUrl}/images/twitter_32.png")
+    a.has-linkedin(href="https:#{authDomain}/auth/linkedin?origin=#{currentUrl}", title="Twitter!") 
+      img(src="#{cacheUrl}/images/linkedin_32.png")
 
 .reset(style="display:none;")
   form(method="post", action="/auth/reset-password")
