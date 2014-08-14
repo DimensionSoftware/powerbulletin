@@ -299,8 +299,8 @@ export create-passport = (domain, cb) ->
     done(err, user)
 
   linkedin-options =
-    consumer-key    : config?linkedin-consumer-key
-    consumer-secret : config?linkedin-consumer-secret
+    consumer-key    : config?linkedin-consumer-key    or \x
+    consumer-secret : config?linkedin-consumer-secret or \x
     callback-URL    : "https://#{domain}/auth/linkedin/return"
   pass.use new passport-linkedin.Strategy linkedin-options, (access-token, refresh-token, profile, done) ->
     log 'linkedin profile', profile
