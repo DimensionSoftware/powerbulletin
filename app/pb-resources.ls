@@ -133,7 +133,10 @@ is-commentable-forum = (m, forum-id) ->
         \twitterConsumerKey
         \twitterConsumerSecret
         \googleConsumerKey
-        \googleConsumerSecret]
+        \googleConsumerSecret
+        \linkedinConsumerKey
+        \linkedinConsumerSecret
+      ]
       domain.config = { [k, v] for k, v of req.body when k in auths}
 
       # save domain config

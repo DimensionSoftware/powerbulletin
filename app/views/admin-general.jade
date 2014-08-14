@@ -154,7 +154,13 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
               input.stylish.save#google_auth(type='checkbox', value='checked', name='googleConsumerSecret', checked=site.config.googleConsumerSecret)
               label.switch-control(for='google_auth')
                 .switch
-            .note Allow user logins from Facebook, Twitter &amp; Google+
+            .break
+            label(for='linkedin_auth') LinkedIn Auth
+            .box
+              input.stylish.save#linkedin_auth(type='checkbox', value='checked', name='linkedinConsumerSecret', checked=site.config.linkedinConsumerSecret)
+              label.switch-control(for='linkedin_auth')
+                .switch
+            .note Allow user logins from Facebook, Twitter, Google+ &amp; LinkedIn
             //- TODO Coming soon:
             //-.break
             //-label(for='ssl_only') Force SSL
