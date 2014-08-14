@@ -274,7 +274,7 @@ CREATE FUNCTION procs.find_or_create_user(usr JSON) RETURNS JSON AS $$
         RETURNING *
     )
   INSERT INTO aliases (user_id, site_id, name, verify)
-    SELECT u.id, $4::bigint, $5::varchar, $6::varchar FROM u;
+    SELECT u.id, $4::varchar, $5::varchar, $6::varchar FROM u;
   '''
   ins-params =
     * usr.id
@@ -322,7 +322,7 @@ CREATE FUNCTION procs.register_local_user(usr JSON) RETURNS JSON AS $$
         RETURNING *
     )
   INSERT INTO aliases (user_id, site_id, name, verify)
-    SELECT u.id, $4::bigint, $5::varchar, $6::varchar FROM u
+    SELECT u.id, $4::varchar, $5::varchar, $6::varchar FROM u
     RETURNING *
   '''
   ins-params =
