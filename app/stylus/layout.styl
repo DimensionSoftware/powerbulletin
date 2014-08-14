@@ -524,7 +524,6 @@ body.paginator
   right 53px
   top 176px
   cursor pointer
-  display none
   font-weight 200
   background-color theme_alpha
   letter-spacing 3px
@@ -533,6 +532,9 @@ body.paginator
   color dark_theme_color
   text-shadow 0 0 1px theme_color
   border-radius 3px
+  display none
+  &.shown
+    display block
   input
     position absolute
     text-transform capitalize

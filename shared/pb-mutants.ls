@@ -901,6 +901,7 @@ mk-post-pnum-to-href = (post-uri) ->
       window.marshal \dialog, @page.config.dialog
       window.marshal \activeForumId, @active-forum-id
       window.marshal \offerContentOnly, @page.config.offer-content-only
+      window.marshal \newsletter, @newsletter
       remove-backgrounds window
       layout-static.call @, window, \page, @active-forum-id
       next!
@@ -908,6 +909,7 @@ mk-post-pnum-to-href = (post-uri) ->
     (window, next) ->
       $ document .scroll-top 0
       $ \body .toggle-class \minimized, !!(window.content-only or window.offer-content-only)
+      $ \#newsletter .toggle-class \shown, window.newsletter is \checked # bring out newsletter?
       $ \body .add-class \loaded
 
       # show newsletter & confirmation once for guests
@@ -967,6 +969,7 @@ mk-post-pnum-to-href = (post-uri) ->
       $ \body .remove-class \loaded
       window.onbeforeunload = void # clear
       unless next-mutant is \page
+        $ \#newsletter .remove-class \shown
         $ \body .remove-class \minimized
       next!
   on-mutate:

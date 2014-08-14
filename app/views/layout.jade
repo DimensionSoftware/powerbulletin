@@ -105,10 +105,9 @@ html
 
     section#main_content.main-content.container
 
-    if newsletter
-      #newsletter.onclick-newsletter
-        input#news_email(type='text', placeholder='your@email.com')
-        .button Get the Latest
+    #newsletter.onclick-newsletter(title='Read the Latest with Our Newsletter!')
+      input#news_email(type='text', placeholder='your@email.com')
+      .button(title='Get the Latest with Our Newsletter!') Get the Latest
 
     //- for mocha testing
     if env != 'production'
