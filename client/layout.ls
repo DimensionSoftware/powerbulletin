@@ -179,6 +179,7 @@ window.logout = ->
 $d.on \click \.onclick-logout -> window.logout!; false
 $d.on \click \.require-login, Auth.require-login(-> this.click)
 $d.on \click \.onclick-login -> Auth.show-login-dialog!; false
+$d.on \click \.onclick-newsletter -> Auth.show-newsletter-dialog!; false
 
 # from /auth/$oauth/finish window
 $.receive-message(((e) ->

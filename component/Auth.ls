@@ -169,6 +169,9 @@ module.exports =
       @$.on \click \.onclick-show-choose ->
         @@hide-info!
         @show-choose-dialog \on-login
+      @$.on \click \.onclick-show-newsletter ->
+        @@hide-info!
+        @show-newsletter-dialog!
       @$.on \click \.onclick-show-register -> Auth.show-register-dialog!
 
       # catch esc key events on input boxes for Auth

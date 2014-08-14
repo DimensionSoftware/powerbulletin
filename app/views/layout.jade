@@ -105,6 +105,11 @@ html
 
     section#main_content.main-content.container
 
+    if newsletter
+      #newsletter.onclick-newsletter
+        input#news_email(type='text', placeholder='your@email.com')
+        .button Get the Latest
+
     //- for mocha testing
     if env != 'production'
       #mocha
