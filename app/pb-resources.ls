@@ -109,7 +109,7 @@ is-commentable-forum = (m, forum-id) ->
       # update site
       site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
-        <[ newsletter postsPerPage metaKeywords inviteOnly private social analytics style colorTheme ]> }
+        <[ newsletter newsletterMsg newsletterAction postsPerPage metaKeywords inviteOnly private social analytics style colorTheme ]> }
       for c in <[ newsletter inviteOnly social private ]> # uncheck checkboxes?
         delete site.config[c] unless req.body[c]
       for s in <[ private analytics ]> # subscription tampering

@@ -588,6 +588,9 @@ set-private-state = ->
   c = $ \#private .is \:checked
   $ \#background_uploader .toggle-class \hidden, !c
   $ '#background_uploader + .note' .toggle-class \hidden !c
+set-newsletter-state = ->
+  c = $ \#newsletter .is \:checked
+  $ '#newsletter_dialog' .toggle-class \hidden, !c
 subscribe = (what) -> unless what in site.subscriptions
   do-buy what
   false
