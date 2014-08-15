@@ -608,6 +608,7 @@ same-profile = (hints) ->
       if window.admin-expanded = $b.has-class \collapsed
         $b.remove-class \collapsed
       $ 'form input:first' .focus!select!
+      window.set-admin-ui!
       current-domain = (window.site.domains.filter (-> it.name is window.location.hostname))?0
       if current-domain then $ \#domain .val current-domain.id.to-string!
       $ \#domain .trigger \change # fill-in authorization

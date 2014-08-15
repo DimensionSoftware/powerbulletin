@@ -468,6 +468,9 @@ $d.on \click 'html.admin .plus-minus.degrees button' (ev) -> # inc/dec in degree
   i = e.prev-all \input:first # the input
     ..val next-deg-value (e.attr \class), i.val!
   i.keyup!focus!select!       # focus input
+$d.on \keyup 'html.admin .save' (ev) ->
+  $d.find \form.onclick-submit .trigger \submit # trigger submit
+  true
 $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save[type="checkbox"]' (ev) ->
   $d.find \form.onclick-submit .trigger \submit # trigger submit
   true
@@ -602,8 +605,13 @@ $d.on \click 'html.admin #private' ->
     set-private-state! # has bought?
     return true
   false # don't toggle ui
+$d.on \click 'html.admin #newsletter' ->
+  set-newsletter-state!
+  set-timeout (-> $ \#newsletter_action .focus!), 50ms
+  true
 
-set-private-state!
+window.set-admin-ui = -> set-private-state!; set-newsletter-state!
+set-timeout window.set-admin-ui, 10ms # init hidden/shown ui
 #}}}
 # {{{ - components
 window.component = {}
