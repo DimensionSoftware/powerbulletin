@@ -1133,7 +1133,7 @@ html.admin
         margin-bottom 0
         margin-left -10px
         border-bottom 1px solid #eee
-        background-color #fcfcfc
+        background-color lighten(theme_alpha, 50%)
         overflow hidden
         h4
           cursor pointer
@@ -1142,7 +1142,7 @@ html.admin
           top 0
           left 0
           margin -10px
-          color #777!important
+          color dark_text!important
           letter-spacing 1px
           text-align center
           font-weight 200
@@ -1182,7 +1182,7 @@ html.admin
       .collapse + label
         border-left 1px solid transparent
       .collapse + label:hover
-        border-bottom 1px solid #dfdfdf
+        border-bottom 1px solid theme_color
         border-left 1px solid #eee
       // for expansion
       label.expanded, .collapse:checked + label
@@ -1431,7 +1431,7 @@ html.page
           h2
             text-shadow 0 0 1px theme_color
             color #000
-            transform scale(1.01)
+            transform scale(1.005)
             transition none
           img
             //animation-name popin
@@ -1498,7 +1498,9 @@ html.page
             width 100%
           p
             text-align justify
+            vertical-align top
           &:first-letter
+            line-height .8em
             vertical-align top
             padding-top 4px
             padding-right 2px

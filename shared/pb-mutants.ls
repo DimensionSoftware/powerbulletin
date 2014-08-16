@@ -909,12 +909,27 @@ mk-post-pnum-to-href = (post-uri) ->
       $ document .scroll-top 0
       $ \body .toggle-class \minimized, !!(window.content-only or window.offer-content-only)
       $ \body .add-class \loaded
-      if window.dialog is \offer
-        window.onbeforeunload = (ev) -> # confirm close
-          ev = ev or window.event # ie & ff
-          const msg = 'You\'ll be missing out on all the latest!'
-          if ev then ev.return-value = msg
-          msg
+
+      # show newsletter & confirmation once for guests
+      if !user and window.dialog is \offer
+        const k = "newsletter-#siteId"
+        storage.del k # reset
+        window.onbeforeunload = (ev) -> # confirm close for guests
+          unless storage.has k # prompt once
+            storage.set k, true
+            set-timeout Auth.show-newsletter-dialog, 10ms
+            ev = ev or window.event # ie & ff
+            const msg = '''
+
+
+            You\'ll be missing out on all the latest!
+            Prefer our newsletter?
+
+
+            '''
+            if ev then ev.return-value = msg
+            msg
+
       #{{{ refresh share links
       if window.social
         set-timeout (->

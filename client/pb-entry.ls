@@ -469,6 +469,9 @@ $d.on \click 'html.admin .plus-minus.degrees button' (ev) -> # inc/dec in degree
     ..val next-deg-value (e.attr \class), i.val!
   i.keyup!focus!select!       # focus input
 $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save[type="checkbox"]' (ev) ->
+  $d.find \form.onclick-submit .trigger \submit # trigger submit
+  true
+$d.on \submit \form.onclick-submit (ev) -> # use submit event to ensure form has finished updating
   # indicate we're saving
   t = $ \#warning
   b = $ ev.current-target # submit button
@@ -510,7 +513,7 @@ $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save
       show-tooltip t, (data?msg or data?messages?join \<br/>)
   )
   if $(ev.target).is \:button then ev.prevent-default! # no <form> submits
-  true
+  false
 
 $d.on \click 'html.admin .question' (ev) ->
   switch window.location.pathname
