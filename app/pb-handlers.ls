@@ -805,6 +805,7 @@ function profile-paths user, uploaded-file, base=\avatar
     fdoc.site-name       = site.name
     fdoc.title           = title-case (page.title or 'Power Bulletin Forum Communities in Real Time by Dimension Software')
     fdoc.page            = page
+    fdoc.newsletter      = site.config.newsletter
     fdoc.active-forum-id = page.id
     fdoc.content-only    = item?form?content-only is \checked
     res.locals fdoc

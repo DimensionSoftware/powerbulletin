@@ -1182,8 +1182,8 @@ html.admin
       .collapse + label
         border-left 1px solid transparent
       .collapse + label:hover
-        border-bottom 1px solid theme_color
-        border-left 1px solid #eee
+        border-bottom 1px solid darken(theme_alpha, 75%)
+        border-left 1px solid darken(theme_alpha, 35%)
       // for expansion
       label.expanded, .collapse:checked + label
         border-top 1px solid #eee
@@ -1234,9 +1234,9 @@ html.admin
           width 305px
           height 100px
           font-size 1em
-        #facebook_auth:checked + label:after, #twitter_auth:checked + label:after, #google_auth:checked + label:after, #invite_only:checked + label::after, #private:checked + label::after, #social:checked + label::after
+        #newsletter:checked + label:after, #facebook_auth:checked + label:after, #twitter_auth:checked + label:after, #google_auth:checked + label:after, #invite_only:checked + label::after, #private:checked + label::after, #social:checked + label::after
           content 'On'
-        #facebook_auth + label:after, #twitter_auth + label:after, #google_auth + label:after, #invite_only + label::after, #private + label::after, #social + label::after
+        #newsletter + label:after, #facebook_auth + label:after, #twitter_auth + label:after, #google_auth + label:after, #invite_only + label::after, #private + label::after, #social + label::after
           content 'Off'
       button
         display block

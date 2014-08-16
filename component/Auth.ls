@@ -39,7 +39,7 @@ module.exports =
     @show-newsletter-dialog = (remove-class='') ->
       <- Auth.show-login-dialog
       switch-and-focus remove-class, \on-newsletter, '.newsletter input:first'
-      show-tooltip $('#auth .newsletter .tooltip'), 'Get the latest instantly!'
+      #show-tooltip $('#auth .newsletter .tooltip'), 'Get the latest instantly!'
       set-timeout (~>
         $ '#auth .newsletter #email'
           ..focus!
@@ -169,6 +169,9 @@ module.exports =
       @$.on \click \.onclick-show-choose ->
         @@hide-info!
         @show-choose-dialog \on-login
+      @$.on \click \.onclick-show-newsletter ->
+        @@hide-info!
+        @show-newsletter-dialog!
       @$.on \click \.onclick-show-register -> Auth.show-register-dialog!
 
       # catch esc key events on input boxes for Auth

@@ -35,6 +35,8 @@ require! {
     res.locals.invite-only        = config.invite-only
     res.locals.social             = config.social
     res.locals.style              = config.style
+    res.locals.newsletter-action  = config.newsletter-action or ''
+    res.locals.newsletter-msg     = config.newsletter-msg or ''
     res.locals.logo               = config.logo
     res.locals.private            = config.private
     res.locals.private-background = config.private-background
