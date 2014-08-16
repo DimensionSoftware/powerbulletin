@@ -38,12 +38,8 @@ module.exports =
 
     @show-newsletter-dialog = (remove-class='') ->
       <- Auth.show-login-dialog
-      switch-and-focus remove-class, \on-newsletter, '.newsletter input:first'
+      switch-and-focus remove-class, \on-newsletter, '.newsletter input:first', false
       #show-tooltip $('#auth .newsletter .tooltip'), 'Get the latest instantly!'
-      set-timeout (~>
-        $ '#auth .newsletter #email'
-          ..focus!
-          ..select!), 100ms
 
     @show-choose-dialog = (remove-class='') ->
       <- Auth.show-login-dialog
