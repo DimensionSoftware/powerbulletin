@@ -28,12 +28,12 @@ mixin social(currentUrl)
     label(for="username")
       h2 Get Our Newsletter
     fieldset
-      if newsletterMsg && newsletterMsg.length
+      if (typeof(newsletterMsg) !== 'undefined') && newsletterMsg.length
         p= newsletterMsg
       .tooltip
       input(name="email", class="register-email", type="text", placeholder="Email", maxlength=254)
       input(name="newsletter", type="hidden", value=true)
-      button(type="submit")= (newsletterAction && newsletterAction.length) ? newsletterAction : 'Go!'
+      button(type="submit")= ((typeof(newsletterAction) !== 'undefined') && newsletterAction.length) ? newsletterAction : 'Go!'
   unless inviteOnly
     mixin social(currentUrl)
 .choose(style="display:none;")
