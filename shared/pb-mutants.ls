@@ -903,6 +903,8 @@ mk-post-pnum-to-href = (post-uri) ->
       window.marshal \activeForumId, @active-forum-id
       window.marshal \offerContentOnly, @page.config.offer-content-only
       window.marshal \newsletter, @newsletter
+      window.marshal \newsletterMsg, @newsletterMsg
+      window.marshal \newsletterAction, @newsletterAction
       remove-backgrounds window
       layout-static.call @, window, \page, @active-forum-id
       next!
