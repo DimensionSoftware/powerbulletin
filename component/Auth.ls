@@ -95,13 +95,15 @@ module.exports =
           $form .find 'h2:first' .html "Couldn't find you. :("
 
     @login-with-token = (cb) ->
-      r <- cors.get "#{auth-domain}/auth/once", { site_id: window.site-id }
+      r <~ cors.get "#{auth-domain}/auth/once", { site_id: window.site-id }
       #console.warn \cors, r
       if r
-        rr <- $.post '/auth/once', { token: r.token }
-        #console.warn \once, rr
+        rr <~ $.post '/auth/once', { token: r.token }
+        console.warn \once, rr
         if rr.success
           Auth.after-login!
+          if rr.choose-name
+            set-timeout Auth.show-choose-dialog, 1000ms
           window.location.hash = ''
           if cb then return cb(rr)
         #else
