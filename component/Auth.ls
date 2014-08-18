@@ -99,10 +99,13 @@ module.exports =
       #console.warn \cors, r
       if r
         rr <~ $.post '/auth/once', { token: r.token }
-        console.warn \once, rr
         if rr.success
           Auth.after-login!
           if rr.choose-name
+            $ '#auth .choose #username'
+              ..val rr?name
+              ..focus!
+              ..select!
             Auth.show-choose-dialog!
           else
             $.fancybox.close!
