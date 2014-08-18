@@ -41,7 +41,8 @@ module.exports =
       switch-and-focus remove-class, \on-newsletter, '.newsletter input:first', false
       #show-tooltip $('#auth .newsletter .tooltip'), 'Get the latest instantly!'
 
-    @show-choose-dialog = (remove-class='') ->
+    @show-choose-dialog = (remove-class='', cb=(->)) ->
+      Auth.after-choose = cb
       <- Auth.show-login-dialog
       switch-and-focus remove-class, \on-choose, '.choose input:first'
       u = user?name
@@ -106,7 +107,8 @@ module.exports =
               ..val rr?name
               ..focus!
               ..select!
-            Auth.show-choose-dialog!
+            <~ Auth.show-choose-dialog ''
+            $ '#start_now' .trigger \click
           else
             $.fancybox.close!
           window.location.hash = ''
@@ -354,6 +356,9 @@ module.exports =
             @after-login!
             window.location.hash = ''
             storage.set \user, window.user <<< {name:v}
+          if Auth.after-choose
+            Auth.after-choose!
+            delete Auth.after-choose
         else
           $form.find \input:first .focus!
           show-tooltip $form.find(\.tooltip), r.msg # display error
