@@ -103,7 +103,9 @@ module.exports =
         if rr.success
           Auth.after-login!
           if rr.choose-name
-            set-timeout Auth.show-choose-dialog, 1000ms
+            Auth.show-choose-dialog!
+          else
+            $.fancybox.close!
           window.location.hash = ''
           if cb then return cb(rr)
         #else

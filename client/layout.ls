@@ -184,7 +184,6 @@ $d.on \click \.onclick-newsletter -> Auth.show-newsletter-dialog!; false
 # from /auth/$oauth/finish window
 $.receive-message(((e) ->
   if e.data is \login
-    $.fancybox.close!
     Auth.login-with-token!),
     "https:#{auth-domain}"
 )
