@@ -608,6 +608,7 @@ same-profile = (hints) ->
       if window.admin-expanded = $b.has-class \collapsed
         $b.remove-class \collapsed
       $ 'form input:first' .focus!select!
+      window.set-admin-ui!
       current-domain = (window.site.domains.filter (-> it.name is window.location.hostname))?0
       if current-domain then $ \#domain .val current-domain.id.to-string!
       $ \#domain .trigger \change # fill-in authorization
@@ -901,6 +902,9 @@ mk-post-pnum-to-href = (post-uri) ->
       window.marshal \dialog, @page.config.dialog
       window.marshal \activeForumId, @active-forum-id
       window.marshal \offerContentOnly, @page.config.offer-content-only
+      window.marshal \newsletter, @newsletter
+      window.marshal \newsletterMsg, @newsletterMsg
+      window.marshal \newsletterAction, @newsletterAction
       remove-backgrounds window
       layout-static.call @, window, \page, @active-forum-id
       next!
@@ -908,6 +912,10 @@ mk-post-pnum-to-href = (post-uri) ->
     (window, next) ->
       $ document .scroll-top 0
       $ \body .toggle-class \minimized, !!(window.content-only or window.offer-content-only)
+      if user
+        $ \#newsletter .remove-class \shown # always remove
+      else
+        $ \#newsletter .toggle-class \shown, window.newsletter is \checked # bring out newsletter?
       $ \body .add-class \loaded
 
       # show newsletter & confirmation once for guests
@@ -967,6 +975,7 @@ mk-post-pnum-to-href = (post-uri) ->
       $ \body .remove-class \loaded
       window.onbeforeunload = void # clear
       unless next-mutant is \page
+        $ \#newsletter .remove-class \shown
         $ \body .remove-class \minimized
       next!
   on-mutate:

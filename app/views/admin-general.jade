@@ -14,6 +14,22 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
     .note Disallow the public from registering - 
       a.mutant(href='/admin/invites') Invites
     .break
+    label(for='newsletter') Newsletter
+    .box
+      input.stylish.save#newsletter(type='checkbox', value='checked', name='newsletter', checked=site.config.newsletter)
+      label.switch-control(for='newsletter')
+        .switch
+    .note Offer a newsletter and collect email addresses
+    #newsletter_dialog.hidden
+      .break
+      label(for='newsletter_action')
+      input#newsletter_action.save(type='text', name='newsletterAction', placeholder='Get the Latest', value=site.config.newsletterAction)
+      .note Action verbiage
+      .break
+      label(for='newsletter_msg')
+      textarea#newsletter_msg.save(name='newsletterMsg')= site.config.newsletterMsg
+      .note Welcome message
+    .break
     .theme
       input.collapse(id='lookandfeel', type='checkbox')
       label.onclick-expand(for='click_lookandfeel')

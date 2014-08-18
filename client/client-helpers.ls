@@ -299,7 +299,7 @@ load-css = (href) ->
           ..0?scroll-into-view!
 
 timers = {}
-@show-tooltip = ($tt, msg, duration=4500ms) ~>
+@show-tooltip = ($tt, msg, duration=4000ms) ~>
   key = $tt.attr \id # keyed to tooltip id
   if $tt?length
     unless msg?length then $tt.remove-class \hover; return # hide & guard

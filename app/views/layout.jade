@@ -105,6 +105,10 @@ html
 
     section#main_content.main-content.container
 
+    #newsletter.onclick-newsletter(title='Read the Latest with Our Newsletter!')
+      input#news_email(type='text', placeholder='your@email.com')
+      .button(title='Get the Latest with Our Newsletter!')= (newsletterAction && newsletterAction.length) ?  newsletterAction : 'Get the Latest'
+
     //- for mocha testing
     if env != 'production'
       #mocha
