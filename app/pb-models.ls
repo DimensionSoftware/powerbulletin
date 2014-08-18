@@ -368,6 +368,7 @@ query-dictionary =
     update     : deserialized-fn (serialized-fn (updatex-fn \aliases), _alias-serializers), _alias-deserializers
 
     update-last-activity-for-user: (user, cb) ->
+      if not user then return cb null
       id = user.id or user.user_id
       if not id then return cb null
       @update { last_activity: (new Date).to-ISO-string! }, { user_id: id, site_id: user.site_id }, cb
