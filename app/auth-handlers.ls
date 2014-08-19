@@ -119,7 +119,7 @@ announce = sioa.create-client!
     req.body.password = gen-password!
 
   # TODO more validation
-  req.assert \username .not-empty!is-email!regex /[\w\d@\-]+/  # .len(min, max) .regex(/pattern/)
+  req.assert \username .not-empty!
   req.assert \password .not-empty!  # .len(min, max) .regex(/pattern/)
   req.assert \email .is-email!
 
