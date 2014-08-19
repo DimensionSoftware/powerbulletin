@@ -83,7 +83,7 @@ module.exports =
       @$.find 'li.my-sites' .hide!
 
     show-my-sites: ~>
-      return if $ '#auth .register:visible' .length # guard
+      return if $ '#auth:visible' .length # guard
       <~ ch.lazy-load-fancybox
       $div = $ '<div/>'
       r <~ @@$.get '/ajax/sites-and-memberships'

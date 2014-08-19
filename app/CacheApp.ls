@@ -1,6 +1,7 @@
 require! {
   express
   http
+  cors
   sh: \./server-helpers
 }
 
@@ -26,6 +27,7 @@ module.exports =
 
       app = express!
         ..use deny-ls
+        ..use cors(origin: '*', credentials: true)
         ..use express.static(\public, {max-age})
         # probe for haproxy
         ..get \/probe, (req, res) ->
