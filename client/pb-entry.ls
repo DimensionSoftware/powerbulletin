@@ -468,9 +468,7 @@ $d.on \click 'html.admin .plus-minus.degrees button' (ev) -> # inc/dec in degree
   i = e.prev-all \input:first # the input
     ..val next-deg-value (e.attr \class), i.val!
   i.keyup!focus!select!       # focus input
-$d.on \keyup 'html.admin .save' (ev) ->
-  $d.find \form.onclick-submit .trigger \submit # trigger submit
-  true
+$d.on \keyup 'html.admin .save' __.debounce (-> $d.find \form.onclick-submit .trigger \submit), 1000ms # trigger submit
 $d.on \click 'html.admin .onclick-submit button[type="submit"], html.admin .save[type="checkbox"]' (ev) ->
   $d.find \form.onclick-submit .trigger \submit # trigger submit
   true
@@ -479,7 +477,7 @@ $d.on \submit \form.onclick-submit (ev) -> # use submit event to ensure form has
   t = $ \#warning
   b = $ ev.current-target # submit button
   b.attr \disabled, \disabled
-  set-timeout (-> show-tooltip t, \Saving), 150ms # hide for instant saves
+  show-tooltip t, \Saving # hide for instant saves
 
   submit-form(ev, (data) ->
     f = $ this # form
