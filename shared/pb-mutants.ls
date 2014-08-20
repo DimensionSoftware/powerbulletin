@@ -1067,7 +1067,7 @@ mk-post-pnum-to-href = (post-uri) ->
 function snap-to-top
   <~ set-timeout _, 90ms # yield to browser
   if window.scroll-to then window.scroll-to 0, 0
-  $ \body .remove-class \scrolled
+  if window.mutator isnt \forum then $ \body .remove-class \scrolled
 
 @
 # vim:fdm=indent

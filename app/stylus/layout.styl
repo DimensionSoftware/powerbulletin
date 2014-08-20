@@ -7,7 +7,6 @@ bounce = cubic-bezier(0,1.72,0,.75)
 header_height           = 100px
 header_scrolled_height  = 35px
 
-forum-header_height = 0
 footer_height       = 36px
 left_content_width  = 310px
 
@@ -478,13 +477,13 @@ body.paginator
     width 100%
 .main-content
   grid(100%, 800px)
-  padding forum-header_height 0 0 0
-  padding-top (header_height+(grid*3.5))
+  padding 0
+  padding-top 120px
   //z-index 5
   .breadcrumb
     position fixed
     top -100px
-    left -9999px
+    left -999px
     text-align center
     z-index 100
     border-bottom-left-radius 10px
@@ -722,6 +721,7 @@ body.scrolled
       a.page.next::before
         bottom 10px
   .main-content
+    padding-top 68px
     .breadcrumb
       top (header_scrolled_height+1)
       transition top .25s ease-out

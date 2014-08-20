@@ -133,24 +133,23 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
   e
 
 # indicate to stylus that view scrolled
-has-scrolled = ->
+$ window .on \scroll ->
   st = $w.scroll-top!
-  $ \body .toggle-class \scrolled (st > threshold)
-  if st is 0 then $ \header .remove-class \expanded
-$ window .on \scroll -> # expand header when scrolled to top
-  has-scrolled!
-  if $ window .scroll-top! is 0 then $ \body .remove-class \minimized
+  if window.mutator isnt \forum # expand header when scrolled to top
+    $ \body .toggle-class \scrolled (st > threshold)
+  else if st > threshold
+    $ \body .add-class \scrolled
+  if st is 0
+    $ \header .remove-class \expanded
+    $ \body .remove-class \minimized
 
 $ \header.header .on \click (ev) ->
   if $ ev.target .has-class \header # pull down search when header is clicked
     h = $ this
     b = $ \body
-    if $w.scroll-top! > threshold
-      b.toggle-class \scrolled
-      h.add-class \expanded
-      set-timeout (-> $ \#query .focus!), 1ms # ...and focus search
-    else
-      h.remove-class \expanded
+    b.toggle-class \scrolled
+    h.toggle-class \expanded
+    set-timeout (-> $ \#query .focus!), 1ms # ...and focus search
 
 # attach scroll-to's
 $d.on \click '.onclick-scroll-to' ->
