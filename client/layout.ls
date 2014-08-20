@@ -105,10 +105,6 @@ window.onload-resizable = ->
       $l.resizable \destroy
 #}}}
 #{{{ Scrolling behaviors
-set-timeout (->
-  $ window .on \scroll -> # expand header when scrolled to top
-    if $ window .scroll-top! is 0 then $ \body .remove-class \minimized), 2000ms
-
 window.scroll-to-top = (cb) ->
   return if ($ window).scroll-top! is 0 # guard
   $e = $ 'html,body'
@@ -141,9 +137,10 @@ has-scrolled = ->
   st = $w.scroll-top!
   $ \body .toggle-class \scrolled (st > threshold)
   if st is 0 then $ \header .remove-class \expanded
-set-timeout (->
-  $w.on \scroll -> has-scrolled!
-  has-scrolled!), 600ms # initially yield
+$ window .on \scroll -> # expand header when scrolled to top
+  has-scrolled!
+  if $ window .scroll-top! is 0 then $ \body .remove-class \minimized
+
 $ \header.header .on \click (ev) ->
   if $ ev.target .has-class \header # pull down search when header is clicked
     h = $ this
