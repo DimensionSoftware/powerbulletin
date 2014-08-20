@@ -176,7 +176,9 @@ html.forum, html.profile, html.search, html.moderation
         background-color #fff
         &:before
           width 5px
-          background-image linear-gradient(to top, dark_theme_color 15%, dark_theme_color 16%, lighten(theme_color, 12%) 75%, lighten(theme_color, 20%) 100%)
+          background-color dark_theme_color
+          top -2px
+          bottom -2px
         // {{{ active thread arrow
         .arrow
           display none
