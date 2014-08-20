@@ -459,6 +459,12 @@ same-profile = (hints) ->
       profile-user-id = $('#left_content .profile').data \userId
       unless profile-user-id is user?id
         enable-chat!
+
+      if user?name is user?email # enable username switch only if haven't set
+        window.$ \.onclick-show-choose .show!
+        window.$ \body .on \click \.onclick-show-choose ->
+          Auth.show-choose-dialog!
+
       window.$ \body .on \click \.onclick-show-forgot ->
         <- Auth.show-login-dialog
         show-tooltip ($ '#auth .forgot .tooltip'), 'We\'ll Send A Single-Use, Secure Link'
