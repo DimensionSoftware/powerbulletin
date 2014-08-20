@@ -2,7 +2,8 @@ table
   thead
     tr
       each ctitle in cols
-        th!= ctitle
+        title = ctitle.replace(/_/g, ' ')
+        th!= title
   tbody.Table-tbody
     each row in rows
       tr
