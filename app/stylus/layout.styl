@@ -733,21 +733,43 @@ body.scrolled
 body.collapsed
   #left_content
     width 0!important
-    transition width .1s
     .handle
-      right -25px
-      background-color #bbb
-      background radial-gradient(circle closest-corner at 45% 35%, #d0d0d0 40%, #999 100%)
-      border 1px solid #888
-      box-shadow 0 0 3px 1px theme_color
-      &::before, &::after
+      position fixed
+      border-radius 0
+      top -12px
+      bottom 0
+      left 0
+      height 100%
+      width 10px
+      background none
+      background-color theme_color
+      //right -25px
+      //background-color theme_color
+      //background radial-gradient(circle closest-corner at 45% 35%, theme_color 40%, #999 100%)
+      //border 1px solid #888
+      //box-shadow 0 0 3px 1px theme_color
+      &::before
         transform rotate(180deg)
-        top 8px
-        left 14px
-        transition all .2s ease-out
+        border none
+        background-color theme_color
+        height 48px
+        width 28px
+        border-radius 4px
+        top 34px
+        left 8px
       &::after
-        top 7px
-        left 15px
+        content 'Tap'
+        z-index 99
+        transform rotate(90deg)
+        font-weight bold
+        font-size 1.1em
+        if dark(theme_color)
+          color lighten(dark_theme_color, 20%)
+        else
+          color darken(dark_theme_color, 20%)
+        border none
+        top 43px
+        left 33px
     .create a
       display none!important
     .thread.active .arrow

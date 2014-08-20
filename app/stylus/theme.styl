@@ -164,26 +164,23 @@ header
     background-color #f7f7f7
     width 1px
   .handle
-    transition all .2s ease-out
     background-color #ddd
-    background radial-gradient(circle closest-corner at 45% 35%, #e0e0e0 40%, #bbb 100%)
+    background radial-gradient(circle closest-corner at 45% 38%, #fff 85%, #aaa 100%)
     border 1px solid #ddd
     color #888
     &::after
-      border-right 10px solid #fff
-      transition all .1s ease-out
+      border-right 10px solid theme_color
     &::before
       border-right 12px solid #aaa
-      transition all .1s ease-out
     &:hover
       background-color #ddd
-      background radial-gradient(circle closest-corner at 45% 35%, #e0e0e0 40%, #a0a0a0 100%)
+      background radial-gradient(circle closest-corner at 45% 38%, #fff 80%, #999 100%)
       color #444
       &::before
         border-right 14px solid #999
         left -4px
       &::after
-        border-right 12px solid #fff
+        border-right 12px solid darken(theme_color, 5%)
         left -3px
   .title
     letter-spacing -1px

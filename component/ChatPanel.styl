@@ -28,7 +28,7 @@ body.scrolled
       display block!important
       position absolute
       top 9px
-      right 47px
+      right 50px
       font-size 2.8em
       color #eee
       transition color .2s ease-out
@@ -87,7 +87,10 @@ body.scrolled
       background-color tint(dark_theme_color, 5%)
       border-radius 3px
       margin-top 1px
-      color #fff
+      if dark(dark_theme_color)
+        color #fff
+      else
+        color dark_text
       a
         color @color
         padding 0.12em 0.7em
@@ -105,7 +108,7 @@ body.scrolled
     .messages > li.break
       border-radius 0
       background-color transparent
-      color #bbb
+      color dark_text
       font-size .75em
       margin-bottom 3px
       b
