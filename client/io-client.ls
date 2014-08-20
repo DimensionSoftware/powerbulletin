@@ -141,10 +141,13 @@ function init-with-socket s
 
       # & render new post
       commentable=window.commentable
-      sel = "\#post_#{post.parent_id} ~ .children:first"
-      unless $ sel .length # no immediate parent (eg. comment became a reply)
-        commentable=false
-        sel = "[data-thread-id=\"#{post.thread_id}\"]:last ~ .children:first"
+      if commentable
+        sel = "\#post_#{post.parent_id} ~ .children:first"
+        unless $ sel .length # no immediate parent (eg. comment became a reply)
+          commentable=false
+          sel = "[data-thread-id=\"#{post.thread_id}\"]:last ~ .children:first"
+      else
+        sel = '.forum > .children > div'
 
       animate-in = (e) -> $ e .add-class \post-animate-in
       if post.user_id is user?id then post.is_comment=true # hide sig., etc... on our own posts
