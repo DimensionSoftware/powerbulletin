@@ -30,9 +30,6 @@ body.scrolled
               top 28px
 header.header
   a.mutant:hover
-    animation-name tiny-grow
-    animation-duration .3s
-    animation-timing ease-out
     text-decoration none!important
   //{{{ background header images
   &.image
@@ -280,6 +277,9 @@ header.header
   //{{{ Theme-related
 .MainMenu
   .menu
+    > .row
+      .title.hover
+        transform scale(1.12)
     .row
       > .title.hover
         position relative!important
@@ -302,8 +302,6 @@ header.header
         transition color .2s ease-out
       > .title:hover, .title.hover
         color #555
-        animation-name tiny-grow!important
-        animation-duration .15s
       .title
         text-decoration none
         border-bottom 1px solid transparent
