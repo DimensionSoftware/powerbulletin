@@ -65,10 +65,14 @@ html.forum, html.profile, html.search, html.moderation
       .create
         .button
           font-size 1.1em
-      .threads
+      .threads .thread .container
+        .username
+          position relative!important
+          margin-left 8px!important
+          color #333!important
         .created
           opacity 1
-          display inline
+          display none
   #left_content
     transform translateX(0)
     opacity 1
@@ -76,7 +80,7 @@ html.forum, html.profile, html.search, html.moderation
     #thread-paginator
       margin 12px 0 0 0
       text-align center
-    .photo, .username
+    .photo
       display none
     .photo
       margin 5px 11px 7px 0
@@ -139,7 +143,10 @@ html.forum, html.profile, html.search, html.moderation
             text-overflow ellipsis
             margin-bottom -6px
           .username
-            margin-left -5px
+            position absolute
+            right 12px
+            color #999
+            font-weight 300
           .post-count, .views
             font-weight bold
             font-size .8em
