@@ -32,7 +32,10 @@ module.exports =
       @chats = chats
       if err then return err
       if chats.length
-        @@$ \.onclick-messages .show!
+        unless window.admin-chats
+          if window.user?rights?super then @@$ \.onclick-messages .show!
+        else
+          @@$ \.onclick-messages .show!
         @$.find \.list .html '' # clear
         for i,c of chats
           @add c

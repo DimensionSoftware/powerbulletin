@@ -14,6 +14,13 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
     .note Disallow the public from registering - 
       a.mutant(href='/admin/invites') Invites
     .break
+    label(for='admin_chat') Admin Chat
+    .box
+      input.stylish.save#admin_chat(type='checkbox', value='checked', name='adminChat', checked=site.config.adminChat)
+      label.switch-control(for='admin_chat')
+        .switch
+    .note Disallow private messages except for admins
+    .break
     label(for='newsletter') Newsletter
     .box
       input.stylish.save#newsletter(type='checkbox', value='checked', name='newsletter', checked=site.config.newsletter)

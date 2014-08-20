@@ -129,6 +129,7 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
   forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
   w.$ \html .attr(\class "#{next-mutant}#{forum-class}") # stylus
   if w.marshal then w.marshal \mutator, next-mutant      # js
+  if w.marshal then w.marshal \adminChat, @admin-chat
 
   # handle active main menu
   fid = active-forum-id or w.active-forum-id
@@ -455,6 +456,9 @@ same-profile = (hints) ->
     (window, next) ->
       # forgot password delegate
       #window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
+      profile-user-id = $('#left_content .profile').data \userId
+      unless profile-user-id is user?id
+        enable-chat!
       window.$ \body .on \click \.onclick-show-forgot ->
         <- Auth.show-login-dialog
         show-tooltip ($ '#auth .forgot .tooltip'), 'We\'ll Send A Single-Use, Secure Link'
@@ -531,6 +535,7 @@ same-profile = (hints) ->
             [\.left-content, 'Spice up your posts with a Profile Photo, Title &amp; Signature!', true]
           storage.set k, true
       else
+        enable-chat!
         photocropper-disable!
     else
       photocropper-disable!
@@ -1068,6 +1073,12 @@ function snap-to-top
   <~ set-timeout _, 90ms # yield to browser
   if window.scroll-to then window.scroll-to 0, 0
   if window.mutator isnt \forum then $ \body .remove-class \scrolled
+
+function enable-chat
+  if window.admin-chat
+    if window?user?rights?super then window.$ \.onclick-chat .remove-class \hidden
+  else
+    window.$ \.onclick-chat .remove-class \hidden
 
 @
 # vim:fdm=indent

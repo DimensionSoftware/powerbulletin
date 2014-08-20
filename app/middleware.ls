@@ -34,6 +34,7 @@ require! {
     res.locals.analytics          = config.analytics
     res.locals.invite-only        = config.invite-only
     res.locals.social             = config.social
+    res.locals.admin-chat         = config.admin-chat
     res.locals.style              = config.style
     res.locals.newsletter-action  = config.newsletter-action or ''
     res.locals.newsletter-msg     = config.newsletter-msg or ''
