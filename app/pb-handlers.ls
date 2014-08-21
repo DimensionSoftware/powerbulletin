@@ -503,6 +503,8 @@ function profile-paths user, uploaded-file, base=\avatar
   db   = pg.procs
   user = req.user
   site = res.vars.site
+  if not user
+    return res.json { success: false, type: \not-logged-in }
   console.warn \lookup-user, { id: req.params.id, site_id: site.id }
   err, usr <- db.usr { id: req.params.id, site_id: site.id }
   console.warn \found-user, err, usr
