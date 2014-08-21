@@ -175,7 +175,7 @@ function make-resizable footer
   p = window?get-prefs!
   if p then [_, _, h?] = p
   footer # setup footer for "open state"
-    ..height h or \200 # default
+    ..height h or \400 # default
     ..add-class \expanded
   unless footer.data \uiResizable # guard
     footer # create initial state
