@@ -31,9 +31,8 @@ Post-Modern, Realtime, FREE (as in freedom) Community
 # Mac OS X Firewall Tricks to Forward Ports 3001, 3002 to 80 and 443 respectively
     # This is needed because virtualbox cannot bind to privileged ports.
     # on mac os x:
-    ipfw flush
-    ipfw add fwd 127.0.0.1,3001 tcp from any to me dst-port 80
-    ipfw add fwd 127.0.0.1,3002 tcp from any to me dst-port 443 
+    ipfw add 1 fwd 127.0.0.1,3001 tcp from any to me dst-port 80
+    ipfw add 1 fwd 127.0.0.1,3002 tcp from any to me dst-port 443 
 
     # if you would like to run without invoking the caching / layer (also disabling forced ssl + security headers)
     ipfw flush
