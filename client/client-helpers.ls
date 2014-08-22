@@ -171,7 +171,7 @@ load-css = (href) ->
     cb
 @lazy-load-socketio = (cb) ~>
   @lazy-load (-> window.$!fancybox?length),
-    "#cache-url/local/socket.io.min.js",
+    "#cache-url/socket.io/socket.io.js",
     null,
     cb
 #}}}
