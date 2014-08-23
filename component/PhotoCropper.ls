@@ -5,7 +5,7 @@ require! {
   \./PBComponent
   sh: \../shared/shared-helpers
 }
-{storage, lazy-load-fancybox, lazy-load-jcrop} = require \../client/client-helpers
+{show-tooltip, storage, lazy-load-fancybox, lazy-load-jcrop} = require \../client/client-helpers
 
 module.exports =
   class PhotoCropper extends PBComponent
@@ -58,6 +58,10 @@ module.exports =
       opts = {
         name: \avatar
         post-url: @endpoint-url
+        on-failure: (ev, file, req) ~>
+          try r = JSON.parse req.response-text
+          if req.status is 400
+            show-tooltip (@$.find \.tooltip), r?msg or 'File must be at least 200x200px'
         on-success: (xhr, file, r-json) ~>
           storage.del @storage-key # reset selection
           r = JSON.parse(r-json)
