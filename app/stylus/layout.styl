@@ -186,10 +186,9 @@ header
           margin-left -97px
           opacity 1
           text-align center
-          //transition all .2s ease-out
+          transition none
           menu
             padding 5px
-            transition padding .1s ease-out
             &.close
               opacity 0
               height 0
@@ -199,9 +198,21 @@ header
             li
               height 23px
               opacity 1
-              transition height .1s ease-out .05s
-              &:hover
+              transition height .1s bounce
+              &.admin-only
+                position relative
+                margin-top 3px
+                &:before
+                  content ''
+                  position absolute
+                  left 40px
+                  top 0
+                  width 12px
+                  height 0
+                  background-color theme_color
                 a
+                  color dark_text
+              &:hover a
                   border-radius 25px
                   padding 5px 17px
                   color colored_text
@@ -264,6 +275,7 @@ header
             overflow hidden
           .onclick-logout
             margin-top 2px
+            font-size .9em
             &:hover
               a
                 background none!important
