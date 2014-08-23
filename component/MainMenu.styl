@@ -16,6 +16,8 @@ body.scrolled
           bottom -2px
           > .row
             //transition line-height .2s ease-out
+            > .title.active:after
+              bottom 1px
             .submenu
               &.flat
                 .row
@@ -26,6 +28,8 @@ body.scrolled
               .row
                 line-height (grid*3)
           > .row:hover
+            > .title:after
+              bottom 1px
             .submenu
               top 28px
 header.header

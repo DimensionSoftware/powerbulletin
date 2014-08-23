@@ -1450,15 +1450,12 @@ html.page
         text-align center
         &:hover
           h2
-            text-shadow 0 0 1px theme_color
             color #000
-            transform scale(1.005)
             transition none
           img
             //animation-name popin
             //animation-duration .9s
             //animation-delay .01s
-            transform scale(1.01)
             transition none
             outline-color rgba(theme_color, .3)
           article
@@ -1498,6 +1495,7 @@ html.page
           margin 0
         h2
           color dark_text
+          text-shadow 0 0 1px theme_color
           transition all .3s ease-in
         h3
           color #222
@@ -1570,7 +1568,7 @@ html.page
         //transition opacity .5s ease-out
     &.minimized
       header
-        transform translateY(-99px)
+        transform translateY(-100px)
         transition all .3s ease-out .2s
       .social-right > .social
         top -100px

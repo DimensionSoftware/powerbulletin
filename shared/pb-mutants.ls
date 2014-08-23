@@ -986,7 +986,7 @@ mk-post-pnum-to-href = (post-uri) ->
           # for mutations
           #try gapi.plusone.go!
           try FB.XFBML.parse!
-          try twttr.widgets.load!), 1000ms # yield
+          try twttr.widgets.load!), 1234ms # yield
       #}}}
       next!
   on-unload:
@@ -1083,7 +1083,7 @@ mk-post-pnum-to-href = (post-uri) ->
 
 
 function snap-to-top
-  <~ set-timeout _, 90ms # yield to browser
+  <~ set-timeout _, 5ms # yield to browser
   if window.scroll-to then window.scroll-to 0, 0
   if window.mutator isnt \forum then $ \body .remove-class \scrolled
 
