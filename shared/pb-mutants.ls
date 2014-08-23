@@ -907,6 +907,7 @@ mk-post-pnum-to-href = (post-uri) ->
 @page =
   static:
     (window, next) ->
+      window.$ \body .toggle-class \minimized, !!(@page.config.content-only or @page.config.offer-content-only)
       if @page.config.dialog is \offer # render jade offer template
         @page.cache-url = @cache-url
         @page.site-name = @site-name
@@ -928,7 +929,6 @@ mk-post-pnum-to-href = (post-uri) ->
   on-load:
     (window, next) ->
       $ document .scroll-top 0
-      $ \body .toggle-class \minimized, !!(window.content-only or window.offer-content-only)
       if user
         $ \#newsletter .remove-class \shown # always remove
       else
