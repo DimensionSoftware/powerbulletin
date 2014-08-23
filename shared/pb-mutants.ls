@@ -278,7 +278,9 @@ layout-on-personalize = (w, u) ->
       $l = $ \#left_container
       $l.find \.active .remove-class \active # set active post
       $l.find ".thread[data-id='#{window.active-thread-id}']" .add-class \active
-      $l.on \click.thread \.thread (ev) -> $ ev.current-target .add-class \active # mutant is slow, update immediately
+      $l.on \click.thread \.thread (ev) ->
+        $ ev.current-target .add-class \active      # mutant is slow, update immediately
+        ($ ev.target .find \.mutant).trigger \click # mutate
       respond-resize!
 
       # editing handler
