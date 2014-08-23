@@ -84,7 +84,7 @@ module.exports =
         console.warn 'uncaught exception in worker, shutting down'
         graceful-shutdown!
 
-      app = global.app = express!
+      app = express!
 
       server = null
 
@@ -197,11 +197,9 @@ module.exports =
           responder res
           #graceful-shutdown!
 
-      # routes
-      #
-      # XXX: this is hacky, pb-routes should be turned into its own app that can be app.use(d)
-      # right now it depends on global.app being available, hence the ordering
-      require! \./pb-routes
+      # bind all routes
+      pbr = require \./pb-routes
+      pbr.use app
 
       # 404 handler, if not 404, punt
       err-or-notfound = (err, req, res, next) ~>
