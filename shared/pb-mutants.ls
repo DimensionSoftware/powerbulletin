@@ -210,6 +210,11 @@ layout-on-personalize = (w, u) ->
       const prev-mutant = window.mutator
 
       # render main content
+      if is-forum-homepage @furl.path # show tall header only on forum homepages
+        window.$ \body .remove-class \scrolled
+      else # begin with smaller "scrolled" header
+        window.$ \body .add-class \scrolled
+
       if is-editing(@furl.path) is true
         window.render-mutant \main_content, \post-new
       else if is-forum-homepage @furl.path
