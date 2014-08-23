@@ -106,7 +106,7 @@ module.exports =
             hup-or-die!
         #catch # XXX shouldn't need to catch (duplicates call to hup-or-die)
         #  hup-or-die!
-      graceful-shutdown = _.debounce _graceful-shutdown, 2000ms
+      graceful-shutdown = _.debounce _graceful-shutdown, 100ms
 
       html_50x = fs.read-file-sync('public/50x.html').to-string!
       html_404 = fs.read-file-sync('public/404.html').to-string!
