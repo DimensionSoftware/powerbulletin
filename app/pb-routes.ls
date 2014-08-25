@@ -134,6 +134,9 @@ exports.use = (app) ->
       Allow: /
       '''
 
+  app.get '/_routes', (req, res, next) -> # print GET routes
+    res.send ["#{r.path}\n" for r in app.routes[\get]]
+
 # page handler tries to match paths before forum handler
   app.get '*',
     personal-mw,
