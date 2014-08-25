@@ -723,4 +723,13 @@ Auth.after-login = ->
 # run initial mutant
 if window.initial-mutant
   <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
+
+if u = storage.get \user # verify local user matches server
+  server-user <- $.getJSON \/auth/user
+  unless server-user?id is u.id
+    show-tooltip ($ \#warning), 'Securing Your Connection'
+    storage.del \user       # clear local storage
+    window.location.reload! # & refresh
+
+
 # vim:fdm=marker
