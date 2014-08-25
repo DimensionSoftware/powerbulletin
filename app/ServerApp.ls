@@ -24,12 +24,13 @@ require! {
   cors
   \express-resource
   \express-validator
+  \express-vhost
   stylus
   fluidity
   \./auth
   \./elastic
   sh: \./server-helpers
-  \express/node_modules/connect
+  \connect
   pg: \./postgres
   v: \./varnish
   m: \./pb-models
@@ -204,9 +205,9 @@ module.exports =
       # 404 handler, if not 404, punt
       err-or-notfound = (err, req, res, next) ~>
         if err is 404
-          res.send 404, html_404
+          res.status 404 .send html_404
         else
-          explain = err-handler (res) -> res.send 500, html_50x
+          explain = err-handler (res) -> res.status 500 .send html_50x
           explain err, req, res, next
 
       app.use err-or-notfound
@@ -220,7 +221,8 @@ module.exports =
         sh.caching-strategies.nocache res
         res.send 'OK'
 
-      sock.use(express.vhost (if process.env.NODE_ENV is \production then \powerbulletin.com else \pb.com), sales-app)
+      sock.use express-vhost.vhost!
+      express-vhost.register (if process.env.NODE_ENV is \production then \powerbulletin.com else \pb.com), sales-app
 
       # dynamic app can automatically check req.host
       sock.use(app)

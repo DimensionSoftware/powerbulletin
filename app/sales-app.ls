@@ -4,7 +4,10 @@ require! {
   cors
   async
   \express-validator
-  \express/node_modules/connect
+  \connect
+  \body-parser
+  \cookie-parser
+  \cookie-session
   csu: \./css-urls
   jsu: \./js-urls
   mw: \./middleware
@@ -32,9 +35,9 @@ s-app.use connect.logger(immediate: false, format: sh.dev-log-format) if (env is
 # middleware for auth routes
 sales-personal-mw =
   * cors(origin: true, credentials: true)
-  * express.body-parser!
-  * express.cookie-parser!
-  * express.cookie-session {secret:cvars.secret, proxy:true, cookie:{proxy:true, secure:true, max-age:1000*60*60*24*365}}
+  * body-parser.urlencoded!
+  * cookie-parser!
+  * cookie-session {secret:cvars.secret, proxy:true, cookie:{proxy:true, secure:true, max-age:1000*60*60*24*365}}
   * auth.mw.initialize
   * auth.mw.session
 

@@ -16,12 +16,14 @@ require! {
   res.locals.env = global.env
 
   # cacheUrls should always be available
-  res.locals {[k,v] for k,v of cvars when (k.match /^cache\d?Url$/ or k.match /authDomain/)}
+  for k,v of cvars
+    if k.match /^cache\d?Url$/ or k.match /authDomain/
+      res.locals[k] = v
 
   next!
 
 @multi-domain = (req, res, next) ->
-  err, site <- db.site-by-domain req.host
+  err, site <- db.site-by-domain req.hostname
   if err then return next err
 
   if site
@@ -49,7 +51,7 @@ require! {
       res.locals["cache#{i}Url"] = cvars["cache#{i}Url"]
     next!
   # if no site matches and there is a leading m or www, then try without
-  else if m = req.host.match /^(www|m)\.(.+)$/i
+  else if m = req.hostname.match /^(www|m)\.(.+)$/i
     shortened-host = m[2]
     err, redir-site <- db.site-by-domain shortened-host
     if err then return next err
