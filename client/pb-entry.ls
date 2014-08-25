@@ -133,8 +133,9 @@ append-reply-ui = (ev) ->
       parent_id:  $p.data \post-id
       is_comment: true), ->
         editor = $p.find 'textarea[name="body"]'
-        editor.autosize!
-        if focus then editor.focus!
+        if editor
+          editor.autosize!
+          if focus then editor.focus!
   else
     $p.find('.reply .cancel').click!
 
