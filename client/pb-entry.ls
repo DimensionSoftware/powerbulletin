@@ -114,9 +114,9 @@ window.load-ui = -> # restore ui state from local storage
       $ \body .add-class \collapsed # only collapse on non-admin mutants
     # animate build-in
     w = parse-int w
-    $l.transition({width: w} 600ms \easeOutExpo -> set-wide!)
-    $ '#main_content .resizable' .transition({padding-left: w+left-offset} 300ms \easeOutExpo)
-  set-timeout (-> set-wide!; align-ui!; respond-resize!), 500ms
+    $l.transition({width: w} 300ms \easeOutExpo -> set-wide!)
+    $ '#main_content .resizable' .transition({padding-left: w+left-offset} 100ms \easeOutExpo)
+  set-timeout (-> set-wide!; align-ui!; respond-resize!), 150ms
 
 # waypoints
 $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 800ms)

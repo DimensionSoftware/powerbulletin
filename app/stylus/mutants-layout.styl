@@ -20,8 +20,9 @@ html.homepage, html.profile, html.admin, html.moderation, html.search, html.page
 html.homepage, html.page, html.moderation
   .left-content
     transform translateX(-600px)
-    opacity 0
-    transition all .08s ease-in
+    transition all .1s ease-in
+    #left_container
+      display none
 html.homepage
   .main-content
     width 94%
@@ -1570,7 +1571,7 @@ html.page
         //transition opacity .5s ease-out
     &.minimized
       header
-        transform translateY(-100px)
+        transform translateY(-101px)
         transition all .3s ease-out .2s
       .social-right > .social
         top -100px
