@@ -251,7 +251,10 @@ layout-on-personalize = (w, u) ->
       window.marshal \commentable @commentable
       window.marshal \replyTo @post?title
       window.marshal \replyBy @post?user_name
-      window.marshal \hideHomepage @item?form?hide-homepage
+
+      hh = @item?form?hide-homepage
+      window.marshal \hideHomepage hh
+      if hh then window.$ \#main_content .add-class \transparent
 
       do ~>
         if not @post then return
@@ -302,8 +305,6 @@ layout-on-personalize = (w, u) ->
 
       <- lazy-load-autosize
 
-      window.$ \#main_content .remove-class \transparent # fade content in
-
       #{{{ refresh share links
       if window.social
         # load share links for fb, google & twitter
@@ -336,8 +337,7 @@ layout-on-personalize = (w, u) ->
       #}}}
 
       if is-forum-homepage window.location.pathname
-        # handle homepage or not
-        if (($ '.threads .thread' .length) is 1) or window.hideHomepage # click first thread to enter
+        if window.hide-homepage # handle homepage or not
           $ '.threads .thread:first .mutant' .click!
 
         homepage-postdrawer = ->
@@ -355,6 +355,8 @@ layout-on-personalize = (w, u) ->
         homepage-postdrawer!
         # render homepage
         render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
+      else
+        window.$ \#main_content .remove-class \transparent # fade content in
       next!
   on-initial:
     (window, next) ->

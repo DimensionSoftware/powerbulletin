@@ -15,7 +15,7 @@ module.exports =
       @list     = []
       @seen     = {}
       @selected = null
-      @delay    = 100ms
+      @delay    = 80ms
       @ease-in  = \easeInExpo
       @ease-out = \easeOutExpo
 

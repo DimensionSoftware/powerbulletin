@@ -114,9 +114,9 @@ window.load-ui = -> # restore ui state from local storage
       $ \body .add-class \collapsed # only collapse on non-admin mutants
     # animate build-in
     w = parse-int w
-    $l.transition({width: w} 600ms \easeOutExpo -> set-wide!)
-    $ '#main_content .resizable' .transition({padding-left: w+left-offset} 300ms \easeOutExpo)
-  set-timeout (-> set-wide!; align-ui!; respond-resize!), 500ms
+    $l.transition({width: w} 300ms \easeOutExpo -> set-wide!)
+    $ '#main_content .resizable' .transition({padding-left: w+left-offset} 100ms \easeOutExpo)
+  set-timeout (-> set-wide!; align-ui!; respond-resize!), 150ms
 
 # waypoints
 $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 800ms)
@@ -406,7 +406,7 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
   icon = $p.find \img .attr \src
   panels = window.component.panels
 
-  err, c <- socket.emit \chat-between, [user.id, t.id]
+  err, c <- socket?emit \chat-between, [user.id, t.id]
   if err then return
 
   chat-panel = ChatPanel.add-from-conversation c, window.user
@@ -695,7 +695,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
           mutant.run mutants[r.mutant], {locals, window.user}, ->
             onload-resizable!
             window.hints.current.mutator = window.mutator
-            socket.emit \ping
+            socket?emit \ping
             window.time-updater!
         #else
         #  console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
@@ -723,4 +723,13 @@ Auth.after-login = ->
 # run initial mutant
 if window.initial-mutant
   <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
+
+if u = storage.get \user # verify local user matches server
+  server-user <- $.getJSON \/auth/user
+  unless server-user?id is u.id
+    show-tooltip ($ \#warning), 'Securing Your Connection'
+    storage.del \user       # clear local storage
+    window.location.reload! # & refresh
+
+
 # vim:fdm=marker
