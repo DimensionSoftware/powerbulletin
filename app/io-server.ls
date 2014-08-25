@@ -4,7 +4,7 @@ require! {
   crc32: 'express/node_modules/buffer-crc32'
   cookie: 'express/node_modules/cookie'
   connect: 'express/node_modules/connect'
-  RedisStore: 'socket.io/lib/stores/redis'
+  RedisStore: \socket.io-redis
   ChatServer: './io-chat-server'
   Presence: './presence'
   sio: \socket.io
@@ -56,22 +56,22 @@ clear-stale-redis-data = (r, cb) ->
   # mixing additional keys into 'db' namespace
   do -> pg.procs <<< { [k,v] for k,v of m when k not in <[orm client driver]> }
 
-  io  = sio.listen server
-  io.enable 'browser client minification' # send minified client
-  io.enable 'browser client etag'         # apply etag caching logic based on version number
-  io.enable 'browser client gzip'         # gzip the file
+  io = sio.listen server
+  #io.enable 'browser client minification' # send minified client
+  #io.enable 'browser client etag'         # apply etag caching logic based on version number
+  #io.enable 'browser client gzip'         # gzip the file
   io.set \transports, [
     * \websocket
     * \xhr-polling
     * \jsonp-polling
   ]
-  io.set 'log level', 1
+  #io.set 'log level', 1
 
-  redis-pub    = redis.create-client!
-  redis-sub    = redis.create-client!
+  pub-client   = redis.create-client!
+  sub-client   = redis.create-client!
   redis-client = redis.create-client!
-  redis-store  = new RedisStore({ redis, redis-pub, redis-sub, redis-client })
-  io.set \store, redis-store
+  redis-store  = new RedisStore({ sub-client, pub-client })
+  io.adapter redis-store
 
   err <- clear-stale-redis-data redis-client
 
@@ -236,7 +236,7 @@ clear-stale-redis-data = (r, cb) ->
       socket.join search-room
 
       # register search with the search notifier
-      io.sockets.emit \register-search, {searchopts, site-id: site.id, room: search-room}
+      io.emit \register-search, {searchopts, site-id: site.id, room: search-room}
 
     socket.on \debug, (args, cb=(->)) ->
       console.warn \debug, args
