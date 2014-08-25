@@ -1083,9 +1083,10 @@ mk-post-pnum-to-href = (post-uri) ->
 
 
 function snap-to-top
-  <~ set-timeout _, 5ms # yield to browser
-  if window.scroll-to then window.scroll-to 0, 0
   if window.mutator isnt \forum then $ \body .remove-class \scrolled
+  if window.scroll-to then window.scroll-to 0, 0
+  <~ set-timeout _, 50ms # yield to browser
+  if window.scroll-to then window.scroll-to 0, 0
 
 function enable-chat
   if window.admin-chat

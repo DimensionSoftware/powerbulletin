@@ -72,7 +72,7 @@ module.exports =
       v = parse-int n
       @$.find "##id .notices"
         ..html v
-        ..toggle-class \hidden (v <= 0)
+        ..toggle-class \hidden (not v or v <= 0)
 
     # remove a panel from the collection
     remove: (name) ~>
