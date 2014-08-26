@@ -5,7 +5,7 @@ require! \./PBComponent
 require! \./Editor
 require! furl: \../shared/forum-urls
 
-{in-thread-mode, thread-mode, storage, submit-form, post-success} = require \../client/client-helpers
+{lazy-load-html5-uploader, in-thread-mode, thread-mode, storage, submit-form, post-success} = require \../client/client-helpers
 {is-forum-homepage} = require \../shared/shared-helpers
 
 module.exports =
@@ -28,6 +28,22 @@ module.exports =
           if @is-editing # update ui
             @edit-mode! # back to default Reply mode
           @delete-draft!
+
+      # make entire component droppable
+      opts = {
+        name: \upload
+        post-url: "/resources/sites/#{site.id}/upload"
+        on-failure: (ev, file, req) ~>
+          try r = JSON.parse req.response-text
+          if req.status is 400
+            show-tooltip (@$.find \.tooltip), r?msg or 'File must be at least 200x200px'
+        on-success: (xhr, file, r-json) ~>
+          r = JSON.parse(r-json)
+          cache-buster = Math.random!to-string!replace \\. ''
+          #@$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
+      }
+      <~ lazy-load-html5-uploader
+      @$.html5-uploader opts # make entire component droppable
 
       @@$ document .on \click.post-drawer (ev) ~> # live
         if $ ev.target .has-class \onclick-footer-toggle # guard

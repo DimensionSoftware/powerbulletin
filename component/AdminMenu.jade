@@ -44,6 +44,13 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             //- XXX html5-uploader works inside parent <form>
             //-#uploader_component
             .break
+            label(for='uploads') Allow Uploads
+            .box
+              input.stylish#uploads(type='checkbox', value='checked', name='uploads')
+              label.switch-control(for='uploads')
+                .switch
+            .note Simply drag &amp; drop file uploads in posts
+            .break
             label(for='locked') Admin Only
             .box
               input.stylish#locked(type='checkbox', value='checked', name='locked')

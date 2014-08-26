@@ -170,7 +170,7 @@ is-commentable-forum = (m, forum-id) ->
 
       if id # active form
         form = { [k, v] for k,v of req.body when k in
-          <[ id dbid title placeholderDescription newsletter offerPhoto offerContent offerContentOnly offerDescription affiliateLink hashtags videoTop videoTop2 videoBottom linkDescription forumDescription pageDescription dialog postsPerPage offerSlug forumSlug hideHomepage locked comments pageSlug content url contentOnly separateTab ]> }
+          <[ id dbid title placeholderDescription newsletter offerPhoto offerContent offerContentOnly offerDescription affiliateLink hashtags videoTop videoTop2 videoBottom linkDescription forumDescription pageDescription dialog postsPerPage offerSlug forumSlug uploads hideHomepage locked comments pageSlug content url contentOnly separateTab ]> }
 
         for k in <[offerSlug forumSlug pageSlug]> # cleanup keys
           if form[k].length < 1 then delete form[k]

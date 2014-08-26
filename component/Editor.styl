@@ -32,66 +32,6 @@ html.profile .wmd-preview
       right auto
       bottom 12px
       margin 0 auto
-  //{{{ Preview pane
-  &.has-preview
-  // - when the preview is visible
-    .wmd-panel
-      position absolute
-      min-width 50%
-      width 50%
-      transition none
-      &:after
-        position absolute
-        z-index 20
-        content ''
-        top 0
-        bottom 0
-        right 0
-        background-color border_color
-        width 1px
-      .wmd-input
-        width 98%
-    .wmd-preview 
-      position absolute
-      border-left 2px solid #eee
-      height 100%
-      bottom 0
-      left 50%
-      text-align left
-      cursor default
-      width 50%
-      transition none
-    .onclick-toggle-preview
-      width 92px
-      text-indent 2px
-      &:after
-        content 'Hide Preview'
-  .onclick-toggle-preview
-    position absolute
-    z-index 10
-    right 0
-    bottom 0
-    height 22px
-    width 55px
-    padding 4px 12px
-    color #fff
-    font-size .95em
-    background-color rgba(0,0,0,.3)
-    border-left 1px solid #999
-    border-top 1px solid #999
-    border-top-left-radius 8px
-    cursor pointer
-    transition all .4s ease-out .1s
-    &:hover
-      background-color rgba(0,0,0,.5)
-      border-left 1px solid #555
-      border-top 1px solid #555
-      transition none
-    &:after
-      right 20px
-      position absolute
-      content 'Preview'
-  //}}}
   //{{{ <PageDown Editor>
   blockquote 
     border-left 2px dotted #888
@@ -204,4 +144,66 @@ absolue_top = 9999999!important
   z-index 99999!important
   //}}} </PageDown Editor>
 
+//{{{ Preview pane
+@media screen and (min-width: 800px)
+  .Editor
+    &.has-preview
+    // - when the preview is visible
+      .wmd-panel
+        position absolute
+        min-width 50%
+        width 50%
+        transition none
+        &:after
+          position absolute
+          z-index 20
+          content ''
+          top 0
+          bottom 0
+          right 0
+          background-color border_color
+          width 1px
+        .wmd-input
+          width 98%
+      .wmd-preview 
+        position absolute
+        border-left 2px solid #eee
+        height 100%
+        bottom 0
+        left 50%
+        text-align left
+        cursor default
+        width 50%
+        transition none
+      .onclick-toggle-preview
+        width 92px
+        text-indent 2px
+        &:after
+          content 'Hide Preview'
+    .onclick-toggle-preview
+      position absolute
+      z-index 10
+      right 0
+      bottom 0
+      height 22px
+      width 55px
+      padding 4px 12px
+      color #fff
+      font-size .95em
+      background-color rgba(0,0,0,.3)
+      border-left 1px solid #999
+      border-top 1px solid #999
+      border-top-left-radius 8px
+      cursor pointer
+      transition all .4s ease-out .1s
+      &:hover
+        background-color rgba(0,0,0,.5)
+        border-left 1px solid #555
+        border-top 1px solid #555
+        transition none
+      &:after
+        right 20px
+        position absolute
+        content 'Preview'
+//}}}
 // vim: fdm=marker

@@ -161,13 +161,13 @@
       .dialog
         visibility hidden
         opacity 0
-        #locked:checked + label::after, #comments:checked + label::after
+        #hide_homepage:checked + label:after, #uploads:checked + label:after, #locked:checked + label:after, #comments:checked + label:after
           content 'On'
-        #locked + label::after, #comments + label::after
+        #hide_homepage + label:after, #uploads + label:after, #locked + label:after, #comments + label:after
           content 'Off'
-        #content_only:checked + label::after, #separate_tab:checked + label::after
+        #content_only:checked + label:after, #separate_tab:checked + label:after
           content 'Yes'
-        #content_only + label::after, #separate_tab + label::after
+        #content_only + label:after, #separate_tab + label:after
           content 'No'
       .type, .dialog
         position absolute
