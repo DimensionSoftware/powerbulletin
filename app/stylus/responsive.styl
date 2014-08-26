@@ -16,7 +16,33 @@
     grid(100%,475px)
     .main-content
       .forum, .search
-        padding-left (grid*4)!important
+        padding-left (grid*12)!important
+        margin-left 0!important
+        .social
+          bottom 12px
+          z-index 6
+        .post-bottom + .social
+          bottom 30px
+        .post
+          margin-right 12px
+          .container
+            margin-left 7px
+          .profile-container
+            margin-left -190px
+            transform scale(.7)
+        // 1st level replies
+        .children
+          margin-left 0!important
+          .container
+            margin-left 10px!important
+          .profile-container
+            margin-left -190px!important
+          .actions
+              left 12px
+          // comments
+          .children
+            .profile-container
+              margin-left -212px!important
   body.scrolled
     .logo
       display none
