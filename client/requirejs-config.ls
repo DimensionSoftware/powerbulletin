@@ -31,7 +31,7 @@ paths:
   pd-editor             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.min else \../local/pagedown/Markdown.Editor
   #pagedown              : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.min else \../local/pagedown/Markdown.Sanitizer
   #jquery-fancybox       : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack else \../local/jquery.fancybox.pack
-  #socketio              : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min else \../local/socket.io.min
+  socketio              : \../local/socket.io
   pd-converter          : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.min else \../local/pagedown/Markdown.Converter
   pd-sanitizer          : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.min else \../local/pagedown/Markdown.Sanitizer
   raf                   : \../local/raf

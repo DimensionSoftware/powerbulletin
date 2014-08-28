@@ -61,9 +61,8 @@ clear-stale-redis-data = (r, cb) ->
   #io.enable 'browser client etag'         # apply etag caching logic based on version number
   #io.enable 'browser client gzip'         # gzip the file
   io.set \transports, [
+    * \polling
     * \websocket
-    * \xhr-polling
-    * \jsonp-polling
   ]
   #io.set 'log level', 1
 
@@ -75,37 +74,23 @@ clear-stale-redis-data = (r, cb) ->
 
   err <- clear-stale-redis-data redis-client
 
-  io.set \authorization, (handshake, accept) ->
-    if not handshake or handshake?domain
-      return accept("null handshake", false)
-    handshake.domain = handshake.headers.host
-    if handshake.headers.cookie
-      handshake.cookies = cookie.parse handshake.headers.cookie
-      connect-cookie = handshake.cookies['connect.sess']
-      unless connect-cookie then return accept(null, true)
-      unsigned = try
-        connect.utils.parse-signed-cookie connect-cookie, cvars.secret
-      catch
-        console.error \connect.utils.parse-signed-cookie, e
-        false
-
-      if unsigned
-        original-hash = crc32.signed unsigned
-        session = try
-          connect.utils.parse-JSON-cookie(unsigned) || {}
-        catch
-          console.error \connect.utils.parse-JSON-cookie, e
-          {}
-        #log \session, session
-        handshake.session = session
-        return accept(null, true)
-      else
-        #return accept("bad session?", false)
-        console.warn 'bad session cookie?', connect-cookie
-        return accept(null, true)
-    else
-      log "no cookies found during socket.io authorization phase"
-      return accept(null, true)
+  # new authorization middleware
+  io.use (socket, next) ->
+    handshake = socket.handshake
+    cookies = cookie.parse handshake.headers.cookie
+    next! unless cookies
+    session-cookie = cookies['connect.sess']
+    next! unless session-cookie
+    unsigned = connect.utils.parse-signed-cookie session-cookie, cvars.secret
+    next! unless unsigned
+    session = try
+      connect.utils.parse-JSON-cookie(unsigned) || {}
+    catch
+      console.error \connect.utils.parse-JSON-cookie, e
+      {}
+    next! unless session
+    socket.session = session
+    next!
 
   seen-socket-ids = {}
 
@@ -132,17 +117,18 @@ clear-stale-redis-data = (r, cb) ->
       log "no socket.handshake; bailing to prevent crash"
       return
 
-    err, user <- user-from-session socket.handshake.session
+    err, user <- user-from-session socket.session
     if err
       log err
       return
+    console.log \user, user
 
     err <- db.aliases.update-last-activity-for-user user
     if err
       log err
       return
 
-    err, site <- site-by-domain socket.handshake?domain
+    err, site <- site-by-domain socket.handshake?headers?host
     if err
       log err
       return

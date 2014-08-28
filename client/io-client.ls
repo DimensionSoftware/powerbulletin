@@ -15,16 +15,19 @@ window.ChatPanel = ChatPanel
 {render-and-append, add-commas} = require \../shared/shared-helpers
 {lazy-load-socketio, set-online-user, storage} = require \./client-helpers
 
+window.lazy-load-socketio = lazy-load-socketio
+
 ####  main  ;,.. ___  _
 init = -> # export socket to window + init
+  console.log \init, window.socket
   if sock = window.socket = io?connect!
     init-with-socket sock
   sock
 main = ->
-  <- lazy-load-socketio # first try
+  window.io <- require [ \socketio ]
   unless init!
     set-timeout (-> # static crashed or otherwise 50x'd--try again:
-      <- lazy-load-socketio
+      window.io <- require [ \socketio ]
       init!) 3000ms
 main!
 
