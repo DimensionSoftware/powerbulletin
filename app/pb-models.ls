@@ -6,7 +6,7 @@ require! {
   mkdirp
   fs
   postgres: \./postgres
-  sioa: \socket.io-announce
+  io: \socket.io-emitter
   sh: \../shared/shared-helpers
   format: \../shared/format
 }
@@ -14,8 +14,6 @@ require! {
 {filter, join, keys, values, sort-by} = require \prelude-ls
 
 const base-css = \public/sites
-
-announce = sioa.create-client!
 
 # Generate a function that takes another function and transforms its first parameter
 # according to the rules in serializers
@@ -851,7 +849,7 @@ query-dictionary =
       err <~ db.messages.mark-read msg.id, me.user_id
       if err then return cb { -success, err, messages: [ "Couldn't mark message read." ] }
       for alias in c.participants
-        announce.in("#{c.site_id}/users/#{alias.user_id}").emit \chat-message, msg
+        io.in("#{c.site_id}/users/#{alias.user_id}").emit \chat-message, msg
       cb null, msg
 
   thread_subscriptions:
