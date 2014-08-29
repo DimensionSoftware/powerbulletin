@@ -32,7 +32,7 @@ module.exports =
       # make entire component droppable
       opts = {
         name: \upload
-        post-url: "/resources/sites/#{site.id}/upload"
+        post-url: "/resources/sites/#{site?id}/upload"
         on-failure: (ev, file, req) ~>
           try r = JSON.parse req.response-text
           if req.status is 400
