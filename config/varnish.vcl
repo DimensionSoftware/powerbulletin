@@ -598,6 +598,7 @@ sub vcl_recv {
 
   # if it starts with /socket.io then send to socket backend
   if (req.url ~ "(?i)^/socket\.io/") {
+    set client.identity = client.ip; # stick sessions
     set req.backend = socket;
     # pipe any socket.io requests as they are long polling requests
     return (pipe);
