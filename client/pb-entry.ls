@@ -133,8 +133,9 @@ append-reply-ui = (ev) ->
       parent_id:  $p.data \post-id
       is_comment: true), ->
         editor = $p.find 'textarea[name="body"]'
-        editor.autosize!
-        if focus then editor.focus!
+        if editor
+          editor.autosize!
+          if focus then editor.focus!
   else
     $p.find('.reply .cancel').click!
 
@@ -406,7 +407,7 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
   icon = $p.find \img .attr \src
   panels = window.component.panels
 
-  err, c <- socket.emit \chat-between, [user.id, t.id]
+  err, c <- socket?emit \chat-between, [user.id, t.id]
   if err then return
 
   chat-panel = ChatPanel.add-from-conversation c, window.user
@@ -695,7 +696,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
           mutant.run mutants[r.mutant], {locals, window.user}, ->
             onload-resizable!
             window.hints.current.mutator = window.mutator
-            socket.emit \ping
+            socket?emit \ping
             window.time-updater!
         #else
         #  console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
