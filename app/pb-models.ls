@@ -6,10 +6,12 @@ require! {
   mkdirp
   fs
   postgres: \./postgres
-  io: \socket.io-emitter
+  io-emitter: \socket.io-emitter
   sh: \../shared/shared-helpers
   format: \../shared/format
 }
+
+io = io-emitter!
 
 {filter, join, keys, values, sort-by} = require \prelude-ls
 

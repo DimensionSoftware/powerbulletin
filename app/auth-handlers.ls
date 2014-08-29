@@ -4,7 +4,7 @@ require! {
   jade
   querystring
   url
-  io: \socket.io-emitter
+  io-emitter: \socket.io-emitter
   pg:   \./postgres
   auth: \./auth
   __: lodash
@@ -12,6 +12,8 @@ require! {
 
 {is-editing, is-admin, is-auth} = require \./path-regexps
 {gen-password} = require \../shared/shared-helpers
+
+io = io-emitter!
 
 @login = (req, res, next) ->
   site      = res.vars.site

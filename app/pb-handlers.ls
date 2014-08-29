@@ -16,9 +16,10 @@ require! {
   \./menu
   url
   sch: \./sales-component-handlers
+  io-emitter: \socket.io-emitter
 }
 
-io = require(\socket.io-emitter)
+io = io-emitter!
 
 global <<< require \./server-helpers
 global <<< require \../shared/shared-helpers

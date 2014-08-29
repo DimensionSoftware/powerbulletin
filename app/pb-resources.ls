@@ -3,7 +3,7 @@ require! {
   v: \./varnish
   c: \./cache
   h: \./server-helpers
-  io: \socket.io-emitter
+  io-emitter: \socket.io-emitter
   auth: \./auth
   menu: \./menu
   rights: \./rights
@@ -19,6 +19,8 @@ require! {
 }
 
 const base-css = \public/sites
+
+io = io-emitter!
 
 # Return true if forum-id is a locked forum according to the menu m.
 is-locked-forum = (m, forum-id) ->
