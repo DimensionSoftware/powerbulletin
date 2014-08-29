@@ -32,9 +32,7 @@ main = ->
 main!
 
 force-reconnect = (s) ->
-  #console.log \force-reconnect
-  s.socket.disconnect!
-  s.socket.reconnect!
+  io.connect '', force-new: true
 
 const timeout = 1000ms
 test-socket = (s, timeout, cb=(->)) ->
