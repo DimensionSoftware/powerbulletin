@@ -19,7 +19,6 @@ window.lazy-load-socketio = lazy-load-socketio
 
 ####  main  ;,.. ___  _
 init = -> # export socket to window + init
-  console.log \init, window.socket
   if sock = window.socket = io?connect!
     init-with-socket sock
   sock
