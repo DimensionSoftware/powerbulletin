@@ -66,9 +66,9 @@ clear-stale-redis-data = (r, cb) ->
   ]
   #io.set 'log level', 1
 
-  pub-client   = redis.create-client!
-  sub-client   = redis.create-client!
-  redis-client = redis.create-client!
+  pub-client   = redis.create-client return_buffers: true
+  sub-client   = redis.create-client return_buffers: true
+  redis-client = redis.create-client return_buffers: true
   redis-store  = new RedisStore({ sub-client, pub-client })
   io.adapter redis-store
 

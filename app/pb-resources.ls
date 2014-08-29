@@ -13,6 +13,7 @@ require! {
   async
   fs
   mkdirp
+  redis
   stream
   stylus
   validator
@@ -20,7 +21,7 @@ require! {
 
 const base-css = \public/sites
 
-io = io-emitter!
+io = io-emitter redis.create-client return_buffers: true
 
 # Return true if forum-id is a locked forum according to the menu m.
 is-locked-forum = (m, forum-id) ->

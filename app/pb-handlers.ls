@@ -5,6 +5,7 @@ require! {
   mkdirp
   querystring
   gm
+  redis
   s: \./search
   c: \./cache
   h: \./server-helpers
@@ -19,7 +20,7 @@ require! {
   io-emitter: \socket.io-emitter
 }
 
-io = io-emitter!
+io = io-emitter redis.create-client return_buffers: true
 
 global <<< require \./server-helpers
 global <<< require \../shared/shared-helpers

@@ -4,6 +4,7 @@ require! {
   jade
   querystring
   url
+  redis
   io-emitter: \socket.io-emitter
   pg:   \./postgres
   auth: \./auth
@@ -13,7 +14,7 @@ require! {
 {is-editing, is-admin, is-auth} = require \./path-regexps
 {gen-password} = require \../shared/shared-helpers
 
-io = io-emitter!
+io = io-emitter redis.create-client return_buffers: true
 
 @login = (req, res, next) ->
   site      = res.vars.site

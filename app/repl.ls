@@ -23,7 +23,8 @@ global.el  = require \./elastic
 global.elc = -> el.client
 global.m   = require \./pb-models
 
-global.io       = require(\socket.io-emitter)()
+global.redis    = require \redis
+global.io       = require(\socket.io-emitter)(redis.create-client return_buffers: true)
 global.menu     = require \./menu
 
 global.reload = (m) ->

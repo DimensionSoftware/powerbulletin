@@ -5,13 +5,14 @@ require! {
   stylus
   mkdirp
   fs
+  redis
   postgres: \./postgres
   io-emitter: \socket.io-emitter
   sh: \../shared/shared-helpers
   format: \../shared/format
 }
 
-io = io-emitter!
+io = io-emitter redis.create-client return_buffers: true
 
 {filter, join, keys, values, sort-by} = require \prelude-ls
 
