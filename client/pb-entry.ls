@@ -487,9 +487,13 @@ $d.on \submit \form.onclick-submit (ev) -> # use submit event to ensure form has
 
     f.find \input:first .focus!select! unless f.has-class \no-focus
     if data?success
+      if data.site then window.site = data.site # update site
       # indicated saved!
       b.remove-attr \disabled
       show-tooltip t, (data?msg or t.data(\msg) or \Saved!)
+
+      # <ui updates>
+      window.fixed-header = data.site.config?fixed-header
       # update config for domains (client)
       id = parse-int($ '#domain option:selected' .val!)
       if domain = find (-> it.id == id), site.domains

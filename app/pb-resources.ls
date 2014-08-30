@@ -160,7 +160,7 @@ is-commentable-forum = (m, forum-id) ->
 
       # varnish ban
       h.ban-all-domains site.id if should-ban
-      res.json success:true
+      res.json {+success, site}
 
     | \menu =>
       # save site config

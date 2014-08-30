@@ -135,14 +135,17 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
 # indicate to stylus that view scrolled
 on-scroll-fn = ->
   st = $w.scroll-top!
-  if window.mutator isnt \forum or (helpers.is-forum-homepage window.location.pathname) # expand header when scrolled to top
-    $ \body .toggle-class \scrolled (st > threshold)
-  else if st > threshold
-    $ \body .add-class \scrolled
+  unless window.fixed-header
+    if window.mutator isnt \forum or (helpers.is-forum-homepage window.location.pathname) # expand header when scrolled to top
+      $ \body .toggle-class \scrolled (st > threshold)
+    else if st > threshold
+      $ \body .add-class \scrolled
+
   if st is 0
     $ \header .remove-class \expanded
     $ \body .remove-class \minimized
-unless window.fixed-header then $ window .on \scroll _.debounce on-scroll-fn, 10ms
+    if window.fixed-header then $ \body .remove-class \scrolled
+$ window .on \scroll _.debounce on-scroll-fn, 10ms
 
 
 $ \header.header .on \click (ev) ->
