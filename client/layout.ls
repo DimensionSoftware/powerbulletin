@@ -144,8 +144,8 @@ on-scroll-fn = ->
       $ \body .add-class \scrolled
 
   # handle footer
-  if window.mutator is \forum
-    $ \body .add-class \footer-show # always show footer on forum (paginator)
+  if window.mutator is \forum or window.mutator is \profile
+    $ \body .add-class \footer-show # always show footer on these (paginator)
   else
     $ \body .toggle-class \footer-show (st > threshold)
 
