@@ -135,11 +135,19 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
 # indicate to stylus that view scrolled
 on-scroll-fn = ->
   st = $w.scroll-top!
+
+  # handle header
   unless window.fixed-header
     if window.mutator isnt \forum or (helpers.is-forum-homepage window.location.pathname) # expand header when scrolled to top
       $ \body .toggle-class \scrolled (st > threshold)
     else if st > threshold
       $ \body .add-class \scrolled
+
+  # handle footer
+  if window.mutator is \forum
+    $ \body .add-class \footer-show # always show footer on forum (paginator)
+  else
+    $ \body .toggle-class \footer-show (st > threshold)
 
   if st is 0
     $ \header .remove-class \expanded
