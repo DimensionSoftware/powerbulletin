@@ -160,7 +160,7 @@ $ \header.header .on \click (ev) ->
   if $ ev.target .has-class \header # pull down search when header is clicked
     h = $ this
     b = $ \body
-    b.toggle-class \scrolled
+    unless window.fixed-header then b.toggle-class \scrolled
     h.toggle-class \expanded
     set-timeout (-> $ \#query .focus!), 1ms # ...and focus search
 
