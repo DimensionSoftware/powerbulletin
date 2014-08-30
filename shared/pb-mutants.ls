@@ -128,8 +128,10 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
   # indicate current
   forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
   w.$ \html .attr(\class "#{next-mutant}#{forum-class}") # stylus
-  if w.marshal then w.marshal \mutator, next-mutant      # js
-  if w.marshal then w.marshal \adminChat, @admin-chat
+  if w.marshal
+    w.marshal \mutator, next-mutant # js
+    w.marshal \adminChat, @admin-chat
+    w.marshal \fixedHeader, @fixed-header
 
   # handle active main menu
   fid = active-forum-id or w.active-forum-id
@@ -210,10 +212,11 @@ layout-on-personalize = (w, u) ->
       const prev-mutant = window.mutator
 
       # render main content
-      if is-forum-homepage @furl.path # show tall header only on forum homepages
-        window.$ \body .remove-class \scrolled
-      else # begin with smaller "scrolled" header
-        window.$ \body .add-class \scrolled
+      unless @fixed-header
+        if is-forum-homepage @furl.path # show tall header only on forum homepages
+          window.$ \body .remove-class \scrolled
+        else # begin with smaller "scrolled" header
+          window.$ \body .add-class \scrolled
 
       if is-editing(@furl.path) is true
         window.render-mutant \main_content, \post-new

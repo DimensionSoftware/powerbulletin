@@ -142,7 +142,7 @@ on-scroll-fn = ->
   if st is 0
     $ \header .remove-class \expanded
     $ \body .remove-class \minimized
-$ window .on \scroll _.debounce on-scroll-fn, 10ms
+unless window.fixed-header then $ window .on \scroll _.debounce on-scroll-fn, 10ms
 
 
 $ \header.header .on \click (ev) ->
