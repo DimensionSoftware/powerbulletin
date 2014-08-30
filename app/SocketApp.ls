@@ -19,7 +19,7 @@ module.exports =
 
       server = http.create-server app
       io-server.init server
-      server.listen @port
+      server.listen @port or 5000
 
       @stop = (cb) -> server.close(cb)
 

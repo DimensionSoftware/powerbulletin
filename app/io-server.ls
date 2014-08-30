@@ -57,9 +57,6 @@ clear-stale-redis-data = (r, cb) ->
   do -> pg.procs <<< { [k,v] for k,v of m when k not in <[orm client driver]> }
 
   io = sio.listen server
-  #io.enable 'browser client minification' # send minified client
-  #io.enable 'browser client etag'         # apply etag caching logic based on version number
-  #io.enable 'browser client gzip'         # gzip the file
   io.set \transports, [
     * \polling
     * \websocket

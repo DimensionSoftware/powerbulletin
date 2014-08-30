@@ -28,7 +28,7 @@ module.exports =
       @$.find \.list .append $chat
 
     load-initial: ~>
-      err, chats <~ socket.emit \chat-past
+      err, chats <~ socket?emit \chat-past
       @chats = chats
       if err then return err
       if chats.length
