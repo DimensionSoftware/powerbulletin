@@ -43,6 +43,13 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
         h4.onclick-expand Look &amp; Feel
         .dialog
           .break
+          label(for='fixed_header') Fixed Header
+          .box
+            input.stylish.save#fixed_header(type='checkbox', value='checked', name='fixedHeader', checked=site.config.fixedHeader)
+            label.switch-control(for='fixed_header')
+              .switch
+          .note Keep the header expanded
+          .break
           //- XXX html5-uploader works inside parent <form>
           #logo_uploader
           .break

@@ -339,7 +339,7 @@ body.paginator
     height 32px
     width 32px
     margin-top 9px
-    top (header_height-20)
+    top (header_height - 83)
     right -17px
     cursor pointer
     position absolute
@@ -573,10 +573,6 @@ footer.expanded
   z-index 100
   .onclick-scroll-top
     margin-top 8px
-footer.active
-  opacity 1
-  bottom -(grid * 1.4)
-  font-size .85em
 footer
   position fixed!important
   top auto!important
@@ -588,7 +584,12 @@ footer
   width auto
   font-size .95em
   padding 5px 0
-  transition left .08s ease-in, height .08s ease-in
+  transition height .15s ease-out .5s
+  &.active
+    opacity 1
+    bottom -(grid * 1.4)
+    font-size .85em
+    transition all .3s ease-in
   .onclick-scroll-top
     cursor n-resize
     //cursor default
@@ -713,7 +714,7 @@ body.scrolled
     padding-top (grid * 1.5)
     //transition padding-top .4s ease-out, top .1s ease-out!important
     .handle
-      transition top .2s ease-out
+      top (header_height - 87)
     #paginator
       a.page.previous::before
         top -5px
@@ -723,10 +724,12 @@ body.scrolled
     .breadcrumb
       top (header_scrolled_height+1)
       transition top .25s ease-out
+
+body.footer-show
   footer
     opacity 1
     height footer_height
-    transition height .12s bounce
+    transition height .13s bounce
 //}}}
 //{{{ Collapsed left nav
 body.collapsed
