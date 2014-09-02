@@ -342,6 +342,8 @@ layout-on-personalize = (w, u) ->
       if is-forum-homepage window.location.pathname
         if window.hide-homepage # handle homepage or not
           $ '.threads .thread:first .mutant' .click!
+        else
+          window.$ \#main_content .remove-class \transparent # fade content in
 
         homepage-postdrawer = ->
           thread-mode true
