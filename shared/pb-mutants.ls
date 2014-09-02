@@ -565,7 +565,7 @@ same-profile = (hints) ->
       window.$ \body .off \click.pd
       window.$ \#change_title .off!
       window.$ \.onclick-change-sig .off!
-      reset-paginator window unless next-mutant is \forum
+      reset-paginator window
       next!
   on-initial:
     (window, next) ->
