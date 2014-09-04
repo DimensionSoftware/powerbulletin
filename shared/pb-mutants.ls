@@ -424,7 +424,12 @@ layout-on-personalize = (w, u) ->
       #w.$ \body .off \click.pd
       #$ '#left_container .scrollable' .off \scroll.Forum
       try w.$ \#left_container .resizable(\destroy)
-      if w.user then postdrawer!save-draft!
+      if w.user then postdrawer!
+        ..save-draft!
+        # back to Reply mode
+        ..clear!
+        ..edit-mode!
+        thread-mode false
       unless next-mutant is \forum_background
         remove-backgrounds w
         reset-paginator w

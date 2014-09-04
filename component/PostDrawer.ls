@@ -28,6 +28,7 @@ module.exports =
           if @is-editing # update ui
             @edit-mode! # back to default Reply mode
           @delete-draft!
+          @clear!
 
       @@$ document .on \click.post-drawer (ev) ~> # live
         if $ ev.target .has-class \onclick-footer-toggle # guard
