@@ -738,10 +738,10 @@ if u = storage.get \user # verify local user matches server
 
 
 # disable "scroll overflow" of left bar into parent
-$ document .on \wheel, '#left_container .scrollable' (ev) ->
-    offset-top    = @scroll-top + parseInt(ev.original-event.delta-y, 10)
+$ document .on \wheel, \.y-scrollable (ev) ->
+    offset-top    = @scroll-top + parse-int(ev.original-event.delta-y, 10)
     offset-bottom = @scroll-height - @get-bounding-client-rect!height - offset-top
-    if offset-top < 0 or offset-bottom < 0
+    if offset-top <= 0 or offset-bottom <= 0
       ev.prevent-default!
     else
       ev.stop-immediate-propagation!
