@@ -170,6 +170,7 @@ $d.on \click '.onclick-scroll-to' ->
   false
 
 # attach scroll-to-top's
+$d.on \click \.onclick-scroll-top window.scroll-to-top; false
 $d.on \mousedown \.onclick-scroll-top ->
   $ this .attr \title 'Scroll to Top!'
   window.scroll-to-top!
