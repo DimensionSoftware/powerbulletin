@@ -633,7 +633,6 @@ same-profile = (hints) ->
       next!
   on-load:
     (window, next) ->
-      #require \jqueryIris
       # expand left nav or not?
       $b = $ \body
       if window.admin-expanded = $b.has-class \collapsed
