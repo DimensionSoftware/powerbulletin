@@ -156,7 +156,7 @@ on-scroll-fn = ->
 $ window .on \scroll _.debounce on-scroll-fn, 10ms
 
 
-$ \header.header .on \click (ev) ->
+$ \header.header .on \dblclick (ev) ->
   if $ ev.target .has-class \header # pull down search when header is clicked
     h = $ this
     b = $ \body

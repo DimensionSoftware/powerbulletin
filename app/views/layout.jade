@@ -61,7 +61,7 @@ html
       window.CHANGESET=!{JSON.stringify(global.CHANGESET)};window.siteName="!{siteName}";window.siteId=!{siteId};!{invite}window.initialMutant=!{JSON.stringify(initialMutant)};window.cacheUrl=!{JSON.stringify(cacheUrl)};window.cache2Url=!{JSON.stringify(cache2Url)};window.cache3Url=!{JSON.stringify(cache3Url)};window.cache4Url=!{JSON.stringify(cache4Url)};window.cache5Url=!{JSON.stringify(cache5Url)};window.authDomain="!{authDomain}";window.env=!{JSON.stringify(env)};require.config({baseUrl:window.cache5Url+'/client',urlArgs:!{JSON.stringify(global.CHANGESET)}});require(['requirejs-config'],function(cfg){require.config(cfg);require.call(window,['pb-entry']);});
   body
     .opener
-    header.header.toggler
+    header.header
       if logo
         h1.logo.custom-logo
           a.mutant(tabindex='-1', href='/', title=metaKeywords)= siteName
