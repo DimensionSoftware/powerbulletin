@@ -77,14 +77,6 @@ header
   color #555
   background overlay_color_secondary
   background-image linear-gradient(bottom, #fff 55%, overlay_color_secondary)
-  &:after
-    position absolute
-    content ''
-    left 0
-    right 0
-    bottom 1px
-    height 1px
-    background #f4f4f4
   &.expanded
     background-color overlay_tint_color
   .container
@@ -103,25 +95,32 @@ header
       .query:focus + .icon
         top -2px
         height 40px
-        opacity .75
+        opacity .8
       .query
         box-shadow 0 1px 1px -1px theme_color inset,0 1px 3px 0 theme_color inset
-        border 0
+        border none
         background none
         border-radius 8px
         font-size 1.15em
         height 20px
-        transition all .2s ease-in .1s
+        opacity 1
+        transition none
         background-color rgba(overlay_color_primary, .95)
+        &:hover
+          color #222
+          background-color overlay_color_primary
+          box-shadow 0 1px 1px 0 theme_color inset,0 1px 2px 0 theme_color inset, 0 1px 0 0 theme_color
+          transition none
         &:focus
           transition none
           background-color overlay_color_primary
-          margin-top -1px
-          height 21px
-          text-indent 8px
-          border-radius 5px
-          box-shadow 0 1px 2px 1px theme_color, 0 1px 7px -2px theme_color
+          //margin-top -1px
+          //height 21px
+          //text-indent 8px
+          border-radius 6px
+          box-shadow 0 1px 1px 1px theme_color, 0 1px 5px -3px theme_color, 0 1px 0 1px theme_color inset
           color #111
+          transform scale(1.01)
       .query::-webkit-input-placeholder
           color #ccc
       .query:-moz-placeholder
@@ -296,8 +295,10 @@ footer
 //{{{ Scrolled <body>
 body.scrolled
   header
+    transition none
     background-color overlay_tint_color
     height -2px
+    box-shadow 0 1px 3px 0px rgba(0,0,0,.1)
     //transition height .1s ease-out
     //&::after
     //  box-shadow 0 2px 6px 0px #ddd
@@ -308,19 +309,13 @@ body.scrolled
     //  height 1px
     //  content ''
     //  position absolute
-    &:after
-      position absolute
-      content ''
-      left 0
-      right 0
-      bottom 1px
-      height 1px
-      background #eaeaea
     .online
       box-shadow 0 0 2px 0 dark_theme_color, 1px 1px 10px -1px theme_color
     .container
       .search
+        top -500px
         .query
+          opacity 0!important
           border-bottom-width 1px
         .query::-webkit-input-placeholder
             color #bbb
@@ -331,8 +326,17 @@ body.scrolled
         .query:-ms-input-placeholder
             color #bbb
 
-    .profile.photo.online
-      box-shadow 0 0 2px 1px dark_theme_color, 1px 1px 2px 1px theme_color!important
+    &.image
+      .tools
+        .profile.photo
+          box-shadow 0 0 2px 1px #333
+          &.online
+            box-shadow 0 0 2px 1px dark_theme_color, 1px 1px 2px 1px theme_color!important
+    .tools
+      .profile.photo
+        box-shadow 0 0 2px 1px #333
+        &.online
+          box-shadow 0 0 2px 1px dark_theme_color, 1px 1px 2px 1px theme_color!important
 
   #left_content::after
     bottom (footer_height - 4)
@@ -358,7 +362,11 @@ body.scrolled
 .shake
   animation-name shake
   animation-duration .8s
-.fancybox-overlay
+.wmd-prompt-dialog
+  padding 5px 20px 35px
+  border-radius 4px
+  box-shadow 0 0 12px #888
+.fancybox-overlay, .wmd-prompt-background
   background radial-gradient(circle closest-corner at 50% 40%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,1) 100% ) !important
   overflow none
   &::after
