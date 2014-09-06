@@ -32,7 +32,7 @@ module.exports =
           @delete-draft!
           @clear!
 
-      init-uploader.call @
+      @init-uploader!
 
       @@$ document .on \click.post-drawer (ev) ~> # live
         if $ ev.target .has-class \onclick-footer-toggle # guard
@@ -67,6 +67,24 @@ module.exports =
       # + Editor
       @editor = new Editor {locals:{id:active-thread-id?}}, \#editor, @
       @editor.render!attach!
+
+    init-uploader: ~>
+      opts = {
+        name: \attach
+        post-url: "/resources/sites/#{siteId}/upload"
+        preview: void
+        on-failure: (ev, file, req) ~>
+          try r = JSON.parse req.response-text
+          if req.status is 400
+            show-tooltip (@$.find \.tooltip), r?msg or 'File must be at least 200x200px'
+        on-success: (xhr, file, r-json) ~>
+          r = JSON.parse(r-json)
+          cache-buster = Math.random!to-string!replace \\. ''
+          #@$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
+      }
+      <~ lazy-load-html5-uploader
+      @uploader = new Uploader opts, (@$.find \#attach_uploader)
+      @$.html5-uploader opts # make entire component droppable
 
     _draft: ~>
       const forum-id  = window.active-forum-id or @context-forum-id
@@ -195,21 +213,4 @@ function make-resizable footer
         max-height: 600px
         resize: (el, ui) -> window?save-ui!)
 
-function init-uploader
-  opts = {
-    name: \uploader
-    post-url: "/resources/sites/#{siteId}/upload"
-    preview: void
-    on-failure: (ev, file, req) ~>
-      try r = JSON.parse req.response-text
-      if req.status is 400
-        show-tooltip (@$.find \.tooltip), r?msg or 'File must be at least 200x200px'
-    on-success: (xhr, file, r-json) ~>
-      r = JSON.parse(r-json)
-      cache-buster = Math.random!to-string!replace \\. ''
-      #@$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
-  }
-  <~ lazy-load-html5-uploader
-  @uploader = new Uploader opts, (@$.find \.Uploader)
-  @$.html5-uploader opts # make entire component droppable
 # vim:fdm=marker
