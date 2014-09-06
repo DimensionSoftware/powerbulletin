@@ -738,7 +738,7 @@ if u = storage.get \user # verify local user matches server
 
 
 # disable "scroll overflow" of left bar into parent
-$ document .on \wheel, \.y-scrollable (ev) ->
+$d.on \wheel, \.y-scrollable (ev) ->
     offset-top    = @scroll-top + parse-int(ev.original-event.delta-y, 10)
     offset-bottom = @scroll-height - @get-bounding-client-rect!height - offset-top
     if offset-top <= 0 or offset-bottom <= 0

@@ -1,6 +1,6 @@
 analytics = unescape(site.config.analytics)
 form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", enctype="multipart/form-data")
-  fieldset.col1.y-scrollable
+  fieldset.col1
     button.name(type='submit', value='Save') Save
     label(for='name') Title
     input(id='name', class='name', name='name', type='text', value=site.name)
