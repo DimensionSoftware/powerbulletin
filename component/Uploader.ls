@@ -58,12 +58,12 @@ module.exports =
           on-success: (xhr, file, r-json) ~>
             @$.find \.progress .width 0px
             # load current preview
-            r = JSON.parse r-json
-            if r.success
+            try r = JSON.parse r-json
+            if r?success
               @set-preview r[locals.name]
             else
-              show-tooltip ($ \.tooltip:first), r?msg
-            if locals.on-success then locals.on-success xhr, file, try JSON.parse r-json
+              show-tooltip ($ \.tooltip:first), r?msg or 'Try Again!'
+            if locals.on-success then locals.on-success xhr, file, r
         }
 
       ####  main  ;,.. ___  _
