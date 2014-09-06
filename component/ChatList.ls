@@ -23,6 +23,7 @@ module.exports =
     on-detach: ~>
 
     add: (c) ~>
+      return unless c.participants # guard
       c.others = c.participants |> reject (-> it.user_id is window.user?id)
       $chat = @@$(jade.templates._chat_list_item(c))
       @$.find \.list .append $chat
