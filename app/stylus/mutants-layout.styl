@@ -931,15 +931,11 @@ html.admin
           font-size .8em
           padding-botom 2px
       menu
-        float right
+        text-align right
         list-style none
         padding 18px
         margin 28px 0 0 3px
-        transition all .2s ease-out
-        li.active
-          a
-            right 6px
-            transition right .15s ease-out
+        transition all .15s ease-out
         li
           padding 4px 12px 4px 5px
           margin-bottom 8px
@@ -951,7 +947,10 @@ html.admin
             position absolute
             right 10px
             font-size 1.3em
-            animation-name none
+          &.active
+            a
+              right 6px
+              transition right .25s ease-out
   .main-content
     padding-left 200px
     padding-bottom 50px
