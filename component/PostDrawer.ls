@@ -25,6 +25,7 @@ module.exports =
         ev = {target:@editor.$} # mock event
         submit-form ev, (data) ~> # ...and submit!
           post-success ev, data
+          return unless data.success # guard
           if @is-editing # update ui
             @edit-mode! # back to default Reply mode
           @delete-draft!
