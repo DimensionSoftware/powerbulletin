@@ -4,7 +4,7 @@ require! {
   crc32: 'express/node_modules/buffer-crc32'
   cookie: 'express/node_modules/cookie'
   connect: 'express/node_modules/connect'
-  RedisStore: \socket.io-redis
+  socketio-redis: \socket.io-redis
   ChatServer: './io-chat-server'
   Presence: './presence'
   sio: \socket.io
@@ -57,17 +57,17 @@ clear-stale-redis-data = (r, cb) ->
   do -> pg.procs <<< { [k,v] for k,v of m when k not in <[orm client driver]> }
 
   io = sio.listen server
+  console.log "------------------------------------------------------------------------"
+  pub-client = redis.create-client return_buffers: true
+  sub-client = redis.create-client null, null, detect_buffers: true
+  redis-client = redis.create-client return_buffers: true
+  io.adapter socketio-redis({host: \localhost, port: 6379, pub-client, sub-client})
   io.set \transports, [
     * \polling
     * \websocket
   ]
   #io.set 'log level', 1
 
-  pub-client   = redis.create-client return_buffers: true
-  sub-client   = redis.create-client return_buffers: true
-  redis-client = redis.create-client return_buffers: true
-  redis-store  = new RedisStore({ sub-client, pub-client })
-  io.adapter redis-store
 
   err <- clear-stale-redis-data redis-client
 
