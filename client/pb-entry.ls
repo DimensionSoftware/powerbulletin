@@ -29,7 +29,7 @@ require \raf
 require \layout
 
 {storage, set-imgs, set-profile, align-ui, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, show-info, submit-form, postdrawer} = require \./client-helpers
-{render-and-append, render-and-prepend} = require \../shared/shared-helpers
+{render-and-append, render-and-before, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
 window.MainMenu        = require \../component/MainMenu
@@ -281,8 +281,12 @@ $R((sopts) ->
 
 $ui.on \thread-create, (e, thread) ->
   #console.info 'thread-create', thread
-  <- render-and-prepend window,  $('#left_container .threads'), \thread, thread:thread
-  $ '#left_container .threads div.fadein li' .unwrap!
+  if $ '#left_container .threads .sticky' .length # insert after last sticky
+    <- render-and-before window,  $('#left_container .threads .sticky:last + .thread'), \thread, thread:thread
+    $ '#left_container .threads div.fadein li' .unwrap!
+  else
+    <- render-and-prepend window,  $('#left_container .threads'), \thread, thread:thread
+    $ '#left_container .threads div.fadein li' .unwrap!
 
 $ui.on \nav-top-posts, (e, threads) ->
   #console.info \stub, threads

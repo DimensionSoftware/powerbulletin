@@ -5,6 +5,7 @@ require! {
   mkdirp
   querystring
   gm
+  redis
   s: \./search
   c: \./cache
   h: \./server-helpers
@@ -16,9 +17,10 @@ require! {
   \./menu
   url
   sch: \./sales-component-handlers
+  io-emitter: \socket.io-emitter
 }
 
-announce = require(\socket.io-announce).create-client!
+io = io-emitter redis.create-client return_buffers: true
 
 global <<< require \./server-helpers
 global <<< require \../shared/shared-helpers
@@ -573,7 +575,7 @@ function profile-paths user, uploaded-file, base=\avatar
         if err
           console.error \change-avatar, err
           return res.json success: false, type: \db.change-avatar
-        announce.in(site.id).emit \new-profile-photo, { id: user.id, photo: new-photo }
+        io.in(site.id).emit \new-profile-photo, { id: user.id, photo: new-photo }
         ban-all-domains site.id
         return res.json success: true
   res.json success: false
@@ -601,7 +603,7 @@ function profile-paths user, uploaded-file, base=\avatar
   site = res.vars.site
   # TODO make add-thread-impression return forum_id
   # TODO make room name based on site.id and forum_id
-  announce.in(site.id).emit \thread-impression r #{ id: req.params.id, views: r.views, forum_id: r.thread_id }
+  io.in(site.id).emit \thread-impression r #{ id: req.params.id, views: r.views, forum_id: r.thread_id }
   res.json success: true
 
 @censor = (req, res, next) ->

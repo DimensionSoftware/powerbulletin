@@ -169,8 +169,8 @@ load-css = (href) ->
     "#cache-url/fancybox/jquery.fancybox.css",
     cb
 @lazy-load-socketio = (cb) ~>
-  @lazy-load (-> window.$!fancybox?length),
-    "#cache-url/local/socket.io.min.js",
+  @lazy-load (-> window.io),
+    "#cache-url/socket.io/socket.io.js",
     null,
     cb
 #}}}
