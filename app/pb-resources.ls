@@ -85,7 +85,7 @@ is-commentable-forum = (m, forum-id) ->
     switch req.body.action
     | \general =>
       should-ban = false # varnish
-      for f in <[style newsletter postsPerPage adminChat inviteOnly private social analytics]>
+      for f in <[style fixedHeader newsletter postsPerPage adminChat inviteOnly private social analytics]>
         if site.config[f] isnt req.body[f] then should-ban = true
 
       css-dir = "#base-css/#{site.id}"
@@ -110,8 +110,8 @@ is-commentable-forum = (m, forum-id) ->
       # update site
       site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
-        <[ newsletter newsletterMsg newsletterAction postsPerPage metaKeywords adminChat inviteOnly private social analytics style colorTheme ]> }
-      for c in <[ newsletter adminChat inviteOnly social private ]> # uncheck checkboxes?
+        <[ newsletter fixedHeader newsletterMsg newsletterAction postsPerPage metaKeywords adminChat inviteOnly private social analytics style colorTheme ]> }
+      for c in <[ fixedHeader newsletter adminChat inviteOnly social private ]> # uncheck checkboxes?
         delete site.config[c] unless req.body[c]
       for s in <[ private analytics ]> # subscription tampering
         delete site.config[s] unless s in site.subscriptions
@@ -161,7 +161,7 @@ is-commentable-forum = (m, forum-id) ->
 
       # varnish ban
       h.ban-all-domains site.id if should-ban
-      res.json success:true
+      res.json {+success, site}
 
     | \menu =>
       # save site config
@@ -171,7 +171,7 @@ is-commentable-forum = (m, forum-id) ->
 
       if id # active form
         form = { [k, v] for k,v of req.body when k in
-          <[ id dbid title placeholderDescription newsletter offerPhoto offerContent offerContentOnly offerDescription affiliateLink hashtags videoTop videoTop2 videoBottom linkDescription forumDescription pageDescription dialog postsPerPage offerSlug forumSlug hideHomepage locked comments pageSlug content url contentOnly separateTab ]> }
+          <[ id dbid title placeholderDescription fixedHeader newsletter offerPhoto offerContent offerContentOnly offerDescription affiliateLink hashtags videoTop videoTop2 videoBottom linkDescription forumDescription pageDescription dialog postsPerPage offerSlug forumSlug hideHomepage locked comments pageSlug content url contentOnly separateTab ]> }
 
         for k in <[offerSlug forumSlug pageSlug]> # cleanup keys
           if form[k].length < 1 then delete form[k]

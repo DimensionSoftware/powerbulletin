@@ -91,7 +91,6 @@ render = (sel, locals, cb=(->)) ~>
   unless (window.user?rights?super or window.user?sys_rights?super)
     if $ \body .has-class \locked then return
   unless user then Auth.show-login-dialog!; return
-  @postdrawer!set-draft!
   @postdrawer!toggle!
 
 @open-postdrawer = (ev) ~> @postdrawer!open!
