@@ -505,36 +505,46 @@ director cache round-robin {
   }
 }
 
-director socket round-robin {
+director socket client {
   {
     .backend = s0;
+    .weight = 1;
   }
   {
     .backend = s1;
+    .weight = 1;
   }
   {
     .backend = s2;
+    .weight = 1;
   }
   {
     .backend = s3;
+    .weight = 1;
   }
   {
     .backend = s4;
+    .weight = 1;
   }
   {
     .backend = s5;
+    .weight = 1;
   }
   {
     .backend = s6;
+    .weight = 1;
   }
   {
     .backend = s7;
+    .weight = 1;
   }
   {
     .backend = s8;
+    .weight = 1;
   }
   {
     .backend = s9;
+    .weight = 1;
   }
 }
 
