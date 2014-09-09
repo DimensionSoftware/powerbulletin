@@ -31,7 +31,6 @@
       display inline-block
     &.edit .in-edit
       display inline-block
-
 pre,code
   background-color #f9f9f9
   font-size smaller
@@ -75,7 +74,10 @@ footer
         position absolute
         bottom 0
         right 0
-        z-index 9
+        z-index 12
+        .label, .note
+          display none
+          z-index 12px
       #editor .center
         top 0
         .tooltip.small

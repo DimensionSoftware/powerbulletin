@@ -50,13 +50,15 @@ module.exports =
           name: locals.name
           post-url: locals.postUrl
           on-server-progress: (progress, file) ~>
+            @$.find \.action .hide!
             p = parse-int((progress.loaded/file.size) * 100)
             @$.find \.progress # progress update!
-              ..html p + ' <small> %</small>'
+              ..html p + '<small>%</small>'
               ..css  \width, (if p < 35 then 35 else p) + \%
-          on-client-load-end: ~> @$.find \.progress .width 0px
+          on-client-load-end: ~> @$.find \.progress .width 0px; @$.find \.action .show!
           on-success: (xhr, file, r-json) ~>
             @$.find \.progress .width 0px
+            @$.find \.action .show!
             # load current preview
             try r = JSON.parse r-json
             if r?success
