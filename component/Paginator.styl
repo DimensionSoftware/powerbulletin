@@ -1,38 +1,32 @@
 .Paginator
-  margin-top 1px
   // active & inactive links
   a, strong
     position relative
     z-index 1
     display inline-block
-    height 12px
-    line-height 9px
     font-weight 300
-    padding 4px 8px
-    margin 0 18px
+    padding 0 6px
+    margin 0 15px
     font-size 1em
-    border-radius 30px
+    border-radius 100%
   // active-only
   strong
-    font-weight bold
-    color #fff
-    background-color theme_color
-    transform translateY(-1px) scale(1.1)
+    font-weight 500
+    color dark_text
+    background-color rgba(theme_color, .2)
+    transform scale(1.1)
   // inactive-only
   a
+    transition all .1s ease-out
     &:hover
       position relative
       z-index 1
       text-shadow 0 -1px 0 rgba(50,50,50,.09)
       box-shadow 0 0 2px theme_color, 0 1px 1px theme_color
-      //transform translateY(-1px) scale(1.1)
+      transform scale(1.04)
+      transition all 0
   // inset controls (< > reply & top)
   .inset
-    color #777
-    background-color #ddd
-    background-image linear-gradient(to bottom, #ddd 2px, #f1f1f1 100%)
-    border 1px solid #ddd
+    background-color rgba(#ddd, .4)
+    background-image linear-gradient(to bottom, #fff 4px, #eee 100%)
     display inline-block
-    &:hover
-      color #666
-      border 1px solid #bbb
