@@ -20,7 +20,7 @@ module.exports =
       tolerance-element: '> div'
       placeholder: \placeholder
       is-tree: true
-      start-collapsed: true
+      start-collapsed: false
       tab-size: 25
       revert: 100
       expand-on-hover: 800ms
@@ -209,7 +209,7 @@ module.exports =
             $ol.append($item)
           # if item has children, create a sub $ol and recurse
           if item.children?length
-            $item?add-class \mjs-nestedSortable-collapsed # default collapsed
+            $item?add-class \mjs-nestedSortable-expanded # default expanded
             $sub-ol = $('<ol/>')
             $item?append $sub-ol
             @build-nested-sortable $sub-ol, item.children
