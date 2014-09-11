@@ -70,9 +70,10 @@ module.exports =
       @editor.render!attach!
 
     init-uploader: ~>
+      <~ lazy-load-html5-uploader
       opts = {
         name: \attach
-        post-url: "/resources/sites/#{site-id}/upload"
+        post-url: "/resources/sites/#site-id/upload"
         preview: void
         on-failure: (ev, file, req) ~>
           try r = JSON.parse req.response-text
@@ -83,8 +84,7 @@ module.exports =
           cache-buster = Math.random!to-string!replace \\. ''
           #@$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
       }
-      <~ lazy-load-html5-uploader
-      @uploader = new Uploader locals:opts, (@$.find \#attach_uploader)
+      #@uploader = new Uploader locals:opts, (@$.find \#attach_uploader)
       @$.html5-uploader opts # make entire component droppable
 
     _draft: ~>
