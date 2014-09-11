@@ -116,7 +116,7 @@ window.load-ui = -> # restore ui state from local storage
     w = parse-int w
     $l.transition({width: w} 300ms \easeOutExpo -> set-wide!)
     $ '#main_content .resizable' .transition({padding-left: w+left-offset} 100ms \easeOutExpo)
-  set-timeout (-> set-wide!; align-ui!; respond-resize!), 150ms
+  set-timeout (-> set-wide!; align-ui!; respond-resize!), 305ms
 
 # waypoints
 $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 800ms)
@@ -178,10 +178,6 @@ window.r-show-thread-admin-ui = $R((user) ->
 ##
 set-imgs!
 load-ui!
-set-timeout (->
-  $ \footer
-    ..css \left $(\#left_content).width!+1
-    ..add-class \active), 2500ms
 $ \#query .focus!select!
 
 # Delegated Events
