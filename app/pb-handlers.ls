@@ -335,6 +335,7 @@ function background-for-forum m, active-forum-id
   if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
   if file-name
     # TODO update images table (migrate to uploads?)
+    res.send 200, {+success, token, file-name}
   else
     res.json 500, {-success, msg:'What kind of file is this?'}
 

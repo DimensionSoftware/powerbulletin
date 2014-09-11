@@ -75,13 +75,17 @@ module.exports =
         name: \attach
         post-url: "/resources/sites/#site-id/upload"
         preview: void
+        on-client-load: ~> unless window.csrf # load new csrf
+          window.csrf <~ $.get "/resources/sites/#site-id/csrf"
         on-failure: (ev, file, req) ~>
           try r = JSON.parse req.response-text
           if req.status is 400
             show-tooltip (@$.find \.tooltip), r?msg or 'File must be at least 200x200px'
         on-success: (xhr, file, r-json) ~>
           r = JSON.parse(r-json)
-          cache-buster = Math.random!to-string!replace \\. ''
+          window.csrf = void # delete, so auto-fetch later
+          # TODO show attachment ui
+          #cache-buster = Math.random!to-string!replace \\. ''
           #@$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
       }
       #@uploader = new Uploader locals:opts, (@$.find \#attach_uploader)

@@ -130,6 +130,7 @@
                 }
             };
             xmlHttpRequest.open("POST", settings.postUrl, true);
+            if (window.csrf) xmlHttpRequest.setRequestHeader("x-csrf-token", window.csrf);
 
             if (file.getAsBinary) { // Firefox
 
