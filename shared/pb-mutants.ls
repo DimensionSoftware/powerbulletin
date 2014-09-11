@@ -179,6 +179,7 @@ layout-on-personalize = (w, u) ->
   on-mutate: 
     (window, next) ->
       snap-to-top!
+      $ \body .remove-class \footer-show
   on-load:
     (window, next) ->
       render-component window, \#main_content, \Homepage, Homepage, {-auto-render}

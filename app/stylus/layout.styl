@@ -7,7 +7,7 @@ bounce = cubic-bezier(0,1.72,0,.75)
 header_height           = 100px
 header_scrolled_height  = 35px
 
-footer_height       = 36px
+footer_height       = 34px
 left_content_width  = 310px
 
 section
@@ -580,7 +580,9 @@ footer.expanded
 footer
   position fixed!important
   top auto!important
+  // default off-screen (improves build-in)
   right 0
+  left 99999px
   bottom -(grid)
   height 0
   opacity 0
@@ -596,7 +598,6 @@ footer
     transition all .3s ease-in
   .onclick-scroll-top
     cursor n-resize
-    //cursor default
     height 0
     width 0
     opacity 0
@@ -612,24 +613,32 @@ footer
     background-color #ddd
     background-image linear-gradient(to top, #ddd 1px, #f1f1f1 60%)
     border 1px solid #ddd
-    transition opacity .1s ease-out
+    transition all .1s ease-out .1s
     &:hover
       color #aaa
       background-image linear-gradient(to top, #ccc 1px, #f1f1f1 65%)
       border 1px solid #bbb
-      transition all .1s ease-out
-    &:hover::before
+      transition none
+    &:hover:before
       border-bottom 9px solid #888
       top 1px
-      transition all .1s ease-out
-    &::before
+      transition none
+    &:after
+      position absolute
+      content ''
+      top 0
+      right 0
+      height 10px
+      width 38px
+      padding 5px 8px
+    &:before
       position absolute
       content ''
       border 5px solid transparent
       border-bottom 7px solid #aaa
       top 2px
       right 7px
-      transition all .2s ease-out
+      transition all .05s ease-out
   .post-container
     .post-new
       .title
@@ -662,7 +671,7 @@ body.scrolled
     width 22px
     height 22px
     opacity 1
-    transition all .1s ease-out
+    transition none
   .logo
     top 3px
     //transition all .1s ease-out
