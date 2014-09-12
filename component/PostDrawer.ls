@@ -75,8 +75,6 @@ module.exports =
         name: \attach
         post-url: "/resources/sites/#site-id/upload"
         preview: void
-        on-client-load: ~> unless window.csrf # load new csrf
-          window.csrf <~ $.get "/resources/sites/#site-id/csrf"
         on-failure: (ev, file, req) ~>
           try r = JSON.parse req.response-text
           if req.status is 400
@@ -217,5 +215,8 @@ function make-resizable footer
         min-height: 100px
         max-height: 600px
         resize: (el, ui) -> window?save-ui!)
+  unless window.csrf # load new csrf
+    r <~ $.get "/resources/sites/#site-id/csrf"
+    window.csrf = r.response-text or r
 
 # vim:fdm=marker

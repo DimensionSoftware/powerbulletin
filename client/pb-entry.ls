@@ -178,6 +178,7 @@ window.r-show-thread-admin-ui = $R((user) ->
 ##
 set-imgs!
 load-ui!
+$ \footer .add-class \active # init footer
 $ \#query .focus!select!
 
 # Delegated Events
