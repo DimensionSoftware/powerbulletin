@@ -330,8 +330,8 @@ function background-for-forum m, active-forum-id
   forum-id = parse-int req.params.id
   err, site <- db.site-by-id site.id
   if err then return next err
-  token = "#{user.id}-#{req.csrf-token!}"
-  err, file-name <- save-file-to-disk req.files.upload, site.id, "#{user.id}-#token"
+  token = "#{user.id}-#{req.headers['x-csrf-token']}"
+  err, file-name <- save-file-to-disk req.files.upload, site.id, token
   if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
   if file-name
     # TODO update images table (migrate to uploads?)
