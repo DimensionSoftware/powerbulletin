@@ -25,9 +25,11 @@ module.exports =
         ev = {target:@editor.$} # mock event
         submit-form ev, (data) ~> # ...and submit!
           post-success ev, data
+          return unless data.success # guard
           if @is-editing # update ui
             @edit-mode! # back to default Reply mode
           @delete-draft!
+          @clear!
 
       @@$ document .on \click.post-drawer (ev) ~> # live
         if $ ev.target .has-class \onclick-footer-toggle # guard
@@ -43,11 +45,16 @@ module.exports =
             else
               if @is-open! then @close! # toggle
           else
-            if @is-open! then @close! # toggle
-            @clear! # back to Reply mode
+            if @is-open!
+              @save-draft!  # save for later
+              @close!       # toggle
+              @clear!       # back to Reply mode
+            else
+              @clear!       # back to Reply mode
+              @set-draft!   # restore on open
+
             thread-mode false
             make-resizable @footer!
-            @set-draft!
             @edit-mode! # back to reply mode
             if @editor then @editor.focus!
           false

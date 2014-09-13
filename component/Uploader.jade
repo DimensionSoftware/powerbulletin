@@ -1,8 +1,9 @@
-label(for=name)= name
+label(for=name)
+  span.label= name
   div.drop-target.button 
     .progress 1
       small %
-    span Browse
+    span.action Browse
     input.upload(id=name, type='file', name=name)
   img.inline-preview
   .cancel.close.onclick-delete(title='Delete') X

@@ -91,7 +91,6 @@ render = (sel, locals, cb=(->)) ~>
   unless (window.user?rights?super or window.user?sys_rights?super)
     if $ \body .has-class \locked then return
   unless user then Auth.show-login-dialog!; return
-  @postdrawer!set-draft!
   @postdrawer!toggle!
 
 @open-postdrawer = (ev) ~> @postdrawer!open!
@@ -170,8 +169,8 @@ load-css = (href) ->
     "#cache-url/fancybox/jquery.fancybox.css",
     cb
 @lazy-load-socketio = (cb) ~>
-  @lazy-load (-> window.$!fancybox?length),
-    "#cache-url/local/socket.io.min.js",
+  @lazy-load (-> window.io),
+    "#cache-url/socket.io/socket.io.js",
     null,
     cb
 #}}}
@@ -221,7 +220,7 @@ load-css = (href) ->
   m = $ \#main_content
   l = $ \#left_content
   pos = (m.width!-b.width!)/2
-  b.transition {left:(if pos < l.width! then l.width! else pos)}, 300ms \easeOutExpo
+  b.transition {left:(if pos < l.width! then l.width! else pos)}, 150ms \easeOutExpo
   # footer to left-nav
   $ \footer .css \left, ($ \#left_container .width!+1+\px)
 
@@ -339,7 +338,7 @@ timers = {}
       ..attr \src, e.data \src
       ..load ->
         e.remove-attr \data-src # cleanup
-        e.transition opacity:1, 800ms
+        e.transition opacity:1, 400ms
 
 @
 # vim:fdm=marker

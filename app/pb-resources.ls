@@ -3,7 +3,7 @@ require! {
   v: \./varnish
   c: \./cache
   h: \./server-helpers
-  sioa: \socket.io-announce
+  io-emitter: \socket.io-emitter
   auth: \./auth
   menu: \./menu
   rights: \./rights
@@ -13,6 +13,7 @@ require! {
   async
   fs
   mkdirp
+  redis
   stream
   stylus
   validator
@@ -20,7 +21,7 @@ require! {
 
 const base-css = \public/sites
 
-announce = sioa.create-client!
+io = io-emitter redis.create-client return_buffers: true
 
 # Return true if forum-id is a locked forum according to the menu m.
 is-locked-forum = (m, forum-id) ->
@@ -51,11 +52,11 @@ is-commentable-forum = (m, forum-id) ->
       for k in <[title sig]> then config[k]=alias.config[k]         # & scrub
       if config.sig then config.sig-html = format.render config.sig # & scrub harder + render sig
       err <- db.aliases.update {config}, {user_id, site_id}         # & update!
-      announce.in(site_id).emit \new-profile-title, { id:user_id, title:config?title } # broadcast title everywhere
+      io.in(site_id).emit \new-profile-title, { id:user_id, title:config?title } # broadcast title everywhere
       (err, user) <~ db.usr { id:user_id, site_id }
       user.sig = config.sig # ensure latest sig
       delete user.auths
-      announce.in("#site_id/users/#user_id").emit \set-user, user # brodcast new user object to all of my browsers
+      io.in("#site_id/users/#user_id").emit \set-user, user # brodcast new user object to all of my browsers
       res.json {+success}
     else
       res.json {-success}
@@ -84,7 +85,7 @@ is-commentable-forum = (m, forum-id) ->
     switch req.body.action
     | \general =>
       should-ban = false # varnish
-      for f in <[style newsletter postsPerPage adminChat inviteOnly private social analytics]>
+      for f in <[style fixedHeader newsletter postsPerPage adminChat inviteOnly private social analytics]>
         if site.config[f] isnt req.body[f] then should-ban = true
 
       css-dir = "#base-css/#{site.id}"
@@ -103,14 +104,14 @@ is-commentable-forum = (m, forum-id) ->
         # generate site-specific master.css
         err <- h.render-css-to-file site.id, \master.styl
         if err then return res.json {-success, messages:[err]}
-        announce.in("#{site.id}/users/#{req.user.id}").emit \css-update, { cache-buster: site.config.cache-buster }
+        io.in("#{site.id}/users/#{req.user.id}").emit \css-update, { cache-buster: site.config.cache-buster }
         if err then res.json { -success, messages: [ "Could not save color theme." ] }
 
       # update site
       site.name = req.body.name
       site.config <<< { [k, val] for k, val of req.body when k in # guard
-        <[ newsletter newsletterMsg newsletterAction postsPerPage metaKeywords adminChat inviteOnly private social analytics style colorTheme ]> }
-      for c in <[ newsletter adminChat inviteOnly social private ]> # uncheck checkboxes?
+        <[ newsletter fixedHeader newsletterMsg newsletterAction postsPerPage metaKeywords adminChat inviteOnly private social analytics style colorTheme ]> }
+      for c in <[ fixedHeader newsletter adminChat inviteOnly social private ]> # uncheck checkboxes?
         delete site.config[c] unless req.body[c]
       for s in <[ private analytics ]> # subscription tampering
         delete site.config[s] unless s in site.subscriptions
@@ -160,7 +161,7 @@ is-commentable-forum = (m, forum-id) ->
 
       # varnish ban
       h.ban-all-domains site.id if should-ban
-      res.json success:true
+      res.json {+success, site}
 
     | \menu =>
       # save site config
@@ -170,7 +171,7 @@ is-commentable-forum = (m, forum-id) ->
 
       if id # active form
         form = { [k, v] for k,v of req.body when k in
-          <[ id dbid title placeholderDescription newsletter offerPhoto offerContent offerContentOnly offerDescription affiliateLink hashtags videoTop videoTop2 videoBottom linkDescription forumDescription pageDescription dialog postsPerPage offerSlug forumSlug hideHomepage locked comments pageSlug content url contentOnly separateTab ]> }
+          <[ id dbid title placeholderDescription fixedHeader newsletter offerPhoto offerContent offerContentOnly offerDescription affiliateLink hashtags videoTop videoTop2 videoBottom linkDescription forumDescription pageDescription dialog postsPerPage offerSlug forumSlug hideHomepage locked comments pageSlug content url contentOnly separateTab ]> }
 
         for k in <[offerSlug forumSlug pageSlug]> # cleanup keys
           if form[k].length < 1 then delete form[k]
@@ -191,7 +192,7 @@ is-commentable-forum = (m, forum-id) ->
       if err then return res.json success: false, hint: \db.site-update
 
       h.ban-all-domains site.id # varnish ban
-      announce.in(site.id).emit \menu-update, site.config.menu
+      io.in(site.id).emit \menu-update, site.config.menu
       res.json success:true, id: dbid
 
     # delete a menu
@@ -215,7 +216,7 @@ is-commentable-forum = (m, forum-id) ->
       if err then return res.json success: false, hint: \db-site-update, err: err, errors: [ "Item could not be deleted." ]
 
       h.ban-all-domains site.id # varnish ban
-      announce.in(site.id).emit \menu-update, site.config.menu
+      io.in(site.id).emit \menu-update, site.config.menu
       res.json success: true
 
     # resort a menu
@@ -233,7 +234,7 @@ is-commentable-forum = (m, forum-id) ->
       if err then return res.json success: false, hint: \menu-resort
 
       h.ban-all-domains site.id # varnish ban
-      announce.in(site.id).emit \menu-update, site.config.menu
+      io.in(site.id).emit \menu-update, site.config.menu
       res.json success:true
 
 @users =
@@ -385,7 +386,7 @@ is-commentable-forum = (m, forum-id) ->
     unless post.parent_id
       err, new-post <- db.post site.id, post.id
       if err then return next err
-      announce.in(site.id).emit \thread-create new-post
+      io.in(site.id).emit \thread-create new-post
       db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
       if post.mentions?length
         notifications.send \mention, user, post.mentions, { site, post: new-post }
@@ -394,7 +395,7 @@ is-commentable-forum = (m, forum-id) ->
       err, new-post <- db.post site.id, post.id
       if err then return next err
       new-post.posts = []
-      announce.in(site.id).emit \post-create new-post
+      io.in(site.id).emit \post-create new-post
       db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
       if post.mentions?length
         notifications.send \mention, user, post.mentions, { site, post: new-post }

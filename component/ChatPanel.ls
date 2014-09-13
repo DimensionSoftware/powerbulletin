@@ -136,10 +136,10 @@ module.exports =
         @send-message message
 
     send-message: (message, cb=(->)) ->
-      window.socket.emit \chat-message, message, cb
+      window.socket?emit \chat-message, message, cb
 
     load-initial-messages: (cb=(->)) ->
-      err, r <~ socket.emit \chat-previous-messages, @id, { limit: 50 }
+      err, r <~ socket?emit \chat-previous-messages, @id, { limit: 50 }
       if err then return err
       if r.success
         for i,msg of (reverse r.messages)
@@ -153,7 +153,7 @@ module.exports =
       #console.info scroll-top
       return unless scroll-top <= 10
       #console.warn "id: #{@id}, last-mid: #{@last-mid}"
-      err, r <~ socket.emit \chat-previous-messages, @id, { last: @last-mid }
+      err, r <~ socket?emit \chat-previous-messages, @id, { last: @last-mid }
       if r.messages.length
         for i,msg of r.messages
           @add-old-message msg
@@ -172,7 +172,7 @@ module.exports =
         @load-initial-messages!
       @$.css(height: "#{hi}px")
       icon-id = "icon-#{@local \id}"
-      socket.emit 'chat-mark-all-read', @cid!, (~> @p.set-notice(icon-id, 0))
+      socket?emit 'chat-mark-all-read', @cid!, (~> @p.set-notice(icon-id, 0))
       @p.show @$, (~>
         @scroll-to-latest!
         @$.find \.message-box .focus!)

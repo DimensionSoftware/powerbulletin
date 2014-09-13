@@ -21,15 +21,16 @@
       max-height 23px
       overflow hidden
       text-overflow ellipsis
-      #reply_to, #reply_by
-        display inline-block
+      #reply_to, #reply_by, #reply_by a, #reply_to a
+        display inline
+        overflow hidden
+        text-overflow ellipsis
         text-transform capitalize
     // show either state
     &.reply .in-reply
       display inline-block
     &.edit .in-edit
       display inline-block
-
 pre,code
   background-color #f9f9f9
   font-size smaller
@@ -56,7 +57,7 @@ footer
   &.expanded
     .PostDrawer
       position absolute
-      bottom 14px
+      bottom 10px
       top 24px
       left 0
       right 0
@@ -67,7 +68,16 @@ footer
         bottom 0
         border-bottom-right-radius 0
         border-bottom-left-radius 0
-        right 44%
+        margin-left -100px
+        width 200px
+      .Uploader
+        position absolute
+        bottom 0
+        right 0
+        z-index 12
+        .label, .note
+          display none
+          z-index 12px
       #editor .center
         top 0
         .tooltip.small

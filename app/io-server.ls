@@ -4,7 +4,7 @@ require! {
   crc32: 'express/node_modules/buffer-crc32'
   cookie: 'express/node_modules/cookie'
   connect: 'express/node_modules/connect'
-  RedisStore: 'socket.io/lib/stores/redis'
+  socketio-redis: \socket.io-redis
   ChatServer: './io-chat-server'
   Presence: './presence'
   sio: \socket.io
@@ -56,53 +56,38 @@ clear-stale-redis-data = (r, cb) ->
   # mixing additional keys into 'db' namespace
   do -> pg.procs <<< { [k,v] for k,v of m when k not in <[orm client driver]> }
 
-  io  = sio.listen server
+  io = sio.listen server
+  console.log "------------------------------------------------------------------------"
+  pub-client = redis.create-client return_buffers: true
+  sub-client = redis.create-client null, null, detect_buffers: true
+  redis-client = redis.create-client return_buffers: true
+  io.adapter socketio-redis({host: \localhost, port: 6379, pub-client, sub-client})
   io.set \transports, [
+    * \polling
     * \websocket
-    * \xhr-polling
-    * \jsonp-polling
   ]
-  io.set 'log level', 1
+  #io.set 'log level', 1
 
-  redis-pub    = redis.create-client!
-  redis-sub    = redis.create-client!
-  redis-client = redis.create-client!
-  redis-store  = new RedisStore({ redis, redis-pub, redis-sub, redis-client })
-  io.set \store, redis-store
 
   err <- clear-stale-redis-data redis-client
 
-  io.set \authorization, (handshake, accept) ->
-    if not handshake or handshake?domain
-      return accept("null handshake", false)
-    handshake.domain = handshake.headers.host
-    if handshake.headers.cookie
-      handshake.cookies = cookie.parse handshake.headers.cookie
-      connect-cookie = handshake.cookies['connect.sess']
-      unless connect-cookie then return accept(null, true)
-      unsigned = try
-        connect.utils.parse-signed-cookie connect-cookie, cvars.secret
-      catch
-        console.error \connect.utils.parse-signed-cookie, e
-        false
-
-      if unsigned
-        original-hash = crc32.signed unsigned
-        session = try
-          connect.utils.parse-JSON-cookie(unsigned) || {}
-        catch
-          console.error \connect.utils.parse-JSON-cookie, e
-          {}
-        #log \session, session
-        handshake.session = session
-        return accept(null, true)
-      else
-        #return accept("bad session?", false)
-        console.warn 'bad session cookie?', connect-cookie
-        return accept(null, true)
-    else
-      log "no cookies found during socket.io authorization phase"
-      return accept(null, true)
+  # new authorization middleware
+  io.use (socket, next) ->
+    handshake = socket.handshake
+    cookies = cookie.parse handshake.headers.cookie
+    next! unless cookies
+    session-cookie = cookies['connect.sess']
+    next! unless session-cookie
+    unsigned = connect.utils.parse-signed-cookie session-cookie, cvars.secret
+    next! unless unsigned
+    session = try
+      connect.utils.parse-JSON-cookie(unsigned) || {}
+    catch
+      console.error \connect.utils.parse-JSON-cookie, e
+      {}
+    next! unless session
+    socket.session = session
+    next!
 
   seen-socket-ids = {}
 
@@ -129,17 +114,18 @@ clear-stale-redis-data = (r, cb) ->
       log "no socket.handshake; bailing to prevent crash"
       return
 
-    err, user <- user-from-session socket.handshake.session
+    err, user <- user-from-session socket.session
     if err
       log err
       return
+    console.log \user, user
 
     err <- db.aliases.update-last-activity-for-user user
     if err
       log err
       return
 
-    err, site <- site-by-domain socket.handshake?domain
+    err, site <- site-by-domain socket.handshake?headers?host
     if err
       log err
       return
@@ -233,7 +219,7 @@ clear-stale-redis-data = (r, cb) ->
       socket.join search-room
 
       # register search with the search notifier
-      io.sockets.emit \register-search, {searchopts, site-id: site.id, room: search-room}
+      io.emit \register-search, {searchopts, site-id: site.id, room: search-room}
 
     socket.on \debug, (args, cb=(->)) ->
       console.warn \debug, args

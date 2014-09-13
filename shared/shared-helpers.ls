@@ -131,6 +131,7 @@ seconds-to-human-readable = (secs) ->
   if cb then cb $b
 @render-and-append  = @render-and \append
 @render-and-prepend = @render-and \prepend
+@render-and-before  = @render-and \before
 
 @is-email = (name) ->
   name.index-of(\@) isnt -1

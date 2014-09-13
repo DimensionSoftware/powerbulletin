@@ -29,7 +29,7 @@ require \raf
 require \layout
 
 {storage, set-imgs, set-profile, align-ui, edit-post, fancybox-params, lazy-load-fancybox, mutate, post-success, remove-editing-url, respond-resize, set-wide, show-tooltip, show-info, submit-form, postdrawer} = require \./client-helpers
-{render-and-append, render-and-prepend} = require \../shared/shared-helpers
+{render-and-append, render-and-before, render-and-prepend} = require \../shared/shared-helpers
 
 #XXX: end legacy
 window.MainMenu        = require \../component/MainMenu
@@ -114,9 +114,9 @@ window.load-ui = -> # restore ui state from local storage
       $ \body .add-class \collapsed # only collapse on non-admin mutants
     # animate build-in
     w = parse-int w
-    $l.transition({width: w} 600ms \easeOutExpo -> set-wide!)
-    $ '#main_content .resizable' .transition({padding-left: w+left-offset} 300ms \easeOutExpo)
-  set-timeout (-> set-wide!; align-ui!; respond-resize!), 500ms
+    $l.transition({width: w} 300ms \easeOutExpo -> set-wide!)
+    $ '#main_content .resizable' .transition({padding-left: w+left-offset} 100ms \easeOutExpo)
+  set-timeout (-> set-wide!; align-ui!; respond-resize!), 305ms
 
 # waypoints
 $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 800ms)
@@ -133,8 +133,9 @@ append-reply-ui = (ev) ->
       parent_id:  $p.data \post-id
       is_comment: true), ->
         editor = $p.find 'textarea[name="body"]'
-        editor.autosize!
-        if focus then editor.focus!
+        if editor
+          editor.autosize!
+          if focus then editor.focus!
   else
     $p.find('.reply .cancel').click!
 
@@ -177,10 +178,7 @@ window.r-show-thread-admin-ui = $R((user) ->
 ##
 set-imgs!
 load-ui!
-set-timeout (->
-  $ \footer
-    ..css \left $(\#left_content).width!+1
-    ..add-class \active), 2500ms
+$ \footer .add-class \active # init footer
 $ \#query .focus!select!
 
 # Delegated Events
@@ -280,8 +278,12 @@ $R((sopts) ->
 
 $ui.on \thread-create, (e, thread) ->
   #console.info 'thread-create', thread
-  <- render-and-prepend window,  $('#left_container .threads'), \thread, thread:thread
-  $ '#left_container .threads div.fadein li' .unwrap!
+  if $ '#left_container .threads .sticky' .length # insert after last sticky
+    <- render-and-before window,  $('#left_container .threads .sticky:last + .thread'), \thread, thread:thread
+    $ '#left_container .threads div.fadein li' .unwrap!
+  else
+    <- render-and-prepend window,  $('#left_container .threads'), \thread, thread:thread
+    $ '#left_container .threads div.fadein li' .unwrap!
 
 $ui.on \nav-top-posts, (e, threads) ->
   #console.info \stub, threads
@@ -406,7 +408,7 @@ $d.on \click  \.onclick-chat Auth.require-login( (ev) ->
   icon = $p.find \img .attr \src
   panels = window.component.panels
 
-  err, c <- socket.emit \chat-between, [user.id, t.id]
+  err, c <- socket?emit \chat-between, [user.id, t.id]
   if err then return
 
   chat-panel = ChatPanel.add-from-conversation c, window.user
@@ -486,9 +488,13 @@ $d.on \submit \form.onclick-submit (ev) -> # use submit event to ensure form has
 
     f.find \input:first .focus!select! unless f.has-class \no-focus
     if data?success
+      if data.site then window.site = data.site # update site
       # indicated saved!
       b.remove-attr \disabled
       show-tooltip t, (data?msg or t.data(\msg) or \Saved!)
+
+      # <ui updates>
+      window.fixed-header = data.site.config?fixed-header
       # update config for domains (client)
       id = parse-int($ '#domain option:selected' .val!)
       if domain = find (-> it.id == id), site.domains
@@ -695,7 +701,7 @@ History.Adapter.bind window, \statechange, (e) -> # history manipulaton
           mutant.run mutants[r.mutant], {locals, window.user}, ->
             onload-resizable!
             window.hints.current.mutator = window.mutator
-            socket.emit \ping
+            socket?emit \ping
             window.time-updater!
         #else
         #  console.log "skipping req ##{req-id} since new req ##{last-req-id} supercedes it!"
@@ -723,4 +729,22 @@ Auth.after-login = ->
 # run initial mutant
 if window.initial-mutant
   <- mutant.run mutants[window.initial-mutant], {initial: true, window.user}
+
+if u = storage.get \user # verify local user matches server
+  server-user <- $.getJSON \/auth/user
+  unless server-user?id is u.id
+    show-tooltip ($ \#warning), 'Securing Your Connection'
+    storage.del \user       # clear local storage
+    window.location.reload! # & refresh
+
+
+# disable "scroll overflow" of left bar into parent
+$d.on \wheel, \.y-scrollable (ev) ->
+    offset-top    = @scroll-top + parse-int(ev.original-event.delta-y, 10)
+    offset-bottom = @scroll-height - @get-bounding-client-rect!height - offset-top
+    if offset-top <= 0 or offset-bottom <= 0
+      ev.prevent-default!
+    else
+      ev.stop-immediate-propagation!
+
 # vim:fdm=marker

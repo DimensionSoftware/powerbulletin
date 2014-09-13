@@ -10,7 +10,7 @@ html.homepage, html.profile, html.admin, html.moderation, html.search, html.page
   footer.expanded
     box-shadow 0 0 4px -1px theme_color!important
     max-height 39px!important
-    height 36px!important
+    height footer_height!important
     .onclick-scroll-top
       margin-top 0
     .ui-resizable-handle
@@ -20,8 +20,9 @@ html.homepage, html.profile, html.admin, html.moderation, html.search, html.page
 html.homepage, html.page, html.moderation
   .left-content
     transform translateX(-600px)
-    opacity 0
-    transition all .08s ease-in
+    transition all .1s ease-in
+    #left_container
+      display none
 html.homepage
   .main-content
     width 94%
@@ -40,7 +41,7 @@ html.forum .homepage .forum > .title
 html.homepage, html.forum
   .main-content
     .forum.homepage
-      margin-top 69px
+      margin-top 0
       .post
         margin-bottom (grid*2)
         .body
@@ -391,6 +392,8 @@ html.forum, html.profile, html.search, html.moderation
           left auto
           font-size .9em
           color dark_text
+        .body
+          font-size 1.5em
       .post
         position relative
         clear both
@@ -411,6 +414,7 @@ html.forum, html.profile, html.search, html.moderation
         &:first-child
           padding-top (grid*1.5)
         .breadcrumb
+          left -300px
           margin-bottom (grid*2)
           span, em
             display none
@@ -469,7 +473,7 @@ html.forum, html.profile, html.search, html.moderation
           border-top-right-radius 35px
           transition box-shadow .1s ease-out .1s
           &:hover
-            box-shadow 1px 1px 2px 1px rgba(0,0,0,.06)
+            box-shadow 1px 1px 2px 1px rgba(0,0,0,.05)
             transition none
           .s-chat-bubble
             position absolute
@@ -483,9 +487,9 @@ html.forum, html.profile, html.search, html.moderation
             margin-right 67px
             margin 0 0 15px -1px
             padding-bottom 15px
-            font-size 1.8em
+            font-size 1.6em
             color #444
-            border-bottom 1px solid #eee
+            border-bottom 1px solid #eaeaea
             text-transform capitalize
           textarea.body
             font-size 1.1em
@@ -929,15 +933,11 @@ html.admin
           font-size .8em
           padding-botom 2px
       menu
-        float right
+        text-align right
         list-style none
         padding 18px
         margin 28px 0 0 3px
-        transition all .2s ease-out
-        li.active
-          a
-            right 6px
-            transition right .15s ease-out
+        transition all .15s ease-out
         li
           padding 4px 12px 4px 5px
           margin-bottom 8px
@@ -949,7 +949,10 @@ html.admin
             position absolute
             right 10px
             font-size 1.3em
-            animation-name none
+          &.active
+            a
+              right 6px
+              transition right .25s ease-out
   .main-content
     padding-left 200px
     padding-bottom 50px
@@ -1257,9 +1260,9 @@ html.admin
           width 305px
           height 100px
           font-size 1em
-        #admin_chat:checked + label:after, #newsletter:checked + label:after, #facebook_auth:checked + label:after, #twitter_auth:checked + label:after, #google_auth:checked + label:after, #linkedin_auth:checked + label:after, #invite_only:checked + label::after, #private:checked + label::after, #social:checked + label::after
+        #hide_homepage:checked + label:after, #admin_chat:checked + label:after, #newsletter:checked + label:after, #facebook_auth:checked + label:after, #twitter_auth:checked + label:after, #google_auth:checked + label:after, #linkedin_auth:checked + label:after, #invite_only:checked + label::after, #private:checked + label::after, #social:checked + label::after
           content 'On'
-        #admin_chat + label:after, #newsletter + label:after, #facebook_auth + label:after, #twitter_auth + label:after, #google_auth + label:after, #linkedin_auth + label:after, #invite_only + label::after, #private + label::after, #social + label::after
+        #hide_homepage + label:after, #admin_chat + label:after, #newsletter + label:after, #facebook_auth + label:after, #twitter_auth + label:after, #google_auth + label:after, #linkedin_auth + label:after, #invite_only + label::after, #private + label::after, #social + label::after
           content 'Off'
       button
         display block
@@ -1288,9 +1291,13 @@ html.admin
 //}}}
 //{{{ - forum
 html.forum
+  body.scrolled
+    .main-content
+      margin-top 6px
   .main-content
+    margin-top 67px
     opacity 1
-    transition opacity .15s
+    transition opacity .05s ease-out
     &.transparent
       opacity 0
       transition none
@@ -1311,8 +1318,8 @@ html.forum
     position absolute
     z-index 9
     padding-right 20px
-    left 22px
-    top 4px
+    left 13px
+    top 5px
     color #666
     background-color #bbb
     background-image linear-gradient(to bottom, theme_color 0px, theme_color 100%)
@@ -1570,7 +1577,7 @@ html.page
         //transition opacity .5s ease-out
     &.minimized
       header
-        transform translateY(-100px)
+        transform translateY(-101px)
         transition all .3s ease-out .2s
       .social-right > .social
         top -100px
