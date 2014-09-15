@@ -17,7 +17,7 @@ module.exports =
           sh.caching-strategies.nocache res
           res.send 'OK'
 
-      server = http.create-server app
+      server = http.Server app
       io-server.init server
       server.listen @port or 5000
 
