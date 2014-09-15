@@ -5,9 +5,7 @@ require! {
 }
 
 @homepage = (req, res, next) ->
-  res.locals {
-    cvars.cache-url
-  }
+  res.locals.cache-url = cvars.cache-url
   next!
 
 @super-sites = (req, res, next) ->
@@ -44,7 +42,7 @@ require! {
     o.created = "<span title=\"@ #{o.created_iso}\">#{o.created_human}</span>"
 
   # pass page var thru
-  res.locals {
+  [res.locals[k] = v for k,v of {
     cvars.cache-url
     cols
     active-page
@@ -53,5 +51,5 @@ require! {
       [[o[c] for c in cols] for o in a.obj-rows]
 
     a.qty
-  }
+  }]
   next!

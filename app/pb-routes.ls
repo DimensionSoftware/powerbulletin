@@ -1,5 +1,8 @@
 require! {
   express
+  \body-parser
+  \cookie-parser
+  \cookie-session
   mutant
   async
   express.csrf
@@ -20,9 +23,9 @@ global <<< require \./server-helpers
 # middleware we will use only on personalized routes to save cpu cycles!
 personal-mw =
   * cors(origin: '*', credentials: true)
-  * express.body-parser!
-  * express.cookie-parser!
-  * express.cookie-session {secret:cvars.secret, proxy:true, cookie:{proxy:true, secure:true, max-age:1000*60*60*24*365}}
+  * body-parser.urlencoded!
+  * cookie-parser!
+  * cookie-session {secret:cvars.secret, proxy:true, cookie:{secure-proxy:true, secure:true, max-age:1000*60*60*24*365}}
   * auth.mw.initialize
   * auth.mw.session
 
@@ -80,7 +83,7 @@ exports.use = (app) ->
 ##}}}
 
 # inject testing code in dev only
-  app.configure \development ->
+  if process.env.NODE_ENV is \development
     entry = common-js.pop!
     common-js.push "#{cvars.cache5-url}/local/mocha.js"
     common-js.push "#{cvars.cache5-url}/local/chai.js"

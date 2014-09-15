@@ -84,7 +84,7 @@ delete-unnecessary-surf-tasks = (tasks, keep-string) ->
 
   if req.surfing then delete-unnecessary-surf-data res
 
-  res.locals doc
+  [res.locals[k] = v for k,v of doc]
 
   # XXX: this should be abstracted into a pattern, middleware or pure function
   # cache homepage for 60s
@@ -127,7 +127,7 @@ function background-for-forum m, active-forum-id
 
   finish = (adoc) ->
     adoc.uri = req.path
-    res.locals adoc
+    [res.locals[k] = v for k,v of adoc]
 
     # indefinite / manual invalidation caching for forums threads and sub-post pages
     caching-strategies.nocache res # we never cache forum pages upstream because they are live
@@ -147,7 +147,7 @@ function background-for-forum m, active-forum-id
     if err then return next err
     fdoc.menu = site.config.menu
 
-    res.locals fdoc
+    [res.locals[k] = v for k,v of fdoc]
     caching-strategies.nocache res
     res.mutant \moderation
     return
@@ -491,7 +491,7 @@ function background-for-forum m, active-forum-id
   fdoc.profile.human_post_count   = add-commas(fdoc.qty)
   fdoc.profile.human_thread_count = add-commas(fdoc.profile.thread_count) or 0
 
-  res.locals fdoc
+  [res.locals[k] = v for k,v of fdoc]
   res.locals.step = ppp
 
   # i know this is hacky, XXX use proper parsing later
@@ -599,8 +599,7 @@ function profile-paths user, uploaded-file, base=\avatar
 
 @stylus = (req, res, next) ->
   site = res.vars.site
-  r = req.route.params
-  files = r.file.split ','
+  files = req.params.file?split ','
   if not files?length then return next 404
 
   render-css = render-css-fn define: [ [ \site-id, site.id ] ]
@@ -733,7 +732,7 @@ function profile-paths user, uploaded-file, base=\avatar
   tmp = fdoc.sites |> reject (.id is site.id)
   fdoc.sites = tmp # mutate
 
-  res.locals fdoc
+  [res.locals[k] = v for k,v of fdoc]
 
   if res.locals.action is \users
     # populate user info into locals
@@ -800,14 +799,14 @@ function profile-paths user, uploaded-file, base=\avatar
     else
       -1
 
-  res.locals {
+  [res.locals[k] = v for k,v of {
     elres
     facets
     forums-alphabetized: [{id: k, title: v} for k,v of forum-dict].sort compare-title
     menu:  site.config.menu
     page: (req.query.page or '1')
     title: "Search#{if res.locals.searchopts.q then (' : ' + res.locals.searchopts.q) else ''}"
-  }
+  }]
 
   # NOTE: not sure if caching is possible given the dynamicness of
   # search queries
@@ -834,7 +833,7 @@ function profile-paths user, uploaded-file, base=\avatar
     fdoc.newsletter      = site.config.newsletter
     fdoc.active-forum-id = page.id
     fdoc.content-only    = item?form?content-only is \checked
-    res.locals fdoc
+    [res.locals[k] = v for k,v of fdoc]
     caching-strategies.etag res, sha1((JSON.stringify page.config) + CHANGESET), 60s
     res.mutant \page
   else

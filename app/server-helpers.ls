@@ -205,12 +205,12 @@ process-cached-data = {}
   | otherwise     => 32
 
   len = if is-NaN len then '' else len
-  "\x1b[38;5;222m#{@lpad 7, req.method} \x1b[90m(\x1b[#{color}m#{res.status-code}\x1b[90m) \x1b[38;5;255m#{req.host}#{req.originalUrl} \x1b[38;5;197m#{new Date - req._start-time}ms - #{len}\x1b[0m"
+  "\x1b[38;5;222m#{@lpad 7, req.method} \x1b[90m(\x1b[#{color}m#{res.status-code}\x1b[90m) \x1b[38;5;255m#{req.hostname}#{req.originalUrl} \x1b[38;5;197m#{new Date - req._start-time}ms - #{len}\x1b[0m"
 
 @prod-log-format = (tokens, req, res) ->
   status = res.status-code
   len    = parse-int res.get-header(\Content-Length), 10
   len    = if is-NaN len then '' else len
-  "#{@lpad 7, req.method} (#{res.status-code}) #{req.host}#{req.originalUrl} #{new Date - req._start-time}ms - #{len} - #{req.ip}"
+  "#{@lpad 7, req.method} (#{res.status-code}) #{req.hostname}#{req.originalUrl} #{new Date - req._start-time}ms - #{len} - #{req.ip}"
 
 # vim:fdm=marker
