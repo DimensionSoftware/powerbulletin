@@ -13,7 +13,7 @@ body
     animation-name move-down
   background-color #000
   margin 0
-  height 6600px
+  height 6625px
   position relative
   .body-bg
     position fixed
@@ -139,7 +139,7 @@ body.scrolled
 //{{{ - Site Responsive (mobile)
 @media screen and (max-width: 800px)
   body.homepage
-    height 3741px!important
+    height 3790px!important
     &.scrolled
       .Sales
         #imagine
@@ -151,6 +151,8 @@ body.scrolled
         padding-top 60px
       //.body-bg
       //  display none
+      h1, h2
+        visibility hidden
       #logo
         display none
       .logo
@@ -175,18 +177,25 @@ body.scrolled
         .SiteRegister-create
           right 247px
       .container
+        &.first
+          border-top-color #ccc
         height auto!important
         .bg
           display none
       section.feature
         height 360px
+        border-top none
+        border-bottom-color #ddd
         padding-left 0!important
         h3
           font-size 1.5em!important
         article
           margin-top 80px
-          transform translateX(5px)
+          transform translateX(-10px)
           width 90%!important
+          h3
+            text-align center
+            margin-left 0
           .arrow
             display none
           img
@@ -194,21 +203,29 @@ body.scrolled
           ul
             opacity 1
             margin-right 0
+            margin-left 33px
+            font-size .8em
             text-indent 0
       #support
         margin-left 0
         h3, p
           text-align center!important
+          font-size .9em
       section.last
         #register_bottom
           padding-left 80px!important
           .hostname
             padding-left 115px
       section.faq
-        padding-bottom 420px
+        padding-bottom 520px
+        .dimensionsoftware
+          margin-left -60px
         article
-          h4::after
-            left 29%
+          h4
+            font-size .9em
+            margin-right 0
+            &:after
+              left 29%
           p
             padding 0
           menu
@@ -663,7 +680,7 @@ body.scrolled
     top auto
     z-index 8
     min-height 100px
-    height 840px
+    height 870px
     margin 0
     padding 0
     border-top 1px solid #eee

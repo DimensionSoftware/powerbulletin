@@ -27,7 +27,7 @@ mixin _menu
                   - hasChildren=true
               //- if any items have more children or if there's more > 9 items in this level
               - var shouldRecurse = ((item.children.length > 9) || hasChildren)
-              div(class="submenu #{hasChildren} #{item.children.length} #{shouldRecurse ? '' : 'flat'}")
+              div(class="submenu y-scrollable #{hasChildren} #{item.children.length} #{shouldRecurse ? '' : 'flat'}")
                 ul
                   if shouldRecurse
                     //- use wide-style menu

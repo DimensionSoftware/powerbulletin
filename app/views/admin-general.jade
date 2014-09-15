@@ -14,7 +14,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
     .note Disallow the public from registering - 
       a.mutant(href='/admin/invites') Invites
     .break
-    label(for='admin_chat') Admin Chat
+    label(for='admin_chat') Admin Only Chat
     .box
       input.stylish.save#admin_chat(type='checkbox', value='checked', name='adminChat', checked=site.config.adminChat)
       label.switch-control(for='admin_chat')
@@ -53,6 +53,13 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
           //-  option(disabled=true, selected=true) - Choose a Theme -
           //-  each t in themes
           //-    option(value=t.id)= t.name
+          label(for='fixed_header') Fixed Header
+          .box
+            input.stylish.save#fixed_header(type='checkbox', value='checked', name='fixedHeader', checked=site.config.fixedHeader)
+            label.switch-control(for='fixed_header')
+              .switch
+          .note Keep header expanded always
+          .break
           .break
           fieldset
             - var ct = site.config.colorTheme ? site.config.colorTheme : {}

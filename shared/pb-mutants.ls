@@ -128,8 +128,10 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
   # indicate current
   forum-class = if w.active-forum-id then " forum-#{w.active-forum-id}" else ''
   w.$ \html .attr(\class "#{next-mutant}#{forum-class}") # stylus
-  if w.marshal then w.marshal \mutator, next-mutant      # js
-  if w.marshal then w.marshal \adminChat, @admin-chat
+  if w.marshal
+    w.marshal \mutator, next-mutant # js
+    w.marshal \adminChat, @admin-chat
+    w.marshal \fixedHeader, @fixed-header
 
   # handle active main menu
   fid = active-forum-id or w.active-forum-id
@@ -177,6 +179,7 @@ layout-on-personalize = (w, u) ->
   on-mutate: 
     (window, next) ->
       snap-to-top!
+      $ \body .remove-class \footer-show
   on-load:
     (window, next) ->
       render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
@@ -210,10 +213,11 @@ layout-on-personalize = (w, u) ->
       const prev-mutant = window.mutator
 
       # render main content
-      if is-forum-homepage @furl.path # show tall header only on forum homepages
-        window.$ \body .remove-class \scrolled
-      else # begin with smaller "scrolled" header
-        window.$ \body .add-class \scrolled
+      unless @fixed-header
+        if is-forum-homepage @furl.path # show tall header only on forum homepages
+          window.$ \body .remove-class \scrolled
+        else # begin with smaller "scrolled" header
+          window.$ \body .add-class \scrolled
 
       if is-editing(@furl.path) is true
         window.render-mutant \main_content, \post-new
@@ -339,6 +343,8 @@ layout-on-personalize = (w, u) ->
       if is-forum-homepage window.location.pathname
         if window.hide-homepage # handle homepage or not
           $ '.threads .thread:first .mutant' .click!
+        else
+          window.$ \#main_content .remove-class \transparent # fade content in
 
         homepage-postdrawer = ->
           thread-mode true
@@ -419,7 +425,12 @@ layout-on-personalize = (w, u) ->
       #w.$ \body .off \click.pd
       #$ '#left_container .scrollable' .off \scroll.Forum
       try w.$ \#left_container .resizable(\destroy)
-      if w.user then postdrawer!save-draft!
+      if w.user then postdrawer!
+        ..save-draft!
+        # back to Reply mode
+        ..clear!
+        ..edit-mode!
+        thread-mode false
       unless next-mutant is \forum_background
         remove-backgrounds w
         reset-paginator w
@@ -562,7 +573,7 @@ same-profile = (hints) ->
       window.$ \body .off \click.pd
       window.$ \#change_title .off!
       window.$ \.onclick-change-sig .off!
-      reset-paginator window unless next-mutant is \forum
+      reset-paginator window
       next!
   on-initial:
     (window, next) ->
@@ -623,7 +634,6 @@ same-profile = (hints) ->
       next!
   on-load:
     (window, next) ->
-      #require \jqueryIris
       # expand left nav or not?
       $b = $ \body
       if window.admin-expanded = $b.has-class \collapsed
@@ -1087,7 +1097,7 @@ mk-post-pnum-to-href = (post-uri) ->
 function snap-to-top
   if window.mutator isnt \forum then $ \body .remove-class \scrolled
   if window.scroll-to then window.scroll-to 0, 0
-  <~ set-timeout _, 50ms # yield to browser
+  <~ set-timeout _, 80ms # yield to browser
   if window.scroll-to then window.scroll-to 0, 0
 
 function enable-chat

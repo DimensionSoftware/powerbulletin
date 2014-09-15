@@ -23,8 +23,8 @@ global.el  = require \./elastic
 global.elc = -> el.client
 global.m   = require \./pb-models
 
-global.sioa     = require \socket.io-announce
-global.announce = sioa.create-client!
+global.redis    = require \redis
+global.io       = require(\socket.io-emitter)(redis.create-client return_buffers: true)
 global.menu     = require \./menu
 
 global.reload = (m) ->

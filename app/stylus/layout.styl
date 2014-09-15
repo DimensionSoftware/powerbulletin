@@ -7,7 +7,7 @@ bounce = cubic-bezier(0,1.72,0,.75)
 header_height           = 100px
 header_scrolled_height  = 35px
 
-footer_height       = 36px
+footer_height       = 37px
 left_content_width  = 310px
 
 section
@@ -26,6 +26,9 @@ body.waiting
   cursor wait!important
   a, input, button, textarea
     cursor wait!important
+
+.y-scrollable
+  overflow-y scroll
 
 .onclick-logout, .onclick-profile, .onclick-messages, .admin-only, .has-facebook, .has-google, .has-twitter, .has-auth
   display none
@@ -84,11 +87,11 @@ body.waiting
   &:before
     content ''
     left -13px
-    top -12px
-    width 260px
-    height 60px
+    top -18px
+    width 296px
+    height 71px
     position absolute
-    background radial-gradient(ellipse closest-side at 37% 45%, rgba(255,255,255,.7) 30%, rgba(255,255,255,0) 100%)
+    background radial-gradient(ellipse closest-side at 37% 45%, rgba(255,255,255,.7) 40%, rgba(255,255,255,0) 100%)
   a
     position relative
     height 30px
@@ -148,7 +151,7 @@ header
     .tools
       position absolute
       right 50px
-      top 15px
+      top 14px
       height 22px
       width 0
       z-index 50
@@ -159,7 +162,7 @@ header
         height 10px
         width 10px
         right 5px
-        top 70px
+        top 63px
         opacity 0
         &.close
           display none
@@ -182,7 +185,7 @@ header
         .container
           width 105px
           height auto
-          padding-top 105px
+          padding-top 100px
           margin-left -97px
           opacity 1
           text-align center
@@ -210,19 +213,20 @@ header
       &::before
         content ''
         position absolute
-        top 46px
-        right 3px
+        top 43px
+        right 1px
+        border 2px solid #fff
         z-index 12
         height 20px
         width 20px
-        border-radius 20px
+        border-radius 100%
       // ::after is the arrow
       &:hover::after
         top 52px
         right 12px
         border-top-width 9px
         transform rotate(10deg)
-        transition all .2s ease-out
+        transition all .1s ease-out
       &::after
         border 4px solid transparent
         border-top 6px solid #fff
@@ -276,7 +280,7 @@ header
     #warning
       bottom 8px
     .search
-      top 10px
+      bottom 47px
       left 308px
       position absolute 
       z-index 10
@@ -339,7 +343,7 @@ body.paginator
     height 32px
     width 32px
     margin-top 9px
-    top (header_height-20)
+    top (header_height - 83)
     right -17px
     cursor pointer
     position absolute
@@ -485,7 +489,7 @@ body.paginator
   .breadcrumb
     position fixed
     top -100px
-    left -999px
+    left -99999px
     text-align center
     z-index 100
     border-bottom-left-radius 10px
@@ -523,7 +527,7 @@ body.paginator
   width 267px
   height 100px
   right 53px
-  top 176px
+  top 190px
   cursor pointer
   font-weight 200
   background-color theme_alpha
@@ -573,14 +577,12 @@ footer.expanded
   z-index 100
   .onclick-scroll-top
     margin-top 8px
-footer.active
-  opacity 1
-  bottom -(grid * 1.4)
-  font-size .85em
 footer
   position fixed!important
   top auto!important
+  // default off-screen (improves build-in)
   right 0
+  left 99999px
   bottom -(grid)
   height 0
   opacity 0
@@ -588,10 +590,14 @@ footer
   width auto
   font-size .95em
   padding 5px 0
-  transition left .08s ease-in, height .08s ease-in
+  transition height .15s ease-out .5s
+  &.active
+    opacity 1
+    bottom -(grid * 1.4)
+    font-size .85em
+    transition all .3s ease-in
   .onclick-scroll-top
     cursor n-resize
-    //cursor default
     height 0
     width 0
     opacity 0
@@ -605,26 +611,34 @@ footer
     padding 0
     color #ccc
     background-color #ddd
-    background-image linear-gradient(to bottom, #ddd 2px, #f1f1f1 100%)
+    background-image linear-gradient(to top, #ddd 1px, #f1f1f1 60%)
     border 1px solid #ddd
-    transition opacity .1s ease-out
+    transition all .1s ease-out .1s
     &:hover
       color #aaa
-      background-image linear-gradient(to bottom, #ccc 2px, #f1f1f1 100%)
-      border 1px solid #999
-      transition all .1s ease-out
-    &:hover::before
+      background-image linear-gradient(to top, #ccc 1px, #f1f1f1 65%)
+      border 1px solid #bbb
+      transition none
+    &:hover:before
       border-bottom 9px solid #888
       top 1px
-      transition all .1s ease-out
-    &::before
+      transition none
+    &:after
+      position absolute
+      content ''
+      top 0
+      right 0
+      height 10px
+      width 38px
+      padding 5px 8px
+    &:before
       position absolute
       content ''
       border 5px solid transparent
       border-bottom 7px solid #aaa
       top 2px
       right 7px
-      transition all .2s ease-out
+      transition all .05s ease-out
   .post-container
     .post-new
       .title
@@ -657,7 +671,7 @@ body.scrolled
     width 22px
     height 22px
     opacity 1
-    transition all .1s ease-out
+    transition none
   .logo
     top 3px
     //transition all .1s ease-out
@@ -713,7 +727,7 @@ body.scrolled
     padding-top (grid * 1.5)
     //transition padding-top .4s ease-out, top .1s ease-out!important
     .handle
-      transition top .2s ease-out
+      top (header_height - 87)
     #paginator
       a.page.previous::before
         top -5px
@@ -723,10 +737,12 @@ body.scrolled
     .breadcrumb
       top (header_scrolled_height+1)
       transition top .25s ease-out
+
+body.footer-show
   footer
     opacity 1
     height footer_height
-    transition height .12s bounce
+    transition height .13s bounce
 //}}}
 //{{{ Collapsed left nav
 body.collapsed

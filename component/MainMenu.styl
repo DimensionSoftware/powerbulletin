@@ -33,8 +33,9 @@ body.scrolled
             .submenu
               top 28px
 header.header
-  a.mutant:hover
+  a:hover
     text-decoration none!important
+    outline none
   //{{{ background header images
   &.image
     // dark gradient
@@ -60,7 +61,7 @@ header.header
       img
         z-index 1
         position absolute
-        width 105%
+        width 100%
         min-height 100%
       // white gradient
       &:after
@@ -72,7 +73,7 @@ header.header
         bottom 0
         width 30%
         max-width 450px
-        background-image linear-gradient(to right, rgba(255,255,255,.95) 10%, rgba(255,255,255,0))
+        background-image linear-gradient(to right, rgba(255,255,255,.95) 14%, rgba(255,255,255,0))
     .tools
       .profile.photo
         box-shadow 2px 1px 10px 2px #111, 0 0 2px 1px dark_theme_color, 1px 1px 3px 2px theme_color
@@ -156,7 +157,7 @@ header.header
         min-width 850px
         padding 10px 0 25px 0
         margin-left -27px
-        box-shadow 0 -1px 5px -1px theme_color, 0 1px 0 0 theme_color, 0 1px 1px 0 #333
+        box-shadow 0 -1px 5px -1px theme_color, 0 1px 0 0 theme_color, 0 1px 1px 0 #333, 0 -1px 1px #fff inset
         transition padding .15s ease-out .25s, margin-left .15s ease-out .3s, box-shadow .15s ease-out .2s, max-height .15s ease-out .3s
         &.hide
           opacity 0
@@ -192,7 +193,7 @@ header.header
         padding 0
         margin 0
         max-height 0
-        box-shadow 0
+        box-shadow none
         transition box-shadow 0s ease-out .1s, padding 0s ease-out .1s, opacity .1s ease-out, max-height .0s ease-out .1s, top 0s ease-out .1s, min-width 0s ease-out .1s, margin 0s ease-out .1s
         //- flat-style (non-recursive) menu
         &.flat
@@ -283,7 +284,7 @@ header.header
   .menu
     > .row
       .title.hover
-        transform scale(1.07)
+        transform scale(1.02) translate(0, -1px)!important
     .row
       > .title.hover
         position relative!important

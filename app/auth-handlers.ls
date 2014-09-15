@@ -4,16 +4,17 @@ require! {
   jade
   querystring
   url
-  sioa: \socket.io-announce
+  redis
+  io-emitter: \socket.io-emitter
   pg:   \./postgres
   auth: \./auth
   __: lodash
 }
 
-announce = sioa.create-client!
-
 {is-editing, is-admin, is-auth} = require \./path-regexps
 {gen-password} = require \../shared/shared-helpers
+
+io = io-emitter redis.create-client return_buffers: true
 
 @login = (req, res, next) ->
   site      = res.vars.site
@@ -69,7 +70,7 @@ announce = sioa.create-client!
       req.login maybe-new-user, (err) ->
         if err then return next(err)
         #console.warn "emitting enter-site #{JSON.stringify(user)}" unless env is \production
-        announce.in(site-room).emit \enter-site, user
+        io.in(site-room).emit \enter-site, user
         err <- db.aliases.update-last-activity-for-user user
         if err then return next(err)
         res.json { success: true } <<< extra

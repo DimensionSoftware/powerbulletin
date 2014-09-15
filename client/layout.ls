@@ -133,23 +133,39 @@ window.awesome-scroll-to = (e, duration, cb=->) ->
   e
 
 # indicate to stylus that view scrolled
+last-st = $w.scroll-top!
 on-scroll-fn = ->
   st = $w.scroll-top!
-  if window.mutator isnt \forum or (helpers.is-forum-homepage window.location.pathname) # expand header when scrolled to top
-    $ \body .toggle-class \scrolled (st > threshold)
-  else if st > threshold
-    $ \body .add-class \scrolled
-  if st is 0
+
+  # handle header
+  unless window.fixed-header
+    if window.mutator isnt \forum or (helpers.is-forum-homepage window.location.pathname) # expand header when scrolled to top
+      if st <= threshold
+        $ \body .remove-class \scrolled
+    # all pages toggle only in downward direction
+    if st > last-st and st > threshold
+      $ \body .add-class \scrolled
+
+  # handle footer
+  if window.mutator is \forum or window.mutator is \profile
+    $ \body .add-class \footer-show # always show footer on these (paginator)
+  else
+    $ \body .toggle-class \footer-show (st > threshold)
+
+  if st <= 0 # catch-all "reset" when scrolled to top
     $ \header .remove-class \expanded
     $ \body .remove-class \minimized
+    if window.fixed-header then $ \body .remove-class \scrolled
+  last-st := st
+
 $ window .on \scroll _.debounce on-scroll-fn, 10ms
 
 
-$ \header.header .on \click (ev) ->
+$ \header.header .on \dblclick (ev) ->
   if $ ev.target .has-class \header # pull down search when header is clicked
     h = $ this
     b = $ \body
-    b.toggle-class \scrolled
+    unless window.fixed-header then b.toggle-class \scrolled
     h.toggle-class \expanded
     set-timeout (-> $ \#query .focus!), 1ms # ...and focus search
 
@@ -159,6 +175,7 @@ $d.on \click '.onclick-scroll-to' ->
   false
 
 # attach scroll-to-top's
+$d.on \click \.onclick-scroll-top window.scroll-to-top; false
 $d.on \mousedown \.onclick-scroll-top ->
   $ this .attr \title 'Scroll to Top!'
   window.scroll-to-top!
