@@ -1,9 +1,9 @@
 require! {
   redis
   debug
+  connect
   crc32: 'express/node_modules/buffer-crc32'
   cookie: 'express/node_modules/cookie'
-  connect: 'express/node_modules/connect'
   socketio-redis: \socket.io-redis
   ChatServer: './io-chat-server'
   Presence: './presence'
