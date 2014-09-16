@@ -125,8 +125,8 @@
                 }
                 if (settings.onSuccess && xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
                     settings.onSuccess(e, file, xmlHttpRequest.responseText);
-                } else if (xmlHttpRequest.status == 400) {
-                    settings.onFailure(e, file, xmlHttpRequest);
+                } else if (xmlHttpRequest.status == 400 || xmlHttpRequest.status == 500) {
+                    settings.onFailure(e, file, xmlHttpRequest.responseText);
                 }
             };
             xmlHttpRequest.open("POST", settings.postUrl, true);
