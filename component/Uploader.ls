@@ -66,6 +66,14 @@ module.exports =
             else
               show-tooltip ($ \.tooltip:first), r?msg
             if locals.on-success then locals.on-success xhr, file, try JSON.parse r-json
+          on-failure: (xhr, file, r-json) ~>
+            try r = JSON.parse r-json
+            show-tooltip ($ \.tooltip:first), r?msg
+            @$.find \.progress
+              ..css \width, 0px
+            @$.find \.action
+              ..html 'Try Again'
+              ..show!
         }
 
       ####  main  ;,.. ___  _
