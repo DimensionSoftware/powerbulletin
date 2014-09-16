@@ -6,5 +6,5 @@
   .in-edit Editing Your Post
 #editor
 button.save Reply
-form
+form(action="/resources/sites/#{siteId}", method="put", enctype="multipart/form-data")
   #attach_uploader

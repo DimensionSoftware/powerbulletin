@@ -51,7 +51,7 @@ exports.use = (app) ->
 
   # TODO move csrf as site-wide middleware
   app.get    \/resources/sites/:id/csrf,   csurf!, handlers.get-csrf
-  app.post   \/resources/sites/:id/upload, csurf!, handlers.site-upload
+  app.post   \/resources/sites/:id/upload, handlers.site-upload # FIXME use csurf!
 
   app.post   \/resources/sites/:id/header,      handlers.forum-header
   app.delete \/resources/sites/:id/header,      handlers.forum-header-delete

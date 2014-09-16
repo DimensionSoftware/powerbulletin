@@ -325,13 +325,15 @@ function background-for-forum m, active-forum-id
 @get-csrf = (req, res, next) -> res.send req.csrf-token!
 @site-upload = (req, res, next) ->
   # get site
+  console.log \upload
   site     = res.vars.site
   user     = req.user
   forum-id = parse-int req.params.id
   err, site <- db.site-by-id site.id
   if err then return next err
-  token = "#{user.id}-#{req.csrf-token!}"
-  err, file-name <- save-file-to-disk req.files.upload, site.id, "#{user.id}-#token"
+  token = "#{user.id}-#{req.headers['x-csrf-token']}"
+  console.log \files:, req.files
+  err, file-name <- save-file-to-disk req.files.attach, site.id, token
   if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
   if file-name
     # TODO update images table (migrate to uploads?)
