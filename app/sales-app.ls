@@ -35,7 +35,7 @@ s-app.use connect.logger(immediate: false, format: sh.dev-log-format) if (env is
 # middleware for auth routes
 sales-personal-mw =
   * cors(origin: true, credentials: true)
-  * body-parser.urlencoded!
+  * body-parser.urlencoded {+extended}
   * cookie-parser!
   * cookie-session {secret:cvars.secret, proxy:true, cookie:{proxy:true, secure:true, max-age:1000*60*60*24*365}}
   * auth.mw.initialize

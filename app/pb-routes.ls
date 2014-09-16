@@ -22,7 +22,7 @@ global <<< require \./server-helpers
 # middleware we will use only on personalized routes to save cpu cycles!
 personal-mw =
   * cors(origin: '*', credentials: true)
-  * body-parser.urlencoded!
+  * body-parser.urlencoded {+extended}
   * cookie-parser!
   * cookie-session {secret:cvars.secret, proxy:true, cookie:{secure-proxy:true, secure:true, max-age:1000*60*60*24*365}}
   * auth.mw.initialize
