@@ -588,7 +588,6 @@ function profile-paths user, uploaded-file, base=\avatar
         io.in(site.id).emit \new-profile-photo, { id: user.id, photo: new-photo }
         ban-all-domains site.id
         return res.json success: true
-  res.json success: false
 
 @stylus = (req, res, next) ->
   site = res.vars.site
