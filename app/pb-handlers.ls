@@ -33,7 +33,7 @@ global <<< require \../shared/shared-helpers
 const posts-per-page = 30
 
 @hello = (req, res, next) ->
-  console.log req.headers
+  console.dir req.headers
   res.send "hello #{res.vars.remote-ip}!"
 
 # remove unnecessary data from res.locals when surfing
@@ -264,16 +264,16 @@ function background-for-forum m, active-forum-id
   # get item
   m    = site.config.menu
   item = menu.flatten m |> find -> it.form.dbid is forum-id
-  unless item then return res.json 500, {-success} # guard
+  unless item then return res.status 500 .json {-success} # guard
   # wipe file from disk
   err <- fs.unlink "public/sites/#{item.form.background.replace(/\?.*$/, '')}"
-  if err then return res.json 500, {-success, msg:err}
+  if err then return res.status 500 .json {-success, msg:err}
   # update config
   path = menu.path-for-upsert m, item.id.to-string!
   item.form.background = void
   site.config.menu     = menu.struct-upsert m, path, item
   err, r <- db.site-update site # save!
-  if err then return res.json 500, {-success, msg:err}
+  if err then return res.status 500 .json {-success, msg:err}
   res.json {+success}
   h.ban-all-domains site.id # blow cache since this affects html pages
 @forum-background = (req, res, next) ->
@@ -282,23 +282,25 @@ function background-for-forum m, active-forum-id
   forum-id = parse-int req.params.id
   err, site <- db.site-by-id site.id
   if err then return next err
-  err, file-name <- save-file-to-disk req.files.background, "#{site.id}", forum-id
-  if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+  form = new formidable.IncomingForm!
+  err, fields, files <~ form.parse req
+  err, file-name <- save-file-to-disk files.background, "#{site.id}", forum-id
+  if err then return res.status 500 .json {-success, msg:"Unable to save file: #err"}
   if file-name
     # update site.config.menu
     m    = site.config.menu
     item = menu.flatten m |> find -> it.form.dbid is forum-id
-    unless item then return res.json 500, {-success} # guard
+    unless item then return res.status 500 .json {-success} # guard
     path = menu.path-for-upsert m, item.id.to-string!
     item.form.background = "#{site.id}/bg/#file-name?#{h.cache-buster!}".to-lower-case!
     site.config.menu     = menu.struct-upsert m, path, item
 
     err, r <- db.site-update site # save!
-    if err then return res.json 500, {-success, msg:err}
+    if err then return res.status 500 .json {-success, msg:err}
     res.json {+success, background:item.form.background}
     h.ban-all-domains site.id # blow cache since this affects html pages
   else
-    res.json 500, {-success, msg:'What kind of file is this?'}
+    res.status 500 .json {-success, msg:'What kind of file is this?'}
 
 @forum-logo-delete = (req, res, next) -> wipe-file-with-config res, \logo, next
 @forum-logo = (req, res, next) ->
@@ -307,21 +309,23 @@ function background-for-forum m, active-forum-id
   if err then return next err
 
   # html5-uploader (save forum logo)
-  if logo = req.files?logo
-    err, file-name <- save-file-to-disk req.files?logo, "#{site.id}", \logo
-    if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+  form = new formidable.IncomingForm!
+  err, fields, files <~ form.parse req
+  if logo = files?logo
+    err, file-name <- save-file-to-disk files.logo, "#{site.id}", \logo
+    if err then return res.status 500 .json {-success, msg:"Unable to save file: #err"}
     if file-name
       # update site.config
       site.config.logo = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
 
       err, r <- db.site-update site # save!
-      if err then return res.json 500, {-success, msg:err}
+      if err then return res.status 500 .json {-success, msg:err}
       res.json {+success, logo:site.config.logo}
       h.ban-all-domains site.id # blow cache since this affects html pages
     else
-      res.json 500, {-success, msg:'What kind of file is this?'}
+      res.status 500 .json {-success, msg:'What kind of file is this?'}
   else
-    res.json 500, {-success, msg:'What logo?'}
+    res.status 500 .json {-success, msg:'What logo?'}
 
 @forum-header-delete = (req, res, next) -> wipe-file-with-config res, \header, next
 @forum-header = (req, res, next) ->
@@ -330,17 +334,20 @@ function background-for-forum m, active-forum-id
   forum-id = parse-int req.params.id
   err, site <- db.site-by-id site.id
   if err then return next err
-  err, file-name <- save-file-to-disk req.files.header, "#{site.id}", \header
-  if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+
+  form = new formidable.IncomingForm!
+  err, fields, files <~ form.parse req
+  err, file-name <~ save-file-to-disk files.header, "#{site.id}", \header
+  if err then return res.status 500 .json {-success, msg:"Unable to save file: #err"}
   if file-name
     # update site.config
     site.config.header = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
     err, r <- db.site-update site # save!
-    if err then return res.json 500, {-success, msg:err}
-    res.json {+success, header:site.config.header}
+    if err then return res.status 500 .json {-success, msg:err}
+    res.json {+success, heading:site.config.header}
     h.ban-all-domains site.id # blow cache since this affects html pages
   else
-    res.json 500, {-success, msg:'What kind of file is this?'}
+    res.status 500 .json {-success, msg:'What kind of file is this?'}
 
 @private-background-delete = (req, res, next) -> wipe-file-with-config res, \privateBackground, next
 @private-background = (req, res, next) ->
@@ -348,15 +355,15 @@ function background-for-forum m, active-forum-id
   site     = res.vars.site
   err, site <- db.site-by-id site.id
   if err then return next err
-  err, file-name <- save-file-to-disk req.files.background, "#{site.id}", \private-background
-  if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+  err, file-name <- save-file-to-disk req.background, "#{site.id}", \private-background
+  if err then return res.status 500 .json {-success, msg:"Unable to save file: #err"}
   if file-name
     site.config.private-background = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
     err, r <- db.site-update site # save!
-    if err then return res.json 500, {-success, msg:err}
+    if err then return res.status 500 .json {-success, msg:err}
     res.json {+success, background:site.config.private-background}
   else
-    res.json 500, {-success, msg:'What kind of file is this?'}
+    res.status 500 .json {-success, msg:'What kind of file is this?'}
 
 @offer-photo-delete = (req, res, next) ->
   #wipe-file-with-config res, \offer, next
@@ -367,7 +374,7 @@ function background-for-forum m, active-forum-id
   id = req.params.offerid
   err, page <- db.pages.select-one {id} # get offer (page)
   if err then return next err
-  unless page then return res.json 500, {-success, msg:['Unable to find page']} # guard
+  unless page then return res.status 500 .json {-success, msg:['Unable to find page']} # guard
 
   # update offer.config.offer-photo
   file-name = page.config.offer-photo?match(/offers\/(.+?)\?/).1
@@ -376,12 +383,12 @@ function background-for-forum m, active-forum-id
   if file-name
     unless file-name.to-string!match /\.\./ # guard
       err <- fs.unlink "public/sites/#{site.id}/offers/#file-name"
-      if err then return res.json 500, {-success, msg:err}
+      if err then return res.status 500 .json {-success, msg:err}
 
       # update site.config.menu
       m    = site.config.menu
       item = menu.flatten m |> find -> it.form.dbid.to-string! is id
-      unless item then return res.json 500, {-success, msg:'Unable to find page menu'} # guard
+      unless item then return res.status 500 .json {-success, msg:'Unable to find page menu'} # guard
       delete item.form.offer-photo
       path = menu.path-for-upsert m, item.id.to-string!
       site.config.menu = menu.struct-upsert m, path, item
@@ -391,24 +398,26 @@ function background-for-forum m, active-forum-id
       cleanup-page-keys page
       delete page.config.offer-photo
       err <- db.pages.update-one page # save
-      if err then return res.json 500, {-success, msg:err}
+      if err then return res.status 500 .json {-success, msg:err}
       res.json {+success}
       h.ban-all-domains site.id # blow cache since this affects html pages
     else
-      res.json 500, {-success, msg:['Bad file name!']}
+      res.status 500 .json {-success, msg:['Bad file name!']}
   else
-    res.json 500, {-success, msg:['Unable to find file!']}
+    res.status 500 .json {-success, msg:['Unable to find file!']}
 @offer-photo = (req, res, next) ->
   site = res.vars.site
   err, site <- db.site-by-id site.id
   if err then return next err
 
   # html5-uploader
-  if offer-photo = req.files.offer-photo
+  form = new formidable.IncomingForm!
+  err, fields, files <~ form.parse req
+  if offer-photo = files.offer-photo
     id = req.params.offerid
     # save offer-photo + menu id
     err, file-name <- save-file-to-disk offer-photo, "#{site.id}/offers", id
-    if err then return res.json 500, {-success, msg:"Unable to save file: #err"}
+    if err then return res.status 500 .json {-success, msg:"Unable to save file: #err"}
     if file-name
       err, page <- db.pages.select-one {id} # get offer (page)
       if err then return next err
@@ -417,12 +426,12 @@ function background-for-forum m, active-forum-id
         offer-photo = page.config.offer-photo = "#{site.id}/offers/#file-name?#{h.cache-buster!}".to-lower-case!
         cleanup-page-keys page
         err <- db.pages.upsert page # save
-        if err then return res.json 500, {-success, msg:err}
+        if err then return res.status 500 .json {-success, msg:err}
 
         # update site.config.menu
         m    = site.config.menu
         item = menu.flatten m |> find -> it.form.dbid.to-string! is id
-        unless item then return res.json 500, {-success, msg:'Unable to find page menu'} # guard
+        unless item then return res.status 500 .json {-success, msg:'Unable to find page menu'} # guard
         path = menu.path-for-upsert m, item.id.to-string!
         site.config.menu = menu.struct-upsert m, path, item
         err, r <- db.site-update site # save!
@@ -430,11 +439,11 @@ function background-for-forum m, active-forum-id
         res.json {+success, offer-photo}
         h.ban-all-domains site.id # blow cache since this affects html pages
       else
-        res.json 500, {-success, msg:'Unable to find page'}
+        res.status 500 .json {-success, msg:'Unable to find page'}
     else
-      res.json 500, {-success, msg:'What kind of file is this?'}
+      res.status 500 .json {-success, msg:'What kind of file is this?'}
   else
-    res.json 500, {-success, msg:'What offer photo?'}
+    res.status 500 .json {-success, msg:'What offer photo?'}
 
 # user profiles /user/:name
 @profile = (req, res, next) ->
@@ -450,7 +459,7 @@ function background-for-forum m, active-forum-id
 
   errors = req.validation-errors!
   if errors
-    res.json 500, {-success, errors}
+    res.status 500 .json {-success, errors}
 
   tasks =
     profile        : db.usr usr, _
@@ -519,13 +528,17 @@ function profile-paths user, uploaded-file, base=\avatar
     console.error \authorization, "#{usr.name} != #{user.name}"
     return res.json { success: false, type: \authorization }
 
-  avatar = req.files.avatar
+  form = new formidable.IncomingForm!
+  err, fields, files <~ form.parse req
+  avatar = files.avatar
+  console.dir \attrs:, files, fields
+  #console.log \path:, avatar.path
   gm avatar.path # resolution guard
     .size (err, size) ->
       if err then return res.json {-success}
       console.log size
       if size.height < 200px or size.width < 200px
-        return res.json 400, {-success, msg: 'Image must be at least 200x200px'}
+        return res.status 400 .json {-success, msg: 'Image must be at least 200x200px'}
 
       # mkdirp public/images/user/:user_id
       {avatar-file, url-dir-path, fs-dir-path, url-path, fs-path} = profile-paths user, avatar, \avatar-to-crop
@@ -871,7 +884,7 @@ function extention-for file-name
   file-name?match(/\.(\w+)$/)?1 or ""
 
 function save-file-to-disk file, dst-dir, dst-file-name, cb
-  # html5-uploader (save forum backgrounds)
+  return cb 'Missing file' unless file?name # guard
   # mkdirp public/sites/ID
   const prefix = \public/sites
   err <- mkdirp "#prefix/#dst-dir"
@@ -893,15 +906,15 @@ function wipe-file-with-config res, key, next
   if file-name = site.config[key]
     unless (file-name is \powerbulletin_header.jpg) or (file-name.to-string!match /\.\./) # guard
       err <- fs.unlink "public/sites/#{file-name.replace(/\?.*$/, '')}"
-      if err then return res.json 500, {-success, msg:err}
+      if err then return res.status 500 .json {-success, msg:err}
 
     # update config
     site.config[key] = ''
     err, r <- db.site-update site # save!
-    if err then return res.json 500, {-success, msg:err}
+    if err then return res.status 500 .json {-success, msg:err}
     res.json {+success}
   else
-    res.json 500, {-success, msg:['Unable to find file!']}
+    res.status 500 .json {-success, msg:['Unable to find file!']}
   h.ban-all-domains site.id # blow cache since this affects html pages
 
 function cleanup-page-keys page # XXX mutates
