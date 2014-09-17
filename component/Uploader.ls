@@ -65,7 +65,15 @@ module.exports =
               @set-preview r[locals.name]
             else
               show-tooltip ($ \.tooltip:first), r?msg or 'Try Again!'
-            if locals.on-success then locals.on-success xhr, file, r
+            if locals.on-success then locals.on-success xhr, file, try JSON.parse r-json
+          on-failure: (xhr, file, r-json) ~>
+            try r = JSON.parse r-json
+            show-tooltip ($ \.tooltip:first), r?msg
+            @$.find \.progress
+              ..css \width, 0px
+            @$.find \.action
+              ..html 'Try Again'
+              ..show!
         }
 
       ####  main  ;,.. ___  _
