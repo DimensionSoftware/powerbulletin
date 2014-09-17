@@ -20,26 +20,25 @@ require! {
 global <<< require \./server-helpers
 
 # middleware we will use only on personalized routes to save cpu cycles!
-personal-mw =
-  * cors(origin: '*', credentials: true)
-  * body-parser.urlencoded {+extended, +defer}
+auth-mw =
   * cookie-parser!
   * cookie-session {secret:cvars.secret, proxy:true, cookie:{secure-proxy:true, secure:true, max-age:1000*60*60*24*365}}
   * auth.mw.initialize
   * auth.mw.session
+personal-mw =
+  * cors(origin: '*', credentials: true)
+  * body-parser.urlencoded {+extended, +defer}
+  ...auth-mw
 
 exports.use = (app) ->
 #{{{ API Resources
-  app.post   \/resources/sites/:id/header,      handlers.forum-header
-  app.delete \/resources/sites/:id/header,      handlers.forum-header-delete
-  app.post   \/resources/forums/:id/background, handlers.forum-background
-  app.delete \/resources/forums/:id/background, handlers.forum-background-delete
-  app.post   \/resources/sites/:id/logo,        handlers.forum-logo
-  app.delete \/resources/sites/:id/logo,        handlers.forum-logo-delete
-  app.post   \/resources/sites/:id/private-background, handlers.private-background
-  app.delete \/resources/sites/:id/private-background, handlers.private-background-delete
+  # upload handlers (personal-mw interferes with formidable)
+  app.post   \/resources/users/:id/avatar,               ...auth-mw, handlers.profile-avatar
+  app.post   \/resources/sites/:id/header,               handlers.forum-header
+  app.post   \/resources/forums/:id/background,          handlers.forum-background
+  app.post   \/resources/sites/:id/logo,                 handlers.forum-logo
+  app.post   \/resources/sites/:id/private-background,   handlers.private-background
   app.post   \/resources/sites/:id/offer-photo/:offerid, handlers.offer-photo
-  app.delete \/resources/sites/:id/offer-photo/:offerid, handlers.offer-photo-delete
 
   app.all      \/resources/*,                 ...personal-mw
   app.resource \resources/sites,              resources.sites
@@ -50,14 +49,20 @@ exports.use = (app) ->
   app.resource \resources/conversations,      resources.conversations
   app.resource \resources/threads,            resources.threads
   app.resource \resources/domains,            resources.domains
+
   app.get  \/resources/posts/:id/sub-posts,   handlers.sub-posts
   app.post \/resources/posts/:id/impression,  handlers.add-impression
   app.post \/resources/posts/:id/censor,      handlers.censor
   app.post \/resources/posts/:id/uncensor,    handlers.uncensor
   app.post \/resources/posts/:id/sticky,      handlers.sticky
   app.post \/resources/posts/:id/locked,      handlers.locked
-  app.post \/resources/users/:id/avatar,      handlers.profile-avatar
   app.put \/resources/users/:id/avatar,       handlers.profile-avatar-crop
+
+  app.delete \/resources/sites/:id/header,               handlers.forum-header-delete
+  app.delete \/resources/forums/:id/background,          handlers.forum-background-delete
+  app.delete \/resources/sites/:id/logo,                 handlers.forum-logo-delete
+  app.delete \/resources/sites/:id/private-background,   handlers.private-background-delete
+  app.delete \/resources/sites/:id/offer-photo/:offerid, handlers.offer-photo-delete
 
 #}}}
 

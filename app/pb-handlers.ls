@@ -517,10 +517,7 @@ function profile-paths user, uploaded-file, base=\avatar
   site = res.vars.site
   if not user
     return res.json { success: false, type: \not-logged-in }
-  console.warn \lookup-user, { id: req.params.id, site_id: site.id }
   err, usr <- db.usr { id: req.params.id, site_id: site.id }
-  console.warn \found-user, err, usr
-  console.warn \logged-in-as, user
   if err
     console.error \db.usr
     return res.json { success: false, type: \db.usr }
@@ -575,7 +572,6 @@ function profile-paths user, uploaded-file, base=\avatar
   _avatar = name: path.replace /-to-crop/, ''
   cropped-photo = profile-paths req.user, _crop, \avatar-to-crop
   avatar-photo  = profile-paths req.user, _avatar
-  console.warn \crop, { cropped-photo, avatar-photo }
   gm(cropped-photo.fs-path)
     .crop w, h, x, y
     .resize 200px, 200px
