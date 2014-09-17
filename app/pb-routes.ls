@@ -22,7 +22,7 @@ global <<< require \./server-helpers
 # middleware we will use only on personalized routes to save cpu cycles!
 personal-mw =
   * cors(origin: '*', credentials: true)
-  * body-parser.urlencoded {+extended}
+  * body-parser.urlencoded {+extended, +defer}
   * cookie-parser!
   * cookie-session {secret:cvars.secret, proxy:true, cookie:{secure-proxy:true, secure:true, max-age:1000*60*60*24*365}}
   * auth.mw.initialize
@@ -30,6 +30,17 @@ personal-mw =
 
 exports.use = (app) ->
 #{{{ API Resources
+  app.post   \/resources/sites/:id/header,      handlers.forum-header
+  app.delete \/resources/sites/:id/header,      handlers.forum-header-delete
+  app.post   \/resources/forums/:id/background, handlers.forum-background
+  app.delete \/resources/forums/:id/background, handlers.forum-background-delete
+  app.post   \/resources/sites/:id/logo,        handlers.forum-logo
+  app.delete \/resources/sites/:id/logo,        handlers.forum-logo-delete
+  app.post   \/resources/sites/:id/private-background, handlers.private-background
+  app.delete \/resources/sites/:id/private-background, handlers.private-background-delete
+  app.post   \/resources/sites/:id/offer-photo/:offerid, handlers.offer-photo
+  app.delete \/resources/sites/:id/offer-photo/:offerid, handlers.offer-photo-delete
+
   app.all      \/resources/*,                 ...personal-mw
   app.resource \resources/sites,              resources.sites
   app.resource \resources/posts,              resources.posts
@@ -48,16 +59,6 @@ exports.use = (app) ->
   app.post \/resources/users/:id/avatar,      handlers.profile-avatar
   app.put \/resources/users/:id/avatar,       handlers.profile-avatar-crop
 
-  app.post   \/resources/sites/:id/header,      handlers.forum-header
-  app.delete \/resources/sites/:id/header,      handlers.forum-header-delete
-  app.post   \/resources/forums/:id/background, handlers.forum-background
-  app.delete \/resources/forums/:id/background, handlers.forum-background-delete
-  app.post   \/resources/sites/:id/logo,        handlers.forum-logo
-  app.delete \/resources/sites/:id/logo,        handlers.forum-logo-delete
-  app.post   \/resources/sites/:id/private-background, handlers.private-background
-  app.delete \/resources/sites/:id/private-background, handlers.private-background-delete
-  app.post   \/resources/sites/:id/offer-photo/:offerid, handlers.offer-photo
-  app.delete \/resources/sites/:id/offer-photo/:offerid, handlers.offer-photo-delete
 #}}}
 
 #{{{ Common JS

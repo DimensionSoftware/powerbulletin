@@ -6,6 +6,7 @@ require! {
   querystring
   gm
   redis
+  formidable
   s: \./search
   c: \./cache
   h: \./server-helpers
