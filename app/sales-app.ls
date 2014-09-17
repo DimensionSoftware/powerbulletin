@@ -35,14 +35,11 @@ s-app.use connect.logger(immediate: false, format: sh.dev-log-format) if (env is
 # middleware for auth routes
 sales-personal-mw =
   * cors(origin: true, credentials: true)
-  * body-parser.urlencoded {+extended}
+  * body-parser.urlencoded {+extended, +defer}
   * cookie-parser!
   * cookie-session {secret:cvars.secret, proxy:true, cookie:{proxy:true, secure:true, max-age:1000*60*60*24*365}}
   * auth.mw.initialize
   * auth.mw.session
-
-# authorization for dreamcodez' blitz.io account
-s-app.get \/mu-d81b9b5a-572eee60-bc2ce3f6-e3fc404b (req, res) -> res.send \42
 
 s-app.get '/dynamic/css/:file' pb-handlers.stylus
 
