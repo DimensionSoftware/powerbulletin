@@ -35,12 +35,12 @@ exports.use = (app) ->
 #{{{ API Resources
   # upload handlers (personal-mw interferes with formidable)
   app.post   \/resources/users/:id/avatar,               ...auth-mw, handlers.profile-avatar
-  app.post   \/resources/sites/:id/header,               handlers.forum-header
-  app.post   \/resources/forums/:id/background,          handlers.forum-background
-  app.post   \/resources/sites/:id/logo,                 handlers.forum-logo
-  app.post   \/resources/sites/:id/private-background,   handlers.private-background
-  app.post   \/resources/sites/:id/offer-photo/:offerid, handlers.offer-photo
-  app.post   \/resources/sites/:id/upload,               handlers.site-upload # FIXME use csurf!
+  app.post   \/resources/sites/:id/header,               ...auth-mw, handlers.forum-header
+  app.post   \/resources/forums/:id/background,          ...auth-mw, handlers.forum-background
+  app.post   \/resources/sites/:id/logo,                 ...auth-mw, handlers.forum-logo
+  app.post   \/resources/sites/:id/private-background,   ...auth-mw, handlers.private-background
+  app.post   \/resources/sites/:id/offer-photo/:offerid, ...auth-mw, handlers.offer-photo
+  app.post   \/resources/sites/:id/upload,               ...auth-mw, handlers.site-upload # FIXME use csurf!
 
   app.all      \/resources/*,                 ...personal-mw
   app.resource \resources/sites,              resources.sites
