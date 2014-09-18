@@ -75,6 +75,7 @@ module.exports =
         name: \attach
         post-url: "/resources/sites/#site-id/upload"
         preview: void
+        +multiple
         on-failure: (ev, file, req) ~>
           try r = JSON.parse req.response-text
           if req.status is 400
@@ -86,7 +87,7 @@ module.exports =
           #cache-buster = Math.random!to-string!replace \\. ''
           #@$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
       }
-      #@uploader = new Uploader locals:opts, (@$.find \#attach_uploader)
+      @uploader = new Uploader locals:opts, (@$.find \#attach_uploader)
       @$.html5-uploader opts # make entire component droppable
 
     _draft: ~>
