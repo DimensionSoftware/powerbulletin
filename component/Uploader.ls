@@ -19,9 +19,9 @@ module.exports =
         @local k, v
 
     delete-preview: ->
-      @@$.ajax {method:\DELETE, url:@local \postUrl}
+      @@$.ajax {method:\DELETE, url:(@local \postUrl), data: {src:@local \preview} }
         ..error (data) ~>
-          show-tooltip ($ \#warning), if typeof! data.msg?0 is \String then data.msg.0 else 'Unable to Delete!'
+          show-tooltip (@@$ \#warning), if typeof! data.msg?0 is \String then data.msg.0 else 'Unable to Delete!'
         ..success (data) ~>
           @set-preview void # remove thumb
           @locals!on-delete data # cb
@@ -40,8 +40,10 @@ module.exports =
 
       #{{{ Event Delegates
       @$.on \click \.onclick-delete (ev) ~> # delete
+        ev.prevent-default!
         if confirm "Permanently Delete?"
           @delete-preview!
+        false
       #}}}
 
       init-html5-uploader = (locals) ~>
@@ -63,6 +65,7 @@ module.exports =
             try r = JSON.parse r-json
             if r?success
               @set-preview r[locals.name]
+              @local \preview, r[locals.name]
             else
               show-tooltip ($ \.tooltip:first), r?msg or 'Try Again!'
             if locals.on-success then locals.on-success xhr, file, try JSON.parse r-json
