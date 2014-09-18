@@ -332,9 +332,11 @@ function background-for-forum m, active-forum-id
   site = res.vars.site # get site
   err, site <- db.site-by-id site.id
   if err then return next err
-
-  # TODO wipe file from disk
-  if file-name = req.params.src
+  # wipe file from disk
+  file-name = req.body.src
+  if file-name and !file-name.to-string!match /\.\./
+    err <- fs.unlink "public/sites/#file-name"
+    if err then return res.status 500 .json {-success, msg:err}
     res.json {+success}
   else
     res.status 500 .json {-success, msg:['Unable to find file!']}

@@ -68,6 +68,7 @@ exports.use = (app) ->
   app.delete \/resources/sites/:id/logo,                 handlers.forum-logo-delete
   app.delete \/resources/sites/:id/private-background,   handlers.private-background-delete
   app.delete \/resources/sites/:id/offer-photo/:offerid, handlers.offer-photo-delete
+  app.delete \/resources/sites/:id/upload,               handlers.site-delete
 
 #}}}
 
