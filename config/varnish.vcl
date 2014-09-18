@@ -559,8 +559,7 @@ sub depersonalize_response {
 sub default_vcl_recv {
   if (req.restarts == 0) {
     if (req.http.x-forwarded-for) {
-        set req.http.X-Forwarded-For =
-    	req.http.X-Forwarded-For + ", " + client.ip;
+        set req.http.X-Forwarded-For = req.http.X-Forwarded-For + ", " + client.ip;
     } else {
         set req.http.X-Forwarded-For = client.ip;
     }
