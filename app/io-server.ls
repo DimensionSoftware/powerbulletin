@@ -76,12 +76,11 @@ clear-stale-redis-data = (r, cb) ->
     handshake = socket.handshake
     cookies = cookie.parse handshake.headers.cookie
     next! unless cookies
-    session-cookie = cookies['connect.sess']
+    session-cookie = cookies['express:sess']
     next! unless session-cookie
-    unsigned = connect.utils.parse-signed-cookie session-cookie, cvars.secret
-    next! unless unsigned
     session = try
-      connect.utils.parse-JSON-cookie(unsigned) || {}
+      json = new Buffer(session-cookie, 'base64').toString('utf8');
+      JSON.parse(json) || {}
     catch
       console.error \connect.utils.parse-JSON-cookie, e
       {}
