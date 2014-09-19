@@ -81,7 +81,7 @@ module.exports =
           if req.status is 400
             show-tooltip (@$.find \.tooltip), r?msg or 'File must be at least 200x200px'
         on-success: (xhr, file, r-json) ~>
-          r = JSON.parse(r-json)
+          r = if typeof! r-json is \Object then r-json else JSON.parse r-json
           window.csrf = void # delete, so auto-fetch later
           # TODO show attachment ui
           #cache-buster = Math.random!to-string!replace \\. ''
