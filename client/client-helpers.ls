@@ -41,6 +41,7 @@ if window?
   else # mock form (eg. PostDrawer's Editor is outside a <form>)
     $f = $ ev.target.closest \.form
     [encodeURI("#k=#v&") for k,v of {
+      token:    window.csrf
       body:     ($f.find '[name="body"]' .val!)
       title:    ($f.find '[name="title"]' .val!)
       id:       ($f.find '[name="id"]' .val!)

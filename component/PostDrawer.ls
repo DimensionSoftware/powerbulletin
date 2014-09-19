@@ -32,6 +32,8 @@ module.exports =
             @edit-mode! # back to default Reply mode
           @delete-draft!
           @clear!
+          window.csrf = void # reset & fetch new token
+          fetch-csrf!
 
       @init-uploader!
 
@@ -216,8 +218,11 @@ function make-resizable footer
         min-height: 100px
         max-height: 600px
         resize: (el, ui) -> window?save-ui!)
-  unless window.csrf # load new csrf
-    r <~ $.get "/resources/sites/#site-id/csrf"
-    window.csrf = r.response-text or r
+  unless window.csrf then fetch-csrf! # load new csrf
+
+
+function fetch-csrf
+  r <~ $.get "/resources/sites/#site-id/csrf"
+  window.csrf = r.response-text or r
 
 # vim:fdm=marker
