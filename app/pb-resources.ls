@@ -19,6 +19,8 @@ require! {
   validator
 }
 
+global <<< require \./server-helpers
+
 const base-css = \public/sites
 
 io = io-emitter redis.create-client return_buffers: true
@@ -404,6 +406,7 @@ is-commentable-forum = (m, forum-id) ->
   show    : (req, res, next) ->
     site = res.vars.site
     db = pg.procs
+    caching-strategies.nocache res # nocache for edit, etc...
     if post-id = parse-int(req.params.post)
       err, post <- db.post site.id, post-id
       if err then return next err
