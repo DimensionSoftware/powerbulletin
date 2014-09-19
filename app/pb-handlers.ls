@@ -354,11 +354,14 @@ function background-for-forum m, active-forum-id
 
   # save file
   err, fields, files <~ form.parse req
-  err, file-name <- save-file-to-disk files.attach, prefix, token
+  err, filename <- save-file-to-disk files.attach, prefix, token
   if err then return res.status 500 .json {-success, msg:"Unable to save file: #err"}
-  if file-name
+  # insert db
+  err <- db.attachments.upsert {site_id:site.id, user_id:user.id, token, filename}
+  if err then return res.status 500 .json {-success, msg:"Unable to upsert: #err"}
+  if filename
     # TODO update images table (migrate to uploads?)
-    res.send {+success, token, attach:"#prefix/#file-name"}
+    res.send {+success, token, attach:"#prefix/#filename"}
   else
     res.status 500 .json {-success, msg:'What kind of file is this?'}
 
