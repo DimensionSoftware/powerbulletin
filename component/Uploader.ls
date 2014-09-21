@@ -27,7 +27,7 @@ module.exports =
           @locals!on-delete data # cb
 
     set-preview: (uri) ->
-      if uri?match /\.(jpg|gif|bmp|png)?\?/i
+      if uri?match /\.(jpg|gif|bmp|png)\??/i
         # show preview
         @$.find \.inline-text .hide!
         @$.find \.inline-preview
@@ -40,7 +40,7 @@ module.exports =
               "#{cacheUrl}/images/transparent-1px.gif"
       else
         if uri # show filename
-          uri = uri.replace /^\d+\//, '' # remove leading site-id
+          uri = uri.replace /^.+\//, '' # remove leading site-id
           file-name = (uri?match /(.+)?\./ .1) or ''
           file-ext  = (uri?match /\.([\w\d]{1,4})\??/ .1) or ''
           @$.find \.inline-preview .hide!
