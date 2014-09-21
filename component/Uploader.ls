@@ -27,13 +27,30 @@ module.exports =
           @locals!on-delete data # cb
 
     set-preview: (uri) ->
-      @$.find \.inline-preview
-        ..data \src, uri
-        ..attr \src,
-          if uri and not uri.match /transparent-1px/
-            "#{cacheUrl}/sites/#uri"
-          else
-            "#{cacheUrl}/images/transparent-1px.gif"
+      if uri?match /\.(jpg|gif|bmp|png)?\?/i
+        # show preview
+        @$.find \.inline-text .hide!
+        @$.find \.inline-preview
+          ..show!
+          ..data \src, uri
+          ..attr \src,
+            if uri and not uri.match /transparent-1px/
+              "#{cacheUrl}/sites/#uri"
+            else
+              "#{cacheUrl}/images/transparent-1px.gif"
+      else
+        if uri # show filename
+          uri = uri.replace /^\d+\//, '' # remove leading site-id
+          file-name = (uri?match /(.+)?\./ .1) or ''
+          file-ext  = (uri?match /\.([\w\d]{1,4})\??/ .1) or ''
+          @$.find \.inline-preview .hide!
+          @$.find \.inline-text
+            ..html "#{file-name or \Attachment}.<small>#file-ext</small>"
+            ..show!
+        else # hide all
+          @$.find \.inline-preview .hide!
+          @$.find \.inline-text .hide!
+
 
     on-attach: !->
       <~ lazy-load-html5-uploader
