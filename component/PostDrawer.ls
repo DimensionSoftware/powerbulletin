@@ -84,10 +84,12 @@ module.exports =
             show-tooltip (@$.find \.tooltip), r?msg or 'File must be at least 200x200px'
         on-success: (xhr, file, r-json) ~>
           r = if typeof! r-json is \Object then r-json else JSON.parse r-json
-          window.csrf = void # delete, so auto-fetch later
-          # TODO show attachment ui
-          #cache-buster = Math.random!to-string!replace \\. ''
-          #@$.find \img .attr \src, "#{cacheUrl}#{r.url}?#cache-buster"
+          # TODO if existing upload, delete it
+
+          # fetch new csrf
+          window.csrf = void
+          fetch-csrf!
+
       }
       @uploader = new Uploader locals:opts, (@$.find \#attach_uploader)
       @$.html5-uploader opts # make entire component droppable
