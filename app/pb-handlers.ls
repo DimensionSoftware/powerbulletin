@@ -382,7 +382,7 @@ function background-for-forum m, active-forum-id
     site.config.header = "#{site.id}/#file-name?#{h.cache-buster!}".to-lower-case!
     err, r <- db.site-update site # save!
     if err then return res.status 500 .json {-success, msg:err}
-    res.json {+success, heading:site.config.header}
+    res.json {+success, header:site.config.header}
     h.ban-all-domains site.id # blow cache since this affects html pages
   else
     res.status 500 .json {-success, msg:'What kind of file is this?'}
