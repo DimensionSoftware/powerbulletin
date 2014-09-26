@@ -333,10 +333,16 @@ function background-for-forum m, active-forum-id
   err, site <- db.site-by-id site.id
   if err then return next err
   # wipe file from disk
-  file-name = req.body.src
-  if file-name and !file-name.to-string!match /\.\./
-    err <- fs.unlink "public/sites/#file-name"
-    if err then return res.status 500 .json {-success, msg:err}
+  src = req.body.src
+  if src and !src.to-string!match /\.\./
+    err <- fs.unlink "public/sites/#src"
+    if err then return res.status 500 .json {-success, msg:[err]}
+    # delete from db
+    filename = src.replace /.+\//, ''
+    err, r <- db.attachments.select {filename}
+    if err or not r.length then return res.status 500 .json {-success, msg:['Unable to select file!']}
+    err <- db.attachments.delete r?0
+    if err then return res.status 500 .json {-success, msg:['Unable to delete file!']}
     res.json {+success}
   else
     res.status 500 .json {-success, msg:['Unable to find file!']}
