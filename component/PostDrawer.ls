@@ -84,8 +84,6 @@ module.exports =
             show-tooltip (@$.find \.tooltip), r?msg or 'File must be at least 200x200px'
         on-success: (xhr, file, r-json) ~>
           r = if typeof! r-json is \Object then r-json else JSON.parse r-json
-          # TODO if existing upload, delete it
-
           # fetch new csrf
           window.csrf = void
           fetch-csrf!

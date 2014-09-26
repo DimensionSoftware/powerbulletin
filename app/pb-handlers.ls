@@ -336,16 +336,16 @@ function background-for-forum m, active-forum-id
   src = req.body.src
   if src and !src.to-string!match /\.\./
     err <- fs.unlink "public/sites/#src"
-    if err then return res.status 500 .json {-success, msg:[err]}
+    if err then return res.status 500 .json {-success, msg:err}
     # delete from db
     filename = src.replace /.+\//, ''
     err, r <- db.attachments.select {filename}
-    if err or not r.length then return res.status 500 .json {-success, msg:['Unable to select file!']}
+    if err or not r.length then return res.status 500 .json {-success, msg:'Unable to select file!'}
     err <- db.attachments.delete r?0
-    if err then return res.status 500 .json {-success, msg:['Unable to delete file!']}
+    if err then return res.status 500 .json {-success, msg:'Unable to delete file!'}
     res.json {+success}
   else
-    res.status 500 .json {-success, msg:['Unable to find file!']}
+    res.status 500 .json {-success, msg:'Unable to find file!'}
 @site-upload = (req, res, next) ->
   # get site
   site     = res.vars.site
@@ -358,18 +358,29 @@ function background-for-forum m, active-forum-id
   form   = new formidable.IncomingForm!
   prefix = "#{site.id}/uploads"
 
-  # save file
-  err, fields, files <~ form.parse req
-  err, filename <- save-file-to-disk files.attach, prefix, token
-  if err then return res.status 500 .json {-success, msg:"Unable to save file: #err"}
-  # insert db
-  err <- db.attachments.upsert {site_id:site.id, user_id:user.id, token, filename}
-  if err then return res.status 500 .json {-success, msg:"Unable to upsert: #err"}
-  if filename
-    # TODO update images table (migrate to uploads?)
-    res.send {+success, token, attach:"#prefix/#filename"}
+  save-file = ->
+    # save to disk
+    err, fields, files <~ form.parse req
+    err, filename <- save-file-to-disk files.attach, prefix, token
+    if err then return res.status 500 .json {-success, msg:"Unable to save file: #err"}
+    # insert db attachment
+    err <- db.attachments.upsert {site_id:site.id, user_id:user.id, token, filename}
+    if err then return res.status 500 .json {-success, msg:"Unable to upsert: #err"}
+    if filename
+      res.send {+success, token, attach:"#prefix/#filename?#{h.cache-buster!}".to-lower-case!}
+    else
+      res.status 500 .json {-success, msg:'What kind of file is this?'}
+
+  # existing upload?
+  err, r <- db.attachments.select {token}
+  if r.length # yes--so, delete
+    err <- fs.unlink "public/sites/#{r.0.site_id}/uploads/#{r.0.filename}"
+    if err then return res.status 500 .json {-success, msg:err}
+    err <- db.attachments.delete r?0
+    if err then return res.status 500 .json {-success, msg:'Unable to delete file!'}
+    save-file!
   else
-    res.status 500 .json {-success, msg:'What kind of file is this?'}
+    save-file!
 
 @forum-header-delete = (req, res, next) -> wipe-file-with-config res, \header, next
 @forum-header = (req, res, next) ->
