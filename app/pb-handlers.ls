@@ -583,12 +583,9 @@ function profile-paths user, uploaded-file, base=\avatar
   form = new formidable.IncomingForm!
   err, fields, files <~ form.parse req
   avatar = files.avatar
-  console.dir \attrs:, files, fields
-  #console.log \path:, avatar.path
   gm avatar.path # resolution guard
     .size (err, size) ->
       if err then return res.json {-success}
-      console.log size
       if size.height < 200px or size.width < 200px
         return res.status 400 .json {-success, msg: 'Image must be at least 200x200px'}
 

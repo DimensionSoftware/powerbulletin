@@ -383,13 +383,10 @@ is-commentable-forum = (m, forum-id) ->
       c.invalidate-post post.id, req.user.name # blow cache!
       # set attachment's post_id
       if post.token
-        console.log post.token
         err, a <- db.attachments.select-one {token:"#{user.id}-#{post.token}", site_id:site.id, user_id:user.id}
-        console.log \a:, a
         if err or !a then return console.warn "unable to set post_id to attachment: #err"
         a.post_id = post.id
         delete a.created_human; delete a.created_iso; delete a.created_friendly
-        console.log \a:, a
         err <- db.attachments.upsert a
         if err then return console.warn "unable to set post_id to attachment: #err"
 
