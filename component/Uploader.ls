@@ -24,7 +24,8 @@ module.exports =
           show-tooltip (@@$ \#warning), if typeof! data.msg?0 is \String then data.msg.0 else 'Unable to Delete!'
         ..success (data) ~>
           @set-preview void # remove thumb
-          @locals!on-delete data # cb
+          if cb = @locals!on-delete
+            cb data
 
     set-preview: (uri) ->
       if uri?match /\.(jpg|gif|bmp|png)\??/i
