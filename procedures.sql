@@ -450,7 +450,7 @@ CREATE FUNCTION procs.usr(usr JSON) RETURNS JSON AS $$
     u.id, u.email, u.rights AS sys_rights,
     a.photo, a.verified, a.rights, a.name, a.created, a.site_id, a.last_activity, a.config AS config,
     (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2) AS post_count,
-    (SELECT SUM(count) FROM (SELECT DISTINCT COUNT(*) FROM posts WHERE user_id = u.id AND site_id = $2 GROUP BY thread_id) AS tc) AS thread_count,
+    (SELECT SUM(count) FROM (SELECT DISTINCT COUNT(*) FROM posts p WHERE p.user_id = u.id AND p.parent_id IS NULL AND p.forum_id IN (SELECT id FROM forums WHERE site_id = $2)) AS tc) AS thread_count,
     auths.type, auths.profile 
   FROM users u
   JOIN aliases a ON a.user_id = u.id

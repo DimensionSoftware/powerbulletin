@@ -95,6 +95,7 @@ io = io-emitter redis.create-client return_buffers: true
 @once-setup = (req, res, next) ->
   try site-id = parse-int req.query.site_id
   return unless site-id # guard
+  return res.status 500 .json {-success, msg:'No User!'} unless req.user?id # guard
   user =
     id      : req.user.id
     site_id : site-id
