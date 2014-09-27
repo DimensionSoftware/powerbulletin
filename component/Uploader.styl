@@ -97,7 +97,7 @@ form
         top 0
         border-radius 3px
         // hide close for empty backgrounds
-        &[src*='transparent'] + .close
+        &:not([src]) ~ .close, &[src*='transparent'] ~ .close
           opacity 0!important
           height 0!important
           width 0!important
