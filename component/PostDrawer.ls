@@ -34,6 +34,7 @@ module.exports =
           @clear!
           window.csrf = void # reset & fetch new token
           fetch-csrf!
+          @uploader.reset!
 
       @init-uploader!
 

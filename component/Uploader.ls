@@ -27,6 +27,15 @@ module.exports =
           if cb = @locals!on-delete
             cb data
 
+    reset: -> # reset ui
+      @set-preview void
+      @$.find \.inline-preview
+        ..show!
+        ..data \src, void
+        ..attr \src, "#{cacheUrl}/images/transparent-1px.gif"
+      @$.find \.progress
+        ..css \width, 0px
+
     set-preview: (uri) ->
       if uri?match /\.(jpg|gif|bmp|png)\??/i
         # show preview
