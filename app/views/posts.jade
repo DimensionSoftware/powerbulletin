@@ -45,6 +45,8 @@ if typeof(post) !== 'undefined'
           .post-content
             if post.title
               h2.title= post.title
+            if post.media_url
+              img(src="#{cacheUrl}/sites/#{post.media_url}")
             if post.html
               .body!= post.html
           if !post.is_comment && post.alias_config && post.alias_config.sig

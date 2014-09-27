@@ -374,43 +374,54 @@ is-commentable-forum = (m, forum-id) ->
     if reply-only = (not is-commentable-forum(site.config.menu, parse-int(post.forum_id))) and parent-post
       post.parent_id = parent-post.thread_id
 
-    err, ap-res <- db.add-post post
-    if err then return next err
-
-    if ap-res.success
-      # blow cache
-      post.id = ap-res.id
-      c.invalidate-post post.id, req.user.name # blow cache!
-      # set attachment's post_id
-      if post.token
-        err, a <- db.attachments.select-one {token:"#{user.id}-#{post.token}", site_id:site.id, user_id:user.id}
-        if err or !a then return console.warn "unable to set post_id to attachment: #err"
-        a.post_id = post.id
-        delete a.created_human; delete a.created_iso; delete a.created_friendly
-        err <- db.attachments.upsert a
-        if err then return console.warn "unable to set post_id to attachment: #err"
-
-    finish = (new-post) ->
+    finish = (ap-res, new-post) ->
       ap-res.user_id = post.user_id
       res.json ap-res
 
-    unless post.parent_id
-      err, new-post <- db.post site.id, post.id
+    do-subscriptions = (ap-res) ->
+      unless post.parent_id
+        err, new-post <- db.post site.id, post.id
+        if err then return next err
+        io.in(site.id).emit \thread-create new-post
+        db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
+        if post.mentions?length
+          notifications.send \mention, user, post.mentions, { site, post: new-post }
+        finish ap-res, new-post
+      else
+        err, new-post <- db.post site.id, post.id
+        if err then return next err
+        new-post.posts = []
+        io.in(site.id).emit \post-create new-post
+        db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
+        if post.mentions?length
+          notifications.send \mention, user, post.mentions, { site, post: new-post }
+        finish ap-res, new-post
+
+    add-post = (post, attachment) ->
+      err, ap-res <- db.add-post post
       if err then return next err
-      io.in(site.id).emit \thread-create new-post
-      db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
-      if post.mentions?length
-        notifications.send \mention, user, post.mentions, { site, post: new-post }
-      finish new-post
+      if ap-res.success
+        # blow cache
+        post.id = ap-res.id
+        c.invalidate-post post.id, req.user.name
+        if attachment and post.token # set attachment's post_id
+          attachment.post_id = post.id
+          delete attachment.created_human; delete attachment.created_iso; delete attachment.created_friendly
+          err <- db.attachments.upsert attachment
+          if err then return console.warn "Unable to set post_id to attachment: #err"
+          do-subscriptions ap-res
+        else
+          do-subscriptions ap-res
+
+    if post.token # update post's media_url (for display)
+      err, attachment <- db.attachments.select-one {token:"#{user.id}-#{post.token}", site_id:site.id, user_id:user.id}
+      unless err or !attachment
+        post.media_url = "#{site.id}/uploads/#{attachment.filename}"
+      err, ap-res <- db.add-post post
+      if err then return next err
+      add-post post, attachment
     else
-      err, new-post <- db.post site.id, post.id
-      if err then return next err
-      new-post.posts = []
-      io.in(site.id).emit \post-create new-post
-      db.thread_subscriptions.add(site.id, req.user.id, new-post.thread_id)
-      if post.mentions?length
-        notifications.send \mention, user, post.mentions, { site, post: new-post }
-      finish new-post
+      add-post post
 
   show    : (req, res, next) ->
     site = res.vars.site

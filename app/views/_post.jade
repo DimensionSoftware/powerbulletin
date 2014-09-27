@@ -19,6 +19,8 @@ mixin _post(p, i, moderatorMode)
               a.mutant(href=p.thread_uri)= p.title
           else
             h4.title= p.title
+        if p.media_url
+          img(src="#{cacheUrl}/sites/#{p.media_url}")
         if p.html
           .body!= p.html
           .clear
