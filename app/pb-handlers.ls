@@ -333,15 +333,15 @@ function background-for-forum m, active-forum-id
   err, site <- db.site-by-id site.id
   if err then return next err
   # wipe file from disk
-  src = req.body.src
+  src = req.body.src.to-lower-case!replace /\?.+$/, '' # remove any cgi
   if src and !src.to-string!match /\.\./
     err <- fs.unlink "public/sites/#src"
     if err then return res.status 500 .json {-success, msg:err}
     # delete from db
-    filename = src.replace /.+\//, ''
-    err, r <- db.attachments.select {filename}
-    if err or not r.length then return res.status 500 .json {-success, msg:'Unable to select file!'}
-    err <- db.attachments.delete r?0
+    filename = src.replace /.+\//, '' # remove slashes
+    err, r <- db.attachments.select-one {filename}
+    if err or !r then return res.status 500 .json {-success, msg:'Unable to select file!'}
+    err <- db.attachments.delete r
     if err then return res.status 500 .json {-success, msg:'Unable to delete file!'}
     res.json {+success}
   else
@@ -364,6 +364,7 @@ function background-for-forum m, active-forum-id
     err, filename <- save-file-to-disk files.attach, prefix, token
     if err then return res.status 500 .json {-success, msg:"Unable to save file: #err"}
     # insert db attachment
+    filename = filename.to-lower-case!
     err <- db.attachments.upsert {site_id:site.id, user_id:user.id, token, filename}
     if err then return res.status 500 .json {-success, msg:"Unable to upsert: #err"}
     if filename
@@ -372,12 +373,10 @@ function background-for-forum m, active-forum-id
       res.status 500 .json {-success, msg:'What kind of file is this?'}
 
   # existing upload?
-  err, r <- db.attachments.select {token}
-  if r.length # yes--so, delete
-    err <- fs.unlink "public/sites/#{r.0.site_id}/uploads/#{r.0.filename}"
-    if err then return res.status 500 .json {-success, msg:err}
-    err <- db.attachments.delete r?0
-    if err then return res.status 500 .json {-success, msg:'Unable to delete file!'}
+  err, r <- db.attachments.select-one {token}
+  if r # yes--so, delete (proceed even if err as file will replace)
+    err <- fs.unlink "public/sites/#{r.site_id}/uploads/#{r.filename}"
+    err <- db.attachments.delete r
     save-file!
   else
     save-file!
