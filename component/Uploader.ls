@@ -87,7 +87,9 @@ module.exports =
           on-client-load-end: ~> @$.find \.progress .width 0px; @$.find \.action .show!
           on-success: (xhr, file, r-json) ~>
             @$.find \.progress .width 0px
-            @$.find \.action .show!
+            @$.find \.action
+              ..html \Browse
+              ..show!
             # load current preview
             try r = JSON.parse r-json
             if r?success
