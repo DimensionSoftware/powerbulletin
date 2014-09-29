@@ -1438,6 +1438,34 @@
             buttonRow.className = 'wmd-button-row';
             buttonRow = buttonBar.appendChild(buttonRow);
             var xPosition = 0;
+            var makeUpload = function (id, title, XShift, textOp) {
+                var button = document.createElement("li");
+                button.className = "wmd-button";
+                button.style.left = xPosition + "px";
+                xPosition += 25;
+                var buttonImage = document.createElement('Label');
+                buttonImage.setAttribute('for', 'attach');
+                button.id = id + postfix;
+                button.appendChild(buttonImage);
+                button.title = title;
+                button.XShift = XShift;
+                if (textOp)
+                    button.textOp = textOp;
+                var normalYShift = "0px";
+                var disabledYShift = "-20px";
+                var highlightYShift = "-40px";
+                var label = button.getElementsByTagName("label")[0];
+                label.style.backgroundPosition = button.XShift + " " + normalYShift;
+                button.onmouseover = function () {
+                    label.style.backgroundPosition = this.XShift + " " + highlightYShift;
+                };
+
+                button.onmouseout = function () {
+                    label.style.backgroundPosition = this.XShift + " " + normalYShift;
+                };
+                buttonRow.appendChild(button);
+                return button;
+            };
             var makeButton = function (id, title, XShift, textOp) {
                 var button = document.createElement("li");
                 button.className = "wmd-button";
@@ -1459,7 +1487,7 @@
                 spacer.className = "wmd-spacer wmd-spacer" + num;
                 spacer.id = "wmd-spacer" + num + postfix;
                 buttonRow.appendChild(spacer);
-                xPosition += 25;
+                xPosition += 15;
             }
 
             buttons.bold = makeButton("wmd-bold-button", getString("bold"), "0px", bindCommand("doBold"));
@@ -1473,6 +1501,8 @@
             buttons.image = makeButton("wmd-image-button", getString("image"), "-100px", bindCommand(function (chunk, postProcessing) {
                 return this.doLinkOrImage(chunk, postProcessing, true);
             }));
+            buttons.upload = makeUpload("wmd-upload-button", "Upload Attachment", "-259px", null);
+
             makeSpacer(2);
             buttons.olist = makeButton("wmd-olist-button", getString("olist"), "-120px", bindCommand(function (chunk, postProcessing) {
                 this.doList(chunk, postProcessing, true);
