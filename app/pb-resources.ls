@@ -412,13 +412,13 @@ is-commentable-forum = (m, forum-id) ->
           do-subscriptions ap-res
         else
           do-subscriptions ap-res
+      else
+        res.send {-success, errors:ap-res.errors} # FIXME refactor to res.status 400 .send
 
     if post.token # update post's media_url (for display)
       err, attachment <- db.attachments.select-one {token:"#{user.id}-#{post.token}", site_id:site.id, user_id:user.id}
       unless err or !attachment
         post.media_url = "#{site.id}/uploads/#{attachment.filename}"
-      err, ap-res <- db.add-post post
-      if err then return next err
       add-post post, attachment
     else
       add-post post
