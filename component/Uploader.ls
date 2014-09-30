@@ -28,11 +28,11 @@ module.exports =
             cb data
 
     reset: -> # reset ui
-      @set-preview void
+      @$.find \.inline-text .hide!
       @$.find \.inline-preview
-        ..show!
         ..data \src, void
         ..attr \src, "#{cacheUrl}/images/transparent-1px.gif"
+        ..show!
       @$.find \.progress
         ..css \width, 0px
 
@@ -41,13 +41,13 @@ module.exports =
         # show preview
         @$.find \.inline-text .hide!
         @$.find \.inline-preview
-          ..show!
           ..data \src, uri
           ..attr \src,
             if uri and not uri.match /transparent-1px/
               "#{cacheUrl}/sites/#uri"
             else
               "#{cacheUrl}/images/transparent-1px.gif"
+          ..show!
       else
         if uri # show filename
           uri = uri.replace /^.+\//, '' # remove leading site-id
@@ -57,10 +57,13 @@ module.exports =
           @$.find \.inline-text
             ..html "#{file-name or \Attachment}.<small>#file-ext</small>"
             ..show!
-        else # hide all
-          @$.find \.inline-preview .hide!
-          @$.find \.inline-text .hide!
+        else
+          @reset!
 
+    upload: -> # fire upload event
+      # FIXME don't use-- isn't cross-browser
+      # - can work around security exception in some browsers by creating mouse events
+      @$.find "label[for='#{@local \name}']" .trigger \click
 
     on-attach: !->
       <~ lazy-load-html5-uploader
