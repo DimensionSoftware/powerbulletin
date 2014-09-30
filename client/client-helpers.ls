@@ -264,13 +264,14 @@ load-css = (href) ->
       if [control, msg, arrow=false] = msgs[index]
         if ($e = $ control)?length is 1 # raise control & reposition tooltip to control
           left = $e.position!left + ($i.width!/2)
+          top  = $e.position!top - 10px
           $e
             ..0?scroll-into-view!
             ..add-class \raised
           $i # position
             ..toggle-class \right, arrow is true # points left
             ..toggle-class \left,  arrow is -1   # points right
-            ..css \top, ($e.position!top - 10px) + \px
+            ..css \top, (if top < 0 then 0 else top) + \px
             ..css \left (switch arrow
               | 1     => \50%
               | true  => left + 280px
