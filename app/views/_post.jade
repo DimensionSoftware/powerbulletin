@@ -20,7 +20,13 @@ mixin _post(p, i, moderatorMode)
           else
             h4.title= p.title
         if p.media_url
-          img(src="#{cacheUrl}/sites/#{p.media_url}")
+          if p.media_url.match(/\.(jpg|gif|bmp|png)\??/i)
+            // image preview
+            img(src="#{cacheUrl}/sites/#{p.media_url}")
+          else
+            // attachment
+            a(href="#{cacheUrl}/sites/#{p.media_url}", title='Click to Download')
+              strong Attachment #1
         if p.html
           .body!= p.html
           .clear

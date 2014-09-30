@@ -53,7 +53,9 @@ module.exports =
           uri = uri.replace /^.+\//, '' # remove leading site-id
           file-name = (uri?match /(.+)?\./ .1) or ''
           file-ext  = (uri?match /\.([\w\d]{1,4})\??/ .1) or ''
-          @$.find \.inline-preview .hide!
+          @$.find \.inline-preview
+            ..attr \src, '' # show delete button
+            ..hide!
           @$.find \.inline-text
             ..html "#{file-name or \Attachment}.<small>#file-ext</small>"
             ..show!

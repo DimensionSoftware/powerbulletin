@@ -46,7 +46,13 @@ if typeof(post) !== 'undefined'
             if post.title
               h2.title= post.title
             if post.media_url
-              img(src="#{cacheUrl}/sites/#{post.media_url}")
+              if post.media_url.match(/\.(jpg|gif|bmp|png)\??/i)
+                // image preview
+                img(src="#{cacheUrl}/sites/#{post.media_url}")
+              else
+                // attachment
+                a(href="#{cacheUrl}/sites/#{post.media_url}", title='Click to Download')
+                  strong Attachment #1
             if post.html
               .body!= post.html
           if !post.is_comment && post.alias_config && post.alias_config.sig
