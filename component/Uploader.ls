@@ -82,15 +82,18 @@ module.exports =
           name: locals.name
           post-url: locals.postUrl
           on-server-progress: (progress, file) ~>
+            if @local \hideBrowse then @$.find \.button .remove-class \hidden
             @$.find \.action .css \visibility, \hidden
             p = parse-int((progress.loaded/file.size) * 100)
             @$.find \.progress # progress update!
               ..html p + '<small>%</small>'
               ..css  \width, (if p < 35 then 35 else p) + \%
-          on-client-load-end: ~>
+          on-client-load-end: ~> # XXX does this work?  added code to on-success just in case
             @$.find \.progress .width 0px
             @$.find \.action .css \visibility, \visible
+            if @local \hideBrowse then @$.find \.button .add-class \hidden
           on-success: (xhr, file, r-json) ~>
+            if @local \hideBrowse then @$.find \.button .add-class \hidden
             @$.find \.progress .width 0px
             @$.find \.action
               ..html \Browse

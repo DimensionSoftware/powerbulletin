@@ -79,6 +79,7 @@ module.exports =
         post-url: "/resources/sites/#site-id/upload"
         preview: void
         +multiple
+        +hide-browse # only show upload progress since we have toolbar icon for attachments
         on-failure: (ev, file, req) ~>
           try r = JSON.parse req.response-text
           if req.status is 400
