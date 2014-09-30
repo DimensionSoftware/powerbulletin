@@ -1,10 +1,10 @@
+#action_wrapper
+  .in-reply Replying to 
+    span#reply_to
+    span.in-reply-by by
+      span#reply_by
+  .in-edit Editing Your Post
+#editor
+button.save Reply
 form(action="/resources/sites/#{siteId}", method="put", enctype="multipart/form-data")
-  #action_wrapper
-    .in-reply Replying to 
-      span#reply_to
-      span.in-reply-by by
-        span#reply_by
-    .in-edit Editing Your Post
-  #editor
-  button.save Reply
   #attach_uploader

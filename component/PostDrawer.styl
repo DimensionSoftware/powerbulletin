@@ -73,14 +73,34 @@ footer
         border-bottom-left-radius 0
         margin-left -100px
         width 200px
-      .Uploader
-        position absolute
-        bottom 50px
-        right 0
-        z-index 12
-        .label, .note
-          display none
-          z-index 12px
+      form
+        position static!important
+        .Uploader
+          position absolute
+          bottom -1px
+          left 1px
+          z-index 12
+          .label
+            position static
+          .label, .note
+            display none
+            z-index 12px
+          .close
+            z-index 10
+            left 0
+            top -45px
+          .inline-preview
+            top auto
+            height 27px
+            bottom 3px
+            left 5px
+            border 1px solid #eee
+          .button
+            margin -37px 0 7px 48px !important
+            height 25px!important
+            border-radius 0
+            .action
+              display none
       #editor .center
         top 0
         .tooltip.small
