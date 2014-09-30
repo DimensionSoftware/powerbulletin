@@ -130,7 +130,10 @@
                 }
             };
             xmlHttpRequest.open("POST", settings.postUrl, true);
+
+            // pass custom pb headers
             if (window.csrf) xmlHttpRequest.setRequestHeader("x-csrf-token", window.csrf);
+            if (window.activeForumId) xmlHttpRequest.setRequestHeader("x-forum-id", window.activeForumId);
 
             if (file.getAsBinary) { // Firefox
 
