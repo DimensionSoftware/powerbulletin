@@ -109,6 +109,7 @@ module.exports =
               show-tooltip ($ \.tooltip:first), r?msg or 'Try Again!'
             if locals.on-success then locals.on-success xhr, file, try JSON.parse r-json
           on-failure: (xhr, file, r-json) ~>
+            if @local \hideBrowse then @$.find \.button .add-class \hidden
             try r = JSON.parse r-json
             show-tooltip ($ \.tooltip:first), r?msg
             @$.find \.progress
