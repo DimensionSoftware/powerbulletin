@@ -255,7 +255,9 @@ layout-on-personalize = (w, u) ->
       window.marshal \commentable @commentable
       window.marshal \replyTo @post?title
       window.marshal \replyBy @post?user_name
-      window.marshal \allowUploads @item?form?uploads
+      # XXX facilitate content by allowing everyone to upload (for now)
+      #window.marshal \allowUploads @item?form?uploads
+      window.marshal \allowUploads true
 
       hh = @item?form?hide-homepage
       window.marshal \hideHomepage hh

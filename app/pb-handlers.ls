@@ -354,11 +354,12 @@ function background-for-forum m, active-forum-id
   err, site <- db.site-by-id site.id
   if err then return next err
 
+  # XXX facilitate content by allowing everyone to upload (for now)
   # guard if no subscription to allow upload
-  m    = site.config.menu
-  id   = try parse-int req.headers['x-forum-id']
-  item = menu.flatten m |> find -> it.form.dbid is id
-  unless item?form?uploads then return res.status 400 .json {-success, msg:'Uploads Not Allowed!'}
+  #m    = site.config.menu
+  #id   = try parse-int req.headers['x-forum-id']
+  #item = menu.flatten m |> find -> it.form.dbid is id
+  #unless item?form?uploads then return res.status 400 .json {-success, msg:'Uploads Not Allowed!'}
 
   token  = "#{user.id}-#{req.headers['x-csrf-token']}"
   form   = new formidable.IncomingForm!

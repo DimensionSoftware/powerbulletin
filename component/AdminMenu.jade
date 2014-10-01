@@ -40,17 +40,17 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
               small per page
             input(id='posts_per_page', placeholder='30', class='posts-per-page', name='postsPerPage', type='text', value='30', maxlength=4)
             .note Override the default
+            .break
+            //- XXX facilitate content by allowing everyone to upload (for now)
+            //-label(for='uploads') Allow Uploads
+            //-.box
+            //-  input.stylish#uploads(type='checkbox', value='checked', name='uploads')
+            //-  label.switch-control(for='uploads')
+            //-    .switch
+            //-.note Simply drag &amp; drop file uploads in posts
             //-.break
-            //- XXX html5-uploader works inside parent <form>
-            //-#uploader_component
-            .break
-            label(for='uploads') Allow Uploads
-            .box
-              input.stylish#uploads(type='checkbox', value='checked', name='uploads')
-              label.switch-control(for='uploads')
-                .switch
-            .note Simply drag &amp; drop file uploads in posts
-            .break
+            //- XXX force allow uploads on every forum
+            input(type='hidden', value='checked', name='uploads')
             label(for='locked') Admin Only
             .box
               input.stylish#locked(type='checkbox', value='checked', name='locked')
