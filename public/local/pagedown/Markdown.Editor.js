@@ -36,7 +36,9 @@
 
         image: "Image <img> Ctrl+G",
         imagedescription: "enter image description here",
-        imagedialog: "<p><b>Insert Image</b></p><p>http://example.com/images/diagram.jpg \"optional title\"<br><br>Need <a href='http://www.google.com/search?q=free+image+hosting' target='_blank'>free image hosting?</a></p>",
+        imagedialog: (window.allowUploads
+          ?  "<p><b>Insert Image</b></p><p>http://example.com/images/diagram.jpg \"optional title\"<br><br><label style=\"cursor:pointer;\" for=\"attach\">Or, Upload Photos/Video</label></p>"
+          :  "<p><b>Insert Image</b></p><p>http://example.com/images/diagram.jpg \"optional title\"<br><br>Need <a href='http://www.google.com/search?q=free+image+hosting' target='_blank'>free image hosting?</a></p>"),
 
         olist: "Numbered List <ol> Ctrl+O",
         ulist: "Bulleted List <ul> Ctrl+U",
@@ -1457,11 +1459,11 @@
                 var label = button.getElementsByTagName("label")[0];
                 label.style.backgroundPosition = button.XShift + " " + normalYShift;
                 button.onmouseover = function () {
-                    label.style.backgroundPosition = this.XShift + " " + highlightYShift;
+                    if (window.allowUploads) label.style.backgroundPosition = this.XShift + " " + highlightYShift;
                 };
 
                 button.onmouseout = function () {
-                    label.style.backgroundPosition = this.XShift + " " + normalYShift;
+                    if (window.allowUploads) label.style.backgroundPosition = this.XShift + " " + normalYShift;
                 };
                 buttonRow.appendChild(button);
                 return button;
@@ -1501,6 +1503,8 @@
             buttons.image = makeButton("wmd-image-button", getString("image"), "-100px", bindCommand(function (chunk, postProcessing) {
                 return this.doLinkOrImage(chunk, postProcessing, true);
             }));
+
+            // toolbar icon for attachments
             buttons.upload = makeUpload("wmd-upload-button", "Upload Attachment", "-259px", null);
 
             makeSpacer(2);
