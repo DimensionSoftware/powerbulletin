@@ -255,6 +255,7 @@ layout-on-personalize = (w, u) ->
       window.marshal \commentable @commentable
       window.marshal \replyTo @post?title
       window.marshal \replyBy @post?user_name
+      window.marshal \allowUploads @item?form?uploads
 
       hh = @item?form?hide-homepage
       window.marshal \hideHomepage hh
@@ -426,6 +427,7 @@ layout-on-personalize = (w, u) ->
       #$ '#left_container .scrollable' .off \scroll.Forum
       try w.$ \#left_container .resizable(\destroy)
       if w.user then postdrawer!
+        ..reload!
         ..save-draft!
         # back to Reply mode
         ..clear!

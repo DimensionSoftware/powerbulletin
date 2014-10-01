@@ -80,7 +80,7 @@ render = (sel, locals, cb=(->)) ~>
     focus $e
 
 @postdrawer = ~>
-  return pd if pd = window.component.postdrawer # guard
+  return pd.reload! if pd = window.component.postdrawer # guard
   window.component.postdrawer = new PostDrawer {locals:{
     forum-id:window.active-forum-id,
     parent-id:window.active-thread-id}}, \#post_new

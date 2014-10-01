@@ -68,7 +68,10 @@ module.exports =
       #}}}
 
       ####  main  ;,.. ___  _
-      # + Editor
+      @init-editor!
+      @reload!
+
+    init-editor: ~>
       @editor = new Editor {locals:{id:active-thread-id?}}, \#editor, @
       @editor.render!attach!
 
@@ -89,6 +92,14 @@ module.exports =
       }
       @uploader = new Uploader locals:opts, (@$.find \#attach_uploader)
       @$.html5-uploader opts # make entire component droppable
+
+    reload: ~>
+      # editor
+      if @editor then @editor.reload!
+      # uploader
+      if @uploader then @uploader.detach! # destroy & cleanup
+      if window.allow-uploads then @init-uploader!
+      @
 
     _draft: ~>
       const forum-id  = window.active-forum-id or @context-forum-id

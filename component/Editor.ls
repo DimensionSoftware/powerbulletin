@@ -79,6 +79,11 @@ module.exports =
       e = @@$ 'footer [name="title"]:visible' # use title?
       if e?length and not e.val!length then e.focus! else @editor?focus!), 50ms # ... & focus!
 
+    reload: ->
+      $ \#wmd-upload-button
+        ..prop \disabled !window.allow-uploads
+        ..find \label .css \background-position-y (if window.allow-uploads then 0 else -20px)
+
     on-attach: ~>
       ####  main  ;,.. ___  _
       # lazy-load-pagedown on client
@@ -103,12 +108,14 @@ module.exports =
         $ window .on \unload.Editor ~> @save true      # to server
       #}}}
       @$.toggle-class \has-preview, (storage.get @k-has-preview!) or true # default w/ preview
+      @reload!
       @focus!
 
     on-detach: ~> # XXX ensure detach is called
       if @local \autoSave # unbind save events
         $ window .off \unload.Editor
         @save true
+      @editor.pagedown = void
       @$.off!remove! # cleanup
 
 function preview-id-for id
