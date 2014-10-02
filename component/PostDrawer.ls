@@ -55,7 +55,6 @@ module.exports =
             if @is-open!
               @save-draft!  # save for later
               @close!       # toggle
-              @clear!       # back to Reply mode
             else
               @clear!       # back to Reply mode
               @set-draft!   # restore on open
@@ -111,8 +110,7 @@ module.exports =
       storage.del draft-key
     save-draft: ~>
       {forum-id, parent-id, draft-key} = @_draft!
-      if v = (@@$ '.PostDrawer [name="body"]')?val!
-        storage.set draft-key, v
+      storage.set draft-key, (@@$ '.PostDrawer [name="body"]')?val! # always set val
     set-draft: ~>
       {forum-id, parent-id, draft-key} = @_draft!
       if draft = storage.get draft-key # retrieve
