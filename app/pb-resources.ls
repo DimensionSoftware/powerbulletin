@@ -173,7 +173,7 @@ is-commentable-forum = (m, forum-id) ->
 
       if id # active form
         form = { [k, v] for k,v of req.body when k in
-          <[ id dbid title placeholderDescription fixedHeader newsletter offerPhoto offerContent offerContentOnly offerDescription affiliateLink hashtags videoTop videoTop2 videoBottom linkDescription forumDescription pageDescription dialog postsPerPage offerSlug forumSlug uploads hideHomepage locked comments pageSlug content url contentOnly separateTab ]> }
+          <[ id dbid title placeholderDescription fixedHeader newsletter offerPhoto offerContent offerContentOnly offerDescription affiliateLink hashtags videoTop videoTop2 videoBottom linkDescription forumDescription pageDescription dialog postsPerPage offerSlug forumSlug requireUpload uploads hideHomepage locked comments pageSlug content url contentOnly separateTab ]> }
 
         for k in <[offerSlug forumSlug pageSlug]> # cleanup keys
           if form[k].length < 1 then delete form[k]
@@ -415,13 +415,25 @@ is-commentable-forum = (m, forum-id) ->
       else
         res.send {-success, errors:ap-res.errors} # FIXME refactor to res.status 400 .send
 
+    post-if = (post, attachment, cb) ->
+      # test for 4chan-style
+      m    = site.config.menu
+      id   = try parse-int post.forum_id
+      item = menu.flatten m |> find -> it.form.dbid is id
+      if item?form?require-upload and !attachment and !post.parent_id # new thread requiring attachment
+        # XXX should be 400-- punting as client refactor is heavy
+        res.status 200 .json {-success, errors:['Upload a Photo or Video to Post!']} # guard
+      else
+        cb!
+
+    # attempt to post
     if post.token # update post's media_url (for display)
       err, attachment <- db.attachments.select-one {token:"#{user.id}-#{post.token}", site_id:site.id, user_id:user.id}
       unless err or !attachment
         post.media_url = "#{site.id}/uploads/#{attachment.filename}"
-      add-post post, attachment
+      post-if post, attachment, (-> add-post post, attachment)
     else
-      add-post post
+      post-if post, false, (-> add-post post)
 
   show    : (req, res, next) ->
     site = res.vars.site

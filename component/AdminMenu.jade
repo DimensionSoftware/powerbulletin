@@ -41,6 +41,21 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             input(id='posts_per_page', placeholder='30', class='posts-per-page', name='postsPerPage', type='text', value='30', maxlength=4)
             .note Override the default
             .break
+            input(type='hidden', value='checked', name='uploads')
+            label(for='locked') Admin Only
+            .box
+              input.stylish#locked(type='checkbox', value='checked', name='locked')
+              label.switch-control(for='locked')
+                .switch
+            .note Lock entire forum (read-only except admin)
+            .break
+            label(for='require_upload') 4Chan Threads
+            .box
+              input.stylish#require_upload(type='checkbox', value='checked', name='requireUpload')
+              label.switch-control(for='require_upload')
+                .switch
+            .note Require a Photo/Video upload to create a thread
+            .break
             //- XXX facilitate content by allowing everyone to upload (for now)
             //-label(for='uploads') Allow Uploads
             //-.box
@@ -50,20 +65,12 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
             //-.note Simply drag &amp; drop file uploads in posts
             //-.break
             //- XXX force allow uploads on every forum
-            input(type='hidden', value='checked', name='uploads')
-            label(for='locked') Admin Only
-            .box
-              input.stylish#locked(type='checkbox', value='checked', name='locked')
-              label.switch-control(for='locked')
-                .switch
-            .note Lock entire forum (read-only except admin)
-            .break
-            label(for='comments') Comments
+            label(for='comments') Reddit Comments
             .box
               input.stylish#comments(type='checkbox', value='checked', name='comments')
               label.switch-control(for='comments')
                 .switch
-            .note Commentable forums are threaded like Reddit
+            .note Commentable forums are threaded like a tree
             .break
             label(for='hide_homepage') Hide Homepage
             .box
