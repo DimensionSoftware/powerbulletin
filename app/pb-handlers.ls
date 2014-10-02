@@ -821,7 +821,7 @@ function profile-paths user, uploaded-file, base=\avatar
   err, forum-dict <- db.forum-dict site.id
   if err then return next(err)
 
-  res.locals {searchopts: cleanup-searchopts(searchopts)}
+  res.locals.searchopts = cleanup-searchopts searchopts
 
   for h in elres.hits
     h._source.posts = [] # stub object for non-existent sub-posts in search view
