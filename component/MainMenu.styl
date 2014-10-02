@@ -1,55 +1,14 @@
 // shrink overall look when body has been scrolled
 body.scrolled
   header.header
-    &.image
-      // dark gradient
-      &:after
-        background-image linear-gradient(bottom, rgba(0,0,0,0) 14%, rgba(0,0,0,.9))
-        bottom 0
-        height (header_scrolled_height + 5)
-    #header_background, #header_background_buffer, #header_background_color
+    height header_scrolled_height
+    #header_background_buffer, #header_background, #header_background_color
       height header_scrolled_height
-      //transition height .1s ease-out
-    .container
-      .MainMenu
-        #menu.menu
-          bottom -2px
-          > .row
-            //transition line-height .2s ease-out
-            > .title.active:after
-              bottom 1px
-            .submenu
-              &.flat
-                .row
-                  line-height 35px
-                  // square arrow
-                  &:before
-                    top 0
-              .row
-                line-height (grid*3)
-          > .row:hover
-            > .title:after
-              bottom 1px
-            .submenu
-              top 28px
 header.header
   a:hover
     text-decoration none!important
     outline none
   //{{{ background header images
-  &.image
-    // dark gradient
-    &:after
-      content ''
-      z-index 2
-      position absolute
-      width 100%
-      height (header_height + 5)
-      bottom 0
-      right 0
-      background-image linear-gradient(bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,.9))
-      background-color transparent
-      //background radial-gradient(circle closest-corner at 45% 35%, rgba(0,0,0,0,.6) 50%, rgba(255,255,255,0) 100%)
     #header_background_buffer
       opacity 0
       z-index 1
@@ -63,25 +22,11 @@ header.header
         position absolute
         width 100%
         min-height 100%
-      // white gradient
-      &:after
-        position absolute
-        z-index 10
-        content ''
-        left 0
-        top 0
-        bottom 0
-        width 30%
-        max-width 450px
-        background-image linear-gradient(to right, rgba(255,255,255,.95) 14%, rgba(255,255,255,0))
     .tools
       .profile.photo
         box-shadow 2px 1px 10px 2px #111, 0 0 2px 1px dark_theme_color, 1px 1px 3px 2px theme_color
-      //.bubble, .bubble2
-      //  background-color #222
       .container menu
         background-color #fff
-        //background-image linear-gradient(bottom, rgba(0,0,0,1) 20%, rgba(0,0,0,.75))
         li a
           color #333
         .onclick-logout
@@ -102,10 +47,7 @@ header.header
         > .row
           > .title
             text-transform uppercase
-            text-shadow 1px 1px 0 rgba(0,0,0,.7)
-            color #ddd
-          //> .title.active, > .title.hover, .title:hover
-          //  color #fff
+            color darken(theme_color, 25%)
         &.active, &.hover
           &:before
             content ''
@@ -130,28 +72,43 @@ header.header
           box-shadow 0 1px 1px -1px #333 inset,2px 3px 4px 0px #bbb inset,0 0 1px 0 #555,0 1px 3px 0 theme_color inset
   //}}}
 .MainMenu
+  position fixed
+  left 0
+  right 0
+  height 49px
+  top 25px
+  background-color #fff
+  z-index 9
+  box-shadow 0 0 5px #444
   .close
     display none
   //{{{ Structure-related
   .menu
     padding 0
-    margin -3px auto 0 auto
+    margin 6px auto 0 400px
     display inline-block
-    position absolute
-    bottom -1px
     > .row
-        position relative!important
-        z-index 50!important
+      position relative!important
+      z-index 50!important
       .title
         display inline-block
         text-transform capitalize
         padding 0 15px
         margin-right 20px
+      &:after
+        content ''
+        position absolute
+        width 1px
+        background-color #eee
+        background-image linear-gradient(to bottom, #fafafa 20%, #eee 100%)
+        height 18px
+        right 11px
+        top 0
     .row.active, .row.hover, .row:hover
       z-index 7
       > .submenu
         opacity 1
-        top 29px
+        top 33px
         max-height 450px
         height auto
         min-width 850px
@@ -319,7 +276,7 @@ header.header
         left 20%
         width 0%
         height 0
-        bottom 0
+        bottom -6px
       .submenu
         border-radius 30px
         background-color #fff

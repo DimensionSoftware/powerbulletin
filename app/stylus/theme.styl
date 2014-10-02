@@ -300,18 +300,6 @@ body.scrolled
     background-color overlay_tint_color
     height -2px
     box-shadow 0 1px 3px 0px rgba(0,0,0,.1)
-    //transition height .1s ease-out
-    //&::after
-    //  box-shadow 0 2px 6px 0px #ddd
-    //  background-color darken(overlay_color_secondary, 5%)
-    //  bottom -1px
-    //  left 0
-    //  right 0
-    //  height 1px
-    //  content ''
-    //  position absolute
-    .online
-      box-shadow 0 0 2px 0 dark_theme_color, 1px 1px 10px -1px theme_color
     .container
       .search
         top -500px
@@ -326,19 +314,6 @@ body.scrolled
             color #bbb
         .query:-ms-input-placeholder
             color #bbb
-
-    &.image
-      .tools
-        .profile.photo
-          box-shadow 0 0 2px 1px #333
-          &.online
-            box-shadow 0 0 2px 1px dark_theme_color, 1px 1px 2px 1px theme_color!important
-    .tools
-      .profile.photo
-        box-shadow 0 0 2px 1px #333
-        &.online
-          box-shadow 0 0 2px 1px dark_theme_color, 1px 1px 2px 1px theme_color!important
-
   #left_content::after
     bottom (footer_height - 4)
   .question
