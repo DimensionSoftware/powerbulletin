@@ -244,7 +244,7 @@ is-commentable-forum = (m, forum-id) ->
     user = req.user
     site = res.vars.site
     unless user?rights?super or user?sys_rights?super
-      return res.send 404, 404
+      return res.status 404 .send 404
     err, users <- db.users.select {}
     if err
       return res.json { success: false, message: err?message or err }
