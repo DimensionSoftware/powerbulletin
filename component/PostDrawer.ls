@@ -18,7 +18,7 @@ module.exports =
 
     on-attach: !~>
       #{{{ Event Delegates
-      @@$ '.in-reply, .in-edit' .on \click scroll-to-top
+      @@$ '.in-reply, .in-edit' .on \click window.scroll-to-top
       @$.find \.save .on \click (ev) ~>
         # XXX for now, always reply to active or nearest in DOM (context) thread
         @$.find '[name="forum_id"]' .val(window.active-forum-id or @context-forum-id)
