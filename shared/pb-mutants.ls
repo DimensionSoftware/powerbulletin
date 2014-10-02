@@ -183,6 +183,7 @@ layout-on-personalize = (w, u) ->
   on-load:
     (window, next) ->
       render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
+      time-updater!
       next!
   on-unload:
     (window, next-mutant, next) ->
@@ -366,6 +367,7 @@ layout-on-personalize = (w, u) ->
         render-component window, \#main_content, \Homepage, Homepage, {-auto-render}
       else
         window.$ \#main_content .remove-class \transparent # fade content in
+      time-updater!
       next!
   on-initial:
     (window, next) ->
