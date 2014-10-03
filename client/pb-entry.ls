@@ -437,6 +437,10 @@ $d.on \dblclick 'html.admin .dialog' (ev) ->
   l = $ ev.current-target .parents \.onclick-expand
     ..toggle-class \expanded, !(l.has-class \expanded)
   $ 'html.admin .theme .onclick-close' .hide!
+
+$d.on \click \.s-search (ev) ->
+  $ \header .toggle-class \search
+
 $d.on \click 'html.admin .onclick-expand' (ev) -> # expand admin drop-downs
   return unless ($ ev.target .has-class \onclick-expand) # guard
   l = $ ev.current-target

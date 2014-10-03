@@ -72,14 +72,15 @@ html
             strong Bulletin
             img(title=siteName, alt=metaKeywords, src="")
       .container
+        #warning.tooltip
+        .MainMenu.menu-container
+          +_menu(0, menu)
+        .s-search
         .search
           input#query.query(tabindex='1', type='text', placeholder='Search', autocomplete='off')
           .icon
             .s-big-search
           .onclick-close.toggler(title='Close!') x
-        #warning.tooltip
-        .MainMenu.menu-container
-          +_menu(0, menu)
         .tools
           a.profile.photo.mutant
             img#profile(src="#{cache3Url}/images/profile.png")
