@@ -740,7 +740,11 @@ body.scrolled
         margin 50px auto 0 auto
         font-weight 300
         font-size .8em
+        position relative
         > a
+          position absolute
+          margin-top 8px
+          margin-left -57px
           color #ddd
       .dimensionsoftware
         clear both
@@ -824,6 +828,14 @@ footer
     letter-spacing 2px
     padding 0 23px 0 30px
     //}}}
+
+.fb_iframe_widget
+  position absolute!important
+  bottom 40px
+  width 200px
+  left 50%
+  z-index 8
+  margin-left -76px
 
 // overwrite fluidity's box-shadow w/ vendor prefixes for working animations (below)
 box-shadow(arg1, arg2, arg3)
