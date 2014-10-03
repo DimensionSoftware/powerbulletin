@@ -59,7 +59,7 @@ ready = (s) ->
 function init-with-socket s
   s.on \connect, ->
     #globals.r-socket s
-    console.log \connect
+    #console.log \connect
     if window.closed-duration-i
       clear-interval window.closed-duration-i
       window.closed-duration-i = null
@@ -92,7 +92,7 @@ function init-with-socket s
 
   s.on \disconnect, ->
     $ \html .add-class \disconnected
-    console.log \disconnect
+    #console.log \disconnect
     window.closed-duration = 0
     window.closed-duration-i = set-interval (-> window.closed-duration++), 1000ms
 
