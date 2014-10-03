@@ -28,7 +28,8 @@ paths:
   jquery-iris           : \../local/iris.min
   jquery-postmessage    : \../local/jquery.ba-postmessage.min
   lodash                : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min else \../local/lodash.min
-  pd-editor             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.min else \../local/pagedown/Markdown.Editor
+  pd-editor             : \../local/pagedown/Markdown.Editor
+  #pd-editor             : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.min else \../local/pagedown/Markdown.Editor
   #pagedown              : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.min else \../local/pagedown/Markdown.Sanitizer
   #jquery-fancybox       : if env is \production then \//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack else \../local/jquery.fancybox.pack
   socketio              : \../local/socket.io
