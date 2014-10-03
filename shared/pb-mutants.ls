@@ -354,7 +354,6 @@ layout-on-personalize = (w, u) ->
           thread-mode true
           postdrawer!
             ..clear!
-            ..editor?focus!
           <- set-timeout _, 100ms # FIXME this is janky, need to simplify states, hard w/ mutant
           $ \#action_wrapper .remove-class 'reply edit' # clear title
         # intercept for thread-mode
