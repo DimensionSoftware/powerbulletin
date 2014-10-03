@@ -28,7 +28,7 @@ mixin menu-item(depth, items)
             if latest && latest.username
               a.mutant.body(href=latest.uri)= latest.title
               a.mutant.username(href="/user/#{latest.username}")= latest.username
-              span.date(data-time=latest.created.last_post_created_iso, title=latest.created.last_post_created_friendly)- latest.created.last_post_created_human
+              span.date(data-time=latest.created.last_post_created_iso, title=latest.created.last_post_created_friendly)!= latest.created.last_post_created_human
           td.threads= item.thread_count
           td.posts= item.post_count
         //- link, page & product
