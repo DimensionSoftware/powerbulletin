@@ -109,7 +109,6 @@ module.exports =
       #}}}
       @$.toggle-class \has-preview, (storage.get @k-has-preview!) or true # default w/ preview
       @reload!
-      @focus!
 
     on-detach: ~> # XXX ensure detach is called
       if @local \autoSave # unbind save events
