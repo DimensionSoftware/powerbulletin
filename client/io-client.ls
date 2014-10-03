@@ -13,13 +13,15 @@ window.globals = globals
 window.ChatPanel = ChatPanel
 
 {render-and-append, add-commas} = require \../shared/shared-helpers
-{lazy-load-socketio, set-online-user, storage} = require \./client-helpers
+{lazy-load-socketio, set-online-user, storage, show-info, show-tooltip} = require \./client-helpers
 
 window.lazy-load-socketio = lazy-load-socketio
+window.show-info = show-info
+window.show-tooltip = show-tooltip
 
 ####  main  ;,.. ___  _
 init = -> # export socket to window + init
-  if sock = window.socket = io?connect!
+  if sock = window.socket = io?connect '', force-new: true
     init-with-socket sock
   sock
 main = ->
@@ -57,6 +59,12 @@ ready = (s) ->
 function init-with-socket s
   s.on \connect, ->
     #globals.r-socket s
+    console.log \connect
+    if window.closed-duration-i
+      clear-interval window.closed-duration-i
+      window.closed-duration-i = null
+      if window.closed-duration > 30s
+        show-tooltip $('#warning'), "Please reload the page.", 100000ms
 
   s.on \connect_failed ->
     #console.warn \connect_failed
@@ -84,6 +92,9 @@ function init-with-socket s
 
   s.on \disconnect, ->
     $ \html .add-class \disconnected
+    console.log \disconnect
+    window.closed-duration = 0
+    window.closed-duration-i = set-interval (-> window.closed-duration++), 1000ms
 
   s.on \logout, ->
     storage.del \user
