@@ -387,12 +387,12 @@ layout-on-personalize = (w, u) ->
         ``
         (function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}})(document, 'script', 'twitter-wjs');
         ``
-      set-timeout (-> # scroll active thread on left nav into view
-        threads = $ '#left_container .scrollable'
-        offset  = -125px
-        cur = threads.scroll-top!
-        dst = Math.round($ '#left_container .threads > .active' .position!?top)
-        if dst then threads.animate {scroll-top:cur+dst+offset}, 500ms, \easeOutExpo), 500ms
+      # scroll active thread on left nav into view
+      threads = $ '#left_container .scrollable'
+      offset  = -125px
+      cur = threads.scroll-top!
+      dst = Math.round($ '#left_container .threads > .active' .position!?top)
+      if dst then threads.scroll-top cur+dst+offset
 
       # FIXME move arrow on scroll
       #orig = $ '#left_container .active' .offset!top
