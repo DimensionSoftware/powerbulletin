@@ -113,10 +113,12 @@ window.load-ui = -> # restore ui state from local storage
     if collapsed is \1 and not $ \html .has-class \admin
       $ \body .add-class \collapsed # only collapse on non-admin mutants
     # animate build-in
-    w = parse-int w
-    $l.transition({width: w} 300ms \easeOutExpo -> set-wide!)
-    $ '#main_content .resizable' .transition({padding-left: w+left-offset} 100ms \easeOutExpo)
-  set-timeout (-> set-wide!; align-ui!; respond-resize!), 305ms
+    width = parse-int w
+    $l.transition {width} 150ms \easeOutExpo ->
+      set-wide!
+      align-ui!
+      respond-resize!
+      $ '#main_content .resizable' .css \padding-left, width+left-offset
 
 # waypoints
 $w.resize (__.debounce (-> $.waypoints \refresh; respond-resize!; align-ui!), 800ms)
@@ -176,8 +178,8 @@ window.r-show-thread-admin-ui = $R((user) ->
 #.
 #### main   ###############>======-- -   -
 ##
-set-imgs!
 load-ui!
+set-imgs!
 $ \footer .add-class \active # init footer
 $ \#query .focus!select!
 
