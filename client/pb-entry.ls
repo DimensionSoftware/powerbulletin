@@ -347,7 +347,8 @@ $d.on \click 'html header .menu a.title' mutate
 
 # search header
 $d.on \click 'header .onclick-close' (e) ->
-  $ \#query .val('').focus!
+  $ \header .remove-class \search
+  $ \#query .val ''
   History.back!
 #}}}
 #{{{ - left_nav handle
@@ -437,8 +438,19 @@ $d.on \dblclick 'html.admin .dialog' (ev) ->
     ..toggle-class \expanded, !(l.has-class \expanded)
   $ 'html.admin .theme .onclick-close' .hide!
 
-$d.on \click \.s-search (ev) ->
-  $ \header .toggle-class \search
+
+toggle-ok=true
+$d.on \click \.s-search (ev) -> # bring out search input
+  return unless toggle-ok # guard
+  h = $ \header
+    ..toggle-class \search
+  if h.has-class \search then $ \#query .focus!select!
+$d.on \blur \#query (ev) ->
+  return if mutator is \search # keep if searching
+  toggle-ok:=false
+  $ \header .remove-class \search # off
+  set-timeout (-> toggle-ok:=true), 100ms
+
 
 $d.on \click 'html.admin .onclick-expand' (ev) -> # expand admin drop-downs
   return unless ($ ev.target .has-class \onclick-expand) # guard

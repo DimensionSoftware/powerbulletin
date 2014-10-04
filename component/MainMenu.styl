@@ -9,67 +9,105 @@ header.header
     text-decoration none!important
     outline none
   //{{{ background header images
-    #header_background_buffer
-      opacity 0
+  #header_background_buffer
+    opacity 0
+    z-index 1
+    display none
+  #header_background, #header_background_buffer, #header_background_color
+    overflow hidden
+    height header_height
+    position relative
+    img
       z-index 1
-      display none
-    #header_background, #header_background_buffer, #header_background_color
-      overflow hidden
-      height header_height
-      position relative
-      img
-        z-index 1
-        position absolute
-        width 100%
-        min-height 100%
-    .tools
-      .profile.photo
-        box-shadow 2px 1px 10px 2px #111, 0 0 2px 1px dark_theme_color, 1px 1px 3px 2px theme_color
-      .container menu
-        background-color #fff
-        li a
-          color #333
-        .onclick-logout
-          a
-            color #555
-          &:hover a
-            color #333!important
-    .MainMenu
-      #menu.menu
-        &.flat
-          .row, .row.active, .row:hover
-            > .submenu
-              > ul
-                .row:hover
-                  background-color transparent
-                  background-image linear-gradient(to bottom, rgba(255,255,255,.01) 50%, rgba(255,255,255,.06))
-                  transition none
-        > .row
-          > .title
-            text-transform uppercase
-            color darken(theme_color, 25%)
-        &.active, &.hover
-          &:before
-            content ''
-            position absolute
-            box-shadow 0 0 10px 10px rgba(255,255,255,.5)
-            width 10px
-            height 10px
-          //> .title, > .title.hover, > .title:hover
-          //  color #fff
-        .submenu
-          color #ddd
-          background-color transparent
-          //background-image linear-gradient(bottom, rgba(0,0,0,.9) 50%, #333)
-          //.col-sep, .col-sep2
-          //  background-color #333
-          //.row .title, .row .title:hover
-          //  color #fff
-          //  text-shadow none
+      position absolute
+      width 100%
+      min-height 100%
+  .tools
+    .profile.photo
+      box-shadow 2px 1px 10px 2px #111, 0 0 2px 1px dark_theme_color, 1px 1px 3px 2px theme_color
+    .container menu
+      background-color #fff
+      li a
+        color #333
+      .onclick-logout
+        a
+          color #555
+        &:hover a
+          color #333!important
+  .MainMenu
+    #menu.menu
+      &.flat
+        .row, .row.active, .row:hover
+          > .submenu
+            > ul
+              .row:hover
+                background-color transparent
+                background-image linear-gradient(to bottom, rgba(255,255,255,.01) 50%, rgba(255,255,255,.06))
+                transition none
+      > .row
+        > .title
+          text-transform uppercase
+          color darken(theme_color, 25%)
+      &.active, &.hover
+        &:before
+          content ''
+          position absolute
+          box-shadow 0 0 10px 10px rgba(255,255,255,.5)
+          width 10px
+          height 10px
+        //> .title, > .title.hover, > .title:hover
+        //  color #fff
+      .submenu
+        color #ddd
+        background-color transparent
+        //background-image linear-gradient(bottom, rgba(0,0,0,.9) 50%, #333)
+        //.col-sep, .col-sep2
+        //  background-color #333
+        //.row .title, .row .title:hover
+        //  color #fff
+        //  text-shadow none
+  &.search
     .container
       .search
+        top 30px
+        right 198px
         .query
-          box-shadow 0 1px 1px -1px #333 inset,2px 3px 4px 0px #bbb inset,0 0 1px 0 #555,0 1px 3px 0 theme_color inset
+          opacity 1!important
+          transition opacity .03s ease-out
+  .container
+    .s-search
+      cursor pointer
+      position absolute
+      top 39px
+      right 150px
+      z-index 9
+      transition all .2s ease-out .1s
+      &:hover
+        transform scale(1.08)
+        transition none
+    .search
+      position absolute
+      top -1000px
+      z-index 10
+      .query
+        box-shadow 0 1px 1px -1px #333 inset,1px 2px 2px 0px #bbb inset,0 0 1px 0 #555,0 1px 2px 0 theme_color inset
+        width 300px
+        border-radius 3px
+        opacity 0
+        padding 8px 7px
+        font-size 1.3em
+        text-indent 8px
+      .onclick-close
+        cursor pointer
+        position absolute
+        transform rotate(0)
+        right 8px
+        border-radius 3px
+        z-index 20
+        font-size 1.1em
+        line-height 6px
+        opacity 0
+        transition none
   //}}}
 .MainMenu
   position fixed

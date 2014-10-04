@@ -279,37 +279,6 @@ header
               font-size .95em
     #warning
       bottom 8px
-    .s-search
-      cursor pointer
-      position absolute
-      top 39px
-      right 150px
-      z-index 9
-      transition all .2s ease-out .1s
-      &:hover
-        transform scale(1.08)
-        transition none
-    .search
-      bottom 47px
-      left 308px
-      position absolute 
-      display none
-      z-index 10
-      .query
-        width 440px
-        padding-top grid
-        font-size 1.3em
-        text-indent 8px
-      .onclick-close
-        cursor pointer
-        position absolute
-        right 36px
-        top -40px
-        z-index 20
-        font-size 1.1em
-        line-height 6px
-        opacity 0
-        transition opacity .3s ease-out
 .opener
   position fixed
   top -100px
@@ -685,12 +654,6 @@ body.scrolled
     transition none
   header
     height header_scrolled_height
-    .container
-      .search
-        opacity 0
-        .query
-          font-size 1em
-          height 18px
   #left_content
     top (header_scrolled_height+3)
     padding-top (grid * 1.5)
