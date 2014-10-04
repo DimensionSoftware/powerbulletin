@@ -1,31 +1,35 @@
 .MenuSummary
   clear both
   .container
-    padding 3px 20px 5px 20px
-    margin -6px 50px 0 0
+    padding 0px 20px 5px 3px
+    margin -8px 50px 0 0
     border-radius 6px
-    border-bottom 1px solid tint(theme_color, 70%)
-    background-color #fff
     table
       width 100%
       th
         text-align left
         color darken(theme_color, 18%)
-        padding 10px 0 10px 8px
+        padding 10px 0 20px 8px
         font-size 1.15em
         font-weight 300
       .first
         min-width 300px
-      tr:nth-child(odd)
-        background-color lighten(theme_alpha, 60%)
-      tr:last-child, tr:first-child
-        background-color transparent
-      tr:last-child
-        border-bottom none
       tr
         position relative
-        border-bottom 1px solid lighten(theme_alpha, 10%)
+        border-bottom 1px solid #eee
+        background-color lighten(theme_alpha, 60%)
         transition all .1s ease-out .1s
+        &:first-child
+          background-color transparent
+          border-bottom none
+        &:last-child
+          border-bottom none
+        &:nth-child(2) td
+          padding-top 18px
+          .name
+            margin-top 8px
+        &:last-child td
+          padding-bottom 18px
         .icon
           float left
           margin -1px 18px 15px -5px
@@ -40,6 +44,9 @@
           bottom -1px
           box-shadow 0 0 3px theme_color
           transition all .1s ease-out .05s
+        .name
+          font-size 1.1em
+          font-weight 200
         &.item-page
           &:hover
             .name
@@ -65,7 +72,9 @@
               transform translate(0, 0)
               transition all .45s ease-out .05s
             a
-              color #444
+              color #777
+            .username
+              color theme_color
           &:hover
             .name
               transform scale(1.07)
@@ -82,7 +91,7 @@
                 b
                   color #111
             .threads, .posts
-              color #000
+              color #111
               font-weight 400
         td
           padding grid
@@ -121,11 +130,12 @@
           .date
             position relative
             font-style italic
-            font-size .9em
+            font-size .85em
             color #666
             margin-left 15px
             b
               text-transform capitalize
+              font-weight normal
             &:before
               content '-'
               position absolute
