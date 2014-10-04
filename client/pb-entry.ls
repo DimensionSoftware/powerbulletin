@@ -181,7 +181,6 @@ window.r-show-thread-admin-ui = $R((user) ->
 load-ui!
 set-imgs!
 $ \footer .add-class \active # init footer
-$ \#query .focus!select!
 
 # Delegated Events
 #{{{ - search and ui delegated events
@@ -290,8 +289,6 @@ $ui.on \thread-create, (e, thread) ->
 $ui.on \nav-top-posts, (e, threads) ->
   #console.info \stub, threads
 
-$ '.search > .icon' .on \click ->
-  $ \#query .focus!select!
 #}}}
 # {{{ - generic form-handling ui
 $d.on \click '.create .no-surf' Auth.require-login((ev) ->
