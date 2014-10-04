@@ -63,8 +63,8 @@ function init-with-socket s
     if window.closed-duration-i
       clear-interval window.closed-duration-i
       window.closed-duration-i = null
-      if window.closed-duration > 30s
-        show-tooltip $('#warning'), "Please reload the page.", 100000ms
+      if window.closed-duration > 60s
+        show-tooltip $('#warning'), "Reload For The Latest", 100000ms
 
   s.on \connect_failed ->
     #console.warn \connect_failed
