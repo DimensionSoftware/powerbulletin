@@ -168,15 +168,20 @@ module.exports =
         selected-panel.resize!
 
     hide: (sel) ->
-      #@@$(sel).add-class \hidden
       panel = @find @selected
       wd = (panel.local \width) + 20px
       @@$(sel).transition { x: wd }, @delay/2, @ease-in
+      @@$ window .off \resize.Panel
 
     show: (sel, cb=(->)) ->
-      hi = $(window).height!
-      #@@$(sel).remove-class \hidden
-      @@$(sel).css(height: "#{hi}px").transition { x: 0 }, @delay, @ease-out, cb
+      e = @@$ sel
+      h = $ window .height!
+      e.css(height: "#{h}px").transition { x: 0 }, @delay, @ease-out, cb
+
+      @@$ window .on \resize.Panel -> # keep panel positioned correctly
+        h = $ window .height!
+        e.css height: "#{h}px"
+        e.find \.middle .css \height, (e.height! - 214px)
 
     select-force: (name) ->
       if @selected is void or @selected isnt name
