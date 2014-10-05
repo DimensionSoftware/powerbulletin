@@ -771,6 +771,7 @@ reset-paginator = (w) ->
       ..reload!
 
 end-search = (w) ->
+  w.$ \header.header .remove-class \searching
   reset-paginator w
   socket.emit \search-end
 
@@ -807,6 +808,8 @@ mk-post-pnum-to-href = (post-uri) ->
         window.marshal \pagesCount @pages-count
         window.marshal \searchopts @searchopts
         window.marshal \newHits 0 # reset new-hit count
+
+        window.$ \header.header .add-class \searching # force searching
 
         # only render left side on first time to search
         # filters can be dom-touched, no need to re-insert innerhtml, as that is awkward
@@ -919,7 +922,7 @@ mk-post-pnum-to-href = (post-uri) ->
       next!
   on-unload:
     (w, next-mutant, next) ->
-      end-search(w)
+      end-search w
       delete w.searchopts # reset filter state so it doesn't come back to haunt us
       next!
 

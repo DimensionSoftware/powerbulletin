@@ -349,7 +349,7 @@ $d.on \click 'html header .menu a.title' mutate
 $d.on \click 'header .onclick-close' (e) ->
   $ \header .remove-class \search
   $ \#query .val ''
-  History.back!
+  if window.mutator is \search then History.back! # only when searching
 #}}}
 #{{{ - left_nav handle
 $d.on \click \#handle ->
