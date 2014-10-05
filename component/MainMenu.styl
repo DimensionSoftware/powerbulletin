@@ -23,6 +23,18 @@ header.header
       width 100%
       min-height 100%
   .tools
+    .bubble, .bubble2
+      box-shadow 0 0 1px #999, 1px 1px 3px theme_color
+      background-color overlay_color_primary
+    .bubble
+      box-shadow 0 0 1px #777, 1px 1px 2px theme_color
+    &::before
+      background-color theme_color
+    .container
+      menu
+        background-color overlay_color_primary
+        background-image linear-gradient(to bottom, overlay_color_primary 50%, #f8f8f8)
+        box-shadow 0 -1px 3px -1px theme_color, 0 1px 0 0 theme_color, 0 1px 1px 0 #333, 0 -1px 1px #fff inset
     .profile.photo
       box-shadow 2px 1px 10px 2px #111, 0 0 2px 1px dark_theme_color, 1px 1px 3px 2px theme_color
     .container menu
@@ -93,26 +105,67 @@ header.header
     .search
       position absolute
       top -1000px
+      right 198px
       z-index 10
+      transition top 0 ease-out .4s
       .query
-        box-shadow 0 1px 1px -1px #333 inset,1px 2px 2px 0px #bbb inset,0 0 1px 0 #555,0 1px 2px 0 theme_color inset
-        width 300px
+        box-shadow 0 0 1px 0 #aaa,0 -1px 1px 0 theme_color inset
+        width 0
         border-radius 3px
         opacity 0
         padding 8px 7px
         font-size 1.3em
         text-indent 8px
+        border none
+        background none
+        height 20px
+        transform scale(0)
+        transition transform .15s ease-in .25s
+        //opacity .15s ease-out .2s, width .15s ease-in .1s
+        background-color rgba(overlay_color_primary, .95)
+        transition all .15s ease-out .25s
+        &:hover
+          color #333
+          background-color overlay_color_primary
+          box-shadow 0 -1px 1px 0 theme_color inset,0 1px 1px 0 theme_color inset, 0 1px 0 0 theme_color
+          transition none
+        &:focus
+          transition all .05s ease-in
+          background-color overlay_color_primary
+          box-shadow 0 -1px 1px 0 theme_color inset,0 1px 2px 0 theme_color inset, 0 1px 0 0 theme_color
+          border-radius 4px
+          color #111
+          transform scale(1.01)
+      &:-webkit-input-placeholder
+          color #ccc
+      &:-moz-placeholder
+          color #ccc
+      &:-moz-placeholder
+          color #ccc
+      &:-ms-input-placeholder
+          color #ccc
+      &:hover
+        color #444
+      #query.query
+        position relative
+        z-index 9
+        font-style italic
+        letter-spacing 1px
+        font-weight 400
       .onclick-close
+        opacity 0
         cursor pointer
         position absolute
-        transform rotate(0)
-        right 8px
-        border-radius 3px
         z-index 20
+        top 8px
+        right 8px
+        height 12px
+        width 12px
+        border-radius 100%
+        background none
         font-size 1.1em
         line-height 6px
-        opacity 0
-        transition none
+        transition opacity .25s ease-out
   //}}}
 .MainMenu
   position fixed
