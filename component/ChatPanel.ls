@@ -162,7 +162,6 @@ module.exports =
         @scrolled-to-beginning = true
 
     show: ->
-      hi = $(window).height!
       if @local \virgin
         @$.transition { x: (@local \width) }, 0
         @$.css(width: @local \width)
@@ -170,7 +169,6 @@ module.exports =
         @$.find \.message-box .css(width: (@local \width)-8px)
         @local \virgin, false
         @load-initial-messages!
-      @$.css(height: "#{hi}px")
       icon-id = "icon-#{@local \id}"
       socket?emit 'chat-mark-all-read', @cid!, (~> @p.set-notice(icon-id, 0))
       @p.show @$, (~>
