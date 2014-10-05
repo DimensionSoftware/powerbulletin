@@ -443,12 +443,12 @@ toggle-ok=true
 $d.on \click \.s-search (ev) -> # bring out search input
   return unless toggle-ok # guard
   h = $ \header
-    ..toggle-class \search
-  if h.has-class \search then $ \#query .focus!select!
+    ..toggle-class \searching
+  if h.has-class \searching then $ \#query .focus!select!
 $d.on \blur \#query (ev) ->
   return if mutator is \search # keep if searching
   toggle-ok:=false
-  $ \header .remove-class \search # off
+  $ \header .remove-class \searching # off
   set-timeout (-> toggle-ok:=true), 100ms
 
 

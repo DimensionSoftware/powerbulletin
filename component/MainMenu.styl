@@ -66,14 +66,19 @@ header.header
         //.row .title, .row .title:hover
         //  color #fff
         //  text-shadow none
-  &.search
+  &.searching
     .container
       .search
         top 30px
-        right 198px
         .query
+          width 300px
           opacity 1!important
-          transition opacity .03s ease-out
+          transform scale(1)
+          transition none!important
+        .onclick-close
+          opacity 1
+          transition opacity .28s ease-out
+
   .container
     .s-search
       cursor pointer
