@@ -5,6 +5,11 @@
     .forum, .search
       margin 0 150px 0 30px
 
+@media screen and (max-width: 1100px)
+  header
+    #menu
+      margin-left 260px
+
 // oneliner titles on left pane
 @media screen and (max-height: 450px)
   .left-content
@@ -12,11 +17,14 @@
       .post-count, .views, .profile, .username
         display none!important
 @media screen and (max-width: 800px)
+  header
+    #menu
+      margin-left 12px
   body.collapsed
     grid(100%,475px)
     .main-content
       .forum, .search
-        padding-left (grid*12)!important
+        padding-left 20px!important
         margin-left 0!important
         .social
           bottom 12px
@@ -28,15 +36,12 @@
           .container
             margin-left 7px
           .profile-container
-            margin-left -190px
             transform scale(.7)
         // 1st level replies
         .children
           margin-left 0!important
           .container
             margin-left 10px!important
-          .profile-container
-            margin-left -190px!important
           .actions
               left 12px
           // comments
@@ -60,6 +65,49 @@
     #main_content
       .offer
         max-width 100%!important
+      .s-chat-bubble
+        display none
+      .social
+        display none
+      .post
+        .container
+          padding 0 37px
+          background none
+          .post-content
+            clear both
+        .actions
+          left 38px
+          bottom -34px
+        .profile-container
+          position relative
+          float left
+          margin-left -14px
+          width auto
+          .post-profile
+            float left
+            margin-left 30px
+          .username
+            margin-left 10px
+          .user, .username
+            margin-right 12px
+          div, a
+            display inline-block
+        & + .children
+          .actions
+            left 45px
+        .children
+          .profile-container
+            width 513px!important
+            margin-left 15px!important
+      .post-reply
+        top 65px
+    footer.expanded
+      .post-container
+        width 100%
+        .save
+          right 0
+          left 0
+          width 100%!important
 
 @media screen and (max-width: 500px)
   header
