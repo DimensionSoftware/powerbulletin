@@ -53,13 +53,13 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
           //-  option(disabled=true, selected=true) - Choose a Theme -
           //-  each t in themes
           //-    option(value=t.id)= t.name
-          label(for='fixed_header') Fixed Header
-          .box
-            input.stylish.save#fixed_header(type='checkbox', value='checked', name='fixedHeader', checked=site.config.fixedHeader)
-            label.switch-control(for='fixed_header')
-              .switch
-          .note Keep header expanded always
-          .break
+          //-label(for='fixed_header') Fixed Header
+          //-.box
+          //-  input.stylish.save#fixed_header(type='checkbox', value='checked', name='fixedHeader', checked=site.config.fixedHeader)
+          //-  label.switch-control(for='fixed_header')
+          //-    .switch
+          //-.note Keep header expanded always
+          //-.break
           .break
           fieldset
             - var ct = site.config.colorTheme ? site.config.colorTheme : {}
