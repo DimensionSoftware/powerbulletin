@@ -45,7 +45,7 @@ module.exports =
 
       @@$ \.onclick-logout .click ~> @logout!; false # overriding layout.ls'
       @@$ \.onclick-my-sites .click @show-my-sites
-      @@$ 'header, #logo, #start_now' .click (ev) ~>
+      @@$ 'header, #logo, #experience, #start_now' .click (ev) ~>
         return true if ev.target.tag-name.to-lower-case! is \a # guard
         ev.prevent-default!
         @scroll-to-top window

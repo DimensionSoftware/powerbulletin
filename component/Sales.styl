@@ -9,6 +9,8 @@
 
 //{{{ Sales is a site component that owns <body> and it can define initial style:
 body
+  img
+    outline none
   #features .s-down-arrow
     animation-name move-down
   background-color #000
@@ -36,6 +38,10 @@ body
 body.scrolled
   .logo
     top 10px
+    a
+      color #333
+      b
+        color #222
   .beacon
     animation r0 1s ease-out .5s infinite
   #features .s-down-arrow
@@ -45,18 +51,20 @@ body.scrolled
     opacity 0
     transition opacity .5s ease-out
   header
-    border-bottom none
     height 53px
     box-shadow none
     background rgba(255,255,255,0.7)
+    border-bottom none
     &:after, &:before
       display none
     ul
       li
-        margin-top 16px
+        margin-top 10px
         a
           color #333
           font-weight 600
+          &:hover
+            color #111
     &:after
       display none
       bottom -1px
@@ -113,12 +121,19 @@ body.scrolled
   #features
     font-size 1.7em
     .down-arrow
-      top 57px
+      top 42px
+      .s-down-arrow
+        top 70px!important
     .slogan
+      position relative
+      z-index 9
       opacity 1
       color #bbb
       font-size .7em
       transform translate(0, 70px)
+      display block
+      .fb-like
+        top -12px
   section
     opacity 1
   #features::after
@@ -137,6 +152,12 @@ body.scrolled
     transition all .4s ease-out
 //}}}
 //{{{ - Site Responsive (mobile)
+@media screen and (max-width: 1200px)
+  body.homepage
+    header
+      ul
+        margin-right 20px
+        margin-left 0
 @media screen and (max-width: 800px)
   body.homepage
     height 3790px!important
@@ -165,6 +186,9 @@ body.scrolled
         top 100px;
       #start_now
         display none
+      header
+        ul
+          margin 5px 0 0 0
       header ul li
         margin-left 28px
       .SiteRegister
@@ -262,8 +286,8 @@ body.scrolled
     position relative
     .down-arrow
       position relative
+      top -50px
       z-index 9
-      transition top .3s ease-out
       &:hover:before
         background-color rgba(150,150,150,.3)
       &:before
@@ -296,16 +320,6 @@ body.scrolled
     height 60px
   #logo
     opacity 0
-    a
-      color #333
-    &:before
-      content ''
-      left 0
-      top -12px
-      width 230px
-      height 60px
-      position absolute
-      background radial-gradient(ellipse closest-side at 48% 45%, rgba(255,255,255,.5) 10%, rgba(255,255,255,0) 100%)
   h1
     position relative
     color #999
@@ -318,18 +332,18 @@ body.scrolled
     top 0
     left 0
     width 100%
-    height 45px
+    height 55px
     text-align right
-    border-bottom-color #cfcfcf
+    border-bottom 1px solid #000
     z-index 20!important
     //background rgba(255,255,255,.55)
     background transparent
-    background-image linear-gradient(to top, rgba(255,255,255,.55) 35%, rgba(255,255,255,.35) 100%)
+    background-image linear-gradient(to top, rgba(0,0,0,.25) 35%, rgba(0,0,0,.55) 100%)
     &:after
       background #ccc
     ul
       list-style none
-      margin 0 50px
+      margin 5px 250px
       li
         display inline-block
         margin-top 12px
@@ -345,10 +359,10 @@ body.scrolled
           display none
         a
           display block
-          color #444
+          color #aaa
           font-weight 400
           &:hover
-            color #111
+            color #fff
             transform scale(1.08)
             transition all .08s ease-out
         &:last-child
@@ -410,7 +424,11 @@ body.scrolled
     z-index 2
     animation-name none
     .slogan
+      display none
       font-size .8em
+      .fb-like
+        top -42px
+        margin-left -98px
     span
       padding 0 3px
     b
@@ -436,7 +454,7 @@ body.scrolled
   //{{{ Logo
   .logo
     position fixed
-    top 8px
+    top 13px
     left 100px
     z-index 30
     text-align left
@@ -455,7 +473,7 @@ body.scrolled
       margin-left 3px
       font-weight 300
       margin 0
-      color #555
+      color #ddd
       font-style italic
       transition text-shadow .2s ease-out .5s
       b
@@ -464,7 +482,7 @@ body.scrolled
         letter-spacing 0
         margin-left 4px
         font-weight 500
-        color #333
+        color #eee
     em
       display block
       margin-top 23px
@@ -498,7 +516,8 @@ body.scrolled
         width 7px
         border-radius 100%
       &.active::before
-        background-color #999
+        background-color theme_color
+        border-color dark_theme_color
       &::before
         content ''
         position absolute
@@ -601,7 +620,7 @@ body.scrolled
         text-shadow 1px 1px 0 dark_theme_color
         text-align left
       ul
-        list-style-type circle
+        list-style-type none
         text-align left
         text-indent -200px
         opacity 0
@@ -610,6 +629,13 @@ body.scrolled
           margin-top 5px
           line-height 1.6em
           font-size 1.1em
+          &:before
+            color theme_color
+            content "•"
+            position absolute
+            left 35px
+            font-size 18px
+            margin-left -7px
     .arrow
       top 99px
       left -100px
@@ -661,6 +687,9 @@ body.scrolled
           left 95px
         .hostname
           padding-left 33px
+  #experience
+    cursor pointer
+    color theme_color
   #responsive article img
     margin-top 8px
     left -520px
@@ -745,7 +774,7 @@ body.scrolled
           position absolute
           margin-top 8px
           margin-left -57px
-          color #ddd
+          color #aaa
       .dimensionsoftware
         clear both
         margin-top 10px
