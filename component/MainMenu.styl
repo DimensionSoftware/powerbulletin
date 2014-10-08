@@ -82,38 +82,46 @@ header.header
         //  text-shadow none
   &.searching
     .container
+      #menu.menu
+        transform translateX(-245px)
+        transition transform .1s bounce
       .search
-        top 30px
+        top 31px
+        right 147px
+        transition all 0s
         .query
           width 300px
           opacity 1!important
           transform scale(1)
-          transition none!important
+          transition all 0s
         .onclick-close
-          opacity 1
-          transition opacity .28s ease-out
+          //opacity 1
+          //transition opacity .28s ease-out
 
   .container
     .s-search
       cursor pointer
       position absolute
       top 39px
-      right 150px
-      z-index 9
+      right 158px
+      z-index 11
       transition all .2s ease-out .1s
       &:hover
         transform scale(1.08)
         transition none
+    #menu.menu
+      transform translateX(0)
+      transition transform .12s ease-in .2s
     .search
       position absolute
       top -1000px
-      right 198px
+      right 147px
       z-index 10
       transition top 0 ease-out .4s
       .query
         box-shadow 0 0 1px 0 #aaa,0 -1px 1px 0 theme_color inset
         width 0
-        border-radius 3px
+        border-radius 20px
         opacity 0
         padding 8px 7px
         font-size 1.3em
@@ -129,13 +137,12 @@ header.header
         &:hover
           color #333
           background-color overlay_color_primary
-          box-shadow 0 -1px 1px 0 theme_color inset,0 1px 1px 0 theme_color inset, 0 1px 0 0 theme_color
+          box-shadow 0 -1px 1px 0 theme_color inset,0 1px 0 0 theme_color inset, 0 1px 0 0 theme_color
           transition none
         &:focus
           transition all .05s ease-in
           background-color overlay_color_primary
           box-shadow 0 -1px 1px 0 theme_color inset,0 1px 2px 0 theme_color inset, 0 1px 0 0 theme_color
-          border-radius 4px
           color #111
           transform scale(1.01)
       &:-webkit-input-placeholder
@@ -182,9 +189,20 @@ header.header
     display none
   //{{{ Structure-related
   .menu
+    float right
     padding 0
-    margin 6px auto 0 400px
+    font-size .95em
+    margin 6px 200px 0 0
     display inline-block
+    &:after
+      content ''
+      position absolute
+      right 208px
+      top 16px
+      width 1px
+      background-color #eee
+      background-image linear-gradient(to bottom, #fafafa 20%, #eee 100%)
+      height 18px
     > .row
       position relative!important
       z-index 50!important
