@@ -154,8 +154,8 @@ on-scroll-fn = ->
 
   if st <= 0 # catch-all "reset" when scrolled to top
     $ \header .remove-class \expanded
-    $ \body .remove-class \minimized
-    if window.fixed-header then $ \body .remove-class \scrolled
+    $ \body .remove-class 'minimized scrolled'
+    #if window.fixed-header then $ \body .remove-class \scrolled
   last-st := st
 
 $ window .on \scroll _.debounce on-scroll-fn, 10ms

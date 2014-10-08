@@ -214,11 +214,11 @@ layout-on-personalize = (w, u) ->
       const prev-mutant = window.mutator
 
       # render main content
-      unless @fixed-header
-        if is-forum-homepage @furl.path # show tall header only on forum homepages
-          window.$ \body .remove-class \scrolled
-        else # begin with smaller "scrolled" header
-          window.$ \body .add-class \scrolled
+      #unless @fixed-header
+      #  if is-forum-homepage @furl.path # show tall header only on forum homepages
+      #    window.$ \body .remove-class \scrolled
+      #  else # begin with smaller "scrolled" header
+      #    window.$ \body .add-class \scrolled
 
       if is-editing(@furl.path) is true
         window.render-mutant \main_content, \post-new
@@ -1103,7 +1103,8 @@ mk-post-pnum-to-href = (post-uri) ->
 
 
 function snap-to-top
-  if window.mutator isnt \forum then $ \body .remove-class \scrolled
+  #if window.mutator isnt \forum then $ \body .remove-class \scrolled
+  $ \body .remove-class \scrolled
   if window.scroll-to then window.scroll-to 0, 0
   <~ set-timeout _, 80ms # yield to browser
   if window.scroll-to then window.scroll-to 0, 0
