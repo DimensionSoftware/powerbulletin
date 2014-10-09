@@ -84,7 +84,7 @@ header.header
     .container
       #menu.menu
         transform translateX(-245px)
-        transition transform .1s bounce
+        transition transform .08s bounce
       .search
         top 31px
         right 147px
@@ -111,7 +111,7 @@ header.header
         transition none
     #menu.menu
       transform translateX(0)
-      transition transform .12s ease-in .2s
+      transition transform .15s ease-in .05s
     .search
       position absolute
       top -1000px
@@ -133,7 +133,7 @@ header.header
         transition transform .15s ease-in .25s
         //opacity .15s ease-out .2s, width .15s ease-in .1s
         background-color rgba(overlay_color_primary, .95)
-        transition all .15s ease-out .25s
+        transition all .15s ease-out
         &:hover
           color #333
           background-color overlay_color_primary
@@ -197,8 +197,8 @@ header.header
     &:after
       content ''
       position absolute
-      right 208px
-      top 16px
+      right 10px
+      top 9px
       width 1px
       background-color #eee
       background-image linear-gradient(to bottom, #fafafa 20%, #eee 100%)

@@ -40,11 +40,11 @@ module.exports =
         s  = r.next \.submenu         # row's menu
 
         # precalc
-        <~ set-timeout _, 300ms
+        <~ set-timeout _, 600ms
         w  = $ window .width!
         ds = w - (s.offset!?left + s.width!)
         if ds < 30px # intelligently reposition submenu
-          s.transition {left:ds - 125px}, 500ms, \easeOutExpo
+          s.transition {left:ds - 125px}, 600ms, \easeOutExpo
 
       @$.on \mouseleave ~> # mouse-hover-intent'd out
         intent-timer := set-timeout (~>
