@@ -480,12 +480,11 @@ same-profile = (hints) ->
   on-load:
     (window, next) ->
       # forgot password delegate
-      #window.$ \body .on \click.pd, toggle-postdrawer # expand & minimize drawer
       profile-user-id = $('#left_content .profile').data \userId
       unless profile-user-id is user?id
         enable-chat!
 
-      if user?name is user?email # enable username switch only if haven't set
+      if user and (user.name is user.email) # enable username switch only if haven't set
         window.$ \.onclick-show-choose .show!
         window.$ \body .on \click \.onclick-show-choose ->
           Auth.show-choose-dialog!
