@@ -5,9 +5,15 @@
     .forum, .search
       margin 0 150px 0 30px
 
-@media screen and (max-width: 900px)
+@media screen and (max-width: 1200px)
   .logo
     display none
+  #main_content.main-content
+    .forum
+      margin-left 0
+  footer
+    .post-container
+      width 85%!important
 
 // oneliner titles on left pane
 @media screen and (max-height: 450px)
@@ -99,7 +105,7 @@
         top 65px
     footer.expanded
       .post-container
-        width 100%
+        width 100%!important
         .save
           right 0
           left 0
