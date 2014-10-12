@@ -18,6 +18,7 @@ html.profile .wmd-preview
   height 100%
   position relative
   border-top 1px solid border_color
+  border-bottom 2px solid border_color
   .center
     position absolute
     z-index 99
@@ -62,7 +63,7 @@ html.profile .wmd-preview
         min-width 100%
         min-height 100%
         background bg_color
-        padding 0 0 0 12px
+        padding 0 0 0 7px
         bottom -4px
         resize none
         transform none
@@ -176,6 +177,7 @@ absolue_top = 9999999!important
       .wmd-preview 
         position absolute
         border-left 2px solid #eee
+        padding-right 0
         height 100%
         bottom 0
         left 50%
@@ -184,24 +186,25 @@ absolue_top = 9999999!important
         width 50%
         transition none
       .onclick-toggle-preview
-        width 35px
+        width 37px
         text-indent 2px
         &:after
           content 'Hide'
     .onclick-toggle-preview
       position absolute
-      z-index 10
+      z-index 35
       right 0
-      bottom 0
+      top 0
       height 22px
-      width 55px
-      padding 4px 12px
-      color #666
+      width 58px
+      padding 4px 6px 1px 6px
+      color #999
+      font-weight 200
       font-size .95em
       background-color rgba(240,240,240,.3)
-      border-left 1px solid #eee
-      border-top 1px solid #eee
-      border-top-left-radius 8px
+      border-left 1px solid #f4f4f4
+      border-bottom 1px solid #fafafa
+      border-bottom-left-radius 8px
       cursor pointer
       transition all .4s ease-out .1s
       &:hover
@@ -209,7 +212,7 @@ absolue_top = 9999999!important
         color #333
         transition none
       &:after
-        right 16px
+        right 10px
         position absolute
         content 'Preview'
 //}}}

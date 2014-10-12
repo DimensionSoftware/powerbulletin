@@ -24,6 +24,7 @@ module.exports =
           show-tooltip (@@$ \#warning), if typeof! data.msg?0 is \String then data.msg.0 else 'Unable to Delete!'
         ..success (data) ~>
           @set-preview void # remove thumb
+          @$.remove-class \has-attachment
           if cb = @locals!on-delete
             cb data
 
@@ -35,6 +36,7 @@ module.exports =
         ..show!
       @$.find \.progress
         ..css \width, 0px
+      @$.remove-class \has-attachment
 
     set-preview: (uri) ->
       if uri?match /\.(jpg|gif|bmp|png)\??/i
@@ -84,6 +86,7 @@ module.exports =
           name: locals.name
           post-url: locals.postUrl
           on-server-progress: (progress, file) ~>
+            @$.add-class \has-attachment
             if @local \hideBrowse then @$.find \.button .remove-class \hidden
             @$.find \.action .css \visibility, \hidden
             p = parse-int((progress.loaded/file.size) * 100)
@@ -117,6 +120,7 @@ module.exports =
             @$.find \.action
               ..html 'Try Again'
               ..css \visibility, \visible
+            @$.remove-class \has-attachment
         }
 
       ####  main  ;,.. ___  _

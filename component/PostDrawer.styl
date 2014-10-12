@@ -60,15 +60,16 @@ footer
   &.expanded
     .PostDrawer
       position absolute
-      bottom 10px
+      bottom 55px
       top 24px
       left 0
       right 0
       #editor + .save
         position absolute
-        z-index 25
-        padding 5px 65px
-        bottom 4px
+        right 0
+        z-index 36
+        padding 6px 65px 5px
+        bottom -41px
         border-bottom-right-radius 0
         border-bottom-left-radius 0
         margin-left -100px
@@ -77,14 +78,28 @@ footer
         position static!important
         .Uploader
           position absolute
-          bottom -3px
-          left 0
+          bottom -46px
+          left -4px
           z-index 12
+          &.has-attachment
+            bottom -46px
+            label:after
+              display none
           .label
             position static
+            cursor pointer
           .label, .note
             display none
             z-index 12px
+          label:after
+            content 'Drag & Drop or click to Browse'
+            position absolute
+            top -28px
+            left 44px!important
+            font-size .9em
+            color #ccc
+            font-weight 200
+            width 200px
           .close
             z-index 10
             left 0
@@ -95,12 +110,13 @@ footer
             height 28px
             bottom 3px
             left 5px
-            border 1px solid #eee
+            background #ddd
+            border 1px solid #ddd
           .inline-text
-            top -25px
+            top -26px
             right auto
             left 10px
-            width 225px
+            width 325px
           .button
             top 8px
             margin -37px 0 7px 48px !important
@@ -113,7 +129,7 @@ footer
         .tooltip.small
           bottom auto
       .onclick-toggle-preview
-        width 55px!important
+        width 51px!important
       .has-preview
         .onclick-toggle-preview
           width 35px!important
