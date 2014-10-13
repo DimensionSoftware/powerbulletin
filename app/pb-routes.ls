@@ -3,6 +3,7 @@ require! {
   \body-parser
   \cookie-parser
   \cookie-session
+  fs
   mutant
   async
   csurf
@@ -176,6 +177,16 @@ exports.use = (app) ->
     handlers.search
 
   app.get '/hello', handlers.hello
+
+  # stream download to browser
+  app.get '/download/:siteId/uploads/:file' personal-mw, (req, res, next) ->
+    res.set-header \content-type \application/octet-stream
+    return res.status 400 .send 'Bad file' if req.params.file.match /\.\./ # guard
+    site = res.vars.site
+    file = "./public/sites/#{site.id}/uploads/#{req.params.file}" # XXX don't trust client site-id
+    err, stat <- fs.stat file
+    if err then return res.status 400 .send 'Unable to stream file' # guard
+    if stat.is-file! then fs.create-read-stream file .pipe res
 
   app.get '/:forum/most-active',
     personal-mw,
