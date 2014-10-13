@@ -30,6 +30,8 @@
 
         return this.each(function (options) {
             var $this = $(this);
+            if ($this.data('html5uploader')) return; // guard (only bind once)
+            $this.data('html5uploader', true);
             if ($this.is("[type='file']")) {
                 $this
                 .bind("change", function () {

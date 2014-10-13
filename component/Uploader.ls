@@ -82,7 +82,7 @@ module.exports =
 
       init-html5-uploader = (locals) ~>
         @set-preview locals.preview
-        @$.find('.drop-target, input[type=file]').html5-uploader {
+        opts = {
           name: locals.name
           post-url: locals.postUrl
           on-server-progress: (progress, file) ~>
@@ -122,6 +122,8 @@ module.exports =
               ..css \visibility, \visible
             @$.remove-class \has-attachment
         }
+        @$.find('.drop-target, input[type=file]').html5-uploader opts
+        if sel = locals.act-on then @@$ sel .html5-uploader opts # another selector to bind
 
       ####  main  ;,.. ___  _
       init-html5-uploader @locals!

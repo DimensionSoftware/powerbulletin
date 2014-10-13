@@ -78,9 +78,10 @@ module.exports =
       <~ lazy-load-html5-uploader
       opts = {
         name: \attach
+        act-on: \.PostDrawer # drag n' drop on entire component
         post-url: "/resources/sites/#site-id/upload"
         preview: void
-        +multiple
+        -multiple
         +hide-browse # only show upload progress since we have toolbar icon for attachments
         on-failure: (ev, file, req) ~>
           try r = JSON.parse req.response-text
@@ -90,7 +91,6 @@ module.exports =
           r = if typeof! r-json is \Object then r-json else try JSON.parse r-json
       }
       @uploader = new Uploader locals:opts, (@$.find \#attach_uploader)
-      @$.html5-uploader opts # make entire component droppable
 
     reload: ~>
       # editor
