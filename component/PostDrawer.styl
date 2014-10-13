@@ -73,7 +73,7 @@ footer
         border-bottom-right-radius 0
         border-bottom-left-radius 0
         margin-left -100px
-        width 200px
+        width 225px
       form
         position static!important
         .Uploader
@@ -91,15 +91,20 @@ footer
           .label, .note
             display none
             z-index 12px
-          label:after
-            content 'Drag & Drop or click to Browse'
-            position absolute
-            top -28px
-            left 44px!important
-            font-size .9em
-            color #ccc
-            font-weight 200
-            width 200px
+          label
+            &:hover
+              .inline-preview
+                border 1px solid darken(theme_color, 20%)
+                transition none
+            &:after
+              content 'Drag & Drop or click to Browse'
+              position absolute
+              top -28px
+              left 44px!important
+              font-size .9em
+              color #ccc
+              font-weight 200
+              width 200px
           .close
             z-index 10
             left 0
@@ -111,7 +116,11 @@ footer
             bottom 3px
             left 5px
             background #ddd
-            border 1px solid #ddd
+            border 1px solid theme_color
+            transition border 1s ease-out
+            &:hover
+              border 1px solid darken(theme_color, 20%)
+              transition none
           .inline-text
             top -26px
             right auto
