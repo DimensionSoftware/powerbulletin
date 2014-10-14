@@ -27,13 +27,11 @@ box-shadow(arg1, arg2, arg3)
 
 @keyframes move-down
   0%
-    transform translateY(-3) rotateZ(0deg)
-  15%
-    transform scale(1.1)
+    transform translateY(-5px)
   30%
-    transform rotateY(-3deg) translateY(3px)
+    transform translateY(4px) scale(1.15)
   100%
-    transform scale(.9) translateY(-2px)
+    transform scale(.9) translateY(-3px)
 
 @keyframes hover-around
   0%
@@ -52,12 +50,11 @@ box-shadow(arg1, arg2, arg3)
   animation-iteration-count infinite
   animation-direction alternate
 .move-down
-  perspective 300
+  perspective 100
   transformation-style preserve-3d
   animation-name move-down
-  animation-name hover-around
   animation-direction alternate
-  animation-duration 2s
+  animation-duration 1s
   animation-iteration-count infinite
 
 @keyframes tiny-grow

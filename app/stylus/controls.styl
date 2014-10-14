@@ -170,6 +170,7 @@ label.switch-control
     text-shadow 0px 1px 0 black
   else
     text-shadow 0px 1px 0 black,1px 1px 0 rgba(100,100,100,.5)
+  transform scale(1.02) translateY(-1px)
   transition none
 button:disabled:hover::before, input[type="submit"]:disabled:hover::before, input[type="button"]:disabled:hover::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.05) 0%, rgba(255,255,255,.1) 80%)
@@ -190,7 +191,7 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   //border-bottom 1px solid dark_theme_color
   //border-right 1px solid dark_theme_color
   border-bottom-color #888
-  transform translateY(2px)
+  transform translateY(1px)
   border-radius 8px / 4px
   opacity .9
 // bottom "darken" fx
@@ -210,16 +211,15 @@ input[type="submit"]::after, button::after, .button::after
   background-image linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.25) 100%)
   opacity .75
   height 4px
-// XXX this is stealing clicks!  (...but it looks so good ;/)
 //- top gloss fx
-//input[type="submit"]:active::before, button:active::before, .button:active::before
-//  height 53%!important
-//  opacity .7
-//input[type="submit"]:hover::before, button:hover::before, .button:hover::before
-//  background-image linear-gradient(to bottom, rgba(255,255,255,.33) 0%, rgba(255,255,255,.28) 100%)
-//  opacity .9
-//  height 48%
-//  transition opacity .08s ease-out, height .02s ease-out
+input[type="submit"]:active::before, button:active::before, .button:active::before
+  height 53%!important
+  opacity .5!important
+input[type="submit"]:hover::before, button:hover::before, .button:hover::before
+  background-image linear-gradient(to bottom, rgba(255,255,255,.33) 0%, rgba(255,255,255,.28) 100%)
+  opacity .9
+  height 48%
+  transition opacity .08s ease-out, height .02s ease-out
 input[type="submit"]::before, button::before, .button::before
   position absolute
   content ''
@@ -263,6 +263,6 @@ input[type="submit"]::before, button::before, .button::before
     font-weight 500
   padding 6px 15px
   text-align center
-  border-radius 6px/5px
+  border-radius 3px
 //}}}
 // vim: fdm=marker
