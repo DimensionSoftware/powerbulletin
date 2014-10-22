@@ -97,6 +97,7 @@ update-elements = ->
       else # same section, so parallax visible sections!
         for v in last-visible
           dy = -($ v .offset!?top)
+          # TODO use background-position or transformx/y
           $ "#v .bg" .transition {y:"#{parse-int (dy+offset)*0.65}px"}, 0
 
   last-scroll-y := window.scroll-y
@@ -106,7 +107,7 @@ on-resize = -> update-elements window.scroll-y
 on-scroll = (ev) ->
   unless ticking
     ticking := true
-    requestAnimFrame updateElements
+    requestAnimFrame update-elements
 
 # listen & go!
 window.add-event-listener \resize, on-resize, false
