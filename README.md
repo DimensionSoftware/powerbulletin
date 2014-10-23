@@ -31,21 +31,24 @@ Post-Modern, Realtime, FREE (as in freedom) Community
 # Mac OS X Firewall Tricks to Forward Ports 3001, 3002 to 80 and 443 respectively
 * OSX 10.10 Yosemite
 
-    # This is needed because virtualbox cannot bind to privileged ports.
-    # SSH Tunnel (easy & safe)
-    sudo ssh  -gNL 443:localhost:8443 YOUR-USERNAME@localhost
+    > This is needed because virtualbox cannot bind to privileged ports.
+    > SH Tunnel (easy & safe)
+    
+      sudo ssh  -gNL 443:localhost:8443 YOUR-USERNAME@localhost
 
-    # Packet Filter (might conflict with local firewall rules)
-    echo "rdr on en0 inet proto tcp from any to en0 port https -> lo0 port 8443" |sudo pfctl -f -
+    > Packet Filter (might conflict with local firewall rules)
+    
+      echo "rdr on en0 inet proto tcp from any to en0 port https -> lo0 port 8443" |sudo pfctl -f -
 
 * OSX 10.{9,8,7}
 
-    ipfw add 1 fwd 127.0.0.1,3001 tcp from any to me dst-port 80
-    ipfw add 1 fwd 127.0.0.1,3002 tcp from any to me dst-port 443 
+      ipfw add 1 fwd 127.0.0.1,3001 tcp from any to me dst-port 80
+      ipfw add 1 fwd 127.0.0.1,3002 tcp from any to me dst-port 443 
 
-    # if you would like to run without invoking the caching / layer (also disabling forced ssl + security headers)
-    ipfw flush
-    ipfw add fwd 127.0.0.1,3000 tcp from any to me dst-port 80
+    > if you would like to run without invoking the caching / layer (also disabling forced ssl + security headers)
+
+      ipfw flush
+      ipfw add fwd 127.0.0.1,3000 tcp from any to me dst-port 80
 
 
 # IDEA: let people upvote or downvote moderation decisions
