@@ -74,7 +74,10 @@ clear-stale-redis-data = (r, cb) ->
   # new authorization middleware
   io.use (socket, next) ->
     handshake = socket.handshake
-    cookies = cookie.parse handshake.headers.cookie
+    cookies = if handshake?headers?cookie
+      cookie.parse handshake.headers.cookie
+    else
+      null
     next! unless cookies
     session-cookie = cookies['express:sess']
     next! unless session-cookie
