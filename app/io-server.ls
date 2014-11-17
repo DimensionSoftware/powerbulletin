@@ -78,7 +78,7 @@ clear-stale-redis-data = (r, cb) ->
       cookie.parse handshake.headers.cookie
     else
       null
-    next! unless cookies
+    next! unless cookies and cookies['express:sess']
     session-cookie = cookies['express:sess']
     next! unless session-cookie
     session = try
