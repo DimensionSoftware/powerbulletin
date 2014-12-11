@@ -173,24 +173,27 @@ label.switch-control
     text-shadow 0px 1px 0 black,1px 1px 0 rgba(100,100,100,.5)
   transform scale(1.015) translateY(-1px)
   transition all 0s
+input[type="submit"]:disabled::after, button:disabled::after, .button:disabled::after
+  height 1px!important
+  transition all 0s
 button:disabled:hover::before, input[type="submit"]:disabled:hover::before, input[type="button"]:disabled:hover::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.05) 0%, rgba(255,255,255,.1) 80%)
 button:disabled::before, input[type="submit"]:disabled::before, input[type="button"]:disabled::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.05) 0%, rgba(255,255,255,.1) 80%)
 button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   cursor default
-  color lighten(colored_text, 30%)
+  color darken(colored_text, 5%)
   opacity .85
+  border 1px solid theme_color
   text-shadow 0 1px 0 rgba(0,0,0,.3),1px 1px 0 rgba(100,100,100,.1)
   transition opacity .2s ease-in, color .1s ease-in
+
 .button:enabled:active, button:enabled:active, input[type='submit']:enabled:active,input[type='button']:enabled:active,button:enabled:focus, input[type="submit"]:enabled:focus, input[type="button"]:enabled:focus
-  border-top 1px solid #666
+  border-top 1px solid dark_theme_color
   text-indent 1px
-  border-left 1px solid #666
+  border-left 1px solid dark_theme_color
   box-shadow 0 0 1px #777, 1px 1px 1px theme_color inset,0 1px 3px #aaa
   text-shadow 0 0 1px black, 1px 1px 1px rgba(80,80,80,.3)
-  //border-bottom 1px solid dark_theme_color
-  //border-right 1px solid dark_theme_color
   border-bottom-color #888
   transform translateY(1px)
   border-radius-top-right 8px / 4px
@@ -214,14 +217,15 @@ input[type="submit"]::after, button::after, .button::after
   left -1px
   background-image linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.25) 100%)
   opacity .75
+  border-radius 8px
   height 5px
 //- top gloss fx
 input[type="submit"]:active::before, button:active::before, .button:active::before
-  opacity .6!important
+  opacity .4!important
   transition all 0s
 input[type="submit"]:hover::before, button:hover::before, .button:hover::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.33) 0%, rgba(255,255,255,.28) 100%)
-  opacity .9
+  opacity .75
   transition opacity .08s ease-out, height .02s ease-out
 input[type="submit"]::before, button::before, .button::before
   position absolute
@@ -237,9 +241,9 @@ input[type="submit"]::before, button::before, .button::before
   border-radius .5em .5em 6em 6em/.1em .1em 1em 1em
   background-image linear-gradient(to bottom, rgba(255,255,255,.3) 0%, rgba(255,255,255,.25) 100%)
   if dark(theme_color)
-    opacity .3
+    opacity .15
   else
-    opacity .8
+    opacity .7
   transition all 0s
 .button, input[type="button"], input[type="submit"], button
   transition box-shadow .2s ease-in .05s, border .2s ease-in .05s, color .2s ease-in .05s, text-shadow .2s ease-in .05s
