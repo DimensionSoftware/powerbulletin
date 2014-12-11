@@ -16,6 +16,9 @@ footer_height = 25px
 
 body
   font-family 'Helvetica Neue', 'Helvetica', sans-serif
+  &.fancybox-lock
+    #left_content, #main_content, .header, footer, .PanelCollection
+      filter blur(15px)
 
 body.disabled::after
   content ''
