@@ -11,8 +11,11 @@
 body
   img
     outline none
-  &.homepage.fancybox-lock .Sales
-    filter blur(25px)
+  #features .s-down-arrow
+    animation-name move-down
+  // XXX blurring all these big Sales images is too slow
+  //&.homepage.fancybox-lock .Sales
+  //  filter blur(25px)
   background-color #000
   margin 0
   height 6625px
@@ -436,9 +439,9 @@ body.scrolled
     b
       font-weight inherit
     &::after
-      //animation-duration 1s
-      //animation-iteration-count infinite
-      //animation-direction alternate
+      animation-duration 1s
+      animation-iteration-count infinite
+      animation-direction alternate
       left 170px
       top 35px
     &:hover
@@ -780,8 +783,8 @@ body.scrolled
         > a
           position absolute
           margin-top 8px
-          margin-left -57px
-          color #aaa
+          margin-left -38px
+          color #ccc
       .dimensionsoftware
         clear both
         margin-top 10px
@@ -867,8 +870,8 @@ footer
 
 .fb_iframe_widget
   position absolute!important
-  bottom 40px
-  width 200px
+  bottom 52px
+  width 263px
   left 50%
   z-index 8
   margin-left -76px
