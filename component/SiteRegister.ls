@@ -81,7 +81,7 @@ module.exports =
 
       var last-val
       @$.on \click, \.hostname (ev) -> $ ev.target .prev \.SiteRegister-subdomain .focus!
-      @$.on \keydown, \input.SiteRegister-subdomain, -> $ \.hostname .css \opacity, 0
+      @$.on \keydown, \input.SiteRegister-subdomain, (e) -> $ \.hostname .css \opacity, 0; if e.key-code is 32 then return false
       @$.on \keyup, \input.SiteRegister-subdomain, debounce (ev) ~>
         new-input = $ ev.target .val!
         if new-input.length
