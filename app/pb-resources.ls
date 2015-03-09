@@ -160,6 +160,7 @@ is-commentable-forum = (m, forum-id) ->
       err <- mkdirp css-dir
       if err then return next err
       err <- fs.write-file "#css-dir/#{domain.id}.auth.css" domain.config.style
+      if err then return next err
 
       # varnish ban
       h.ban-all-domains site.id if should-ban
