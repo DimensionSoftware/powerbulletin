@@ -204,6 +204,7 @@ module.exports =
 
       # 404 handler, if not 404, punt
       err-or-notfound = (err, req, res, next) ~>
+        return unless res.headers-sent # guard
         if err is 404
           res.status 404 .send html_404
         else
