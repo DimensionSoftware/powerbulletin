@@ -82,6 +82,7 @@ export subscribe = ({
 
     # execute purchase hooks
     console.log "Executing on-purchase hooks for product: #{product-id}"
+    unless on-purchase[product-id] then return cb err # guard if no hook
     err <- on-purchase[product-id] site-id
     if err then return cb err
 

@@ -83,6 +83,7 @@ io = io-emitter redis.create-client return_buffers: true
 @once = (req, res, next) ->
   token = req.body.token
   site  = res.vars.site
+  return res.status 500 .json {-success, msg:'No site!'} unless site # guard
   err, r <- db.authenticate-login-token site.id, token
   console.warn \authenticate-login-token, [err, r]
   if err then return next err

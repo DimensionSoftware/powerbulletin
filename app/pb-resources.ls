@@ -34,7 +34,7 @@ is-locked-thread-by-parent-id = (parent-id, cb) ->
   return cb(null, false) if not parent-id
   err, r <- db.posts.is-thread-locked parent-id
   if err then return cb err
-  cb null, r.is_locked
+  cb null, r?is_locked # crash guard
 
 # Return true if this forum allows nested comments
 is-commentable-forum = (m, forum-id) ->
@@ -107,7 +107,7 @@ is-commentable-forum = (m, forum-id) ->
         err <- h.render-css-to-file site.id, \master.styl
         if err then return res.json {-success, messages:[err]}
         io.in("#{site.id}/users/#{req.user.id}").emit \css-update, { cache-buster: site.config.cache-buster }
-        if err then res.json { -success, messages: [ "Could not save color theme." ] }
+        if err then return res.json { -success, messages: [ "Could not save color theme." ] }
 
       # update site
       site.name = req.body.name
@@ -185,7 +185,7 @@ is-commentable-forum = (m, forum-id) ->
       return res.json {-success, errors: err?errors} if err?errors
 
       if err then return res.json success: false, hint: \menu.upsert, err: err, errors: [ err.message ]
-      if r.length
+      if r.length and r.0?id
         menu-item.form.dbid = dbid = r.0.id
         m2 = site.config.menu
         site.config.menu = menu.struct-upsert m2, m-path, menu-item
@@ -427,7 +427,7 @@ is-commentable-forum = (m, forum-id) ->
         cb!
 
     # attempt to post
-    if post.token # update post's media_url (for display)
+    if post.token and db.attachments # update post's media_url (for display)
       err, attachment <- db.attachments.select-one {token:"#{user.id}-#{post.token}", site_id:site.id, user_id:user.id}
       unless err or !attachment
         post.media_url = "#{site.id}/uploads/#{attachment.filename}"

@@ -51,6 +51,8 @@ require! {
     for i in ['', 2, 3, 4, 5]
       res.locals["cache#{i}Url"] = cvars["cache#{i}Url"]
     next!
+  else if not req.hostname # guard
+    next 404
   # if no site matches and there is a leading m or www, then try without
   else if m = req.hostname.match /^(www|m)\.(.+)$/i
     shortened-host = m[2]
@@ -80,9 +82,8 @@ require! {
   err, async-locals <- async.auto tasks
   if err then return next err
 
-  res.locals async-locals
-
-  res.locals {site-id}
+  res.locals.menu = async-locals.menu
+  res.locals.site-id = site-id
 
   # set random background
   if m = site.config.menu
