@@ -78,16 +78,16 @@ clear-stale-redis-data = (r, cb) ->
       cookie.parse handshake.headers.cookie
     else
       null
-    next! unless cookies and cookies['express:sess']
+    return next! unless cookies and cookies['express:sess'] # guard
     session-cookie = cookies['express:sess']
-    next! unless session-cookie
+    return next! unless session-cookie # guard
     session = try
       json = new Buffer(session-cookie, 'base64').toString('utf8');
       JSON.parse(json) || {}
     catch
       console.error \connect.utils.parse-JSON-cookie, e
       {}
-    next! unless session
+    return next! unless session
     socket.session = session
     next!
 
