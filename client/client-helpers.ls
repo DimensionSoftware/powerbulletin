@@ -26,7 +26,7 @@ if window?
     | \new-thread => History.replace-state {} '' data.uri
     | \edit       => @remove-editing-url meta
     # close drawer
-    window.component.postdrawer.close!
+    if pd = window.component.postdrawer then pd.close!
     #window.component.postdrawer?detach!
     #window.component.postdrawer = void
     $ '#post_new .fadein' .remove!
