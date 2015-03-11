@@ -126,7 +126,7 @@ process-cached-data = {}
       type    : \local
       profile : { password: auth.hash(password) }
       site_id : site.id
-      name    : username
+      name    : username or email
       email   : email
       verify  : vstring
     err, r <~ db.register-local-user u # couldn't use find-or-create-user because we don't know the id beforehand for local registrations
