@@ -180,8 +180,9 @@ html.forum, html.profile, html.search, html.moderation
           background-color #fff
           &:before
             width 7px
-            background-color dark_theme_color
-            top -1px
+            background dark_theme_color
+            background linear-gradient(to bottom, lighten(theme_color, 10%) 3px, dark_theme_color 60px, dark_theme_color 5px)
+            top -2px
             bottom -2px
             border-top 1px solid dark_theme_color
             border-bottom 1px solid dark_theme_color
@@ -310,7 +311,7 @@ html.admin
         content ''
         top 0
         opacity 1
-        right -34px
+        right -33px
         border 17px solid transparent
         border-left 17px solid dark_theme_color
         transition all .1s ease-out

@@ -11,7 +11,7 @@ form.onclick-submit.no-focus(action="/resources/sites/#{siteId}", method="put", 
       input.stylish.save#invite_only(type='checkbox', value='checked', name='inviteOnly', checked=site.config.inviteOnly)
       label.switch-control(for='invite_only')
         .switch
-    .note Disallow the public from registering - 
+    .note Disallow social logins and the public from registering - 
       a.mutant(href='/admin/invites') Invites
     .break
     label(for='admin_chat') Admin Only Chat
