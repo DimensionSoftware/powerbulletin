@@ -161,17 +161,18 @@ label.switch-control
   //background-image linear-gradient(bottom, dark_theme_color 12px, theme_color 87%, dark_theme_color 90%)
   background-color theme_color
   color colored_text
-  border-color #777
-  border-top 1px solid theme_color
-  border-left 1px solid theme_color
-  border-bottom 1px solid #555
-  box-shadow 0 0 5px #bbb,0 1px 5px 0 theme_color
+  if light(theme_color)
+    box-shadow 0 0 5px #bbb,0 1px 5px 0 theme_color
+    border-color #777
+    border-top 1px solid theme_color
+    border-left 1px solid theme_color
+    border-bottom 1px solid #555
   if dark(colored_text)
     // dark colors look blurry w/ extra shading 
     text-shadow 0px 1px 0 black
   else
     text-shadow 0px 1px 0 black,1px 1px 0 rgba(100,100,100,.5)
-  transform scale(1.015) translateY(-1px)
+  transform scale(1.009)
   transition all 0s
 input[type="submit"]:disabled::after, button:disabled::after, .button:disabled::after
   height 1px!important
@@ -193,13 +194,17 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   text-indent 1px
   border-left 1px solid dark_theme_color
   text-shadow 0 1px 0 black, 1px 1px 1px rgba(80,80,80,.2)
-  border-bottom-color #888
+  if dark(theme_color)
+    border-bottom-color #000
+  else
+    border-bottom-color #888
   transform translateY(1px)
   border-radius-top-right 8px / 4px
   border-radius-top-left 8px / 4px
   transition none
 .button:enabled:focus, input[type="submit"]:enabled:focus, input[type="button"]:enabled:focus
-  box-shadow 0 0 1px #777, 1px 1px 1px theme_color inset,0 1px 3px #aaa
+  if light(theme_color)
+    box-shadow 0 0 1px #777, 1px 1px 1px theme_color inset,0 1px 3px #aaa
 // bottom "darken" fx
 input[type="submit"]:active::after, button:active::after, .button:active::after
   height 1px!important
@@ -225,7 +230,10 @@ input[type="submit"]:active::before, button:active::before, .button:active::befo
   transition all 0s
 input[type="submit"]:hover::before, button:hover::before, .button:hover::before
   background-image linear-gradient(to bottom, rgba(255,255,255,.33) 0%, rgba(255,255,255,.28) 100%)
-  opacity .55
+  if dark(theme_color)
+    opacity .32
+  else
+    opacity .55
   transition opacity .08s ease-out, height .02s ease-out
 input[type="submit"]::before, button::before, .button::before
   position absolute
@@ -241,9 +249,9 @@ input[type="submit"]::before, button::before, .button::before
   border-radius .5em .5em 6em 6em/.1em .1em 1em 1em
   background-image linear-gradient(to bottom, rgba(255,255,255,.3) 0%, rgba(255,255,255,.25) 100%)
   if dark(theme_color)
-    opacity .15
+    opacity .25
   else
-    opacity .5
+    opacity .45
   transition all 0s
 .button, input[type="button"], input[type="submit"], button
   transition box-shadow .2s ease-in .05s, border .2s ease-in .05s, color .2s ease-in .05s, text-shadow .2s ease-in .05s
@@ -257,12 +265,15 @@ input[type="submit"]::before, button::before, .button::before
     text-shadow 0 1px 0 #444,1px 1px 0 rgba(100,100,100,.5)
   letter-spacing 1px
   background-color theme_color
-  box-shadow 0px 0px 3px theme_color
-  border 1px solid #666
-  border-top 1px solid lighten(dark_theme_color, 20%)
-  border-left 1px solid lighten(dark_theme_color, 15%)
-  border-right 1px solid dark_theme_color
-  border-bottom-color #444
+  if light(theme_color)
+    box-shadow 0px 0px 3px theme_color
+    border 1px solid #666
+    border-top 1px solid lighten(dark_theme_color, 20%)
+    border-left 1px solid lighten(dark_theme_color, 15%)
+    border-right 1px solid dark_theme_color
+    border-bottom-color #444
+  else
+    border 1px solid #000
   color lighten(colored_text, 5%)
   font-size 1.25em
   if light(colored_text)

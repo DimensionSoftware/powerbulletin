@@ -8,15 +8,15 @@ box-shadow(arg1, arg2, arg3)
   0%
     box-shadow 0 0 6px 2px rgba(darken(theme_color, 15%), 0), 0 0 0 0 transparent, 0 0 0 0 rgba(theme_color, 0)
 
-  70%
+  80%
     box-shadow 0 0 4px 3px darken(theme_color, 20%), 0 0 3px 6px transparent, 0 0 1px 8px lighten(theme_color, 25%)
 
   100%
-    box-shadow 0 0 2px 0 dark_theme_color, 0 0 0 13px transparent, 1px 1px 10px -1px theme_color
+    box-shadow 0 0 2px 0 dark_theme_color, 0 0 0 13px transparent, 1px 1px 8px -1px theme_color
 
 .online
   animation-name online
-  animation-duration .5s
+  animation-duration .3s
   animation-timing-function ease-in
 
 @keyframes translate-and-scale
@@ -81,7 +81,7 @@ box-shadow(arg1, arg2, arg3)
 
 @keyframes fadein
   0%
-    opacity 0
+    opacity .4
   100%
     opacity 1
 

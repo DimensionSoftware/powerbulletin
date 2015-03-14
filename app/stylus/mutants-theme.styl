@@ -118,142 +118,146 @@ html.forum, html.profile, html.search, html.moderation
     // for light & dark colors
     box-shadow 0 1px 1px rgba(0,0,0,.3), 0 2px 1px rgba(255,255,255,.3)
     background-image linear-gradient(to right, #f9f9f9 50%, #fff 70%)
-    .threads
-      .thread
-        list-style-type none
-        border-top 1px solid transparent
-        border-left 2px solid transparent
-        border-bottom 1px solid transparent
-        border-right 2px solid #fff
-        transition box-shadow .3s ease-in .05s
-        &:hover
-          color #333
-          a
-            color #222
-          &:after
-            border-bottom 1px solid rgba(0,0,0,.12)
-        &:before
-          position absolute
-          width 0
-          top -1px
-          left 0
-          height 101%
-          bottom -10px
-          content ''
-        &:after
-          position absolute
-          content ''
-          border-bottom 1px solid rgba(0,0,0,.07)
-          background-color rgba(255,255,255,.3)
-          height 1px
-          margin-top 7px
-          z-index 2
-          left 10%
-          width 80%
-        .title
-          text-shadow none
-          color dark_theme_color
-          display inline-block
-          border-bottom 1px solid transparent
-        .created
-          color #555
-          opacity 0
-        a
-          color #444
-          text-decoration none
-        &:first-child
+    .scrollable
+      border-top 1px solid #ddd
+      .threads
+        .thread
+          list-style-type none
           border-top 1px solid transparent
-        &:first-child:hover
-          border-top 1px solid rgba(250,250,250,.2)
-        &:hover
-          background-color rgba(255,255,255,.2)
-          .created
-            opacity .8
-          a
-            color #222
-      .thread.active
-        border-radius 3px
-        transition none
-        background-image none
-        background-color #fff
-        &:before
-          width 5px
-          background-color dark_theme_color
-          top -1px
-          bottom -2px
-        // {{{ active thread arrow
-        .arrow
-          display none
-          position absolute
-          top 0
-          right -51px
-          margin-top 0
-          z-index 9
+          border-left 2px solid transparent
+          border-bottom 1px solid transparent
+          border-right 2px solid #fff
+          transition box-shadow .3s ease-in .05s
+          &:hover
+            color #333
+            a
+              color #222
+            &:after
+              border-bottom 1px solid rgba(0,0,0,.12)
+          &:before
+            position absolute
+            width 0
+            top -1px
+            left 0
+            height 101%
+            bottom -10px
+            content ''
           &:after
             position absolute
             content ''
-            right -42px
-            margin-top -42px
+            border-bottom 1px solid rgba(0,0,0,.07)
+            background-color rgba(255,255,255,.3)
+            height 1px
+            margin-top 7px
             z-index 2
-        .arrow
-          border 43px solid transparent
-          border-left 12px solid theme_color
-          right -55px
-          &:after
-            border 42px solid transparent
-            border-left 12px solid #fff
-            right -41px
-        &.small .arrow
-          border 32px solid transparent
-          border-left 12px solid theme_color
-          right -45px
-          &:after
-            border 32px solid transparent
-            border-left 12px solid #fff
-            margin-top -33px
-            right -30px
-        &.large .arrow
-          border 55px solid transparent
-          border-left 12px solid theme_color
-          right -66px
-          &:after
-            border 55px solid transparent
-            border-left 12px solid #fff
-            margin-top -54px
-            right -54px
-        &.x-large .arrow
-          border 69px solid transparent
-          border-left 12px solid theme_color
-          right -81px
-          &:after
-            border 64px solid transparent
-            border-left 12px solid #fff
-            margin-top -65px
-            right -63px
-        //}}}
-      .thread.active:last-child, .thread.active
-        z-index 9
-        // background-color #fff
-        border-right 1px solid theme_color
-        border-bottom 1px solid theme_color
-        border-top 1px solid #fff
-        border-left 0
-        box-shadow 0 0 4px 0 theme_color
-        .title
-          color dark_text
-          font-style italic
-        a
-          color #000
-        .created
-          opacity .8em
-          display block
-      .thread.sticky
-        background-image none
-        background-color theme_alpha
-        &.active
+            left 10%
+            width 80%
+          .title
+            text-shadow none
+            color dark_theme_color
+            display inline-block
+            border-bottom 1px solid transparent
+          .created
+            color #555
+            opacity 0
+          a
+            color #444
+            text-decoration none
+          &:first-child
+            border-top 1px solid transparent
+          &:first-child:hover
+            border-top 1px solid rgba(250,250,250,.2)
+          &:hover
+            background-color rgba(255,255,255,.2)
+            .created
+              opacity .8
+            a
+              color #222
+        .thread.active
+          border-radius 3px
+          transition none
+          background-image none
+          background-color #fff
+          &:before
+            width 7px
+            background-color dark_theme_color
+            top -1px
+            bottom -2px
+            border-top 1px solid dark_theme_color
+            border-bottom 1px solid dark_theme_color
+          // {{{ active thread arrow
           .arrow
+            display none
+            position absolute
+            top 0
+            right -51px
+            margin-top 0
+            z-index 9
             &:after
-              border-left 12px solid theme_alpha
+              position absolute
+              content ''
+              right -42px
+              margin-top -42px
+              z-index 2
+          .arrow
+            border 43px solid transparent
+            border-left 12px solid theme_color
+            right -55px
+            &:after
+              border 42px solid transparent
+              border-left 12px solid #fff
+              right -41px
+          &.small .arrow
+            border 32px solid transparent
+            border-left 12px solid theme_color
+            right -45px
+            &:after
+              border 32px solid transparent
+              border-left 12px solid #fff
+              margin-top -33px
+              right -30px
+          &.large .arrow
+            border 55px solid transparent
+            border-left 12px solid theme_color
+            right -66px
+            &:after
+              border 55px solid transparent
+              border-left 12px solid #fff
+              margin-top -54px
+              right -54px
+          &.x-large .arrow
+            border 69px solid transparent
+            border-left 12px solid theme_color
+            right -81px
+            &:after
+              border 64px solid transparent
+              border-left 12px solid #fff
+              margin-top -65px
+              right -63px
+          //}}}
+        .thread.active:last-child, .thread.active
+          z-index 9
+          // background-color #fff
+          border-right 1px solid theme_color
+          border-bottom 1px solid theme_color
+          border-top 1px solid #fff
+          border-left 0
+          box-shadow 0 0 2px 0 theme_color
+          .title
+            color dark_text
+            font-style italic
+          a
+            color #000
+          .created
+            opacity .8em
+            display block
+        .thread.sticky
+          background-image none
+          background-color theme_alpha
+          &.active
+            .arrow
+              &:after
+                border-left 12px solid theme_alpha
 //}}}
 //{{{ - profile
 html.profile

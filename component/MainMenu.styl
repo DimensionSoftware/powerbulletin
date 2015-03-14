@@ -119,7 +119,7 @@ header.header
       z-index 10
       transition top 0 ease-out .4s
       .query
-        box-shadow 0 0 1px 0 #aaa,0 -1px 1px 0 theme_color inset
+        box-shadow 0 0 1px 0 #aaa,0 -1px 0 0 theme_color inset
         width 0
         border-radius 20px
         opacity 0
@@ -134,12 +134,12 @@ header.header
         &:hover
           color #333
           background-color overlay_color_primary
-          box-shadow 0 -1px 1px 0 theme_color inset,0 1px 0 0 theme_color inset, 0 1px 0 0 theme_color
+          box-shadow 0 1px 0 0 theme_color inset, 0 1px 0 0 theme_color
           transition none
         &:focus
           transition all .05s ease-in
           background-color overlay_color_primary
-          box-shadow 0 -1px 1px 0 theme_color inset,0 1px 2px 0 theme_color inset, 0 1px 0 0 theme_color
+          box-shadow 0 1px 1px 0 theme_color inset, 0 1px 0 0 theme_color
           color #111
           transform scale(1.01)
       &:-webkit-input-placeholder
@@ -375,7 +375,8 @@ header.header
         transition width .15s ease-out .15s
       .title.active
         font-weight 400
-        text-shadow 0 1px 0 darken(theme_color, 30%)
+        if light(theme_color)
+          text-shadow 0 1px 0 darken(theme_color, 30%)
         transition color .2s ease-out
       //> .title:hover, .title.hover
       //  color #555

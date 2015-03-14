@@ -44,10 +44,16 @@ a
   opacity .9
 
 .profile.photo.online
-  box-shadow 0 0 2px 1px dark_theme_color, 1px 1px 3px 2px theme_color
+  if dark(theme_color)
+    box-shadow 0 0 1px dark_theme_color, 1px 1px 2px 1px theme_color
+  else
+    box-shadow 0 0 2px 1px dark_theme_color, 1px 1px 3px 2px theme_color
 
 .online
-  box-shadow 0 0 2px 0 dark_theme_color, 1px 1px 10px -1px theme_color
+  if dark(theme_color)
+    box-shadow 0 0 1px 0 dark_theme_color, 1px 1px 5px -1px theme_color
+  else
+    box-shadow 0 0 2px 0 dark_theme_color, 1px 1px 10px -1px theme_color
   border 1px solid theme_color
   opacity 1!important
   display block
@@ -260,8 +266,9 @@ body.scrolled
   animation-name fadein
   animation-duration .4s
 .popin
-  animation-name popin
-  animation-duration .5s
+  // XXX ui taming
+  animation-name fadein
+  animation-duration .3s
 .post-animate-in
   animation-name post-animate-in
   animation-duration .3s
