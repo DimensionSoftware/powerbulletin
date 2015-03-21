@@ -1,5 +1,19 @@
 import std;
 
+backend t0 {
+  .host = "127.0.0.1";
+  .port = "8080";
+  .connect_timeout = 5s;
+  .first_byte_timeout = 60s;
+  .between_bytes_timeout = 60s;
+  .probe = {
+    .url = "/probe";
+    .interval = 3s;
+    .timeout = 1s;
+    .window = 2;
+    .threshold = 1;
+  }
+}
 backend d0 {
   .host = "127.0.0.1";
   .port = "6000";
@@ -615,6 +629,10 @@ sub vcl_recv {
   # if it is dimensionsoftware.com
   else if (req.http.host ~ "(?i)^dimensionsoftware\.com$") {
     set req.backend = d0;
+  }
+  # if it is todo.powerbulletin.com
+  else if (req.http.host ~ "(?i)todo.powerbulletin.com$") {
+    set req.backend = t0;
   }
   # if it is hoerling.com
   else if (req.http.host ~ "(?i)^hoerling\.com$" || req.http.host ~ "(?i)^lbox\.org$") {
