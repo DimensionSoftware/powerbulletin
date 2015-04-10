@@ -26,9 +26,8 @@ input[type="password"], select, input[type="text"]
   overflow hidden
   text-overflow ellipsis
 input[type="password"], select, textarea, input[type="text"]
-  border-radius 2px
   color #666
-  background-image linear-gradient(top, theme_alpha 0, tint_color 5px)
+  background-image linear-gradient(top, theme_alpha 0, tint_color 4px)
   outline none
   margin-bottom 4px
   padding 8px
@@ -55,13 +54,13 @@ input.active, input[type="password"]:focus, input[type="password"]:focus, select
   color #111
   position relative
   z-index 10
+  border-radius 2px
   background-color #fffcfc
   border-bottom 1px solid #777
   border-right 1px solid #888
   box-shadow 0 0 1px -1px #888 inset,0 1px 0 dark_theme_color, 1px 0 1px -1px theme_color, 0 0 1px theme_color
   transform scale(1.006)
   transition all 0s
-  border-radius 3px
   background-image linear-gradient(top, theme_alpha 0, #fff 7px)
   transition color .5s ease-out, border .05s ease-out
 textarea:focus, select:focus
@@ -75,7 +74,6 @@ textarea:focus, select:focus
       text-transform uppercase
   input
     text-align center
-    border-radius 6px/5px
   .plus, .minus
     box-shadow none
     background-color transparent!important
@@ -86,7 +84,6 @@ textarea:focus, select:focus
     bottom -8px
     width 32px!important
     height 33px!important
-    border-radius 5px
     margin 0!important
     text-indent -4px!important
     vertical-align middle
@@ -199,8 +196,6 @@ button:disabled, input[type="submit"]:disabled, input[type="button"]:disabled
   else
     border-bottom-color #888
   transform translateY(1px)
-  border-radius-top-right 8px / 4px
-  border-radius-top-left 8px / 4px
   transition none
 .button:enabled:focus, input[type="submit"]:enabled:focus, input[type="button"]:enabled:focus
   if light(theme_color)
@@ -222,7 +217,6 @@ input[type="submit"]::after, button::after, .button::after
   left -1px
   background-image linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.25) 100%)
   opacity .75
-  border-radius 8px
   height 3px
 //- top gloss fx
 input[type="submit"]:active::before, button:active::before, .button:active::before
@@ -282,6 +276,5 @@ input[type="submit"]::before, button::before, .button::before
     font-weight 500
   padding 6px 15px
   text-align center
-  border-radius 2px
 //}}}
 // vim: fdm=marker
