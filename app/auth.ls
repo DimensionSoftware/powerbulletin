@@ -133,13 +133,14 @@ export send-invite-email = (site, user, new-user, message, cb) ->
   tmpl = """
     {{message}}
     
-    Follow this link and login:
-     https://{{site-domain}}/auth/invite/{{user-verify}}
+    Accept by clicking your invite link below to login:
+    https://{{site-domain}}/auth/invite/{{user-verify}}
   """
   email =
-    from    : "#{user.name}@#{site.current_domain}"
+    #from    : "#{user.name}@#{site.current_domain}"
+    from    : "#{user.name.to-lower-case!}@powerbulletin.com"
     to      : user.email
-    subject : "Invite to #{site.name}!"
+    subject : "You're Invited to Join #{site.name}!"
     text    : h.expand-handlebars tmpl, vars
   log email
   h.send-mail email, cb
