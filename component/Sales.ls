@@ -54,7 +54,7 @@ module.exports =
         set-timeout (-> sr.find \.SiteRegister-subdomain .focus!), 100ms
         false
       #{{{ animate build-in & initial focus
-      $ \#register_top  .add-class \show
+      $ \#register_top .add-class \show
       $ \.SiteRegister-subdomain:first .focus!
       set-timeout (-> # ...and action!
         $ '.SiteRegister h3' .transition {opacity:1, x:-30px}, 350ms
@@ -66,7 +66,7 @@ module.exports =
           else
             $ \#logo .transition {opacity:1}, 1800ms
             $ \header .transition {opacity:1}, 1400ms
-            $ \#features .transition {opacity:1}, 1400ms), 1200ms), 100ms
+            $ \#features .transition {opacity:1}, 1400ms), 1400ms), 100ms
       #}}}
 
     login: (user) ->
