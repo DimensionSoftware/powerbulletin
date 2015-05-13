@@ -620,6 +620,7 @@ same-profile = (hints) ->
       # to them on-initial
       window.marshal \action @action
       window.marshal \site @site
+      window.marshal \users @users
       layout-static.call @, window, \admin
       remove-backgrounds window
       next!

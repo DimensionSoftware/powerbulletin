@@ -61,6 +61,7 @@ module.exports =
       if html-form
         # form values -> json data
         data = {}
+        data.users = $ '[name="users"]' .val! # store users
         html-form.find 'input,textarea' |> each (input) ->
           $i = @$ input
           n = $i?attr \name
@@ -130,6 +131,10 @@ module.exports =
           }, \#offer_photo_uploader
 
           # set input values
+          if fu = form.users
+            $ "[name='users'] option" .attr \selected false
+            for i in fu
+              $ "[name='users'] > [value=#i]" .attr \selected true
           html-form.find 'input,textarea' |> each (input) ->
             $i = @$ input
             n = $i?attr \name

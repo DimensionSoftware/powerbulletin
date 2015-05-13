@@ -792,6 +792,16 @@ function profile-paths user, uploaded-file, base=\avatar
     err <- sch.super-users req, res
     if err then return next err
     res.mutant \admin # out!
+  else if res.locals.action is \menu
+    # add users to locals
+    with-site = if site.id is not 1
+      { site_id: site.id }
+    else
+      { }
+    err, users <- db.users.all with-site
+    if err then return next err
+    res.locals.users = users
+    res.mutant \admin # out!
   else
     # default
     res.mutant \admin # out!

@@ -79,6 +79,19 @@ form.menus.onclick-submit(action="/resources/sites/#{site.id}", method="put", en
                 .switch
             .note Automatically select the first thread
             .break
+            label(for='restrict') Restrict Access
+            .box
+              input.stylish#restrict(type='checkbox', value='checked', name='restrict')
+              label.switch-control(for='restrict')
+                .switch
+              .user-list
+                if users
+                  select(multiple='multiple', name='users')
+                    for user in users
+                      option(value=user.id)!= user.name
+                  .msg Hold SHIFT to select multiple
+            .note Restrict access to specific users
+            .break
             button(type='submit', value='Save') Save
             .break
         li

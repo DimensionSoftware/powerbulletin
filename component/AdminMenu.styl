@@ -161,9 +161,9 @@
       .dialog
         visibility hidden
         opacity 0
-        #hide_homepage:checked + label:after, #uploads:checked + label:after, #locked:checked + label:after, #comments:checked + label:after
+        #restrict:checked + label:after, #require_upload:checked + label:after, #hide_homepage:checked + label:after, #uploads:checked + label:after, #locked:checked + label:after, #comments:checked + label:after
           content 'On'
-        #hide_homepage + label:after, #uploads + label:after, #locked + label:after, #comments + label:after
+        #restrict + label:after, #require_upload + label:after, #hide_homepage + label:after, #uploads + label:after, #locked + label:after, #comments + label:after
           content 'Off'
         #content_only:checked + label:after, #separate_tab:checked + label:after
           content 'Yes'
@@ -237,11 +237,16 @@
           position absolute
           left 0
           top 10px
+        .user-list
+          display none
+          .msg
+            margin-left 4px
+            font-size .9em
         #restrict:checked ~ .user-list
           display block
-          background red
-          height 50px
-          width 50px
+          select
+            overflow scroll
+            min-height 150px
         input[type='radio']:checked ~ div
           display block
         input[type='radio'] ~ div
