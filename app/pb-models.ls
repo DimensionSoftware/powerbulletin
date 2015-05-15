@@ -420,6 +420,7 @@ query-dictionary =
       FROM users u
       JOIN aliases a ON a.user_id=u.id
       #where-clause
+      ORDER BY a.name ASC
       LIMIT $1 OFFSET $2
       """
       #console.log \SQL, "\n" + sql + "\n"
