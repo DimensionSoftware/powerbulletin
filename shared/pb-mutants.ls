@@ -132,6 +132,7 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
     w.marshal \mutator, next-mutant # js
     w.marshal \adminChat, @admin-chat
     w.marshal \fixedHeader, @fixed-header
+    w.marshal \users @users
 
   # handle active main menu
   fid = active-forum-id or w.active-forum-id
@@ -147,6 +148,22 @@ layout-static = (w, next-mutant, active-forum-id=-1) ->
       ..add-class \active
       ..add-class \hover
 
+  # handle restricted menu
+  mflatten = (menu) -> # XXX lifted from beppu's menu.ls to avoid require.js bloat
+    list = []
+    return list unless __.is-array menu # guard
+    for item in menu
+      if item.children?length
+        list = list.concat item, (mflatten item.children)
+      else
+        list = list.concat item
+    list
+  restrict = (mflatten @menu)
+    .filter (.form.restrict)
+    .map -> {"#{it.form.dbid}": __.flatten [it.form.users]}
+  hide-restricted-menus w, restrict
+  w.marshal \restrict restrict
+
   # handle backgrounds
   # XXX forum backgrounds are only allowed on private sites
   # other mutants get a solid (tint) color that's defaulted gray
@@ -158,6 +175,8 @@ layout-on-personalize = (w, u) ->
   if u # guard
     set-online-user u.id
     set-profile u.photo
+
+    show-restricted-menus w, u
 
     # hash actions
     switch w.location.hash
@@ -620,7 +639,6 @@ same-profile = (hints) ->
       # to them on-initial
       window.marshal \action @action
       window.marshal \site @site
-      window.marshal \users @users
       layout-static.call @, window, \admin
       remove-backgrounds window
       next!
@@ -1114,6 +1132,20 @@ function enable-chat
     if window?user?rights?super then window.$ \.onclick-chat .remove-class \hidden
   else
     window.$ \.onclick-chat .remove-class \hidden
+
+function hide-restricted-menus w, restrict
+  restrict.map ->
+    forum-id = __.keys it .0
+    w.$ "[data-surf=#{forum-id}]" .add-class \hidden
+
+function show-restricted-menus w, u
+  # show restricted menu items
+  w.restrict.map ->
+    forum-id = __.keys it .0
+    user-ids = it[forum-id]
+    has-access = user-ids.some (-> it is "#{u.id}") # has user access?
+    if has-access
+      w.$ "[data-surf=#{forum-id}]" .remove-class \hidden
 
 @
 # vim:fdm=indent
