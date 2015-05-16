@@ -174,6 +174,7 @@ function background-for-forum m, active-forum-id
     # fetch forum settings
     item   = menu.flatten site.config.menu |> find -> it.form.dbid is post.forum_id
     limit  = item?form?posts-per-page or posts-per-page
+    if is-restricted res, user, item then return next 404 # guard
     offset = (page - 1) * limit
 
     tasks =
@@ -222,6 +223,7 @@ function background-for-forum m, active-forum-id
     # get active menu item
     m        = site.config.menu
     item     = menu.flatten m |> find -> it.form.dbid is forum-id
+    if is-restricted res, user, item then return next 404 # guard
     children = (menu.item m, (menu.path m, item?id))?children or []
     forum-ids = children |> map (.form.dbid) |> filter (-> it)
 
@@ -792,7 +794,8 @@ function profile-paths user, uploaded-file, base=\avatar
     err <- sch.super-users req, res
     if err then return next err
     res.mutant \admin # out!
-  else if res.locals.action is \menu
+  else
+  #else if res.locals.action is \menu
     # add users to locals
     with-site = if site.id is not 1
       { site_id: site.id }
@@ -801,9 +804,6 @@ function profile-paths user, uploaded-file, base=\avatar
     err, users <- db.users.all with-site
     if err then return next err
     res.locals.users = users
-    res.mutant \admin # out!
-  else
-    # default
     res.mutant \admin # out!
 
 @search = (req, res, next) ->
@@ -924,6 +924,12 @@ function profile-paths user, uploaded-file, base=\avatar
     finish!
   else
     finish!
+
+function is-restricted res, user, item
+  if item.form.restrict # 404 guard if restricted
+    caching-strategies.nocache res
+    not __.flatten [item.form.users] .some ->
+      it is "#{user.id}"
 
 function decorate-menu-item item, forums
   switch item.form.dialog

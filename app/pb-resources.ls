@@ -181,6 +181,7 @@ is-commentable-forum = (m, forum-id) ->
         menu-item = { id, form.title, form }
         m-path = menu.path-for-upsert m, id
         site.config.menu = menu.struct-upsert m, m-path, menu-item
+        h.ban-all-domains site.id if should-ban # blow cache
 
       err, r <- menu.db-upsert site, menu-item
       return res.json {-success, errors: err?errors} if err?errors
