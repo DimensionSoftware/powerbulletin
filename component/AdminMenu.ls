@@ -134,6 +134,7 @@ module.exports =
           if fu = form.users
             $ "[name='users'] option" .attr \selected false
             for i in fu
+              console?log \sel i
               $ "[name='users'] > [value=#i]" .attr \selected true
           html-form.find 'input,textarea' |> each (input) ->
             $i = @$ input
