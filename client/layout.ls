@@ -86,7 +86,7 @@ window.onload-personalize = ->
 window.onload-resizable = ->
   left-offset = 20px
 
-  $l = $ \#left_cntent
+  $l = $ \#left_content
   $r = $ '#main_content .resizable'
 
   if $r.length
@@ -158,7 +158,7 @@ on-scroll-fn = ->
     #if window.fixed-header then $ \body .remove-class \scrolled
   last-st := st
 
-$ window .on \scroll window._.debounce on-scroll-fn, 10ms
+$ window .on \scroll _.debounce on-scroll-fn, 10ms
 
 
 $ \header.header .on \dblclick (ev) ->
