@@ -158,7 +158,8 @@ on-scroll-fn = ->
     #if window.fixed-header then $ \body .remove-class \scrolled
   last-st := st
 
-$ window .on \scroll _.debounce on-scroll-fn, 10ms
+#$ window .on \scroll _.debounce on-scroll-fn, 10ms
+$ window .on \scroll on-scroll-fn
 
 
 $ \header.header .on \dblclick (ev) ->
