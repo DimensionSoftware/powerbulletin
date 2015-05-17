@@ -133,9 +133,11 @@ module.exports =
           # set input values
           if fu = form.users
             $ "[name='users'] option" .attr \selected false
-            for i in fu
-              console?log \sel i
-              $ "[name='users'] > [value=#i]" .attr \selected true
+            if typeof fu is \string
+              $ "[name='users'] > [value=#fu]" .attr \selected true
+            else
+              for i in fu
+                $ "[name='users'] > [value=#i]" .attr \selected true
           html-form.find 'input,textarea' |> each (input) ->
             $i = @$ input
             n = $i?attr \name
