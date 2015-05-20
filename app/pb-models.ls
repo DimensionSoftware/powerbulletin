@@ -389,7 +389,7 @@ query-dictionary =
   # db.users.all cb
   users:
     # used by SuperAdminUsers
-    all: ({site_id, q, limit, offset}, cb) ->
+    all: ({site_id, q, limit, offset, verified}, cb) ->
       pdollars = ['$' + i for i in [3 to 5]]
       where-clauses = []
       where-args = []
@@ -413,6 +413,7 @@ query-dictionary =
         else
           ''
 
+      verified-clause = if verified then " AND a.verified=true " else ''
       sql = """
       SELECT
         u.id, u.email, u.rights AS sys_rights,
@@ -420,6 +421,7 @@ query-dictionary =
       FROM users u
       JOIN aliases a ON a.user_id=u.id
       #where-clause
+      #verified-clause
       ORDER BY a.name ASC
       LIMIT $1 OFFSET $2
       """

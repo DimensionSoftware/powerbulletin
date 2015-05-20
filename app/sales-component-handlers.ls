@@ -23,7 +23,7 @@ require! {
   site   = res.vars.site
   step   = site.config.items-per-page || 20
   offset = (active-page - 1) * step
-  cols   = [\id, \email, \name, \photo, \site_admin, \sys_admin, \verified, \created]
+  cols   = [\id, \name, \email, \photo, \site_admin, \sys_admin, \verified, \created]
 
   with-site = if site.id is not 1
     { site_id: site.id }

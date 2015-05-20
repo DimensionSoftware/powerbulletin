@@ -798,7 +798,7 @@ function profile-paths user, uploaded-file, base=\avatar
   #else if res.locals.action is \menu
     # add users to locals
     with-site = if site.id is not 1
-      { site_id: site.id }
+      { site_id: site.id, +verified }
     else
       { }
     err, users <- db.users.all with-site
