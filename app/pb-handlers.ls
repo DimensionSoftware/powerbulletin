@@ -927,6 +927,7 @@ function profile-paths user, uploaded-file, base=\avatar
 
 function is-restricted res, user, item
   if item.form.restrict # 404 guard if restricted
+    unless user then return true # guard if guest
     caching-strategies.nocache res
     not __.flatten [item.form.users] .some ->
       it is "#{user.id}"
