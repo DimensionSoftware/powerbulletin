@@ -32,8 +32,16 @@ module.exports =
       @children = {table: new Table {locals, pnum-to-href} \.SuperAdminUsers-table @}
     on-attach: ->
       dollarish = @@$
-      @$.on \click \.onclick-export-email ->
-        console.log \here
+      @$.on \#filter .on \keyup ->
+        if it.key-code is 13 # apply filter
+          window.last-statechange-was-user = false # flag that this was programmer, not user
+          History.push-state {}, '', "?filter=#{dollarish \#filter .0.value}"
+      @$.find \#filter
+        ..val (window.location.search.match /filter=(.+)/)?1
+        ..focus!
+
+      #@$.on \click \.onclick-export-email ->
+      #  console.log \here
 
 #      @$.on \click 'a[data-edit-user]' ->
 #        user = dollarish @ .data \edit-user

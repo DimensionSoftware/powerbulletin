@@ -30,6 +30,9 @@ require! {
   else
     { }
 
+  if req.query.verified then with-site.verified = that # verified filter
+  if req.query.filter then with-site.filter     = that # user name filter
+
   err, a <- async.auto {
     obj-rows: db.users.all {limit: step, offset, q} <<< with-site, _
     qty: db.users.all-count {q} <<< with-site, _

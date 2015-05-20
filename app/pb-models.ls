@@ -389,7 +389,7 @@ query-dictionary =
   # db.users.all cb
   users:
     # used by SuperAdminUsers
-    all: ({site_id, q, limit, offset, verified}, cb) ->
+    all: ({site_id, q, limit, offset, verified, filter}, cb) ->
       pdollars = ['$' + i for i in [3 to 5]]
       where-clauses = []
       where-args = []
@@ -413,7 +413,9 @@ query-dictionary =
         else
           ''
 
-      verified-clause = if verified then " AND a.verified=true " else ''
+      verified-clause = if typeof verified isnt \undefined then " AND a.verified=#{if verified is \false then false else true} " else '' # force boolean
+      filter-clause = if filter then " AND a.name LIKE '%#{filter.replace /[^\w\d]/g, ''}%' " else '' # whitelist \w\d regex
+
       sql = """
       SELECT
         u.id, u.email, u.rights AS sys_rights,
@@ -421,6 +423,7 @@ query-dictionary =
       FROM users u
       JOIN aliases a ON a.user_id=u.id
       #where-clause
+      #filter-clause
       #verified-clause
       ORDER BY a.name ASC
       LIMIT $1 OFFSET $2

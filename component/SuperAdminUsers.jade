@@ -8,5 +8,18 @@ ul
   li
     a(href='/resources/users?format=csv')
       b Export Users
+ul.filters
+  li
+    span Filter by
+  li
+    a.mutant(href='?')
+      b All
+  li
+    a.mutant(href='?verified=true')
+      b Verified
+  li
+    a.mutant(href='?verified=false')
+      b Unverified
+input#filter(type='text', name='filter', placeholder="Search")
 
 .SuperAdminUsers-table
