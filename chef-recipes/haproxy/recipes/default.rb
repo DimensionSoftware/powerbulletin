@@ -4,7 +4,7 @@ unless File.file? '/usr/local/sbin/haproxy'
 
   remote_file '/tmp/haproxy.tar.gz' do
     source 'http://haproxy.1wt.eu/download/1.5/src/snapshot/haproxy-ss-20130221.tar.gz'
-    checksum ''
+    #checksum ''
   end
 
   bash "installing haproxy" do
