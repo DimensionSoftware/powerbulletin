@@ -53,9 +53,9 @@ last-scroll-y = window.scroll-y
 $w            = $ window
 bh            = $ \body .height!
 ticking       = false
+const all     = <[.first .second .third .fifth]>
 
-update-elements = ->
-  offset  = $w.scroll-top!
+update-elements = (offset) ->
   if offset is 0 then focus-first!
   #if Math.abs(bh - (offset + $w.height!)) < 400px then focus-last! # within 15px of bottom so dom doesn't jerk
 
@@ -65,7 +65,6 @@ update-elements = ->
 
   if offset > 40px
     # move background images in view
-    const all = <[.first .second .third .fifth]>
     # <optimization> -- save work on invisible sections & by knowing scroll direction
     if cur-id
       last-dir = dir
@@ -90,15 +89,16 @@ update-elements = ->
           | \support        => <[.third .fifth]>
 
         [visible, hide] = partition (-> it in cur), all
-        for h in hide then $ h .remove-class \visible # hide these
-        for v in visible then $ v .add-class \visible # show these
+        #for h in hide then $ h .remove-class \visible # hide these
+        #for v in visible then $ v .add-class \visible # show these
         last-id      := cur-id
         last-visible := visible
-      else # same section, so parallax visible sections!
-        for v in last-visible
-          dy = -($ v .offset!?top)
-          # TODO use background-position or transformx/y
-          $ "#v .bg" .transition {y:"#{parse-int (dy+offset)*0.65}px"}, 0
+
+      # parallax visible sections!
+      for v in last-visible
+        dy = -($ v .offset!?top)
+        # TODO use background-position or transformx/y
+        $ "#v .bg" .transition {y:"#{parse-int (dy+offset)*0.65}px"}, 0
 
   last-scroll-y := window.scroll-y
   ticking       := false
@@ -107,7 +107,8 @@ on-resize = -> update-elements window.scroll-y
 on-scroll = (ev) ->
   unless ticking
     ticking := true
-    requestAnimFrame update-elements
+    offset  = $w.scroll-top!
+    requestAnimFrame -> update-elements offset
 
 # listen & go!
 window.add-event-listener \resize, on-resize, false
