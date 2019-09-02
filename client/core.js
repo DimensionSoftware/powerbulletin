@@ -1,1 +1,0 @@
-../node_modules/markdown/src/core.js
