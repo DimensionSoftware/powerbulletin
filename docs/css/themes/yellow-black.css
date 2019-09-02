@@ -1,0 +1,180 @@
+/* Theme */
+
+::selection {
+  background: #333;
+  color: #FFF;
+}
+::-moz-selection {
+  background: #333;
+  color: #FFF;
+}
+
+html {
+  background-color: #000;
+  background: #000;
+	color: #FFF;
+}
+
+main {
+}
+
+.footer {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  font-size: .8em;
+  opacity: .4;
+  transition: opacity .3s ease-in, transform .2s cubic-bezier(0.680, -0.550, 0.265, 1.550) .1s;
+}
+.footer:hover {
+  transform: scale(1.05);
+  opacity: 1;
+  transition: none;
+}
+.footer svg {
+  vertical-align: middle;
+  height: 1.35em;
+}
+a.footer {
+  vertical-align: middle;
+  text-decoration: none;
+  color: #FFF;
+}
+.background {
+  pointer-events: none;
+  animation: buildInBg 1s ease-in .25s;
+  animation-fill-mode: forwards;
+  background: url("https://raw.githubusercontent.com/DimensionSoftware/powerbulletin/master/public/images/live_support.jpg") no-repeat 50% 100%;
+  position: absolute;
+  min-height: 100vh;
+  min-width: 100vw;
+  left: -25%!important;
+  right: -25%!important;
+  top: -25%!important;
+  bottom: -25%!important;
+  opacity: 0;
+  z-index: -1;
+}
+
+@keyframes gradientBg {
+	0% {
+		background-position: 0% 50%;
+	}
+	7% {
+		background-position: 100% 50%;
+	}
+	40% {
+		background-position: 100% 50%;
+	}
+	60% {
+		background-position: 0% 50%;
+	}
+}
+
+h2.tagline {
+  margin-top: .5rem;
+}
+h2 > a {
+  color: #FFF;
+  text-decoration: none;
+}
+
+small {
+  font-size: .65em;
+}
+
+.icons-social {
+  margin-bottom: 50px;
+}
+
+.icons-social a {
+	color: #FFF;
+}
+
+.icons-social a svg path{
+	fill: #1E1E1E;
+}
+
+@keyframes buildInBg {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes buildInTagline {
+  0% {
+    opacity: .1;
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1) translateY(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes buildInSocial {
+  0% {
+    opacity: .2;
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2) translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes buildInQr {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.5) translateY(10px);
+  }
+  100% {
+    opacity: .75;
+    transform: scale(1) translateY(0);
+  }
+}
+body {
+  overflow: hidden;
+}
+h2.tagline {
+  font-size: 1.6em;
+  animation: buildInTagline .2s ease-in;
+}
+.icons-social {
+  animation: buildInSocial .4s ease-in;
+}
+.icons-social > a {
+  transition: transform .3s cubic-bezier(0.680, -0.550, 0.265, 1.550);
+  display: inline-block;
+}
+.icons-social > a:hover {
+  transform: scale(1.3);
+  transition: none;
+}
+.qrcode {
+  opacity: .75;
+  margin-top: 60px;
+  transition: opacity .3s ease-in, transform .2s cubic-bezier(0.680, -0.550, 0.265, 1.550) .1s;
+  animation: buildInQr .5s ease-in;
+}
+.qrcode:hover {
+  opacity: 1;
+  transform: scale(1.15);
+  transition: none;
+}
+
+.center {
+  width: 100%;
+  position: relative!important;
+  display: block;
+  text-align: center;
+}
