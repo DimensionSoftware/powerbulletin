@@ -37,9 +37,9 @@ main {
   vertical-align: middle;
   height: 1.35em;
 }
-h1 a {
+h1 > a {
   text-decoration: none;
-  color: #fff;
+  color: #fff!important;
 }
 a.footer {
   vertical-align: middle;
