@@ -2,11 +2,11 @@
 
 ::selection {
   background: #333;
-  color: #FFF;
+  color: #FFFC00;
 }
 ::-moz-selection {
   background: #333;
-  color: #FFF;
+  color: #FFFC00;
 }
 
 html {
@@ -16,6 +16,7 @@ html {
 }
 
 main {
+  padding-top: 7em;
 }
 
 .footer {
@@ -32,8 +33,13 @@ main {
   transition: none;
 }
 .footer svg {
+  fill: white;
   vertical-align: middle;
   height: 1.35em;
+}
+h1 a {
+  text-decoration: none;
+  color: #fff;
 }
 a.footer {
   vertical-align: middle;
@@ -45,15 +51,29 @@ a.footer {
   animation: buildInBg 1s ease-in .25s;
   animation-fill-mode: forwards;
   background: url("https://raw.githubusercontent.com/DimensionSoftware/powerbulletin/master/public/images/live_support.jpg") no-repeat 50% 100%;
+  background-size: cover;
   position: absolute;
   min-height: 100vh;
   min-width: 100vw;
-  left: -25%!important;
-  right: -25%!important;
-  top: -25%!important;
+  left: -15%!important;
+  right: -15%!important;
+  top: -15%!important;
   bottom: -25%!important;
   opacity: 0;
+  z-index: -2;
+}
+.lense {
+  position: fixed!important;
   z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  left: -15%!important;
+  right: -15%!important;
+  top: -15%!important;
+  bottom: -25%!important;
+  background: radial-gradient(circle closest-corner at 50% 30%, rgba(0,0,0,0) 70%, rgba(0,0,0,1) 100%)
 }
 
 @keyframes gradientBg {
@@ -80,11 +100,13 @@ h2 > a {
 }
 
 small {
+  opacity: .5;
   font-size: .65em;
 }
 
 .icons-social {
   margin-bottom: 50px;
+  margin-top: 30px;
 }
 
 .icons-social a {
@@ -105,11 +127,11 @@ small {
 }
 @keyframes buildInTagline {
   0% {
-    opacity: .1;
+    opacity: .3;
     transform: scale(1);
   }
   25% {
-    transform: scale(1.1) translateY(2px);
+    transform: scale(1.3) translateY(7px);
   }
   100% {
     opacity: 1;
@@ -143,11 +165,11 @@ small {
   }
 }
 body {
-  overflow: hidden;
+  overflow-x: hidden;
 }
 h2.tagline {
   font-size: 1.6em;
-  animation: buildInTagline .2s ease-in;
+  animation: buildInTagline .45s ease-in;
 }
 .icons-social {
   animation: buildInSocial .4s ease-in;
